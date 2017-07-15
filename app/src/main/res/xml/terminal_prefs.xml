@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2008 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+            android:title="@string/screen_preferences">
+
+        <ListPreference
+                android:key="statusbar"
+                android:defaultValue="@string/default_value_statusbar_preference"
+                android:title="@string/title_statusbar_preference"
+                android:summary="@string/summary_statusbar_preference"
+                android:entries="@array/entries_statusbar_preference"
+                android:entryValues="@array/entryvalues_statusbar_preference"
+                android:dialogTitle="@string/dialog_title_statusbar_preference" />
+
+<!--
+        <ListPreference
+                android:key="cursorstyle"
+                android:defaultValue="@string/default_value_cursorstyle_preference"
+                android:title="@string/title_cursorstyle_preference"
+                android:summary="@string/summary_cursorstyle_preference"
+                android:entries="@array/entries_cursorstyle_preference"
+                android:entryValues="@array/entryvalues_cursorstyle_preference"
+                android:dialogTitle="@string/dialog_title_cursorstyle_preference" />
+
+        <ListPreference
+                android:key="cursorblink"
+                android:defaultValue="@string/default_value_cursorblink_preference"
+                android:title="@string/title_cursorblink_preference"
+                android:summary="@string/summary_cursorblink_preference"
+                android:entries="@array/entries_cursorblink_preference"
+                android:entryValues="@array/entryvalues_cursorblink_preference"
+                android:dialogTitle="@string/dialog_title_cursorblink_preference" />
+-->
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            android:title="@string/text_preferences">
+
+        <ListPreference
+                android:key="fontsize"
+                android:defaultValue="@string/default_value_fontsize_preference"
+                android:title="@string/title_fontsize_preference"
+                android:summary="@string/summary_fontsize_preference"
+                android:entries="@array/entries_fontsize_preference"
+                android:entryValues="@array/entryvalues_fontsize_preference"
+                android:dialogTitle="@string/dialog_title_fontsize_preference" />
+
+        <ListPreference
+                android:key="color"
+                android:defaultValue="@string/default_value_color_preference"
+                android:title="@string/title_color_preference"
+                android:summary="@string/summary_color_preference"
+                android:entries="@array/entries_color_preference"
+                android:entryValues="@array/entryvalues_color_preference"
+                android:dialogTitle="@string/dialog_title_color_preference" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="WAKE-LOCK Options">
+
+        <ListPreference
+                android:key="cpulock"
+                android:defaultValue="1"
+                android:title="CPU Lock"
+                android:summary="Keep the CPU running at all times"
+                android:entries="@array/entries_yesno"
+                android:entryValues="@array/entryvalues_yesno"
+                android:dialogTitle="CPU Lock" />
+
+        <ListPreference
+                android:key="screenlock"
+                android:defaultValue="0"
+                android:title="Screen Lock"
+                android:summary="Keep the screen on at all times [Though it can dim]"
+                android:entries="@array/entries_yesno"
+                android:entryValues="@array/entryvalues_yesno"
+                android:dialogTitle="Screen Lock" />
+
+        <ListPreference
+                android:key="wifilock"
+                android:defaultValue="0"
+                android:title="Wifi Lock"
+                android:summary="Keep the wifi on at all times"
+                android:entries="@array/entries_yesno"
+                android:entryValues="@array/entryvalues_yesno"
+                android:dialogTitle="Wifi Lock" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Basic Special Keys">
+
+        <ListPreference
+                android:key="controlkey"
+                android:defaultValue="@string/default_value_controlkey_preference"
+                android:title="CTRL Key"
+                android:summary="@string/summary_controlkey_preference"
+                android:entries="@array/entries_controlkey_preference"
+                android:entryValues="@array/entryvalues_controlkey_preference"
+                android:dialogTitle="@string/dialog_title_controlkey_preference" />
+
+        <ListPreference
+                android:key="fnkey"
+                android:defaultValue="@string/default_value_fnkey_preference"
+                android:title="ESC Key"
+                android:summary="Choose a hard key for ESC"
+                android:entries="@array/entries_fnkey_preference"
+                android:entryValues="@array/entryvalues_fnkey_preference"
+                android:dialogTitle="ESC Key" />
+
+        <!--<ListPreference
+                android:key="ime"
+                android:defaultValue="@string/default_value_ime_preference"
+                android:title="@string/title_ime_preference"
+                android:summary="@string/summary_ime_preference"
+                android:entries="@array/entries_ime_preference"
+                android:entryValues="@array/entryvalues_ime_preference"
+                android:dialogTitle="@string/dialog_title_ime_preference" />-->
+
+    </PreferenceCategory>
+
+    <!--<PreferenceCategory
+        android:title="@string/shell_preferences">
+
+    <EditTextPreference
+            android:key="shell"
+            android:defaultValue="@string/default_value_shell_preference"
+            android:title="@string/title_shell_preference"
+            android:summary="@string/summary_shell_preference"
+            android:dialogTitle="@string/dialog_title_shell_preference" />
+    <EditTextPreference
+            android:key="initialcommand"
+            android:defaultValue="@string/default_value_initialcommand_preference"
+            android:title="@string/title_initialcommand_preference"
+            android:summary="@string/summary_initialcommand_preference"
+            android:dialogTitle="@string/dialog_title_initialcommand_preference" />
+    </PreferenceCategory>-->
+
+    <PreferenceCategory android:title="Hard Keyboard Mappings">
+
+        <com.spartacusrex.spartacuside.util.dialogpref
+            android:key="hardkeys_reset"
+            android:dialogIcon="@android:drawable/ic_dialog_alert"
+            android:title="Reset All mappings"
+            android:summary="Reset all key mappings to -1"
+            android:dialogMessage="Are you sure you wish to reset all key mappings to -1 ?\n\nNB: You will need to restart this Preference Activity to view these changes."
+            android:positiveButtonText="Clear Keys"
+            android:negativeButtonText="Cancel"/>
+
+        <PreferenceScreen android:title="External Keyboard Mappings"
+                          android:summary="Map keycodes from your external keyboard to Special characters. CTRL / ALT / FN  / ESC ">
+
+            <PreferenceCategory android:title="Enable / Disable ALL Mappings">
+                <ListPreference android:key="hardmap_enable"
+                                android:defaultValue="0"
+                                android:title="Keyboard Mappings"
+                                android:summary="You can set key codes that overide the 'system' key codes from here [only from within Terminal IDE] so BE CAREFUL!! -1 is the default ignore code."
+                                android:entries="@array/entries_enableHardKeyboardMappings"
+                                android:entryValues="@array/entryvalues_enableHardKeyboardMappings"
+                                android:dialogTitle="Enable Hard Mappings" />
+
+            </PreferenceCategory>
+
+            <PreferenceCategory android:title="Main Key Codes">
+                <EditTextPreference
+                        android:key="hardmap_ctrlLeft"
+                        android:defaultValue="-1"
+                        android:title="Left CTRL Key"
+                        android:summary="CTRL key"
+                        android:dialogTitle="CTRL key" />
+                <EditTextPreference
+                        android:key="hardmap_ctrlRight"
+                        android:defaultValue="-1"
+                        android:title="Right CTRL Key"
+                        android:summary="CTRL key"
+                        android:dialogTitle="CTRL key" />
+
+                <EditTextPreference
+                        android:key="hardmap_escape"
+                        android:defaultValue="-1"
+                        android:title="Escape Key"
+                        android:summary="The Escape key"
+                        android:dialogTitle="ESC Key" />
+
+                <EditTextPreference
+                        android:key="hardmap_altLeft"
+                        android:defaultValue="-1"
+                        android:title="Left ALT Key"
+                        android:summary="ALT key"
+                        android:dialogTitle="ALT key" />
+                <EditTextPreference
+                        android:key="hardmap_altRight"
+                        android:defaultValue="-1"
+                        android:title="Right ALT Key"
+                        android:summary="ALT key"
+                        android:dialogTitle="ALT key" />
+
+                <EditTextPreference
+                        android:key="hardmap_function"
+                        android:defaultValue="-1"
+                        android:title="Function Key"
+                        android:summary="Press FN+[0-9]=>F1-F10. FN+O=>F11. FN+P=>F12"
+                        android:dialogTitle="FN Key" />
+
+                </PreferenceCategory>
+
+                <PreferenceCategory android:title="More Key Codes (Should allready work)">
+                    <EditTextPreference
+                            android:key="hardmap_tab"
+                            android:defaultValue="-1"
+                            android:title="TAB Key"
+                            android:summary="TAB key"
+                            android:dialogTitle="TAB key" />
+
+                    <EditTextPreference
+                            android:key="hardmap_leftshift"
+                            android:defaultValue="-1"
+                            android:title="Left SHIFT Key"
+                            android:summary="Left SHIFT key"
+                            android:dialogTitle="Left SHIFT key" />
+
+
+                    <EditTextPreference
+                            android:key="hardmap_rightshift"
+                            android:defaultValue="-1"
+                            android:title="Right SHIFT Key"
+                            android:summary="Right SHIFT key"
+                            android:dialogTitle="Right SHIFT key" />
+
+
+                    <EditTextPreference android:key="hardmap_space"
+                            android:defaultValue="-1"
+                            android:title="SPACE Key"
+                            android:summary="SPACE key"
+                            android:dialogTitle="SPACE key" />
+
+                    <EditTextPreference
+                            android:key="hardmap_enter"
+                            android:defaultValue="-1"
+                            android:title="ENTER Key"
+                            android:summary="ENTER key"
+                            android:dialogTitle="Enter key" />
+
+                    <EditTextPreference
+                            android:key="hardmap_delete"
+                            android:defaultValue="-1"
+                            android:title="DEL Key"
+                            android:summary="DEL key"
+                            android:dialogTitle="DEL key" />
+
+                    <EditTextPreference
+                            android:key="hardmap_backspace"
+                            android:defaultValue="-1"
+                            android:title="BACKSPACE Key"
+                            android:summary="BACKSPACE key"
+                            android:dialogTitle="BACKSPACE key" />
+
+                     <EditTextPreference android:key="hardmap_pageup"
+                            android:defaultValue="-1"
+                            android:title="Page UP Key"
+                            android:summary="Page UP key"
+                            android:dialogTitle="Page UP key" />
+
+                    <EditTextPreference
+                            android:key="hardmap_pagedown"
+                            android:defaultValue="-1"
+                            android:title="Page DOWN Key"
+                            android:summary="Page DOWN key"
+                            android:dialogTitle="Page DOWN key" />
+
+                    <EditTextPreference
+                            android:key="hardmap_home"
+                            android:defaultValue="-1"
+                            android:title="Home Key"
+                            android:summary="Home key. Not the Android version, the keyboard version."
+                            android:dialogTitle="Home key" />
+
+                    <EditTextPreference
+                            android:key="hardmap_end"
+                            android:defaultValue="-1"
+                            android:title="End Key"
+                            android:summary="End key"
+                            android:dialogTitle="End key" />
+
+                </PreferenceCategory>
+
+                <PreferenceCategory android:title="ARROW keys (Should work as DPAD)">
+                    <EditTextPreference android:key="hardmap_up"
+                            android:defaultValue="-1"
+                            android:title="UP Arrow Key"
+                            android:summary="UP key"
+                            android:dialogTitle="UP key" />
+
+                    <EditTextPreference android:key="hardmap_down"
+                            android:defaultValue="-1"
+                            android:title="DOWN Arrow Key"
+                            android:summary="DOWN key"
+                            android:dialogTitle="DOWN key" />
+
+                    <EditTextPreference android:key="hardmap_left"
+                            android:defaultValue="-1"
+                            android:title="LEFT Arrow Key"
+                            android:summary="LEFT key"
+                            android:dialogTitle="LEFT key" />
+
+
+                    <EditTextPreference android:key="hardmap_right"
+                            android:defaultValue="-1"
+                            android:title="RIGHT Arrow Key"
+                            android:summary="RIGHT key"
+                            android:dialogTitle="RIGHT key" />
+                            
+                </PreferenceCategory>
+
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

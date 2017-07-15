@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="Tutorial 1"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+                "Follow all these tutorials through EXACTLY.\n
+\n
+They will help you compile the sample applications in ~/system/src step by step.\n
+\n
+The best way to follow these tutorials is by logging in over telnet/ssh and then
+you can read and follow on the device, whilst using the computer to perform the actions.\n
+\n
+Let's Begin..\n
+\n
+Installing the basic system.\n
+\n
+Click \'Install System\' on the main page, and then follow the instructions.\n
+\n
+Make sure you have enabled the Terminal IDE Keyboard in Settings > Langauge and Keyboard
+on your device. Then choose the Terminal IDE keyboard - click \'Keyboard\' on the main page.\n
+\n
+Start Terminal IDE. Click the button..\n
+\n
+You will now be presented with a nice not-short color prompt. You can change this by typing, \n
+\n
+..$ export PS1=#\n
+\n
+But it does look really nice over telnet/ssh.. :-p\n
+\n
+   - Double-tap toggles the keyboard.\n
+   - Swipe left and right to view your 4 Terminals.\n
+   - Long pressing the screen brings up the Terminal Chooser menu.\n
+   - Press \'Menu\' for Options\n
+\n
+----------------------------------------------\n
+[This part is optional but highly recommended]\n
+\n
+Run telnetd. No parameters are rquired. Defaults setup in ~/.bashrc.You 
+can see what is actually being run by typing :\n
+\n
+# cat `which telnetd`\n
+\n
+Anyway - start telnetd with :\n
+\n
+# telnetd
+\n
+You should now see telnetd startup info. Ending in ../system/bin/bash\n
+\n
+You can shut telnetd down at any stage by typing [CTRL]-C on the Terminal IDE Keyboard\n
+\n
+Now, go to your nice big computer and login via telnet. I have set the escape character to blank, as it is the same as the vim help link follow key.\n
+\n
+[Either]\n
+$ telnet -e '' [THE PHONES IP] 8080\n
+\n
+[Or - better still with adb, which is part of the Android SDK]\n
+Plug your phone into computer via USB first, then\n
+\n
+$ adb -d forward tcp:8080 tcp 8080\n
+$ telnet -e '' 127.0.01 8080\n
+\n
+['' is 2 single quotes not a double quote]\n
+\n
+Now you should be connected to the system via TELNET!\n
+\n
+[And you can connect multiple times simultaneously]\n
+------------------------------------------------\n
+\n
+OK - let's start programming.\n
+\n
+"/>
+
+    </ScrollView>
+
+</LinearLayout>

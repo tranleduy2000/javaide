@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="Keyboard"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+                "The Keyboard is VERY important.\n
+\n
+You need access to the CONTROL keys of a keyboard or none of these command line applications will work properly.. \n
+\n
+Terminal IDE comes with a full 128 set ASCII soft 'on screen' keyboard.\n
+\n
+NB! This keyboard is really ONLY for use in TERMINAL IDE / other Terminals.. The emulators expect ^M. Android expects something else.\n
+\n
+That is why some of you complain about the ENTER KEY NOT WORKING. It works in Terminal IDE correctly.. Not in Android.\n
+\n
+BUT - I have now set it so that if you ever get the SEND, NEXT or GO icon on the keyboard it will send the correct ANDROID enter key.\n
+\n
+AND - If you need to send an ANDROID ENTER KEY, say to unlock the screen with a pin (when you can't just change keyboard..) then use CTRL+ENTER . This will ALWAYS send the correct Android ENTER value.\n
+\n
+You will need to enable the keyboard in the Settings > 'Language and Keyboard' section of your device.\n
+\n
+You can select the keyboard from the main screen by pressing 'Keyboard'. You can switch back to your regular keyboard easily by clicking the options button in the bottom right of the keyboard itself.\n
+\n
+There is a small-ish version and a larger version, and you can set them differently depending on the orientation, in the Keyboard Settings.\n
+\n
+Terminal IDE also comes with a powerful Hard Keybaord Mapper so that MOST external keyboards should now work. And work well.\n
+\n
+As a basic setup, you can specify a CTRL key and ESC key in the options, so atleast you will always have them.\n
+\n
+CTRL is the only TOTALLY essential one.. as..\n
+\n
+ESC     = CTRL+[\n
+[ALT+X] = [ESC then X] (Basically..)\n
+\n
+To see the key combo in BASH pres CTRL+v and then try an action. It will display what keys it receives.\n
+\n
+To set your hard (bluetooth etc..) keyboard up correctly you need to use the 'Hard Key Mappings' section in the 'Options'.\n
+\n
+Before you do - check what does / doesn't work, as most things now should work automatically.\n
+\n
+Function Keys are a usual problem, so you will have to pick a key on the keyboard you can use as the Function key modifier.\n
+\n
+First - in the main terminal view, press Menu, and select Toggle Key Logger. This is ALWAYS off by default. This will output the keys you press, on your external keyboard, to the file ~/.keylog\n
+\n
+Then from the command line either type\n
+\n
+# tail -f ~/.keylog\n
+\n
+( To exit press CTRL+C )\n
+\n
+This will poll the 'tail' end from that file and output it to std out. It refreshes every half second so expect a slight delay. Now press any key, and that 'key code' is the value you need to use in the Hard Keyboard Mappings section.\n
+\n
+Or the KEY LOGGER output is also sent to ADB logcat. So you can check it there too.\n
+\n
+If you press a key and no key-code is sent, like those little blue FN keys, they only change the keyboard.. They cannot be used. They must send a valid code to be used.\n
+\n
+You can map ANY key from your keyboard to ANY key in the list. As long as it sends a key code..\n
+\n
+Don't forget to Toggle the key logger OFF when you are finished.\n
+\n
+At the top of the Hard Mapping Section you can enable or disable this feature, in case you override some system keys, and if you want to reset the key values just set them to -1. Only INTEGER values allowed.\n
+\n
+My Sony bluetooth keyboard now works 'perfect' with this method..\n
+\n
+Fingers Crossed..\n
+"/>
+
+    </ScrollView>
+
+</LinearLayout>

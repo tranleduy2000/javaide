@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string name="default_">Hệ thống</string>
+
+    <string name="cancel">Trở lại</string>
+    <string name="close">Đóng</string>
+    <string name="code_sample">Code mẫu</string>
+    <string name="compile_error">Biên dịch gặp lỗi</string>
+    <string name="copy">Sao chép</string>
+    <string name="document">Xem tài liệu</string>
+    <string name="edit">Sửa</string>
+    <string name="more_app">Tải thêm ứng dụng</string>
+    <string name="new_file">Chương trình mới</string>
+    <string name="ok">Đồng ý</string>
+    <string name="rate">Đánh giá ứng dụng</string>
+    <string name="run">Chạy</string>
+    <string name="save">Lưu</string>
+    <string name="save_as">Lưu với tên khác</string>
+    <string name="setting">Cài đặt</string>
+    <string name="title_activity_code_sample">Code mẫu</string>
+    <string name="compile_ok">Biên dịch thành công</string>
+    <string name="delete_file">Xóa file</string>
+    <string name="deleted">Đã xóa</string>
+    <string name="enter_new_file_name">Nhập tên file</string>
+    <string name="extension">Phần mở rộng</string>
+    <string name="failed">Thất bại</string>
+    <string name="path">Đường dẫn</string>
+    <string name="readable">Đọc: </string>
+    <string name="remove_file_msg">Bạn có muốn xóa tệp </string>
+    <string name="writeable">Ghi: </string>
+    <string name="code_editor">Trình gõ code</string>
+    <string name="find">Tìm kiếm</string>
+    <string name="find_replace">Tìm kiếm và thay thế</string>
+    <string name="find_what">Tìm kiếm</string>
+    <string name="font">Phông chữ</string>
+    <string name="font_z">Cỡ chữ</string>
+    <string name="match_case">Giống hoàn toàn</string>
+    <string name="regex">Regex</string>
+    <string name="replace">Thay thế</string>
+    <string name="replace_with">Thay thế với</string>
+    <string name="show_line">Hiển thị số dòng</string>
+    <string name="tool">Công cụ</string>
+    <string name="user_interface">Giao diện người dùng</string>
+    <string name="word_only">Chỉ tìm kiếm từ</string>
+    <string name="word_wrap">Word wrap</string>
+    <string name="auto_save">Tự động lưu</string>
+    <string name="goto_line">Chuyển đến dòng</string>
+    <string name="describe_causes_an_error">Mô tả nguyên nhân xảy ra lỗi</string>
+    <string name="word_wrap_desc">Tự động xuống dòng khi tràn màn hình</string>
+    <string name="show_line_desc">Hiển thị số dòng bên trái của màn hình gõ code</string>
+    <string name="hide_status_bar_desc">Ẩn thanh trạng thái trong mọi màn hình của ứng dụng, bao gồm cả màn hình Console. Khởi động lại ứng dụng nếu cần thay đổi</string>
+    <string name="information">Thông tin</string>
+    <string name="hide_status_bar">Ẩn thanh trạng thái</string>
+    <string name="format_code">Định dạng code</string>
+    <string name="email">Email</string>
+    <string name="check_update">Kiểm tra cập nhật</string>
+    <string name="bug">Bug</string>
+    <string name="compile">Biên dịch</string>
+    <string name="report_bug">Báo lỗi</string>
+    <string name="show_suggest_popup">Cửa sổ gợi ý</string>
+    <string name="show_hint_desc">Hiển thị các từ có khả năng trùng với các từ khóa khi gõ</string>
+    <string name="file">Tệp</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="change_lang_msg">Khởi động lại ứng dụng để thay đổi ngôn ngữ.</string>
+    <string name="copy_all">Sao chép toàn bộ</string>
+    <string name="data">Dữ liệu</string>
+    <string name="paste">Dán</string>
+    <string name="redo">Làm lại</string>
+    <string name="show_key_board">Hiển thị bàn phím</string>
+    <string name="undo">Hủy thao tác</string>
+    <string name="exit">Thoát</string>
+    <string name="exit_mgs">Bạn có muốn thoát ứng dụng?</string>
+    <string name="setting_editor">Cài đặt soạn thảo</string>
+    <string name="cloud_database">Cloud database</string>
+    <string name="theme">Giao diện code</string>
+    <string name="select">Chọn</string>
+    <string name="back_to_undo">Nhấn nút \"back\" để hoàn tác</string>
+    <string name="cant_redo">Không thể hoàn tác</string>
+    <string name="cant_undo">Không thể hủy thao tác</string>
+    <string name="change_key_board">Thay đổi bàn phím</string>
+    <string name="new_folder">Tạo thư mục mới</string>
+    <string name="home">Trang chủ</string>
+    <string name="folder">Thư mục</string>
+    <string name="enter_new_folder_name">Nhập tên của thư mục</string>
+    <string name="cant_close_file">Không thể đóng tệp</string>
+    <string name="closed">Đã đóng</string>
+    <string name="complete">Hoàn thành</string>
+    <string name="view_console">Xem console</string>
+    <string name="help_me_translate">Giúp nhà phát triển dịch ứng dụng</string>
+    <string name="your_name">Tên của bạn</string>
+    <string name="rerun">Chạy lại chương trình</string>
+    <string name="resume_program">Tiếp tục chương trình</string>
+    <string name="send_to_me">Gửi  đến nhà phát triển</string>
+    <!--<string name="BrightYellow">Vàng sáng</string>-->
+    <!--<string name="DarkGray">Đen xám</string>-->
+    <!--<string name="EspressoLibre">Espresso Libre</string>-->
+    <!--<string name="Idel">Idel</string>-->
+    <!--<string name="KFT2">KFT2</string>-->
+    <!--<string name="Modnokai_Coffee">Modnokai Coffee</string>-->
+    <string name="more_feature">Mở ngăn kéo</string>
+    <string name="navigation_drawer_close">CLose navigation</string>
+    <string name="navigation_drawer_open">Open navigation</string>
+    <string name="pas_file">Tệp pas (*.pas)</string>
+    <string name="pascal_for_android">Pascal cho Android</string>
+    <string name="inp_file">Tệp input (*.inp)</string>
+    <string name="license">Giấy phép nguồn mở</string>
+    <string name="translate">Dịch thuật</string>
+    <string name="background_console">Màu nền console</string>
+    <string name="console_screen">Console</string>
+    <string name="frame_rate">Tốc độ cập nhật</string>
+    <string name="text_color_console">Màu chữ của console</string>
+    <string name="write_code_here">Gõ code vào đây…</string>
+    <string name="max_buffer">Kích thức bộ nhớ đệm cho màn hình</string>
+
+    <string name="can_not_save_file">Không thể lưu file!</string>
+    <string name="saved">Đã lưu</string>
+    <string name="file_exist">Tệp đã tồn tại, vui lòng nhập tên khác!</string>
+    <string name="send_mail">Gửi mail…</string>
+    <string name="no_mail_clients">Hiện tại không có ứng dụng email nào được cài đặt.</string>
+    <string name="your_language">Ngôn ngữ của bạn</string>
+    <string name="other">Tệp khác</string>
+    <string name="logo">Biểu tượng</string>
+    <string name="auto_compile">Tự động biên dịch</string>
+    <string name="auto_compile_summary">Tự động biên dịch trong khi gõ. Hiệu năng của ứng dụng sẽ bị giảm nếu sử dụng tính năng này, tuy nhiên giúp chúng ta báo lỗi nhanh hơn.</string>
+    <string name="keyboard_shortcut">Lối tắt bàn phím</string>
+    <string name="program_structure">Hiển thị cấu trúc chương trình</string>
+    <string name="show_symbol">Dãy kí tự đặc biệt</string>
+    <string name="show_symbol_decs">Hiển thị dãy kí tự đặc biệt bên dưới trình soạn thảo code</string>
+    <string name="add_watch">Add watch</string>
+    <string name="debug">Debug chương trình</string>
+    <string name="var_name">Tên biến</string>
+    <string name="program_stopped">Chương trình đã dừng</string>
+    <string name="no_document">Không có tài liệu</string>
+    <string name="implicitly">không thể</string>
+    <string name="max_page">Số trang lớn nhất</string>
+    <string name="max_page_desc">Số lượng trang lớn nhất có thể hiển thị</string>
+    <string name="enter_key_word">Tìm kiếm…</string>
+    <string name="blog">Blog của ứng dụng</string>
+    <string name="title_activity_zxing">ZxingActivity</string>
+    <string name="turn_off_flashlight">Tắt đèn flash</string>
+    <string name="turn_on_flashlight">Bật đèn flash</string>
+    <string name="insert_url_media">Chèn url media</string>
+    <string name="open_file">Mở tệp</string>
+    <string name="see_in_github">Xem dự án trên Github https://github.com/tranleduy2000/pascalnide</string>
+    <string name="max_history_edit_desc">Số lượng bước tối đa có thể undo redo</string>
+    <string name="max_history_edit">Lịch sử chỉnh sửa</string>
+    <string name="copied">Đã sao chép</string>
+    <string name="stack_size">Kích thước ngăn xếp</string>
+    <string name="stack_size_desc">Kích thước ngăn xếp lớn nhất để chạy chương trình. Trên một số thiết bị, thông số này không có hiệu lực. Giá trị mặc định là 40000. Giá trị nhỏ nhất la 5000</string>
+    <string name="create_shortcut_msg">Chọn tệp để tạo lối tắt</string>
+    <string name="do_you_want_to_create_your_theme">Bạn có muốn tự tạo giao diện?</string>
+    <string name="create_shortcut">Tạo lối tắt</string>
+    <string name="get_pro_version">Nâng cấp lên phiên bản pro</string>
+    <string name="shortcut_created">Đã tạo lối tắt</string>
+    <string name="theme_font">Giao diện và phông chữ</string>
+    <string name="content">Nội dung</string>
+    <string name="insert_color">Chèn màu sắc</string>
+    <string name="see_in_github_2">Xem trên Github</string>
+    <string name="sort_date">Sắp xếp theo ngày</string>
+    <string name="sort_name">Sắp xếp theo tên</string>
+    <string name="sort_size">Sắp xếp theo kích thước</string>
+    <string name="unit_file">Unit pascal (*.pas)</string>
+    <string name="inserted_color">Đã chèn màu</string>
+    <string name="permission_denied_storage">Quyền đọc bộ nhớ ngoài bị từ chối.</string>
+    <string name="what_expect">Bạn mong chờ điều gì?</string>
+    <string name="declare_variable">Khai báo biến</string>
+    <string name="declare_function">Khai báo hàm</string>
+    <string name="declare_constant">Khai báo hằng</string>
+    <string name="auto_fix">Tự động sửa</string>
+    <string name="can_not_exec_unit">Không thể chạy một unit</string>
+    <string name="insert">Insert</string>
+    <string name="select_mode">Chọn chế độ</string>
+    <string name="select_token">Chọn mã</string>
+    <string name="enable_ime_keyboard">Bật bàn phím IME</string>
+    <string name="call_stack">Call stack</string>
+    <string name="frames">Frames</string>
+    <string name="variables">Biến</string>
+    <string name="step_info">Step info</string>
+    <string name="step_over">Step over</string>
+    <string name="maxline_console_desc">số dòng tối đa mà console sẽ lưu lại, số dòng càng lớn sẽ cần nhiều bộ nhớ.</string>
+    <string name="ime_desc">Cho phép bàn phím của bạn hiển thị các gợi ý.</string>
+    <string name="bg_color">Màu nền</string>
+    <string name="compiler">Biên dịch</string>
+    <string name="console_screen_">Màn hình console</string>
+    <string name="ctrl_key">Ctrl Key</string>
+    <string name="def_bg_color">Màu nền mặc định</string>
+    <string name="default_text_color">Màu chữ mặc định</string>
+    <string name="draw_screen_faster">Vẽ màn hình nhanh hơn</string>
+    <string name="keyboard">Bàn phím</string>
+    <string name="notifications">Thông báo</string>
+    <string name="pref_title_new_message_notifications">Có thông báo mới</string>
+    <string name="pref_title_vibrate">Rung</string>
+    <string name="system_interface">Giao diện người dùng</string>
+    <string name="text_color">Màu chữ</string>
+    <string name="anti_alias">Khử răng cưa</string>
+    <string name="anti_alias_summary">Làm mịn các đường nét phức tạp</string>
+    <string name="console_font_size">Cỡ chữ màn hình console</string>
+    <string name="hardware_acceleration">Tăng tốc phần cứng</string>
+    <string name="tab_width">Độ dài tab (khoảng trắng)</string>
+
+    <!--Donate-->
+    <string name="pirated">Có vẻ như ứng dụng ủng hộ đã không được mua thông qua cửa hàng Play! Nếu bạn vi phạm bản quyền, bạn nên cảm thấy xấu hổ!</string>
+    <string name="donate">Ủng hộ</string>
+    <string name="donate_summary">Tính năng này chỉ có sẵn khi ứng dụng ủng hộ được cài đặt! Đừng lo lắng. Bởi vì ứng dụng này là mã nguồn mở, bạn có thể dễ dàng xây dựng nó cho mình và loại bỏ sự kiểm tra này. Nhưng tôi hy vọng bạn hỗ trợ các nhà phát triển. Cảm ơn bạn đã sử dụng Pascal N-IDE! Một khi bạn mua các ứng dụng ủng hộ bạn phải khởi động lại Pascal N-IDE để kích hoạt tất cả tính năng.</string>
+    <string name="donate_nope">Tôi sẽ ko bị dụ đâu :P!</string>
+    <string name="donate_yes">Tôi yêu ứng dụng này. Phải ủng hộ!</string>
+    <string name="license_invalid">Thanks for purchasing the donation app! Unfortunately license check failed. Please try again later. If it\'s still not working, please contact me. You need internet access!</string>
+    <string name="unknown">Unknown</string>
+    <string name="more_font">Get more font</string>
+    <string name="editor_font">Editor font</string>
+    <string name="console_font">Console font</string>
+    <string name="create_new_theme">Create new theme</string>
+    <string name="custom_theme">Custom theme</string>
+    <string name="more_theme">Get premium version. Create your custom theme!</string>
+    <string name="save_and_apply">Save and apply</string>
+</resources>

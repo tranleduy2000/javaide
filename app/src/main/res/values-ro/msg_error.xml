@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+
+    <string name="BadFunctionCallException_1">Tipul unuia sau a mai multor argumente este greșit, la apelarea funcției \"%1$s\"</string>
+    <string name="BadFunctionCallException_2">Prea multe sau prea puține argumente sunt pasate funcției \"%1$s\"</string>
+    <string name="BadFunctionCallException_3">Nu se poate apela funcția \"%1$s\" , care nu a fost definit(ă).</string>
+
+    <string name="MISMATCHED_PARENTHESES">Parantezele nu corespund</string>
+    <string name="MISMATCHED_BRACKETS">Parantezele pătrate sau acoladele nu corespund</string>
+    <string name="MISMATCHED_BEGIN_END">Structură begin - end necorespunzătoare</string>
+    <string name="UNFINISHED_BEGIN_END">Structură begin - end neterminată</string>
+    <string name="UNFINISHED_PARENTHESES">Ați uitat să închideți parantezele</string>
+    <string name="UNFINISHED_BRACKETS">Ați uitat să închideți parantezele pătrate sau acoladele</string>
+    <string name="EXTRA_END">Aveți un \'end\' în plus în programul dumneavoastră</string>
+    <string name="IO_EXCEPTION">Excepție IO apărută în timpul citirii datelor: </string>
+    <string name="INCOMPLETE_CHAR">Caracter literal incomplet</string>
+    <string name="MISSING_INCLUDE">Lipsește un fișier care trebuie inclus</string>
+    <string name="NEWLINE_IN_QUOTES">Trebuie să închideți ghilimelele înaintea începerii unei linii noi</string>
+
+    <string name="multi_define_main">Definiții multiple ale programului principal (main)</string>
+    <string name="main_program_not_define">Programul principal (main) lipsește</string>
+
+    <string name="BadOperationTypeException">Operatorul \"%1$s\" nu poate fi aplicat argumentelor \"%2$s\" și \"%3$s\".\n
+    Unul dintre argumente este de tipul \"%4$s\", iar celălalt este de tipul \"%5$s\"</string>
+    <string name="BadOperationTypeException2">Operatorul \"%1$s\" nu este de tip unar</string>
+    <string name="ConstantCalculationException">Eroare în timpul calculării valorii constantei: \"%1$s\"</string>
+    <string name="LibraryNotFoundException">Librăria \"%1$s\" nu poate fi găsită</string>
+    <string name="MultipleDefaultValuesException">Valorile Predefinite pot fi folosite doar când variabilele de declară pe rând.</string>
+    <string name="NonArrayIndexed">S-a încercat accesarea indexată a unei entități care nu este de tip vector sau șir. Entitatea este de tipul \"%1$s\"</string>
+    <string name="NonConstantExpressionException">Expresia \"%1$s\" nu este o constantă.</string>
+    <string name="NonIntegerIndexException">Index-ul sau indecșii unui vector trebuie să fie de tip integer: \"%1$s\"</string>
+    <string name="NoSuchFunctionOrVariableException">\"%1$s\" nu este o variabilă sau un nume al unei funcții</string>
+    <string name="NotAStatementException">\"%1$s\" nu constituie o instrucțiune.</string>
+    <string name="OverridingFunctionException">Se încearcă redefinirea corpului funcției \"%1$s\", care a fost definită anterior la \"%1$s\"</string>
+    <string name="SameNameException">\"%1$s\" \"%2$s\" este în conflict cu %3$s, definit (ă) anterior, cu același nume definit la %4$s</string>
+    <string name="UnAssignableTypeException">Expresia \"%1$s\" nu poate avea o valoare atribuită ei înseși.</string>
+    <string name="UnrecognizedTypeException">Tipul \"%1$s\" nu este definit.</string>
+    <string name="PascalArithmeticException">Excepție aritmetică: \"%1$s\"</string>
+
+    <string name="PluginCallException">La apelul Funcției sau a Procedurii \"%1$s\" a apărut următoarea excepție Java: \"%2$s\"</string>
+
+    <string name="DiskReadErrorException">A apărut o excepție la citirea din memoria internă. Aceasta se întâmplă, de obicei, când se încearcă citirea după sfârșitul fișierului.</string>
+    <string name="FileNotAssignException">Această eroare este raportată de către Reset, Rewrite, Append, Rename sau Erase dacă sunt apelate cu un parametru pentru care nu s-a apelat anterior procedura Assign.</string>
+    <string name="FileNotFoundException">Reported when trying to erase, rename or open a non-existent file.</string>
+    <string name="FileNotOpenException">Este raportată de către următoarele funcții: Close, Read, Write, Seek, EOf, FilePos, FileSize, Flush, BlockRead, și BlockWrite dacă fișierul nu este deschis.</string>
+    <string name="FileNotOpenForInputException">Este raportată de către Read, BlockRead, Eof, Eoln, SeekEof sau SeekEoln dacă fișierul nu este deschis cu Reset.</string>
+
+    <string name="DivisionByZeroException">Aplicația a încercat să împartă un număr la 0.</string>
+    <string name="CanNotReadVariableException">Nu se pot citi variabile de acest tip</string>
+
+    <string name="InvalidNumericFormatException">Raportat în momentul în care o valoare non-numerică este citită dintr-un fișier text, fiind așteptată o valoare numerică.</string>
+    <string name="NonIntegerException">Valoarea trebuie să fie de tip întreg: \"%1$s\"</string>
+    <string name="ChangeValueConstantException">Valoarea stocată într-o constantă nu poate fi schimbată.</string>
+    <string name="token_not_belong">Următorul nume nu aparține aici: </string>
+    <string name="SubRangeException">Capătul superior al intervalului este mai mic decât capătul inferior.\n
+        Capătul inferior este \"%1$s\", iar cel superior este \"%2$s\"</string>
+    <string name="MissingSemicolonTokenException">Un marcator "punct și virgulă" (;) lipsește în apropierea liniei \"%1$s\"</string>
+    <string name="MissingCommaTokenException">Un marcator "virgulă" (,) lipsește în apropierea liniei \"%1$s\"</string>
+    <string name="StrayCharacterException">Caracter rătăcit în cadrul programului: \"%1$s\"</string>
+    <string name="StackOverflowException">Eroare apărută la supraîncărcarea unei stive (stack overflow).</string>
+    <string name="UnConvertibleTypeException">The expression or variable \"%1$s\" is of type \"%2$s\" which cannot be convert to the type \"%3$s\"</string>
+    <string name="WrongIfElseStatement">WRONG IF ELSE STATEMENT\n\n
+        Syntax: "if condition then S1 else S2;" \n\n
+        Where, S1 and S2 are different statements. Please note that the statement S1 is not followed by a "semicolon" (;).</string>
+    <string name="ExpectedTokenException_3">Syntax error, \"%1$s\" expected but \"%2$s\" found</string>
+    <string name="UnConvertibleTypeException2">The expression or variable \"%1$s\" is of type \"%2$s\" which cannot be convert to the type \"%3$s\" of expression or variable \"%4$s\"</string>
+
+</resources>

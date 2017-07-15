@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string name="BadFunctionCallException_1">Một hoặc nhiều tham số không đúng kiểu dữ liệu khi gọi hàm \"%1$s\"</string>
+    <string name="BadFunctionCallException_2">Có quá ít hoặc quá nhiều tham số khi gọi hàm \"%1$s\"</string>
+    <string name="BadFunctionCallException_3">Không thể gọi hàm \"%1$s\" , hàm chưa được khai báo.</string>
+    <string name="multi_define_main">Quá nhiều chương trình chính được định nghĩa</string>
+    <string name="EXTRA_END">Dư từ khóa \'end\' trong chương trình của bạn</string>
+    <string name="token_not_belong">"Từ khóa không thể đặt ở đây"</string>
+    <string name="main_program_not_define">Không tìm thấy chương trình chính</string>
+
+    <string name="BadOperationTypeException">Phép toán \"%1$s\" không thể áp dụng cho tham số \"%2$s\" và \"%3$s\".\n
+    Một tham số có kiểu \"%4$s\" và một tham số có kiểu \"%5$s\"</string>
+
+    <string name="BadOperationTypeException2">Phép toán \"%1$s\" không phải là toán tử</string>
+    <string name="ConstantCalculationException">Lỗi khi tính toán với hằng số: \"%1$s\"</string>
+    <string name="LibraryNotFoundException">Không tìm thấy thư viện \"%1$s\"</string>
+    <string name="MultipleDefaultValuesException">Có quá nhiều giá trị mặc định, giá trị mặc định chỉ có thể gán cho biến một lần duy nhất.</string>
+    <string name="NonArrayIndexed">Đã cố gắng truy cập được lập vào vị trí của một cái gì đó không phải là một mảng hoặc một chuỗi. Đó là \"%1$s\"</string>
+    <string name="NonConstantExpressionException">Biểu thức \"%1$s\" không phải là một hằng</string>
+    <string name="NonIntegerIndexException">Chỉ số mảng phải là số nguyên: \"%1$s\"</string>
+    <string name="NoSuchFunctionOrVariableException">\"%1$s\" không phải là biến hoặc hàm (vui lòng khai báo nếu bị thiếu)</string>
+    <string name="NotAStatementException">\"%1$s\" không phải là một chỉ dẫn của chính nó.</string>
+    <string name="OverridingFunctionException">Lỗi khi định nghĩa lại phần thân của hàm \"%1$s\", nó đã được định nghĩa ở dòng \"%1$s\"</string>
+    <string name="SameNameException">\"%1$s\" \"%2$s\" xung đột với các khai báo \"%3$s\" với tên giống nhau được định nghĩa ở dòng %4$s</string>
+    <string name="UnAssignableTypeException">Biểu thức \"%1$s\" không thể có giá trị được gán cho nó.</string>
+    <string name="UnrecognizedTypeException">Kiểu \"%1$s\" chưa được khai báo.</string>
+    <string name="PascalArithmeticException">Lỗi khi tính toán: \"%1$s\"</string>
+
+    <string name="DiskReadErrorException">Xảy ra lỗi khi đọc từ tệp. Lỗi này thường xảy ra khi bạn cố đọc phần cuối của một tập tin (khi không còn dữ liệu để đọc).</string>
+    <string name="FileNotAssignException">Tệp chưa được chỉ định (cần gọi hàm ASSIGN trước khi khi gọi các hàm Reset, Rewrite, Append, Rename và Erase)</string>
+    <string name="FileNotFoundException">Lỗi khi cố gắng xóa, đổi tên hoặc mở tệp không tồn tại.</string>
+    <string name="FileNotOpenException">Tệp chưa được mở, cần mở file trước khi gọi các hàm: Close, Read, Write, Seek, EOf, FilePos, FileSize, Flush, BlockRead, và BlockWrite.</string>
+    <string name="FileNotOpenForInputException">Tệp không được mở bằng hàm RESET. Lỗi này xảy ra khi dùng các hàm Read, BlockRead, Eof, Eoln, SeekEof hoặc SeekEoln mà chưa mở file</string>
+
+    <string name="DivisionByZeroException">Lỗi khi cố gắng chia một số cho 0</string>
+
+    <string name="InvalidNumericFormatException">Lỗi khi đọc dữ liệu từ file, biến được đọc là số nhưng dữ liệu không phải là số</string>
+    <string name="NonIntegerException">Giá trị phải là số nguyên: \"%1$s\"</string>
+    <string name="ChangeValueConstantException">Giá trị lưu trong hằng không thể bị thay đổi</string>
+
+    <string name="UNFINISHED_BEGIN_END">Chưa kết thúc cấu trúc begin-end</string>
+    <string name="UNFINISHED_PARENTHESES">Bạn quên đóng dấu ngoặc tròn</string>
+    <string name="UNFINISHED_BRACKETS">Bạn quên đóng dấu ngoặc vuông</string>
+    <string name="MISSING_INCLUDE">Không tìm thấy tệp</string>
+    <string name="NEWLINE_IN_QUOTES">Bạn phải đóng dấu \\\' trước khi bắt đầu một dòng mới (lỗi có thể xảy ra khi gõ một chuỗi).</string>
+    <string name="MISMATCHED_PARENTHESES">Cặp ngoặc đơn không khớp nhau</string>
+    <string name="MISMATCHED_BRACKETS">Cặp ngoặc vuông không khớp nhau</string>
+    <string name="MISMATCHED_BEGIN_END">Cấu trúc begin - end không phù hợp, dư từ khóa begin hoặc end</string>
+    <string name="IO_EXCEPTION">Lỗi nhập xuất</string>
+    <string name="INCOMPLETE_CHAR">Ký tự chữ (char) không đầy đủ</string>
+    <string name="CanNotReadVariableException">Không thể nhập dữ liệu vào biến này</string>
+    <string name="PluginCallException">Lỗi khi gọi hàm \"%1$s\". Lỗi Java: \"%2$s\"</string>
+    <string name="SubRangeException">Giới hạn trên của chỉ số nhỏ hơn giới hạn dưới.\n
+        Hiện tại, giới hạn dưới là \"%1$s\" và giới hạn trên là \"%2$s\"</string>
+    <string name="MissingSemicolonTokenException">Có thể thiếu chấm phẩy (;) gần dòng \"%1$s\"</string>
+    <string name="MissingCommaTokenException">Có thể thiếu dấu phẩy (,) gần dòng \"%1$s\"</string>
+    <string name="StrayCharacterException">Kí tự không xác định trong chương trình: \"%1$s\"</string>
+    <string name="StackOverflowException">Stack overflow error.</string>
+    <string name="UnConvertibleTypeException">Biểu thức hoặc biến \"%1$s\" có kiểu là \"%2$s\" ,nó không thể chuyển sang kiểu \"%3$s\"</string>
+    <string name="WrongIfElseStatement">WRONG IF ELSE STATEMENT\n\n
+        Syntax: "if condition then S1 else S2;" \n\n
+        Where, S1 and S2 are different statements. Please note that the statement S1 is not followed by a "semicolon" (;).</string>
+    <string name="ExpectedTokenException_3">Lỗi cú pháp, \"%1$s\" dự kiến nhưng \"%2$s\" được tìm thấy</string>
+    <string name="UnConvertibleTypeException2">Biểu thức hoặc biến \"%1$s\" có kiểu là \"%2$s\" ,nó không thể chuyển sang kiểu \"%3$s\" của biểu thức hoặc biến \"%4$s\"</string>
+
+</resources>

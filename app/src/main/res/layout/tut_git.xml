@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="GIT"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+                "
+GIT 1.7.8\n
+\n
+[ISSUE : The hostnames do not resolve correctly so you must use the NUMBER IP format for any git servers you use.\n
+\n
+github.com = 207.97.227.239 ]\n
+\n
+Git is a fast, open source, distributed version control system.\n
+\n
+It is a simple command line tool for keeping a history on the state of your source code projects. You use it as you might use something like Subversion, CVS or Perforce.\n
+\n
+You tell it to track files in your project and periodically commit the state of the project when you want a saved point. Then you can share that history with other developers for collaboration, merge between their work and yours, and compare or revert to previous versions of the project or individual files.\n
+\n
+Git is fully distributed, which means that it can work almost entirely offline. In stark contrast to VCS tools like Perforce or Subversion, Git does nearly all of it’s operations without needing a network connection, including history viewing, difference viewing and commiting.\n
+\n
+Probably the most compelling feature of Git, since it often fundamentally changes the way that many developers work, is Gits branching model. Instead of the popular VCS branching method of simply cloning into a seperate directory for a branch, Git lets you switch between branches in a single working directory. Add to that the fact that creating and switching between branches is nearly instant, not all of your branches need to be shared, and it’s easy to stash partially completed work - means that the way you work can be incredibly different.\n
+\n
+Instead of only having branches for major development line departures, Git developers routinely create, merge and destroy multiple branches a week, or even per day. Often each feature or bug you are working on can have its own branch, merged in only when it is complete. This model allows you to experiment quickly, easily and safely - without having to go through hoops to get back to where you where. It enables and encourages a non-linear development cycle, where you can work on multiple lines of thought in parallel without them stepping on each other.\n
+\n
+To Start. Git records your name and email address when you create commits, so you need to tell Git what those are. You can use the git config command to set those. If you pass --global, it will save the values in the ‘~/.gitconfig’ file so they are the default for all of your repositories.\n
+\n
+# git config --global user.name &quot;Scooby Dooby&quot; \n
+# git config --global user.email &quot;woof@scoobymail.com&quot;\n
+\n
+# git config user.name\n
+# git config user.email\n
+# cat ~/.gitconfig\n
+\n
+Will show settings\n
+\n
+To initialize a Git repository from an existing directory, simply type git init while in that directory. That will create the skeleton of the basic Git repository for you in that directory.\n
+\n
+# cd ~/system/src/demo_android\n
+# git init\n
+# git add .\n
+# git commit -m 'The Initial Commit'\n
+\n
+You now have a working 'gitted' project that you can clone, branch, share and use..\n
+\n
+# git log\n
+\n
+You can exit the logger by pressing 'q'\n
+\n
+If you now go to another directory you can clone the project easily.\n
+\n
+# cd ~/projects\n
+# git clone ~/system/src/demo_android\n
+\n
+This obviously works for online git servers aswell.. [ BUT Only use number IPs as hostnames don't resolve yet.. no /etc/hosts..]\n
+\n
+Now lets make some changes..\n
+\n
+# cd demo_android\n
+\n
+Now edit something..\n
+\n
+# vim terminalide.vim\n
+\n
+Add a line comment and save the file [ like &quot;This is an addition ]\n
+\n
+You can see your changes by running\n
+\n
+# git diff\n
+\n
+And commit them with\n
+\n
+# git commit -a -m &quot;Some stuff about the update..&quot;\n
+# git log\n
+# git status\n
+\n
+The status tells you what branch you are working on..\n
+\n
+Or you can use\n
+\n
+# git branch\n
+\n
+To create a new branch, we can use 'git branch (branchname)' which will create a branch at the point we're currently at.\n
+\n
+# git branch experiment\n
+\n
+To switch to that branch so that the work we do is saved to it instead of the ‘master’ branch, we run the ‘git checkout’ command’\n
+\n
+# git checkout experiment\n
+# git branch\n
+\n
+Now lets make more changes to the terminalide.vim file. Open it up and add some more text, that is commented out..\n
+\n
+And commit those..\n
+\n
+# git commit -a -m &quot;Edited terminalide.vim&quot;\n
+# cat terminalide.vim\n
+\n
+Now - you have 2 valid branches. If you want to switch back and check the master stuff, simply do\n
+\n
+# git checkout master\n
+# cat terminalide.vim\n
+\n
+And switch back with\n
+\n
+# git checkout experiment\n
+# cat terminalide.vim\n
+\n
+You can add files to the branch with\n
+\n
+# git add [file]\n
+\n
+Once happy with your branch you can merge it back to the master.\n
+\n
+# git merge experiment\n
+\n
+Once you have done all your changes and merging, and have finished with your branch you can delete it with\n
+\n
+# git branch -d experiment\n
+\n
+And Voila! That was a nice little git session. There is of course a lot more that can be done with git, so, as always, GOOGLE IT!\n
+"/>
+
+    </ScrollView>
+
+</LinearLayout>

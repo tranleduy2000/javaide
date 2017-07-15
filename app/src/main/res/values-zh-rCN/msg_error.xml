@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string name="ExpectedTokenException_3">Syntax出错, \"%1$s\" expected but \"%2$s\" found</string>
+    <string name="BadFunctionCallException_1">当调用 \"%1$s\"时，一个或多个参数包含错误类型</string>
+    <string name="BadFunctionCallException_2">要么过少要么过多参数可传递至函数 \"%1$s\"</string>
+    <string name="BadFunctionCallException_3">无法调用函数 \"%1$s\" , 未进行过定义</string>
+    <string name="MISMATCHED_PARENTHESES">圆括号错位</string>
+    <string name="MISMATCHED_BRACKETS">括号错位</string>
+    <string name="MISMATCHED_BEGIN_END">begin - end构造错位</string>
+    <string name="UNFINISHED_BEGIN_END">未定义begin - end构造</string>
+    <string name="UNFINISHED_PARENTHESES">您忘记闭合圆括号</string>
+    <string name="UNFINISHED_BRACKETS">您忘记闭合括号</string>
+    <string name="EXTRA_END">程序中包含多余的\'end\' 代码段</string>
+    <string name="IO_EXCEPTION">读取输入值时出现IOException</string>
+    <string name="INCOMPLETE_CHAR">字符常值不完整</string>
+    <string name="MISSING_INCLUDE">包括缺失文件</string>
+    <string name="NEWLINE_IN_QUOTES">您必须在换行前关闭引用</string>
+
+    <string name="multi_define_main">Main的多重定义</string>
+    <string name="main_program_not_define">未找到主程序</string>
+
+    <string name="BadOperationTypeException">运算符 \"%1$s\" 无法应用至参数 \"%2$s\" 和 \"%3$s\"。\n
+    一个包含类型 \"%4$s\" , 其他包含类型 \"%5$s\"</string>
+    <string name="BadOperationTypeException2">运算符 \"%1$s\" 并非为一元运算符</string>
+    <string name="ConstantCalculationException">计算常数值出现错误: "%1$s"</string>
+    <string name="LibraryNotFoundException">无法找到库 "%1$s"</string>
+    <string name="MultipleDefaultValuesException">默认值每次仅能用于一次声明变量</string>
+    <string name="NonArrayIndexed">尝试在非阵列或字符串上进行变址存取。这是个"%1$s"</string>
+    <string name="NonConstantExpressionException">该表达式 "%1$s" 并非为常数</string>
+    <string name="NonIntegerIndexException">阵列索引必须为整数: "%1$s"</string>
+    <string name="NoSuchFunctionOrVariableException">%1$s并非为变量或者函数名称</string>
+    <string name="NotAStatementException">%1$s并非为本身指令</string>
+    <string name="OverridingFunctionException">重定义 "%1$s"的函数体,  位于"%1$s"中上一个定义</string>
+    <string name="SameNameException">%1$s \"%2$s\"与%4$s中上一个同名定义 %3$s有冲突</string>
+    <string name="UnAssignableTypeException">该表达式 "%1$s" 无法包含赋值给它的值。</string>
+    <string name="UnrecognizedTypeException">类型 "%1$s" 未进行过定义</string>
+    <string name="PascalArithmeticException">运算异常: "%1$s"</string>
+
+    <string name="PluginCallException">当调用函数或过程 "%1$s"时,  下列java段出现异常: "%2$s"</string>
+
+    <string name="DiskReadErrorException">从磁盘中读取时发生错误。通常在您试图越过文件结束时发生。</string>
+    <string name="FileNotAssignException">This is reported by Reset, Rewrite, Append, Rename and Erase, if you call them with an unassigned file as a parameter.</string>
+    <string name="FileNotFoundException">Reported when trying to erase, rename or open a non-existent file.</string>
+    <string name="FileNotOpenException">Reported by the following functions : Close, Read, Write, Seek, EOf, FilePos, FileSize, Flush, BlockRead, and BlockWrite if the file is not open.</string>
+    <string name="FileNotOpenForInputException">Reported by Read, BlockRead, Eof, Eoln, SeekEof or SeekEoln if the file is not opened with Reset.</string>
+
+    <string name="DivisionByZeroException">该应用程序试图将零整除。</string>
+    <string name="CanNotReadVariableException">无法读取此类变量</string>
+
+    <string name="InvalidNumericFormatException">Reported when a non-numeric value is read from a text file, and a numeric value was expected.</string>
+    <string name="NonIntegerException">数值必须为整数: "%1$s"</string>
+    <string name="ChangeValueConstantException">储存在常数中的值无法更改。</string>
+    <string name="token_not_belong">下列名称不归入于此: </string>
+    <string name="SubRangeException">上界范围低于下界范围。\n
+        当前下界为 "%1$s" , 上界为 "%2$s"</string>
+    <string name="MissingSemicolonTokenException">缺失分号 (;)  "%1$s"行附近的标志</string>
+    <string name="MissingCommaTokenException">缺失逗号 (,)  "%1$s"附近的标志</string>
+    <string name="StrayCharacterException">程序中的零散字符: "%1$s"</string>
+    <string name="StackOverflowException">堆栈溢出错误</string>
+    <string name="UnConvertibleTypeException">该表达式或变量 \"%1$s\" 是无法转换为%4$s的类型 \"%2$s\" </string>
+    <string name="WrongIfElseStatement">WRONG IF ELSE STATEMENT\n\n
+        Syntax: "if condition then S1 else S2;" \n\n
+        Where, S1 and S2 are different statements. Please note that the statement S1 is not followed by a "semicolon" (;).</string>
+    <string name="UnConvertibleTypeException2">The expression or variable \"%1$s\" is of type \"%2$s\" which cannot be convert to the type \"%3$s\" of expression or variable \"%4$s\"</string>
+
+</resources>

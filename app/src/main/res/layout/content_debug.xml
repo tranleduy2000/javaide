@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<com.fsck.splitview.SplitView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    app:bottomContent="@+id/fragment_frame"
+    app:handle="@+id/drag_view_horizontal"
+    app:minSize="100dp"
+    app:topContent="@+id/vertical_scroll">
+
+    <com.duy.pascal.frontend.view.LockableScrollView
+        android:id="@+id/vertical_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <com.duy.pascal.frontend.editor.view.HighlightEditor
+                android:id="@+id/code_editor"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:editable="false"
+                android:focusable="false"
+                android:gravity="top|start"
+                android:inputType="none|textMultiLine"
+                android:scrollbarSize="5dip"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical">
+
+            </com.duy.pascal.frontend.editor.view.HighlightEditor>
+        </HorizontalScrollView>
+
+    </com.duy.pascal.frontend.view.LockableScrollView>
+
+    <ImageView
+        android:id="@+id/drag_view_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drag_handle_size"
+        android:background="?colorPrimary"
+        android:clickable="true"
+        android:foreground="?selectableItemBackground"
+        android:src="@drawable/ic_more_horiz_white_24dp" />
+
+    <fragment
+        android:id="@+id/fragment_frame"
+        class="com.duy.pascal.frontend.debug.fragments.FragmentFrame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:tag="FragmentFrame" />
+</com.fsck.splitview.SplitView>
+

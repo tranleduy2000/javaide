@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* 
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
+
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="8%p"
+    android:horizontalGap="0px"
+    android:verticalGap="0px"
+    android:keyHeight="50dip">
+
+<Row android:rowEdgeFlags="top">
+        <Key android:codes="96"  android:isRepeatable="true" android:keyLabel="`" android:keyWidth="6%p" android:keyEdgeFlags="left"/>
+
+        <Key android:codes="131"  android:keyLabel="F1" android:keyWidth="7%p"/>
+        <Key android:codes="132"  android:keyLabel="F2" android:keyWidth="7%p"/>
+        <Key android:codes="133"  android:keyLabel="F3" android:keyWidth="7%p"/>
+        <Key android:codes="134"  android:keyLabel="F4" android:keyWidth="7%p"/>
+        <Key android:codes="135"  android:keyLabel="F5" android:keyWidth="7%p"/>
+        <Key android:codes="136"  android:keyLabel="F6" android:keyWidth="7%p"/>
+        <Key android:codes="137"  android:keyLabel="F7" android:keyWidth="7%p"/>
+        <Key android:codes="138"  android:keyLabel="F8" android:keyWidth="7%p"/>
+        <Key android:codes="139"  android:keyLabel="F9" android:keyWidth="7%p"/>
+        <Key android:codes="140"  android:keyLabel="F10" android:keyWidth="7%p"/>
+
+        <Key android:codes="141" android:keyLabel="F11" android:keyWidth="6%p"/>
+        <Key android:codes="142" android:keyLabel="F12" android:keyWidth="6%p"/>
+
+        <Key android:codes="-5" android:keyLabel="BKS"  android:isRepeatable="true" android:keyWidth="12%p" android:keyEdgeFlags="right"/>
+
+    </Row>
+
+    <Row>
+        <Key android:codes="27"  android:keyLabel="ESC" android:keyWidth="9%p" android:keyEdgeFlags="left"/>
+
+        <Key android:codes="113" android:isRepeatable="true" android:keyWidth="7%p" android:keyLabel="q" />
+        <Key android:codes="119" android:isRepeatable="true" android:keyWidth="7%p" android:keyLabel="w" />
+        <Key android:codes="101" android:isRepeatable="true" android:keyWidth="7%p" android:keyLabel="e" />
+        <Key android:codes="114" android:isRepeatable="true" android:keyWidth="7%p" android:keyLabel="r" />
+        <Key android:codes="116" android:isRepeatable="true" android:keyWidth="7%p" android:keyLabel="t" />
+        <Key android:codes="121" android:isRepeatable="true" android:keyWidth="7%p" android:keyLabel="y" />
+        <Key android:codes="117" android:isRepeatable="true" android:keyWidth="7%p" android:keyLabel="u" />
+        <Key android:codes="105" android:isRepeatable="true" android:keyWidth="7%p" android:keyLabel="i" />
+        <Key android:codes="111" android:isRepeatable="true" android:keyWidth="7%p" android:keyLabel="o" />
+        <Key android:codes="112" android:isRepeatable="true" android:keyWidth="7%p" android:keyLabel="p" />
+
+        <Key android:codes="123" android:isRepeatable="true" android:keyWidth="6%p" android:keyLabel="{" />
+        <Key android:codes="125" android:isRepeatable="true" android:keyWidth="6%p" android:keyLabel="}" />
+
+        <Key android:codes="-6" android:keyLabel="DEL" android:isRepeatable="true" android:keyWidth="9%p" android:keyEdgeFlags="right"/>
+
+    </Row>
+<!--    android:horizontalGap="5%p"-->
+    <Row>
+        <Key android:codes="9" android:keyLabel="TAB"  android:keyWidth="12%p" android:keyEdgeFlags="left"/>
+
+        <Key android:codes="97"  android:isRepeatable="true" android:keyLabel="a" android:keyWidth="7%p" />
+        <Key android:codes="115" android:isRepeatable="true" android:keyLabel="s" android:keyWidth="7%p" />
+        <Key android:codes="100" android:isRepeatable="true" android:keyLabel="d" android:keyWidth="7%p" />
+        <Key android:codes="102" android:isRepeatable="true" android:keyLabel="f" android:keyWidth="7%p" />
+        <Key android:codes="103" android:isRepeatable="true" android:keyLabel="g" android:keyWidth="7%p" />
+        <Key android:codes="104" android:isRepeatable="true" android:keyLabel="h" android:keyWidth="7%p" />
+        <Key android:codes="106" android:isRepeatable="true" android:keyLabel="j" android:keyWidth="7%p" />
+        <Key android:codes="107" android:isRepeatable="true" android:keyLabel="k" android:keyWidth="7%p" />
+        <Key android:codes="108" android:isRepeatable="true" android:keyLabel="l" android:keyWidth="7%p" />
+
+        <Key android:codes="58" android:isRepeatable="true" android:keyLabel=":" android:keyWidth="6%p" />
+        <Key android:codes="64" android:isRepeatable="true" android:keyLabel="\u0040" android:keyWidth="6%p" />
+
+        <Key android:codes="13" android:keyIcon="@drawable/sym_keyboard_return" android:keyWidth="13%p" android:keyEdgeFlags="right" android:isRepeatable="true"/>
+
+    </Row>
+
+    <Row>
+
+        <Key android:codes="-1" android:keyIcon="@drawable/sym_keyboard_shift_locked" android:keyWidth="12%p" android:isModifier="true" android:isSticky="true" android:keyEdgeFlags="left"/>
+
+        <Key android:codes="124" android:isRepeatable="true" android:keyLabel="|" android:keyWidth="6%p"/>
+        <Key android:codes="122" android:isRepeatable="true" android:keyLabel="z" android:keyWidth="7%p"/>
+        <Key android:codes="120" android:isRepeatable="true" android:keyLabel="x" android:keyWidth="7%p"/>
+        <Key android:codes="99" android:isRepeatable="true" android:keyLabel="c" android:keyWidth="7%p"/>
+        <Key android:codes="118" android:isRepeatable="true" android:keyLabel="v" android:keyWidth="7%p"/>
+        <Key android:codes="98" android:isRepeatable="true" android:keyLabel="b" android:keyWidth="7%p"/>
+        <Key android:codes="110" android:isRepeatable="true" android:keyLabel="n" android:keyWidth="7%p"/>
+        <Key android:codes="109" android:isRepeatable="true" android:keyLabel="m" android:keyWidth="7%p"/>
+
+        <Key android:codes="60" android:isRepeatable="true" android:keyLabel="&lt;" android:keyWidth="6%p"/>
+        <Key android:codes="62" android:isRepeatable="true" android:keyLabel="&gt;" android:keyWidth="6%p"/>
+
+        <Key android:codes="19" android:keyIcon="@drawable/up" android:isRepeatable="true"/>
+
+        <Key android:codes="-999" android:keyIcon="@drawable/sym_keyboard_shift_locked" android:keyWidth="13%p" android:isModifier="true" android:isSticky="true" android:keyEdgeFlags="right"/>
+
+    </Row>
+
+    <Row android:rowEdgeFlags="bottom">
+        <Key android:codes="-9"  android:isSticky="true" android:isModifier="true" android:keyWidth="11%p" android:keyLabel="CTRL" android:keyEdgeFlags="left"/>
+        <Key android:codes="-10" android:isSticky="true" android:isModifier="true" android:keyWidth="11%p" android:keyLabel="ALT" />
+        <Key android:codes="-2"  android:isModifier="true" android:isSticky="true" android:keyWidth="11%p" android:keyLabel="FN"/>
+
+        <Key android:codes="32"  android:keyIcon="@drawable/sym_keyboard_space" android:keyWidth="32%p" android:isRepeatable="true"/>
+
+        <Key android:codes="63" android:isRepeatable="true" android:keyLabel="\u003F" android:keyWidth="6%p"/>
+
+        <Key android:codes="21" android:keyIcon="@drawable/back" android:isRepeatable="true" />
+        <Key android:codes="20" android:keyIcon="@drawable/down" android:isRepeatable="true"/>
+        <Key android:codes="22" android:keyIcon="@drawable/forwd" android:isRepeatable="true" />
+
+        <Key android:codes="-3" android:keyIcon="@drawable/sym_keyboard_settings" android:keyWidth="5%p" android:keyEdgeFlags="right"/>
+    </Row>
+
+</Keyboard>
+    

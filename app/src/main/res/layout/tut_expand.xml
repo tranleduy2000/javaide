@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="Compiling C Apps"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+                "
+Terminal IDE uses the command line with many native C apps. There are DEFINITELY 
+more apps that some of you might want.\n
+\n
+You can of course add C applications you have compiled yourself to Terminal IDE. 
+Just put them in the ~/local/bin folder.. like your Java / Shell scripts. \n
+\n
+Yes GCC 4.4.0 is available in Terminal IDE, but I have yet to get a ./configure, make, make install to work.. 
+They build, but they seg fault.. :-( Your own projects should be fine, but the 
+libc / bionic differences need to be fixed as you go, as all in one go, never seems to work.\n
+\n
+The Android NDK has come a long way, and you can now create stand alone toolchains. Most of the apps in Terminal IDE are compiled with CodeSourcery, statically linked.\n
+\n
+For a really good start - use http://dan.drown.org/android/\n
+\n
+You still have to fix up any issues that arise, but his build scripts work really well! Thanks DAN!\n
+\n
+I'm not going to go into too much depth, as this is something you will have to wrestle with yourself, as we all do :-)!\n
+\n
+"/>
+
+    </ScrollView>
+
+</LinearLayout>

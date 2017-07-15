@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="Tutorial"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+                "Follow this guide through EXACTLY.\n
+\n
+This will help you compile the sample applications in ~/system/src step by step.\n
+\n
+The best way to follow this tutorial is by logging in over telnet/ssh and then
+you can read and follow on the device, whilst using the computer to perform the actions.\n
+\n
+Let's Begin..\n
+\n
+Install the basic system. Click \'Install System\' on the main page.\n
+\n
+Make sure you have enabled the Terminal IDE Keyboard in Settings > Langauge and Keyboard
+on your device. Then choose the Terminal IDE keyboard - click \'Keyboard\' on the main page.\n
+\n
+Start Terminal IDE. Click the button.\n
+\n
+You will now be presented with a nice color prompt. You can change this by typing, \n
+\n
+export PS1=#\n
+\n
+   - Double-tap toggles the keyboard.\n
+   - Swipe left and right to view your 4 Terminals.\n
+   - Long pressing the screen brings up the Terminal Chooser menu.\n
+   - Press Menu for Options\n
+\n
+----------------------------------------------\n
+[This part is optional but highly recommended]\n
+\n
+Run telnetd. No parameters are rquired. Defaults setup in ~/.bashrc. Run \'cat `which telnetd`\' to check it out.\n
+\n
+# telnetd
+\n
+You should now see telnetd startup info. Ending in ../system/bin/bash.\n
+\n
+You can shut telnetd down at any stage by typing [CTRL]-C on the Terminal IDE Keyboard\n
+\n
+Now, go yo your nice big computer and login via telnet.\n
+\n
+[Either]\n
+$ telnet -e '' [THE PHONES IP] 8080\n
+\n
+[Or - better still with adb, which is part of the Android SDK]\n
+Plug your phone into computer via USB first, then\n
+\n
+$ adb -d forward tcp:8080 tcp:8080\n
+$ telnet -e '' 127.0.0.1 8080\n
+\n
+Now you should be connected to the system via TELNET!\n
+------------------------------------------------\n
+\n
+Now - let's start programming.\n
+\n
+
+"/>
+
+    </ScrollView>
+
+</LinearLayout>

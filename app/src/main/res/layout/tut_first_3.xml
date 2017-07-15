@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="Tutorial 3"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+                "We will now compile a more substantial java library. This library will the be
+used in the 2 last remaing apps.\n
+\n
+Android requires that classes be in the DEX format when running them, but javac requires them in the regular .jar format\n
+\n
+This project compiles both types.\n
+\n
+First cd into the project home folder\n
+\n
+# cd ~/system/src/demo_lib/\n
+\n
+Have a look around\n
+\n
+# ls\n
+\n
+Check out the builder script \n
+\n
+# cat builder.sh\n
+\n
+This will explain all that is happening. Two libs are created at the end.\n
+\n
+Run the build script\n
+\n
+# ./builder.sh\n
+\n
+To check the results run\n
+\n
+# ls dist/\n
+\n
+Ok - now with vim\n
+\n
+Rather than start vim from this folder, it is important to start it from the src/
+folder, as this way javac is called with the right filenames when compiling.\n
+\n
+I have written a simple script called 'terminalide' to help.\n
+\n
+# cat `which terminalide`\n
+\n
+This will show how simple a script it is. Run it.\n
+\n
+# terminalide\n
+\n
+vim will now start with a lovely file-browser side-pane on the left, setup in the correct home folder.\n
+\n
+This is done using a vim plugin. :NERDTree\n
+\n
+Move to the src dir with the arrow keys, and press [ENTER] to open a directory or file.\n
+\n
+Open the libfunc.java file in ./src/org/library by movimg onto it and pressing [ENTER]\n
+\n
+The cursor will now be in the main window now. Press [F7] to compile.\n
+\n
+At this point there are no errors. Make some errors in the code and re-compile.\n
+\n
+Now cycle through your errors with [F8] and [F9].\n
+\n
+I think you'll agree, this is starting to look like a proper IDE.\n
+\n
+You may have noticed a file called builderpro.sh and proguard.cgf\n
+\n
+This is the build script to create the lib using proguard obfuscation.. There are similar scripts in the other demo_ apps\n
+\n
+Play around, then :qa! (exit) and go to Tutorial 4.\n
+"/>
+
+    </ScrollView>
+
+</LinearLayout>

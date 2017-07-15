@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <include layout="@layout/toolbar"/>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/table"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardUseCompatPadding="true">
+
+            <com.duy.pascal.frontend.editor.view.EditorView
+                android:id="@+id/editor_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:editable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:gravity="start|top"
+                android:text="@string/code_preview"/>
+        </android.support.v7.widget.CardView>
+
+
+        <TableLayout
+            android:id="@+id/table"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:stretchColumns="*">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:text="Background"/>
+
+                <View
+                    android:id="@+id/color_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="4dp"
+                    android:background="#fff"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Normal"/>
+
+                <View
+                    android:id="@+id/color_normal"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="4dp"
+                    android:background="#fff"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Keyword"/>
+
+                <View
+                    android:id="@+id/color_keyword"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="4dp"
+                    android:background="#fff"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Number"/>
+
+                <View
+                    android:id="@+id/color_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="4dp"
+                    android:background="#fff"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="String"/>
+
+                <View
+                    android:id="@+id/color_string"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="4dp"
+                    android:background="#fff"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"/>
+            </TableRow>
+
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Comment"/>
+
+                <View
+                    android:id="@+id/color_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="4dp"
+                    android:background="#fff"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Error"/>
+
+                <View
+                    android:id="@+id/color_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="4dp"
+                    android:background="#fff"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Operator"/>
+
+                <View
+                    android:id="@+id/color_opt"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="4dp"
+                    android:background="#fff"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"/>
+            </TableRow>
+
+        </TableLayout>
+    </RelativeLayout>
+
+</LinearLayout>

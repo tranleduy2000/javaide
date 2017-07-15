@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (C) 2008 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<resources>
+    <!-- Title for Latin keyboard  -->
+    <string name="ime_name">Terminal++ Keyboard</string>
+
+    <!-- Symbols that are commonly considered word separators in this language -->
+    <string name="word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>
+
+    <!-- Labels on soft keys -->
+    <string name="label_go_key">Go</string>
+    <string name="label_next_key">Next</string>
+    <string name="label_send_key">Send</string>
+
+    <string name="application_terminal">Terminal IDE</string>
+    <string name="preferences">Preferences</string>
+    <string name="new_window">New window</string>
+    <string name="close_window">Close window</string>
+    <string name="window_list">Windows</string>
+    <string name="prev_window">Prev window</string>
+    <string name="next_window">Next window</string>
+    <string name="reset">Reset term</string>
+    <string name="send_email">Email to</string>
+    <string name="special_keys">Special keys</string>
+    <string name="toggle_soft_keyboard">Toggle soft keyboard</string>
+
+    <string name="enable_wakelock">Take WakeLock</string>
+    <string name="disable_wakelock">Drop WakeLock</string>
+    <string name="enable_wifilock">Take WifiLock</string>
+    <string name="disable_wifilock">Drop WifiLock</string>
+
+    <string name="edit_text">Edit text</string>
+    <string name="select_text">Select text</string>
+    <string name="copy_all">Copy all</string>
+    <string name="paste">Paste</string>
+
+    <string name="service_notify_text">Terminal session is running</string>
+
+    <!-- Preference dialog -->
+    <string name="screen_preferences">Screen</string>
+
+    <string name="title_statusbar_preference">Status bar</string>
+    <string name="summary_statusbar_preference">Show/hide status bar.</string>
+    <string name="dialog_title_statusbar_preference">Status bar</string>
+
+    <string name="title_cursorstyle_preference">Cursor style</string>
+    <string name="summary_cursorstyle_preference">Choose cursor style.</string>
+    <string name="dialog_title_cursorstyle_preference">Cursor style</string>
+
+    <string name="title_cursorblink_preference">Cursor blink</string>
+    <string name="summary_cursorblink_preference">Choose cursor blink.</string>
+    <string name="dialog_title_cursorblink_preference">Cursor blink</string>
+
+    <string name="text_preferences">Text</string>
+
+    <string name="title_fontsize_preference">Font size</string>
+    <string name="summary_fontsize_preference">Choose character height in points.</string>
+    <string name="dialog_title_fontsize_preference">Font size</string>
+
+    <string name="title_color_preference">Colors</string>
+    <string name="summary_color_preference">Choose text color.</string>
+    <string name="dialog_title_color_preference">Text color</string>
+
+    <string name="keyboard_preferences">Keyboard</string>
+
+    <string name="title_controlkey_preference">Control key</string>
+    <string name="summary_controlkey_preference">Choose control key.</string>
+    <string name="dialog_title_controlkey_preference">Control key</string>
+
+    <string name="title_fnkey_preference">Fn key</string>
+    <string name="summary_fnkey_preference">Choose Fn key.</string>
+    <string name="dialog_title_fnkey_preference">Fn key</string>
+
+    <string name="title_ime_preference">Input method</string>
+    <string name="summary_ime_preference">Choose input method for soft keyboard.</string>
+    <string name="dialog_title_ime_preference">Input method</string>
+
+    <string name="shell_preferences">Shell</string>
+    <string name="title_shell_preference">Command line</string>
+    <string name="summary_shell_preference">Specify the shell command line.</string>
+    <string name="dialog_title_shell_preference">Shell</string>
+
+    <string name="title_initialcommand_preference">Initial command</string>
+    <string name="summary_initialcommand_preference">Sent to the shell when it starts.</string>
+    <string name="dialog_title_initialcommand_preference">Initial Command</string>
+
+    <!-- Don't localize these default values -->
+    <string name="default_value_statusbar_preference">1</string>
+    <string name="default_value_cursorstyle_preference">0</string>
+    <string name="default_value_cursorblink_preference">0</string>
+    <string name="default_value_fontsize_preference">12</string>
+    <string name="default_value_color_preference">1</string>
+    <string name="default_value_controlkey_preference">7</string>
+    <string name="default_value_fnkey_preference">7</string>
+    <string name="default_value_ime_preference">0</string>
+    <string name="default_value_shell_preference">/system/bin/sh -</string>
+    <string name="default_value_initialcommand_preference">export HOME=/data/data/com.spartacusrex.spartacuside/files;cd $HOME</string>
+
+    <string name="control_key_dialog_title">Control and Function Keys</string>
+    <!-- The word CTRLKEY should be left un-translated. It will be replaced at run-time with the
+         actual control key key name. -->
+    <string name="control_key_dialog_control_text">CTRLKEY Space : Control-@ (NUL)\nCTRLKEY A..Z : Control-A..Z\nCTRLKEY 5 : Control-]\nCTRLKEY 6 : Control-^\nCTRLKEY 7 : Control-_\nCTRLKEY 9 : F11\nCTRLKEY 0 : F12</string>
+    <string name="control_key_dialog_control_disabled_text">No control key set.</string>
+    <!-- The word FNKEY should be left un-translated. It will be replaced at run-time with the
+         actual function key key name. -->
+    <string name="control_key_dialog_fn_text">FNKEY 1..9 : F1-F9\nFNKEY 0 : F10\nFNKEY W : Up\nFNKEY A : Left\nFNKEY S : Down\nFNKEY D : Right\nFNKEY P : PageUp\nFNKEY N : PageDown\nFNKEY T : Tab\nFNKEY L : | (pipe)\nFNKEY U : _ (underscore)\nFNKEY E : Control-[ (ESC)\nFNKEY X : Delete\nFNKEY I : Insert\nFNKEY H : Home\nFNKEY F : End\nFNKEY . : Control-\\\n</string>
+    <string name="control_key_dialog_fn_disabled_text">No function key set.</string>
+    <string name="tut6">
+      OK - Now that we understand quite how wonderful vim can be, let\'s compile a c applications.
+      GCC is not extracted by default, since it takes up about 70mb, or 20mb unextracted.
+        You need to extract it to the right location for all my scripts to work, so I have
+        created a very simple installer.
+        # cat `which install_gcc`
+        This will show what is actually being done. Simple. Now run it..
+        # install_gcc
+        Now GCC, and more importantly the \'terminal-gcc\' script, should be installed..
+        First cd into the project folder (Remember to use TAB to complete) :
+        # cd ~/system/src/c_examples/chello/
+        List the contents :
+        # ls (Although I prefer ll)
+        There are 2 file here. hello.c and a Makefile. Lets look at the file
+        # cat hello.c
+        You can compile the c code with
+        # terminal-gcc -o hello hello.c
+        And there it is. You should now have an executable in the folder called \'hello\'.
+        Run it with
+        # ./hello
+        You can add more files by adding them at the end of the command.
+        So if you had file1.c and file2.c you would use
+        # terminal-gcc -o hello file1.c file2.c
+        You don\'t need to add the .h files, they should be in this folder.
+        Now let\'s see what terminal-gcc is actually doing..
+        # cat `which terminal-gcc`
+        As you can see I am calling arm-eabi-gcc with some specific parameters.
+        You need these for it to work on Android.
+        If you want to know what is \'actually\' being called you need to set the environment
+        variable DEBUG_GCC
+        # export DEBUG_GCC=true
+        And to stop
+        # export DEBUG_GCC=
+        Also - you can add \'-v\' to get verbose output.    Now let\'s see the Makefile..
+        # cat Makefile
+        This is a very simple generic Makefile. It scans the folder for c files and then compiles them.
+        To use the Makefile :
+        # make clean
+        (This will delete all the compiled files..)
+        # make
+        \'make\' only compiles the files that need to be compiled.
+        Unlike the previous method that just re-compiles everything.
+        Best of all, this works nicely with vim.. or terminalide.. :-)
+        So - run terminalide.
+        # terminalide
+        The fact you don\'t have a ./src folder doesn\'t matter..
+        Once vim/terminalide is up and running you can compile everything by pressing F7.
+        And you can scan through errors, just like in the java tutorials, with F8 and F9.
+        Nice.    Now let\'s move on to a .cpp example..</string>
+    <string name="tut2">
+        Let\'s start by compiling the simplest Hello World app.
+        First cd into the project folder (Remember to use TAB to complete) :
+        # cd ~/system/src/helloworld/
+        List the contents :
+        # ls (Allthough I prefer ll)
+        You will now see three files. hello.java is the code. Compile with :
+        # javac hello.java    Now you have a hello.class file. Need to convert to DEX format :    # dx —dex —output=hello.jar hello.class    Now you have hello.jar in dex format. The naming to .jar seems to matter, not .dex.    And finally you can run it with :    # java -jar hello.jar hello    You just compiled and ran your first program.. Well Done!    Now you will understand what builder.sh and run.sh are doing :     # cat hello.java  # cat builder.sh  # cat run.sh    Now let\'s play with vim a little.. VIM not VI - they are different! vi is included only as a fail-safe, from busybox, in-case you break vim with \'weird\' config settings.    # vim hello.java    You should now see a syntax highlighted hello.java file.    REMEMBER : The most important thing about vim is that [ESC] moves you into Control mode where you can type commands and do functions, and press \'i\' for INSERT mode to write some text.(Or use \'a\' for APPEND mode)    Press \'i\' to enter INSERT mode    Move around with the arrow keys, and then move over the \'System.\' so that the cursor is on the \'o\' of .out    Now press [CTRL]+X [CTRL]+U    You should see java completion for the available options!    There are many available completion type :   - [CTRL]+X [CTRL]+U  USER java completion  - [CTRL]+X [CTRL]+O  OMNI completion, syntax based for many languages  - [CTRL]+X [CTRL]+F  FILE name completion, VERY HANDY, try ~[CTRL]+X [CTRL]+F    And more.. (Enable the dictionary in your ~/.vimrc for many more options) But for us the important one is the USER completion. Java.    Completion only works in INSERT mode.. The auto-popup vim plugin is included, so if you type normally, after the 2nd letter of a word, the auto-completion window should just popup automatically.. sweet. :-)    You can even compile the code with [F7] (this is setup in your ~/.vimrc).    Make sure you are in Control mode, press [ESC], then press [F7].    Since there are no errors the compile will succeed and no errors will appear in the output window that should now have appeared at the bottom of the screen.    The Cursor is now in the output window. Move it to the main window.    Press [ESC] (to make sure you are in control mode). Then press [CTRL]+W (to move into window mode) and then press the UP arrow key. This will move you to the window \'above\'. You can use [CTRL]+W [CTRL]+W to toggle between windows.     You can close the output window if you wish :    [ESC]:cclose[ENTER]    Bring it back with :copen or :clist  Cycle with :cnext :cprevious    Edit the hello.java file by entering INSERT mode and changing it so that there are a few errors.. add a space inbetween the letters of System etc..    You will need to save your changes. Make sure the cursor is in the main window. Then :    [ESC]:w    [ESC] is only required if you are not in Control mode.. From now on I\'ll omit it. :w is save the file. Most functions need to be run from Control mode, and all those starting with :    Now try and compile again with [F7]. You need to be in the main window in Control mode.    This time there should be some errors in the output window.    You can cycle through them with [F8] and [F9], and the cursor will move to the error line.    Pretty sweet..    You can even run your shell build scripts from within vim, so..    :! ./builder.sh   This will run the complete build script, and show you the output.    NB : You can use TAB completion in the vim command line so just type :    :! ./b[TAB] and the rest should be filled in..    To exit vim use :     :w - Save file  :q - Close but file must be saved  :q! - Force Close  :wq - Save and Close  :qa! - Force close ALL.    Ok. Play around here, then move on to Tutorial 3.</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="ok">OK</string>
+    <string name="new_file">New source file</string>
+    <string name="default_">System</string>
+    <string name="language">Language</string>
+    <string name="run">Run</string>
+    <string name="navigation_drawer_open">Open navigation</string>
+    <string name="navigation_drawer_close">CLose navigation</string>
+    <string name="close">Close</string>
+    <string name="rate">Rate app</string>
+    <string name="more_app">More app</string>
+    <string name="compile_error">Compile error</string>
+    <string name="setting">Setting</string>
+    <string name="document">See document</string>
+    <string name="code_sample">Code sample</string>
+    <string name="title_activity_code_sample">Code Sample</string>
+    <string name="edit">Edit</string>
+    <string name="copy">Copy</string>
+    <string name="save_as">Save as</string>
+    <string name="enter_new_file_name">Enter new file name</string>
+    <string name="path">"Path: "</string>
+    <string name="extension">Extension:</string>
+    <string name="readable">"Readable: "</string>
+    <string name="writeable">"Writable: "</string>
+    <string name="remove_file_msg">"Do you want to delete file "</string>
+    <string name="delete_file">Delete file</string>
+    <string name="deleted">Deleted</string>
+    <string name="failed">Failed</string>
+    <string name="compile_ok">Compile success</string>
+    <string name="code_editor">Code editor</string>
+    <string name="word_wrap">Wrap content</string>
+    <string name="font_z">Font size</string>
+    <string name="font">Font</string>
+    <string name="user_interface">User interface</string>
+    <string name="show_line">Show line number</string>
+    <string name="find">Find</string>
+    <string name="find_replace">Find and replace</string>
+    <string name="tool">Tool</string>
+    <string name="find_what">Find what?</string>
+    <string name="replace_with">Replace with</string>
+    <string name="replace">Replace</string>
+    <string name="match_case">Match case</string>
+    <string name="regex">Regex</string>
+    <string name="word_only">Word only</string>
+    <string name="auto_save">Auto save</string>
+    <string name="goto_line">Go to line</string>
+    <string name="format_code">Format code</string>
+    <string name="information">Information</string>
+    <string name="report_bug">Report bug</string>
+    <string name="check_update">Check update</string>
+    <string name="email">Email</string>
+    <string name="describe_causes_an_error">Describe causes an error</string>
+    <string name="bug">Bug</string>
+    <string name="word_wrap_desc">Automatic screen down the line when overflow</string>
+    <string name="show_line_desc">Display the line numbers to the left of the code editor</string>
+
+
+    <string name="hide_status_bar">Hide status bar</string>
+    <string name="hide_status_bar_desc">Hide the status bar in every screen of the app, include console. Restart app if need change.</string>
+    <string name="show_suggest_popup">Hint popup</string>
+    <string name="show_hint_desc">Show suggestions while typing</string>
+    <string name="compile">Compile</string>
+    <string name="file">File</string>
+    <string name="change_lang_msg">Restart the application to change the language.</string>
+    <string name="data">Data</string>
+    <string name="show_key_board">Show key board</string>
+    <string name="undo">Undo</string>
+    <string name="redo">redo</string>
+    <string name="pascal_for_android">Pascal for Android</string>
+    <string name="exit">Exit</string>
+    <string name="exit_mgs">Do you want to exit application?</string>
+    <string name="setting_editor">Setting editor</string>
+    <string name="cloud_database">Cloud database</string>
+    <string name="pas_file">Pas file (*.pas)</string>
+    <string name="inp_file">Inp file (*.inp)</string>
+    <string name="theme">Code style</string>
+    <string name="select">Select</string>
+    <string name="folder">Folder</string>
+    <string name="home">home</string>
+
+    <string name="new_folder">Create new folder</string>
+    <string name="enter_new_folder_name">Enter name of folder</string>
+    <string name="change_key_board">Change keyboard</string>
+    <string name="cant_undo">Can not undo</string>
+    <string name="cant_redo">Can not redo</string>
+    <string name="back_to_undo">Press back to undo</string>
+    <string name="more_feature">Open drawer</string>
+    <string name="cant_close_file">Can not close file</string>
+    <string name="closed">Closed</string>
+    <string name="complete">Complete</string>
+    <string name="view_console">View console</string>
+    <string name="resume_program">Resume program</string>
+    <string name="help_me_translate">Help me translate app</string>
+    <string name="your_name">Your name</string>
+    <string name="send_to_me">Send to dev</string>
+    <string name="rerun">Rerun current program</string>
+
+    <string name="translate">Translate</string>
+    <string name="license">License</string>
+
+    <string name="console_screen">Console</string>
+    <string name="background_console">Background console</string>
+    <string name="text_color_console">Text color console</string>
+
+    <string name="frame_rate">Frame rate</string>
+
+    <string name="max_buffer">Max buffer length</string>
+
+    <string name="write_code_here">Write code here…</string>
+    <string name="can_not_save_file">Can not save file!</string>
+    <string name="saved">Saved</string>
+    <string name="file_exist">File is exist, please enter value name!</string>
+    <string name="send_mail">Send mail…</string>
+    <string name="no_mail_clients">There are no email clients installed.</string>
+    <string name="your_language">Your language</string>
+    <string name="other">Other</string>
+    <string name="logo">Logo</string>
+    <string name="auto_compile_summary">Automatically compile while typing. The performance of the application will be decrease if using this feature, however, which will help us to report the error faster.</string>
+    <string name="auto_compile">Auto compile</string>
+    <string name="keyboard_shortcut">Key board shortcut</string>
+    <string name="program_structure">Show program structure</string>
+    <string name="show_symbol">List symbols</string>
+    <string name="show_symbol_decs">Show list symbol below the editor.</string>
+    <string name="debug">Debug program</string>
+    <string name="add_watch">Add watch</string>
+    <string name="var_name">Variable name</string>
+    <string name="program_stopped">Program is stopped</string>
+    <string name="no_document">No document</string>
+    <string name="max_page_desc">Number of maximum page display on the screen</string>
+    <string name="max_page">Max page editor</string>
+    <string name="implicitly">implicitly</string>
+    <string name="enter_key_word">Enter your keyword…</string>
+    <string name="blog">Blog of Pascal N-IDE</string>
+    <string name="title_activity_zxing">ZxingActivity</string>
+    <string name="turn_on_flashlight">Turn on flashlight</string>
+    <string name="turn_off_flashlight">Turn off flashlight</string>
+    <string name="open_file">Open file</string>
+    <string name="insert_url_media">Insert url media</string>
+    <string name="max_history_edit">Max history edit</string>
+    <string name="max_history_edit_desc">The maximum number of steps can be undo redo</string>
+    <string name="see_in_github">See project in Github https://github.com/tranleduy2000/pascalnide</string>
+    <string name="stack_size_desc">Maximum stack size when running the program. On some devices, this parameter has no effect. The default is 40000. Minimum is 5000</string>
+    <string name="stack_size">Stack size</string>
+    <string name="copied">Copied</string>
+    <string name="theme_font">Code theme and font</string>
+    <string name="do_you_want_to_create_your_theme">Do you want to create your theme?</string>
+    <string name="get_pro_version">Get Pro Version</string>
+    <string name="create_shortcut">Create shortcut</string>
+    <string name="create_shortcut_msg">Select file to create shortcut</string>
+    <string name="shortcut_created">Shortcut created</string>
+    <string name="sort_date">Sort by date…</string>
+    <string name="sort_name">Sort by name…</string>
+    <string name="sort_size">Sort by size…</string>
+    <string name="content">Content</string>
+    <string name="see_in_github_2">See in Github</string>
+    <string name="insert_color">Insert color</string>
+    <string name="permission_denied_storage">Permission denied to read your External storage</string>
+    <string name="inserted_color">Inserted color</string>
+    <string name="unit_file">Unit pascal (*.pas)</string>
+    <string name="what_expect">What do you expect?</string>
+    <string name="auto_fix">Auto fix</string>
+    <string name="declare_variable">Declare variable</string>
+    <string name="declare_function">Declare function</string>
+    <string name="declare_constant">Declare constant</string>
+    <string name="can_not_exec_unit">Can not executing unit</string>
+    <string name="insert">Insert</string>
+    <string name="select_mode">Select mode</string>
+    <string name="select_token">Select token</string>
+    <string name="enable_ime_keyboard">Enable IME keyboard</string>
+    <string name="key_ime_keyboard" translatable="false">key_ime_keyboard</string>
+    <string name="frames">Frames</string>
+    <string name="variables">Variables</string>
+    <string name="call_stack">Call stack</string>
+    <string name="step_info">Step info</string>
+    <string name="step_over">Step over</string>
+
+
+    <string name="notifications">Notifications</string>
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="console_screen_">Console screen</string>
+    <string name="keyboard">Keyboard</string>
+    <string name="system_interface">System interface</string>
+    <string name="maxline_console_desc">The maximum number of lines that the console will store, the larger the number of lines will need more memory.</string>
+    <string name="text_color">Text Color</string>
+    <string name="default_text_color">Default text color</string>
+    <string name="def_bg_color">Default background color</string>
+    <string name="bg_color">Background Color</string>
+    <string name="draw_screen_faster">Draw screen faster</string>
+    <string name="ctrl_key">Ctrl Key</string>
+    <string name="compiler">Compiler</string>
+    <string name="ime_desc">Allows your keyboard to show hints.</string>
+    <string name="tab_width">Tab width (space)</string>
+    <string name="anti_alias_summary">Smooths out jagged graphics</string>
+    <string name="anti_alias">Anti-alias</string>
+    <string name="hardware_acceleration">Hardware acceleration</string>
+    <string name="console_font_size">Console font size</string>
+
+
+    <!--DONATE-->
+    <string name="license_invalid">Thanks for purchasing the donation app! Unfortunately license check failed. Please try again later. If it\'s still not working, please contact me. You need internet access!</string>
+    <string name="pirated">Seems like the donation app wasn\'t purchased through Play Store! If you pirated it, then shame on you!</string>
+    <string name="donate">Donate</string>
+    <string name="donate_summary">You can custom code theme, more font, change console font… with donate version\n.
+        Because this app is open source you can easily build it yourself and remove this check.
+        But I hope you support developers anyway. Thanks for using Pascal NIDE!
+        Once you bought the donation app you have to restart Pascal NIDE in order to enable all features.</string>
+    <string name="donate_nope">I won\'t fall for this scam!</string>
+    <string name="donate_yes">I love this app. Must donate!</string>
+
+    <!--Splash screen-->
+    <string name="more_font">Get more font</string>
+    <string name="editor_font">Editor font</string>
+    <string name="console_font">Console font</string>
+    <string name="unknown">Unknown</string>
+    <string name="custom_theme">Custom theme</string>
+    <string name="save_and_apply">Save and apply</string>
+    <string name="create_new_theme">Create new theme</string>
+    <string name="more_theme">Get premium version. Create your custom theme!</string>
+</resources>

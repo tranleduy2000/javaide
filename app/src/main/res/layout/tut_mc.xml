@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="Midnight Commander"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+                "Midnight Commander 4.8\n
+\n
+Just type 'mc'.\n
+\n
+This is a great console based file manager.\n
+\n
+Use the arrow keys to move around, TAB switches panels, and function keys to get the menus.\n
+\n
+If the function keys don't work for you, just use [ESC] 'number' for the same effect.\n
+\n
+You can mount FTP file systems in mc and if you set up an SSL pipe with ssh, you can access ftps.\n
+\n
+There is even the FISH protocol for SSH file access.\n
+\n
+To get it to work, I had to write a simple little mc script. mc-real is the actual binary. You can run mc-real on a regular screen / keyboard.\n
+\n
+Few tips:\n
+\n
+[F1] HELP - doesn't work yet :-(\n
+[F3] View a file - v quick.\n
+[F4] Open the file in vim for editing\n
+[F9] gets you the main menus. Just use arrow keys and enter.\n
+\n
+Press [ESC] twice to cancel most actions.\n
+\n
+[F10] Quit.\n
+\n
+As with vim, plenty of help on Google.. :-)\n
+\n
+"/>
+
+    </ScrollView>
+
+</LinearLayout>

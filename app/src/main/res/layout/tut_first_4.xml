@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="Tutorial 4"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+                "We will now compile a complete command line java application, that uses the library we compiled in Tutorial 3.\n
+\n
+cd into the home folder\n
+\n
+# cd ~/system/src/demo_console/\n
+\n
+Check things out..\n
+\n
+# cat ./builder.sh\n
+# cat ./run.sh\n
+\n
+Notice how the lib file has been integrated into the build commands.\n
+\n
+Also, check out the terminalide.vim file\n
+\n
+# cat ./terminalide.vim\n
+\n
+Just take a look at it. It will make sense later.\n
+\n
+Now run terminalide\n
+\n
+# terminalide\n
+\n
+Open the start.java file in the src dir.\n
+\n
+Compile with [F7]..\n
+\n
+There are ERRORS! This is normal.\n
+\n
+Also, the java-complete functions will not work for libfunc.\n
+\n
+This is because the vim variables have not been told about the new build environment and added libs.\n
+\n
+Run this function in vim. Make sure you are in the main window and in Control mode.\n
+\n
+:source ../terminalide.vim\n
+\n
+This will set the variables up correctly for the window so that java-complete and javac now work.\n
+\n
+Now try and compile. It should work fine. And the java completion for libfunc aswell..\n
+\n
+Use the builder script to create the full app.\n
+\n
+:! ../builder.sh\n
+\n
+Now lets open a second file.\n
+\n
+Move to NERDTree\n
+\n
+[ESC][CTRL]+W LEFT\n
+\n
+Open up name.java aswell. You will now notice a thin window appear at the top 
+with the names of your current buffers. Also name.java will now be visible in the main window\n
+\n
+Move into this MiniBufExpl window, [CTRL]+W UP\n
+\n
+Press TAB or SHIFT-TAB to cycle through the windows, and ENTER to select one. Nice.\n
+\n
+There are other nice ways to switch buffers.\n
+\n
+:buffers\n
+\n
+this shows a list of buffers, and you then choose with\n
+\n
+:buffer [number]\n
+\n
+I have created a simple mapping in ~/.vimrc so just press [F5].. \n
+\n
+Play around here and then go to tutorial 5.
+"/>
+
+    </ScrollView>
+
+</LinearLayout>

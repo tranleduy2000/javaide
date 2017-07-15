@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="RSYNC"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+                "rsync 3.0.8\n
+\n
+rsync is a great way to backup and synchronise folders on  different machines.\n
+\n
+It only sends the DIFFERENCE between files so that the minimum amount of bandwith is used.\n
+\n
+Even large projects can easily be synced quickly, if you're only transferring the changes..\n
+\n
+There are MANY ways of syncing folders in rsync, pull or push, run in daemon mode, etc.. but I will show you ONE secure way of doing this.\n
+\n
+You need to have the sshd daemon running in Terminal IDE. Follow the previous instructions.\n
+\n
+Now its really quite simple. You need rsync on your home computer.\n
+\n
+Let's try and synchronise the ~/system/src demo apps folder.\n
+\n
+On your big computer, where you want to backup your work, you need to run this function :\n
+\n
+# rsync -e 'ssh -p 8090' --rsync-path='/data/data/com.spartacusrex.spartacuside/files/system/bin/rsync' -avn 127.0.0.1:/data/data/com.spartacusrex.spartacuside/files/system/src .\n
+\n
+By adding the -n option it will show you what it would do, but not do it. Re-run without the -n to actually back the files up..\n
+\n
+# rsync -e 'ssh -p 8090' --rsync-path='/data/data/com.spartacusrex.spartacuside/files/system/bin/rsync' -av 127.0.0.1:/data/data/com.spartacusrex.spartacuside/files/system/src .\n
+\n
+Create a script, to make this easier to call.\n
+\n
+And there you have it. Fast simple secure folder synchronization..\n
+\n
+You can of course reverse the rolls of this script.\n
+\n
+That would mean you could backup your files FROM Terminal IDE TO any ssh server you have access to online, as long as it has rsync.\n
+\n
+"/>
+
+    </ScrollView>
+
+</LinearLayout>

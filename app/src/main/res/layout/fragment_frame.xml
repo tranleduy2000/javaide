@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<com.fsck.splitview.SplitView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    app:bottomContent="@+id/container_vars"
+    app:handle="@+id/drag_view_vertical"
+    app:minSize="30dp"
+    app:topContent="@+id/container_frames">
+
+    <LinearLayout
+        android:id="@+id/container_frames"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorPrimary"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center|start"
+            android:orientation="horizontal"
+            android:padding="2dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_filter_frames_white_18dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/frames"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:scrollbarSize="5dp"
+                android:scrollbars="horizontal">
+
+                <RadioGroup
+                    android:id="@+id/group_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </RadioGroup>
+            </ScrollView>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/drag_view_vertical"
+        android:layout_width="@dimen/drag_handle_size"
+        android:layout_height="match_parent"
+        android:background="?colorPrimary"
+        android:clickable="true"
+        android:contentDescription="drag"
+        android:foreground="?selectableItemBackground"
+        android:src="@drawable/ic_more_vert_white_24dp">
+
+    </ImageView>
+
+    <LinearLayout
+        android:id="@+id/container_vars"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorPrimary"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center|start"
+            android:orientation="horizontal"
+            android:padding="2dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_line_weight_white_18dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/variables"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rc_vars"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+
+</com.fsck.splitview.SplitView>

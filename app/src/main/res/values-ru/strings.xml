@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+
+
+    <string name="auto_save">Авто сохранение</string>
+    <string name="back_to_undo">Клавиша \"назад\" = отменить</string>
+    <string name="bug">Ошибка</string>
+    <string name="cancel">Отмена</string>
+    <string name="cant_close_file">Невозможно закрыть файл</string>
+    <string name="cant_redo">Невозможно повторить</string>
+    <string name="cant_undo">Невозможно отменить</string>
+    <string name="change_key_board">Сменить клавиатуру</string>
+    <string name="change_lang_msg">Перезапустите приложение</string>
+    <string name="check_update">Проверить обновление</string>
+    <string name="close">Закрыть</string>
+    <string name="closed">Закрыто</string>
+    <string name="cloud_database">Облако</string>
+    <string name="code_editor">Редактор кода</string>
+    <string name="code_sample">Примеры кода</string>
+    <string name="compile">Компиляция</string>
+    <string name="compile_error">Ошибка компиляции</string>
+    <string name="compile_ok">Компиляция успешна</string>
+    <string name="complete">Завершено</string>
+    <string name="copy">Копировать</string>
+    <string name="copy_all">Копировать всё</string>
+    <string name="data">Данные</string>
+    <string name="default_">Системный</string>
+    <string name="delete_file">Удалить файл</string>
+    <string name="deleted">Удалено</string>
+    <string name="describe_causes_an_error">Причина</string>
+    <string name="document">См. документ</string>
+    <string name="edit">Редактировать</string>
+    <string name="email">Email</string>
+    <string name="enter_new_file_name">Новое имя файла</string>
+    <string name="enter_new_folder_name">Имя папки</string>
+    <string name="exit">Выход</string>
+    <string name="exit_mgs">Выйти из приложения?</string>
+
+    <string name="extension">Расширение:</string>
+    <string name="failed">Ошибка</string>
+    <string name="file">Файл</string>
+    <string name="find">Найти</string>
+    <string name="find_replace">Найти и заменить</string>
+    <string name="find_what">Что ищем?</string>
+    <string name="folder">Папка</string>
+    <string name="font">Шрифт</string>
+    <string name="font_z">Размер шрифта</string>
+    <string name="format_code">Форматировать код</string>
+    <string name="goto_line">К строке</string>
+    <string name="help_me_translate">Помощь с переводом</string>
+    <string name="hide_status_bar">Скрыть статусбар</string>
+    <string name="home">Главная</string>
+    <string name="information">Информация</string>
+    <string name="language">Язык</string>
+    <string name="match_case">Учитывать регистр</string>
+    <string name="more_app">Ещё приложения</string>
+    <string name="your_name">Ваше имя</string>
+    <string name="new_file">Создать файл</string>
+    <string name="new_folder">Создать папку</string>
+    <string name="ok">OK</string>
+    <string name="paste">Вставить</string>
+    <string name="path">"Путь: "</string>
+    <string name="rate">Оценить приложение</string>
+    <string name="readable">"Чтение: "</string>
+    <string name="redo">Повторить</string>
+    <string name="regex">Регулярное выражение</string>
+    <string name="remove_file_msg">"Вы хотите удалить файл "</string>
+    <string name="replace">Заменить</string>
+    <string name="replace_with">Заменить</string>
+    <string name="report_bug">Отчёт об ошибках</string>
+    <string name="rerun">Перезапустить текущую программу</string>
+    <string name="resume_program">Продолжить программу</string>
+    <string name="run">Запуск</string>
+    <string name="save">Сохранить</string>
+    <string name="save_as">Сохранить как</string>
+    <string name="select">Выбрать</string>
+    <string name="send_to_me">Отправить</string>
+    <string name="setting">Настройки</string>
+    <string name="setting_editor">Настройки редактора</string>
+    <string name="show_suggest_popup">Всплывающие подсказки</string>
+    <string name="show_hint_desc">Показывать предложения, при наборе текста</string>
+    <string name="show_key_board">Показать клавиатуру</string>
+    <string name="show_line">Номера строк</string>
+    <string name="show_line_desc">Показать номера строк в левой части экрана</string>
+    <string name="theme">Стиль кода</string>
+    <string name="title_activity_code_sample">Примеры кода</string>
+    <string name="tool">Инструменты</string>
+    <string name="undo">Отменить</string>
+    <string name="user_interface">Пользовательский интерфейс</string>
+    <string name="view_console">Просмотр консоли</string>
+    <string name="word_only">Только Word</string>
+    <string name="word_wrap">Перенос содержимого</string>
+    <string name="word_wrap_desc">Авто перенос на новую строку при переполнении</string>
+    <string name="writeable">"Запись: "</string>
+    <!--  <string name="BrightYellow">Ярко-жёлтый</string>
+      <string name="DarkGray">Тёмно-зелёный</string>
+      <string name="EspressoLibre">Кофе</string>
+      <string name="Idel">Idel</string>
+      <string name="KFT2">KFT2</string>-->
+    <!--<string name="Modnokai_Coffee">Кофе моднокай</string>-->
+    <string name="more_feature">Открыть меню</string>
+    <string name="navigation_drawer_close">Закрыть панель навигации</string>
+    <string name="navigation_drawer_open">Открыть навигацию</string>
+    <string name="other">Другой</string>
+    <string name="pas_file">Файл Pas (*.pas)</string>
+    <string name="pascal_for_android">Pascal для Android</string>
+    <string name="inp_file">Файл Inp (*.inp)</string>
+    <string name="text_color_console">Цвет текста</string>
+    <string name="translate">Перевод</string>
+    <string name="frame_rate">Частота кадров</string>
+    <string name="background_console">Цвет фона</string>
+    <string name="console_screen">Консоль</string>
+    <string name="license">Лицензия</string>
+    <string name="hide_status_bar_desc">Скрывать статусбар, когда приложение запущено</string>
+    <string name="max_buffer">Максимальный размер, буфера</string>
+    <string name="write_code_here">Напишите код здесь…</string>
+    <string name="can_not_save_file">Не удаётся сохранить файл!</string>
+    <string name="saved">Сохранено</string>
+    <string name="file_exist">Файл с таким именем уже существует!</string>
+    <string name="send_mail">Отправить письмо…</string>
+    <string name="no_mail_clients">Нет установленных почтовых клиентов.</string>
+    <string name="your_language">Ваш язык</string>
+    <string name="logo">Логотип</string>
+    <string name="auto_compile">Авто компиляция</string>
+    <string name="auto_compile_summary">Автоматическая компиляция во время набора текста. Производительность приложения снизится!</string>
+    <string name="keyboard_shortcut">Сочетание клавиш</string>
+    <string name="program_structure">Показать структуру программы</string>
+    <string name="show_symbol">Строка символов</string>
+    <string name="show_symbol_decs">Показывать строку символов в редакторе</string>
+    <string name="add_watch">Добавить часы</string>
+    <string name="debug">Программа отладки</string>
+    <string name="var_name">Имя переменной</string>
+    <string name="program_stopped">Программа остановлена</string>
+    <string name="no_document">Нет документа</string>
+    <string name="implicitly">косвенно</string>
+    <string name="max_page">Максимум страниц</string>
+    <string name="max_page_desc">Максимальное число страниц на экране</string>
+    <string name="enter_key_word">Введите ключевое слово...</string>
+    <string name="blog">Блог Pascal N-IDE</string>
+    <string name="title_activity_zxing">ZxingActivity</string>
+    <string name="turn_off_flashlight">Выключить фонарик</string>
+    <string name="turn_on_flashlight">Включить фонарик</string>
+    <string name="insert_url_media">Вставить URL-адрес</string>
+    <string name="open_file">Открыть файл</string>
+    <string name="see_in_github">Посмотреть проект в github https://github.com/tranleduy2000/pascalnide</string>
+    <string name="max_history_edit_desc">Максимальное количество шагов отмены и повтора.</string>
+    <string name="max_history_edit">Максимальная история изменений</string>
+    <string name="copied">Скопированный</string>
+    <string name="stack_size">Размер стека</string>
+    <string name="stack_size_desc">Максимальный размер стека при запуске программы. На некоторых устройствах этот параметр не действует. По умолчанию 40000. Минимальное значение - 5000.</string>
+    <string name="create_shortcut_msg">Выберите файл для создания ярлыка</string>
+    <string name="do_you_want_to_create_your_theme">Вы хотите создать свою тему?</string>
+    <string name="create_shortcut">Создать ярлык</string>
+    <string name="get_pro_version">Получить PRO-версию</string>
+    <string name="shortcut_created">Ярлык создан</string>
+    <string name="theme_font">Тема и шрифт кода</string>
+    <string name="content">Контент</string>
+    <string name="insert_color">Вставить цвет</string>
+    <string name="see_in_github_2">В Github!</string>
+    <string name="sort_date">По дате…</string>
+    <string name="sort_name">По имени…</string>
+    <string name="sort_size">По размеру…</string>
+    <string name="unit_file">Unit pascal (*.pas)</string>
+   <string name="inserted_color">Вставленный цвет</string>
+    <string name="permission_denied_storage">Отказано в доступе к чтению с внешнего накопителя :(</string>
+    <string name="what_expect">Чего вы ждёте?</string>
+    <string name="declare_variable">Объявить переменную</string>
+    <string name="declare_function">Объявить функцию</string>
+    <string name="declare_constant">Объявить константу</string>
+    <string name="auto_fix">Автоисправление</string>
+    <string name="can_not_exec_unit">Невозможно выполнить блок</string>
+    <string name="select_mode">Выбрать режим</string>
+    <string name="select_token">Выбрать режим</string>
+    <string name="insert">Вставить</string>
+    <string name="enable_ime_keyboard">Включить IME клавиатуру</string>
+    <string name="call_stack">Стек вызовов</string>
+    <string name="frames">Рамки</string>
+    <string name="variables">Переменные</string>
+    <string name="step_info">Step info</string>
+    <string name="step_over">Step over</string>
+    <string name="bg_color">Цвет фона</string>
+    <string name="compiler">Компилятор</string>
+    <string name="console_screen_">Экран консоли</string>
+    <string name="ctrl_key">Клавиша Ctrl</string>
+    <string name="def_bg_color">Цвет фона по умолчанию</string>
+    <string name="default_text_color">Цвет текста по умолчанию</string>
+    <string name="draw_screen_faster">Draw screen faster</string>
+    <string name="ime_desc">Позволяет отображать подсказки на клавиатуре</string>
+    <string name="keyboard">Клавиатура</string>
+    <string name="maxline_console_desc">Максимальное количество строк, которые будет храниться в консоли. Чем больше количество строк, тем больше памяти потребуется.</string>
+    <string name="notifications">Уведомления</string>
+    <string name="pref_title_new_message_notifications">Уведомления о новых сообщениях</string>
+    <string name="pref_title_vibrate">Вибрировать</string>
+    <string name="system_interface">Системный интерфейс</string>
+    <string name="text_color">Цвет текста</string>
+    <string name="anti_alias">Anti-alias</string>
+    <string name="anti_alias_summary">Smooths out jagged graphics</string>
+    <string name="console_font_size">Console font size</string>
+    <string name="hardware_acceleration">Hardware acceleration</string>
+    <string name="tab_width">Tab width (space)</string>
+
+
+    <!--DONATE-->
+    <string name="license_invalid">Спасибо за покупку приложения-пожертвования! К сожалению, проверка лицензии не удалась. Пожалуйста, попробуйте снова позже. Если она всё ещё не работает, пожалуйста, свяжитесь со мной. Вам необходим доступ к интернету!</string>
+    <string name="pirated">Похоже, приложение-пожертвование не было куплено через Play Маркет! Если вы спиратили его, то вам должно быть стыдно!</string>
+    <string name="donate">Пожертвовать</string>
+    <string name="donate_summary">Эта функция доступна только когда установлено приложение-пожертвование! Тем не менее, не волнуйтесь. Так как у этого приложения открытый исходный код, вы без труда можете собрать его самостоятельно и убрать эту проверку. Но я надеюсь, что вы в любом случае поддержите разработчиков. Спасибо за использование Pascal N-IDE! После покупки приложения-пожертвования, вам нужно перезапустить Kernel Auditor для того, чтобы включить все функции.</string>
+    <string name="donate_nope">Я не попадусь на эту аферу!</string>
+    <string name="donate_yes">Я люблю это приложение. Должен пожертвовать!</string>
+
+    <!--Splash screen-->
+    <string name="more_font">Get more font</string>
+    <string name="editor_font">Editor font</string>
+    <string name="console_font">Console font</string>
+    <string name="unknown">Unknown</string>
+    <string name="create_new_theme">Create new theme</string>
+    <string name="custom_theme">Custom theme</string>
+    <string name="more_theme">Get premium version. Create your custom theme!</string>
+    <string name="save_and_apply">Save and apply</string>
+</resources>

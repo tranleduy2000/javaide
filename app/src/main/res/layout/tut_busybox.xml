@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="BusyBox 1.19.2"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+                'The swiss army knife of applications.\n
+\n
+99% of the apps available in Terminal IDE are there because of busybox.\n
+\n
+An App that allow you to compress\n
+   tar -czf compressed.tar.gz ./folder-to-compress\n
+\n
+And extract\n
+   tar -xf compressed.tar.gz\n
+\n
+Or list the contents\n
+   tar -tf compressed.tar.gz\n
+\n
+If you are recursively looking for a file, based on the name\n
+   find . | grep search_term\n
+\n
+If you are recursively looking for a file, based on the contents\n
+   grep -ar "searchforthis" *\n
+\n
+And many many other apps far too numerous to mention.\n
+\n
+Use them wisely..\n
+'/>
+
+    </ScrollView>
+
+</LinearLayout>

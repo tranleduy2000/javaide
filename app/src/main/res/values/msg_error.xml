@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+
+    <string name="ExpectedTokenException_3">Syntax error, \"%1$s\" expected but \"%2$s\" found</string>
+    <string name="BadFunctionCallException_1">One or more arguments has an incorrect type when calling function \"%1$s\"</string>
+    <string name="BadFunctionCallException_2">Either too few or two many arguments are being passed to function \"%1$s\"</string>
+    <string name="BadFunctionCallException_3">Can not call function \"%1$s\" , which is not defined.</string>
+    <string name="MISMATCHED_PARENTHESES">Mismatched parentheses</string>
+    <string name="MISMATCHED_BRACKETS">Mismatched brackets</string>
+    <string name="MISMATCHED_BEGIN_END">Mismatched begin - end construct</string>
+    <string name="UNFINISHED_BEGIN_END">Unfinished begin - end construct</string>
+    <string name="UNFINISHED_PARENTHESES">You forgot to close your parentheses</string>
+    <string name="UNFINISHED_BRACKETS">You forgot to close your brackets</string>
+    <string name="EXTRA_END">You have an extra \'end\' in your program</string>
+    <string name="IO_EXCEPTION">IOException occurred while reading the input</string>
+    <string name="INCOMPLETE_CHAR">Incomplete character literal</string>
+    <string name="MISSING_INCLUDE">Missing file to include</string>
+    <string name="NEWLINE_IN_QUOTES">You must close your quotes before starting a new line</string>
+
+    <string name="multi_define_main">Multiple definitions of main</string>
+    <string name="main_program_not_define">Main program not found</string>
+
+    <string name="BadOperationTypeException">Operator \"%1$s\" cannot be applied to arguments \"%2$s\" and \"%3$s\".\n
+    One has type \"%4$s\" and the other has type \"%5$s\"</string>
+    <string name="BadOperationTypeException2">Operator \"%1$s\" is not a unary operator</string>
+    <string name="ConstantCalculationException">Error while computing constant value: \"%1$s\"</string>
+    <string name="LibraryNotFoundException">Can not find library \"%1$s\"</string>
+    <string name="MultipleDefaultValuesException">Default Values can only be used when declaring variables one at a time.</string>
+    <string name="NonArrayIndexed">Tried to do indexed access on something which wasn\'t an array or a string. It was a \"%1$s\"</string>
+    <string name="NonConstantExpressionException">The expression \"%1$s\" is not constant.</string>
+    <string name="NonIntegerIndexException">Array index must be integers: \"%1$s\"</string>
+    <string name="NoSuchFunctionOrVariableException">\"%1$s\" is not a variable or function name</string>
+    <string name="NotAStatementException">\"%1$s\" is not an instruction by itself.</string>
+    <string name="OverridingFunctionException">Redefining function body for \"%1$s\", which was previous define at \"%1$s\"</string>
+    <string name="SameNameException">\"%1$s\" \"%2$s\" conflicts with previously defined \"%3$s\" with the same name defined at %4$s</string>
+    <string name="UnAssignableTypeException">The expression \"%1$s\" cannot have a value assigned to it.</string>
+    <string name="UnrecognizedTypeException">Type \"%1$s\" is not defined.</string>
+    <string name="PascalArithmeticException">Arithmetic Exception: \"%1$s\"</string>
+
+    <string name="PluginCallException">When calling Function or Procedure \"%1$s\", the following java exception: \"%2$s\"</string>
+
+    <string name="DiskReadErrorException">An error occurred when reading from disk. Typically happens when you try to read past the end of a file.</string>
+    <string name="FileNotAssignException">This is reported by Reset, Rewrite, Append, Rename and Erase, if you call them with an unassigned file as a parameter.</string>
+    <string name="FileNotFoundException">Reported when trying to erase, rename or open a non-existent file.</string>
+    <string name="FileNotOpenException">Reported by the following functions : Close, Read, Write, Seek, EOf, FilePos, FileSize, Flush, BlockRead, and BlockWrite if the file is not open.</string>
+    <string name="FileNotOpenForInputException">Reported by Read, BlockRead, Eof, Eoln, SeekEof or SeekEoln if the file is not opened with Reset.</string>
+
+    <string name="DivisionByZeroException">The application attempted to divide a number by zero.</string>
+    <string name="CanNotReadVariableException">Can not read variable of this type</string>
+
+    <string name="InvalidNumericFormatException">Reported when a non-numeric value is read from a text file, and a numeric value was expected.</string>
+    <string name="NonIntegerException">Value must be integers: \"%1$s\"</string>
+    <string name="ChangeValueConstantException">The value stored in a constant cannot be changed.</string>
+    <string name="token_not_belong">The following name doesn\'t belong here: </string>
+    <string name="SubRangeException">Upper bound of range is less than lower bound.\n
+        Current lower is \"%1$s\" and upper is \"%2$s\"</string>
+    <string name="MissingSemicolonTokenException">Missing semicolon (;) token near line \"%1$s\"</string>
+    <string name="MissingCommaTokenException">Missing comma (,) token near line \"%1$s\"</string>
+    <string name="StrayCharacterException">Stray character in program: \"%1$s\"</string>
+    <string name="StackOverflowException">Stack overflow error.</string>
+    <string name="UnConvertibleTypeException">The expression or variable \"%1$s\" is of type \"%2$s\" which cannot be convert to the type \"%3$s\"</string>
+    <string name="WrongIfElseStatement">WRONG IF ELSE STATEMENT\n\n
+        Syntax: "if condition then S1 else S2;" \n\n
+        Where, S1 and S2 are different statements. Please note that the statement S1 is not followed by a "semicolon" (;).</string>
+    <string name="UnConvertibleTypeException2">The expression or variable \"%1$s\" is of type \"%2$s\" which cannot be convert to the type \"%3$s\" of expression or variable \"%4$s\"</string>
+
+</resources>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txt_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center|start"
+                android:layout_toLeftOf="@+id/img_play"
+                android:padding="4dp"
+                android:text="code sample"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/img_edit"
+                android:layout_toStartOf="@+id/img_edit"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/run"
+                android:padding="4dp"
+                android:src="@drawable/ic_play_arrow_white_24dp" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/img_copy"
+                android:layout_toStartOf="@+id/img_copy"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/edit"
+                android:padding="4dp"
+                android:src="@drawable/ic_mode_edit_white_24dp" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_copy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/copy"
+                android:padding="4dp"
+                android:src="@drawable/ic_content_copy_white_24dp" />
+
+        </RelativeLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
+
+            <com.duy.pascal.frontend.editor.view.EditorView
+                android:id="@+id/editor_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:editable="false"
+                android:focusableInTouchMode="false"
+                android:foreground="?attr/selectableItemBackground" />
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

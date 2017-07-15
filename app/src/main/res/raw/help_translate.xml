@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<help_translate>
+    <user
+        name="Trần Lê Duy"
+        code="vi"
+        image=""
+        lang="Tiếng Việt"
+        link="https://www.facebook.com/leduycs"
+        mail="tranleduy1233@gmail.com" />
+
+    <user
+        name="Nikita Merkuryev"
+        code="ru"
+        image=""
+        lang="Pусский"
+        link="https://vk.com/n1k1ta13"
+        mail="bagbooms@gmail.com" />
+
+    <user
+        name="Franco Rossi"
+        code="es"
+        image=""
+        lang="Spanish"
+        link=""
+        mail="francorossia@gmail.com" />
+    <user
+        name="Marek Michalovič"
+        code="cs"
+        image=""
+        lang="Čeština"
+        link=""
+        mail="marek14michalovic@gmail.com" />
+    <user
+        name="Marek Michalovič"
+        code="sk"
+        image=""
+        lang="Slovenčina"
+        link=""
+        mail="marek14michalovic@gmail.com" />
+    <user
+        name="Whale Majda"
+        code="zh-rCN"
+        image=""
+        lang="Chinese-Simplified"
+        link=""
+        mail="wsxhzgd@gmail.com" />
+
+
+</help_translate>

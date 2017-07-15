@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+
+    <string name="cancel">Zrušiť</string>
+    <string name="save">Uložiť</string>
+    <string name="ok">OK</string>
+    <string name="new_file">Nový zdrojový súbor</string>
+    <string name="default_">Systém</string>
+    <string name="language">Jazyk</string>
+    <string name="run">Spustiť</string>
+    <string name="navigation_drawer_open">Otvoriť navigáciu</string>
+    <string name="navigation_drawer_close">Zatvoriť navigáciu</string>
+    <string name="close">Zatvoriť</string>
+    <string name="rate">Ohodnotiť aplikáciu</string>
+    <string name="more_app">Ďalšie aplikácie</string>
+    <string name="compile_error">Chyba pri kompilácii</string>
+    <string name="setting">Nastavenia</string>
+    <string name="document">Zobraziť dokument</string>
+    <string name="code_sample">Ukážky kódu</string>
+    <string name="title_activity_code_sample">Ukážky kódu</string>
+    <string name="edit">Upraviť</string>
+    <string name="copy">Kopírovať</string>
+    <string name="save_as">Uložiť ako</string>
+    <string name="enter_new_file_name">Zadajte názov nového súboru</string>
+    <string name="path">"Cesta: "</string>
+    <string name="extension">Extension:</string>
+    <string name="readable">"Čitateľné: "</string>
+    <string name="writeable">"Zapisovateľné: "</string>
+    <string name="remove_file_msg">"Chcete odstrániť súbor "</string>
+    <string name="delete_file">Odstrániť súbor</string>
+    <string name="deleted">Odstránené</string>
+    <string name="failed">Neúspešné</string>
+    <string name="compile_ok">Kompilácia úspešná</string>
+    <string name="code_editor">Editor kódu</string>
+    <string name="word_wrap">Wrap content</string>
+    <string name="font_z">Veľkosť písma</string>
+    <string name="font">Písmo</string>
+    <string name="user_interface">Užívateľské rozhranie</string>
+    <string name="show_line">Zobraziť číslo riadku</string>
+    <string name="find">Nájsť</string>
+    <string name="find_replace">Nájsť a nahradiť</string>
+    <string name="tool">Nástroj</string>
+    <string name="find_what">Čo nájsť?</string>
+    <string name="replace_with">Nahradiť čím</string>
+    <string name="replace">Nahradiť</string>
+    <string name="match_case">Match case</string>
+    <string name="regex">Regulárny výraz</string>
+    <string name="word_only">Len slovo</string>
+    <string name="auto_save">Automatické uloženie</string>
+    <string name="goto_line">Ísť na riadok</string>
+    <string name="format_code">Formátovať kód</string>
+    <string name="information">Informácie</string>
+    <string name="report_bug">Nahlásiť bug</string>
+    <string name="check_update">Vyhľadať aktualizácie</string>
+    <string name="email">Email</string>
+    <string name="describe_causes_an_error">Opíšte dôvody chyby (v Anglickom jazyku prosím)</string>
+    <string name="bug">Bug</string>
+    <string name="word_wrap_desc">Automatic screen down the line when overflow</string>
+    <string name="show_line_desc">Zobrazovať čísla riadkov naľavo od editora kódu</string>
+    <string name="hide_status_bar">Skryť stavový riadok</string>
+    <string name="hide_status_bar_desc">Skryť stavový riadok v celej aplikácii vrátane konzole. Ak toto nastavenie potrebujete zmeniť, reštartujte aplikáciu.</string>
+    <string name="show_suggest_popup">Zobrazovať návrhy</string>
+    <string name="show_hint_desc">Zobrazovať návrhy pri písaní</string>
+    <string name="compile">Kompilovať</string>
+    <string name="file">Súbor</string>
+    <string name="change_lang_msg">Pre zmenu jazyka reštartujte aplikáciu.</string>
+    <string name="data">Dáta</string>
+    <string name="show_key_board">Zobraziť klávesnicu</string>
+    <string name="undo">Vrátiť späť</string>
+    <string name="redo">Znova vykonať</string>
+    <string name="paste">Vložiť</string>
+    <string name="copy_all">Skopírovať všetko</string>
+    <string name="pascal_for_android">Pascal pre Android</string>
+    <string name="exit">Opustiť</string>
+    <string name="exit_mgs">Naozaj chcete opustiť aplikáciu?</string>
+    <string name="setting_editor">Úprava nastavení</string>
+    <string name="cloud_database">Cloud databáza</string>
+    <string name="pas_file">Súbor Pas (*.pas)</string>
+    <string name="inp_file">Súbor Inp (*.inp)</string>
+    <string name="theme">Štýl kódu</string>
+    <string name="select">Vybrať</string>
+    <string name="folder">Priečinok</string>
+    <string name="home">domov</string>
+    <string name="new_folder">Nový priečinok</string>
+    <string name="enter_new_folder_name">Názov priečinku</string>
+    <string name="change_key_board">Zmeniť klávesnicu</string>
+    <string name="cant_undo">Nie je možné vrátiť späť</string>
+    <string name="cant_redo">Nie je možné znova vykonať</string>
+    <string name="back_to_undo">Stlačte späť pre vrátenie úpravy späť</string>
+    <string name="more_feature">Zobraziť viac</string>
+    <string name="cant_close_file">Nie je možné zatvoriť súbor</string>
+    <string name="closed">Zatvorené</string>
+    <string name="complete">Dokončené</string>
+    <string name="view_console">Zobraziť konzolu</string>
+    <string name="resume_program">Obnoviť program</string>
+    <string name="help_me_translate">Pomôžte mi preložiť aplikáciu</string>
+    <string name="your_name">Vaše meno</string>
+    <string name="send_to_me">Odoslať vývojárovi</string>
+    <string name="rerun">Znova spustiť program</string>
+    <string name="translate">Preložiť</string>
+    <string name="license">Licencia</string>
+    <string name="console_screen">Konzola</string>
+    <string name="background_console">Pozadie konzole</string>
+    <string name="text_color_console">Farba textu v konzole</string>
+    <string name="frame_rate">Snímky za sekundu</string>
+    <string name="max_buffer">Maximálna veľkosť vyrovnávacej pamäte</string>
+    <string name="write_code_here">Sem môžete písať kód…</string>
+    <string name="can_not_save_file">Nie je možné uložiť súbor!</string>
+    <string name="saved">Uložené</string>
+    <string name="file_exist">Súbor už existuje, zadajte prosím iný názov!</string>
+    <string name="send_mail">Poslať mail…</string>
+    <string name="no_mail_clients">Nie je nainštalovaný žiaden e-mailový klient.</string>
+    <string name="your_language">Váš jazyk</string>
+    <!--<string name="EspressoLibre">Espresso Libre</string>-->
+    <!--<string name="Idel">Idel</string>-->
+    <!--<string name="KFT2">KFT2</string>-->
+    <!--<string name="Modnokai_Coffee">Modnokai Coffee</string>-->
+    <!--<string name="BrightYellow">Bright Yellow</string>-->
+    <!--<string name="DarkGray">Dark Gray</string>-->
+    <string name="other">Ostatné</string>
+    <string name="logo">Logo</string>
+
+    <string name="auto_compile">Auto compile</string>
+    <string name="auto_compile_summary">Automatically compile while typing. The performance of the application will be decrease if using this feature, however, which will help us to report the error faster.</string>
+    <string name="keyboard_shortcut">Key board shortcut</string>
+    <string name="program_structure">Show program structure</string>
+    <string name="show_symbol">List symbols</string>
+    <string name="show_symbol_decs">Show list symbol below the editor.</string>
+    <string name="add_watch">Add watch</string>
+    <string name="debug">Debug program</string>
+    <string name="var_name">Variable name</string>
+    <string name="program_stopped">Program is stopped</string>
+    <string name="no_document">No document</string>
+    <string name="implicitly">implicitly</string>
+    <string name="max_page">Max page</string>
+    <string name="max_page_desc">Number of maximum page display on the screen</string>
+    <string name="enter_key_word">Enter your keyword…</string>
+    <string name="blog">Blog of Pascal N-IDE</string>
+    <string name="title_activity_zxing">ZxingActivity</string>
+    <string name="turn_off_flashlight">Turn off flashlight</string>
+    <string name="turn_on_flashlight">Turn on flashlight</string>
+    <string name="insert_url_media">Insert url media</string>
+    <string name="open_file">Open file</string>
+    <string name="see_in_github">See project in github https://github.com/tranleduy2000/pascalnide</string>
+    <string name="max_history_edit_desc">The maximum number of steps can be undo redo</string>
+    <string name="max_history_edit">Max history edit</string>
+    <string name="copied">Copied</string>
+    <string name="stack_size">Stack size</string>
+    <string name="stack_size_desc">Maximum stack size when running the program. On some devices, this parameter has no effect. The default is 40000. Minimum is 5000</string>
+    <string name="create_shortcut_msg">Select file to create shortcut</string>
+    <string name="do_you_want_to_create_your_theme">Do you want to create your theme?</string>
+    <string name="create_shortcut">Create shortcut</string>
+    <string name="get_pro_version">Get Pro Version</string>
+    <string name="shortcut_created">Shortcut created</string>
+    <string name="theme_font">Code theme and font</string>
+    <string name="content">Content</string>
+    <string name="insert_color">Insert color</string>
+    <string name="see_in_github_2">See in Github</string>
+    <string name="sort_date">Sort by date…</string>
+    <string name="sort_name">Sort by name…</string>
+    <string name="sort_size">Sort by size…</string>
+    <string name="unit_file">Unit pascal (*.pas)</string>
+    <string name="permission_denied_storage">Permission denied to read your External storage</string>
+    <string name="inserted_color">Inserted color</string>
+    <string name="what_expect">What do you expect?</string>
+    <string name="declare_variable">Declare variable</string>
+    <string name="declare_constant">Declare constant</string>
+    <string name="auto_fix">Auto fix</string>
+    <string name="declare_function">Declare function</string>
+    <string name="can_not_exec_unit">Can not executing unit</string>
+    <string name="select_token">Select mode</string>
+    <string name="select_mode">Select mode</string>
+    <string name="insert">Insert</string>
+    <string name="enable_ime_keyboard">Enable IME keyboard</string>
+    <string name="call_stack">Call stack</string>
+    <string name="frames">Frames</string>
+    <string name="variables">Variables</string>
+    <string name="step_info">Step info</string>
+    <string name="step_over">Step over</string>
+    <string name="bg_color">Background Color</string>
+    <string name="compiler">Compiler</string>
+    <string name="console_screen_">Console screen</string>
+    <string name="ctrl_key">Ctrl Key</string>
+    <string name="def_bg_color">Default background color</string>
+    <string name="default_text_color">Default text color</string>
+    <string name="draw_screen_faster">Draw screen faster</string>
+    <string name="ime_desc">Allows your keyboard to show hints.</string>
+    <string name="keyboard">Keyboard</string>
+    <string name="maxline_console_desc">The maximum number of lines that the console will store, the larger the number of lines will need more memory.</string>
+    <string name="notifications">Notifications</string>
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="system_interface">System interface</string>
+    <string name="text_color">Text Color</string>
+    <string name="anti_alias">Anti-alias</string>
+    <string name="anti_alias_summary">Smooths out jagged graphics</string>
+    <string name="console_font_size">Console font size</string>
+    <string name="hardware_acceleration">Hardware acceleration</string>
+    <string name="tab_width">Tab width (space)</string>
+
+    <!--Donate-->
+    <string name="pirated">Vyzerá to že darcovská aplikácia nebola zakúpená cez obchod Google Play. Ak si ju \"upirátil\" hanbi sa!</string>
+    <string name="donate">Príspieť</string>
+    <string name="donate_summary">Táto funkcia je dostupná len s darcovskou verziou aplikácie. Ale nebojte sa. Pretože táto aplikácia je open source, môžete si ju vyrobiť sami a odstrániť tak tento baner. Ale dúfam, že aj tak podporíte vývojárov. Ďakujem, že používate Pascal N-IDE! Keď ste si kúpili verziu pre darcov, musíte reštartovať aplikáciu aby sa zmeny prejavili.</string>
+    <string name="donate_nope">Takému podvodu nepodľahnem!</string>
+    <string name="donate_yes">Milujem túto aplikáciu. Musím si ju kúpiť!</string>
+    <string name="editor_font">Editor font</string>
+    <string name="license_invalid">Thanks for purchasing the donation app! Unfortunately license check failed. Please try again later. If it\'s still not working, please contact me. You need internet access!</string>
+    <string name="unknown">Unknown</string>
+    <string name="more_font">Get more font</string>
+    <string name="console_font">Console font</string>
+    <string name="create_new_theme">Create new theme</string>
+    <string name="custom_theme">Custom theme</string>
+    <string name="more_theme">Get premium version. Create your custom theme!</string>
+    <string name="save_and_apply">Save and apply</string>
+
+
+</resources>
+

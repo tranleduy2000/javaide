@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2008 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Key Press Actions">
+
+        <ListPreference
+                android:key="vibrate"
+                android:defaultValue="1"
+                android:title="Vibrate"
+                android:summary="Vibrate on key press"
+                android:entries="@array/entries_yesno"
+                android:entryValues="@array/entryvalues_yesno"
+                android:dialogTitle="Vibrate" />
+
+        <ListPreference
+                android:key="keyclick"
+                android:defaultValue="0"
+                android:title="Sound"
+                android:summary="Play a click on key press"
+                android:entries="@array/entries_yesno"
+                android:entryValues="@array/entryvalues_yesno"
+                android:dialogTitle="Sound" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Keyboard Size Portrait">
+
+        <ListPreference
+                android:key="keyboard-port-size"
+                android:defaultValue="0"
+                android:title="Keyboard portrait type"
+                android:summary="Full or mini keyboard in portrait mode"
+                android:entries="@array/entries_keyboard_size"
+                android:entryValues="@array/entryvalues_keyboard_size"
+                android:dialogTitle="Portrait Keyboard" />
+
+        <ListPreference
+                android:key="keyboard-port-keyheight"
+                android:defaultValue="1"
+                android:title="Keyboard portrait height"
+                android:summary="The height of the keyboard in portrait mode"
+                android:entries="@array/entries_keyboard_keyheight"
+                android:entryValues="@array/entryvalues_keyboard_keyheight"
+                android:dialogTitle="Portrait Height" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Keyboard Size Landscape">
+
+        <ListPreference
+                android:key="keyboard-land-size"
+                android:defaultValue="1"
+                android:title="Keyboard landscape type"
+                android:summary="Full or mini keyboard in landscape mode"
+                android:entries="@array/entries_keyboard_size"
+                android:entryValues="@array/entryvalues_keyboard_size"
+                android:dialogTitle="Landscape Keyboard" />
+
+         <ListPreference
+                android:key="keyboard-land-keyheight"
+                android:defaultValue="1"
+                android:title="Keyboard landscape height"
+                android:summary="The height of the keyboard in landscape mode"
+                android:entries="@array/entries_keyboard_keyheight"
+                android:entryValues="@array/entryvalues_keyboard_keyheight"
+                android:dialogTitle="Landscape Height" />
+
+    </PreferenceCategory>
+    
+</PreferenceScreen>

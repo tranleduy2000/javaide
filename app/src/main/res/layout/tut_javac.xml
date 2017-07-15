@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="Javac, java, dx"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+                "javac.\n
+\n
+Terminal IDE comes with a complete Java / Android development kit, and has a very powerful and java optimised editor - vim.\n
+\n
+A set of sample applications can be found in ~/system/src. I strongly recommend
+you read the \'Tutorial\' help through to the end. It will show you what you
+need to know.\n
+\n
+vim has been specifically configured for java!\n
+\n
+Know that these features are supported :-\n
+     -Full syntax highlighting - of numerous languages\n
+     -Auto popup completion of files, words and syntax of numerous languages\n
+     -Java-Completion - in vim insert mode , CTRL-X CTRL-U\n
+     -One button Compile [F7] - check ~/.vimrc\n
+     -List of errors on compilation and ability to jump through them [F8][[F9]\n
+     -Left pane file-browser - the vim NERDTree plugin\n
+     -Lots more..\n
+\n
+Compiling for Android is a little different, as after the normal javac compile, classes
+need to be converted to the \'dex\' format Android\'s dalvikVM requires.\n
+\n
+Also - \'aapt\' and \'apkbuilder\' are required to build the resources and final .apk file.\n
+\n
+All of this is provided..\n
+\n
+Android has a Java VM but it is called Dalvik. It needs to be called in a special way
+to enable you to run java applications from the command line. (Especially as a non-root user!)
+All this has been fixed and now works. Voila.\n
+\n
+Review the build scripts used in the
+samples to see how all the different apps are pieced together.\n
+\n
+"/>
+
+    </ScrollView>
+
+</LinearLayout>

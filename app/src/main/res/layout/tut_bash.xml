@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/help_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="Bash 4.2"
+        android:textSize="22dip"/>
+
+    <ScrollView
+        android:id="@+id/help_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/mixer_deck1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text=
+
+                "The command line. THIS is where all the real action takes place.\n
+\n
+Once you are used to using the command line, nothing comes close to the speed and power it offers.\n
+\n
+Here are some of bash's features\n
+\n
+Edit your settings in the ~/.bashrc file : \n
+\n
+# vim ~/.bashrc\n
+\n
+UP / DOWN - shows your history. Very handy.\n
+\n
+Tab Completion - single TAB to complete or double TAB to show all the available options.\n
+\n
+Change your prompt with > export PS1=#\n
+\n
+Ctrl-c       CANCEL current process\n
+\n
+Search for the last time you used a function..\n
+Ctrl-r       REVERSE search\n
+\n
+Show the keys actually being sent to bash\n
+Ctrl-v       VIEW next key combo\n
+\n
+Undo all changes to the current line. (When you scroll up through the histroy, if you make changes)\n
+Alt-r       REVERT to original line\n
+\n
+Some other shortcuts :-\n
+\n
+Ctrl-l      Clear the screen leaving the current line at the top of the screen.\n
+Ctrl-u       Delete from the cursor to the beginning of the line.\n
+Ctrl-k       Delete from the cursor to the end of the line.\n
+Ctrl-w       Delete from the cursor to the start of the word.\n
+Ctrl-b       Move back one character.\n
+Alt-b        Move back one word.\n
+Ctrl-a       Move to the start of the line.\n
+Ctrl-e       Move to the end of the line.\n
+Ctrl-f       Move forward one character.\n
+Alt-f        Move forward one word.\n
+Alt-] x      Where x is any character, moves the cursor forward to the next occurance of x.\n
+Ctrl-y       Pastes text from the clipboard.\n
+\n
+"/>
+
+    </ScrollView>
+
+</LinearLayout>

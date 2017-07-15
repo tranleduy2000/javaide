@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item android:title="@string/data">
+        <menu>
+
+            <item
+                android:id="@+id/action_translate"
+                android:enabled="true"
+                android:icon="@drawable/ic_language_white_24dp"
+                android:title="@string/help_me_translate"
+                app:showAsAction="ifRoom"/>
+
+            <item
+                android:enabled="false"
+                android:icon="@drawable/ic_cloud_white_24dp"
+                android:title="@string/cloud_database">
+
+            </item>
+            <item
+                android:id="@+id/action_got_to_blog"
+                android:enabled="true"
+                android:icon="@drawable/ic_web_white_24dp"
+                android:title="@string/blog"
+                android:visible="false">
+
+            </item>
+            <item
+                android:id="@+id/action_doc"
+                android:enabled="false"
+                android:icon="@drawable/ic_info_white_24dp"
+                android:title="@string/document"
+                app:showAsAction="ifRoom"/>
+
+            <item
+                android:id="@+id/action_code_sample"
+                android:icon="@drawable/ic_code_white_24dp"
+                android:title="@string/code_sample"
+                app:showAsAction="ifRoom"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/code_editor">
+        <menu>
+            <item
+                android:id="@+id/action_select_theme"
+                android:icon="@drawable/ic_color_lens_white_24dp"
+                android:title="@string/theme_font"/>
+
+            <item
+                android:id="@+id/action_setting"
+                android:enabled="true"
+                android:icon="@drawable/ic_settings_white_24dp"
+                android:title="@string/setting"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/information">
+
+        <menu>
+            <item
+                android:id="@+id/action_donate"
+                android:icon="@drawable/ic_donate_white"
+                android:title="@string/donate"/>
+            <item
+                android:id="@+id/action_report_bug"
+                android:icon="@drawable/ic_bug_report_white_24dp"
+                android:title="@string/report_bug"/>
+
+            <item
+                android:id="@+id/action_info"
+                android:icon="@drawable/ic_info_white_24dp"
+                android:title="@string/information"/>
+
+            <item
+                android:id="@+id/action_rate"
+                android:icon="@drawable/ic_stars_white_18dp"
+                android:title="@string/rate"
+                app:showAsAction="ifRoom"/>
+            <item
+                android:id="@+id/action_more_app"
+                android:icon="@drawable/ic_play_store"
+                android:title="@string/more_app"
+                app:showAsAction="ifRoom"/>
+        </menu>
+    </item>
+</menu>

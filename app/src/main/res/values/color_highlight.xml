@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <declare-styleable name="CodeTheme">
+        <attr name="key_word_color" format="color" />
+        <attr name="comment_color" format="color" />
+        <attr name="error_color" format="color" />
+        <attr name="number_color" format="color" />
+        <attr name="string_color" format="color" />
+        <attr name="boolean_color" format="color" />
+        <attr name="background_color" format="color" />
+        <attr name="opt_color" format="color" />
+        <attr name="normal_text_color" format="color" />
+        <attr name="can_edit" format="boolean" />
+    </declare-styleable>
+
+    <style name="CodeTheme.BrightYellow">
+        <item name="key_word_color">#0000B2</item>
+        <item name="comment_color">#9E9E9E</item>
+        <item name="error_color">#00F600</item>
+        <item name="number_color">#F000EB</item>
+        <item name="string_color">#009B2D</item>
+        <item name="boolean_color">#0000B2</item>
+        <item name="background_color">#F4F4C7</item>
+        <item name="opt_color">#FF0000</item>
+        <item name="normal_text_color">#000000</item>
+    </style>
+
+    <style name="CodeTheme.DarkGray">
+        <item name="key_word_color">#8CC4FF</item>
+        <item name="comment_color">#BEBEE6</item>
+        <item name="error_color">#408080</item>
+        <item name="number_color">#EB8EFF</item>
+        <item name="string_color">#FF8015</item>
+        <item name="boolean_color">#8CC4FF</item>
+        <item name="background_color">#2A3836</item>
+        <item name="opt_color">#FF1C63</item>
+        <item name="normal_text_color">#ffffff</item>
+
+    </style>
+
+    <style name="CodeTheme.EspressoLibre">
+        <item name="key_word_color">#3BA8ED</item>
+        <item name="comment_color">#2257FF</item>
+        <item name="error_color">#FFFFA0</item>
+        <item name="number_color">#3DAA42</item>
+        <item name="string_color">#008215</item>
+        <item name="boolean_color">#3BA8ED</item>
+        <item name="background_color">#281F1B</item>
+        <item name="opt_color">#6578B9</item>
+        <item name="normal_text_color">#B87059</item>
+    </style>
+
+    <style name="CodeTheme.Idel">
+        <item name="key_word_color">#FC8040</item>
+        <item name="comment_color">#8787B5</item>
+        <item name="error_color">#00FF00</item>
+        <item name="number_color">#F200F0</item>
+        <item name="string_color">#009B2D</item>
+        <item name="boolean_color">#3BA8ED</item>
+        <item name="background_color">#F5F5F5</item>
+        <item name="opt_color">#FC0000</item>
+        <item name="normal_text_color">#000000</item>
+    </style>
+
+    <style name="CodeTheme.KFT2">
+        <item name="key_word_color">#3F76FF</item>
+        <item name="comment_color">#008080</item>
+        <item name="error_color">#FFFFA0</item>
+        <item name="number_color">#FFF100</item>
+        <item name="string_color">#9EABAB</item>
+        <item name="boolean_color">#3BA8ED</item>
+        <item name="background_color">#1C0024</item>
+        <item name="opt_color">#FF00CE</item>
+        <item name="normal_text_color">#5DFF69</item>
+    </style>
+
+    <style name="CodeTheme.ModnokaiCoffee">
+        <item name="key_word_color">#28f29d</item>
+        <item name="comment_color">#726c51</item>
+        <item name="error_color">#3f3e33</item>
+        <item name="number_color">#f8817a</item>
+        <item name="string_color">#da9908</item>
+        <item name="boolean_color">#28f29d</item>
+        <item name="background_color">#292a24</item>
+        <item name="opt_color">#95e22d</item>
+        <item name="normal_text_color">#ffffff</item>
+    </style>
+
+    <style name="CodeTheme">
+        <item name="key_word_color">#60d9f1</item>
+        <item name="comment_color">#766c4a</item>
+        <item name="error_color">#63029f</item>
+        <item name="number_color">#af7eff</item>
+        <item name="string_color">#e6dc6e</item>
+        <item name="boolean_color">#60d9f1</item>
+        <item name="background_color">#282b2d</item>
+        <item name="opt_color">#fc216e</item>
+        <item name="normal_text_color">#ffffff</item>
+    </style>
+
+    <style name="CodeTheme.TMP">
+        <item name="key_word_color">#9F4A42</item>
+        <item name="comment_color">#8C6969</item>
+        <item name="error_color">#d50000</item>
+        <item name="number_color">#FFB2B2</item>
+        <item name="string_color">#BA944C</item>
+        <item name="boolean_color">#60d9f1</item>
+        <item name="background_color">#140A0A</item>
+        <item name="opt_color">#fc216e</item>
+        <item name="normal_text_color">#FFFFFF</item>
+    </style>
+
+    <string-array name="code_themes">
+        <item>@string/default_theme</item>
+        <item>@string/BrightYellow</item>
+        <item>@string/DarkGray</item>
+        <item>@string/EspressoLibre</item>
+        <item>@string/Idel</item>
+        <item>@string/KFT2</item>
+        <item>@string/Modnokai_Coffee</item>
+    </string-array>
+
+    <string name="default_theme" translatable="false">DPascal</string>
+    <string name="BrightYellow" translatable="false">Bright Yellow</string>
+    <string name="DarkGray" translatable="false">Dark Gray</string>
+    <string name="EspressoLibre" translatable="false">Espresso Libre</string>
+    <string name="Idel" translatable="false">Idel</string>
+    <string name="KFT2" translatable="false">KFT2</string>
+    <string name="Modnokai_Coffee" translatable="false">Modnokai Coffee</string>
+
+    <color name="color.key_word_color">#60d9f1</color>
+    <color name="color.comment_color">#766c4a</color>
+    <color name="color.error_color">#96b71c1c</color>
+    <color name="color.number_color">#af7eff</color>
+    <color name="color.string_color">#e6dc6e</color>
+    <color name="color.boolean_color">#60d9f1</color>
+    <color name="color.background_color">#282b2d</color>
+    <color name="color.opt_color">#fc216e</color>
+    <color name="color.normal_text_color">#ffffff</color>
+</resources>

@@ -21,6 +21,7 @@ import android.content.Intent;
 
 import com.duy.editor.debug.activities.DebugActivity;
 import com.duy.editor.editor.EditorActivity;
+import com.duy.editor.project_files.ProjectFile;
 import com.spartacusrex.spartacuside.TerminalActivity;
 
 /**
@@ -34,6 +35,7 @@ public class CompileManager {
     public static final String INITIAL_POS = "initial_pos";
     public static final int ACTIVITY_EDITOR = 1001;
     public static final String MODE = "run_mode";
+    public static final String PROJECT_FILE = "project_file";
     private final Activity mActivity;
 
     public CompileManager(Activity activity) {
@@ -54,9 +56,9 @@ public class CompileManager {
     }
 
     // Execute compiled file
-    public void execute(String name) {
+    public void execute(ProjectFile projectFile) {
         Intent intent = new Intent(mActivity, TerminalActivity.class);
-        intent.putExtra(FILE_PATH, name);
+        intent.putExtra(PROJECT_FILE, projectFile);
         mActivity.startActivity(intent);
     }
 

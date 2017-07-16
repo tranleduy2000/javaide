@@ -170,8 +170,9 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public void runProgram() {
-        if (doCompile()) mCompileManager.execute(getCurrentFilePath());
+        mCompileManager.execute(projectFile);
     }
+
 
     @Override
     public boolean isAutoSave() {

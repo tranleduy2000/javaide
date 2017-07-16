@@ -3,7 +3,7 @@ cd ~/system/src/demo_console/
 
 #Clean up
 rm -rf build/*
-rm -rf dist/*
+rm -rf bin/*
 
 #First cd into the src dir
 cd src
@@ -24,3 +24,9 @@ dx --dex --verbose --no-strict --output=../dist/demo_console.dex.jar org
 
 #Back out
 cd ..
+
+javac -verbose -d ../../../build/ com/duy/Main.java
+dx --dex --verbose --no-strict --output=../dist/demo_console.dex.jar org
+
+cd ../../
+cd build

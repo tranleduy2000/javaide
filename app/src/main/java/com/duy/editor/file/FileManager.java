@@ -52,8 +52,7 @@ public class FileManager {
      * storage path for saveFile code
      */
     public static final String EXTERNAL_DIR_SRC = Environment.getExternalStorageDirectory() + "/JavaNIDE/src/";
-    public static final String EXTERNAL_DIR = Environment.getExternalStorageDirectory() + "/JavaNID/";
-    private final String TAG = FileManager.class.getSimpleName();
+    public static final String EXTERNAL_DIR = Environment.getExternalStorageDirectory() + "/JavaNIDE/";
     private final String FILE_TEMP_NAME = "tmp.pas";
     private int mode = SAVE_MODE.EXTERNAL;
     private Context context;
@@ -260,7 +259,7 @@ public class FileManager {
      *
      * @param file
      */
-    public static void saveFile(File file, String text) {
+    public static void saveFile(@NonNull File file, String text) {
         try {
             FileOutputStream out = new FileOutputStream(file);
             if (text.length() > 0) out.write(text.getBytes());
@@ -275,7 +274,7 @@ public class FileManager {
      * @param filePath - name of file
      * @param text     - content of file
      */
-    public boolean saveFile(@NonNull String filePath, String text) {
+    public static boolean saveFile(@NonNull String filePath, String text) {
         try {
             File file = new File(filePath);
             if (!file.exists()) {

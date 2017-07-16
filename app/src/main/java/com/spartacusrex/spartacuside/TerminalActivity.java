@@ -47,6 +47,7 @@ import android.widget.Toast;
 
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
+import com.duy.editor.project_files.ProjectFile;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.TermSettings;
 
@@ -130,46 +131,49 @@ public class TerminalActivity extends Activity {
             updatePrefs();
 
             Intent intent = getIntent();
-            String filePath = intent.getStringExtra(CompileManager.FILE_PATH);
-            if (filePath != null) {
-                compileAndRun(mTermSessions.get(0), filePath);
+            ProjectFile projectFile = (ProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
+            if (projectFile != null) {
+                compileAndRun(mTermSessions.get(0), projectFile);
             }
         }
     }
 
-    private void compileAndRun(TermSession termSession, String filePath) {
-        Log.d(TAG, "compileAndRun() called with: filePath = [" + filePath + "]");
-
+    private void compileAndRun(TermSession termSession, ProjectFile projectFile) {
+        Log.d(TAG, "compileAndRun() called with: filePath = [" + projectFile + "]");
         File home = getFilesDir();
-        File javaFile = new File(filePath);
-        File parent = javaFile.getParentFile();
-        String nameWithoutExtension = javaFile.getName().substring(0, javaFile.getName().indexOf("."));
         try {
             FileOutputStream fos = termSession.getTermOut();
             PrintWriter pw = new PrintWriter(fos);
             pw.println("");
             pw.println("clear"); //clear screen
             pw.println("cd ~"); //go to home
-            pw.println("cd " + parent.getPath()); //move to parent of file
+
+            pw.println("cd " + projectFile.getRootDir());//move to root project
+
+            //create build and bin dir
+            File build = new File(projectFile.getRootDir(), "build");
+            if (!(build.exists())) build.mkdirs();
+            File bin = new File(projectFile.getRootDir(), "bin");
+            if (!(bin.exists())) bin.mkdirs();
 
             //clean up
             pw.println("rm -rf build/*");
-            pw.println("rm -rf dist/*");
+            pw.println("rm -rf bin/*");
 
-            pw.println("cd src");
-            pw.println("echo Compile the java code");
-            pw.println("javac -verbose -cp ..");
+            //cd to src dir
+            pw.println("cd src/java/main");
 
-            pw.println("javac " + javaFile.getName()); //compile java file to java class
-            //convert class to dex
-            pw.println("dx --dex --output=" + nameWithoutExtension + ".jar " + "./" + nameWithoutExtension + ".class");
-            //run jar file
-            pw.println("java -jar " + nameWithoutExtension + ".jar " + nameWithoutExtension);
-            //exec
-            pw.flush();
-//            pw.close();
+            //now compile
+            pw.println("echo Compile java file");
+            pw.println("javac -verbose -d ../../../build/ " + projectFile.getFullMainClassName());
 
-            //Make sure the /tmp folder ALWAYS exists
+            //go to build dir
+            pw.println("cd ../../..build/");
+
+            pw.println("echo Now convert to dex format");
+            pw.println("dx --dex --verbose --no-strict --output=../bin/" + projectFile.getProjectName() + ".jar"
+                    + " " + projectFile.getPackageName().substring(0, projectFile.getPackageName().indexOf(".")));
+
             File temp = new File(home, "tmp");
             if (!temp.exists()) temp.mkdirs();
         } catch (Exception e) {

@@ -53,6 +53,8 @@ import com.duy.editor.file.FileActionListener;
 import com.duy.editor.file.FileManager;
 import com.duy.editor.file.FragmentFileManager;
 import com.duy.editor.file.TabFileUtils;
+import com.duy.editor.project_files.ProjectFile;
+import com.duy.editor.project_files.ProjectManager;
 import com.duy.editor.project_files.fragments.DialogNewProject;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.view.SymbolListView;
@@ -87,6 +89,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
     View mContainerSymbol;
     ViewPager viewPager;
     private KeyBoardEventListener keyBoardListener;
+    private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
+
 
     protected void onShowKeyboard() {
         hideAppBar();
@@ -110,22 +114,20 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         tabLayout.setVisibility(View.VISIBLE);
     }
 
+    protected ProjectFile projectFile;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DLog.d(TAG, "onCreate: ");
-
         setContentView(R.layout.activity_editor);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mKeyList = (SymbolListView) findViewById(R.id.recycler_view);
-        mFileManager = new FileManager(this);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        mContainerSymbol = findViewById(R.id.container_symbol);
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
-        setupToolbar();
-        setupPageView();
+        if (savedInstanceState != null) {
+            this.projectFile = (ProjectFile) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
+        } else {
+            this.projectFile = ProjectManager.getLastProject(this);
+        }
+
+        bindView();
     }
 
     protected void setupPageView() {
@@ -284,6 +286,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
     protected void onPause() {
         super.onPause();
         getPreferences().put(JavaPreferences.TAB_POSITION_FILE, tabLayout.getSelectedTabPosition());
+        ProjectManager.saveProject(this, projectFile);
     }
 
     @Override
@@ -439,6 +442,37 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         }
     }
 
+    private void bindView() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mKeyList = (SymbolListView) findViewById(R.id.recycler_view);
+        mFileManager = new FileManager(this);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        mContainerSymbol = findViewById(R.id.container_symbol);
+        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        setupToolbar();
+        setupPageView();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(KEY_PROJECT_FILE, projectFile);
+    }
+
+
+    @Override
+    public void onProjectCreated(ProjectFile projectFile, File mainClass) {
+        this.projectFile = projectFile;
+        FragmentFileManager fmFile = (FragmentFileManager)
+                getSupportFragmentManager().findFragmentByTag("fragment_file_view");
+        //load project file
+        if (fmFile != null) fmFile.load(mainClass.getParentFile());
+        while (mPageAdapter.getCount() > 0) {
+            removePage(0);
+        }
+        addNewPageEditor(mainClass, true);
+    }
 
     private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {
         BaseEditorActivity activity;
@@ -463,17 +497,5 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
                 activity.onShowKeyboard();
             }
         }
-    }
-
-    @Override
-    public void onProjectCreated(File mainClass) {
-        FragmentFileManager fmFile = (FragmentFileManager)
-                getSupportFragmentManager().findFragmentByTag("fragment_file_view");
-        //load project file
-        if (fmFile != null) fmFile.load(mainClass.getParentFile());
-        while (mPageAdapter.getCount() > 0) {
-            removePage(0);
-        }
-        addNewPageEditor(mainClass, true);
     }
 }

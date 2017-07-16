@@ -137,9 +137,9 @@ public class MenuEditor {
 
                 break;
             case R.id.action_format:
-//                if (listener != null) {
-//                    listener.formatCode();
-//                }
+                if (listener != null) {
+                    listener.formatCode();
+                }
                 break;
             case R.id.action_report_bug:
                 if (listener != null) {

@@ -16,7 +16,10 @@
 
 package com.duy.editor.editor;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -36,7 +39,13 @@ import com.duy.editor.file.FileManager;
 import com.duy.editor.view.LockableScrollView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import net.barenca.jastyle.ASFormatter;
+import net.barenca.jastyle.FormatterHelper;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.Reader;
+import java.io.StringReader;
 
 /**
  * Created by Duy on 15-Mar-17.
@@ -184,18 +193,53 @@ public class EditorFragment extends Fragment implements EditorListener {
         mCodeEditor.goToLine(line);
     }
 
+    private Dialog dialog;
+
     @Override
     public void formatCode() {
-        String text = getCode();
-//        try {
-//            IndentCode autoIndentCode;
-//            autoIndentCode = new IndentCode(new StringReader(text));
-//            StringBuilder result = autoIndentCode.getResult();
-//            mCodeEditor.setTextHighlighted(result);
-//            mCodeEditor.applyTabWidth(mCodeEditor.getText(), 0, mCodeEditor.getText().length());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        new TaskFormatCode().execute(getCode());
+    }
+
+    private void showDialog(String msg) {
+        dismissDialog();
+        ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage(msg);
+        progressDialog.show();
+        this.dialog = progressDialog;
+    }
+
+    private void dismissDialog() {
+        if (dialog != null) {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        }
+    }
+
+    private class TaskFormatCode extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showDialog("Formatting...");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String source = params[0];
+            ASFormatter formatter = new ASFormatter();
+            Reader in = new BufferedReader(new StringReader(source));
+            formatter.setJavaStyle();
+            return FormatterHelper.format(in, formatter);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                mCodeEditor.setTextHighlighted(result);
+            }
+            dismissDialog();
+        }
     }
 
     @Override

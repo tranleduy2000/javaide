@@ -26,7 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duy.editor.R;
-import com.spartacusrex.spartacuside.TermService;
+import com.duy.terminal.TermService;
 import com.spartacusrex.spartacuside.startup.setup.FileManager;
 import com.spartacusrex.spartacuside.startup.tutorial.tutview;
 

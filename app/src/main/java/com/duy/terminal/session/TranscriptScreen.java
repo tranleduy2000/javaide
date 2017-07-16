@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.spartacusrex.spartacuside.session;
+package com.duy.terminal.session;
 
 import android.graphics.Canvas;
 import android.util.Log;
 
-import com.spartacusrex.spartacuside.model.Screen;
-import com.spartacusrex.spartacuside.model.TextRenderer;
+import com.duy.terminal.model.Screen;
+import com.duy.terminal.model.TextRenderer;
 
 /**
  * A TranscriptScreen is a screen that remembers data that's been scrolled. The

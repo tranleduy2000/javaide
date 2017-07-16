@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.spartacusrex.spartacuside;
+package com.duy.terminal;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -48,11 +48,11 @@ import android.view.inputmethod.InputContentInfo;
 import android.view.inputmethod.InputMethodManager;
 
 import com.duy.editor.R;
-import com.spartacusrex.spartacuside.model.TextRenderer;
-import com.spartacusrex.spartacuside.model.UpdateCallback;
-import com.spartacusrex.spartacuside.session.TermSession;
-import com.spartacusrex.spartacuside.session.TerminalEmulator;
-import com.spartacusrex.spartacuside.session.TranscriptScreen;
+import com.duy.terminal.model.TextRenderer;
+import com.duy.terminal.model.UpdateCallback;
+import com.duy.terminal.session.TermSession;
+import com.duy.terminal.session.TerminalEmulator;
+import com.duy.terminal.session.TranscriptScreen;
 import com.spartacusrex.spartacuside.util.TermSettings;
 import com.spartacusrex.spartacuside.util.hardkeymappings;
 

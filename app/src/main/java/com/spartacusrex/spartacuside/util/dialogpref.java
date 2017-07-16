@@ -8,8 +8,8 @@ package com.spartacusrex.spartacuside.util;
 import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.util.Log;
-import com.spartacusrex.spartacuside.TermService;
+
+import com.duy.terminal.TermService;
 
 /**
  * The OptionDialogPreference will display a dialog, and will persist the

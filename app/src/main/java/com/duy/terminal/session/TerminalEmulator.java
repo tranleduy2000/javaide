@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.spartacusrex.spartacuside.session;
+package com.duy.terminal.session;
 
 import android.util.Log;
 
-import com.spartacusrex.spartacuside.TermDebug;
-import com.spartacusrex.spartacuside.model.Screen;
+import com.duy.terminal.TermDebug;
+import com.duy.terminal.model.Screen;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

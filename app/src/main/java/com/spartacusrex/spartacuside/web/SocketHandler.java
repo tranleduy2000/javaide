@@ -24,7 +24,7 @@ import java.util.Date;
  *
  * @author Spartacus Rex
  */
-public class sockethandler implements Runnable {
+public class SocketHandler implements Runnable {
 
     /*
      * Static Variables
@@ -46,13 +46,13 @@ public class sockethandler implements Runnable {
     boolean mRunning;
     Thread  mHandlerThread;
 
-    webserver mServer;
+    WebServer mServer;
 
     public void log(String zLog){
         Log.v("SpartacusRex", "SocketHandler - "+mStartTime+" "+zLog);
     }
 
-    public sockethandler(Socket zSocket, Context zContext, webserver zServer){
+    public SocketHandler(Socket zSocket, Context zContext, WebServer zServer){
         mSocket  = zSocket;
         mContext = zContext;
         mRunning = true;

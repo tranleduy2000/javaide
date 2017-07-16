@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.spartacusrex.spartacuside;
+package com.duy.terminal;
 
 import android.content.Context;
 import android.util.AttributeSet;

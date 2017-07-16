@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.spartacusrex.spartacuside;
+package com.duy.terminal;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -47,7 +47,7 @@ import android.widget.Toast;
 
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
-import com.spartacusrex.spartacuside.session.TermSession;
+import com.duy.terminal.session.TermSession;
 import com.spartacusrex.spartacuside.util.TermSettings;
 
 import java.io.File;

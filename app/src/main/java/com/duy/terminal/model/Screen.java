@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.spartacusrex.spartacuside.model;
+package com.duy.terminal.model;
 
 /**
  * An abstract screen interface. A terminal screen stores lines of text. (The

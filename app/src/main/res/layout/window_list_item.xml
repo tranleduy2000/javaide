@@ -43,7 +43,7 @@
 
     <view
         android:id="@+id/window_list_close"
-        class="com.spartacusrex.spartacuside.WindowList$CloseButton"
+        class="com.duy.terminal.WindowList$CloseButton"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:background="@drawable/close_background"

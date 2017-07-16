@@ -36,7 +36,7 @@ import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.setting.SettingsActivity;
 import com.duy.editor.utils.DonateUtils;
 import com.duy.editor.utils.StoreUtil;
-import com.spartacusrex.spartacuside.TerminalPreferences;
+import com.duy.terminal.TerminalPreferences;
 
 /**
  * Handler for menu click

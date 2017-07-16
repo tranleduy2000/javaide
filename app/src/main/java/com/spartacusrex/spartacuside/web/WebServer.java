@@ -8,7 +8,6 @@ package com.spartacusrex.spartacuside.web;
 import android.content.Context;
 import android.util.Log;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Enumeration;
@@ -19,13 +18,13 @@ import javax.net.ServerSocketFactory;
  *
  * @author Spartacus Rex
  */
-public class webserver implements Runnable{
+public class WebServer implements Runnable{
 
     Thread mMainThread;
     boolean mRunning;
     
     ServerSocket mMainServer;
-    sockethandler mLastHandler;
+    SocketHandler mLastHandler;
     
     Context mContext;
 
@@ -33,7 +32,7 @@ public class webserver implements Runnable{
     boolean mStopMode = false;
 
     
-    public webserver(Context zContext){
+    public WebServer(Context zContext){
         mContext    = zContext;
         mHandlers = new Vector();
         mStopMode = false;
@@ -64,7 +63,7 @@ public class webserver implements Runnable{
 
             //Stop all the socket handlers
             for(Enumeration e=mHandlers.elements();e.hasMoreElements();){
-                sockethandler handler = (sockethandler)e.nextElement();
+                SocketHandler handler = (SocketHandler)e.nextElement();
                 handler.stop();
             }
         }
@@ -92,7 +91,7 @@ public class webserver implements Runnable{
                 if(mLastHandler != null){
                    mLastHandler.stop();
                 }
-                sockethandler handler = new sockethandler(sock,mContext,this);
+                SocketHandler handler = new SocketHandler(sock,mContext,this);
                 mLastHandler = handler;
             
                 //Add to our list
@@ -117,7 +116,7 @@ public class webserver implements Runnable{
         log("Server finished");
     }
 
-    public void sockethandlerFinished(sockethandler zHandler){
+    public void sockethandlerFinished(SocketHandler zHandler){
         if(!mStopMode){
             mHandlers.remove(zHandler);
         }

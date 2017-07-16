@@ -23,8 +23,8 @@ import android.widget.Button;
 
 import com.duy.editor.R;
 import com.duy.editor.editor.EditorActivity;
-import com.spartacusrex.spartacuside.TermService;
-import com.spartacusrex.spartacuside.TerminalActivity;
+import com.duy.terminal.TermService;
+import com.duy.terminal.TerminalActivity;
 import com.spartacusrex.spartacuside.startup.tutorial.tutlist;
 
 /**

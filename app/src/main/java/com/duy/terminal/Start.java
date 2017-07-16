@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.spartacusrex.spartacuside;
+package com.duy.terminal;
 
 import android.os.Build;
 import android.os.Bundle;

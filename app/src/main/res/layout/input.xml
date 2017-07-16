@@ -18,7 +18,7 @@
 */
 -->
 
-<com.spartacusrex.spartacuside.keyboard.LatinKeyboardView
+<com.duy.keyboard.keyboard.LatinKeyboardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/keyboard"
     android:layout_width="fill_parent"

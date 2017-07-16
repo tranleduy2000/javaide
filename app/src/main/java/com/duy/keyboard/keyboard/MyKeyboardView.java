@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.spartacusrex.spartacuside.keyboard;
+package com.duy.keyboard.keyboard;
 
 import android.content.Context;
 import android.graphics.Bitmap;

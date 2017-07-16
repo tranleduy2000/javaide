@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.spartacusrex.spartacuside.keyboard;
+package com.duy.keyboard.keyboard;
 
 import android.content.Context;
 import android.util.Log;

@@ -24,7 +24,7 @@
         </activity>
 
         <activity
-            android:name="com.spartacusrex.spartacuside.Start"
+            android:name="com.duy.terminal.Start"
             android:launchMode="singleTask"/>
 
         <activity
@@ -40,12 +40,12 @@
 
 
         <activity
-            android:name="com.spartacusrex.spartacuside.TerminalActivity"
+            android:name="com.duy.terminal.TerminalActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
 
-        <activity android:name="com.spartacusrex.spartacuside.TerminalPreferences"/>
-        <activity android:name="com.spartacusrex.spartacuside.WindowList"/>
+        <activity android:name="com.duy.terminal.TerminalPreferences"/>
+        <activity android:name="com.duy.terminal.WindowList"/>
 
         <activity android:name="com.spartacusrex.spartacuside.startup.tutorial.tutlist"/>
         <activity android:name="com.spartacusrex.spartacuside.startup.tutorial.vimlist"/>
@@ -60,12 +60,12 @@
 
         <activity android:name="com.spartacusrex.spartacuside.startup.TerminalIDEPrefs"/>
 
-        <activity android:name="com.spartacusrex.spartacuside.keyboard.KeyboardPrefs"/>
+        <activity android:name="com.duy.keyboard.keyboard.KeyboardPrefs"/>
 
-        <service android:name="com.spartacusrex.spartacuside.TermService"/>
+        <service android:name="com.duy.terminal.TermService"/>
 
         <service
-            android:name="com.spartacusrex.spartacuside.keyboard.TerminalKeyboard"
+            android:name="com.duy.keyboard.keyboard.TerminalKeyboard"
             android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod"/>

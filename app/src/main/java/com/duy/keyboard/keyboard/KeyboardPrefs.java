@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.spartacusrex.spartacuside.model;
+package com.duy.keyboard.keyboard;
 
-import android.graphics.Canvas;
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
 
-/**
- * Text renderer interface
- */
+import com.duy.editor.R;
 
-public interface TextRenderer {
-    float getCharacterWidth();
+public class KeyboardPrefs extends PreferenceActivity {
 
-    int getCharacterHeight();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    void drawTextRun(Canvas canvas, float x, float y,
-                     int lineOffset, char[] text,
-                     int index, int count, boolean cursor, int foreColor, int backColor);
+        // Load the preferences from an XML resource
+        addPreferencesFromResource(R.xml.keyboard_prefs);
+    }
 }

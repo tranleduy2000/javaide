@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.spartacusrex.spartacuside.session;
+package com.duy.terminal.session;
 
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.spartacusrex.spartacuside.Exec;
-import com.spartacusrex.spartacuside.TermDebug;
-import com.spartacusrex.spartacuside.model.UpdateCallback;
+import com.duy.terminal.Exec;
+import com.duy.terminal.TermDebug;
+import com.duy.terminal.model.UpdateCallback;
 import com.spartacusrex.spartacuside.util.ByteQueue;
 import com.spartacusrex.spartacuside.util.TermSettings;
 

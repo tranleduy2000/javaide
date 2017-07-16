@@ -71,7 +71,7 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
      */
     public void setDefaultKeyword() {
         ArrayList<InfoItem> data = new ArrayList<>();
-        for (String s : KeyWord.ALL_KEY_WORD) {
+        for (String s : KeyWord.RESERVED_KEY_WORDS) {
             data.add(new InfoItem(StructureType.TYPE_KEY_WORD, s));
         }
         setSuggestData(data);

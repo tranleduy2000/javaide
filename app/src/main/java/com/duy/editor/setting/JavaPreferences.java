@@ -290,7 +290,7 @@ public class JavaPreferences {
 
     public int getMaxPage() {
         int count = getInt(context.getString(R.string.key_max_page));
-        count = Math.min(30, count);
+        count = Math.min(10, count);
         count = Math.max(1, count);
         return count;
     }

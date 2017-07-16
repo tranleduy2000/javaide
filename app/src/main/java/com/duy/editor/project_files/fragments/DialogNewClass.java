@@ -1,6 +1,7 @@
 package com.duy.editor.project_files.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -31,9 +32,10 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     private EditText mEditName;
     private Spinner mKind;
     private RadioGroup mModifiers;
-    private View root;
     @Nullable
     private OnCreateClassListener listener;
+
+    private EditText mPackage;
 
     public static DialogNewClass newInstance(ProjectFile p, String currentPackage) {
         Bundle args = new Bundle();
@@ -60,12 +62,23 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            listener = (OnCreateClassListener) getActivity();
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        root = view;
         mEditName = view.findViewById(R.id.edit_class_name);
         mKind = view.findViewById(R.id.spinner_kind);
         mModifiers = view.findViewById(R.id.modifiers);
+        mPackage = view.findViewById(R.id.edit_package_name);
+        mPackage.setText(getArguments().getString("current_package"));
         view.findViewById(R.id.btn_create).setOnClickListener(this);
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
     }
@@ -99,17 +112,20 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         String content = Template.createJava(className, visibility, modifier);
         Bundle arguments = getArguments();
         ProjectFile project_file = (ProjectFile) arguments.getSerializable("project_file");
-        String currentPackage = arguments.getString("current_package");
+        String currentPackage = mPackage.getText().toString();
         currentPackage = currentPackage.replace(".", "/");
-        File file = new File(project_file.getRootDir(), "src/main/java/" + currentPackage);
-        if (!file.exists()) file.mkdirs();
-        File classf = new File(file, className);
-        FileManager.saveFile(classf, content);
+        File file;
+        if (project_file != null) {
+            file = new File(project_file.getRootDir(), "src/main/java/" + currentPackage);
+            if (!file.exists()) file.mkdirs();
+            File classf = new File(file, className);
+            FileManager.saveFile(classf, content);
 
-        if (listener != null) {
-            listener.onClassCreated(classf);
-            Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();
-            this.dismiss();
+            if (listener != null) {
+                listener.onClassCreated(classf);
+                Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();
+                this.dismiss();
+            }
         }
     }
 

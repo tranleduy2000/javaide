@@ -42,6 +42,6 @@ class SortOnLength implements Serializable,Comparator<String>
 
 	public int compare(String a, String b)
 	{
-		return a.length() - b.length();
+		return -(a.length() - b.length());
 	}
 }

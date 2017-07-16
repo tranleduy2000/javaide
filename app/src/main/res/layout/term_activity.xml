@@ -16,9 +16,9 @@
 */
 -->
 
-<com.duy.terminal.TermViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
-                                  android:id="@+id/view_flipper"
-                                  android:layout_width="fill_parent"
-                                  android:layout_height="fill_parent"
-                                  android:background="@android:color/black"
+<com.spartacusrex.spartacuside.TermViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+                                               android:id="@+id/view_flipper"
+                                               android:layout_width="fill_parent"
+                                               android:layout_height="fill_parent"
+                                               android:background="@android:color/black"
     />

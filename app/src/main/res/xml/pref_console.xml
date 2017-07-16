@@ -30,24 +30,25 @@
                 android:dialogTitle="@string/dialog_title_statusbar_preference" />
 
 
-        <ListPreference
-                android:key="cursorstyle"
-                android:defaultValue="@string/default_value_cursorstyle_preference"
-                android:title="@string/title_cursorstyle_preference"
-                android:summary="@string/summary_cursorstyle_preference"
-                android:entries="@array/entries_cursorstyle_preference"
-                android:entryValues="@array/entryvalues_cursorstyle_preference"
-                android:dialogTitle="@string/dialog_title_cursorstyle_preference" />
+        <!--
+                <ListPreference
+                        android:key="cursorstyle"
+                        android:defaultValue="@string/default_value_cursorstyle_preference"
+                        android:title="@string/title_cursorstyle_preference"
+                        android:summary="@string/summary_cursorstyle_preference"
+                        android:entries="@array/entries_cursorstyle_preference"
+                        android:entryValues="@array/entryvalues_cursorstyle_preference"
+                        android:dialogTitle="@string/dialog_title_cursorstyle_preference" />
 
-        <ListPreference
-                android:key="cursorblink"
-                android:defaultValue="@string/default_value_cursorblink_preference"
-                android:title="@string/title_cursorblink_preference"
-                android:summary="@string/summary_cursorblink_preference"
-                android:entries="@array/entries_cursorblink_preference"
-                android:entryValues="@array/entryvalues_cursorblink_preference"
-                android:dialogTitle="@string/dialog_title_cursorblink_preference" />
-
+                <ListPreference
+                        android:key="cursorblink"
+                        android:defaultValue="@string/default_value_cursorblink_preference"
+                        android:title="@string/title_cursorblink_preference"
+                        android:summary="@string/summary_cursorblink_preference"
+                        android:entries="@array/entries_cursorblink_preference"
+                        android:entryValues="@array/entryvalues_cursorblink_preference"
+                        android:dialogTitle="@string/dialog_title_cursorblink_preference" />
+        -->
 
     </PreferenceCategory>
 

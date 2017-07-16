@@ -89,6 +89,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         builder.create().show();
     }
 
+    @SuppressWarnings("ConstantConditions")
     private class InstallTask extends AsyncTask<Void, String, Boolean> {
 
 
@@ -236,37 +237,23 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         }
 
         private void createLocalFile(File home) {
-
             File local = new File(home, "local");
-            if (!local.exists()) {
-                local.mkdirs();
-            }
+            if (!local.exists()) local.mkdirs();
 
             File bin = new File(local, "bin");
-            if (!bin.exists()) {
-                bin.mkdirs();
-            }
+            if (!bin.exists()) bin.mkdirs();
 
             bin = new File(local, "lib");
-            if (!bin.exists()) {
-                bin.mkdirs();
-            }
+            if (!bin.exists()) bin.mkdirs();
 
             bin = new File(local, "include");
-            if (!bin.exists()) {
-                bin.mkdirs();
-            }
+            if (!bin.exists()) bin.mkdirs();
 
             bin = new File(home, "tmp");
-            if (!bin.exists()) {
-                bin.mkdirs();
-            }
+            if (!bin.exists()) bin.mkdirs();
 
             bin = new File(home, "projects");
-            if (!bin.exists()) {
-                bin.mkdirs();
-            }
-
+            if (!bin.exists()) bin.mkdirs();
         }
 
         @Override

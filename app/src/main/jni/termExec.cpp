@@ -42,12 +42,8 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/wait.h>
-#include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <termios.h>
-#include <signal.h>
 
 static jclass class_fileDescriptor;
 static jfieldID field_fileDescriptor_descriptor;
@@ -134,7 +130,7 @@ static int create_subprocess(const char *cmd, const char *arg0, const char *arg1
 }
 
 
-static jobject android_os_Exec_createSubProcess(JNIEnv *env, jobject clazz,
+static jobject com_duy_terminal_Exec_createSubProcess(JNIEnv *env, jobject clazz,
     jstring cmd, jstring arg0, jstring arg1, jintArray processIdArray)
 {
     const jchar* str = cmd ? env->GetStringCritical(cmd, 0) : 0;
@@ -191,7 +187,7 @@ static jobject android_os_Exec_createSubProcess(JNIEnv *env, jobject clazz,
 }
 
 
-static void android_os_Exec_setPtyWindowSize(JNIEnv *env, jobject clazz,
+static void com_duy_terminal_Exec_setPtyWindowSize(JNIEnv *env, jobject clazz,
     jobject fileDescriptor, jint row, jint col, jint xpixel, jint ypixel)
 {
     int fd;
@@ -211,7 +207,7 @@ static void android_os_Exec_setPtyWindowSize(JNIEnv *env, jobject clazz,
     ioctl(fd, TIOCSWINSZ, &sz);
 }
 
-static int android_os_Exec_waitFor(JNIEnv *env, jobject clazz,
+static int com_duy_terminal_Exec_waitFor(JNIEnv *env, jobject clazz,
     jint procId) {
     int status;
     waitpid(procId, &status, 0);
@@ -222,7 +218,7 @@ static int android_os_Exec_waitFor(JNIEnv *env, jobject clazz,
     return result;
 }
 
-static void android_os_Exec_close(JNIEnv *env, jobject clazz, jobject fileDescriptor)
+static void com_duy_terminal_Exec_close(JNIEnv *env, jobject clazz, jobject fileDescriptor)
 {
     int fd;
 
@@ -235,7 +231,7 @@ static void android_os_Exec_close(JNIEnv *env, jobject clazz, jobject fileDescri
     close(fd);
 }
 
-static void android_os_Exec_hangupProcessGroup(JNIEnv *env, jobject clazz,
+static void com_duy_terminal_Exec_hangupProcessGroup(JNIEnv *env, jobject clazz,
     jint procId) {
     kill(-procId, SIGHUP);
 }
@@ -279,15 +275,15 @@ static const char *classPathName = "com/spartacusrex/spartacuside/Exec";
 
 static JNINativeMethod method_table[] = {
     { "createSubprocess", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[I)Ljava/io/FileDescriptor;",
-        (void*) android_os_Exec_createSubProcess },
+        (void*) com_duy_terminal_Exec_createSubProcess },
     { "setPtyWindowSize", "(Ljava/io/FileDescriptor;IIII)V",
-        (void*) android_os_Exec_setPtyWindowSize},
+        (void*) com_duy_terminal_Exec_setPtyWindowSize},
     { "waitFor", "(I)I",
-        (void*) android_os_Exec_waitFor},
+        (void*) com_duy_terminal_Exec_waitFor},
     { "close", "(Ljava/io/FileDescriptor;)V",
-        (void*) android_os_Exec_close},
+        (void*) com_duy_terminal_Exec_close},
     { "hangupProcessGroup", "(I)V",
-        (void*) android_os_Exec_hangupProcessGroup}
+        (void*) com_duy_terminal_Exec_hangupProcessGroup}
 };
 
 /*

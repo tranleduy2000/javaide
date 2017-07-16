@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.terminal.model;
+package com.spartacusrex.spartacuside.model;
 
 import android.graphics.Canvas;
 

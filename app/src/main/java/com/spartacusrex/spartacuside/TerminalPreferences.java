@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package com.duy.terminal.model;
+package com.spartacusrex.spartacuside;
 
-/**
- * Callback to be invoked when updates to a TermSession's transcript occur.
- */
-public interface UpdateCallback {
-    void onUpdate();
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+
+import com.duy.editor.R;
+
+public class TerminalPreferences extends PreferenceActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Load the preferences from an XML resource
+        addPreferencesFromResource(R.xml.pref_console);
+    }
+
 }

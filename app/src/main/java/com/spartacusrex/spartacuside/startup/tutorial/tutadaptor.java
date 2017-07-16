@@ -26,7 +26,7 @@ public class tutadaptor extends gen_adaptor {
         items.add(new tutlistitem(zContext, "Keyboard", "Special Terminal IDE keyboard", R.layout.tut_keyboard, R.drawable.app_terminal));
         items.add(new tutlistitem(zContext, "Tutorial", "Step by step walkthrough..", R.layout.tut_first, R.drawable.app_terminal));
         items.add(new tutlistitem(zContext, "bash", "The Command Line", R.layout.tut_bash, R.drawable.sym_keyboard_done));
-        items.add(new tutlistitem(zContext, "busybox", "The applications", R.layout.tut_busybox, R.drawable.sym_keyboard_done));
+        items.add(new tutlistitem(zContext, "busybox.mp3", "The applications", R.layout.tut_busybox, R.drawable.sym_keyboard_done));
         items.add(new tutlistitem(zContext, "vim", "THE editor", R.layout.tut_vim, R.drawable.sym_keyboard_done));
         items.add(new tutlistitem(zContext, "javac, java, dx..", "Java Development tools", R.layout.tut_javac, R.drawable.sym_keyboard_done));
         items.add(new tutlistitem(zContext, "gcc 4.4.0", "C/CPP Development tools", R.layout.tut_gcc, R.drawable.sym_keyboard_done));

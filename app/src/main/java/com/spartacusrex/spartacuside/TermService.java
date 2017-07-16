@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.terminal;
+package com.spartacusrex.spartacuside;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -32,7 +32,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.duy.editor.R;
-import com.duy.terminal.session.TermSession;
+import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.ServiceForegroundCompat;
 import com.spartacusrex.spartacuside.util.TermSettings;
 import com.spartacusrex.spartacuside.util.hardkeymappings;

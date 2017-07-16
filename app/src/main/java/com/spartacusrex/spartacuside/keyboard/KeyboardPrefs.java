@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.keyboard.keyboard;
+package com.spartacusrex.spartacuside.keyboard;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -28,6 +28,6 @@ public class KeyboardPrefs extends PreferenceActivity {
         super.onCreate(savedInstanceState);
 
         // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.keyboard_prefs);
+        addPreferencesFromResource(R.xml.pref_keyboard);
     }
 }

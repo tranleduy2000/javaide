@@ -9,7 +9,7 @@ import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
-import com.duy.terminal.TermService;
+import com.spartacusrex.spartacuside.TermService;
 
 /**
  * The OptionDialogPreference will display a dialog, and will persist the

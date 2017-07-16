@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.terminal;
+package com.spartacusrex.spartacuside;
 
 /**
  * Debug settings.

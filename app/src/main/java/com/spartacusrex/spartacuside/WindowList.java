@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.terminal;
+package com.spartacusrex.spartacuside;
 
 import android.app.ListActivity;
 import android.content.ComponentName;
@@ -33,7 +33,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.duy.editor.R;
-import com.duy.terminal.session.TermSession;
+import com.spartacusrex.spartacuside.session.TermSession;
 
 import java.util.ArrayList;
 

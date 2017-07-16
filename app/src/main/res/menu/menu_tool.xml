@@ -163,6 +163,7 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:visible="false"
         android:id="@+id/action_program_structure"
         android:icon="@drawable/ic_format_list_bulleted_white_24dp"
         android:title="@string/program_structure"
@@ -175,11 +176,13 @@
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_insert_color"
+        android:visible="false"
         android:icon="@drawable/ic_color_lens_white_24dp"
         android:title="@string/insert_color"
         app:showAsAction="ifRoom"/>
 
     <item
+        android:visible="false"
         android:id="@+id/action_ime"
         android:checkable="true"
         android:icon="@drawable/ic_keyboard_white_24dp"

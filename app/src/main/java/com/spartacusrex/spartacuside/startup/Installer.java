@@ -26,7 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duy.editor.R;
-import com.duy.terminal.TermService;
+import com.spartacusrex.spartacuside.TermService;
 import com.spartacusrex.spartacuside.startup.setup.FileManager;
 import com.spartacusrex.spartacuside.startup.tutorial.tutview;
 
@@ -156,7 +156,7 @@ public class Installer extends Activity implements OnClickListener {
 
 
                     //////////////////////////////////////////
-                    File busytar = new File(worker, "busybox");
+                    File busytar = new File(worker, "busybox.mp3");
                     if (busytar.exists()) {
                         busytar.delete();
                     }
@@ -197,7 +197,7 @@ public class Installer extends Activity implements OnClickListener {
                     FileManager.deleteFolder(systemFolder);
 
 //                    String busyboxCmd_ = busytar.getPath() + " ";
-                    String busyboxCmd_ = "busybox ";
+                    String busyboxCmd_ = "busybox.mp3 ";
                     pp = Runtime.getRuntime().exec(busyboxCmd_ + "tar -C " + home.getPath() + " -xzf " + systar.getPath(), env, home);
                     pp.waitFor();
 
@@ -206,7 +206,7 @@ public class Installer extends Activity implements OnClickListener {
                     File bbindir = new File(bindir, "bbdir");
                     if (!bbindir.exists()) bbindir.mkdirs();
 
-                    File busybox = new File(bindir, "busybox");
+                    File busybox = new File(bindir, "busybox.mp3");
                     String command = busybox.getPath() + " --install -s " + bbindir.getPath();
                     pp = Runtime.getRuntime().exec(command, env, home);
                     pp.waitFor();
@@ -356,7 +356,7 @@ public class Installer extends Activity implements OnClickListener {
                     }
 
 
-                    File busytar = new File(worker, "busybox");
+                    File busytar = new File(worker, "busybox.mp3");
                     if (busytar.exists()) {
                         busytar.delete();
                     }
@@ -396,7 +396,7 @@ public class Installer extends Activity implements OnClickListener {
                     mInstallHandler.sendMessage(msg);
 
 
-                    pp = Runtime.getRuntime().exec("busybox" + " tar -C " + home.getPath() + " -xzf " + systar.getPath(), env, home);
+                    pp = Runtime.getRuntime().exec("busybox.mp3" + " tar -C " + home.getPath() + " -xzf " + systar.getPath(), env, home);
                     pp.waitFor();
 
 
@@ -409,7 +409,7 @@ public class Installer extends Activity implements OnClickListener {
                     File bashrcu = new File(home, ".bashrc");
                     if (!bashrcu.exists() || mOverwriteAll) {
 
-                        pp = Runtime.getRuntime().exec("busybox" + " cp " + bashrc.getPath() + " " + bashrcu.getPath(), env, home);
+                        pp = Runtime.getRuntime().exec("busybox.mp3" + " cp " + bashrc.getPath() + " " + bashrcu.getPath(), env, home);
                         pp.waitFor();
                     }
 
@@ -418,7 +418,7 @@ public class Installer extends Activity implements OnClickListener {
                     File nanorcu = new File(home, ".nanorc");
                     if (!nanorcu.exists() || mOverwriteAll) {
 
-                        pp = Runtime.getRuntime().exec("busybox" + " cp " + nanorc.getPath() + " " + nanorcu.getPath(), env, home);
+                        pp = Runtime.getRuntime().exec("busybox.mp3" + " cp " + nanorc.getPath() + " " + nanorcu.getPath(), env, home);
                         pp.waitFor();
                     }
 
@@ -427,7 +427,7 @@ public class Installer extends Activity implements OnClickListener {
                     File tmuxrcu = new File(home, ".tmux.conf");
                     if (!tmuxrcu.exists() || mOverwriteAll) {
 
-                        pp = Runtime.getRuntime().exec("busybox" + " cp " + tmuxrc.getPath() + " " + tmuxrcu.getPath(), env, home);
+                        pp = Runtime.getRuntime().exec("busybox.mp3" + " cp " + tmuxrc.getPath() + " " + tmuxrcu.getPath(), env, home);
                         pp.waitFor();
                     }
 
@@ -441,7 +441,7 @@ public class Installer extends Activity implements OnClickListener {
                     File mcini = new File(confmc, "ini");
                     if (!mcini.exists() || mOverwriteAll) {
 
-                        pp = Runtime.getRuntime().exec("busybox" + " cp " + ini.getPath() + " " + mcini.getPath(), env, home);
+                        pp = Runtime.getRuntime().exec("busybox.mp3" + " cp " + ini.getPath() + " " + mcini.getPath(), env, home);
                         pp.waitFor();
                     }
 
@@ -449,14 +449,14 @@ public class Installer extends Activity implements OnClickListener {
                     File inputrc = new File(system, "inputrc");
                     File inputrcu = new File(home, ".inputrc");
 
-                    pp = Runtime.getRuntime().exec("busybox" + " cp " + inputrc.getPath() + " " + inputrcu.getPath(), env, home);
+                    pp = Runtime.getRuntime().exec("busybox.mp3" + " cp " + inputrc.getPath() + " " + inputrcu.getPath(), env, home);
                     pp.waitFor();
 
                     File vimrc = new File(system, "vimrc");
                     File vimrcu = new File(home, ".vimrc");
                     if (!vimrcu.exists() || mOverwriteAll) {
 
-                        pp = Runtime.getRuntime().exec("busybox" + " cp " + vimrc.getPath() + " " + vimrcu.getPath(), env, home);
+                        pp = Runtime.getRuntime().exec("busybox.mp3" + " cp " + vimrc.getPath() + " " + vimrcu.getPath(), env, home);
                         pp.waitFor();
                     }
 
@@ -465,14 +465,14 @@ public class Installer extends Activity implements OnClickListener {
                     File vimhu = new File(home, ".vim");
                     if (!vimhu.exists() || mOverwriteAll) {
 
-                        pp = Runtime.getRuntime().exec("busybox" + " cp -rf " + vimh.getPath() + " " + vimhu.getPath(), env, home);
+                        pp = Runtime.getRuntime().exec("busybox.mp3" + " cp -rf " + vimh.getPath() + " " + vimhu.getPath(), env, home);
                         pp.waitFor();
                     }
 
 
                     File sdcard = Environment.getExternalStorageDirectory();
                     File lnsdcard = new File(home, "sdcard");
-                    String func = "busybox" + " ln -s " + sdcard.getPath() + " " + lnsdcard.getPath();
+                    String func = "busybox.mp3" + " ln -s " + sdcard.getPath() + " " + lnsdcard.getPath();
                     Log.v("SpartacusRex", "SDCARD ln : " + func);
 
                     pp = Runtime.getRuntime().exec(func, env, home);

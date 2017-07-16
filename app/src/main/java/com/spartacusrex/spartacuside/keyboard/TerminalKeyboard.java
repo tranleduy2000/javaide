@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.duy.keyboard.keyboard;
+package com.spartacusrex.spartacuside.keyboard;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

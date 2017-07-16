@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.terminal;
+package com.spartacusrex.spartacuside;
 
 import java.io.FileDescriptor;
 

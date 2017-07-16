@@ -17,8 +17,8 @@
 package com.duy.frontend.setting;
 
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 
 import com.duy.frontend.R;
 import com.duy.frontend.activities.AbstractAppCompatActivity;
@@ -32,7 +32,7 @@ public class SettingsActivity extends AbstractAppCompatActivity {
         setContentView(R.layout.activity_setting);
         setupActionBar();
 
-        android.app.FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container, new FragmentSetting()).commit();
     }
 

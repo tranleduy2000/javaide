@@ -18,11 +18,11 @@
 
     <PreferenceCategory android:title="@string/code_editor">
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="@string/key_pref_auto_compile"
-            android:summary="@string/auto_compile_summary"
-            android:title="@string/auto_compile"/>
+        <!--<SwitchPreference-->
+            <!--android:defaultValue="false"-->
+            <!--android:key="@string/key_pref_auto_compile"-->
+            <!--android:summary="@string/auto_compile_summary"-->
+            <!--android:title="@string/auto_compile"/>-->
 
         <EditTextPreference
             android:contentDescription="@string/max_history_edit_desc"
@@ -77,59 +77,59 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/console_screen">
-        <com.flask.colorpicker.ColorPickerPreference
-            android:enabled="false"
-            android:key="pref_console_text_color"
-            android:summary="@string/default_text_color"
-            android:title="@string/text_color"/>
+    <!--<PreferenceCategory android:title="@string/console_screen">-->
+        <!--<com.flask.colorpicker.ColorPickerPreference-->
+            <!--android:enabled="false"-->
+            <!--android:key="pref_console_text_color"-->
+            <!--android:summary="@string/default_text_color"-->
+            <!--android:title="@string/text_color"/>-->
 
-        <com.flask.colorpicker.ColorPickerPreference
-            android:enabled="false"
-            android:key="pref_console_bg_color"
-            android:summary="@string/def_bg_color"
-            android:title="@string/bg_color"/>
+        <!--<com.flask.colorpicker.ColorPickerPreference-->
+            <!--android:enabled="false"-->
+            <!--android:key="pref_console_bg_color"-->
+            <!--android:summary="@string/def_bg_color"-->
+            <!--android:title="@string/bg_color"/>-->
 
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="pref_console_anti_alias"
-            android:summary="@string/anti_alias_summary"
-            android:title="@string/anti_alias"/>
+        <!--<SwitchPreference-->
+            <!--android:defaultValue="true"-->
+            <!--android:key="pref_console_anti_alias"-->
+            <!--android:summary="@string/anti_alias_summary"-->
+            <!--android:title="@string/anti_alias"/>-->
 
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="pref_console_hardware_acceleration"
-            android:summary="@string/draw_screen_faster"
-            android:title="@string/hardware_acceleration"/>
+        <!--<SwitchPreference-->
+            <!--android:defaultValue="true"-->
+            <!--android:key="pref_console_hardware_acceleration"-->
+            <!--android:summary="@string/draw_screen_faster"-->
+            <!--android:title="@string/hardware_acceleration"/>-->
 
-        <ListPreference
-            android:defaultValue="12"
-            android:entries="@array/font_size"
-            android:entryValues="@array/font_size_value"
-            android:key="key_pref_console_font_size"
-            android:title="@string/console_font_size"/>
-    </PreferenceCategory>
+        <!--<ListPreference-->
+            <!--android:defaultValue="12"-->
+            <!--android:entries="@array/font_size"-->
+            <!--android:entryValues="@array/font_size_value"-->
+            <!--android:key="key_pref_console_font_size"-->
+            <!--android:title="@string/console_font_size"/>-->
+    <!--</PreferenceCategory>-->
 
-    <PreferenceCategory android:title="@string/compiler">
-        <EditTextPreference
-            android:defaultValue="40000"
-            android:inputType="number"
-            android:key="key_max_stack"
-            android:summary="@string/stack_size_desc"
-            android:title="@string/stack_size">
+    <!--<PreferenceCategory android:title="@string/compiler">-->
+        <!--<EditTextPreference-->
+            <!--android:defaultValue="40000"-->
+            <!--android:inputType="number"-->
+            <!--android:key="key_max_stack"-->
+            <!--android:summary="@string/stack_size_desc"-->
+            <!--android:title="@string/stack_size">-->
 
-        </EditTextPreference>
-    </PreferenceCategory>
+        <!--</EditTextPreference>-->
+    <!--</PreferenceCategory>-->
 
     <PreferenceCategory android:title="@string/keyboard">
 
-        <ListPreference
-            android:defaultValue="@string/volume_down"
-            android:entries="@array/control_key"
-            android:entryValues="@array/control_key"
-            android:key="@string/key_pref_control"
-            android:shouldDisableView="true"
-            android:title="@string/ctrl_key"/>
+        <!--<ListPreference-->
+            <!--android:defaultValue="@string/volume_down"-->
+            <!--android:entries="@array/control_key"-->
+            <!--android:entryValues="@array/control_key"-->
+            <!--android:key="@string/key_pref_control"-->
+            <!--android:shouldDisableView="true"-->
+            <!--android:title="@string/ctrl_key"/>-->
 
         <SwitchPreference
             android:defaultValue="false"

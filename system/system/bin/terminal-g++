@@ -1,0 +1,46 @@
+#!/system/bin/sh
+
+# A script to call g++ with the correct parameters
+
+GXX=arm-eabi-g++
+
+ANDGCC=$HOME/android-gcc-4.4.0
+SYSROOT=${ANDGCC}/sysroot/usr
+SYSLIB=${SYSROOT}/lib
+SYSINC=${SYSROOT}/include
+
+CRTBEGIN=${SYSLIB}/crtbegin_dynamic.o
+CRTEND=${SYSLIB}/crtend_android.o
+
+LINKERSET=-Wl,-dynamic-linker=/system/bin/linker
+
+LIBGCC=${ANDGCC}/lib/gcc/arm-eabi/4.4.0/libgcc.a
+
+LINKING=""
+
+TERMINAL_INCLUDE="-I$SYSINC -fno-short-enums"
+TERMINAL_LIBS="-nostdlib -L${SYSLIB} -lc" 
+
+#Check if we are linking..
+if echo " " "$*" | egrep -q -- '(^| )-shared '; then
+        
+        #Building a shared lin=brary
+        LINKING="$TERMINAL_INCLUDE $TERMINAL_LIBS $LINKERSET"
+
+elif echo " " "$*" | egrep -q -- '(^| )-(c|S|E|nostdlib) '; then
+        
+        #No linking done..
+        LINKING="$TERMINAL_INCLUDE"
+        LIBGCC=""
+        
+else
+        #Linking required
+        LINKING="$TERMINAL_INCLUDE $TERMINAL_LIBS $CRTBEGIN $CRTEND $LINKERSET"
+fi
+
+#do it..
+if [ -n "$DEBUG_AGCC" ]; then
+        echo $GXX $LINKING $@ $LIBGCC
+fi
+
+$GXX $LINKING $@ $LIBGCC

@@ -1,0 +1,2 @@
+#javac helper script
+dalvikvm -Xss262912 -Xmx64M -cp $APK com.spartacusrex.spartacuside.external.javac $@

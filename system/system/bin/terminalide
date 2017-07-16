@@ -1,0 +1,28 @@
+#Scrip that starts up vim correctly per project
+
+#Check that certain files exist
+#if [ ! -f terminalide.vim ]; then
+#	echo This is not a valid project folder 
+#	echo No 'terminalide.vim' file found
+#	exit
+#fi
+
+#Is there a src folder
+if [ ! -d src ];then
+	echo Invalid Java/Android project folder!
+	echo No './src' directory found - probably c/cpp application
+	
+	sleep 2
+	
+	vim -c "NERDTree ."
+
+	exit
+fi
+
+#VERY IMPORTANT - cd into src directory, this way javac works..
+cd src
+
+#Now start vim - (from the correct folder), with NERDTree in parent folder
+vim -c "NERDTree .."
+
+

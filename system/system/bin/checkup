@@ -1,0 +1,21 @@
+#This script runs a few utilty commands to tell you
+# the health of the system
+
+echo Terminal IDE System Checkup v1.1
+echo
+echo Storage used in HOME directory
+du -hsc ~
+echo
+
+#How much is each partition using
+echo Total Partition Disk Usage
+df
+echo
+
+#Now a bit of trickery to get the UID
+TUID=`ps | grep spartacuside | awk '{print $2}' | tail -n 1`
+echo User UID : $TUID
+
+#Show all the running process's
+echo User Process List
+ps | grep $TUID

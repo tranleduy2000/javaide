@@ -1,0 +1,43 @@
+#!/system/bin/sh
+
+# A script that calls gcc with correct params..
+
+GCC=arm-eabi-gcc
+
+ANDGCC=${HOME}/android-gcc-4.4.0
+
+SYSROOT=${ANDGCC}/sysroot/usr
+SYSLIB=${SYSROOT}/lib
+SYSINC=${SYSROOT}/include
+
+CRTBEGIN=${SYSLIB}/crtbegin_dynamic.o
+CRTEND=${SYSLIB}/crtend_android.o
+
+LINKERSET=-Wl,-dynamic-linker=/system/bin/linker
+
+LIBGCC=${ANDGCC}/lib/gcc/arm-eabi/4.4.0/libgcc.a
+
+LINKING=""
+
+#Check if we are linking..
+if echo " " "$*" | egrep -q -- '(^| )-shared '; then
+        #Building a shared library
+        LINKING="-isystem $SYSINC -nostdlib -L${SYSLIB} -lc -fno-short-enums $LINKERSET"
+		
+
+elif echo " " "$*" | egrep -q -- '(^| )-(c|S|E|nostdlib) '; then
+        #No linking done..
+        LINKING="-isystem $SYSINC -fno-short-enums"
+	LIBGCC=""
+
+else
+        #Linking required
+        LINKING="-isystem $SYSINC -nostdlib -L${SYSLIB} -lc -fno-short-enums $CRTBEGIN $CRTEND $LINKERSET"
+fi
+
+#do it..
+if [ -n "$DEBUG_AGCC" ]; then
+        echo $GCC $LINKING $@ $LIBGCC
+fi
+
+$GCC $LINKING $@ $LIBGCC

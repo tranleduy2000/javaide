@@ -1,0 +1,2 @@
+#jping helper script
+dalvikvm -cp $APK com.spartacusrex.spartacuside.external.jping $@

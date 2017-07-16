@@ -1,0 +1,12 @@
+#!/system/bin/sh
+
+# Simple script that extracts GCC to the correct location
+
+cd $HOME
+
+echo Extracting GCC.. Please wait..
+
+tar -xf $HOME/system/android-gcc-4.4.0.tar.gz
+
+echo GCC 4.4.0 Installed
+

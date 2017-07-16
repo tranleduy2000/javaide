@@ -1,0 +1,2 @@
+#apkbuilder helper script
+dalvikvm -cp $APK com.spartacusrex.spartacuside.external.apkbuilder $@

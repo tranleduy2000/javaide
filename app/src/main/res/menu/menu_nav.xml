@@ -21,6 +21,7 @@
     <item android:title="@string/code_editor">
         <menu>
             <item
+                android:visible="false"
                 android:id="@+id/action_select_theme"
                 android:icon="@drawable/ic_color_lens_white_24dp"
                 android:title="@string/theme_font"/>

@@ -17,9 +17,7 @@
 package com.duy.editor.editor.completion;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import java.io.File;
 import java.lang.reflect.Modifier;
 
 /**
@@ -51,7 +49,7 @@ public class Template {
      */
     private static final String JAVA_TEMPLATE =
             "\n" +
-                    "%1$s %2$s %3$s {\n" +
+                    "%1$s %2$s %3$s %4$s {\n" +
                     "\n    " +
                     "}\n";
 
@@ -70,7 +68,7 @@ public class Template {
         return String.format(INTERFACE_TEMPLATE, name);
     }
 
-    public static String createJava(String name, int modifier, int visibility) {
+    public static String createJava(String name, int kind, int modifier, int visibility) {
         String m = "";
         switch (modifier) {
             case Modifier.ABSTRACT:
@@ -86,7 +84,19 @@ public class Template {
                 v = "public";
                 break;
         }
-        return String.format(JAVA_TEMPLATE, v, m, name);
+        String k = "class";
+        switch (kind) {
+            case 0:
+                k = "class";
+                break;
+            case 1:
+                k = "interface";
+                break;
+            case 2:
+                k = "enum";
+                break;
+        }
+        return String.format(JAVA_TEMPLATE, v, m, k, name);
     }
 
 }

@@ -31,7 +31,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     public static final String TAG = "DialogNewClass";
     private EditText mEditName;
     private Spinner mKind;
-    private RadioGroup mModifiers;
+    private RadioGroup mModifiers, mVisibility;
     @Nullable
     private OnCreateClassListener listener;
 
@@ -79,6 +79,9 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         mModifiers = view.findViewById(R.id.modifiers);
         mPackage = view.findViewById(R.id.edit_package_name);
         mPackage.setText(getArguments().getString("current_package"));
+
+        mVisibility = view.findViewById(R.id.visibility);
+
         view.findViewById(R.id.btn_create).setOnClickListener(this);
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
     }
@@ -96,12 +99,15 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     }
 
     private void createNewClass() {
+
+        //check empty
         String className = mEditName.getText().toString();
         if (className.isEmpty()) {
             mEditName.setError(getString(R.string.enter_name));
             return;
         }
-        int visibility = mKind.getSelectedItemPosition() == 0 ? Modifier.PUBLIC : Modifier.PRIVATE;
+
+        int visibility = mVisibility.getCheckedRadioButtonId() == R.id.rad_public ? Modifier.PUBLIC : Modifier.PRIVATE;
         int checkedRadioButtonId = mModifiers.getCheckedRadioButtonId();
         int modifier = 0;
         if (checkedRadioButtonId == R.id.rad_abstract) {
@@ -109,7 +115,10 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         } else if (checkedRadioButtonId == R.id.rad_final) {
             modifier = Modifier.FINAL;
         }
-        String content = Template.createJava(className, visibility, modifier);
+        int kind = mKind.getSelectedItemPosition();
+        String content = Template.createJava(className, kind, visibility, modifier);
+
+
         Bundle arguments = getArguments();
         ProjectFile project_file = (ProjectFile) arguments.getSerializable("project_file");
         String currentPackage = mPackage.getText().toString();

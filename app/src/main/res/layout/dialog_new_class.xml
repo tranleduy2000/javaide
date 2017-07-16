@@ -61,11 +61,13 @@
             android:text="Visibility"/>
 
         <RadioGroup
+            android:id="@+id/visibility"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <RadioButton
+                android:checked="true"
                 android:id="@+id/rad_public"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -104,6 +106,7 @@
                 android:id="@+id/rad_none"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:layout_weight="1"
                 android:text="None"/>
 

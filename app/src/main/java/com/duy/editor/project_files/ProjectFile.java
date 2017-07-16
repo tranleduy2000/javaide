@@ -129,6 +129,6 @@ public class ProjectFile implements Serializable, Cloneable {
 
 
     public String getProjectDir() {
-        return rootDir.endsWith("/") ? rootDir + projectName : rootDir + "/" + projectName;
+        return rootDir;
     }
 }

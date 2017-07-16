@@ -273,12 +273,12 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
             return;
         }
 
-        //Create 4 initial Terminals
+        //Create 1 initial Terminals
         mTermSessions.add(createTermSession(zHome));
-        mTermSessions.add(createTermSession(zHome));
-        mTermSessions.add(createTermSession(zHome));
-        mTermSessions.add(createTermSession(zHome));
-
+//        mTermSessions.add(createTermSession(zHome));
+//        mTermSessions.add(createTermSession(zHome));
+//        mTermSessions.add(createTermSession(zHome));
+//
         mSessionInit = true;
     }
 

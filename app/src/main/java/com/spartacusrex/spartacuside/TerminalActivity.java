@@ -61,6 +61,7 @@ import java.util.Date;
  * A terminal emulator activity.
  */
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class TerminalActivity extends Activity {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
@@ -82,7 +83,7 @@ public class TerminalActivity extends Activity {
     private TermService mTermService;
     private ServiceConnection mTSConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            Log.i(TermDebug.LOG_TAG, "Bound to TermService");
+            Log.i(TAG, "Bound to TermService");
             TermService.TSBinder binder = (TermService.TSBinder) service;
             mTermService = binder.getService();
             populateViewFlipper();
@@ -96,14 +97,14 @@ public class TerminalActivity extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        Log.e(TermDebug.LOG_TAG, "onCreate");
+        Log.e(TAG, "onCreate");
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSettings = new TermSettings(mPrefs);
 
         TSIntent = new Intent(this, TermService.class);
 
         if (!bindService(TSIntent, mTSConnection, BIND_AUTO_CREATE)) {
-            Log.w(TermDebug.LOG_TAG, "bind to service failed!");
+            Log.w(TAG, "bind to service failed!");
         }
 
         setContentView(R.layout.term_activity);
@@ -113,34 +114,6 @@ public class TerminalActivity extends Activity {
         updatePrefs();
         mAlreadyStarted = true;
 
-    }
-
-    private void compileAndRun(String filePath) {
-        Log.d(TAG, "compileAndRun() called with: filePath = [" + filePath + "]");
-
-        File home = getFilesDir();
-        File init = new File(home, ".init");
-        File javaFile = new File(filePath);
-        File parent = javaFile.getParentFile();
-        String nameWithoutExtension = javaFile.getName().substring(0, javaFile.getName().indexOf("."));
-        try {
-            FileOutputStream fos = new FileOutputStream(init);
-            PrintWriter pw = new PrintWriter(fos);
-            pw.print("cd");
-            pw.println("cd " + parent.getPath());
-            pw.println("javac -verbose " + javaFile.getName());
-            pw.println("dx --dex --verbose --output=" + nameWithoutExtension + ".jar " + "./" + nameWithoutExtension + ".class");
-            pw.println("java -jar " + nameWithoutExtension + ".jar " + nameWithoutExtension);
-            pw.flush();
-            pw.close();
-            fos.close();
-
-            //Make sure the /tmp folder ALWAYS exists
-            File temp = new File(home, "tmp");
-            if (!temp.exists()) temp.mkdirs();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -157,12 +130,39 @@ public class TerminalActivity extends Activity {
 
             updatePrefs();
 
-
             Intent intent = getIntent();
             String filePath = intent.getStringExtra(CompileManager.FILE_PATH);
             if (filePath != null) {
-                compileAndRun(filePath);
+                compileAndRun(mTermSessions.get(0), filePath);
             }
+        }
+    }
+
+    private void compileAndRun(TermSession termSession, String filePath) {
+        Log.d(TAG, "compileAndRun() called with: filePath = [" + filePath + "]");
+
+        File home = getFilesDir();
+        File javaFile = new File(filePath);
+        File parent = javaFile.getParentFile();
+        String nameWithoutExtension = javaFile.getName().substring(0, javaFile.getName().indexOf("."));
+        try {
+            FileOutputStream fos = termSession.getTermOut();
+            PrintWriter pw = new PrintWriter(fos);
+            pw.println("cd");
+            pw.println("cd " + parent.getPath());
+//            pw.println("javac -verbose " + javaFile.getName());
+            pw.println("javac " + javaFile.getName());
+//            pw.println("dx --dex --verbose --output=" + nameWithoutExtension + ".jar " + "./" + nameWithoutExtension + ".class");
+            pw.println("dx --dex --output=" + nameWithoutExtension + ".jar " + "./" + nameWithoutExtension + ".class");
+            pw.println("java -jar " + nameWithoutExtension + ".jar " + nameWithoutExtension);
+            pw.flush();
+            pw.close();
+
+            //Make sure the /tmp folder ALWAYS exists
+            File temp = new File(home, "tmp");
+            if (!temp.exists()) temp.mkdirs();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -316,7 +316,7 @@ public class TerminalActivity extends Activity {
 
     private void doCreateNewWindow() {
         if (mTermSessions == null) {
-            Log.w(TermDebug.LOG_TAG, "Couldn't create new window because mTermSessions == null");
+            Log.w(TAG, "Couldn't create new window because mTermSessions == null");
             return;
         }
 
@@ -438,7 +438,7 @@ public class TerminalActivity extends Activity {
         try {
             utf8 = paste.toString().getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
-            Log.e(TermDebug.LOG_TAG, "UTF-8 encoding not found.");
+            Log.e(TAG, "UTF-8 encoding not found.");
             return;
         }
 

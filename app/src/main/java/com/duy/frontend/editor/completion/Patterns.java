@@ -32,21 +32,11 @@ public class Patterns {
      * match reserved keyword
      */
     public static final Pattern KEYWORDS = Pattern.compile(
-            "\\b(uses|const|do|for|while|if|else|in|case|and|array|begin|div" +
-                    "|downto|to|mod|of" +
-                    "|procedure|program|repeat|until|shl|shr" +
-                    "|then|type|var|end|function" +
-                    "|true|false" +
-                    "|and|or|xor|not|break|exit" +
-                    "|integer|byte|word|shortint|smallint|cardinal" +
-                    "|string|ansistring" +
-                    "|single|real|extended|comp|curreny" +
-                    "|longint|int64|qword|longword|dword" +
-                    "|boolean" +
-                    "|char|text" +
-                    "|record|continue" +
-                    "|unit|interface|initialization|finalization|implementation|with" +
-                    "|null|nil|set|new)\\b",
+            "\\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|" +
+                    "continue|default|do|double|else|enum|extends|final|finally|float|" +
+                    "for|goto|if|implements|import|instanceof|int|interface|long|native|new|" +
+                    "package|private|protected|public|short|static|super|switch|synchronized|" +
+                    "this|throw|throws|transient|try|void|volatile|while)\\b",
             Pattern.CASE_INSENSITIVE);
     /**
      * match builtin pascal function

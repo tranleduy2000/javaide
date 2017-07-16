@@ -37,6 +37,7 @@
 
         </activity>
         <activity android:name=".run.ExecuteActivity"/>
+        <activity android:name=".setting.SettingsActivity"/>
 
         <activity
             android:name="com.spartacusrex.spartacuside.TerminalActivity"

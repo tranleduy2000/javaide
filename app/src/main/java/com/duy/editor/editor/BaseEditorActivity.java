@@ -48,11 +48,9 @@ import com.duy.editor.EditorControl;
 import com.duy.editor.R;
 import com.duy.editor.activities.AbstractAppCompatActivity;
 import com.duy.editor.code.CompileManager;
-import com.duy.editor.editor.completion.Template;
 import com.duy.editor.file.FileActionListener;
 import com.duy.editor.file.FileManager;
 import com.duy.editor.file.FragmentFileManager;
-import com.duy.editor.file.TabFileUtils;
 import com.duy.editor.project_files.ProjectFile;
 import com.duy.editor.project_files.ProjectManager;
 import com.duy.editor.project_files.fragments.DialogNewProject;
@@ -131,28 +129,16 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
     }
 
     protected void setupPageView() {
-        ArrayList<File> listFile = TabFileUtils.getTabFiles(this);
-        ArrayList<PageDescriptor> pages = new ArrayList<>();
-        for (File file : listFile) {
-            pages.add(new SimplePageDescriptor(file.getPath(), file.getName()));
+        mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), new ArrayList<PageDescriptor>());
+        if (projectFile == null) {
+            Toast.makeText(this, "Please create new project", Toast.LENGTH_SHORT).show();
+            return;
         }
-        mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), pages);
-        viewPager.setAdapter(mPageAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-        invalidateTab();
+        FragmentFileManager fmFile = (FragmentFileManager)
+                getSupportFragmentManager().findFragmentByTag("fragment_file_view");
+        if (fmFile != null) fmFile.load(new File(projectFile.getMainClass().getPath()));
 
-        if (mPageAdapter.getCount() == 0) {
-            String fileName = "File" + Integer.toHexString((int) System.currentTimeMillis()) + ".java";
-            String filePath = mFileManager.createNewFileInMode(fileName);
-            mFileManager.saveFile(filePath,
-                    Template.createClass(fileName.substring(0, fileName.indexOf("."))));
-            addNewPageEditor(new File(filePath), SELECT);
-        }
-
-        int pos = getPreferences().getInt(JavaPreferences.TAB_POSITION_FILE);
-        if (mPageAdapter.getCount() > pos) {
-            viewPager.setCurrentItem(pos);
-        }
+        addNewPageEditor(new File(projectFile.getMainClass().getPath()), true);
     }
 
     private void invalidateTab() {
@@ -467,11 +453,11 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         FragmentFileManager fmFile = (FragmentFileManager)
                 getSupportFragmentManager().findFragmentByTag("fragment_file_view");
         //load project file
-        if (fmFile != null) fmFile.load(mainClass.getParentFile());
+        if (fmFile != null) fmFile.load(new File(projectFile.getMainClass().getPath()));
         while (mPageAdapter.getCount() > 0) {
             removePage(0);
         }
-        addNewPageEditor(mainClass, true);
+        addNewPageEditor(new File(projectFile.getMainClass().getPath()), true);
     }
 
     private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {

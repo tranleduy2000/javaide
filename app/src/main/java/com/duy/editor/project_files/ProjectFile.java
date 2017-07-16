@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 public class ProjectFile implements Serializable, Cloneable {
     //main class name, don't include package, ex: Main
-    private String mainClassName;
+    private ClassFile mainClass;
 
     /**
      * root director
@@ -28,7 +28,16 @@ public class ProjectFile implements Serializable, Cloneable {
     //project name
     private String projectName;
 
-    //projectDir = rootDir + projectName
+
+    public ProjectFile(String mainClass, String packageName, String projectName) {
+        this.mainClass = new ClassFile(mainClass, packageName);
+        this.packageName = packageName;
+        this.projectName = projectName;
+    }
+
+    public String getRootDir() {
+        return rootDir;
+    }
 
     @Override
     public String toString() {
@@ -36,24 +45,12 @@ public class ProjectFile implements Serializable, Cloneable {
                 "rootDir='" + rootDir + '\'' +
                 ", packageName='" + packageName + '\'' +
                 ", projectName='" + projectName + '\'' +
-                ", mainClassName='" + mainClassName + '\'' +
+                ", mainClass='" + mainClass + '\'' +
                 '}';
     }
 
-    public String getRootDir() {
-        return rootDir;
-    }
-
-    public void setRootDir(String rootDir) {
-        this.rootDir = rootDir;
-    }
-
-    public String getMainClassName() {
-        return mainClassName;
-    }
-
-    public void setMainClassName(String mainClassName) {
-        this.mainClassName = mainClassName;
+    public ClassFile getMainClass() {
+        return mainClass;
     }
 
     public String getPackageName() {
@@ -72,11 +69,6 @@ public class ProjectFile implements Serializable, Cloneable {
         this.projectName = projectName;
     }
 
-    public ProjectFile(String mainClass, String packageName, String projectName) {
-        this.mainClassName = mainClass;
-        this.packageName = packageName;
-        this.projectName = projectName;
-    }
 
     /**
      * create new project as tree:
@@ -95,7 +87,7 @@ public class ProjectFile implements Serializable, Cloneable {
      * @throws IOException
      */
     public File create(File dir) throws IOException {
-        this.rootDir = dir.getPath();
+        this.rootDir = new File(dir, projectName).getPath();
 
         //now create root director
         File root = new File(dir, projectName);
@@ -124,21 +116,15 @@ public class ProjectFile implements Serializable, Cloneable {
         }
 
         //create main class
-        File mainFile = new File(packageF, mainClassName + ".java");
+        File mainFile = new File(packageF, mainClass + ".java");
         mainFile.createNewFile();
-        String content = Template.createClass(mainClassName);
+        String content = Template.createClass(mainClass.getSimpleName());
         FileManager.saveFile(mainFile, content);
 
+        mainClass.setPath(mainFile.getPath());
         return mainFile;
     }
 
-    public String getMainClassPath() {
-        return packageName.replace(".", "/") + "/" + mainClassName + ".java";
-    }
-
-    public String getFullMainClassName() {
-        return packageName + "." + mainClassName;
-    }
 
     public String getProjectDir() {
         return rootDir.endsWith("/") ? rootDir + projectName : rootDir + "/" + projectName;

@@ -9,11 +9,17 @@ import java.io.Serializable;
 public class ClassFile implements Serializable, Cloneable {
     private String simpleName;
     private String packageName;
+    private String name;
+    private String path;
 
     public ClassFile(String simpleName, String packageName) {
         this.simpleName = simpleName;
-
         this.packageName = packageName;
+        this.name = packageName + "." + simpleName;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getSimpleName() {
@@ -30,5 +36,13 @@ public class ClassFile implements Serializable, Cloneable {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

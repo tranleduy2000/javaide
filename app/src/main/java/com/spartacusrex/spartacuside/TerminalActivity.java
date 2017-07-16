@@ -169,7 +169,7 @@ public class TerminalActivity extends Activity {
 
             //now compile
             pw.println("echo Compile java file");
-            pw.println("javac -verbose -d ../../../build/ " + projectFile.getMainClassPath());
+            pw.println("javac -verbose -d ../../../build/ " + projectFile.getMainClass().getName().replace(".", "/"));
             pw.flush();
 
             //go to build dir
@@ -184,7 +184,7 @@ public class TerminalActivity extends Activity {
             pw.flush();
 
             //now run file
-            pw.println("java -jar ./bin/" + jarFile + " " + projectFile.getMainClassName());
+            pw.println("java -jar ./bin/" + jarFile + " " + projectFile.getMainClass().getSimpleName());
             pw.flush();
 
             File temp = new File(home, "tmp");

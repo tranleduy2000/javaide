@@ -32,15 +32,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.duy.frontend.DLog
 import com.duy.frontend.R
-import com.duy.frontend.setting.PascalPreferences
+import com.duy.frontend.setting.JavaPreferences
 import java.util.*
 
 abstract class AbstractAppCompatActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
-    protected var preferences: PascalPreferences? = null
+    protected var preferences: JavaPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        preferences = PascalPreferences(this)
+        preferences = JavaPreferences(this)
         setFullScreen()
         setLocale(false)
         setTheme(false)

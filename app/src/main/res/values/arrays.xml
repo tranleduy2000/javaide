@@ -223,6 +223,8 @@
         <item>None</item>
     </string-array>
     <string-array name="font_size" translatable="false">
+        <item>8 sp</item>
+        <item>9 sp</item>
         <item>10 sp</item>
         <item>11 sp</item>
         <item>12 sp</item>
@@ -239,6 +241,8 @@
         <item>28 sp</item>
     </string-array>
     <string-array name="font_size_value" translatable="false">
+        <item>8</item>
+        <item>9</item>
         <item>10</item>
         <item>11</item>
         <item>12</item>

@@ -22,9 +22,10 @@
     <color name="candidate_recommended">#FFE35900</color>
     <color name="candidate_other">#ff808080</color>
     <color name="candidate_background">#bbffffff</color>
-    <color name="dark.color_primary_dark">#263238</color>
-    <color name="dark.color_primary">#37474f</color>
-    <color name="dark.color_accent">#60d9f1</color>
+
+    <color name="dark.color_primary_dark">#212121</color>
+    <color name="dark.color_primary">#263238</color>
+    <color name="dark.color_accent">#eeff41</color>
 
     <color name="light.color_primary_dark">#283593</color>
     <color name="light.color_primary">#3949ab</color>

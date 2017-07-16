@@ -32,7 +32,7 @@ import com.duy.frontend.R;
 import com.duy.frontend.activities.AbstractAppCompatActivity;
 import com.duy.frontend.editor.view.EditorView;
 import com.duy.frontend.file.FileManager;
-import com.duy.frontend.setting.PascalPreferences;
+import com.duy.frontend.setting.JavaPreferences;
 import com.duy.frontend.themefont.themes.database.CodeTheme;
 import com.duy.frontend.themefont.themes.database.ThemeDatabase;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
@@ -118,7 +118,7 @@ public class CustomThemeActivity extends AbstractAppCompatActivity implements Vi
                     } else {
                         codeTheme.setName(name);
                         mDatabase.insert(codeTheme);
-                        PascalPreferences pascalPreferences = new PascalPreferences(CustomThemeActivity.this);
+                        JavaPreferences pascalPreferences = new JavaPreferences(CustomThemeActivity.this);
                         pascalPreferences.setTheme(name);
                         alertDialog.cancel();
                         finish();

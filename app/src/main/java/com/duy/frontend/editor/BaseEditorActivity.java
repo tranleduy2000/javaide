@@ -48,12 +48,11 @@ import com.duy.frontend.EditorControl;
 import com.duy.frontend.R;
 import com.duy.frontend.activities.AbstractAppCompatActivity;
 import com.duy.frontend.code.CompileManager;
-import com.duy.frontend.editor.EditorPagerAdapter;
 import com.duy.frontend.file.FileActionListener;
 import com.duy.frontend.file.FileManager;
 import com.duy.frontend.file.FragmentFileManager;
 import com.duy.frontend.file.TabFileUtils;
-import com.duy.frontend.setting.PascalPreferences;
+import com.duy.frontend.setting.JavaPreferences;
 import com.duy.frontend.view.SymbolListView;
 
 import java.io.File;
@@ -142,7 +141,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
             addNewPageEditor(new File(filePath), SELECT);
         }
 
-        int pos = getPreferences().getInt(PascalPreferences.TAB_POSITION_FILE);
+        int pos = getPreferences().getInt(JavaPreferences.TAB_POSITION_FILE);
         if (pagerAdapter.getCount() > pos) {
             viewPager.setCurrentItem(pos);
         }
@@ -279,7 +278,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
     @Override
     protected void onPause() {
         super.onPause();
-        getPreferences().put(PascalPreferences.TAB_POSITION_FILE, tabLayout.getSelectedTabPosition());
+        getPreferences().put(JavaPreferences.TAB_POSITION_FILE, tabLayout.getSelectedTabPosition());
     }
 
     @Override

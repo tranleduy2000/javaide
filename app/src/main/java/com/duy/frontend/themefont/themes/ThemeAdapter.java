@@ -30,7 +30,7 @@ import android.widget.Toast;
 import com.duy.frontend.R;
 import com.duy.frontend.code.CodeSample;
 import com.duy.frontend.editor.view.EditorView;
-import com.duy.frontend.setting.PascalPreferences;
+import com.duy.frontend.setting.JavaPreferences;
 import com.duy.frontend.themefont.themes.database.CodeTheme;
 import com.duy.frontend.themefont.themes.database.ThemeDatabase;
 
@@ -43,7 +43,7 @@ import java.util.Map;
 public class ThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<CodeTheme> mThemes = new ArrayList<>();
     private LayoutInflater mInflater;
-    private PascalPreferences mPascalPreferences;
+    private JavaPreferences mPascalPreferences;
     private Activity mContext;
 
     @Nullable
@@ -53,7 +53,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public ThemeAdapter(Activity context) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
-        mPascalPreferences = new PascalPreferences(context);
+        mPascalPreferences = new JavaPreferences(context);
         loadTheme(context);
         mDatabase = new ThemeDatabase(context);
     }

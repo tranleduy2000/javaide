@@ -35,7 +35,7 @@ import com.duy.frontend.utils.DonateUtils;
  * <p>
  * Created by Duy on 3/7/2016
  */
-public class PascalPreferences {
+public class JavaPreferences {
     public static final String FILE_PATH = "last_file";
     public static final String LAST_FIND = "LAST_FIND";
     public static final String LAST_REPLACE = "LAST_REPLACE";
@@ -49,14 +49,14 @@ public class PascalPreferences {
     private SharedPreferences sharedPreferences;
 
     @SuppressLint("CommitPrefEdits")
-    public PascalPreferences(@NonNull Context context) {
+    public JavaPreferences(@NonNull Context context) {
         this.context = context;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.editor = sharedPreferences.edit();
     }
 
     @SuppressLint("CommitPrefEdits")
-    public PascalPreferences(@NonNull SharedPreferences mPreferences, @NonNull Context context) {
+    public JavaPreferences(@NonNull SharedPreferences mPreferences, @NonNull Context context) {
         this.context = context;
         this.sharedPreferences = mPreferences;
         this.editor = sharedPreferences.edit();
@@ -217,7 +217,7 @@ public class PascalPreferences {
         try {
             return Float.parseFloat(getString(context.getString(R.string.key_pref_font_size)));
         } catch (Exception e) {
-            return 14f;
+            return 12f;
         }
     }
 
@@ -228,7 +228,7 @@ public class PascalPreferences {
         try {
             return Float.parseFloat(getString("key_pref_console_font_size"));
         } catch (Exception e) {
-            return 14f;
+            return 12f;
         }
     }
 
@@ -339,5 +339,15 @@ public class PascalPreferences {
 
     public void setTheme(String name) {
         put(context.getString(R.string.key_code_theme), name);
+    }
+
+
+    public boolean hasSystemInstalled() {
+        return getBoolean("system_installed");
+    }
+
+    public String getSystemVersion() {
+        String version = getString("system_version");
+        return version.isEmpty() ? "Unknown" : version;
     }
 }

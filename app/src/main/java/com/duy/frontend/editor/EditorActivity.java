@@ -46,7 +46,7 @@ import com.duy.frontend.dialog.DialogManager;
 import com.duy.frontend.editor.view.AutoIndentEditText;
 import com.duy.frontend.editor.view.EditorView;
 import com.duy.frontend.editor.view.adapters.InfoItem;
-import com.duy.frontend.setting.PascalPreferences;
+import com.duy.frontend.setting.JavaPreferences;
 import com.duy.frontend.themefont.activities.ThemeFontActivity;
 import com.duy.frontend.utils.DonateUtils;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
@@ -142,7 +142,7 @@ public class EditorActivity extends BaseEditorActivity implements
         final CheckBox ckbMatch = (CheckBox) alertDialog.findViewById(R.id.ckb_match_key);
         final EditText editFind = (EditText) alertDialog.findViewById(R.id.txt_find);
         final EditText editReplace = (EditText) alertDialog.findViewById(R.id.edit_replace);
-        editFind.setText(getPreferences().getString(PascalPreferences.LAST_FIND));
+        editFind.setText(getPreferences().getString(JavaPreferences.LAST_FIND));
         alertDialog.findViewById(R.id.btn_replace).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,7 +154,7 @@ public class EditorActivity extends BaseEditorActivity implements
                             ckbRegex.isChecked(),
                             ckbMatch.isChecked());
                 }
-                getPreferences().put(PascalPreferences.LAST_FIND, editFind.getText().toString());
+                getPreferences().put(JavaPreferences.LAST_FIND, editFind.getText().toString());
                 alertDialog.dismiss();
             }
         });
@@ -190,7 +190,7 @@ public class EditorActivity extends BaseEditorActivity implements
         final CheckBox ckbMatch = (CheckBox) alertDialog.findViewById(R.id.ckb_match_key);
         final CheckBox ckbWordOnly = (CheckBox) alertDialog.findViewById(R.id.ckb_word_only);
         final EditText editFind = (EditText) alertDialog.findViewById(R.id.txt_find);
-        editFind.setText(getPreferences().getString(PascalPreferences.LAST_FIND));
+        editFind.setText(getPreferences().getString(JavaPreferences.LAST_FIND));
         alertDialog.findViewById(R.id.btn_replace).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -201,7 +201,7 @@ public class EditorActivity extends BaseEditorActivity implements
                             ckbWordOnly.isChecked(),
                             ckbMatch.isChecked());
                 }
-                getPreferences().put(PascalPreferences.LAST_FIND, editFind.getText().toString());
+                getPreferences().put(JavaPreferences.LAST_FIND, editFind.getText().toString());
                 alertDialog.dismiss();
             }
         });

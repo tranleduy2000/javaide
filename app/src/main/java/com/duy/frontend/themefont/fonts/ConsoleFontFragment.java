@@ -32,7 +32,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.duy.frontend.R;
-import com.duy.frontend.setting.PascalPreferences;
+import com.duy.frontend.setting.JavaPreferences;
 import com.duy.frontend.utils.DonateUtils;
 
 /**
@@ -45,7 +45,7 @@ public class ConsoleFontFragment extends Fragment implements SharedPreferences.O
     public static final int THEME = 1;
     FontAdapter mFontAdapter;
     private RecyclerView mRecyclerView;
-    protected PascalPreferences mPref;
+    protected JavaPreferences mPref;
 
     public static ConsoleFontFragment newInstance() {
         Bundle args = new Bundle();
@@ -95,7 +95,7 @@ public class ConsoleFontFragment extends Fragment implements SharedPreferences.O
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mPref = new PascalPreferences(context);
+        mPref = new JavaPreferences(context);
     }
 
     @Override

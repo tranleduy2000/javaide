@@ -34,7 +34,7 @@ import android.widget.Toast;
 import com.duy.frontend.code_sample.activities.CodeSampleActivity;
 import com.duy.frontend.editor.EditorActivity;
 import com.duy.frontend.info.InfoActivity;
-import com.duy.frontend.setting.PascalPreferences;
+import com.duy.frontend.setting.JavaPreferences;
 import com.duy.frontend.setting.SettingsActivity;
 import com.duy.frontend.utils.StoreUtil;
 import com.duy.frontend.utils.DonateUtils;
@@ -50,12 +50,12 @@ public class MenuEditor {
     @Nullable
     private EditorControl listener;
     private Menu menu;
-    private PascalPreferences pascalPreferences;
+    private JavaPreferences pascalPreferences;
 
     public MenuEditor(@NonNull EditorActivity activity, @Nullable EditorControl listener) {
         this.activity = activity;
         this.listener = listener;
-        pascalPreferences = new PascalPreferences(this.activity);
+        pascalPreferences = new JavaPreferences(this.activity);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -19,13 +19,13 @@ package com.duy.frontend;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.duy.frontend.setting.PascalPreferences;
+import com.duy.frontend.setting.JavaPreferences;
 
 /**
  * Created by Duy on 02-Mar-17.
  */
 
-public class EditorSetting extends PascalPreferences {
+public class EditorSetting extends JavaPreferences {
     public EditorSetting(Context context) {
         super(context);
     }

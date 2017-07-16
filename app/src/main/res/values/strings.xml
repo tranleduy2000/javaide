@@ -397,4 +397,7 @@
     <string name="save_and_apply">Save and apply</string>
     <string name="create_new_theme">Create new theme</string>
     <string name="more_theme">Get premium version. Create your custom theme!</string>
+    <string name="java_for_android">Java for Android</string>
+    <string name="system_version">System version: </string>
+    <string name="install">Install</string>
 </resources>

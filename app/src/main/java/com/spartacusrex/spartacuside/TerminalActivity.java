@@ -61,7 +61,6 @@ import java.util.Date;
  * A terminal emulator activity.
  */
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class TerminalActivity extends Activity {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";

@@ -26,7 +26,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.duy.frontend.R;
-import com.duy.frontend.setting.PascalPreferences;
+import com.duy.frontend.setting.JavaPreferences;
 
 import java.util.LinkedList;
 
@@ -34,14 +34,14 @@ public class FontAdapter extends RecyclerView.Adapter<FontAdapter.ViewHolder> {
     private LayoutInflater inflater;
     private Context context;
     private LinkedList<FontEntry> listFonts = new LinkedList<>();
-    private PascalPreferences pascalPreferences;
+    private JavaPreferences pascalPreferences;
     @Nullable
     private OnFontSelectListener onFontSelectListener;
 
     public FontAdapter(Context context) {
         this.context = context;
         inflater = LayoutInflater.from(context);
-        pascalPreferences = new PascalPreferences(context);
+        pascalPreferences = new JavaPreferences(context);
         this.listFonts = FontManager.getAll(context);
     }
 

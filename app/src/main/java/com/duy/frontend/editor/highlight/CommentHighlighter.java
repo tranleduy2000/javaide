@@ -37,9 +37,9 @@ public class CommentHighlighter implements Highlighter {
      * match comment, include // { } (* *) comment
      */
     public static final Pattern COMMENTS = Pattern.compile(
-            "(//.*)|(/\\*(?:.|[\\n\\r])*?\\*/)" + //splash splash comment
-                    "|(\\{(?:.|[\\n\\r])*?\\})" + //{ } comment
-                    "|((\\(\\*)(?:.|[\\n\\r])*?(\\*\\)))"// (* *) comment
+            "(//.*)|(/\\*(?:.|[\\n\\r])*?\\*/)"  //splash splash comment
+//                   + "|(\\{(?:.|[\\n\\r])*?\\})"  //{ } comment
+//                  +  "|((\\(\\*)(?:.|[\\n\\r])*?(\\*\\)))"// (* *) comment
     );
     private ArrayList<Pair<Integer, Integer>> mCommentRegion = new ArrayList<>();
     private CodeTheme codeTheme;

@@ -28,37 +28,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.duy.frontend.editor.EditorListener;
-import com.duy.pascal.interperter.builtin_libraries.PascalLibraryManager;
-import com.duy.pascal.interperter.builtin_libraries.SystemLibrary;
-import com.duy.pascal.interperter.builtin_libraries.file.FileLib;
-import com.duy.pascal.interperter.builtin_libraries.io.IOLib;
-import com.duy.pascal.interperter.linenumber.LineInfo;
-import com.duy.pascal.interperter.parse_exception.ParsingException;
-import com.duy.pascal.interperter.parse_exception.convert.UnConvertibleTypeException;
-import com.duy.pascal.interperter.parse_exception.define.MainProgramNotFoundException;
-import com.duy.pascal.interperter.parse_exception.define.TypeIdentifierExpectException;
-import com.duy.pascal.interperter.parse_exception.define.UnknownIdentifierException;
-import com.duy.pascal.interperter.parse_exception.grouping.GroupingException;
-import com.duy.pascal.interperter.parse_exception.missing.MissingTokenException;
-import com.duy.pascal.interperter.parse_exception.value.ChangeValueConstantException;
-import com.duy.frontend.editor.indention.IndentCode;
 import com.duy.frontend.EditorControl;
 import com.duy.frontend.R;
 import com.duy.frontend.code.CompileManager;
-import com.duy.frontend.editor.completion.KeyWord;
 import com.duy.frontend.editor.view.EditorView;
-import com.duy.frontend.editor.view.LineUtils;
-import com.duy.frontend.editor.view.adapters.InfoItem;
 import com.duy.frontend.file.FileManager;
-import com.duy.frontend.structure.viewholder.StructureType;
 import com.duy.frontend.view.LockableScrollView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
 
 /**
  * Created by Duy on 15-Mar-17.
@@ -124,11 +102,11 @@ public class EditorFragment extends Fragment implements EditorListener {
 //                }
 //            });
 //        }
-        ArrayList<InfoItem> items = PascalLibraryManager.getAllMethodDescription(SystemLibrary.class, IOLib.class, FileLib.class);
-        for (String s : KeyWord.ALL_KEY_WORD) {
-            items.add(new InfoItem(StructureType.TYPE_KEY_WORD, s));
-        }
-        mCodeEditor.setSuggestData(items);
+//        ArrayList<InfoItem> items = PascalLibraryManager.getAllMethodDescription(SystemLibrary.class, IOLib.class, FileLib.class);
+//        for (String s : KeyWord.ALL_KEY_WORD) {
+//            items.add(new InfoItem(StructureType.TYPE_KEY_WORD, s));
+//        }
+//        mCodeEditor.setSuggestData(items);
         return view;
     }
 
@@ -159,23 +137,6 @@ public class EditorFragment extends Fragment implements EditorListener {
         mCodeEditor.restoreHistory(getFilePath());
     }
 
-    public void autoFix(ParsingException e) {
-        if (e instanceof TypeIdentifierExpectException) {
-            mCodeEditor.getAutoFixError().fixMissingType((TypeIdentifierExpectException) e);
-        } else if (e instanceof UnknownIdentifierException) {
-            mCodeEditor.getAutoFixError().fixMissingDefine((UnknownIdentifierException) e);
-        } else if (e instanceof UnConvertibleTypeException) {
-            mCodeEditor.getAutoFixError().fixUnConvertType((UnConvertibleTypeException) e);
-        } else if (e instanceof MissingTokenException) {
-            mCodeEditor.getAutoFixError().insertToken((MissingTokenException) e);
-        } else if (e instanceof ChangeValueConstantException) {
-            mCodeEditor.getAutoFixError().changeConstToVar((ChangeValueConstantException) e);
-        } else if (e instanceof GroupingException) {
-            mCodeEditor.getAutoFixError().fixGroupException((GroupingException) e);
-        } else if (e instanceof MainProgramNotFoundException) {
-            mCodeEditor.getAutoFixError().fixProgramNotFound();
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -226,15 +187,15 @@ public class EditorFragment extends Fragment implements EditorListener {
     @Override
     public void formatCode() {
         String text = getCode();
-        try {
-            IndentCode autoIndentCode;
-            autoIndentCode = new IndentCode(new StringReader(text));
-            StringBuilder result = autoIndentCode.getResult();
-            mCodeEditor.setTextHighlighted(result);
-            mCodeEditor.applyTabWidth(mCodeEditor.getText(), 0, mCodeEditor.getText().length());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            IndentCode autoIndentCode;
+//            autoIndentCode = new IndentCode(new StringReader(text));
+//            StringBuilder result = autoIndentCode.getResult();
+//            mCodeEditor.setTextHighlighted(result);
+//            mCodeEditor.applyTabWidth(mCodeEditor.getText(), 0, mCodeEditor.getText().length());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -280,19 +241,6 @@ public class EditorFragment extends Fragment implements EditorListener {
         return mCodeEditor;
     }
 
-    public void setLineError(@NonNull final LineInfo lineInfo) {
-        mCodeEditor.setLineError(lineInfo);
-        mCodeEditor.refresh();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mScrollView != null) {
-                    mScrollView.smoothScrollTo(0, LineUtils.getYAtLine(mScrollView,
-                            mCodeEditor.getLineCount(), lineInfo.getLine()));
-                }
-            }
-        }, 100);
-    }
 
     public void refreshCodeEditor() {
         mCodeEditor.updateFromSettings();

@@ -15,12 +15,9 @@
 -->
 
 <resources>
-    <style name="Theme" parent="@android:style/Theme.Light">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFrame">@null</item>
-    </style>
 
-    <style name="AppThemeDark" parent="Theme.AppCompat">
+
+    <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
 
         <item name="colorPrimary">@color/dark.color_primary</item>
         <item name="colorPrimaryDark">@color/dark.color_primary_dark</item>

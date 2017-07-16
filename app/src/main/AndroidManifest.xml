@@ -18,8 +18,7 @@
 
         <activity
             android:name="com.spartacusrex.spartacuside.Start"
-            android:launchMode="singleTask"
-            android:theme="@style/Theme">
+            android:launchMode="singleTask">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -27,11 +26,21 @@
             </intent-filter>
 
         </activity>
+        <activity
+            android:name=".editor.EditorActivity"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
+        <activity android:name=".run.ExecuteActivity"/>
 
         <activity
-            android:name="com.spartacusrex.spartacuside.Term"
+            android:name="com.spartacusrex.spartacuside.TerminalActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
-            android:theme="@style/Theme"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
 
         <activity android:name="com.spartacusrex.spartacuside.TermPreferences"/>

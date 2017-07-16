@@ -21,7 +21,7 @@ import android.content.Intent;
 
 import com.duy.frontend.debug.activities.DebugActivity;
 import com.duy.frontend.editor.EditorActivity;
-import com.duy.frontend.run.ExecuteActivity;
+import com.spartacusrex.spartacuside.TerminalActivity;
 
 /**
  * Created by Duy on 11-Feb-17.
@@ -41,7 +41,7 @@ public class CompileManager {
     }
 
     public static void execute(Activity activity, String name) {
-        Intent intent = new Intent(activity, ExecuteActivity.class);
+        Intent intent = new Intent(activity, TerminalActivity.class);
         intent.putExtra(FILE_PATH, name);
         activity.finish();
         activity.startActivity(intent);
@@ -55,7 +55,7 @@ public class CompileManager {
 
     // Execute compiled file
     public void execute(String name) {
-        Intent intent = new Intent(mActivity, ExecuteActivity.class);
+        Intent intent = new Intent(mActivity, TerminalActivity.class);
         intent.putExtra(FILE_PATH, name);
         mActivity.startActivity(intent);
     }

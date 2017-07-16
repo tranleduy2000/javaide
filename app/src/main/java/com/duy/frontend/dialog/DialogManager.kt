@@ -21,14 +21,10 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.support.v7.app.AlertDialog
 import android.view.View
-import android.widget.*
-import com.duy.pascal.interperter.parse_exception.ParsingException
-import com.duy.pascal.interperter.parse_exception.define.UnknownIdentifierException
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import com.duy.frontend.R
-import com.duy.frontend.code.ExceptionManager
-import com.duy.frontend.editor.EditorActivity
-import com.duy.frontend.editor.autofix.DefineType
-import com.duy.frontend.utils.DonateUtils
 
 /**
  * Created by Duy on 29-Mar-17.
@@ -63,60 +59,6 @@ class DialogManager {
             return builder.create()
         }
 
-        /**
-         * create and set event for error dialog
-         */
-        fun createErrorDialog(activity: EditorActivity,
-                              e: Exception): android.support.v7.app.AlertDialog {
-            val exceptionManager = ExceptionManager(activity)
-            val title = activity.getString(R.string.compile_error)
-            val msg = exceptionManager.getMessage(e)
-
-            //create builder
-            val builder = AlertDialog.Builder(activity)
-            builder.setView(R.layout.dialog_show_error)
-
-            //show dialog
-            val dialog = builder.create()
-            dialog.show()
-
-            //set title and message for dialog
-            val txtTitle = dialog.findViewById(R.id.txt_title) as TextView?
-            txtTitle?.text = title
-            val txtMsg = dialog.findViewById(R.id.txt_message) as TextView?
-            txtMsg?.text = msg
-
-            //set event for button
-            dialog.findViewById(R.id.btn_cancel)?.setOnClickListener { dialog.cancel() }
-
-            if (DonateUtils.DONATED) {
-                if (e is ParsingException) {
-                    if (e.isAutoFix) {
-                        var container: RadioGroup? = null
-                        if (e is UnknownIdentifierException) {
-                            container = dialog.findViewById(R.id.container_define)!! as RadioGroup
-                            container.visibility = View.VISIBLE
-                        }
-                        //set event for button Auto fix
-                        dialog.findViewById(R.id.btn_auto_fix)?.visibility = View.VISIBLE
-                        dialog.findViewById(R.id.btn_auto_fix)?.setOnClickListener {
-                            if (e is UnknownIdentifierException) {
-                                val checkedRadioButtonId = container?.checkedRadioButtonId
-                                when (checkedRadioButtonId) {
-                                    R.id.rad_var -> e.fitType = DefineType.DECLARE_VAR
-                                    R.id.rad_fun -> e.fitType = DefineType.DECLARE_FUNCTION
-                                    R.id.rad_const -> e.fitType = DefineType.DECLARE_CONST
-                                }
-                            }
-                            activity.autoFix(e)
-                            dialog.cancel()
-                        }
-                    }
-                }
-            }
-            return dialog
-
-        }
 
         fun createFinishDialog(activity: Activity,
                                title: CharSequence, msg: CharSequence,
@@ -142,7 +84,6 @@ class DialogManager {
             val editContent = alertDialog.findViewById(R.id.edit_content) as EditText?
             val btnSend = alertDialog.findViewById(R.id.btn_email) as Button?
             val editExpect = alertDialog.findViewById(R.id.edit_expect) as EditText?
-            assert(btnSend != null)
             btnSend!!.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View) {
                     sendBug()

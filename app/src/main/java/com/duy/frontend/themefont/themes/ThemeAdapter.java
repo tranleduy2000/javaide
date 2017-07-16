@@ -27,7 +27,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.duy.pascal.interperter.linenumber.LineInfo;
 import com.duy.frontend.R;
 import com.duy.frontend.code.CodeSample;
 import com.duy.frontend.editor.view.EditorView;
@@ -99,7 +98,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
         }
-        view.editorView.setLineError(new LineInfo(3, 0, ""));
+//        view.editorView.setLineError(new LineInfo(3, 0, ""));
         view.editorView.setCodeTheme(entry);
         view.editorView.setTextHighlighted(CodeSample.DEMO_THEME);
         view.txtTitle.setText(entry.getName());

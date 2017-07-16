@@ -47,6 +47,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputContentInfo;
 import android.view.inputmethod.InputMethodManager;
 
+import com.duy.frontend.R;
 import com.spartacusrex.spartacuside.model.TextRenderer;
 import com.spartacusrex.spartacuside.model.UpdateCallback;
 import com.spartacusrex.spartacuside.session.TermSession;
@@ -1265,6 +1266,7 @@ class PaintRenderer extends BaseTextRenderer {
     private int mCharHeight;
     private int mCharAscent;
     private int mCharDescent;
+
     public PaintRenderer(int fontSize, int forePaintColor, int backPaintColor) {
         super(forePaintColor, backPaintColor);
         mTextPaint = new Paint();

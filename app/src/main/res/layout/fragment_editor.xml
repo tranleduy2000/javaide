@@ -13,14 +13,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<com.duy.pascal.frontend.view.LockableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.duy.frontend.view.LockableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/vertical_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:overScrollMode="always">
 
-    <!--    <com.duy.pascal.frontend.view.LockableHorizontalScrollView
+    <!--    <com.duy.frontend.view.LockableHorizontalScrollView
             android:id="@+id/horizontal_scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">-->
 
-    <com.duy.pascal.frontend.editor.view.EditorView
+    <com.duy.frontend.editor.view.EditorView
         android:id="@+id/code_editor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,6 +42,6 @@
         android:inputType="textMultiLine|textNoSuggestions" />
     <!-- </LinearLayout>
 
- </com.duy.pascal.frontend.view.LockableHorizontalScrollView>
+ </com.duy.frontend.view.LockableHorizontalScrollView>
 -->
-</com.duy.pascal.frontend.view.LockableScrollView>
+</com.duy.frontend.view.LockableScrollView>

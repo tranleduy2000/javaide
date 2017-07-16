@@ -25,16 +25,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.duy.frontend.R;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.ServiceForegroundCompat;
 import com.spartacusrex.spartacuside.util.TermSettings;
 import com.spartacusrex.spartacuside.util.hardkeymappings;
-import com.spartacusrex.spartacuside.web.webserver;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,25 +51,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TermService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
-    /* Parallels the value of START_STICKY on API Level >= 5 */
-    private static final int COMPAT_START_STICKY = 1;
 
     private static final int RUNNING_NOTIFICATION = 1;
     private static final String TAG = "TermService";
+    private static final String SRC_DIR = Environment.getExternalStorageDirectory() + File.separator +
+            "JavaNIDE" + File.separator + "src";
     /*
      * Key logger HACK to get the keycodes..
      */
     private static hardkeymappings mHardKeys = new hardkeymappings();
     private static boolean mLogKeys = false;
-    //The Global Key logs File..
-    private static File mKeyLogFile = null;
     private static FileOutputStream mKeyLogFileOutputStream = null;
     private static PrintWriter mKeyLogger = null;
     private final IBinder mTSBinder = new TSBinder();
     boolean mBacktoESC = false;
     private ServiceForegroundCompat compat;
     private ArrayList<TermSession> mTermSessions;
-    private webserver mServer;
     private SharedPreferences mPrefs;
     private TermSettings mSettings;
     private boolean mSessionInit;
@@ -99,7 +97,7 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
     }
 
     private void initKeyLog() {
-        mKeyLogFile = new File(getFilesDir(), ".keylog");
+        File mKeyLogFile = new File(getFilesDir(), ".keylog");
         try {
             mKeyLogFileOutputStream = new FileOutputStream(mKeyLogFile, true);
             mKeyLogger = new PrintWriter(mKeyLogFileOutputStream);
@@ -107,7 +105,6 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
         } catch (FileNotFoundException fileNotFoundException) {
             Log.v("KEY_LOGGER", "Error - could not create ~/.keylog");
         }
-
         mLogKeys = true;
     }
 
@@ -163,8 +160,7 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
         builder.setContentText(getString(R.string.service_notify_text));
         builder.setSmallIcon(R.drawable.app_terminal);
         builder.setContentIntent(pendingIntent);
-        Notification notification = builder.build();
-        return notification;
+        return builder.build();
     }
 
     @Override
@@ -290,9 +286,7 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
         Log.d(TAG, "createBashInit() called with: zHome = [" + zHome + "]");
 
         File init = new File(zHome, ".init");
-        if (init.exists()) {
-            init.delete();
-        }
+        if (init.exists()) init.delete();
 
         try {
             //Create from scratch
@@ -331,9 +325,8 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
             pw.println("fi");
             pw.println("");
             pw.println("# And finally cd $HOME");
-//            pw.println("cd $HOME/system/src/helloworld");
             //set default dir
-            pw.println("cd /sdcard");
+            pw.println("cd " + SRC_DIR);
             pw.println("");
             pw.flush();
             pw.close();

@@ -22,12 +22,12 @@ package com.duy.frontend.editor.completion;
 
 public class Template {
     public static final String PROGRAM_TEMPLATE =
-            "program %s;\n" +
-                    "uses crt;\n" +
-                    "begin\n" +
-                    "    " +
-                    "    readln;\n" +
-                    "end.";
+            "\n" +
+                    "public class %1$s {\n" +
+                    "    public static void main(String[] args) {\n" +
+                    "        \n" +
+                    "    }\n" +
+                    "}\n";
 
     public static final String UNIT_TEMPlATE =
             "unit %s;\n" +

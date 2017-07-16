@@ -16,7 +16,8 @@
 
 package com.duy.frontend.editor.completion;
 
-import com.duy.pascal.interperter.utils.ArrayUtil;
+
+import com.duy.frontend.utils.ArrayUtil;
 
 /**
  * Created by Duy on 30-Mar-17.

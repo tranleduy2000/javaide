@@ -19,8 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.duy.pascal.frontend.editor.EditorActivity">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
@@ -50,12 +49,12 @@
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_keyboard_tab_white_24dp" />
 
-        <com.duy.pascal.frontend.view.SymbolListView
+        <com.duy.frontend.view.SymbolListView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_editor_height">
 
-        </com.duy.pascal.frontend.view.SymbolListView>
+        </com.duy.frontend.view.SymbolListView>
 
     </LinearLayout>
 

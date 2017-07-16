@@ -443,7 +443,7 @@ public class FragmentFileManager extends Fragment implements
                     tempFolder = tempFolder.getParentFile();
                 }
 
-                String[] canOpen = {"txt", "pas", "nide", "inp", "out"};
+                String[] canOpen = {"java"};
 
                 final LinkedList<FileDetail> fileDetails = new LinkedList<>();
                 final LinkedList<FileDetail> folderDetails = new LinkedList<>();

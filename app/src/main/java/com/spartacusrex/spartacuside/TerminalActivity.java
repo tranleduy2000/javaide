@@ -45,32 +45,30 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.duy.frontend.R;
+import com.duy.frontend.code.CompileManager;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.TermSettings;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 
 /**
  * A terminal emulator activity.
  */
 
-public class Term extends Activity {
+public class TerminalActivity extends Activity {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
     /**
      * The name of the ViewFlipper in the resources.
      */
     private static final int VIEW_FLIPPER = R.id.view_flipper;
-    private final static int SELECT_TEXT_ID = 0;
-    private final static int COPY_ALL_ID = 1;
-    private final static int PASTE_ID = 2;
-    private final static int CLEAR_ALL_ID = 3;
+    private static final String TAG = "TerminalActivity";
     /**
      * The ViewFlipper which holds the collection of EmulatorView widgets.
      */
@@ -81,11 +79,6 @@ public class Term extends Activity {
     private boolean mAlreadyStarted = false;
     private Intent TSIntent;
     private int onResumeSelectWindow = -1;
-
-
-    //    private PowerManager.WakeLock mWakeLock;
-    //    private WifiManager.WifiLock mWifiLock;
-
     private TermService mTermService;
     private ServiceConnection mTSConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -109,36 +102,53 @@ public class Term extends Activity {
 
         TSIntent = new Intent(this, TermService.class);
 
-        //Not Needed..
-        //startService(TSIntent);
-
         if (!bindService(TSIntent, mTSConnection, BIND_AUTO_CREATE)) {
             Log.w(TermDebug.LOG_TAG, "bind to service failed!");
         }
 
         setContentView(R.layout.term_activity);
-        mViewFlipper = (TermViewFlipper) findViewById(VIEW_FLIPPER);
+        mViewFlipper = findViewById(VIEW_FLIPPER);
         registerForContextMenu(mViewFlipper);
-
-//        PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-//        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TermDebug.LOG_TAG);
-//        mWakeLock.acquire();
-
-//        WifiManager wm = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-//        mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, TermDebug.LOG_TAG);
 
         updatePrefs();
         mAlreadyStarted = true;
+
+    }
+
+    private void compileAndRun(String filePath) {
+        Log.d(TAG, "compileAndRun() called with: filePath = [" + filePath + "]");
+
+        File home = getFilesDir();
+        File init = new File(home, ".init");
+        File javaFile = new File(filePath);
+        File parent = javaFile.getParentFile();
+        String nameWithoutExtension = javaFile.getName().substring(0, javaFile.getName().indexOf("."));
+        try {
+            FileOutputStream fos = new FileOutputStream(init);
+            PrintWriter pw = new PrintWriter(fos);
+            pw.print("cd");
+            pw.println("cd " + parent.getPath());
+            pw.println("javac -verbose " + javaFile.getName());
+            pw.println("dx --dex --verbose --output=" + nameWithoutExtension + ".jar " + "./" + nameWithoutExtension + ".class");
+            pw.println("java -jar " + nameWithoutExtension + ".jar " + nameWithoutExtension);
+            pw.flush();
+            pw.close();
+            fos.close();
+
+            //Make sure the /tmp folder ALWAYS exists
+            File temp = new File(home, "tmp");
+            if (!temp.exists()) temp.mkdirs();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     private void populateViewFlipper() {
+        Log.d(TAG, "populateViewFlipper() called");
+
         if (mTermService != null) {
             mTermSessions = mTermService.getSessions(getFilesDir());
-
-//            if (mTermSessions.size() == 0) {
-//                mTermSessions.add(createTermSession());
-//            }
 
             for (TermSession session : mTermSessions) {
                 EmulatorView view = createEmulatorView(session);
@@ -146,10 +156,14 @@ public class Term extends Activity {
             }
 
             updatePrefs();
+
+
+            Intent intent = getIntent();
+            String filePath = intent.getStringExtra(CompileManager.FILE_PATH);
+            if (filePath != null) {
+                compileAndRun(filePath);
+            }
         }
-
-        //Set back to ESC
-
     }
 
     @Override
@@ -157,18 +171,9 @@ public class Term extends Activity {
         super.onDestroy();
         mViewFlipper.removeAllViews();
         unbindService(mTSConnection);
-
-        //stopService(TSIntent);
-
         mTermService = null;
         mTSConnection = null;
 
-//        if (mWakeLock.isHeld()) {
-//            mWakeLock.release();
-//        }
-//        if (mWifiLock.isHeld()) {
-//            mWifiLock.release();
-//        }
     }
 
     private void restart() {
@@ -176,38 +181,6 @@ public class Term extends Activity {
         finish();
     }
 
-    public String getLocalIpAddress() {
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
-                NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
-                        return inetAddress.getHostAddress().toString();
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            Log.e("SpartacusRex GET LOCAL IP : ", ex.toString());
-        }
-
-        return null;
-    }
-
-    /*private TermSession createTermSession() {
-        String HOME = getFilesDir().getPath();
-        String APK  = getPackageResourcePath();
-        String IP   = getLocalIpAddress();
-        if(IP == null){
-           IP = "127.0.0.1";
-        }
-        
-        String initialCommand = "export HOME="+HOME+";cd $HOME;~/system/init "+HOME+" "+APK+" "+IP;
-//        String initialCommand = "export HOME="+HOME+";cd $HOME";
-
-
-        return new TermSession(this,mSettings, null, initialCommand);
-    }*/
 
     private EmulatorView createEmulatorView(TermSession session) {
         DisplayMetrics metrics = new DisplayMetrics();
@@ -338,32 +311,6 @@ public class Term extends Activity {
             doEmailTranscript();
         }
 
-        /*if (id == R.id.menu_preferences) {
-            doPreferences();
-        } else if (id == R.id.menu_new_window) {
-            //doCreateNewWindow();
-            //show keyboards..
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showInputMethodPicker();
-            
-        } else if (id == R.id.menu_close_window) {
-            doCloseWindow();
-        } else if (id == R.id.menu_window_list) {
-            startActivityForResult(new Intent(this, WindowList.class), REQUEST_CHOOSE_WINDOW);
-        } else if (id == R.id.menu_reset) {
-            doResetTerminal();
-        } else if (id == R.id.menu_send_email) {
-            doEmailTranscript();
-        } else if (id == R.id.menu_special_keys) {
-            doDocumentKeys();
-        } else if (id == R.id.menu_toggle_soft_keyboard) {
-            doToggleSoftKeyboard();
-        } else if (id == R.id.menu_toggle_wakelock) {
-            doToggleWakeLock();
-        } else if (id == R.id.menu_toggle_wifilock) {
-            doToggleWifiLock();
-        }*/
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -425,63 +372,24 @@ public class Term extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        /*MenuItem wakeLockItem = menu.findItem(R.id.menu_toggle_wakelock);
-        MenuItem wifiLockItem = menu.findItem(R.id.menu_toggle_wifilock);
-        if (mWakeLock.isHeld()) {
-            wakeLockItem.setTitle(R.string.disable_wakelock);
-        } else {
-            wakeLockItem.setTitle(R.string.enable_wakelock);
-        }
-        if (mWifiLock.isHeld()) {
-            wifiLockItem.setTitle(R.string.disable_wifilock);
-        } else {
-            wifiLockItem.setTitle(R.string.enable_wifilock);
-        }*/
-
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-
         //Show alist of windows
         menu.setHeaderTitle("Terminals");
         menu.add(0, 0, 0, "Terminal 1");
         menu.add(0, 1, 1, "Terminal 2");
         menu.add(0, 2, 2, "Terminal 3");
         menu.add(0, 3, 3, "Terminal 4");
-
-//      menu.setHeaderTitle(R.string.edit_text);
-//      menu.add(0, SELECT_TEXT_ID, 0, R.string.select_text);
-//      menu.add(0, COPY_ALL_ID, 0, R.string.copy_all);
-//      menu.add(0, PASTE_ID, 0,  R.string.paste);
-//      if (!canPaste()) {
-//          menu.getItem(PASTE_ID).setEnabled(false);
-//      }
-
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         //Set the selected window..
-
         mViewFlipper.setDisplayedChild(item.getItemId());
-
-        /*switch (item.getItemId()) {
-          case SELECT_TEXT_ID:
-            getCurrentEmulatorView().toggleSelectingText();
-            return true;
-          case COPY_ALL_ID:
-            doCopyAll();
-            return true;
-          case PASTE_ID:
-            doPaste();
-            return true;
-          default:
-            return super.onContextItemSelected(item);
-          }*/
-
         return super.onContextItemSelected(item);
     }
 

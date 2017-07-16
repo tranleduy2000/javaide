@@ -36,7 +36,7 @@
             android:foreground="?attr/selectableItemBackground"
             app:cardUseCompatPadding="true">
 
-            <com.duy.pascal.frontend.editor.view.EditorView
+            <com.duy.frontend.editor.view.EditorView
                 android:id="@+id/editor_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

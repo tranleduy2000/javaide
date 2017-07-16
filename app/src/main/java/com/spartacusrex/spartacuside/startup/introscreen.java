@@ -22,7 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.duy.frontend.R;
-import com.spartacusrex.spartacuside.Term;
+import com.spartacusrex.spartacuside.TerminalActivity;
 import com.spartacusrex.spartacuside.TermService;
 import com.spartacusrex.spartacuside.startup.tutorial.tutlist;
 
@@ -45,17 +45,17 @@ public class introscreen extends Activity implements OnClickListener {
         mTSIntent = new Intent(this, TermService.class);
         startService(mTSIntent);
 
-        Button but = (Button) findViewById(R.id.main_start);
+        Button but = findViewById(R.id.main_start);
         but.setOnClickListener(this);
-        but = (Button) findViewById(R.id.main_stop);
+        but = findViewById(R.id.main_stop);
         but.setOnClickListener(this);
-        but = (Button) findViewById(R.id.main_keyboard);
+        but = findViewById(R.id.main_keyboard);
         but.setOnClickListener(this);
-        but = (Button) findViewById(R.id.main_install);
+        but = findViewById(R.id.main_install);
         but.setOnClickListener(this);
-        but = (Button) findViewById(R.id.main_help);
+        but = findViewById(R.id.main_help);
         but.setOnClickListener(this);
-        but = (Button) findViewById(R.id.main_options);
+        but = findViewById(R.id.main_options);
         but.setOnClickListener(this);
 
         AlertDialog.Builder build = new AlertDialog.Builder(this);
@@ -93,7 +93,7 @@ public class introscreen extends Activity implements OnClickListener {
         build.setNegativeButton("Later", new android.content.DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 //Start the Terminal
-                startActivity(new Intent(introscreen.this, Term.class));
+                startActivity(new Intent(introscreen.this, TerminalActivity.class));
 
                 mConfirmDialog.dismiss();
             }
@@ -117,7 +117,7 @@ public class introscreen extends Activity implements OnClickListener {
                 mInstallDialog.show();
             } else {
                 //Start the Terminal
-                startActivity(new Intent(introscreen.this, Term.class));
+                startActivity(new Intent(introscreen.this, TerminalActivity.class));
             }
 
         } else if (zButton == findViewById(R.id.main_stop)) {

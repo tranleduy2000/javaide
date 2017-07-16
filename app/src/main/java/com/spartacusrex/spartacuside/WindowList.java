@@ -29,10 +29,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.duy.frontend.R;
 import com.spartacusrex.spartacuside.session.TermSession;
 
 import java.util.ArrayList;
@@ -96,7 +96,7 @@ public class WindowList extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Intent data = new Intent();
-        data.putExtra(Term.EXTRA_WINDOW_ID, position - 1);
+        data.putExtra(TerminalActivity.EXTRA_WINDOW_ID, position - 1);
         setResult(RESULT_OK, data);
         finish();
     }
@@ -107,7 +107,7 @@ public class WindowList extends ListActivity {
      * button being triggered.
      * Idea and code shamelessly borrowed from the Android browser's tabs list.
      */
-    private static class CloseButton extends ImageView {
+    private static class CloseButton extends android.support.v7.widget.AppCompatImageView {
         public CloseButton(Context context) {
             super(context);
         }

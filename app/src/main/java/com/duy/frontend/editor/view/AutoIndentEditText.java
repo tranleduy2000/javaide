@@ -26,7 +26,6 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 
-import com.duy.frontend.editor.indention.IndentCode;
 import com.duy.frontend.editor.completion.Patterns;
 
 import java.util.regex.Matcher;
@@ -37,6 +36,7 @@ import java.util.regex.Matcher;
 
 public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
     public static final String TAB_CHARACTER = "    ";
+    public static final String TAB = "  "; //2 space
     private static final String TAG = "AutoIndentEditText";
 
     public AutoIndentEditText(Context context) {
@@ -234,7 +234,7 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
         String prev = dest.subSequence(start, dstart).toString().trim();
         Matcher matcher = Patterns.OPEN_PATTERN.matcher(prev);
         if (matcher.find()) {
-            indent += IndentCode.TAB;
+            indent += TAB;
         }
         return source + indent;
     }

@@ -37,7 +37,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -47,19 +46,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ScrollView;
 import android.widget.Scroller;
 
-import com.duy.pascal.interperter.core.PascalCompiler;
-import com.duy.pascal.interperter.linenumber.LineInfo;
-import com.duy.pascal.interperter.parse_exception.ParsingException;
-import com.duy.pascal.interperter.source_include.ScriptSource;
 import com.duy.frontend.R;
-import com.duy.frontend.editor.autofix.AutoFixError;
 import com.duy.frontend.editor.highlight.CodeHighlighter;
+import com.duy.frontend.themefont.themes.ThemeManager;
 import com.duy.frontend.themefont.themes.database.CodeTheme;
 import com.duy.frontend.themefont.themes.database.CodeThemeUtils;
-import com.duy.frontend.themefont.themes.ThemeManager;
 
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -122,7 +114,6 @@ public class HighlightEditor extends CodeSuggestsEditText
      */
     private EditTextChangeListener mChangeListener;
     private int numberWidth = 0;
-    private AutoFixError mAutoFixError;
     private CodeHighlighter mHighlighter;
     private final Runnable colorRunnable_duringEditing =
             new Runnable() {
@@ -167,9 +158,6 @@ public class HighlightEditor extends CodeSuggestsEditText
         refresh();
     }
 
-    public AutoFixError getAutoFixError() {
-        return mAutoFixError;
-    }
 
     public boolean isAutoCompile() {
         return autoCompile;
@@ -189,7 +177,6 @@ public class HighlightEditor extends CodeSuggestsEditText
 
     private void setup(Context context) {
         this.mContext = context;
-        mAutoFixError = new AutoFixError(this);
 
         lineUtils = new LineUtils();
         mPaintNumbers = new Paint();
@@ -495,41 +482,41 @@ public class HighlightEditor extends CodeSuggestsEditText
 
     private void highlightLineError(Editable e) {
         try {
-            //high light error lineInfo
-            if (lineError != null) {
-                Layout layout = getLayout();
-                int line = lineError.getLine();
-                int temp = line;
-                while (realLines[temp] < line) temp++;
-                line = temp;
-                if (layout != null && line < getLineCount()) {
-                    int lineStart = getLayout().getLineStart(line);
-                    int lineEnd = getLayout().getLineEnd(line);
-                    lineStart += lineError.getColumn();
-
-                    //check if it contains offset from start index error to
-                    //(start + offset) index
-                    if (lineError.getLength() > -1) {
-                        lineEnd = lineStart + lineError.getLength();
-                        Log.d(TAG, "highlightLineError: " + lineError.getLength());
-                    }
-
-                    //normalize
-                    lineStart = Math.max(0, lineStart);
-                    lineEnd = Math.min(lineEnd, getText().length());
-
-                    if (lineStart < lineEnd) {
-                        e.setSpan(new BackgroundColorSpan(codeTheme.getErrorColor()),
-                                lineStart,
-                                lineEnd,
-                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        if (!isAutoCompile()) {
-                            setSelection(lineEnd);
-                        }
-                    }
-
-                }
-            }
+//            //high light error lineInfo
+//            if (lineError != null) {
+//                Layout layout = getLayout();
+//                int line = lineError.getLine();
+//                int temp = line;
+//                while (realLines[temp] < line) temp++;
+//                line = temp;
+//                if (layout != null && line < getLineCount()) {
+//                    int lineStart = getLayout().getLineStart(line);
+//                    int lineEnd = getLayout().getLineEnd(line);
+//                    lineStart += lineError.getColumn();
+//
+//                    //check if it contains offset from start index error to
+//                    //(start + offset) index
+//                    if (lineError.getLength() > -1) {
+//                        lineEnd = lineStart + lineError.getLength();
+//                        Log.d(TAG, "highlightLineError: " + lineError.getLength());
+//                    }
+//
+//                    //normalize
+//                    lineStart = Math.max(0, lineStart);
+//                    lineEnd = Math.min(lineEnd, getText().length());
+//
+//                    if (lineStart < lineEnd) {
+//                        e.setSpan(new BackgroundColorSpan(codeTheme.getErrorColor()),
+//                                lineStart,
+//                                lineEnd,
+//                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                        if (!isAutoCompile()) {
+//                            setSelection(lineEnd);
+//                        }
+//                    }
+//
+//                }
+//            }
         } catch (Exception ignored) {
         }
     }
@@ -695,39 +682,39 @@ public class HighlightEditor extends CodeSuggestsEditText
     }
 
     public void pinLine(@Nullable LineInfo lineInfo) {
-        Layout layout = getLayout();
-        Editable e = getEditableText();
-
-        if (lastPinLine < getLineCount() && lastPinLine >= 0) {
-            int lineStart = getLayout().getLineStart(lastPinLine);
-            int lineEnd = getLayout().getLineEnd(lastPinLine);
-            BackgroundColorSpan[] backgroundColorSpan = e.getSpans(lineStart, lineEnd,
-                    BackgroundColorSpan.class);
-            for (BackgroundColorSpan colorSpan : backgroundColorSpan) {
-                e.removeSpan(colorSpan);
-            }
-        }
-        if (lineInfo == null) return;
-        if (layout != null && lineInfo.getLine() < getLineCount()) {
-            try {
-                int lineStart = getLayout().getLineStart(lineInfo.getLine());
-                int lineEnd = getLayout().getLineEnd(lineInfo.getLine());
-                lineStart += lineInfo.getColumn();
-
-                //normalize
-                lineStart = Math.max(0, lineStart);
-                lineEnd = Math.min(lineEnd, getText().length());
-
-                if (lineStart < lineEnd) {
-                    e.setSpan(new BackgroundColorSpan(codeTheme.getErrorColor()),
-                            lineStart,
-                            lineEnd,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-                lastPinLine = lineInfo.getLine();
-            } catch (Exception ignored) {
-            }
-        }
+//        Layout layout = getLayout();
+//        Editable e = getEditableText();
+//
+//        if (lastPinLine < getLineCount() && lastPinLine >= 0) {
+//            int lineStart = getLayout().getLineStart(lastPinLine);
+//            int lineEnd = getLayout().getLineEnd(lastPinLine);
+//            BackgroundColorSpan[] backgroundColorSpan = e.getSpans(lineStart, lineEnd,
+//                    BackgroundColorSpan.class);
+//            for (BackgroundColorSpan colorSpan : backgroundColorSpan) {
+//                e.removeSpan(colorSpan);
+//            }
+//        }
+//        if (lineInfo == null) return;
+//        if (layout != null && lineInfo.getLine() < getLineCount()) {
+//            try {
+//                int lineStart = getLayout().getLineStart(lineInfo.getLine());
+//                int lineEnd = getLayout().getLineEnd(lineInfo.getLine());
+//                lineStart += lineInfo.getColumn();
+//
+//                //normalize
+//                lineStart = Math.max(0, lineStart);
+//                lineEnd = Math.min(lineEnd, getText().length());
+//
+//                if (lineStart < lineEnd) {
+//                    e.setSpan(new BackgroundColorSpan(codeTheme.getErrorColor()),
+//                            lineStart,
+//                            lineEnd,
+//                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                }
+//                lastPinLine = lineInfo.getLine();
+//            } catch (Exception ignored) {
+//            }
+//        }
     }
 
     public void highlightText() {
@@ -881,19 +868,19 @@ public class HighlightEditor extends CodeSuggestsEditText
     private class CompileRunnable implements Runnable {
         @Override
         public void run() {
-            try {
-                PascalCompiler.loadPascal("temp", new StringReader(getCleanText()),
-                        new ArrayList<ScriptSource>(), null);
-                lineError = null;
-            } catch (ParsingException e) {
-                if (e.getLineInfo() != null) {
-                    synchronized (objectThread) {
-                        lineError = e.getLineInfo();
-                    }
-                }
-                e.printStackTrace();
-            } catch (Exception ignored) {
-            }
+//            try {
+//                PascalCompiler.loadPascal("temp", new StringReader(getCleanText()),
+//                        new ArrayList<ScriptSource>(), null);
+//                lineError = null;
+//            } catch (ParsingException e) {
+//                if (e.getLineInfo() != null) {
+//                    synchronized (objectThread) {
+//                        lineError = e.getLineInfo();
+//                    }
+//                }
+//                e.printStackTrace();
+//            } catch (Exception ignored) {
+//            }
         }
 
 

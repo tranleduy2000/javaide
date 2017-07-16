@@ -110,9 +110,9 @@ class DialogCreateNewFile : AppCompatDialogFragment() {
             return null
         }
         if (checkBoxInp!!.isChecked && !fileName.contains(".")) {
-            fileName += ".inp"
+            fileName += ".java"
         } else if ((checkBoxPas!!.isChecked || checkBoxUnit!!.isChecked) && !fileName.contains(".")) {
-            fileName += ".pas"
+            fileName += ".java"
         }
         var file = File(FileManager.getApplicationPath() + fileName)
         if (file.exists()) {

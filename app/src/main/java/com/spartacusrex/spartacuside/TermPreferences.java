@@ -19,6 +19,8 @@ package com.spartacusrex.spartacuside;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
+import com.duy.frontend.R;
+
 public class TermPreferences extends PreferenceActivity {
 
     @Override

@@ -16,10 +16,11 @@
 
 package com.duy.frontend.editor.completion;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by Duy on 22-May-17.
  */
-
 public class Template {
     public static final String PROGRAM_TEMPLATE =
             "\n" +
@@ -29,33 +30,27 @@ public class Template {
                     "    }\n" +
                     "}\n";
 
-    public static final String UNIT_TEMPlATE =
-            "unit %s;\n" +
-                    "interface\n" +
-                    "    \n" +
-                    "implementation\n" +
-                    "    \n" +
-                    "initialization\n" +
-                    "begin\n" +
-                    "    \n" +
-                    "end;\n" +
-                    "finalization\n" +
-                    "begin\n" +
-                    "    \n" +
-                    "end;\n" +
-                    "end.";
+    private static final String INTERFACE_TEMPLATE =
+            "\n" +
+                    "public interface %1$s {\n" +
+                    "}\n";
+    private static final String ENUM_TEMPLATE =
+            "\n" +
+                    "public enum %1$s {\n" +
+                    "}\n";
 
-    public static final String FUNCTION_TEMPLATE =
-            "\nfunction %1$s( ) : ;\n" +
-                    "begin\n" +
-                    "    \n" +
-                    "end;\n";
-
-    public static String createProgramTemplate(String name) {
+    @NonNull
+    public static String createClass(String name) {
         return String.format(PROGRAM_TEMPLATE, name);
     }
 
-    public static String createUnitTemplate(String name) {
-        return String.format(UNIT_TEMPlATE, name);
+    @NonNull
+    public static String createEnum(String name) {
+        return String.format(ENUM_TEMPLATE, name);
+    }
+
+    @NonNull
+    public static String createInterface(@NonNull String name) {
+        return String.format(INTERFACE_TEMPLATE, name);
     }
 }

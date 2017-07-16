@@ -33,6 +33,7 @@
 
         <activity android:name=".run.ExecuteActivity"/>
         <activity android:name=".setting.SettingsActivity"/>
+        <activity android:name=".themefont.activities.ThemeFontActivity"/>
         <activity
             android:name=".system.InstallActivity"
             android:configChanges="keyboardHidden|screenSize|screenLayout|orientation|keyboard"/>

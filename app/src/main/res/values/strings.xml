@@ -400,4 +400,7 @@
     <string name="java_for_android">Java for Android</string>
     <string name="system_version">System version: </string>
     <string name="install">Install</string>
+    <string name="class_">Class</string>
+    <string name="interface_">Interface</string>
+    <string name="enum_">Enum</string>
 </resources>

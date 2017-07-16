@@ -213,8 +213,8 @@ public class FragmentFileManager extends Fragment implements
                     return;
                 }
 
-                RadioButton checkBoxPas = (RadioButton) alertDialog.findViewById(R.id.rad_pas);
-                RadioButton checkBoxInp = (RadioButton) alertDialog.findViewById(R.id.rad_inp);
+                RadioButton checkBoxPas = (RadioButton) alertDialog.findViewById(R.id.rad_class);
+                RadioButton checkBoxInp = (RadioButton) alertDialog.findViewById(R.id.rad_enum);
 
                 if (checkBoxInp != null && checkBoxInp.isChecked()) fileName += ".inp";
                 else if (checkBoxPas.isChecked()) fileName += ".pas";

@@ -15,19 +15,20 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <item
         android:id="@+id/action_compile"
         android:icon="@drawable/ic_check_circle_white_24dp"
         android:title="@string/compile"
-        app:showAsAction="always" />
+        android:visible="false"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/nav_run"
         android:icon="@drawable/ic_play_arrow_white_24dp"
         android:title="@string/run"
-        app:showAsAction="always" />
+        app:showAsAction="always"/>
 
     <item
         android:icon="@drawable/ic_folder_white_24dp"
@@ -38,19 +39,19 @@
             <item
                 android:id="@+id/action_new_file"
                 android:icon="@drawable/ic_fiber_new_white_24dp"
-                android:title="@string/new_file" />
+                android:title="@string/new_file"/>
             <item
                 android:id="@+id/action_open_file"
                 android:icon="@drawable/ic_folder_open_white_24dp"
-                android:title="@string/open_file" />
+                android:title="@string/open_file"/>
             <item
                 android:id="@+id/action_save"
                 android:icon="@drawable/ic_save_white_24dp"
-                android:title="@string/save" />
+                android:title="@string/save"/>
             <item
                 android:id="@+id/action_save_as"
                 android:icon="@drawable/ic_save_white_24dp"
-                android:title="@string/save_as" />
+                android:title="@string/save_as"/>
 
             <item
                 android:id="@+id/action_auto_save"
@@ -58,7 +59,7 @@
                 android:checked="true"
                 android:enabled="false"
                 android:icon="@drawable/ic_save_white_24dp"
-                android:title="@string/auto_save" />
+                android:title="@string/auto_save"/>
 
             <!--<item-->
             <!--android:id="@+id/action_open_file"-->
@@ -76,20 +77,20 @@
             <item
                 android:id="@+id/action_undo"
                 android:icon="@drawable/ic_undo_white_24dp"
-                android:title="@string/undo" />
+                android:title="@string/undo"/>
             <item
                 android:id="@+id/action_redo"
                 android:icon="@drawable/ic_redo_white_24dp"
-                android:title="@string/redo" />
+                android:title="@string/redo"/>
 
             <item
                 android:id="@+id/action_paste"
                 android:icon="@drawable/ic_content_paste_white_24dp"
-                android:title="@string/paste" />
+                android:title="@string/paste"/>
             <item
                 android:id="@+id/action_copy_all"
                 android:icon="@drawable/ic_content_copy_white_24dp"
-                android:title="@string/copy_all" />
+                android:title="@string/copy_all"/>
         </menu>
     </item>
 
@@ -98,7 +99,8 @@
         android:id="@+id/action_debug"
         android:icon="@drawable/ic_bug_report_white_24dp"
         android:title="@string/debug"
-        app:showAsAction="ifRoom" />
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
     <item
         android:icon="@drawable/ic_build_white_24dp"
         android:title="@string/tool"
@@ -107,21 +109,21 @@
             <item
                 android:id="@+id/action_find"
                 android:icon="@drawable/ic_search_white_24dp"
-                android:title="@string/find" />
+                android:title="@string/find"/>
 
             <item
                 android:id="@+id/action_find_and_replace"
                 android:icon="@drawable/ic_find_replace_white_24dp"
-                android:title="@string/find_replace" />
+                android:title="@string/find_replace"/>
             <item
                 android:id="@+id/action_goto_line"
                 android:icon="@drawable/ic_format_list_numbered_white_24dp"
-                android:title="@string/goto_line" />
+                android:title="@string/goto_line"/>
 
             <item
                 android:id="@+id/action_format"
                 android:icon="@drawable/ic_format_indent_increase_white_24dp"
-                android:title="@string/format_code" />
+                android:title="@string/format_code"/>
         </menu>
     </item>
 
@@ -135,22 +137,22 @@
                 android:id="@+id/action_edit_word_wrap"
                 android:checkable="true"
                 android:icon="@drawable/ic_wrap_text_white_24dp"
-                android:title="@string/word_wrap" />
+                android:title="@string/word_wrap"/>
             <item
                 android:id="@+id/action_show_symbol"
                 android:checkable="true"
                 android:icon="@drawable/ic_apps_white_24dp"
-                android:title="@string/show_symbol" />
+                android:title="@string/show_symbol"/>
             <item
                 android:id="@+id/action_show_line"
                 android:checkable="true"
                 android:icon="@drawable/ic_format_list_numbered_white_24dp"
-                android:title="@string/show_line" />
+                android:title="@string/show_line"/>
             <item
                 android:id="@+id/action_show_popup"
                 android:checkable="true"
                 android:icon="@drawable/ic_chat_bubble_outline_white_24dp"
-                android:title="@string/show_suggest_popup" />
+                android:title="@string/show_suggest_popup"/>
         </menu>
     </item>
 
@@ -158,28 +160,29 @@
         android:id="@+id/action_more_feature"
         android:icon="@drawable/ic_more_vert_white_24dp"
         android:title="@string/more_feature"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_program_structure"
         android:icon="@drawable/ic_format_list_bulleted_white_24dp"
         android:title="@string/program_structure"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
     <item
+        android:visible="false"
         android:id="@+id/action_insert_media_url"
         android:icon="@drawable/ic_perm_media_white_24dp"
         android:title="@string/insert_url_media"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_insert_color"
         android:icon="@drawable/ic_color_lens_white_24dp"
         android:title="@string/insert_color"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_ime"
         android:checkable="true"
         android:icon="@drawable/ic_keyboard_white_24dp"
         android:title="@string/enable_ime_keyboard"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
 </menu>

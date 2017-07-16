@@ -41,9 +41,9 @@ class DialogCreateNewFile : AppCompatDialogFragment() {
     private var btnOK: Button? = null
     private var btnCancel: Button? = null
     private var listener: OnCreateNewFileListener? = null
-    private var checkBoxPas: RadioButton? = null
-    private var checkBoxInp: RadioButton? = null
-    private var checkBoxUnit: RadioButton? = null
+    private var checkBoxClass: RadioButton? = null
+    private var checkBoxInterface: RadioButton? = null
+    private var checkBoxEnum: RadioButton? = null
     private var mFileManager: FileManager? = null
 
     fun setListener(listener: OnCreateNewFileListener?) {
@@ -86,9 +86,9 @@ class DialogCreateNewFile : AppCompatDialogFragment() {
             if (listener != null) listener!!.onCancel()
             dismiss()
         }
-        checkBoxPas = view.findViewById(R.id.rad_pas)
-        checkBoxInp = view.findViewById(R.id.rad_inp)
-        checkBoxUnit = view.findViewById(R.id.rad_unit)
+        checkBoxClass = view.findViewById(R.id.rad_class)
+        checkBoxInterface = view.findViewById(R.id.rad_interface)
+        checkBoxEnum = view.findViewById(R.id.rad_enum)
 
         btnOK!!.setOnClickListener {
             val file = doCreateFile()
@@ -109,9 +109,8 @@ class DialogCreateNewFile : AppCompatDialogFragment() {
             mEditFileName!!.error = getString(R.string.enter_new_file_name)
             return null
         }
-        if (checkBoxInp!!.isChecked && !fileName.contains(".")) {
-            fileName += ".java"
-        } else if ((checkBoxPas!!.isChecked || checkBoxUnit!!.isChecked) && !fileName.contains(".")) {
+        if ((checkBoxInterface!!.isChecked ||
+                checkBoxClass!!.isChecked || checkBoxEnum!!.isChecked) && !fileName.contains(".")) {
             fileName += ".java"
         }
         var file = File(FileManager.getApplicationPath() + fileName)
@@ -122,12 +121,16 @@ class DialogCreateNewFile : AppCompatDialogFragment() {
         //create new file
         val filePath = mFileManager!!.createNewFile(FileManager.getApplicationPath() + fileName)
         file = File(filePath)
-        if (checkBoxPas!!.isChecked) {
+
+        if (checkBoxClass!!.isChecked) {
             mFileManager!!.saveFile(file,
-                    Template.createProgramTemplate(file.nameWithoutExtension))
-        } else if (checkBoxUnit!!.isChecked) {
+                    Template.createClass(file.nameWithoutExtension))
+        } else if (checkBoxEnum!!.isChecked) {
             mFileManager!!.saveFile(file,
-                    Template.createUnitTemplate(file.nameWithoutExtension))
+                    Template.createEnum(file.nameWithoutExtension))
+        } else if (checkBoxInterface!!.isChecked) {
+            mFileManager!!.saveFile(file,
+                    Template.createInterface(file.nameWithoutExtension))
         }
         return file
     }

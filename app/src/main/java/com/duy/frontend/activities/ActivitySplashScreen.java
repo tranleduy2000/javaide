@@ -70,7 +70,7 @@ public class ActivitySplashScreen extends AppCompatActivity {
     private boolean systemInstalled() {
         JavaPreferences preferences = new JavaPreferences(this);
         return preferences.hasSystemInstalled()
-                && preferences.getSystemVersion().equalsIgnoreCase("3.0");
+                && preferences.getSystemVersion().equalsIgnoreCase(InstallActivity.SYSTEM_VERSION);
     }
 
     @Override

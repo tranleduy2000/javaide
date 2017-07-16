@@ -40,23 +40,23 @@
         android:orientation="vertical">
 
         <RadioButton
-            android:id="@+id/rad_pas"
+            android:id="@+id/rad_class"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/pas_file" />
+            android:text="@string/class_" />
 
         <RadioButton
-            android:id="@+id/rad_unit"
+            android:id="@+id/rad_interface"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/unit_file" />
+            android:text="@string/interface_" />
 
         <RadioButton
-            android:id="@+id/rad_inp"
+            android:id="@+id/rad_enum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/inp_file" />
+            android:text="@string/enum_" />
 
         <RadioButton
             android:layout_width="match_parent"

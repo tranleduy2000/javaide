@@ -19,7 +19,6 @@ package com.duy.frontend;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
@@ -31,13 +30,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.duy.frontend.code_sample.activities.CodeSampleActivity;
 import com.duy.frontend.editor.EditorActivity;
 import com.duy.frontend.info.InfoActivity;
 import com.duy.frontend.setting.JavaPreferences;
 import com.duy.frontend.setting.SettingsActivity;
-import com.duy.frontend.utils.StoreUtil;
 import com.duy.frontend.utils.DonateUtils;
+import com.duy.frontend.utils.StoreUtil;
 
 /**
  * Handler for menu click
@@ -94,22 +92,19 @@ public class MenuEditor {
 //                listener.chooseFile(null);
 //                break;
                 break;
-            case R.id.action_doc:
-                if (listener != null) {
-                    listener.showDocumentActivity();
-                }
-
-                break;
+//            case R.id.action_doc:
+//                if (listener != null) {
+//                    listener.showDocumentActivity();
+//                }
+//                break;
             case R.id.action_new_file:
                 if (listener != null) {
                     listener.createNewSourceFile(null);
                 }
-
                 break;
-            case R.id.action_code_sample:
-                activity.startActivity(new Intent(activity, CodeSampleActivity.class));
-
-                break;
+//            case R.id.action_code_sample:
+//                activity.startActivity(new Intent(activity, CodeSampleActivity.class));
+//                break;
             case R.id.action_rate:
                 StoreUtil.gotoPlayStore(activity, BuildConfig.APPLICATION_ID);
                 break;
@@ -120,14 +115,12 @@ public class MenuEditor {
                 if (listener != null) {
                     listener.runProgram();
                 }
-
                 break;
-            case R.id.action_compile:
-                if (listener != null) {
-                    listener.doCompile();
-                }
-
-                break;
+//            case R.id.action_compile:
+//                if (listener != null) {
+//                    listener.doCompile();
+//
+//                break;
             case R.id.action_save:
                 if (listener != null) {
                     listener.saveFile();
@@ -147,16 +140,14 @@ public class MenuEditor {
 
                 break;
             case R.id.action_format:
-                if (listener != null) {
-                    listener.formatCode();
-                }
-
+//                if (listener != null) {
+//                    listener.formatCode();
+//                }
                 break;
             case R.id.action_report_bug:
                 if (listener != null) {
                     listener.reportBug();
                 }
-
                 break;
 
             case R.id.action_undo:
@@ -187,28 +178,27 @@ public class MenuEditor {
                 if (listener != null) {
                     listener.selectThemeFont();
                 }
-
                 break;
             case R.id.action_more_feature:
                 activity.openDrawer(GravityCompat.END);
 
                 break;
-            case R.id.action_translate:
-                showPopupTranslate(activity);
-
-                break;
+//            case R.id.action_translate:
+//                showPopupTranslate(activity);
+//
+//                break;
             case R.id.action_info:
                 activity.startActivity(new Intent(activity, InfoActivity.class));
 
                 break;
-            case R.id.action_program_structure:
-                activity.showProgramStructure();
-
-                break;
-            case R.id.action_debug:
-                activity.startDebug();
-
-                break;
+//            case R.id.action_program_structure:
+//                activity.showProgramStructure();
+//
+//                break;
+//            case R.id.action_debug:
+//                activity.startDebug();
+//
+//                break;
             case R.id.action_show_line:
                 pascalPreferences.setShowLines(menuItem.isChecked());
 
@@ -226,13 +216,13 @@ public class MenuEditor {
                 pascalPreferences.setWordWrap(menuItem.isChecked());
 
                 break;
-            case R.id.action_got_to_blog: {
-                Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://pascalnide.wordpress.com/"));
-                activity.startActivity(intent);
-
-                break;
-            }
+//            case R.id.action_got_to_blog: {
+//                Intent intent = new Intent(Intent.ACTION_VIEW,
+//                        Uri.parse("https://pascalnide.wordpress.com/"));
+//                activity.startActivity(intent);
+//
+//                break;
+//            }
             case R.id.action_open_file:
                 activity.openDrawer(GravityCompat.START);
 

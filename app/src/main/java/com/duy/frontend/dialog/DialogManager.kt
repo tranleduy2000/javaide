@@ -94,7 +94,7 @@ class DialogManager {
                     val i = Intent(Intent.ACTION_SEND)
                     i.type = "text/plain"
                     i.putExtra(Intent.EXTRA_EMAIL, arrayOf("tranleduy1233@gmail.com"))
-                    i.putExtra(Intent.EXTRA_SUBJECT, "Report bug for PASCAL NIDE: " + editTitle!!.text.toString())
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Report bug for Java NIDE: " + editTitle!!.text.toString())
 
                     val content = "Cause: \n" + editContent!!.text.toString() + "\n" +
                             "Expect:  " + editExpect!!.text.toString() + "\n" + "Code:\n" + code

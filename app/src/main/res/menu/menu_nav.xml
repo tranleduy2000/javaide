@@ -18,45 +18,6 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <item android:title="@string/data">
-        <menu>
-
-            <item
-                android:id="@+id/action_translate"
-                android:enabled="true"
-                android:icon="@drawable/ic_language_white_24dp"
-                android:title="@string/help_me_translate"
-                app:showAsAction="ifRoom"/>
-
-            <item
-                android:enabled="false"
-                android:icon="@drawable/ic_cloud_white_24dp"
-                android:title="@string/cloud_database">
-
-            </item>
-            <item
-                android:id="@+id/action_got_to_blog"
-                android:enabled="true"
-                android:icon="@drawable/ic_web_white_24dp"
-                android:title="@string/blog"
-                android:visible="false">
-
-            </item>
-            <item
-                android:id="@+id/action_doc"
-                android:enabled="false"
-                android:icon="@drawable/ic_info_white_24dp"
-                android:title="@string/document"
-                app:showAsAction="ifRoom"/>
-
-            <item
-                android:id="@+id/action_code_sample"
-                android:icon="@drawable/ic_code_white_24dp"
-                android:title="@string/code_sample"
-                app:showAsAction="ifRoom"/>
-        </menu>
-    </item>
-
     <item android:title="@string/code_editor">
         <menu>
             <item
@@ -78,7 +39,8 @@
             <item
                 android:id="@+id/action_donate"
                 android:icon="@drawable/ic_donate_white"
-                android:title="@string/donate"/>
+                android:title="@string/donate"
+                android:visible="false"/>
             <item
                 android:id="@+id/action_report_bug"
                 android:icon="@drawable/ic_bug_report_white_24dp"
@@ -87,17 +49,21 @@
             <item
                 android:id="@+id/action_info"
                 android:icon="@drawable/ic_info_white_24dp"
-                android:title="@string/information"/>
+                android:title="@string/information"
+                android:visible="false"/>
 
             <item
                 android:id="@+id/action_rate"
                 android:icon="@drawable/ic_stars_white_18dp"
                 android:title="@string/rate"
+                android:visible="false"
                 app:showAsAction="ifRoom"/>
+
             <item
                 android:id="@+id/action_more_app"
                 android:icon="@drawable/ic_play_store"
                 android:title="@string/more_app"
+                android:visible="false"
                 app:showAsAction="ifRoom"/>
         </menu>
     </item>

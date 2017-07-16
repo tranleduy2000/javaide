@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/JavaNIDE.iml" filepath="$PROJECT_DIR$/JavaNIDE.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/colorpicker/colorpicker.iml" filepath="$PROJECT_DIR$/colorpicker/colorpicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pager/pager.iml" filepath="$PROJECT_DIR$/pager/pager.iml" />
       <module fileurl="file://$PROJECT_DIR$/splitview/splitview.iml" filepath="$PROJECT_DIR$/splitview/splitview.iml" />
     </modules>
   </component>

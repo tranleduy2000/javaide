@@ -405,4 +405,6 @@
     <string name="enum_" translatable="false">Enum</string>
     <string name="setting_console" translatable="false">Console setting</string>
     <string name="new_project">New project</string>
+    <string name="enter_project_name">Enter project name</string>
+    <string name="enter_name">Enter name</string>
 </resources>

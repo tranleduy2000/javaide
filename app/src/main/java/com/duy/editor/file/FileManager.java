@@ -51,8 +51,8 @@ public class FileManager {
     /**
      * storage path for saveFile code
      */
-    public static final String EXTERNAL_DIR_CODE = Environment.getExternalStorageDirectory().getPath()
-            + "/JavaNIDE/src/";
+    public static final String EXTERNAL_DIR_SRC = Environment.getExternalStorageDirectory() + "/JavaNIDE/src/";
+    public static final String EXTERNAL_DIR = Environment.getExternalStorageDirectory() + "/JavaNID/";
     private final String TAG = FileManager.class.getSimpleName();
     private final String FILE_TEMP_NAME = "tmp.pas";
     private int mode = SAVE_MODE.EXTERNAL;
@@ -70,11 +70,11 @@ public class FileManager {
      * @return path of application
      */
     public static String getApplicationPath() {
-        File file = new File(EXTERNAL_DIR_CODE);
+        File file = new File(EXTERNAL_DIR_SRC);
         if (!file.exists()) {
             file.mkdirs();
         }
-        return EXTERNAL_DIR_CODE;
+        return EXTERNAL_DIR_SRC;
     }
 
     public static StringBuilder streamToString(InputStream inputStream) {
@@ -155,7 +155,7 @@ public class FileManager {
     }
 
     public boolean createDirectory() {
-        File dir = new File(EXTERNAL_DIR_CODE);
+        File dir = new File(EXTERNAL_DIR_SRC);
         if (dir.exists()) {
             if (dir.isDirectory()) return true;
             if (!dir.delete()) return false;

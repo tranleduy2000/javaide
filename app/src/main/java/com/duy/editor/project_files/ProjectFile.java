@@ -36,7 +36,7 @@ public class ProjectFile {
      * @return - path of parent of  main class
      * @throws IOException
      */
-    public String create(File dir) throws IOException {
+    public File create(File dir) throws IOException {
         //now create root director
         File root = new File(dir, projectName);
         if (!root.exists()) root.mkdirs();
@@ -66,6 +66,6 @@ public class ProjectFile {
         String content = Template.createClass(mainClassName);
         FileManager.saveFile(mainFile, content);
 
-        return mainFile.getParent();
+        return mainFile.getParentFile();
     }
 }

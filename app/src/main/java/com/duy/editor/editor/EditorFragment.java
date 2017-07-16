@@ -226,6 +226,7 @@ public class EditorFragment extends Fragment implements EditorListener {
         @Override
         protected String doInBackground(String... params) {
             String source = params[0];
+            source = source.replace("{", "{\n");
             ASFormatter formatter = new ASFormatter();
             Reader in = new BufferedReader(new StringReader(source));
             formatter.setJavaStyle();

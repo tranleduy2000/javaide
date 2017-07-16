@@ -30,6 +30,8 @@
 
 package net.barenca.jastyle;
 
+import net.barenca.jastyle.ASFormatter.BracketMode;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -42,8 +44,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.barenca.jastyle.ASFormatter.BracketMode;
 
 public class Main
 {

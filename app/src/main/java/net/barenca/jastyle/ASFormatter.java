@@ -30,12 +30,12 @@
 
 package net.barenca.jastyle;
 
+import net.barenca.jastyle.constants.BracketType;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-
-import net.barenca.jastyle.constants.BracketType;
 
 public class ASFormatter extends ASBeautifier
 {

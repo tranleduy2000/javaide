@@ -30,10 +30,10 @@
 
 package net.barenca.jastyle;
 
+import net.barenca.jastyle.constants.FileType;
+
 import java.util.Collections;
 import java.util.List;
-
-import net.barenca.jastyle.constants.FileType;
 
 public class ASResource
 {

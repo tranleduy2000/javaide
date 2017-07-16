@@ -30,12 +30,12 @@
 
 package net.barenca.jastyle;
 
+import net.barenca.jastyle.constants.FileType;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
-
-import net.barenca.jastyle.constants.FileType;
 
 public class ASBeautifier extends AbstractASBase
 {

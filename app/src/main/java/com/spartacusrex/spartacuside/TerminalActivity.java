@@ -45,6 +45,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.duy.editor.BuildConfig;
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
 import com.duy.editor.project_files.ProjectFile;
@@ -144,35 +145,47 @@ public class TerminalActivity extends Activity {
         try {
             FileOutputStream fos = termSession.getTermOut();
             PrintWriter pw = new PrintWriter(fos);
-            pw.println("");
             pw.println("clear"); //clear screen
-            pw.println("cd ~"); //go to home
+            pw.println("echo JAVA N-IDE. version " + BuildConfig.VERSION_CODE);
+            pw.flush();
 
-            pw.println("cd " + projectFile.getRootDir());//move to root project
+            pw.println("cd ~"); //go to home
+            pw.println("cd " + projectFile.getProjectDir());//move to root project
+            pw.flush();
 
             //create build and bin dir
-            File build = new File(projectFile.getRootDir(), "build");
+            File build = new File(projectFile.getProjectDir(), "build");
             if (!(build.exists())) build.mkdirs();
-            File bin = new File(projectFile.getRootDir(), "bin");
+            File bin = new File(projectFile.getProjectDir(), "bin");
             if (!(bin.exists())) bin.mkdirs();
 
             //clean up
             pw.println("rm -rf build/*");
             pw.println("rm -rf bin/*");
+            pw.flush();
 
             //cd to src dir
             pw.println("cd src/java/main");
 
             //now compile
             pw.println("echo Compile java file");
-            pw.println("javac -verbose -d ../../../build/ " + projectFile.getFullMainClassName());
+            pw.println("javac -verbose -d ../../../build/ " + projectFile.getMainClassPath());
+            pw.flush();
 
             //go to build dir
-            pw.println("cd ../../..build/");
+            pw.println("cd ../../../build/");
 
             pw.println("echo Now convert to dex format");
-            pw.println("dx --dex --verbose --no-strict --output=../bin/" + projectFile.getProjectName() + ".jar"
-                    + " " + projectFile.getPackageName().substring(0, projectFile.getPackageName().indexOf(".")));
+            String jarFile = projectFile.getProjectName() + ".jar";
+            pw.println("dx --dex --verbose --no-strict --output=../bin/" + jarFile + " *");
+            pw.flush();
+
+            pw.println("cd .."); //go to root dir
+            pw.flush();
+
+            //now run file
+            pw.println("java -jar ./bin/" + jarFile + " " + projectFile.getMainClassName());
+            pw.flush();
 
             File temp = new File(home, "tmp");
             if (!temp.exists()) temp.mkdirs();

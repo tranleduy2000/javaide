@@ -12,6 +12,9 @@ import java.io.Serializable;
  */
 
 public class ProjectFile implements Serializable, Cloneable {
+    //main class name, don't include package, ex: Main
+    private String mainClassName;
+
     /**
      * root director
      */
@@ -25,8 +28,17 @@ public class ProjectFile implements Serializable, Cloneable {
     //project name
     private String projectName;
 
-    //main class name, don't include package
-    private String mainClassName;
+    //projectDir = rootDir + projectName
+
+    @Override
+    public String toString() {
+        return "ProjectFile{" +
+                "rootDir='" + rootDir + '\'' +
+                ", packageName='" + packageName + '\'' +
+                ", projectName='" + projectName + '\'' +
+                ", mainClassName='" + mainClassName + '\'' +
+                '}';
+    }
 
     public String getRootDir() {
         return rootDir;
@@ -76,7 +88,7 @@ public class ProjectFile implements Serializable, Cloneable {
      *          └─ main
      *             └──com
      *                 └──...
-     *                     └──mainclass
+     *                     └──Main.class
      *
      * @param dir - parent dir for project
      * @return - path of parent of  main class
@@ -120,16 +132,15 @@ public class ProjectFile implements Serializable, Cloneable {
         return mainFile;
     }
 
-
-    public File getMainClassPath() {
-        //create package file
-        File parent = new File(rootDir + "src/java/main" + packageName.replace(".", "/"));
-        if (!parent.exists()) parent.mkdirs();
-        File file = new File(parent, getMainClassName() + ".java");
-        return file;
+    public String getMainClassPath() {
+        return packageName.replace(".", "/") + "/" + mainClassName + ".java";
     }
 
     public String getFullMainClassName() {
-        return packageName + "." + mainClassName + ".java";
+        return packageName + "." + mainClassName;
+    }
+
+    public String getProjectDir() {
+        return rootDir.endsWith("/") ? rootDir + projectName : rootDir + "/" + projectName;
     }
 }

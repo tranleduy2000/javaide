@@ -20,7 +20,7 @@ cd build
 
 #Now convert to dex format (need no-strict)
 echo Now convert to dex format
-dx --dex --verbose --no-strict --output=../dist/demo_console.dex.jar org
+dx --dex --verbose --no-strict --output=../dist/demo_console.dex.jar *
 
 #Back out
 cd ..
@@ -30,3 +30,8 @@ dx --dex --verbose --no-strict --output=../dist/demo_console.dex.jar org
 
 cd ../../
 cd build
+
+dx --dex --verbose --no-strict --output=../bin/demo_console.dex.jar *
+
+java -jar ./dist/demo_console.dex.jar:./libs/demolib.dex.jar org.demo.start
+

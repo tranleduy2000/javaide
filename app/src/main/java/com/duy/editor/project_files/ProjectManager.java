@@ -23,12 +23,12 @@ public class ProjectManager {
         File file = new File(context.getFilesDir(), FILE_PROJECT);
         try {
             if (!file.exists()) file.createNewFile();
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            ObjectOutputStream out = new ObjectOutputStream(fileOutputStream);
+            FileOutputStream fo = new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(fo);
             out.writeObject(projectFile);
             out.flush();
             out.close();
-            fileOutputStream.close();
+            fo.close();
             return true;
         } catch (Exception e) {
             return false;

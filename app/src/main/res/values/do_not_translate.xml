@@ -15,8 +15,8 @@
   -->
 
 <resources>
-    <string name="app_name" translatable="false">Pascal N-IDE</string>
-    <string name="pascal_nide" translatable="false">Pascal N-IDE</string>
+    <string name="app_name" translatable="false">Java N-IDE</string>
+    <string name="pascal_nide" translatable="false">Java N-IDE</string>
 
     <string name="key_pref_word_wrap" translatable="false">pref_word_wrap</string>
     <string name="key_show_line_number" translatable="false">pref_show_line_number</string>

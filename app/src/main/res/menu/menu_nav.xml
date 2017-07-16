@@ -30,7 +30,12 @@
                 android:id="@+id/action_setting"
                 android:enabled="true"
                 android:icon="@drawable/ic_settings_white_24dp"
-                android:title="@string/setting"/>
+                android:title="@string/setting_editor"/>
+            <item
+                android:id="@+id/action_setting_console"
+                android:enabled="true"
+                android:icon="@drawable/ic_settings_white_24dp"
+                android:title="@string/setting_console"/>
         </menu>
     </item>
 

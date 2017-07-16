@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/file_view"
-        class="com.duy.frontend.file.FragmentFileManager"
+        class="com.duy.editor.file.FragmentFileManager"
         android:layout_width="wrap_content"
         android:minWidth="200dp"
         android:layout_height="match_parent"

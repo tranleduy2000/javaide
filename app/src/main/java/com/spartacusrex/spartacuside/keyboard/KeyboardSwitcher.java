@@ -8,7 +8,7 @@ package com.spartacusrex.spartacuside.keyboard;
 import android.content.Context;
 import android.util.Log;
 
-import com.duy.frontend.R;
+import com.duy.editor.R;
 
 /**
  * @author Spartacus Rex

@@ -25,7 +25,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.duy.frontend.R;
+import com.duy.editor.R;
 import com.spartacusrex.spartacuside.TermService;
 import com.spartacusrex.spartacuside.startup.setup.FileManager;
 import com.spartacusrex.spartacuside.startup.tutorial.tutview;

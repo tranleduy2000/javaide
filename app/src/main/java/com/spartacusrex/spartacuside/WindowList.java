@@ -32,7 +32,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.duy.frontend.R;
+import com.duy.editor.R;
 import com.spartacusrex.spartacuside.session.TermSession;
 
 import java.util.ArrayList;

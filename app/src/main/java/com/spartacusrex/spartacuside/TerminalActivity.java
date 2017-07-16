@@ -45,8 +45,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.duy.frontend.R;
-import com.duy.frontend.code.CompileManager;
+import com.duy.editor.R;
+import com.duy.editor.code.CompileManager;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.TermSettings;
 
@@ -406,7 +406,7 @@ public class TerminalActivity extends Activity {
     }
 
     private void doPreferences() {
-        startActivity(new Intent(this, TermPreferences.class));
+        startActivity(new Intent(this, TerminalPreferences.class));
     }
 
     private void doResetTerminal() {

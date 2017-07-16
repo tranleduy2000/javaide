@@ -30,7 +30,6 @@
                 android:dialogTitle="@string/dialog_title_statusbar_preference" />
 
 
-<!--
         <ListPreference
                 android:key="cursorstyle"
                 android:defaultValue="@string/default_value_cursorstyle_preference"
@@ -48,7 +47,7 @@
                 android:entries="@array/entries_cursorblink_preference"
                 android:entryValues="@array/entryvalues_cursorblink_preference"
                 android:dialogTitle="@string/dialog_title_cursorblink_preference" />
--->
+
 
     </PreferenceCategory>
 

@@ -40,7 +40,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
-import com.duy.frontend.R;
+import com.duy.editor.R;
 
 import java.util.ArrayList;
 import java.util.Hashtable;

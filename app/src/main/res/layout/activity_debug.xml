@@ -45,7 +45,7 @@
 
         <include layout="@layout/content_debug" />
 
-        <com.duy.frontend.view.exec_screen.console.ConsoleView
+        <com.duy.editor.view.exec_screen.console.ConsoleView
             android:id="@+id/console"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

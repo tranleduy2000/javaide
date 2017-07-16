@@ -47,7 +47,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputContentInfo;
 import android.view.inputmethod.InputMethodManager;
 
-import com.duy.frontend.R;
+import com.duy.editor.R;
 import com.spartacusrex.spartacuside.model.TextRenderer;
 import com.spartacusrex.spartacuside.model.UpdateCallback;
 import com.spartacusrex.spartacuside.session.TermSession;

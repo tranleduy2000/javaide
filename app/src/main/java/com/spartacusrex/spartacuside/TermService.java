@@ -31,7 +31,7 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.duy.frontend.R;
+import com.duy.editor.R;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.ServiceForegroundCompat;
 import com.spartacusrex.spartacuside.util.TermSettings;

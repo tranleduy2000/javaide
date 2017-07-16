@@ -249,7 +249,7 @@
     <string name="pascal_for_android">Pascal for Android</string>
     <string name="exit">Exit</string>
     <string name="exit_mgs">Do you want to exit application?</string>
-    <string name="setting_editor">Setting editor</string>
+    <string name="setting_editor">Editor setting</string>
     <string name="cloud_database">Cloud database</string>
     <string name="pas_file">Pas file (*.pas)</string>
     <string name="inp_file">Inp file (*.inp)</string>
@@ -403,4 +403,5 @@
     <string name="class_">Class</string>
     <string name="interface_">Interface</string>
     <string name="enum_">Enum</string>
+    <string name="setting_console">Console setting</string>
 </resources>

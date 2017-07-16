@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.duy.frontend.R;
+import com.duy.editor.R;
 
 /**
  * @author Spartacus Rex

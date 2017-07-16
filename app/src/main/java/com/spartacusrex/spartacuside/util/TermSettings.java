@@ -92,7 +92,7 @@ public class TermSettings {
         mStatusBar = readIntPref(STATUSBAR_KEY, mStatusBar, 1);
         // mCursorStyle = readIntPref(CURSORSTYLE_KEY, mCursorStyle, 2);
         // mCursorBlink = readIntPref(CURSORBLINK_KEY, mCursorBlink, 1);
-        mFontSize = readIntPref(FONTSIZE_KEY, mFontSize, 20);
+        mFontSize = readIntPref(FONTSIZE_KEY, mFontSize, 12);
         mColorId = readIntPref(COLOR_KEY, mColorId, COLOR_SCHEMES.length - 1);
         mControlKeyId = readIntPref(CONTROLKEY_KEY, mControlKeyId,
                 CONTROL_KEY_SCHEMES.length - 1);

@@ -7,7 +7,7 @@ package com.spartacusrex.spartacuside.startup.tutorial;
 
 import android.content.Context;
 
-import com.duy.frontend.R;
+import com.duy.editor.R;
 
 import java.util.Vector;
 

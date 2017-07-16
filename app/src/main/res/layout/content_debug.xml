@@ -26,7 +26,7 @@
     app:minSize="100dp"
     app:topContent="@+id/vertical_scroll">
 
-    <com.duy.frontend.view.LockableScrollView
+    <com.duy.editor.view.LockableScrollView
         android:id="@+id/vertical_scroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:fillViewport="true">
 
-            <com.duy.frontend.editor.view.HighlightEditor
+            <com.duy.editor.editor.view.HighlightEditor
                 android:id="@+id/code_editor"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -50,10 +50,10 @@
                 android:scrollbarStyle="insideInset"
                 android:scrollbars="vertical">
 
-            </com.duy.frontend.editor.view.HighlightEditor>
+            </com.duy.editor.editor.view.HighlightEditor>
         </HorizontalScrollView>
 
-    </com.duy.frontend.view.LockableScrollView>
+    </com.duy.editor.view.LockableScrollView>
 
     <ImageView
         android:id="@+id/drag_view_horizontal"
@@ -66,7 +66,7 @@
 
     <fragment
         android:id="@+id/fragment_frame"
-        class="com.duy.frontend.debug.fragments.FragmentFrame"
+        class="com.duy.editor.debug.fragments.FragmentFrame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

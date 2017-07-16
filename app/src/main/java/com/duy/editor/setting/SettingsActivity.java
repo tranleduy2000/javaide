@@ -20,7 +20,6 @@ package com.duy.editor.setting;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 
-import com.duy.editor.R;
 import com.duy.editor.activities.AbstractAppCompatActivity;
 
 

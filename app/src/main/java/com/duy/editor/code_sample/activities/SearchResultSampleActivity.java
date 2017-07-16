@@ -14,34 +14,20 @@
  * limitations under the License.
  */
 
-package com.duy.editor.setting;
+package com.duy.editor.code_sample.activities;
 
-
-import android.app.FragmentTransaction;
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.duy.editor.R;
-import com.duy.editor.activities.AbstractAppCompatActivity;
 
 
-public class SettingsActivity extends AbstractAppCompatActivity {
+public class SearchResultSampleActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
-        setupActionBar();
-
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, new FragmentSetting()).commit();
-    }
-
-    /**
-     * find toolbar in xml file and setSupportActionBar.
-     */
-    private void setupActionBar() {
-        setupToolbar();
-        setTitle(getString(R.string.setting));
+        setContentView(R.layout.activity_search_result_sample);
     }
 
 }

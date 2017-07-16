@@ -32,7 +32,6 @@ import android.widget.Toast;
 
 import com.duy.editor.editor.EditorActivity;
 import com.duy.editor.info.InfoActivity;
-import com.duy.editor.project_files.fragments.DialogNewProject;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.setting.SettingsActivity;
 import com.duy.editor.utils.DonateUtils;
@@ -99,11 +98,7 @@ public class MenuEditor {
 //                    listener.showDocumentActivity();
 //                }
 //                break;
-            case R.id.action_new_file:
-                if (listener != null) {
-                    listener.createNewSourceFile(null);
-                }
-                break;
+
 //            case R.id.action_code_sample:
 //                activity.startActivity(new Intent(activity, CodeSampleActivity.class));
 //                break;
@@ -191,7 +186,6 @@ public class MenuEditor {
 //                break;
             case R.id.action_info:
                 activity.startActivity(new Intent(activity, InfoActivity.class));
-
                 break;
 //            case R.id.action_program_structure:
 //                activity.showProgramStructure();
@@ -218,13 +212,6 @@ public class MenuEditor {
                 pascalPreferences.setWordWrap(menuItem.isChecked());
 
                 break;
-//            case R.id.action_got_to_blog: {
-//                Intent intent = new Intent(Intent.ACTION_VIEW,
-//                        Uri.parse("https://pascalnide.wordpress.com/"));
-//                activity.startActivity(intent);
-//
-//                break;
-//            }
             case R.id.action_open_file:
                 activity.openDrawer(GravityCompat.START);
 
@@ -249,17 +236,20 @@ public class MenuEditor {
             case R.id.action_setting_console:
                 activity.startActivity(new Intent(activity, TerminalPreferences.class));
                 break;
+
             case R.id.action_new_project:
-                showDialogCreateProject();
+                activity.showDialogCreateProject();
+                break;
+            case R.id.action_new_file:
+                if (listener != null) listener.createNewFile(null);
+                break;
+            case R.id.action_new_class:
+                activity.showDialogCreateClass();
                 break;
         }
         return true;
     }
 
-    private void showDialogCreateProject() {
-        DialogNewProject dialogNewProject = DialogNewProject.newInstance();
-        dialogNewProject.show(activity.getSupportFragmentManager(), DialogNewProject.TAG);
-    }
 
     public void showPopupTranslate(final Activity activity) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);

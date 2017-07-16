@@ -41,6 +41,10 @@
                 android:icon="@drawable/ic_fiber_new_white_24dp"
                 android:title="@string/new_project"/>
             <item
+                android:id="@+id/action_new_class"
+                android:icon="@drawable/ic_fiber_new_white_24dp"
+                android:title="@string/new_class"/>
+            <item
                 android:id="@+id/action_new_file"
                 android:icon="@drawable/ic_fiber_new_white_24dp"
                 android:title="@string/new_file"/>

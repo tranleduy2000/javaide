@@ -447,7 +447,7 @@ public class FragmentFileManager extends Fragment implements
                     tempFolder = tempFolder.getParentFile();
                 }
 
-                String[] canOpen = {"java"};
+                String[] canOpen = {"java", "class", "jar"};
 
                 final LinkedList<FileDetail> fileDetails = new LinkedList<>();
                 final LinkedList<FileDetail> folderDetails = new LinkedList<>();

@@ -33,7 +33,7 @@ public interface EditorControl {
 
     void showDocumentActivity();
 
-    void createNewSourceFile(View view);
+    void createNewFile(View view);
 
     void goToLine();
 

@@ -17,6 +17,10 @@
 package com.duy.editor.editor.completion;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.io.File;
+import java.lang.reflect.Modifier;
 
 /**
  * Created by Duy on 22-May-17.
@@ -39,6 +43,18 @@ public class Template {
                     "public enum %1$s {\n" +
                     "}\n";
 
+    /**
+     * %1 visibility
+     * %2 modifier
+     * %3 name
+     * %4
+     */
+    private static final String JAVA_TEMPLATE =
+            "\n" +
+                    "%1$s %2$s %3$s {\n" +
+                    "\n    " +
+                    "}\n";
+
     @NonNull
     public static String createClass(String name) {
         return String.format(PROGRAM_TEMPLATE, name);
@@ -53,4 +69,24 @@ public class Template {
     public static String createInterface(@NonNull String name) {
         return String.format(INTERFACE_TEMPLATE, name);
     }
+
+    public static String createJava(String name, int modifier, int visibility) {
+        String m = "";
+        switch (modifier) {
+            case Modifier.ABSTRACT:
+                m = "abstract";
+                break;
+            case Modifier.FINAL:
+                m = "final";
+                break;
+        }
+        String v = "";
+        switch (visibility) {
+            case Modifier.PUBLIC:
+                v = "public";
+                break;
+        }
+        return String.format(JAVA_TEMPLATE, v, m, name);
+    }
+
 }

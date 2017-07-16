@@ -378,7 +378,7 @@ public class EditorActivity extends BaseEditorActivity implements
      * show dialog create new source file
      */
     @Override
-    public void createNewSourceFile(View view) {
+    public void createNewFile(View view) {
         DialogCreateNewFile dialogCreateNewFile = DialogCreateNewFile.Companion.getInstance();
         dialogCreateNewFile.show(getSupportFragmentManager(), DialogCreateNewFile.Companion.getTAG());
         dialogCreateNewFile.setListener(new DialogCreateNewFile.OnCreateNewFileListener() {

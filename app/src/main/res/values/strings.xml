@@ -407,4 +407,5 @@
     <string name="new_project">New project</string>
     <string name="enter_project_name">Enter project name</string>
     <string name="enter_name">Enter name</string>
+    <string name="new_class">Create new class</string>
 </resources>

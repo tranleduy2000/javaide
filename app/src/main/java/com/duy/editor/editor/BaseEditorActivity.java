@@ -53,6 +53,7 @@ import com.duy.editor.file.FileManager;
 import com.duy.editor.file.FragmentFileManager;
 import com.duy.editor.project_files.ProjectFile;
 import com.duy.editor.project_files.ProjectManager;
+import com.duy.editor.project_files.fragments.DialogNewClass;
 import com.duy.editor.project_files.fragments.DialogNewProject;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.view.SymbolListView;
@@ -68,7 +69,7 @@ import java.util.ArrayList;
 @SuppressWarnings("DefaultFileTemplate")
 public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for debug
         implements SymbolListView.OnKeyListener, EditorControl, FileActionListener,
-        DialogNewProject.OnCreateProjectListener {
+        DialogNewProject.OnCreateProjectListener, DialogNewClass.OnCreateClassListener {
 
     protected final static String TAG = BaseEditorActivity.class.getSimpleName();
 
@@ -463,6 +464,27 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         }
         addNewPageEditor(new File(projectFile.getMainClass().getPath()), true);
     }
+
+    @Override
+    public void onClassCreated(File classF) {
+        FragmentFileManager fmFile = (FragmentFileManager)
+                getSupportFragmentManager().findFragmentByTag("fragment_file_view");
+        //load project file
+        if (fmFile != null) fmFile.load(new File(classF.getParent()));
+        addNewPageEditor(classF, true);
+    }
+
+    public void showDialogCreateProject() {
+        DialogNewProject dialogNewProject = DialogNewProject.newInstance();
+        dialogNewProject.show(getSupportFragmentManager(), DialogNewProject.TAG);
+    }
+
+    public void showDialogCreateClass() {
+        DialogNewClass dialogNewClass = DialogNewClass.newInstance(projectFile,
+                projectFile.getPackageName());
+        dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
+    }
+
 
     private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {
         BaseEditorActivity activity;

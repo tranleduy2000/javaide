@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 
 public class StringHighlighter implements Highlighter {
     /**
-     * match string pascal
+     * match string java
      * include
      * <p>
      * 'string'

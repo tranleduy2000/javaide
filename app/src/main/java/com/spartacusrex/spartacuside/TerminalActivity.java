@@ -168,8 +168,9 @@ public class TerminalActivity extends Activity {
             pw.println("cd src/java/main");
 
             //now compile
+            String mainFile = projectFile.getMainClass().getName().replace(".", "/") + ".java";
             pw.println("echo Compile java file");
-            pw.println("javac -verbose -d ../../../build/ " + projectFile.getMainClass().getName().replace(".", "/"));
+            pw.println("javac -verbose -d ../../../build/ " + mainFile);
             pw.flush();
 
             //go to build dir

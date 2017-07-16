@@ -259,9 +259,10 @@
         <item>28</item>
     </string-array>
 
-    <string-array name="spinner_kind">
+    <string-array name="kind_class">
         <item>Class</item>
         <item>Interface</item>
         <item>Enum</item>
     </string-array>
+
 </resources>

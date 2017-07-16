@@ -16,110 +16,110 @@
 -->
 <resources>
     <!-- Title for Latin keyboard  -->
-    <string name="ime_name">Terminal++ Keyboard</string>
+    <string name="ime_name" translatable="false">Terminal++ Keyboard</string>
 
     <!-- Symbols that are commonly considered word separators in this language -->
-    <string name="word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>
+    <string name="word_separators" translatable="false">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>
 
     <!-- Labels on soft keys -->
-    <string name="label_go_key">Go</string>
-    <string name="label_next_key">Next</string>
-    <string name="label_send_key">Send</string>
+    <string name="label_go_key" translatable="false">Go</string>
+    <string name="label_next_key" translatable="false">Next</string>
+    <string name="label_send_key" translatable="false">Send</string>
 
-    <string name="application_terminal">Terminal IDE</string>
-    <string name="preferences">Preferences</string>
-    <string name="new_window">New window</string>
-    <string name="close_window">Close window</string>
-    <string name="window_list">Windows</string>
-    <string name="prev_window">Prev window</string>
-    <string name="next_window">Next window</string>
-    <string name="reset">Reset term</string>
-    <string name="send_email">Email to</string>
-    <string name="special_keys">Special keys</string>
-    <string name="toggle_soft_keyboard">Toggle soft keyboard</string>
+    <string name="application_terminal" translatable="false">Terminal IDE</string>
+    <string name="preferences" translatable="false">Preferences</string>
+    <string name="new_window" translatable="false">New window</string>
+    <string name="close_window" translatable="false">Close window</string>
+    <string name="window_list" translatable="false">Windows</string>
+    <string name="prev_window" translatable="false">Prev window</string>
+    <string name="next_window" translatable="false">Next window</string>
+    <string name="reset" translatable="false">Reset term</string>
+    <string name="send_email" translatable="false">Email to</string>
+    <string name="special_keys" translatable="false">Special keys</string>
+    <string name="toggle_soft_keyboard" translatable="false">Toggle soft keyboard</string>
 
-    <string name="enable_wakelock">Take WakeLock</string>
-    <string name="disable_wakelock">Drop WakeLock</string>
-    <string name="enable_wifilock">Take WifiLock</string>
-    <string name="disable_wifilock">Drop WifiLock</string>
+    <string name="enable_wakelock" translatable="false">Take WakeLock</string>
+    <string name="disable_wakelock" translatable="false">Drop WakeLock</string>
+    <string name="enable_wifilock" translatable="false">Take WifiLock</string>
+    <string name="disable_wifilock" translatable="false">Drop WifiLock</string>
 
-    <string name="edit_text">Edit text</string>
-    <string name="select_text">Select text</string>
+    <string name="edit_text" translatable="false">Edit text</string>
+    <string name="select_text" translatable="false">Select text</string>
     <string name="copy_all">Copy all</string>
     <string name="paste">Paste</string>
 
-    <string name="service_notify_text">Terminal session is running</string>
+    <string name="service_notify_text" translatable="false">Terminal session is running</string>
 
     <!-- Preference dialog -->
-    <string name="screen_preferences">Screen</string>
+    <string name="screen_preferences" translatable="false">Screen</string>
 
-    <string name="title_statusbar_preference">Status bar</string>
-    <string name="summary_statusbar_preference">Show/hide status bar.</string>
-    <string name="dialog_title_statusbar_preference">Status bar</string>
+    <string name="title_statusbar_preference" translatable="false">Status bar</string>
+    <string name="summary_statusbar_preference" translatable="false">Show/hide status bar.</string>
+    <string name="dialog_title_statusbar_preference" translatable="false">Status bar</string>
 
-    <string name="title_cursorstyle_preference">Cursor style</string>
-    <string name="summary_cursorstyle_preference">Choose cursor style.</string>
-    <string name="dialog_title_cursorstyle_preference">Cursor style</string>
+    <string name="title_cursorstyle_preference" translatable="false">Cursor style</string>
+    <string name="summary_cursorstyle_preference" translatable="false">Choose cursor style.</string>
+    <string name="dialog_title_cursorstyle_preference" translatable="false">Cursor style</string>
 
-    <string name="title_cursorblink_preference">Cursor blink</string>
-    <string name="summary_cursorblink_preference">Choose cursor blink.</string>
-    <string name="dialog_title_cursorblink_preference">Cursor blink</string>
+    <string name="title_cursorblink_preference" translatable="false">Cursor blink</string>
+    <string name="summary_cursorblink_preference" translatable="false">Choose cursor blink.</string>
+    <string name="dialog_title_cursorblink_preference" translatable="false">Cursor blink</string>
 
-    <string name="text_preferences">Text</string>
+    <string name="text_preferences" translatable="false">Text</string>
 
-    <string name="title_fontsize_preference">Font size</string>
-    <string name="summary_fontsize_preference">Choose character height in points.</string>
-    <string name="dialog_title_fontsize_preference">Font size</string>
+    <string name="title_fontsize_preference" translatable="false">Font size</string>
+    <string name="summary_fontsize_preference" translatable="false">Choose character height in points.</string>
+    <string name="dialog_title_fontsize_preference" translatable="false">Font size</string>
 
-    <string name="title_color_preference">Colors</string>
-    <string name="summary_color_preference">Choose text color.</string>
-    <string name="dialog_title_color_preference">Text color</string>
+    <string name="title_color_preference" translatable="false">Colors</string>
+    <string name="summary_color_preference" translatable="false">Choose text color.</string>
+    <string name="dialog_title_color_preference" translatable="false">Text color</string>
 
-    <string name="keyboard_preferences">Keyboard</string>
+    <string name="keyboard_preferences" translatable="false">Keyboard</string>
 
-    <string name="title_controlkey_preference">Control key</string>
-    <string name="summary_controlkey_preference">Choose control key.</string>
-    <string name="dialog_title_controlkey_preference">Control key</string>
+    <string name="title_controlkey_preference" translatable="false">Control key</string>
+    <string name="summary_controlkey_preference" translatable="false">Choose control key.</string>
+    <string name="dialog_title_controlkey_preference" translatable="false">Control key</string>
 
-    <string name="title_fnkey_preference">Fn key</string>
-    <string name="summary_fnkey_preference">Choose Fn key.</string>
-    <string name="dialog_title_fnkey_preference">Fn key</string>
+    <string name="title_fnkey_preference" translatable="false">Fn key</string>
+    <string name="summary_fnkey_preference" translatable="false">Choose Fn key.</string>
+    <string name="dialog_title_fnkey_preference" translatable="false">Fn key</string>
 
-    <string name="title_ime_preference">Input method</string>
-    <string name="summary_ime_preference">Choose input method for soft keyboard.</string>
-    <string name="dialog_title_ime_preference">Input method</string>
+    <string name="title_ime_preference" translatable="false">Input method</string>
+    <string name="summary_ime_preference" translatable="false">Choose input method for soft keyboard.</string>
+    <string name="dialog_title_ime_preference" translatable="false">Input method</string>
 
-    <string name="shell_preferences">Shell</string>
-    <string name="title_shell_preference">Command line</string>
-    <string name="summary_shell_preference">Specify the shell command line.</string>
-    <string name="dialog_title_shell_preference">Shell</string>
+    <string name="shell_preferences" translatable="false">Shell</string>
+    <string name="title_shell_preference" translatable="false">Command line</string>
+    <string name="summary_shell_preference" translatable="false">Specify the shell command line.</string>
+    <string name="dialog_title_shell_preference" translatable="false">Shell</string>
 
-    <string name="title_initialcommand_preference">Initial command</string>
-    <string name="summary_initialcommand_preference">Sent to the shell when it starts.</string>
-    <string name="dialog_title_initialcommand_preference">Initial Command</string>
+    <string name="title_initialcommand_preference" translatable="false">Initial command</string>
+    <string name="summary_initialcommand_preference" translatable="false">Sent to the shell when it starts.</string>
+    <string name="dialog_title_initialcommand_preference" translatable="false">Initial Command</string>
 
     <!-- Don't localize these default values -->
-    <string name="default_value_statusbar_preference">1</string>
-    <string name="default_value_cursorstyle_preference">0</string>
-    <string name="default_value_cursorblink_preference">0</string>
-    <string name="default_value_fontsize_preference">12</string>
-    <string name="default_value_color_preference">1</string>
-    <string name="default_value_controlkey_preference">7</string>
-    <string name="default_value_fnkey_preference">7</string>
-    <string name="default_value_ime_preference">0</string>
-    <string name="default_value_shell_preference">/system/bin/sh -</string>
-    <string name="default_value_initialcommand_preference">export HOME=/data/data/com.spartacusrex.spartacuside/files;cd $HOME</string>
+    <string name="default_value_statusbar_preference" translatable="false">1</string>
+    <string name="default_value_cursorstyle_preference" translatable="false">0</string>
+    <string name="default_value_cursorblink_preference" translatable="false">0</string>
+    <string name="default_value_fontsize_preference" translatable="false">12</string>
+    <string name="default_value_color_preference" translatable="false">1</string>
+    <string name="default_value_controlkey_preference" translatable="false">7</string>
+    <string name="default_value_fnkey_preference" translatable="false">7</string>
+    <string name="default_value_ime_preference" translatable="false">0</string>
+    <string name="default_value_shell_preference" translatable="false">/system/bin/sh -</string>
+    <string name="default_value_initialcommand_preference" translatable="false">export HOME=/data/data/com.spartacusrex.spartacuside/files;cd $HOME</string>
 
-    <string name="control_key_dialog_title">Control and Function Keys</string>
+    <string name="control_key_dialog_title" translatable="false">Control and Function Keys</string>
     <!-- The word CTRLKEY should be left un-translated. It will be replaced at run-time with the
          actual control key key name. -->
-    <string name="control_key_dialog_control_text">CTRLKEY Space : Control-@ (NUL)\nCTRLKEY A..Z : Control-A..Z\nCTRLKEY 5 : Control-]\nCTRLKEY 6 : Control-^\nCTRLKEY 7 : Control-_\nCTRLKEY 9 : F11\nCTRLKEY 0 : F12</string>
-    <string name="control_key_dialog_control_disabled_text">No control key set.</string>
+    <string name="control_key_dialog_control_text" translatable="false">CTRLKEY Space : Control-@ (NUL)\nCTRLKEY A..Z : Control-A..Z\nCTRLKEY 5 : Control-]\nCTRLKEY 6 : Control-^\nCTRLKEY 7 : Control-_\nCTRLKEY 9 : F11\nCTRLKEY 0 : F12</string>
+    <string name="control_key_dialog_control_disabled_text" translatable="false">No control key set.</string>
     <!-- The word FNKEY should be left un-translated. It will be replaced at run-time with the
          actual function key key name. -->
-    <string name="control_key_dialog_fn_text">FNKEY 1..9 : F1-F9\nFNKEY 0 : F10\nFNKEY W : Up\nFNKEY A : Left\nFNKEY S : Down\nFNKEY D : Right\nFNKEY P : PageUp\nFNKEY N : PageDown\nFNKEY T : Tab\nFNKEY L : | (pipe)\nFNKEY U : _ (underscore)\nFNKEY E : Control-[ (ESC)\nFNKEY X : Delete\nFNKEY I : Insert\nFNKEY H : Home\nFNKEY F : End\nFNKEY . : Control-\\\n</string>
-    <string name="control_key_dialog_fn_disabled_text">No function key set.</string>
-    <string name="tut6">
+    <string name="control_key_dialog_fn_text" translatable="false">FNKEY 1..9 : F1-F9\nFNKEY 0 : F10\nFNKEY W : Up\nFNKEY A : Left\nFNKEY S : Down\nFNKEY D : Right\nFNKEY P : PageUp\nFNKEY N : PageDown\nFNKEY T : Tab\nFNKEY L : | (pipe)\nFNKEY U : _ (underscore)\nFNKEY E : Control-[ (ESC)\nFNKEY X : Delete\nFNKEY I : Insert\nFNKEY H : Home\nFNKEY F : End\nFNKEY . : Control-\\\n</string>
+    <string name="control_key_dialog_fn_disabled_text" translatable="false">No function key set.</string>
+    <string name="tut6" translatable="false">
       OK - Now that we understand quite how wonderful vim can be, let\'s compile a c applications.
       GCC is not extracted by default, since it takes up about 70mb, or 20mb unextracted.
         You need to extract it to the right location for all my scripts to work, so I have
@@ -168,7 +168,7 @@
         Once vim/terminalide is up and running you can compile everything by pressing F7.
         And you can scan through errors, just like in the java tutorials, with F8 and F9.
         Nice.    Now let\'s move on to a .cpp example..</string>
-    <string name="tut2">
+    <string name="tut2" translatable="false">
         Let\'s start by compiling the simplest Hello World app.
         First cd into the project folder (Remember to use TAB to complete) :
         # cd ~/system/src/helloworld/
@@ -397,11 +397,11 @@
     <string name="save_and_apply">Save and apply</string>
     <string name="create_new_theme">Create new theme</string>
     <string name="more_theme">Get premium version. Create your custom theme!</string>
-    <string name="java_for_android">Java for Android</string>
-    <string name="system_version">System version: </string>
-    <string name="install">Install</string>
-    <string name="class_">Class</string>
-    <string name="interface_">Interface</string>
-    <string name="enum_">Enum</string>
-    <string name="setting_console">Console setting</string>
+    <string name="java_for_android" translatable="false">Java for Android</string>
+    <string name="system_version" translatable="false">System version: </string>
+    <string name="install" translatable="false">Install</string>
+    <string name="class_" translatable="false">Class</string>
+    <string name="interface_" translatable="false">Interface</string>
+    <string name="enum_" translatable="false">Enum</string>
+    <string name="setting_console" translatable="false">Console setting</string>
 </resources>

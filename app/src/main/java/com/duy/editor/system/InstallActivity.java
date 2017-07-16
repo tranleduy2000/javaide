@@ -89,10 +89,17 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         builder.create().show();
     }
 
+    private boolean installing = false;
+
+    @Override
+    public void onBackPressed() {
+        if (!installing) {
+            super.onBackPressed();
+        }
+    }
+
     @SuppressWarnings("ConstantConditions")
     private class InstallTask extends AsyncTask<Void, String, Boolean> {
-
-
         private Exception error = null;
         private Context context;
 
@@ -106,6 +113,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             mInfo.setText("Starting install system");
             mProgressBar.setIndeterminate(true);
             findViewById(R.id.btn_install).setEnabled(false);
+            installing = true;
         }
 
         @Override
@@ -274,6 +282,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             mProgressBar.setIndeterminate(false);
             String version = getString(R.string.system_version) + mPreferences.getSystemVersion();
             mTxtVersion.setText(version);
+            installing = false;
         }
     }
 }

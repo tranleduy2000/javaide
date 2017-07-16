@@ -48,6 +48,7 @@ import com.duy.editor.EditorControl;
 import com.duy.editor.R;
 import com.duy.editor.activities.AbstractAppCompatActivity;
 import com.duy.editor.code.CompileManager;
+import com.duy.editor.editor.completion.Template;
 import com.duy.editor.file.FileActionListener;
 import com.duy.editor.file.FileManager;
 import com.duy.editor.file.FragmentFileManager;
@@ -136,8 +137,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         invalidateTab();
 
         if (pagerAdapter.getCount() == 0) {
-            String fileName = Integer.toHexString((int) System.currentTimeMillis()) + ".pas";
+            String fileName = "File" + Integer.toHexString((int) System.currentTimeMillis()) + ".java";
             String filePath = mFileManager.createNewFileInMode(fileName);
+            mFileManager.saveFile(filePath,
+                    Template.createClass(fileName.substring(0, fileName.indexOf("."))));
             addNewPageEditor(new File(filePath), SELECT);
         }
 

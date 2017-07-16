@@ -82,7 +82,7 @@ private:
 };
 
 static int create_subprocess(const char *cmd, const char *arg0, const char *arg1,
-    int* pProcessId)
+                             int *pProcessId)
 {
     char *devname;
     int ptm;
@@ -130,8 +130,9 @@ static int create_subprocess(const char *cmd, const char *arg0, const char *arg1
 }
 
 
-static jobject com_duy_terminal_Exec_createSubProcess(JNIEnv *env, jobject clazz,
-    jstring cmd, jstring arg0, jstring arg1, jintArray processIdArray)
+static jobject android_os_Exec_createSubProcess(JNIEnv *env, jobject clazz,
+                                                jstring cmd, jstring arg0, jstring arg1,
+                                                jintArray processIdArray)
 {
     const jchar* str = cmd ? env->GetStringCritical(cmd, 0) : 0;
     String8 cmd_8;
@@ -187,8 +188,9 @@ static jobject com_duy_terminal_Exec_createSubProcess(JNIEnv *env, jobject clazz
 }
 
 
-static void com_duy_terminal_Exec_setPtyWindowSize(JNIEnv *env, jobject clazz,
-    jobject fileDescriptor, jint row, jint col, jint xpixel, jint ypixel)
+static void android_os_Exec_setPtyWindowSize(JNIEnv *env, jobject clazz,
+                                             jobject fileDescriptor, jint row, jint col,
+                                             jint xpixel, jint ypixel)
 {
     int fd;
     struct winsize sz;
@@ -207,8 +209,8 @@ static void com_duy_terminal_Exec_setPtyWindowSize(JNIEnv *env, jobject clazz,
     ioctl(fd, TIOCSWINSZ, &sz);
 }
 
-static int com_duy_terminal_Exec_waitFor(JNIEnv *env, jobject clazz,
-    jint procId) {
+static int android_os_Exec_waitFor(JNIEnv *env, jobject clazz,
+                                   jint procId) {
     int status;
     waitpid(procId, &status, 0);
     int result = 0;
@@ -218,7 +220,7 @@ static int com_duy_terminal_Exec_waitFor(JNIEnv *env, jobject clazz,
     return result;
 }
 
-static void com_duy_terminal_Exec_close(JNIEnv *env, jobject clazz, jobject fileDescriptor)
+static void android_os_Exec_close(JNIEnv *env, jobject clazz, jobject fileDescriptor)
 {
     int fd;
 
@@ -231,8 +233,8 @@ static void com_duy_terminal_Exec_close(JNIEnv *env, jobject clazz, jobject file
     close(fd);
 }
 
-static void com_duy_terminal_Exec_hangupProcessGroup(JNIEnv *env, jobject clazz,
-    jint procId) {
+static void android_os_Exec_hangupProcessGroup(JNIEnv *env, jobject clazz,
+                                               jint procId) {
     kill(-procId, SIGHUP);
 }
 
@@ -266,31 +268,31 @@ static int register_FileDescriptor(JNIEnv *env)
     if (method_fileDescriptor_init == NULL) {
         LOGE("Can't find FileDescriptor.init");
         return -1;
-     }
-     return 0;
+    }
+    return 0;
 }
 
 
 static const char *classPathName = "com/spartacusrex/spartacuside/Exec";
 
 static JNINativeMethod method_table[] = {
-    { "createSubprocess", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[I)Ljava/io/FileDescriptor;",
-        (void*) com_duy_terminal_Exec_createSubProcess },
-    { "setPtyWindowSize", "(Ljava/io/FileDescriptor;IIII)V",
-        (void*) com_duy_terminal_Exec_setPtyWindowSize},
-    { "waitFor", "(I)I",
-        (void*) com_duy_terminal_Exec_waitFor},
-    { "close", "(Ljava/io/FileDescriptor;)V",
-        (void*) com_duy_terminal_Exec_close},
-    { "hangupProcessGroup", "(I)V",
-        (void*) com_duy_terminal_Exec_hangupProcessGroup}
+        {"createSubprocess",   "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[I)Ljava/io/FileDescriptor;",
+                (void *) android_os_Exec_createSubProcess},
+        {"setPtyWindowSize",   "(Ljava/io/FileDescriptor;IIII)V",
+                (void *) android_os_Exec_setPtyWindowSize},
+        {"waitFor",            "(I)I",
+                (void *) android_os_Exec_waitFor},
+        {"close",              "(Ljava/io/FileDescriptor;)V",
+                (void *) android_os_Exec_close},
+        {"hangupProcessGroup", "(I)V",
+                (void *) android_os_Exec_hangupProcessGroup}
 };
 
 /*
  * Register several native methods for one class.
  */
 static int registerNativeMethods(JNIEnv* env, const char* className,
-    JNINativeMethod* gMethods, int numMethods)
+                                 JNINativeMethod *gMethods, int numMethods)
 {
     jclass clazz;
 
@@ -314,12 +316,12 @@ static int registerNativeMethods(JNIEnv* env, const char* className,
  */
 static int registerNatives(JNIEnv* env)
 {
-  if (!registerNativeMethods(env, classPathName, method_table,
-                 sizeof(method_table) / sizeof(method_table[0]))) {
-    return JNI_FALSE;
-  }
+    if (!registerNativeMethods(env, classPathName, method_table,
+                               sizeof(method_table) / sizeof(method_table[0]))) {
+        return JNI_FALSE;
+    }
 
-  return JNI_TRUE;
+    return JNI_TRUE;
 }
 
 
@@ -360,6 +362,6 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 
     result = JNI_VERSION_1_4;
 
-bail:
+    bail:
     return result;
 }

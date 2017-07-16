@@ -107,7 +107,7 @@ public class WindowList extends ListActivity {
      * button being triggered.
      * Idea and code shamelessly borrowed from the Android browser's tabs list.
      */
-    private static class CloseButton extends android.support.v7.widget.AppCompatImageView {
+    public static class CloseButton extends android.support.v7.widget.AppCompatImageView {
         public CloseButton(Context context) {
             super(context);
         }

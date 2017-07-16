@@ -149,11 +149,18 @@ public class TerminalActivity extends Activity {
             PrintWriter pw = new PrintWriter(fos);
             pw.println("");
             pw.println("clear"); //clear screen
-            pw.println("cd"); //go to home
+            pw.println("cd ~"); //go to home
             pw.println("cd " + parent.getPath()); //move to parent of file
-//            pw.println("javac -verbose " + javaFile.getName());
+
+            //clean up
+            pw.println("rm -rf build/*");
+            pw.println("rm -rf dist/*");
+
+            pw.println("cd src");
+            pw.println("echo Compile the java code");
+            pw.println("javac -verbose -cp ..");
+
             pw.println("javac " + javaFile.getName()); //compile java file to java class
-//            pw.println("dx --dex --verbose --output=" + nameWithoutExtension + ".jar " + "./" + nameWithoutExtension + ".class");
             //convert class to dex
             pw.println("dx --dex --output=" + nameWithoutExtension + ".jar " + "./" + nameWithoutExtension + ".class");
             //run jar file

@@ -404,4 +404,5 @@
     <string name="interface_" translatable="false">Interface</string>
     <string name="enum_" translatable="false">Enum</string>
     <string name="setting_console" translatable="false">Console setting</string>
+    <string name="new_project">New project</string>
 </resources>

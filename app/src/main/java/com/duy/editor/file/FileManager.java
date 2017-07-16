@@ -260,7 +260,7 @@ public class FileManager {
      *
      * @param file
      */
-    public void saveFile(File file, String text) {
+    public static void saveFile(File file, String text) {
         try {
             FileOutputStream out = new FileOutputStream(file);
             if (text.length() > 0) out.write(text.getBytes());

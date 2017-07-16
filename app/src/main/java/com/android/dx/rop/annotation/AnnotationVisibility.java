@@ -23,7 +23,7 @@ import com.android.dx.util.ToHuman;
  */
 public enum AnnotationVisibility implements ToHuman {
     RUNTIME("runtime"),
-    BUILD("build"),
+    BUILD("builder"),
     SYSTEM("system"),
     EMBEDDED("embedded");
 

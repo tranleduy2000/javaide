@@ -60,7 +60,7 @@
         <item>0</item>
     </string-array>
 
-<!--    Jackpal Terminal Stuff..-->
+    <!--    Jackpal Terminal Stuff..-->
     <string-array name="entries_statusbar_preference">
         <item>Show status bar</item>
         <item>Hide status bar</item>
@@ -198,7 +198,7 @@
         <item>0</item>
         <item>1</item>
     </string-array>
-    
+
     <!-- These are the 'short' names for the control keys. They are used in the special keys dialog. -->
     <string-array name="control_keys_short_names">
         <item>Ball</item>
@@ -210,7 +210,7 @@
         <item>Camera</item>
         <item>None</item>
     </string-array>
-    
+
     <!-- These are the 'short' names for the Fn keys. They are used in the special keys dialog. -->
     <string-array name="fn_keys_short_names">
         <item>Ball</item>
@@ -221,22 +221,23 @@
         <item>Vol-Dn</item>
         <item>Camera</item>
         <item>None</item>
-    </string-array> <string-array name="font_size" translatable="false">
-    <item>10 sp</item>
-    <item>11 sp</item>
-    <item>12 sp</item>
-    <item>13 sp</item>
-    <item>14 sp</item>
-    <item>15 sp</item>
-    <item>16 sp</item>
-    <item>17 sp</item>
-    <item>18 sp</item>
-    <item>20 sp</item>
-    <item>22 sp</item>
-    <item>24 sp</item>
-    <item>26 sp</item>
-    <item>28 sp</item>
-</string-array>
+    </string-array>
+    <string-array name="font_size" translatable="false">
+        <item>10 sp</item>
+        <item>11 sp</item>
+        <item>12 sp</item>
+        <item>13 sp</item>
+        <item>14 sp</item>
+        <item>15 sp</item>
+        <item>16 sp</item>
+        <item>17 sp</item>
+        <item>18 sp</item>
+        <item>20 sp</item>
+        <item>22 sp</item>
+        <item>24 sp</item>
+        <item>26 sp</item>
+        <item>28 sp</item>
+    </string-array>
     <string-array name="font_size_value" translatable="false">
         <item>10</item>
         <item>11</item>

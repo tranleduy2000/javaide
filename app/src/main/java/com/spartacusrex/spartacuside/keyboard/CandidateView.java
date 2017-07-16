@@ -26,7 +26,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.spartacusrex.spartacuside.R;
+import com.duy.frontend.R;
 
 import java.util.ArrayList;
 import java.util.List;

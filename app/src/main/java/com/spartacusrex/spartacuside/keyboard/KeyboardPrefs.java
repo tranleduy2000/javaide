@@ -19,7 +19,7 @@ package com.spartacusrex.spartacuside.keyboard;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-import com.spartacusrex.spartacuside.R;
+import com.duy.frontend.R;
 
 public class KeyboardPrefs extends PreferenceActivity {
 

@@ -17,16 +17,16 @@
 
 <resources>
     <declare-styleable name="CodeTheme">
-        <attr name="key_word_color" format="color" />
-        <attr name="comment_color" format="color" />
-        <attr name="error_color" format="color" />
-        <attr name="number_color" format="color" />
-        <attr name="string_color" format="color" />
-        <attr name="boolean_color" format="color" />
-        <attr name="background_color" format="color" />
-        <attr name="opt_color" format="color" />
-        <attr name="normal_text_color" format="color" />
-        <attr name="can_edit" format="boolean" />
+        <attr name="key_word_color" format="color"/>
+        <attr name="comment_color" format="color"/>
+        <attr name="error_color" format="color"/>
+        <attr name="number_color" format="color"/>
+        <attr name="string_color" format="color"/>
+        <attr name="boolean_color" format="color"/>
+        <attr name="background_color" format="color"/>
+        <attr name="opt_color" format="color"/>
+        <attr name="normal_text_color" format="color"/>
+        <attr name="can_edit" format="boolean"/>
     </declare-styleable>
 
     <style name="CodeTheme.BrightYellow">

@@ -8,7 +8,7 @@ android {
         applicationId "com.spartacusrex.spartacuside"
         minSdkVersion rootProject.ext.minSdkVersion as Integer
         targetSdkVersion rootProject.ext.targetSdkVersion as Integer
-        multgit diDexEnabled true
+        multiDexEnabled true
         ndk {
             moduleName "libjackpal-androidterm2"
             abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
@@ -58,4 +58,8 @@ dependencies {
     compile 'com.sothree.slidinguppanel:library:3.3.1'
     provided 'frankiesardo:icepick-processor:3.2.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    compile project(':pager')
+    compile project(':colorpicker')
+    compile project(':splitview')
 }

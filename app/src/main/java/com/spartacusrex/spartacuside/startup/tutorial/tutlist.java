@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
-import com.spartacusrex.spartacuside.R;
+import com.duy.frontend.R;
 
 /**
  * @author Spartacus Rex

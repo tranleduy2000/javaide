@@ -13,7 +13,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<com.fsck.splitview.SplitView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.fsck.splitview.SplitView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -42,13 +43,13 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_filter_frames_white_18dp" />
+                android:src="@drawable/ic_filter_frames_white_18dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/frames"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -106,13 +107,13 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_line_weight_white_18dp" />
+                android:src="@drawable/ic_line_weight_white_18dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/variables"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
         </LinearLayout>
 

@@ -21,7 +21,7 @@ import android.content.Intent;
 
 import com.duy.frontend.debug.activities.DebugActivity;
 import com.duy.frontend.editor.EditorActivity;
-import com.duy.frontend.runnable.ExecuteActivity;
+import com.duy.frontend.run.ExecuteActivity;
 
 /**
  * Created by Duy on 11-Feb-17.

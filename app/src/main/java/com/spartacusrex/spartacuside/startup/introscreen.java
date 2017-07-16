@@ -21,7 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
-import com.spartacusrex.spartacuside.R;
+import com.duy.frontend.R;
 import com.spartacusrex.spartacuside.Term;
 import com.spartacusrex.spartacuside.TermService;
 import com.spartacusrex.spartacuside.startup.tutorial.tutlist;

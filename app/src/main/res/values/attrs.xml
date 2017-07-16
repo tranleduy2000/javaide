@@ -17,32 +17,33 @@
 -->
 
 <resources>
-     <declare-styleable name="EmulatorView">
-    </declare-styleable> <declare-styleable name="ConsoleView2" />
+    <declare-styleable name="EmulatorView">
+    </declare-styleable>
+    <declare-styleable name="ConsoleView2"/>
 
     <declare-styleable name="NumberPickerPreferenceas">
-        <attr name="max" format="integer" />
-        <attr name="min" format="integer" />
-        <attr name="maxExternal" format="string" />
-        <attr name="minExternal" format="string" />
-        <attr name="defaultValue" format="integer" />
+        <attr name="max" format="integer"/>
+        <attr name="min" format="integer"/>
+        <attr name="maxExternal" format="string"/>
+        <attr name="minExternal" format="string"/>
+        <attr name="defaultValue" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="DoubleNumberPickerPreference">
-        <attr name="defaultValue1" format="integer" />
-        <attr name="defaultValue2" format="integer" />
-        <attr name="max1" format="integer" />
-        <attr name="min1" format="integer" />
-        <attr name="max2" format="integer" />
-        <attr name="min2" format="integer" />
-        <attr name="maxExternal1" format="string" />
-        <attr name="minExternal1" format="string" />
-        <attr name="maxExternal2" format="string" />
-        <attr name="minExternal2" format="string" />
-        <attr name="pickerTitle1" format="string" />
-        <attr name="pickerTitle2" format="string" />
+        <attr name="defaultValue1" format="integer"/>
+        <attr name="defaultValue2" format="integer"/>
+        <attr name="max1" format="integer"/>
+        <attr name="min1" format="integer"/>
+        <attr name="max2" format="integer"/>
+        <attr name="min2" format="integer"/>
+        <attr name="maxExternal1" format="string"/>
+        <attr name="minExternal1" format="string"/>
+        <attr name="maxExternal2" format="string"/>
+        <attr name="minExternal2" format="string"/>
+        <attr name="pickerTitle1" format="string"/>
+        <attr name="pickerTitle2" format="string"/>
     </declare-styleable>
 
-    <attr name="toolbarStyle" format="reference" />
-    <attr name="appbarStyle" format="reference" />
+    <attr name="toolbarStyle" format="reference"/>
+    <attr name="appbarStyle" format="reference"/>
 </resources>

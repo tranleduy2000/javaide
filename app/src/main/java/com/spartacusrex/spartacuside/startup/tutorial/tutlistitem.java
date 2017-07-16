@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.spartacusrex.spartacuside.R;
+import com.duy.frontend.R;
 
 /**
  * @author Spartacus Rex

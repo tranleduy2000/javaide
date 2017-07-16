@@ -25,7 +25,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.spartacusrex.spartacuside.R;
+import com.duy.frontend.R;
 import com.spartacusrex.spartacuside.TermService;
 import com.spartacusrex.spartacuside.startup.setup.FileManager;
 import com.spartacusrex.spartacuside.startup.tutorial.tutview;
@@ -42,7 +42,7 @@ public class Installer extends Activity implements OnClickListener {
     private static final String TAG = "Installer";
     public static int CURRENT_INSTALL_SYSTEM_NUM = 20;
     public static String CURRENT_INSTALL_SYSTEM = "System v2.0";
-    public static String CURRENT_INSTALL_ASSETFILE = "system-2.0.tar.gz.mp3";
+    public static String CURRENT_INSTALL_ASSETFILE = "system3.tar.gz.mp3";
     boolean mOverwriteAll = false;
     private ProgressDialog mInstallProgress;
     public Handler mInstallHandler = new Handler() {

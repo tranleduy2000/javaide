@@ -27,6 +27,16 @@ public class DialogNewProject extends AppCompatDialogFragment implements View.On
     private Button btnCreate, btnCancel;
     @Nullable
     private OnCreateProjectListener listener;
+    public static final String TAG = "DialogNewProject";
+
+    public static DialogNewProject newInstance() {
+
+        Bundle args = new Bundle();
+
+        DialogNewProject fragment = new DialogNewProject();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -108,6 +118,6 @@ public class DialogNewProject extends AppCompatDialogFragment implements View.On
 
 
     public interface OnCreateProjectListener {
-        void onProjectCreated(File parentMainClass);
+        void onProjectCreated(File mainClass);
     }
 }

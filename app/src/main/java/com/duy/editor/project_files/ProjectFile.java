@@ -66,6 +66,6 @@ public class ProjectFile {
         String content = Template.createClass(mainClassName);
         FileManager.saveFile(mainFile, content);
 
-        return mainFile.getParentFile();
+        return mainFile;
     }
 }

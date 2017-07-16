@@ -53,6 +53,7 @@ import com.duy.editor.file.FileActionListener;
 import com.duy.editor.file.FileManager;
 import com.duy.editor.file.FragmentFileManager;
 import com.duy.editor.file.TabFileUtils;
+import com.duy.editor.project_files.fragments.DialogNewProject;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.view.SymbolListView;
 
@@ -66,15 +67,17 @@ import java.util.ArrayList;
 
 @SuppressWarnings("DefaultFileTemplate")
 public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for debug
-        implements SymbolListView.OnKeyListener,
-        EditorControl, FileActionListener {
+        implements SymbolListView.OnKeyListener, EditorControl, FileActionListener,
+        DialogNewProject.OnCreateProjectListener {
+
     protected final static String TAG = BaseEditorActivity.class.getSimpleName();
+
     protected final boolean SELECT = true;
     protected final boolean SAVE_LAST_FILE = true;
     protected final boolean UN_SELECT = false;
     protected final boolean UN_SAVE_LAST_FILE = false;
     protected FileManager mFileManager;
-    protected EditorPagerAdapter pagerAdapter;
+    protected EditorPagerAdapter mPageAdapter;
     Toolbar toolbar;
     AppBarLayout appBarLayout;
     DrawerLayout mDrawerLayout;
@@ -131,12 +134,12 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         for (File file : listFile) {
             pages.add(new SimplePageDescriptor(file.getPath(), file.getName()));
         }
-        pagerAdapter = new EditorPagerAdapter(getSupportFragmentManager(), pages);
-        viewPager.setAdapter(pagerAdapter);
+        mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), pages);
+        viewPager.setAdapter(mPageAdapter);
         tabLayout.setupWithViewPager(viewPager);
         invalidateTab();
 
-        if (pagerAdapter.getCount() == 0) {
+        if (mPageAdapter.getCount() == 0) {
             String fileName = "File" + Integer.toHexString((int) System.currentTimeMillis()) + ".java";
             String filePath = mFileManager.createNewFileInMode(fileName);
             mFileManager.saveFile(filePath,
@@ -145,13 +148,13 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         }
 
         int pos = getPreferences().getInt(JavaPreferences.TAB_POSITION_FILE);
-        if (pagerAdapter.getCount() > pos) {
+        if (mPageAdapter.getCount() > pos) {
             viewPager.setCurrentItem(pos);
         }
     }
 
     private void invalidateTab() {
-        for (int i = 0; i < pagerAdapter.getCount(); i++) {
+        for (int i = 0; i < mPageAdapter.getCount(); i++) {
             final TabLayout.Tab tab = tabLayout.getTabAt(i);
             View view = null;
             if (tab != null) {
@@ -168,8 +171,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
                         removePage(position);
                     }
                 });
-                TextView txtTitle = (TextView) view.findViewById(R.id.txt_title);
-                txtTitle.setText(pagerAdapter.getPageTitle(i));
+                TextView txtTitle = view.findViewById(R.id.txt_title);
+                txtTitle.setText(mPageAdapter.getPageTitle(i));
                 txtTitle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -206,12 +209,11 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         mDrawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(keyBoardListener);
     }
 
-
     /**
      * remove a page in <code>position</code>
      */
     protected void removePage(int position) {
-        Fragment existingFragment = pagerAdapter.getExistingFragment(position);
+        Fragment existingFragment = mPageAdapter.getExistingFragment(position);
         if (existingFragment == null) {
             if (DLog.DEBUG) DLog.d(TAG, "removePage: " + "null page " + position);
             return;
@@ -222,7 +224,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         mFileManager.removeTabFile(filePath);
 
         //remove page
-        pagerAdapter.remove(position);
+        mPageAdapter.remove(position);
         invalidateTab();
         Toast.makeText(this, getString(R.string.closed) + " " + new File(filePath).getName(), Toast.LENGTH_SHORT).show();
     }
@@ -241,7 +243,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
      * @param selectNewPage - if <code>true</code>, the tab of file will be selected when initialized
      */
     protected void addNewPageEditor(@NonNull File file, boolean selectNewPage) {
-        int position = pagerAdapter.getPositionForTag(file.getPath());
+        int position = mPageAdapter.getPositionForTag(file.getPath());
         if (position != -1) { //existed in list file
             //check need select tab
             if (selectNewPage) {
@@ -252,8 +254,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
                 }
             }
         } else { //new file
-            if (pagerAdapter.getCount() >= getPreferences().getMaxPage()) {
-                Fragment existingFragment = pagerAdapter.getExistingFragment(0);
+            if (mPageAdapter.getCount() >= getPreferences().getMaxPage()) {
+                Fragment existingFragment = mPageAdapter.getExistingFragment(0);
                 if (existingFragment != null) {
                     mFileManager.removeTabFile(existingFragment.getTag());
                     removePage(0);
@@ -264,11 +266,11 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
             mFileManager.addNewPath(file.getPath());
 
             //new page
-            pagerAdapter.add(new SimplePageDescriptor(file.getPath(), file.getName()));
+            mPageAdapter.add(new SimplePageDescriptor(file.getPath(), file.getName()));
             invalidateTab();
 
             if (selectNewPage) {
-                int indexOfNewPage = pagerAdapter.getCount() - 1;
+                int indexOfNewPage = mPageAdapter.getCount() - 1;
                 TabLayout.Tab tab = tabLayout.getTabAt(indexOfNewPage);
                 if (tab != null) {
                     tab.select();
@@ -332,7 +334,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int position = pagerAdapter.getPositionForTag(file.getPath());
+                int position = mPageAdapter.getPositionForTag(file.getPath());
                 boolean success = mFileManager.deleteFile(file);
                 if (success) {
                     if (position >= 0) {
@@ -367,7 +369,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
      */
     @Nullable
     protected File getCurrentFile() {
-        EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
             String filePath = editorFragment.getFilePath();
             return new File(filePath);
@@ -438,7 +440,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
     }
 
 
-
     private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {
         BaseEditorActivity activity;
 
@@ -464,5 +465,15 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         }
     }
 
-
+    @Override
+    public void onProjectCreated(File mainClass) {
+        FragmentFileManager fmFile = (FragmentFileManager)
+                getSupportFragmentManager().findFragmentByTag("fragment_file_view");
+        //load project file
+        if (fmFile != null) fmFile.load(mainClass.getParentFile());
+        while (mPageAdapter.getCount() > 0) {
+            removePage(0);
+        }
+        addNewPageEditor(mainClass, true);
+    }
 }

@@ -410,6 +410,10 @@ public class FragmentFileManager extends Fragment implements
         return true;
     }
 
+    public void load(File parentFile) {
+        new UpdateList(parentFile.getPath()).execute();
+    }
+
     private class UpdateList extends AsyncTask<Void, Void, LinkedList<FileDetail>> {
         private String path;
         private String exceptionMessage;

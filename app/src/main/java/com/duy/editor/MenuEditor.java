@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.duy.editor.editor.EditorActivity;
 import com.duy.editor.info.InfoActivity;
+import com.duy.editor.project_files.fragments.DialogNewProject;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.setting.SettingsActivity;
 import com.duy.editor.utils.DonateUtils;
@@ -248,8 +249,16 @@ public class MenuEditor {
             case R.id.action_setting_console:
                 activity.startActivity(new Intent(activity, TerminalPreferences.class));
                 break;
+            case R.id.action_new_project:
+                showDialogCreateProject();
+                break;
         }
         return true;
+    }
+
+    private void showDialogCreateProject() {
+        DialogNewProject dialogNewProject = DialogNewProject.newInstance();
+        dialogNewProject.show(activity.getSupportFragmentManager(), DialogNewProject.TAG);
     }
 
     public void showPopupTranslate(final Activity activity) {

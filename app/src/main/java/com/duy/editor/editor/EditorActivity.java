@@ -109,7 +109,7 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public void onKeyClick(View view, String text) {
-        EditorFragment currentFragment = pagerAdapter.getCurrentFragment();
+        EditorFragment currentFragment = mPageAdapter.getCurrentFragment();
         if (currentFragment != null) {
             currentFragment.insert(text);
         }
@@ -117,7 +117,7 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public void onKeyLongClick(String text) {
-        EditorFragment currentFragment = pagerAdapter.getCurrentFragment();
+        EditorFragment currentFragment = mPageAdapter.getCurrentFragment();
         if (currentFragment != null) {
             currentFragment.insert(text);
         }
@@ -146,7 +146,7 @@ public class EditorActivity extends BaseEditorActivity implements
         alertDialog.findViewById(R.id.btn_replace).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+                EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
                 if (editorFragment != null) {
                     editorFragment.doFindAndReplace(
                             editFind.getText().toString(),
@@ -194,7 +194,7 @@ public class EditorActivity extends BaseEditorActivity implements
         alertDialog.findViewById(R.id.btn_replace).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+                EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
                 if (editorFragment != null) {
                     editorFragment.doFind(editFind.getText().toString(),
                             ckbRegex.isChecked(),
@@ -217,7 +217,7 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public void saveFile() {
-        EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
             editorFragment.saveFile();
         }
@@ -231,7 +231,7 @@ public class EditorActivity extends BaseEditorActivity implements
 
 
     public String getCode() {
-        EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
             return editorFragment.getCode();
         }
@@ -315,7 +315,7 @@ public class EditorActivity extends BaseEditorActivity implements
         if (s.equals(getString(R.string.key_show_suggest_popup))
                 || s.equals(getString(R.string.key_show_line_number))
                 || s.equals(getString(R.string.key_pref_word_wrap))) {
-            EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+            EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
             if (editorFragment != null) {
                 editorFragment.refreshCodeEditor();
             }
@@ -323,7 +323,7 @@ public class EditorActivity extends BaseEditorActivity implements
             mContainerSymbol.setVisibility(getPreferences().isShowListSymbol()
                     ? View.VISIBLE : View.GONE);
         } else if (s.equals(getString(R.string.key_show_suggest_popup))) {
-            EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+            EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
             if (editorFragment != null) {
                 EditorView editor = editorFragment.getEditor();
                 editor.setSuggestData(new ArrayList<InfoItem>());
@@ -331,7 +331,7 @@ public class EditorActivity extends BaseEditorActivity implements
         }
         //toggle ime/no suggest mode
         else if (s.equalsIgnoreCase(getString(R.string.key_ime_keyboard))) {
-            EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+            EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
             if (editorFragment != null) {
                 EditorView editor = editorFragment.getEditor();
                 editorFragment.refreshCodeEditor();
@@ -408,7 +408,7 @@ public class EditorActivity extends BaseEditorActivity implements
                         String line = edittext.getText().toString();
                         if (!line.isEmpty()) {
                             EditorFragment editorFragment
-                                    = pagerAdapter.getCurrentFragment();
+                                    = mPageAdapter.getCurrentFragment();
                             if (editorFragment != null) {
                                 editorFragment.goToLine(Integer.parseInt(line));
                             }
@@ -426,7 +426,7 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public void formatCode() {
-        EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
             editorFragment.formatCode();
         }
@@ -445,7 +445,7 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public void undo() {
-        EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
             editorFragment.undo();
         }
@@ -453,7 +453,7 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public void redo() {
-        EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
             editorFragment.redo();
         }
@@ -483,7 +483,7 @@ public class EditorActivity extends BaseEditorActivity implements
             case ACTION_PICK_MEDIA_URL:
                 if (resultCode == RESULT_OK) {
                     String path = data.getData().toString();
-                    EditorFragment currentFragment = pagerAdapter.getCurrentFragment();
+                    EditorFragment currentFragment = mPageAdapter.getCurrentFragment();
                     if (currentFragment != null && path != null) {
                         currentFragment.insert(path);
                     }
@@ -513,7 +513,7 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public void paste() {
-        EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
             editorFragment.paste();
         }
@@ -521,7 +521,7 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public void copyAll() {
-        EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
             editorFragment.copyAll();
         }
@@ -576,7 +576,7 @@ public class EditorActivity extends BaseEditorActivity implements
     }
 
     private String getCurrentFilePath() {
-        EditorFragment editorFragment = pagerAdapter.getCurrentFragment();
+        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
             return editorFragment.getFilePath();
         }
@@ -614,7 +614,7 @@ public class EditorActivity extends BaseEditorActivity implements
                 setPositiveButton(getString(R.string.select), new ColorPickerClickListener() {
                     @Override
                     public void onClick(DialogInterface d, int lastSelectedColor, Integer[] allColors) {
-                        EditorFragment currentFragment = pagerAdapter.getCurrentFragment();
+                        EditorFragment currentFragment = mPageAdapter.getCurrentFragment();
                         if (currentFragment != null) {
                             currentFragment.insert(String.valueOf(lastSelectedColor));
                             Toast.makeText(EditorActivity.this, getString(R.string.inserted_color) + lastSelectedColor,

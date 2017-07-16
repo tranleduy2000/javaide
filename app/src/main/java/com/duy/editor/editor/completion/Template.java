@@ -49,8 +49,8 @@ public class Template {
      */
     private static final String JAVA_TEMPLATE =
             "\n" +
-                    "%1$s %2$s %3$s %4$s {\n" +
-                    "\n    " +
+                    "%1$s%2$s%3$s %4$s {\n" +
+                    "    \n" +
                     "}\n";
 
     @NonNull
@@ -72,16 +72,16 @@ public class Template {
         String m = "";
         switch (modifier) {
             case Modifier.ABSTRACT:
-                m = "abstract";
+                m = "abstract ";
                 break;
             case Modifier.FINAL:
-                m = "final";
+                m = "final ";
                 break;
         }
         String v = "";
         switch (visibility) {
             case Modifier.PUBLIC:
-                v = "public";
+                v = "public ";
                 break;
         }
         String k = "class";

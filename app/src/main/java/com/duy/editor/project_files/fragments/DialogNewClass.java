@@ -125,7 +125,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         currentPackage = currentPackage.replace(".", "/");
         File file;
         if (project_file != null) {
-            file = new File(project_file.getRootDir(), "src/java/main" + currentPackage);
+            file = new File(project_file.getRootDir(), "src/java/main/" + currentPackage);
             if (!file.exists()) file.mkdirs();
             File classf = new File(file, className);
             FileManager.saveFile(classf, content);

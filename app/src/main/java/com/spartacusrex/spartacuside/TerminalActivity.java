@@ -98,7 +98,6 @@ public class TerminalActivity extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        Log.e(TAG, "onCreate");
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSettings = new TermSettings(mPrefs);
 

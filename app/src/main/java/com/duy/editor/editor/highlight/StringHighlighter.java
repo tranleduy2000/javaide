@@ -44,8 +44,8 @@ public class StringHighlighter implements Highlighter {
      * 'sadhasdhasdhashdhas ds asda sd
      */
     public static final Pattern STRINGS = Pattern.compile(
-            "((')(.*?)('))" +//'string'
-                    "|((')(.+))", Pattern.DOTALL); // no end string 'asdasdasd
+            "((\")(.*?)(\"))" +//'string'
+                    "|((\")(.+))", Pattern.DOTALL); // no end string 'asdasdasd
 
     private ArrayList<Pair<Integer, Integer>> mStringRegion = new ArrayList<>();
     private CodeTheme codeTheme;

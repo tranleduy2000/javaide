@@ -148,15 +148,20 @@ public class TerminalActivity extends Activity {
         try {
             FileOutputStream fos = termSession.getTermOut();
             PrintWriter pw = new PrintWriter(fos);
-            pw.println("cd");
-            pw.println("cd " + parent.getPath());
+            pw.println("");
+            pw.println("clear"); //clear screen
+            pw.println("cd"); //go to home
+            pw.println("cd " + parent.getPath()); //move to parent of file
 //            pw.println("javac -verbose " + javaFile.getName());
-            pw.println("javac " + javaFile.getName());
+            pw.println("javac " + javaFile.getName()); //compile java file to java class
 //            pw.println("dx --dex --verbose --output=" + nameWithoutExtension + ".jar " + "./" + nameWithoutExtension + ".class");
+            //convert class to dex
             pw.println("dx --dex --output=" + nameWithoutExtension + ".jar " + "./" + nameWithoutExtension + ".class");
+            //run jar file
             pw.println("java -jar " + nameWithoutExtension + ".jar " + nameWithoutExtension);
+            //exec
             pw.flush();
-            pw.close();
+//            pw.close();
 
             //Make sure the /tmp folder ALWAYS exists
             File temp = new File(home, "tmp");

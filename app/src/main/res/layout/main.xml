@@ -34,6 +34,12 @@
                 android:text="Terminal IDE"/>
 
             <Button
+                android:id="@+id/btn_java_ide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Java IDE"/>
+
+            <Button
                 android:id="@+id/main_install"
                 android:layout_width="200dip"
                 android:layout_height="wrap_content"

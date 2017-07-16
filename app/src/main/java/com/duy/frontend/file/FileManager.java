@@ -52,7 +52,7 @@ public class FileManager {
      * storage path for saveFile code
      */
     public static final String EXTERNAL_DIR_CODE = Environment.getExternalStorageDirectory().getPath()
-            + "/PascalCompiler/";
+            + "/JavaNIDE/src/";
     private final String TAG = FileManager.class.getSimpleName();
     private final String FILE_TEMP_NAME = "tmp.pas";
     private int mode = SAVE_MODE.EXTERNAL;

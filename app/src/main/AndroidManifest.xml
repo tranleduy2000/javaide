@@ -52,7 +52,7 @@
         <activity android:name="com.spartacusrex.spartacuside.startup.tutorial.tutview"/>
         <activity android:name="com.spartacusrex.spartacuside.startup.tutorial.remotelist"/>
 
-        <activity android:name="com.spartacusrex.spartacuside.startup.introscreen"/>
+        <activity android:name="com.spartacusrex.spartacuside.startup.MainActivity"/>
 
         <activity
             android:name="com.spartacusrex.spartacuside.startup.Installer"

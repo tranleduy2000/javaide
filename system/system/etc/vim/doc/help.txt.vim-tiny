@@ -1,0 +1,33 @@
+*help.txt*	For Vim version 6.4.  Last change: 2004 Aug 29
+
+		  VIM - fake help file for vim-tiny
+
+The Vim online help is not installed on this Debian GNU/Linux system.
+
+WHY ?
+
+Because the "vim-runtime" package containing it is not installed.
+
+This may happen if your administrator has chosen to install as only Vim variant
+the "vim-tiny" package.  The "vim-tiny" package contains a minimal version of
+Vim compiled with no graphical user interface and only a small subset of
+features in order to keep small the package size.
+
+Since the "vim-runtime" package is rather huge when compared to "vim-tiny",
+installing the latter does not automatically install the former.
+
+HOW TO OBTAIN HELP
+
+either browse the Vim online help via web starting at
+
+     http://vimdoc.sourceforge.net/htmldoc/help.html#help.txt
+
+or ask your administrator to install the "vim-doc" package, which contains the
+   HTML version of the online help and browse it starting at
+
+     /usr/share/doc/vim/html/index.html
+
+or  ask your administrator to install the "vim-runtime" package, re-run vim and
+    access the online help again.  Note that all Vim variants other then
+    "vim-tiny" automatically install the "vim-runtime" package, if you don't
+    suffer from disk space shortage using one of them is recommended.

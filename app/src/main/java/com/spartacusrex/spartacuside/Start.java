@@ -8,7 +8,7 @@ package com.spartacusrex.spartacuside;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.spartacusrex.spartacuside.startup.introscreen;
+import com.spartacusrex.spartacuside.startup.MainActivity;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -16,7 +16,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 /**
  * @author Spartacus Rex
  */
-public class Start extends introscreen {
+public class Start extends MainActivity {
     private static final String TAG = "Start";
 
     @Override

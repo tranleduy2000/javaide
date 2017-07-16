@@ -83,9 +83,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
     DrawerLayout mDrawerLayout;
     SymbolListView mKeyList;
     NavigationView navigationView;
-    TabLayout tabLayout;
+    TabLayout mTabLayout;
     View mContainerSymbol;
-    ViewPager viewPager;
+    ViewPager mViewPager;
     private KeyBoardEventListener keyBoardListener;
     private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
 
@@ -102,14 +102,14 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
      * hide appbar layout when keyboard visible
      */
     private void hideAppBar() {
-        tabLayout.setVisibility(View.GONE);
+        mTabLayout.setVisibility(View.GONE);
     }
 
     /**
      * show appbar layout when keyboard gone
      */
     private void showAppBar() {
-        tabLayout.setVisibility(View.VISIBLE);
+        mTabLayout.setVisibility(View.VISIBLE);
     }
 
     protected ProjectFile projectFile;
@@ -130,6 +130,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
 
     protected void setupPageView() {
         mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), new ArrayList<PageDescriptor>());
+        mViewPager.setAdapter(mPageAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
+        invalidateTab();
+
         if (projectFile == null) {
             Toast.makeText(this, "Please create new project", Toast.LENGTH_SHORT).show();
             return;
@@ -143,7 +147,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
 
     private void invalidateTab() {
         for (int i = 0; i < mPageAdapter.getCount(); i++) {
-            final TabLayout.Tab tab = tabLayout.getTabAt(i);
+            final TabLayout.Tab tab = mTabLayout.getTabAt(i);
             View view = null;
             if (tab != null) {
                 tab.setCustomView(R.layout.item_tab_file);
@@ -164,12 +168,12 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
                 txtTitle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        viewPager.setCurrentItem(position);
+                        mViewPager.setCurrentItem(position);
                     }
                 });
             }
 
-            if (i == viewPager.getCurrentItem()) {
+            if (i == mViewPager.getCurrentItem()) {
                 if (tab != null) {
                     tab.select();
                 }
@@ -235,10 +239,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         if (position != -1) { //existed in list file
             //check need select tab
             if (selectNewPage) {
-                TabLayout.Tab tab = tabLayout.getTabAt(position);
+                TabLayout.Tab tab = mTabLayout.getTabAt(position);
                 if (tab != null) {
                     tab.select();
-                    viewPager.setCurrentItem(position);
+                    mViewPager.setCurrentItem(position);
                 }
             }
         } else { //new file
@@ -259,10 +263,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
 
             if (selectNewPage) {
                 int indexOfNewPage = mPageAdapter.getCount() - 1;
-                TabLayout.Tab tab = tabLayout.getTabAt(indexOfNewPage);
+                TabLayout.Tab tab = mTabLayout.getTabAt(indexOfNewPage);
                 if (tab != null) {
                     tab.select();
-                    viewPager.setCurrentItem(indexOfNewPage);
+                    mViewPager.setCurrentItem(indexOfNewPage);
                 }
             }
         }
@@ -271,7 +275,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
     @Override
     protected void onPause() {
         super.onPause();
-        getPreferences().put(JavaPreferences.TAB_POSITION_FILE, tabLayout.getSelectedTabPosition());
+        getPreferences().put(JavaPreferences.TAB_POSITION_FILE, mTabLayout.getSelectedTabPosition());
         ProjectManager.saveProject(this, projectFile);
     }
 
@@ -433,9 +437,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
         mKeyList = (SymbolListView) findViewById(R.id.recycler_view);
         mFileManager = new FileManager(this);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mContainerSymbol = findViewById(R.id.container_symbol);
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
         setupToolbar();
         setupPageView();
     }

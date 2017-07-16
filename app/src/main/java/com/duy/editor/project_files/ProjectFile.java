@@ -11,6 +11,7 @@ import java.io.Serializable;
  * Created by Duy on 16-Jul-17.
  */
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class ProjectFile implements Serializable, Cloneable {
     //main class name, don't include package, ex: Main
     private ClassFile mainClass;
@@ -116,11 +117,12 @@ public class ProjectFile implements Serializable, Cloneable {
         }
 
         //create main class
-        File mainFile = new File(packageF, mainClass + ".java");
-        mainFile.createNewFile();
-        String content = Template.createClass(mainClass.getSimpleName());
-        FileManager.saveFile(mainFile, content);
-
+        File mainFile = new File(packageF, mainClass.getSimpleName() + ".java");
+        if (!mainFile.exists()) {
+            mainFile.createNewFile();
+            String content = Template.createClass(mainClass.getSimpleName());
+            FileManager.saveFile(mainFile, content);
+        }
         mainClass.setPath(mainFile.getPath());
         return mainFile;
     }

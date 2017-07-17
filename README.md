@@ -1,4 +1,4 @@
-![ICON](art/icons/playstore/icon.png)
+![ICON](art/icons/mipmap-xxxhdpi/ic_launcher.png)
 
 # Java compiler on Android.
 

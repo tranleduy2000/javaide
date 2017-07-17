@@ -7,8 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +21,8 @@ import com.unnamed.b.atv.view.AndroidTreeView;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import static android.widget.FrameLayout.LayoutParams;
 
 /**
  * Created by Duy on 17-Jul-17.
@@ -91,36 +91,17 @@ public class FolderStructureFragment extends Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mProjectFile = (ProjectFile)
+                getArguments().getSerializable(CompileManager.PROJECT_FILE);
         mContainerView = view.findViewById(R.id.container);
+        refresh();
 
-        TreeNode root = TreeNode.root();
-        TreeNode fileStructure = createFileStructure();
-        if (fileStructure != null) {
-            root.addChildren(fileStructure);
-        }
-
-        mTreeView = new AndroidTreeView(getContext(), root);
-        mTreeView.setDefaultAnimation(false);
-        mTreeView.setDefaultContainerStyle(R.style.TreeNodeStyleCustom);
-        mTreeView.setDefaultViewHolder(IconTreeItemHolder.class);
-        mTreeView.setDefaultNodeClickListener(nodeClickListener);
-        mTreeView.setDefaultNodeLongClickListener(nodeLongClickListener);
-        mContainerView.addView(mTreeView.getView());
-
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && mTreeView != null) {
             String state = savedInstanceState.getString("tState");
             if (!TextUtils.isEmpty(state)) {
                 mTreeView.restoreState(state);
             }
         }
-    }
-
-    @Nullable
-    private TreeNode createFileStructure() {
-        ProjectFile projectFile = (ProjectFile)
-                getArguments().getSerializable(CompileManager.PROJECT_FILE);
-        if (projectFile == null) return null;
-        return createFileStructure(projectFile);
     }
 
     @Nullable
@@ -135,11 +116,7 @@ public class FolderStructureFragment extends Fragment
         return root;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+
 
     private ArrayList<TreeNode> getNode(File parent) {
         ArrayList<TreeNode> nodes = new ArrayList<>();
@@ -216,9 +193,10 @@ public class FolderStructureFragment extends Fragment
         if (saveState != null) {
             mTreeView.restoreState(saveState);
         }
-
         mContainerView.removeAllViews();
-        mContainerView.addView(mTreeView.getView());
+        View view = mTreeView.getView();
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        mContainerView.addView(view, params);
     }
 
     @Override

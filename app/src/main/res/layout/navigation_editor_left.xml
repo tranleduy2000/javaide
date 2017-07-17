@@ -26,14 +26,7 @@
         android:text="@string/project_file"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fadeScrollbars="false"
-        android:fillViewport="true"
-        android:scrollbarSize="5dp">
-
-        <FrameLayout
+    <FrameLayout
             android:id="@+id/container_file"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -42,6 +35,5 @@
             android:orientation="vertical">
 
         </FrameLayout>
-    </HorizontalScrollView>
 
 </LinearLayout>

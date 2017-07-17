@@ -101,13 +101,12 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     }
 
     private void createNewClass() {
-
-        //check empty
         String className = mEditName.getText().toString();
         if (className.isEmpty()) {
             mEditName.setError(getString(R.string.enter_name));
             return;
         }
+        String currentPackage = mPackage.getText().toString();
 
         int visibility = mVisibility.getCheckedRadioButtonId() == R.id.rad_public ? Modifier.PUBLIC : Modifier.PRIVATE;
         int checkedRadioButtonId = mModifiers.getCheckedRadioButtonId();
@@ -118,13 +117,11 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
             modifier = Modifier.FINAL;
         }
         int kind = mKind.getSelectedItemPosition();
-        String content = Template.createJava(className, kind, visibility, modifier);
+        String content = Template.createJava(currentPackage, className, kind, visibility, modifier);
 
 
         Bundle arguments = getArguments();
         ProjectFile projectFile = (ProjectFile) arguments.getSerializable(KEY_PROJECT_FILE);
-        String currentPackage = mPackage.getText().toString();
-        currentPackage = currentPackage.replace(".", "/");
         if (projectFile != null) {
             File classf = ProjectFile.createClass(projectFile, currentPackage, className, content);
             if (listener != null) {

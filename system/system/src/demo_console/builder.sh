@@ -12,7 +12,7 @@ cd src
 
 #Now compile - note the use of a seperate lib (in non-dex format!)
 echo Compile the java code
-javac -verbose -cp ../libs/demolib.jar -d ../build/ org/demo/start.java 
+javac -verbose -cp ../libs/demolib.jar -d ../build/ org/demo/start.java
 
 #Back out
 cd ..

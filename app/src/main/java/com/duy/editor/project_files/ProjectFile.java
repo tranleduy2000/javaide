@@ -75,12 +75,14 @@ public class ProjectFile implements Serializable, Cloneable {
 
     private static final String TAG = "ProjectFile";
 
-    public static File createClass(ProjectFile projectFile, String currentPackage, String className,
+    public static File createClass(ProjectFile projectFile,
+                                   String currentPackage, String className,
                                    String content) {
-        File file = new File(projectFile.getRootDir(), "src/" + currentPackage.replace(".", "/"));
+        File file = new File(projectFile.getRootDir(), "src/main/java/" + currentPackage.replace(".", "/"));
         if (!file.exists()) file.mkdirs();
         File classf = new File(file, className + ".java");
         FileManager.saveFile(classf, content);
+
         Log.d(TAG, "createClass() returned: " + classf);
         return classf;
     }
@@ -91,9 +93,11 @@ public class ProjectFile implements Serializable, Cloneable {
      * ├───build
      * ├───libs
      * └───src
-     *       └──com
-     *            └──...
-     *               └──Main.class
+     *      └─main
+     *          └─ java
+     *             └──com
+     *                 └──...
+     *                     └──Main.class
      *
      * @param dir - parent dir for project
      * @return - path of parent of  main class
@@ -115,14 +119,14 @@ public class ProjectFile implements Serializable, Cloneable {
         File src = new File(root, "src");
         if (!src.exists()) src.mkdirs();
 
-//        File main = new File(src, "main");
-//        if (!main.exists()) main.mkdirs();
-//
-//        File javaF = new File(main, "java");
-//        if (!javaF.exists()) javaF.mkdirs();
+        File main = new File(src, "main");
+        if (!main.exists()) main.mkdirs();
+
+        File javaF = new File(main, "java");
+        if (!javaF.exists()) javaF.mkdirs();
 
         //create package file
-        File packageF = new File(src, packageName.replace(".", "/"));
+        File packageF = new File(javaF, packageName.replace(".", "/"));
         if (!packageF.exists()) {
             packageF.getParentFile().mkdirs();
             packageF.mkdirs();

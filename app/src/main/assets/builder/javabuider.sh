@@ -13,11 +13,12 @@ cd ${PROJECT_PATH}
 rm -rf build/*
 rm -rf bin/*
 
-#cd to src/java/main dir
-cd src/main/java
+#cd to src dir
+cd src
 
 #Now compile - note the use of a seperate lib (in non-dex format!)
 echo Compile the java code
+javac -verbose -cp ../libs/demolib.jar -d ../build/ ${PATH_MAIN_CLASS}.java
 javac -verbose -cp -d ../../../build/ ${PATH_MAIN_CLASS}.java
 
 #Now into build dir

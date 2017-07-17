@@ -48,6 +48,7 @@ public class Template {
      * %4
      */
     private static final String JAVA_TEMPLATE =
+            "%5$s" +
             "\n" +
                     "%1$s%2$s%3$s %4$s {\n" +
                     "    \n" +
@@ -68,7 +69,7 @@ public class Template {
         return String.format(INTERFACE_TEMPLATE, name);
     }
 
-    public static String createJava(String name, int kind, int visibility, int modifier) {
+    public static String createJava(String zpackage, String name, int kind, int visibility, int modifier) {
         String m = "";
         switch (modifier) {
             case Modifier.ABSTRACT:
@@ -96,7 +97,8 @@ public class Template {
                 k = "enum";
                 break;
         }
-        return String.format(JAVA_TEMPLATE, v, m, k, name);
+        zpackage = zpackage.isEmpty() ? "" : "package " + zpackage + ";";
+        return String.format(JAVA_TEMPLATE, v, m, k, name, zpackage);
     }
 
 }

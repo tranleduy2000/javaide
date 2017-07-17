@@ -16,14 +16,14 @@
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/img_arrow"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             app:srcCompat="@drawable/ic_keyboard_arrow_right_white_24dp" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/img_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             app:srcCompat="@drawable/ic_jar_file_white" />
 
         <TextView
@@ -47,14 +47,14 @@
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/img_add"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             app:srcCompat="@drawable/fab_add" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/img_delete"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             app:srcCompat="@drawable/ic_close_white_24dp" />
     </LinearLayout>
 </RelativeLayout>

@@ -31,7 +31,7 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
 
     @Override
     public View createNodeView(final TreeNode node, final TreeItem item) {
-        View view = inflater.inflate(R.layout.layout_icon_node, null, false);
+        View view = inflater.inflate(R.layout.list_item_file, null, false);
         txtName = view.findViewById(R.id.node_value);
         txtName.setText(item.getFile().getName());
         imgArrow = view.findViewById(R.id.img_arrow);

@@ -49,6 +49,8 @@ import com.duy.editor.BuildConfig;
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
 import com.duy.editor.project_files.ProjectFile;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.TermSettings;
 
@@ -95,6 +97,8 @@ public class TerminalActivity extends Activity {
         }
     };
 
+    private AdView mAdView;
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -108,12 +112,18 @@ public class TerminalActivity extends Activity {
         }
 
         setContentView(R.layout.term_activity);
-        mViewFlipper = findViewById(VIEW_FLIPPER);
+        mViewFlipper = findViewById(R.id.view_flipper);
         registerForContextMenu(mViewFlipper);
 
         updatePrefs();
         mAlreadyStarted = true;
+        loadAdView();
+    }
 
+    private void loadAdView() {
+//        mAdView = findViewById(R.id.adView);
+        if (mAdView != null)
+            mAdView.loadAd(new AdRequest.Builder().build());
     }
 
 
@@ -197,6 +207,8 @@ public class TerminalActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mAdView != null) mAdView.destroy();
+
         mViewFlipper.removeAllViews();
         unbindService(mTSConnection);
         mTermService = null;
@@ -263,7 +275,7 @@ public class TerminalActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-
+        if (mAdView != null) mAdView.resume();
         if (mTermSessions != null && mTermSessions.size() < mViewFlipper.getChildCount()) {
             for (int i = 0; i < mViewFlipper.getChildCount(); ++i) {
                 EmulatorView v = (EmulatorView) mViewFlipper.getChildAt(i);
@@ -290,10 +302,10 @@ public class TerminalActivity extends Activity {
     @Override
     public void onPause() {
         super.onPause();
+        if (mAdView != null) mAdView.pause();
 
         mViewFlipper.pauseCurrentView();
     }
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

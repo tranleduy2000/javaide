@@ -39,6 +39,7 @@
         </menu>
     </item>
 
+
     <item android:title="@string/information">
 
         <menu>
@@ -52,6 +53,10 @@
                 android:icon="@drawable/ic_bug_report_white_24dp"
                 android:title="@string/report_bug"/>
 
+            <item
+                android:id="@+id/action_install"
+                android:icon="@drawable/ic_system_update_white_24dp"
+                android:title="System info"/>
             <item
                 android:id="@+id/action_info"
                 android:icon="@drawable/ic_info_white_24dp"

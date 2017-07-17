@@ -46,6 +46,7 @@
                 android:title="@string/new_class"/>
             <item
                 android:id="@+id/action_new_file"
+                android:visible="false"
                 android:icon="@drawable/ic_fiber_new_white_24dp"
                 android:title="@string/new_file"/>
             <item

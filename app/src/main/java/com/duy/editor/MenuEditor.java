@@ -34,6 +34,7 @@ import com.duy.editor.editor.EditorActivity;
 import com.duy.editor.info.InfoActivity;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.setting.SettingsActivity;
+import com.duy.editor.system.InstallActivity;
 import com.duy.editor.utils.DonateUtils;
 import com.duy.editor.utils.StoreUtil;
 import com.spartacusrex.spartacuside.TerminalPreferences;
@@ -245,6 +246,9 @@ public class MenuEditor {
                 break;
             case R.id.action_new_class:
                 activity.showDialogCreateClass();
+                break;
+            case R.id.action_install:
+                activity.startActivity(new Intent(activity, InstallActivity.class));
                 break;
         }
         return true;

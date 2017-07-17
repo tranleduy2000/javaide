@@ -259,7 +259,7 @@
         <item>28</item>
     </string-array>
 
-    <string-array name="kind_class">
+    <string-array name="kind_class" translatable="false">
         <item>Class</item>
         <item>Interface</item>
         <item>Enum</item>

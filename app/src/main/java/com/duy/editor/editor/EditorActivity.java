@@ -163,16 +163,19 @@ public class EditorActivity extends BaseEditorActivity implements
     }
 
     @Override
-    public void runProgram() {
+    public void runProject() {
         if (projectFile != null) {
+            if (projectFile.getMainClass() == null
+                    || projectFile.getMainClass().getName().trim().isEmpty()
+                    || projectFile.getMainClass().exist(projectFile)) {
+                showDialogRunConfig();
+                return;
+            }
             mCompileManager.execute(projectFile);
         } else {
             Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
 
     /**
      * replace dialog find

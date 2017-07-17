@@ -1,5 +1,6 @@
 package com.duy.project_files;
 
+import java.io.File;
 import java.io.Serializable;
 
 /**
@@ -44,5 +45,14 @@ public class ClassFile implements Serializable, Cloneable {
 
     public String getPath() {
         return path;
+    }
+
+    public boolean exist(ProjectFile parent) {
+        String projectDir = parent.getProjectDir();
+        File src = new File(projectDir, "src/main/java");
+        if (!src.exists()) return false;
+
+        File file = new File(src, name.replace(".", File.separator) + ".java");
+        return file.exists();
     }
 }

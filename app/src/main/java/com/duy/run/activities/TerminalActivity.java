@@ -154,61 +154,23 @@ public class TerminalActivity extends Activity {
         }
     }
 
-    private void compileAndRun(TermSession termSession, ProjectFile projectFile) {
-        Log.d(TAG, "compileAndRun() called with: filePath = [" + projectFile + "]");
+    private void compileAndRun(TermSession termSession, ProjectFile pf) {
+        Log.d(TAG, "compileAndRun() called with: filePath = [" + pf + "]");
         File home = getFilesDir();
         try {
             FileOutputStream fos = termSession.getTermOut();
             PrintWriter pw = new PrintWriter(fos);
-//            pw.println("clear"); //clear screen
-//            pw.println("echo JAVA N-IDE. version " + BuildConfig.VERSION_CODE);
-//            pw.flush();
 
             //set value for variable
-            pw.println("PROJECT_PATH=" + projectFile.getProjectDir());
-            pw.println("PROJECT_NAME=" + projectFile.getProjectName());
-            pw.println("MAIN_CLASS=" + projectFile.getMainClass().getName());
-            pw.println("PATH_MAIN_CLASS=" + projectFile.getMainClass().getName().replace(".", "/"));
-            pw.println("ROOT_PACKAGE=" + projectFile.getPackageName().substring(0, projectFile.getPackageName().indexOf(".")));
+            pw.println("PROJECT_PATH=" + pf.getProjectDir());
+            pw.println("PROJECT_NAME=" + pf.getProjectName());
+            pw.println("MAIN_CLASS=" + pf.getMainClass().getName());
+            pw.println("PATH_MAIN_CLASS=" + pf.getMainClass().getName().replace(".", "/"));
+            pw.println("ROOT_PACKAGE=" + pf.getPackageName().substring(0, pf.getPackageName().indexOf(".")));
 
-//            pw.println("cd ~"); //go to home
-//            pw.println("cd ${PROJECT_PATH}");//move to root project
-//            pw.flush();
-//
-//            //create build and bin dir
-//            File build = new File(projectFile.getProjectDir(), "build");
-//            if (!(build.exists())) build.mkdirs();
-//            File bin = new File(projectFile.getProjectDir(), "bin");
-//            if (!(bin.exists())) bin.mkdirs();
-//
-//            //clean up
-//            pw.println("rm -rf build/*");
-//            pw.println("rm -rf bin/*");
-//            pw.flush();
-//
-//            //cd to src dir
-//            pw.println("cd src/main/java");
-//
-//            //now compile
-//            pw.println("echo Compile java file");
-//            pw.println("javac -verbose -d ../../../build/ ${PATH_MAIN_CLASS}.java");
-//            pw.flush();
-//
-//            //go to build dir
-//            pw.println("cd ../../../build/");
-//
-//            pw.println("echo Now convert to dex format");
-//            pw.println("dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.jar ${ROOT_PACKAGE}");
-//            pw.flush();
-//
-//            pw.println("cd .."); //go to root dir
-//            pw.flush();
-//
-//            //now run file
-//            pw.println("java -jar ./bin/${PROJECT_NAME}.jar ${MAIN_CLASS}");
             InputStream stream = getAssets().open("builder/javabuilder2.sh");
             String builder = FileManager.streamToString(stream).toString();
-            pw.println(builder);
+            pw.print(builder);
             pw.flush();
 
             File temp = new File(home, "tmp");

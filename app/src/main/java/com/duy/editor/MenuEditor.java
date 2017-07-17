@@ -81,7 +81,7 @@ public class MenuEditor {
                 break;
             case R.id.nav_run:
                 if (listener != null) {
-                    listener.runProgram();
+                    listener.runProject();
                 }
                 break;
             case R.id.action_save:

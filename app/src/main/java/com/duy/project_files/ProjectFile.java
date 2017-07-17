@@ -87,7 +87,7 @@ public class ProjectFile implements Serializable, Cloneable {
     public static File createClass(ProjectFile projectFile,
                                    String currentPackage, String className,
                                    String content) {
-        File file = new File(projectFile.getRootDir(), "src/main/java/" + currentPackage.replace(".", "/"));
+        File file = new File(projectFile.getRootDir(), "src/main/java/" + currentPackage.replace(".", File.separator));
         if (!file.exists()) file.mkdirs();
         File classf = new File(file, className + ".java");
         FileManager.saveFile(classf, content);
@@ -135,7 +135,7 @@ public class ProjectFile implements Serializable, Cloneable {
         if (!javaF.exists()) javaF.mkdirs();
 
         //create package file
-        File packageF = new File(javaF, packageName.replace(".", "/"));
+        File packageF = new File(javaF, packageName.replace(".", File.separator));
         if (!packageF.exists()) {
             packageF.getParentFile().mkdirs();
             packageF.mkdirs();

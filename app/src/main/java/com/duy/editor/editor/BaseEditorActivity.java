@@ -65,9 +65,7 @@ import java.util.ArrayList;
 /**
  * Created by Duy on 09-Mar-17.
  */
-
-@SuppressWarnings("DefaultFileTemplate")
-public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for debug
+public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         implements SymbolListView.OnKeyListener, EditorControl, FileActionListener,
         DialogNewProject.OnCreateProjectListener, DialogNewClass.OnCreateClassListener {
 

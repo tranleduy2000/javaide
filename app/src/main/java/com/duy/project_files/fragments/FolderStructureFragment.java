@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
 import com.duy.project_files.ProjectFile;
+import com.duy.project_files.ProjectFileContract;
 import com.duy.project_files.holder.IconTreeItemHolder;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
@@ -26,9 +28,10 @@ import java.util.ArrayList;
  * Created by Duy on 17-Jul-17.
  */
 
-public class FolderStructureFragment extends Fragment {
-    private AndroidTreeView tView;
-    private int counter = 0;
+public class FolderStructureFragment extends Fragment
+        implements ProjectFileContract.OnItemClickListener, ProjectFileContract.View {
+    private static final String TAG = "FolderStructureFragment";
+
     private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
         @Override
         public void onClick(TreeNode node, Object value) {
@@ -40,6 +43,7 @@ public class FolderStructureFragment extends Fragment {
             return true;
         }
     };
+    private ProjectFile projectFile;
 
 
     public static FolderStructureFragment newInstance(@NonNull ProjectFile projectFile) {
@@ -57,27 +61,29 @@ public class FolderStructureFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    private AndroidTreeView mTreeView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_default, null, false);
+
         ViewGroup containerView = rootView.findViewById(R.id.container);
 
         TreeNode root = TreeNode.root();
         root.addChildren(createFileStructure());
 
-        tView = new AndroidTreeView(getActivity(), root);
-        tView.setDefaultAnimation(false);
-        tView.setDefaultContainerStyle(R.style.TreeNodeStyleCustom);
-        tView.setDefaultViewHolder(IconTreeItemHolder.class);
-        tView.setDefaultNodeClickListener(nodeClickListener);
-        tView.setDefaultNodeLongClickListener(nodeLongClickListener);
-
-        containerView.addView(tView.getView());
+        mTreeView = new AndroidTreeView(getActivity(), root);
+        mTreeView.setDefaultAnimation(false);
+        mTreeView.setDefaultContainerStyle(R.style.TreeNodeStyleCustom);
+        mTreeView.setDefaultViewHolder(IconTreeItemHolder.class);
+        mTreeView.setDefaultNodeClickListener(nodeClickListener);
+        mTreeView.setDefaultNodeLongClickListener(nodeLongClickListener);
+        containerView.addView(mTreeView.getView());
 
         if (savedInstanceState != null) {
             String state = savedInstanceState.getString("tState");
             if (!TextUtils.isEmpty(state)) {
-                tView.restoreState(state);
+                mTreeView.restoreState(state);
             }
         }
 
@@ -91,13 +97,19 @@ public class FolderStructureFragment extends Fragment {
         if (projectFile == null) return null;
 
         File rootDir = new File(projectFile.getRootDir());
-        TreeNode root = new TreeNode(new IconTreeItemHolder.IconTreeItem(rootDir));
+        TreeNode root = new TreeNode(new IconTreeItemHolder.IconTreeItem(rootDir, this));
         try {
             root.addChildren(getNode(rootDir));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private ArrayList<TreeNode> getNode(File parent) {
@@ -107,7 +119,7 @@ public class FolderStructureFragment extends Fragment {
                 File[] child = parent.listFiles();
                 if (child != null) {
                     for (File file : child) {
-                        TreeNode node = new TreeNode(new IconTreeItemHolder.IconTreeItem(file));
+                        TreeNode node = new TreeNode(new IconTreeItemHolder.IconTreeItem(file, this));
                         if (file.isDirectory()) {
                             node.addChildren(getNode(file));
                         }
@@ -115,7 +127,7 @@ public class FolderStructureFragment extends Fragment {
                     }
                 }
             } else {
-                TreeNode node = new TreeNode(new IconTreeItemHolder.IconTreeItem(parent));
+                TreeNode node = new TreeNode(new IconTreeItemHolder.IconTreeItem(parent, this));
                 nodes.add(node);
             }
         } catch (Exception e) {
@@ -125,31 +137,51 @@ public class FolderStructureFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 //            case R.id.expandAll:
-//                tView.expandAll();
+//                mTreeView.expandAll();
 //                break;
 //
 //            case R.id.collapseAll:
-//                tView.collapseAll();
+//                mTreeView.collapseAll();
 //                break;
         }
         return true;
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("tState", tView.getSaveState());
+        outState.putString("tState", mTreeView.getSaveState());
     }
 
 
+    @Override
+    public void onClickDelete(File file) {
+        Log.d(TAG, "onClickDelete() called with: file = [" + file + "]");
+
+
+    }
+
+    @Override
+    public void onClickCreateNew(File parent) {
+        Log.d(TAG, "onClickCreateNew() called with: parent = [" + parent + "]");
+
+    }
+
+    @Override
+    public void display(ProjectFile projectFile) {
+        this.projectFile = projectFile;
+    }
+
+    @Override
+    public void refresh() {
+
+    }
+
+    @Override
+    public void setPresenter(ProjectFileContract.Presenter presenter) {
+
+    }
 }

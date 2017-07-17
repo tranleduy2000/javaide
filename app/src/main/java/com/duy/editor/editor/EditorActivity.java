@@ -48,9 +48,6 @@ import com.duy.editor.editor.view.EditorView;
 import com.duy.editor.editor.view.adapters.InfoItem;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.themefont.activities.ThemeFontActivity;
-import com.duy.editor.utils.DonateUtils;
-import com.flask.colorpicker.builder.ColorPickerClickListener;
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,25 +60,21 @@ public class EditorActivity extends BaseEditorActivity implements
     public static final int ACTION_CREATE_SHORTCUT = 1014;
 
     private CompileManager mCompileManager;
-    private MenuEditor menuEditor;
+    private MenuEditor mMenuEditor;
     private Dialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCompileManager = new CompileManager(this);
-        mDrawerLayout.addDrawerListener(this);
+        mMenuEditor = new MenuEditor(this, this);
 
-        menuEditor = new MenuEditor(this, this);
-        if (DonateUtils.DONATED) {
-            Menu menu = navigationView.getMenu();
-            menu.findItem(R.id.action_donate).setVisible(false);
-        }
+        mDrawerLayout.addDrawerListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 mDrawerLayout.closeDrawers();
-                return menuEditor.onOptionsItemSelected(item);
+                return mMenuEditor.onOptionsItemSelected(item);
             }
         });
         findViewById(R.id.img_tab).setOnClickListener(new View.OnClickListener() {
@@ -94,9 +87,8 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return menuEditor.onOptionsItemSelected(item);
+        return mMenuEditor.onOptionsItemSelected(item);
     }
-
 
     @Override
     public void invalidateOptionsMenu() {
@@ -125,7 +117,7 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return menuEditor.onCreateOptionsMenu(menu);
+        return mMenuEditor.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -176,7 +168,7 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public boolean isAutoSave() {
-        return menuEditor.getChecked(R.id.action_auto_save);
+        return mMenuEditor.getChecked(R.id.action_auto_save);
     }
 
     /**
@@ -239,56 +231,11 @@ public class EditorActivity extends BaseEditorActivity implements
         return "";
     }
 
-    /**
-     * compile code, if is error, show dialog error
-     * invalidate keyword
-     */
-    @Override
-    public boolean doCompile() {
-        saveFile();
-        String filePath = getCurrentFilePath();
-        if (filePath.isEmpty()) return false;
-        try {
-//            CodeUnit codeUnit;
-//            if (getCode().trim().toLowerCase().startsWith("unit ")) {
-//
-//                ArrayList<ScriptSource> searchPath = new ArrayList<>();
-//                searchPath.add(new FileScriptSource(new File(filePath).getParent()));
-//                codeUnit = PascalCompiler.loadLibrary(new File(filePath).getName(),
-//                        new FileReader(filePath),
-//                        searchPath,
-//                        new ProgramHandler(filePath));
-//            } else {
-//
-//                ArrayList<ScriptSource> searchPath = new ArrayList<>();
-//                searchPath.add(new FileScriptSource(new File(filePath).getParent()));
-//
-//                codeUnit = PascalCompiler.loadPascal(new File(filePath).getName(),
-//                        new FileReader(filePath), searchPath, new ProgramHandler(filePath));
-//                if (codeUnit != null) {
-//                    if (((PascalProgramDeclaration) codeUnit).main == null) {
-//                        showErrorDialog(new MainProgramNotFoundException());
-//                        return false;
-//                    }
-//                }
-//            }
-            buildSuggestData();
-        } catch (Exception e) {
-            showErrorDialog(e);
-            return false;
-        }
-        Toast.makeText(this, R.string.compile_ok, Toast.LENGTH_SHORT).show();
-        return true;
-    }
-
     private void buildSuggestData() {
 
     }
 
     private void showErrorDialog(Exception e) {
-//        this.mDialog = DialogManager.Companion.createErrorDialog(this, e);
-//        this.mDialog.show();
-//        DLog.e(e);
     }
 
     @Override
@@ -354,7 +301,6 @@ public class EditorActivity extends BaseEditorActivity implements
     public void onFileLongClick(File file) {
         showFileInfo(file);
     }
-
 
     /**
      * show dialog with file info
@@ -432,7 +378,6 @@ public class EditorActivity extends BaseEditorActivity implements
             editorFragment.formatCode();
         }
     }
-
 
     @Override
     public void reportBug() {
@@ -584,52 +529,6 @@ public class EditorActivity extends BaseEditorActivity implements
         return "";
     }
 
-    public void showProgramStructure() {
-//        try {
-//            String filePath = getCurrentFilePath();
-//            PascalProgramDeclaration pascalProgram = PascalCompiler
-//                    .loadPascal(filePath, new FileReader(filePath),
-//                            new ArrayList<ScriptSource>(), null);
-//
-//            if (pascalProgram.main == null) {
-//                showErrorDialog(new MainProgramNotFoundException());
-//            }
-//            ExpressionContextMixin program = pascalProgram.getProgram();
-//
-//            com.duy.frontend.structure.viewholder.StructureItem node = getNode(program, pascalProgram.getProgramName(), StructureType.TYPE_PROGRAM, 0);
-//
-//            DialogProgramStructure dialog = DialogProgramStructure.newInstance(node);
-//            dialog.show(getSupportFragmentManager(), DialogProgramStructure.TAG);
-//        } catch (Exception e) {
-//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-//        }
-    }
-
-
-    public void startDebug() {
-        if (doCompile()) mCompileManager.debug(getCurrentFilePath());
-    }
-
-    public void insertColor() {
-        ColorPickerDialogBuilder.with(this).
-                setPositiveButton(getString(R.string.select), new ColorPickerClickListener() {
-                    @Override
-                    public void onClick(DialogInterface d, int lastSelectedColor, Integer[] allColors) {
-                        EditorFragment currentFragment = mPageAdapter.getCurrentFragment();
-                        if (currentFragment != null) {
-                            currentFragment.insert(String.valueOf(lastSelectedColor));
-                            Toast.makeText(EditorActivity.this, getString(R.string.inserted_color) + lastSelectedColor,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                }).build().show();
-    }
 
 
 }

@@ -14,8 +14,7 @@
   ~ limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
     <item android:title="@string/code_editor">
@@ -56,26 +55,8 @@
             <item
                 android:id="@+id/action_install"
                 android:icon="@drawable/ic_system_update_white_24dp"
-                android:title="System info"/>
-            <item
-                android:id="@+id/action_info"
-                android:icon="@drawable/ic_info_white_24dp"
-                android:title="@string/information"
-                android:visible="false"/>
+                android:title="@string/system_info" />
 
-            <item
-                android:id="@+id/action_rate"
-                android:icon="@drawable/ic_stars_white_18dp"
-                android:title="@string/rate"
-                android:visible="false"
-                app:showAsAction="ifRoom"/>
-
-            <item
-                android:id="@+id/action_more_app"
-                android:icon="@drawable/ic_play_store"
-                android:title="@string/more_app"
-                android:visible="false"
-                app:showAsAction="ifRoom"/>
         </menu>
     </item>
 </menu>

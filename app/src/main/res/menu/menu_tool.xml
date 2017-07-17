@@ -17,13 +17,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-    <item
-        android:id="@+id/action_compile"
-        android:icon="@drawable/ic_check_circle_white_24dp"
-        android:title="@string/compile"
-        android:visible="false"
-        app:showAsAction="always"/>
     <item
         android:id="@+id/nav_run"
         android:icon="@drawable/ic_play_arrow_white_24dp"
@@ -49,11 +42,6 @@
                 android:visible="false"
                 android:icon="@drawable/ic_fiber_new_white_24dp"
                 android:title="@string/new_file"/>
-            <!--<item-->
-            <!--android:id="@+id/action_open_file"-->
-            <!--android:title="@string/open_file"-->
-            <!--android:icon="@drawable/ic_folder_open_white_24dp"-->
-            <!--android:visible="false"/>-->
             <item
                 android:id="@+id/action_open_project"
                 android:enabled="false"
@@ -63,26 +51,7 @@
                 android:id="@+id/action_save"
                 android:icon="@drawable/ic_save_white_24dp"
                 android:title="@string/save"/>
-            <item
-                android:visible="false"
-                android:id="@+id/action_save_as"
-                android:icon="@drawable/ic_save_white_24dp"
-                android:title="@string/save_as"/>
 
-            <item
-                android:id="@+id/action_auto_save"
-                android:checkable="true"
-                android:checked="true"
-                android:enabled="false"
-                android:icon="@drawable/ic_save_white_24dp"
-                android:title="@string/auto_save"/>
-
-            <!--<item-->
-            <!--android:id="@+id/action_open_file"-->
-            <!--android:enabled="true"-->
-            <!--android:icon="@drawable/ic_create_new_folder_white_24dp"-->
-            <!--android:title="@string/open_file"-->
-            <!--/-->
         </menu>
     </item>
     <item
@@ -111,12 +80,6 @@
     </item>
 
 
-    <item
-        android:id="@+id/action_debug"
-        android:icon="@drawable/ic_bug_report_white_24dp"
-        android:title="@string/debug"
-        android:visible="false"
-        app:showAsAction="ifRoom"/>
     <item
         android:icon="@drawable/ic_build_white_24dp"
         android:title="@string/tool"
@@ -178,30 +141,4 @@
         android:title="@string/more_feature"
         app:showAsAction="ifRoom"/>
 
-    <item
-        android:visible="false"
-        android:id="@+id/action_program_structure"
-        android:icon="@drawable/ic_format_list_bulleted_white_24dp"
-        android:title="@string/program_structure"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:visible="false"
-        android:id="@+id/action_insert_media_url"
-        android:icon="@drawable/ic_perm_media_white_24dp"
-        android:title="@string/insert_url_media"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/action_insert_color"
-        android:visible="false"
-        android:icon="@drawable/ic_color_lens_white_24dp"
-        android:title="@string/insert_color"
-        app:showAsAction="ifRoom"/>
-
-    <item
-        android:visible="false"
-        android:id="@+id/action_ime"
-        android:checkable="true"
-        android:icon="@drawable/ic_keyboard_white_24dp"
-        android:title="@string/enable_ime_keyboard"
-        app:showAsAction="ifRoom"/>
 </menu>

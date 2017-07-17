@@ -16,19 +16,12 @@
 
 package com.duy.editor;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
-import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.duy.editor.editor.EditorActivity;
 import com.duy.editor.info.InfoActivity;
@@ -89,20 +82,7 @@ public class MenuEditor {
                 if (listener != null) {
                     listener.findAndReplace();
                 }
-
-//            case R.id.action_open_file:
-//                listener.chooseFile(null);
-//                break;
                 break;
-//            case R.id.action_doc:
-//                if (listener != null) {
-//                    listener.showDocumentActivity();
-//                }
-//                break;
-
-//            case R.id.action_code_sample:
-//                activity.startActivity(new Intent(activity, CodeSampleActivity.class));
-//                break;
             case R.id.action_rate:
                 StoreUtil.gotoPlayStore(activity, BuildConfig.APPLICATION_ID);
                 break;
@@ -114,11 +94,6 @@ public class MenuEditor {
                     listener.runProgram();
                 }
                 break;
-//            case R.id.action_compile:
-//                if (listener != null) {
-//                    listener.doCompile();
-//
-//                break;
             case R.id.action_save:
                 if (listener != null) {
                     listener.saveFile();
@@ -181,29 +156,14 @@ public class MenuEditor {
                 activity.openDrawer(GravityCompat.END);
 
                 break;
-//            case R.id.action_translate:
-//                showPopupTranslate(activity);
-//
-//                break;
             case R.id.action_info:
                 activity.startActivity(new Intent(activity, InfoActivity.class));
                 break;
-//            case R.id.action_program_structure:
-//                activity.showProgramStructure();
-//
-//                break;
-//            case R.id.action_debug:
-//                activity.startDebug();
-//
-//                break;
             case R.id.action_show_line:
                 pascalPreferences.setShowLines(menuItem.isChecked());
-
-
                 break;
             case R.id.action_show_popup:
                 pascalPreferences.setShowSuggestPopup(menuItem.isChecked());
-
                 break;
             case R.id.action_show_symbol:
                 pascalPreferences.setShowSymbol(menuItem.isChecked());
@@ -224,9 +184,6 @@ public class MenuEditor {
                 activity.startActivityForResult(Intent.createChooser(i, "Complete action using"),
                         EditorActivity.ACTION_PICK_MEDIA_URL);
 
-                break;
-            case R.id.action_insert_color:
-                activity.insertColor();
                 break;
             case R.id.action_ime:
                 pascalPreferences.setImeMode(menuItem.isChecked());
@@ -254,38 +211,6 @@ public class MenuEditor {
         return true;
     }
 
-
-    public void showPopupTranslate(final Activity activity) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(R.string.help_me_translate).setView(R.layout.dialog_help_translate)
-                .setIcon(R.drawable.ic_language_white_24dp);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-        final EditText editTitle = (EditText) alertDialog.findViewById(R.id.edit_title);
-        final EditText editContent = (EditText) alertDialog.findViewById(R.id.edit_content);
-        final Button btnSend = (Button) alertDialog.findViewById(R.id.btn_email);
-        assert btnSend != null;
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"tranleduy1233@gmail.com"});
-                assert editTitle != null;
-                assert editContent != null;
-                String content = "Help translate: \n" + editTitle.getText().toString() + "\n"
-                        + editContent.getText().toString();
-                i.putExtra(Intent.EXTRA_TEXT, content);
-                try {
-                    activity.startActivity(Intent.createChooser(i, activity.getString(R.string.send_mail)));
-                } catch (ActivityNotFoundException ex) {
-                    Toast.makeText(activity, R.string.no_mail_clients, Toast.LENGTH_SHORT).show();
-                }
-                alertDialog.cancel();
-            }
-        });
-
-    }
 
     @Nullable
     public EditorControl getListener() {

@@ -8,14 +8,19 @@ import java.io.File;
 
 public class ProjectFileContract {
     public interface View {
+        void display(ProjectFile projectFile);
 
+        void refresh();
+
+        void setPresenter(Presenter presenter);
     }
 
     public interface Presenter {
-
     }
 
-    public interface Listener {
-        void onFileClick(File file);
+    public interface OnItemClickListener {
+        void onClickDelete(File file);
+
+        void onClickCreateNew(File parent);
     }
 }

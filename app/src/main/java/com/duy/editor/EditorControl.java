@@ -19,8 +19,6 @@ package com.duy.editor;
 import android.view.View;
 
 public interface EditorControl {
-    boolean doCompile();
-
     void saveAs();
 
     void findAndReplace();

@@ -180,7 +180,7 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="ok">OK</string>
-    <string name="new_file">New source file</string>
+    <string name="new_file">New file</string>
     <string name="default_">System</string>
     <string name="language">Language</string>
     <string name="run">Run</string>
@@ -423,4 +423,5 @@
     <string name="create_new_java_project">Create new Java project</string>
     <string name="java_package_name_com_example">Java package name (com.example)</string>
     <string name="main_class_name_main">Main class name (Main)</string>
+    <string name="system_info">System info</string>
 </resources>

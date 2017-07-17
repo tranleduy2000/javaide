@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  * Copyright (C) 2008 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,53 +14,45 @@
  * limitations under the License.
 -->
 
-<!--<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_new_window"
-        android:title="@string/new_window"
-        android:icon="@drawable/ic_menu_add" />
-    <item android:id="@+id/menu_close_window"
-        android:title="@string/close_window"
-        android:icon="@drawable/ic_menu_close_clear_cancel" />
-    <item android:id="@+id/menu_window_list"
-        android:title="@string/window_list"
-        android:icon="@drawable/ic_menu_windows" />
-    <item android:id="@+id/menu_toggle_soft_keyboard"
-        android:title="@string/toggle_soft_keyboard" />
-    <item android:id="@+id/menu_special_keys"
-        android:title="@string/special_keys" />
-    <item android:id="@+id/menu_preferences"
-        android:title="@string/preferences"
-        android:icon="@drawable/ic_menu_preferences" />
-    <item android:id="@+id/menu_reset"
-        android:title="@string/reset" />
-    <item android:id="@+id/menu_send_email"
-        android:title="@string/send_email" />
-    <item android:id="@+id/menu_toggle_wakelock" />
-        android:title="@string/enable_wakelock" />
-    <item android:id="@+id/menu_toggle_wifilock" />
-        android:title="@string/enable_wifilock" />
-</menu>-->
-
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/menu_copypaste" android:title="Copy / Paste / Email" >
+    <item
+        android:id="@+id/menu_copypaste"
+        android:title="Copy / Paste / Email">
         <menu>
-            <item android:id="@+id/menu_copyemail" android:title="Email Transcript" />
-            <item android:id="@+id/menu_copyall" android:title="Copy ALL Text" />
-            <item android:id="@+id/menu_paste" android:title="Paste" />
+            <item
+                android:id="@+id/menu_copyemail"
+                android:title="Email Transcript" />
+            <item
+                android:id="@+id/menu_copyall"
+                android:title="Copy ALL Text" />
+            <item
+                android:id="@+id/menu_paste"
+                android:title="Paste" />
         </menu>
     </item>
 
-    <item android:id="@+id/menu_toggle" android:title="Toggle Options" >
+    <item
+        android:id="@+id/menu_toggle"
+        android:title="Toggle Options">
         <!-- "file" submenu -->
         <menu>
-            <item android:id="@+id/menu_back_esc" android:title="Toggle BACK=>ESC" />
-            <item android:id="@+id/menu_keylogger" android:title="Toggle Key Logger" />
-            <item android:id="@+id/menu_toggle_soft_keyboard" android:title="Toggle Soft Keyboard"/>
+            <item
+                android:id="@+id/menu_back_esc"
+                android:title="Toggle BACK=>ESC" />
+            <item
+                android:id="@+id/menu_keylogger"
+                android:title="Toggle Key Logger" />
+            <item
+                android:id="@+id/menu_toggle_soft_keyboard"
+                android:title="Toggle Soft Keyboard" />
         </menu>
     </item>
 
-    <item android:id="@+id/menu_window_list" android:title="Terminal List" android:icon="@drawable/ic_menu_windows" />
+    <item
+        android:id="@+id/menu_window_list"
+        android:icon="@drawable/ic_menu_windows"
+        android:title="Terminal List" />
 
-<!--    <item android:id="@+id/menu_reset" android:title="Reset This" />-->
+    <!--    <item android:id="@+id/menu_reset" android:title="Reset This" />-->
 </menu>

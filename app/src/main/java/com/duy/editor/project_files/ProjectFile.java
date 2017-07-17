@@ -77,8 +77,8 @@ public class ProjectFile implements Serializable, Cloneable {
      * ├───build
      * ├───libs
      * └───src
-     *      └─java
-     *          └─ main
+     *      └─main
+     *          └─ java
      *             └──com
      *                 └──...
      *                     └──Main.class
@@ -103,11 +103,11 @@ public class ProjectFile implements Serializable, Cloneable {
         File src = new File(root, "src");
         if (!src.exists()) src.mkdirs();
 
-        File javaF = new File(src, "java");
-        if (!javaF.exists()) javaF.mkdirs();
-
-        File main = new File(javaF, "main");
+        File main = new File(src, "main");
         if (!main.exists()) main.mkdirs();
+
+        File javaF = new File(main, "java");
+        if (!javaF.exists()) javaF.mkdirs();
 
         //create package file
         File packageF = new File(main, packageName.replace(".", "/"));

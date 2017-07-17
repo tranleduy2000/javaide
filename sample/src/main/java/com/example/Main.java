@@ -1,6 +1,12 @@
 package com.example;
 
-import java.util.ArrayList;
+/**
+ * Created by Duy on 17-Jul-17.
+ */
 
-public class Main {public static void main(String[] args) {NumberOne numberOne = new NumberOne();numberOne.print();NumberTwo numberTwo = new NumberTwo();ArrayList<String> arrayList = new ArrayList<String>();arrayList.add(numberOne.toString());arrayList.add(numberTwo.toString());System.out.println(arrayList);}
+public class Main {
+    public static void main(String[] args) {
+        CC cc = new CC();
+        cc.print();
+    }
 }

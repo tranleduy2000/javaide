@@ -1,37 +1,36 @@
+clear
+echo Java NIDE
+
 #cd into the home directory - so you can run the script from vim or anywhere else
-cd ~/system/src/demo_console/
+cd ~
+
+PROJECT_PATH=""
+PROJECT_NAME=""
+MAIN_CLASS=""
+PATH_MAIN_CLASS=""
+
+cd ${PROJECT_PATH}
 
 #Clean up
 rm -rf build/*
 rm -rf bin/*
 
-#First cd into the src dir
-cd src
+#cd to src/java/main dir
+cd src/main/java
 
 #Now compile - note the use of a seperate lib (in non-dex format!)
 echo Compile the java code
-javac -verbose -d ../build/ org/demo/start.java
-
-#Back out
-cd ..
+javac -verbose -d ../../../build/ ${PATH_MAIN_CLASS}
 
 #Now into build dir
-cd build
+cd ../../../build/
 
 #Now convert to dex format (need no-strict)
 echo Now convert to dex format
-dx --dex --verbose --no-strict --output=../dist/demo_console.dex.jar *
+dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.dex.jar ${PATH_MAIN_CLASS}.class
 
 #Back out
 cd ..
 
-javac -verbose -d ../../../build/ com/duy/Main.java
-dx --dex --verbose --no-strict --output=../dist/demo_console.dex.jar org
-
-cd ../../
-cd build
-
-dx --dex --verbose --no-strict --output=../bin/demo_console.dex.jar *
-
-java -jar ./dist/demo_console.dex.jar:./libs/demolib.dex.jar org.demo.start
+java -jar ./bin/${PROJECT_NAME}.dex.jar ${MAIN_CLASS}
 

@@ -68,7 +68,7 @@ public class Template {
         return String.format(INTERFACE_TEMPLATE, name);
     }
 
-    public static String createJava(String name, int kind, int modifier, int visibility) {
+    public static String createJava(String name, int kind, int visibility, int modifier) {
         String m = "";
         switch (modifier) {
             case Modifier.ABSTRACT:

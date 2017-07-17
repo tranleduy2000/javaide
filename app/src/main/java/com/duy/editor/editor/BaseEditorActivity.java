@@ -455,6 +455,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity //for
     @Override
     public void onProjectCreated(ProjectFile projectFile, File mainClass) {
         this.projectFile = projectFile;
+        ProjectManager.saveProject(this, projectFile);
+
         FragmentFileManager fmFile = (FragmentFileManager)
                 getSupportFragmentManager().findFragmentByTag("fragment_file_view");
         //load project file

@@ -180,7 +180,7 @@ public class TerminalActivity extends Activity {
             pw.flush();
 
             //cd to src dir
-            pw.println("cd src/main/java");
+            pw.println("cd src");
 
             //now compile
             pw.println("echo Compile java file");

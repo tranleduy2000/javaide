@@ -36,14 +36,8 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
 
     private EditText mPackage;
 
-    public static DialogNewClass newInstance(ProjectFile p, String currentPackage) {
-        Bundle args = new Bundle();
-        args.putSerializable("project_file", p);
-        args.putString("current_package", currentPackage);
-        DialogNewClass fragment = new DialogNewClass();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private static final String KEY_PROJECT_FILE = "project_file";
+    private static final String KEY_PACKAGE = "current_package";
 
     @Nullable
     @Override
@@ -70,19 +64,13 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         }
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mEditName = view.findViewById(R.id.edit_class_name);
-        mKind = view.findViewById(R.id.spinner_kind);
-        mModifiers = view.findViewById(R.id.modifiers);
-        mPackage = view.findViewById(R.id.edit_package_name);
-        mPackage.setText(getArguments().getString("current_package"));
-
-        mVisibility = view.findViewById(R.id.visibility);
-
-        view.findViewById(R.id.btn_create).setOnClickListener(this);
-        view.findViewById(R.id.btn_cancel).setOnClickListener(this);
+    public static DialogNewClass newInstance(ProjectFile p, String currentPackage) {
+        Bundle args = new Bundle();
+        args.putSerializable(KEY_PROJECT_FILE, p);
+        args.putString(KEY_PACKAGE, currentPackage);
+        DialogNewClass fragment = new DialogNewClass();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -95,6 +83,21 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
                 createNewClass();
                 break;
         }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mEditName = view.findViewById(R.id.edit_class_name);
+        mKind = view.findViewById(R.id.spinner_kind);
+        mModifiers = view.findViewById(R.id.modifiers);
+        mPackage = view.findViewById(R.id.edit_package_name);
+        mPackage.setText(getArguments().getString(KEY_PACKAGE));
+
+        mVisibility = view.findViewById(R.id.visibility);
+
+        view.findViewById(R.id.btn_create).setOnClickListener(this);
+        view.findViewById(R.id.btn_cancel).setOnClickListener(this);
     }
 
     private void createNewClass() {
@@ -119,10 +122,9 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
 
 
         Bundle arguments = getArguments();
-        ProjectFile projectFile = (ProjectFile) arguments.getSerializable("projectFile");
+        ProjectFile projectFile = (ProjectFile) arguments.getSerializable(KEY_PROJECT_FILE);
         String currentPackage = mPackage.getText().toString();
         currentPackage = currentPackage.replace(".", "/");
-        File file;
         if (projectFile != null) {
             File classf = ProjectFile.createClass(projectFile, currentPackage, className, content);
             if (listener != null) {

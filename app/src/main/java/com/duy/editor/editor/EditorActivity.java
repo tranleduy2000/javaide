@@ -167,7 +167,7 @@ public class EditorActivity extends BaseEditorActivity implements
         if (projectFile != null) {
             if (projectFile.getMainClass() == null
                     || projectFile.getMainClass().getName().trim().isEmpty()
-                    || projectFile.getMainClass().exist(projectFile)) {
+                    || !projectFile.getMainClass().exist(projectFile)) {
                 showDialogRunConfig();
                 return;
             }

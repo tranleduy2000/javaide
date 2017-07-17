@@ -158,8 +158,14 @@ public class TerminalActivity extends Activity {
             pw.println("echo JAVA N-IDE. version " + BuildConfig.VERSION_CODE);
             pw.flush();
 
+            //set value for variable
+            pw.println("PROJECT_PATH=" + projectFile.getProjectDir());
+            pw.println("PROJECT_NAME=" + projectFile.getProjectName());
+            pw.println("MAIN_CLASS=" + projectFile.getMainClass().getName());
+            pw.println("PATH_MAIN_CLASS=" + projectFile.getMainClass().getName().replace(".", "/"));
+
             pw.println("cd ~"); //go to home
-            pw.println("cd " + projectFile.getProjectDir());//move to root project
+            pw.println("cd ${PROJECT_PATH}");//move to root project
             pw.flush();
 
             //create build and bin dir
@@ -174,12 +180,11 @@ public class TerminalActivity extends Activity {
             pw.flush();
 
             //cd to src dir
-            pw.println("cd src/java/main");
+            pw.println("cd src/main/java");
 
             //now compile
-            String mainFile = projectFile.getMainClass().getName().replace(".", "/") + ".java";
             pw.println("echo Compile java file");
-            pw.println("javac -verbose -d ../../../build/ " + mainFile);
+            pw.println("javac -verbose -d ../../../build/ ${PATH_MAIN_CLASS}");
             pw.flush();
 
             //go to build dir
@@ -187,14 +192,14 @@ public class TerminalActivity extends Activity {
 
             pw.println("echo Now convert to dex format");
             String jarFile = projectFile.getProjectName() + ".jar";
-            pw.println("dx --dex --verbose --no-strict --output=../bin/" + jarFile + " *");
+            pw.println("dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.dex.jar ${PATH_MAIN_CLASS}.class");
             pw.flush();
 
             pw.println("cd .."); //go to root dir
             pw.flush();
 
             //now run file
-            pw.println("java -jar ./bin/" + jarFile + " " + projectFile.getMainClass().getSimpleName());
+            pw.println("jjava -jar ./bin/${PROJECT_NAME}.dex.jar ${MAIN_CLASS}");
             pw.flush();
 
             File temp = new File(home, "tmp");

@@ -110,7 +110,7 @@ public class ProjectFile implements Serializable, Cloneable {
         if (!javaF.exists()) javaF.mkdirs();
 
         //create package file
-        File packageF = new File(main, packageName.replace(".", "/"));
+        File packageF = new File(javaF, packageName.replace(".", "/"));
         if (!packageF.exists()) {
             packageF.getParentFile().mkdirs();
             packageF.mkdirs();

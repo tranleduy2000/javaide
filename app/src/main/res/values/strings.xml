@@ -426,4 +426,9 @@
     <string name="system_info">System info</string>
     <string name="project_file">Project file</string>
     <string name="download_system_file">Download system file</string>
+    <string name="install_msg">You need to download files for your system, make sure you have turned
+        on your internet connection and at least 100MB of free internal memory.\n
+        1. Press download button\n
+        2. Wait for download finish\n
+        3. Wait for install system file.</string>
 </resources>

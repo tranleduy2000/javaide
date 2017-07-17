@@ -144,7 +144,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Error");
         builder.setMessage(error.getMessage());
-        builder.setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

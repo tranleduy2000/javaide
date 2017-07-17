@@ -47,11 +47,18 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/install_msg" />
+
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_info"
-                android:text="Info..."/>
+                android:text="Info..."
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_install"

@@ -108,7 +108,7 @@
     <string name="default_value_fnkey_preference" translatable="false">7</string>
     <string name="default_value_ime_preference" translatable="false">0</string>
     <string name="default_value_shell_preference" translatable="false">/system/bin/sh -</string>
-    <string name="default_value_initialcommand_preference" translatable="false">export HOME=/data/data/com.spartacusrex.spartacuside/files;cd $HOME</string>
+    <string name="default_value_initialcommand_preference" translatable="false">export HOME=/data/data/com.duy.compiler.javanide/files;cd $HOME</string>
 
     <string name="control_key_dialog_title" translatable="false">Control and Function Keys</string>
     <!-- The word CTRLKEY should be left un-translated. It will be replaced at run-time with the

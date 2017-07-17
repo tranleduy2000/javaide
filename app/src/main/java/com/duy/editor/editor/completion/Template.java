@@ -25,7 +25,7 @@ import java.lang.reflect.Modifier;
  */
 public class Template {
     public static final String CLASS_TEMPLATE =
-            "package %2$s;" +
+            "package %2$s;\n" +
                     "\n" +
                     "public class %1$s {\n" +
                     "    public static void main(String[] args) {\n" +

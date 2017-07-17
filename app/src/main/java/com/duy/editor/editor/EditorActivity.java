@@ -161,7 +161,11 @@ public class EditorActivity extends BaseEditorActivity implements
 
     @Override
     public void runProgram() {
-        mCompileManager.execute(projectFile);
+        if (projectFile != null) {
+            mCompileManager.execute(projectFile);
+        } else {
+            Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

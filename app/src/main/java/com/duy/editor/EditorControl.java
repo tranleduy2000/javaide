@@ -25,7 +25,6 @@ public interface EditorControl {
 
     void runProgram();
 
-    boolean isAutoSave();
 
     void saveFile();
 

@@ -119,7 +119,7 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
         @Nullable
         private ProjectFileContract.FileActionListener listener;
 
-        public TreeItem(@NonNull File file,
+        public TreeItem(@Nullable File file,
                         @Nullable ProjectFileContract.FileActionListener listener) {
             this.file = file;
             this.listener = listener;

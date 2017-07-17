@@ -86,7 +86,10 @@ public class FolderStructureFragment extends Fragment
         mContainerView = view.findViewById(R.id.container);
 
         TreeNode root = TreeNode.root();
-        root.addChildren(createFileStructure());
+        TreeNode fileStructure = createFileStructure();
+        if (fileStructure != null) {
+            root.addChildren(fileStructure);
+        }
 
         mTreeView = new AndroidTreeView(getActivity(), root);
         mTreeView.setDefaultAnimation(false);

@@ -192,10 +192,6 @@ public class UndoRedoSupportEditText extends HighlightEditor {
                     if (editorControl != null)
                         editorControl.runProgram();
                     return true;
-                case KeyEvent.KEYCODE_B: //build
-                    if (editorControl != null)
-                        editorControl.doCompile();
-                    return true;
                 case KeyEvent.KEYCODE_G: //go to line
                     if (editorControl != null)
                         editorControl.goToLine();

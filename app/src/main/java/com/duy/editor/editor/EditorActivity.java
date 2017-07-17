@@ -165,10 +165,7 @@ public class EditorActivity extends BaseEditorActivity implements
     }
 
 
-    @Override
-    public boolean isAutoSave() {
-        return mMenuEditor.getChecked(R.id.action_auto_save);
-    }
+
 
     /**
      * replace dialog find

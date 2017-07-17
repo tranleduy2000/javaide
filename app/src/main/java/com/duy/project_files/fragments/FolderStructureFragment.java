@@ -231,7 +231,7 @@ public class FolderStructureFragment extends Fragment
     public void onDestroyView() {
         if (mTreeView != null) {
             String saveState = mTreeView.getSaveState();
-            mPref.edit().putString("tree_state", saveState);
+            mPref.edit().putString("tree_state", saveState).apply();
         }
         super.onDestroyView();
     }

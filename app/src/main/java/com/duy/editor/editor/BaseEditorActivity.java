@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -133,6 +134,15 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         setupToolbar();
         setupFileView(savedInstanceState);
         setupEditor();
+
+        if (projectFile == null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showDialogCreateProject();
+                }
+            }, 100);
+        }
     }
 
     private void setupFileView(Bundle savedInstanceState) {

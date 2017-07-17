@@ -29,7 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.duy.editor.R;
-import com.duy.editor.editor.EditorActivity;
+import com.duy.editor.editor.MainActivity;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.system.InstallActivity;
 
@@ -115,13 +115,13 @@ public class ActivitySplashScreen extends AppCompatActivity {
 
     /**
      * If receive data from other app (it could be file, text from clipboard),
-     * You will be handle data and send to {@link EditorActivity}
+     * You will be handle data and send to {@link MainActivity}
      */
     private void startMainActivity() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(ActivitySplashScreen.this, EditorActivity.class);
+                Intent intent = new Intent(ActivitySplashScreen.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 overridePendingTransition(0, 0);
                 startActivity(intent);

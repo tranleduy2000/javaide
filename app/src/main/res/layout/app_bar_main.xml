@@ -41,6 +41,8 @@
             android:clipChildren="true"
             app:tabGravity="fill"
             app:tabMode="scrollable"
+            android:textAlignment=""
+            app:="@style/TextAppearance.AppCompat.Small"
             app:tabPaddingEnd="0dp"
             app:tabPaddingStart="0dp" />
     </android.support.design.widget.AppBarLayout>

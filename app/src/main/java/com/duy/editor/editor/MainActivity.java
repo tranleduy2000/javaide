@@ -58,7 +58,7 @@ import com.duy.run.dialog.DialogRunConfig;
 import java.io.File;
 import java.util.ArrayList;
 
-public class EditorActivity extends BaseEditorActivity implements
+public class MainActivity extends BaseEditorActivity implements
         DrawerLayout.DrawerListener,
         DialogRunConfig.OnConfigChangeListener,
         FileSelectListener {
@@ -133,7 +133,7 @@ public class EditorActivity extends BaseEditorActivity implements
      */
     @Override
     public void findAndReplace() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setView(R.layout.dialog_find_and_replace);
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -185,7 +185,7 @@ public class EditorActivity extends BaseEditorActivity implements
      * replace dialog find
      */
     public void showDialogFind() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setView(R.layout.dialog_find);
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -487,7 +487,7 @@ public class EditorActivity extends BaseEditorActivity implements
                 .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        EditorActivity.super.onBackPressed();
+                        MainActivity.super.onBackPressed();
                     }
                 })
                 .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {

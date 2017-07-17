@@ -33,7 +33,7 @@ import com.duy.editor.code.CompileManager;
 import com.duy.editor.code_sample.adapters.CodePagerAdapter;
 import com.duy.editor.code_sample.adapters.CodeSampleAdapter;
 import com.duy.editor.code_sample.fragments.FragmentCodeSample;
-import com.duy.editor.editor.EditorActivity;
+import com.duy.editor.editor.MainActivity;
 import com.duy.editor.file.FileManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
@@ -151,7 +151,7 @@ public class CodeSampleActivity extends AbstractAppCompatActivity implements Cod
         fileManager.saveFile(file, code);
 
         //set file temp for generate
-        Intent intent = new Intent(this, EditorActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
 
         //this code is verified, do not need compile
         intent.putExtra(CompileManager.FILE_PATH, file);

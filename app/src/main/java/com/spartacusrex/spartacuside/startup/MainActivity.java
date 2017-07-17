@@ -22,7 +22,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.duy.editor.R;
-import com.duy.editor.editor.EditorActivity;
 import com.spartacusrex.spartacuside.TermService;
 import com.duy.run.activities.TerminalActivity;
 
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         int id = v.getId();
         switch (id) {
             case R.id.btn_java_ide:
-                startActivity(new Intent(this, EditorActivity.class));
+                startActivity(new Intent(this, com.duy.editor.editor.MainActivity.class));
                 break;
             case (R.id.main_start):
                 //Check system version

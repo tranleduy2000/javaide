@@ -50,6 +50,7 @@
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
+                app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
                 android:layout_height="@dimen/toolbar_height"
                 android:clipChildren="true"
                 app:tabGravity="fill"

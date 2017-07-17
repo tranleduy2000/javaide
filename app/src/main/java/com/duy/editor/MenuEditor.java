@@ -23,7 +23,7 @@ import android.support.v4.view.GravityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.duy.editor.editor.EditorActivity;
+import com.duy.editor.editor.MainActivity;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.setting.SettingsActivity;
 import com.duy.editor.system.InstallActivity;
@@ -37,13 +37,13 @@ import com.spartacusrex.spartacuside.TerminalPreferences;
 
 public class MenuEditor {
     @NonNull
-    private EditorActivity activity;
+    private MainActivity activity;
     @Nullable
     private EditorControl listener;
     private Menu menu;
     private JavaPreferences pascalPreferences;
 
-    public MenuEditor(@NonNull EditorActivity activity, @Nullable EditorControl listener) {
+    public MenuEditor(@NonNull MainActivity activity, @Nullable EditorControl listener) {
         this.activity = activity;
         this.listener = listener;
         pascalPreferences = new JavaPreferences(this.activity);

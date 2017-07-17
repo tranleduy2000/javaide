@@ -24,19 +24,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.duy.project_files.activities.FileManagerActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
+        <activity android:name="com.duy.project_files.activities.FileManagerActivity" />
 
         <activity
             android:name="com.spartacusrex.spartacuside.Start"
             android:launchMode="singleTask"/>
 
         <activity
-            android:name=".editor.EditorActivity"
+            android:name=".editor.MainActivity"
             android:launchMode="singleTask"/>
 
         <activity android:name=".run.ExecuteActivity"/>

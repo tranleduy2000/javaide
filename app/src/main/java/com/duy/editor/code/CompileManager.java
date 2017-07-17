@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.duy.editor.debug.activities.DebugActivity;
-import com.duy.editor.editor.EditorActivity;
+import com.duy.editor.editor.MainActivity;
 import com.duy.project_files.ProjectFile;
 import com.duy.run.activities.TerminalActivity;
 
@@ -70,7 +70,7 @@ public class CompileManager {
     }
 
     public void edit(String fileName, Boolean isNew) {
-        Intent intent = new Intent(mActivity, EditorActivity.class);
+        Intent intent = new Intent(mActivity, MainActivity.class);
         intent.putExtra(FILE_PATH, fileName);
         intent.putExtra(IS_NEW, isNew);
         intent.putExtra(INITIAL_POS, 0);

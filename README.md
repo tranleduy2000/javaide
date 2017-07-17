@@ -1,8 +1,14 @@
-## Java compiler on Android.
+![ICON](art/icons/playstore/icon.png)
+
+# Java compiler on Android.
 
 This project is develop to help the community learn java on android.
 
+You can download in https://play.google.com/store/apps/details?id=com.duy.compiler.javanide
+
+
 ## Todo
+
 1. Java compiler (OK)
 2. Java editor
 3. Auto complete code

@@ -1,11 +1,11 @@
 package com.duy.project_files.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
  */
 
 public class FolderStructureFragment extends Fragment
-        implements ProjectFileContract.OnItemClickListener, ProjectFileContract.View {
+        implements ProjectFileContract.View {
     private static final String TAG = "FolderStructureFragment";
 
     private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
@@ -43,8 +43,11 @@ public class FolderStructureFragment extends Fragment
             return true;
         }
     };
-    private ProjectFile projectFile;
-
+    private ProjectFile mProjectFile;
+    @Nullable
+    private ProjectFileContract.FileActionListener listener;
+    private ViewGroup mContainerView;
+    private ProjectFileContract.Presenter presenter;
 
     public static FolderStructureFragment newInstance(@NonNull ProjectFile projectFile) {
 
@@ -64,10 +67,23 @@ public class FolderStructureFragment extends Fragment
     private AndroidTreeView mTreeView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_default, null, false);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            this.listener = (ProjectFileContract.FileActionListener) getActivity();
+        } catch (ClassCastException e) {
+        }
+    }
 
-        ViewGroup containerView = rootView.findViewById(R.id.container);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_default, null, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mContainerView = view.findViewById(R.id.container);
 
         TreeNode root = TreeNode.root();
         root.addChildren(createFileStructure());
@@ -78,7 +94,7 @@ public class FolderStructureFragment extends Fragment
         mTreeView.setDefaultViewHolder(IconTreeItemHolder.class);
         mTreeView.setDefaultNodeClickListener(nodeClickListener);
         mTreeView.setDefaultNodeLongClickListener(nodeLongClickListener);
-        containerView.addView(mTreeView.getView());
+        mContainerView.addView(mTreeView.getView());
 
         if (savedInstanceState != null) {
             String state = savedInstanceState.getString("tState");
@@ -86,8 +102,6 @@ public class FolderStructureFragment extends Fragment
                 mTreeView.restoreState(state);
             }
         }
-
-        return rootView;
     }
 
     @Nullable
@@ -95,9 +109,13 @@ public class FolderStructureFragment extends Fragment
         ProjectFile projectFile = (ProjectFile)
                 getArguments().getSerializable(CompileManager.PROJECT_FILE);
         if (projectFile == null) return null;
+        return createFileStructure(projectFile);
+    }
 
+    @Nullable
+    private TreeNode createFileStructure(ProjectFile projectFile) {
         File rootDir = new File(projectFile.getRootDir());
-        TreeNode root = new TreeNode(new IconTreeItemHolder.IconTreeItem(rootDir, this));
+        TreeNode root = new TreeNode(new IconTreeItemHolder.TreeItem(rootDir, listener));
         try {
             root.addChildren(getNode(rootDir));
         } catch (Exception e) {
@@ -119,7 +137,7 @@ public class FolderStructureFragment extends Fragment
                 File[] child = parent.listFiles();
                 if (child != null) {
                     for (File file : child) {
-                        TreeNode node = new TreeNode(new IconTreeItemHolder.IconTreeItem(file, this));
+                        TreeNode node = new TreeNode(new IconTreeItemHolder.TreeItem(file, listener));
                         if (file.isDirectory()) {
                             node.addChildren(getNode(file));
                         }
@@ -127,7 +145,7 @@ public class FolderStructureFragment extends Fragment
                     }
                 }
             } else {
-                TreeNode node = new TreeNode(new IconTreeItemHolder.IconTreeItem(parent, this));
+                TreeNode node = new TreeNode(new IconTreeItemHolder.TreeItem(parent, listener));
                 nodes.add(node);
             }
         } catch (Exception e) {
@@ -157,31 +175,27 @@ public class FolderStructureFragment extends Fragment
     }
 
 
-    @Override
-    public void onClickDelete(File file) {
-        Log.d(TAG, "onClickDelete() called with: file = [" + file + "]");
-
-
-    }
-
-    @Override
-    public void onClickCreateNew(File parent) {
-        Log.d(TAG, "onClickCreateNew() called with: parent = [" + parent + "]");
-
-    }
 
     @Override
     public void display(ProjectFile projectFile) {
-        this.projectFile = projectFile;
+        this.mProjectFile = projectFile;
+        refresh();
     }
 
     @Override
     public void refresh() {
+        TreeNode root = TreeNode.root();
+        root.addChildren(createFileStructure(mProjectFile));
 
+        mTreeView = new AndroidTreeView(getActivity(), root);
+        mContainerView.removeAllViews();
+        mContainerView.addView(mTreeView.getView());
     }
 
     @Override
     public void setPresenter(ProjectFileContract.Presenter presenter) {
-
+        this.presenter = presenter;
     }
+
+
 }

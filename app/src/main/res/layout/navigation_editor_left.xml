@@ -19,13 +19,8 @@
     android:layout_height="match_parent"
     android:background="?android:windowBackground"
     android:fitsSystemWindows="true"
+    android:id="@+id/container_file"
     android:orientation="vertical">
 
-    <fragment
-        android:id="@+id/file_view"
-        class="com.duy.editor.file.FragmentFileManager"
-        android:layout_width="wrap_content"
-        android:minWidth="200dp"
-        android:layout_height="match_parent"
-        android:tag="fragment_file_view" />
+
 </FrameLayout>

@@ -29,6 +29,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -48,15 +49,17 @@ import com.duy.editor.EditorControl;
 import com.duy.editor.R;
 import com.duy.editor.activities.AbstractAppCompatActivity;
 import com.duy.editor.code.CompileManager;
-import com.duy.editor.file.FileActionListener;
+import com.duy.editor.editor.view.EditorView;
 import com.duy.editor.file.FileManager;
-import com.duy.editor.file.FragmentFileManager;
+import com.duy.editor.setting.JavaPreferences;
+import com.duy.editor.view.SymbolListView;
+import com.duy.project_files.FilePresenter;
 import com.duy.project_files.ProjectFile;
+import com.duy.project_files.ProjectFileContract;
 import com.duy.project_files.ProjectManager;
 import com.duy.project_files.dialog.DialogNewClass;
 import com.duy.project_files.dialog.DialogNewProject;
-import com.duy.editor.setting.JavaPreferences;
-import com.duy.editor.view.SymbolListView;
+import com.duy.project_files.fragments.FolderStructureFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +69,8 @@ import java.util.ArrayList;
  * Created by Duy on 09-Mar-17.
  */
 public abstract class BaseEditorActivity extends AbstractAppCompatActivity
-        implements SymbolListView.OnKeyListener, EditorControl, FileActionListener,
+        implements SymbolListView.OnKeyListener, EditorControl,
+        ProjectFileContract.FileActionListener,
         DialogNewProject.OnCreateProjectListener, DialogNewClass.OnCreateClassListener {
 
     protected final static String TAG = BaseEditorActivity.class.getSimpleName();
@@ -113,21 +117,32 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     protected ProjectFile projectFile;
 
+    private ProjectFileContract.Presenter mFilePresenter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
-
         if (savedInstanceState != null) {
             this.projectFile = (ProjectFile) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
         } else {
             this.projectFile = ProjectManager.getLastProject(this);
         }
-
         bindView();
+        setupToolbar();
+        setupFileView();
+        setupEditor();
     }
 
-    protected void setupPageView() {
+    private void setupFileView() {
+        FolderStructureFragment folderStructureFragment
+                = FolderStructureFragment.newInstance(projectFile);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.container_file, folderStructureFragment).commit();
+        mFilePresenter = new FilePresenter(folderStructureFragment);
+    }
+
+    private void setupEditor() {
         mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), new ArrayList<PageDescriptor>());
         mViewPager.setAdapter(mPageAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -137,11 +152,17 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
             Toast.makeText(this, "Please create new project", Toast.LENGTH_SHORT).show();
             return;
         }
-        FragmentFileManager fmFile = (FragmentFileManager)
-                getSupportFragmentManager().findFragmentByTag("fragment_file_view");
-        if (fmFile != null) fmFile.load(new File(projectFile.getMainClass().getPath()));
-
         addNewPageEditor(new File(projectFile.getMainClass().getPath()), true);
+    }
+
+    private void bindView() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mKeyList = (SymbolListView) findViewById(R.id.recycler_view);
+        mFileManager = new FileManager(this);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        mContainerSymbol = findViewById(R.id.container_symbol);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
     }
 
     private void invalidateTab() {
@@ -179,7 +200,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
             }
         }
     }
-
 
     protected void setupToolbar() {
         //setup action bar
@@ -318,7 +338,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
      * @return true if delete success
      */
     @Override
-    public boolean doRemoveFile(final File file) {
+    public boolean doRemoveFile(final File file, final ProjectFileContract.ActionCallback callback) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.remove_file_msg) + " " + file.getName());
         builder.setTitle(R.string.delete_file);
@@ -332,18 +352,13 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
                     if (position >= 0) {
                         removePage(position);
                     }
+                    callback.onSuccess(null);
                     Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_SHORT).show();
-
-                //reload file
-                FragmentFileManager fragmentSelectFile =
-                        (FragmentFileManager) getSupportFragmentManager().findFragmentByTag("fragment_file_view");
-                if (fragmentSelectFile != null) {
-                    fragmentSelectFile.refresh();
                 } else {
-                    DLog.d(TAG, "onClick: Fragment file is null");
+                    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_SHORT).show();
+                    callback.onFailed(null);
                 }
+
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -431,17 +446,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         }
     }
 
-    private void bindView() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mKeyList = (SymbolListView) findViewById(R.id.recycler_view);
-        mFileManager = new FileManager(this);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        mContainerSymbol = findViewById(R.id.container_symbol);
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        setupToolbar();
-        setupPageView();
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -454,11 +458,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     public void onProjectCreated(ProjectFile projectFile, File mainClass) {
         this.projectFile = projectFile;
         ProjectManager.saveProject(this, projectFile);
-
-        FragmentFileManager fmFile = (FragmentFileManager)
-                getSupportFragmentManager().findFragmentByTag("fragment_file_view");
-        //load project file
-        if (fmFile != null) fmFile.load(new File(projectFile.getMainClass().getPath()));
+        mFilePresenter.show(projectFile);
         while (mPageAdapter.getCount() > 0) {
             removePage(0);
         }
@@ -467,11 +467,45 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     @Override
     public void onClassCreated(File classF) {
-        FragmentFileManager fmFile = (FragmentFileManager)
-                getSupportFragmentManager().findFragmentByTag("fragment_file_view");
-        //load project file
-        if (fmFile != null) fmFile.load(new File(classF.getParent()));
+        mFilePresenter.refresh();
         addNewPageEditor(classF, true);
+    }
+
+    @Override
+    public void onFileClick(File file, ProjectFileContract.ActionCallback callBack) {
+        //save current file
+        addNewPageEditor(file, SELECT);
+        //close drawer
+        mDrawerLayout.closeDrawers();
+    }
+
+    @Override
+    public void onFileLongClick(File file, ProjectFileContract.ActionCallback callBack) {
+        showFileInfo(file);
+    }
+
+    @Override
+    public boolean doCreateNewFile(File file, ProjectFileContract.ActionCallback callBack) {
+        showDialogCreateClass(file);
+        return false;
+    }
+
+    /**
+     * show dialog with file info
+     * filePath, path, size, extension ...
+     *
+     * @param file - file to show info
+     */
+    private void showFileInfo(File file) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(file.getName());
+        builder.setView(R.layout.dialog_view_file);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        TextView txtInfo = (TextView) dialog.findViewById(R.id.txt_info);
+        txtInfo.setText(file.getPath());
+        EditorView editorView = (EditorView) dialog.findViewById(R.id.editor_view);
+        editorView.setTextHighlighted(mFileManager.fileToString(file));
     }
 
     public void showDialogCreateProject() {
@@ -479,12 +513,11 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         dialogNewProject.show(getSupportFragmentManager(), DialogNewProject.TAG);
     }
 
-    public void showDialogCreateClass() {
+    public void showDialogCreateClass(File file) {
         DialogNewClass dialogNewClass = DialogNewClass.newInstance(projectFile,
-                projectFile.getPackageName());
+                projectFile.getPackageName(), file);
         dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
     }
-
 
     private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {
         BaseEditorActivity activity;

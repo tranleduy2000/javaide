@@ -24,12 +24,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.duy.editor.editor.EditorActivity;
-import com.duy.editor.info.InfoActivity;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.setting.SettingsActivity;
 import com.duy.editor.system.InstallActivity;
 import com.duy.editor.utils.DonateUtils;
-import com.duy.editor.utils.StoreUtil;
 import com.spartacusrex.spartacuside.TerminalPreferences;
 
 /**
@@ -62,8 +60,6 @@ public class MenuEditor {
         menu.findItem(R.id.action_show_symbol).setChecked(pascalPreferences.isShowListSymbol());
         menu.findItem(R.id.action_show_popup).setChecked(pascalPreferences.isShowSuggestPopup());
         menu.findItem(R.id.action_edit_word_wrap).setChecked(pascalPreferences.isWrapText());
-        menu.findItem(R.id.action_ime).setChecked(pascalPreferences.useImeKeyboard());
-
         return true;
     }
 
@@ -83,12 +79,6 @@ public class MenuEditor {
                     listener.findAndReplace();
                 }
                 break;
-            case R.id.action_rate:
-                StoreUtil.gotoPlayStore(activity, BuildConfig.APPLICATION_ID);
-                break;
-            case R.id.action_more_app:
-                StoreUtil.moreApp(activity);
-                break;
             case R.id.nav_run:
                 if (listener != null) {
                     listener.runProgram();
@@ -100,12 +90,7 @@ public class MenuEditor {
                 }
 
                 break;
-            case R.id.action_save_as:
-                if (listener != null) {
-                    listener.saveAs();
-                }
 
-                break;
             case R.id.action_goto_line:
                 if (listener != null) {
                     listener.goToLine();
@@ -156,9 +141,6 @@ public class MenuEditor {
                 activity.openDrawer(GravityCompat.END);
 
                 break;
-            case R.id.action_info:
-                activity.startActivity(new Intent(activity, InfoActivity.class));
-                break;
             case R.id.action_show_line:
                 pascalPreferences.setShowLines(menuItem.isChecked());
                 break;
@@ -173,21 +155,7 @@ public class MenuEditor {
                 pascalPreferences.setWordWrap(menuItem.isChecked());
 
                 break;
-//            case R.id.action_open_file:
-//                activity.openDrawer(GravityCompat.START);
-//
-//                break;
-            case R.id.action_insert_media_url:
-                Intent i = new Intent();
-                i.setType("audio/*");
-                i.setAction(Intent.ACTION_GET_CONTENT);
-                activity.startActivityForResult(Intent.createChooser(i, "Complete action using"),
-                        EditorActivity.ACTION_PICK_MEDIA_URL);
 
-                break;
-            case R.id.action_ime:
-                pascalPreferences.setImeMode(menuItem.isChecked());
-                break;
             case R.id.action_donate:
                 DonateUtils.showDialogDonate(activity);
                 break;
@@ -202,7 +170,7 @@ public class MenuEditor {
                 if (listener != null) listener.createNewFile(null);
                 break;
             case R.id.action_new_class:
-                activity.showDialogCreateClass();
+                activity.showDialogCreateClass(null);
                 break;
             case R.id.action_install:
                 activity.startActivity(new Intent(activity, InstallActivity.class));

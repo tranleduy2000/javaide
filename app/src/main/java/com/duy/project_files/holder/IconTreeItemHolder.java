@@ -17,7 +17,7 @@ import java.io.File;
 /**
  * Created by Bogdan Melnychuk on 2/12/15.
  */
-public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItemHolder.IconTreeItem> {
+public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItemHolder.TreeItem> {
     private static final String TAG = "IconTreeItemHolder";
     private TextView txtName;
     private LayoutInflater inflater;
@@ -30,33 +30,57 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
     }
 
     @Override
-    public View createNodeView(final TreeNode node, final IconTreeItem item) {
+    public View createNodeView(final TreeNode node, final TreeItem item) {
         View view = inflater.inflate(R.layout.layout_icon_node, null, false);
         txtName = view.findViewById(R.id.node_value);
         txtName.setText(item.getFile().getName());
         imgArrow = view.findViewById(R.id.img_arrow);
         this.leaf = node.isLeaf();
+        View imgNew = view.findViewById(R.id.img_add);
+
         if (node.isLeaf()) {
             imgArrow.setVisibility(View.INVISIBLE);
+            imgNew.setVisibility(View.GONE);
         }
 
         final File file = item.getFile();
         setIcon((ImageView) view.findViewById(R.id.img_icon), file);
 
-        final ProjectFileContract.OnItemClickListener listener = item.getListener();
+        final ProjectFileContract.FileActionListener listener = item.getListener();
         view.findViewById(R.id.img_delete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    listener.onClickDelete(file);
+                    listener.doRemoveFile(file, new ProjectFileContract.ActionCallback() {
+                        @Override
+                        public void onSuccess(File old) {
+                            getTreeView().removeNode(node);
+                        }
+
+                        @Override
+                        public void onFailed(@Nullable Exception e) {
+
+                        }
+                    });
                 }
             }
         });
-        view.findViewById(R.id.img_add).setOnClickListener(new View.OnClickListener() {
+        imgNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    listener.onClickCreateNew(file);
+                    listener.doCreateNewFile(file, new ProjectFileContract.ActionCallback() {
+                        @Override
+                        public void onSuccess(File newf) {
+                            TreeNode child = new TreeNode(new TreeItem(newf, listener));
+                            getTreeView().addNode(node, child);
+                        }
+
+                        @Override
+                        public void onFailed(@Nullable Exception e) {
+
+                        }
+                    });
                 }
             }
         });
@@ -89,20 +113,20 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
     }
 
 
-    public static class IconTreeItem {
+    public static class TreeItem {
         @NonNull
         private File file;
         @Nullable
-        private ProjectFileContract.OnItemClickListener listener;
+        private ProjectFileContract.FileActionListener listener;
 
-        public IconTreeItem(@NonNull File file,
-                            @Nullable ProjectFileContract.OnItemClickListener listener) {
+        public TreeItem(@NonNull File file,
+                        @Nullable ProjectFileContract.FileActionListener listener) {
             this.file = file;
             this.listener = listener;
         }
 
         @Nullable
-        public ProjectFileContract.OnItemClickListener getListener() {
+        public ProjectFileContract.FileActionListener getListener() {
             return listener;
         }
 

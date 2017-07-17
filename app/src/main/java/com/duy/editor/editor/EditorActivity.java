@@ -34,7 +34,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duy.editor.MenuEditor;
@@ -289,36 +288,7 @@ public class EditorActivity extends BaseEditorActivity implements
         }
     }
 
-    @Override
-    public void onFileClick(File file) {
-        //save current file
-        addNewPageEditor(file, SELECT);
-        //close drawer
-        mDrawerLayout.closeDrawers();
-    }
 
-    @Override
-    public void onFileLongClick(File file) {
-        showFileInfo(file);
-    }
-
-    /**
-     * show dialog with file info
-     * filePath, path, size, extension ...
-     *
-     * @param file - file to show info
-     */
-    private void showFileInfo(File file) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(file.getName());
-        builder.setView(R.layout.dialog_view_file);
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        TextView txtInfo = (TextView) dialog.findViewById(R.id.txt_info);
-        txtInfo.setText(file.getPath());
-        EditorView editorView = (EditorView) dialog.findViewById(R.id.editor_view);
-        editorView.setTextHighlighted(mFileManager.fileToString(file));
-    }
 
     /**
      * show dialog create new source file

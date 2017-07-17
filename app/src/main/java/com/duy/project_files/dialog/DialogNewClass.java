@@ -37,6 +37,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     private EditText mPackage;
 
     private static final String KEY_PROJECT_FILE = "project_file";
+    private static final String KEY_PARENT_FILE = "parent_file";
     private static final String KEY_PACKAGE = "current_package";
 
     @Nullable
@@ -64,10 +65,11 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         }
     }
 
-    public static DialogNewClass newInstance(ProjectFile p, String currentPackage) {
+    public static DialogNewClass newInstance(ProjectFile p, String currentPackage, File file) {
         Bundle args = new Bundle();
         args.putSerializable(KEY_PROJECT_FILE, p);
         args.putString(KEY_PACKAGE, currentPackage);
+        args.putSerializable(KEY_PARENT_FILE, file);
         DialogNewClass fragment = new DialogNewClass();
         fragment.setArguments(args);
         return fragment;
@@ -121,7 +123,9 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
 
 
         Bundle arguments = getArguments();
+        File parent = (File) arguments.getSerializable(KEY_PARENT_FILE);
         ProjectFile projectFile = (ProjectFile) arguments.getSerializable(KEY_PROJECT_FILE);
+
         if (projectFile != null) {
             File classf = ProjectFile.createClass(projectFile, currentPackage, className, content);
             if (listener != null) {

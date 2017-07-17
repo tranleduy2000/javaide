@@ -1,5 +1,7 @@
 package com.duy.project_files;
 
+import android.support.annotation.Nullable;
+
 import java.io.File;
 
 /**
@@ -16,11 +18,25 @@ public class ProjectFileContract {
     }
 
     public interface Presenter {
+        void show(ProjectFile projectFile);
+
+        void refresh();
     }
 
-    public interface OnItemClickListener {
-        void onClickDelete(File file);
+    public interface ActionCallback {
+        void onSuccess(File newf);
 
-        void onClickCreateNew(File parent);
+        void onFailed(@Nullable Exception e);
+    }
+
+
+    public interface FileActionListener {
+        void onFileClick(File file, ActionCallback callBack);
+
+        void onFileLongClick(File file, ActionCallback callBack);
+
+        boolean doRemoveFile(File file, ActionCallback callBack);
+
+        boolean doCreateNewFile(File file, ActionCallback callBack);
     }
 }

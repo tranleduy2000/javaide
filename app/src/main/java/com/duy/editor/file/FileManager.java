@@ -371,8 +371,22 @@ public class FileManager {
         }
     }
 
+    public static boolean deleteFolder(File zFile) {
+        if (zFile.isDirectory()) {
+            //Its a directory
+            File[] files = zFile.listFiles();
+            for (File ff : files) {
+                deleteFolder(ff);
+            }
+        }
+        //Now delete
+        return zFile.delete();
+    }
     public boolean deleteFile(File file) {
         try {
+            if (file.isDirectory()) {
+                return deleteFolder(file);
+            }
             return file.delete();
         } catch (Exception e) {
             return false;

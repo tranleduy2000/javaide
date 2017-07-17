@@ -14,64 +14,50 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
+    android:orientation="horizontal"
     android:gravity="center_vertical|start"
-    android:minHeight="50dp"
     android:padding="4dp">
 
-    <RelativeLayout
-        android:id="@+id/container"
+    <LinearLayout
         android:layout_width="match_parent"
+        android:id="@+id/container"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/img_delete"
         android:layout_toStartOf="@+id/img_delete"
-        android:clickable="true"
-        android:foreground="?attr/selectableItemBackground"
-        android:gravity="center_vertical|start"
-        android:minHeight="50dp">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/img_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:srcCompat="@drawable/ic_java_file_white"/>
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/txt_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:paddingLeft="4dp"
+            android:textColor="?android:textColorPrimary"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingLeft="56dp"
-            android:paddingStart="56dp"
-            android:text="FILE NAME"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            tools:text="Main.java"/>
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/txt_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/img_icon"
-            android:ellipsize="end"
-            android:enabled="false"
-            android:maxLines="1"
-            android:paddingLeft="56dp"
-            android:paddingStart="56dp"
-            android:text="DETAIL 1"
-            android:textSize="14sp" />
-
-
-    </RelativeLayout>
-
+    </LinearLayout>
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/img_delete"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="24dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"

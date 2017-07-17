@@ -60,8 +60,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileVi
         final String fileName = fileDetail.getName();
         if (fileDetail.isFolder()) {
             viewHolder.icon.setImageResource(R.drawable.ic_folder_white_24dp);
-        } else if (fileName.endsWith(".pas")) {
-            viewHolder.icon.setImageResource(R.drawable.ic_code_white_24dp);
+        } else if (fileName.endsWith(".java")) {
+            viewHolder.icon.setImageResource(R.drawable.ic_java_file_white);
+        } else if (fileName.endsWith(".jar")) {
+            viewHolder.icon.setImageResource(R.drawable.ic_jar_file_white);
+        } else if (fileName.endsWith(".class")) {
+            viewHolder.icon.setImageResource(R.drawable.ic_class_file_white);
         } else {
             viewHolder.icon.setImageResource(R.drawable.ic_insert_drive_file_white_24dp);
         }
@@ -80,7 +84,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileVi
         final String fileName = fileDetail.getName();
         setIcon(holder, fileDetail);
         holder.txtName.setText(fileName);
-        holder.txtDetail.setText(fileDetail.getSize() + "\t\t" + fileDetail.getDateModified());
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,7 +95,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileVi
         holder.root.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
                 if (fileAdapterListener != null)
                     fileAdapterListener.onItemClick(v, fileName,
                             FileAdapterListener.ACTION_LONG_CLICK);
@@ -127,24 +129,17 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileVi
 
 
     static class FileViewHolder extends RecyclerView.ViewHolder {
-
-        // Icon of the file
-        public ImageView icon;
-        // Name of the file
+        ImageView icon;
         TextView txtName;
-        // Size of the file
-        TextView txtDetail;
         View imgDelete;
         View root;
 
         public FileViewHolder(View v) {
             super(v);
-            txtName = (TextView) v.findViewById(R.id.txt_name);
-            txtDetail = (TextView) v.findViewById(R.id.txt_info);
-            icon = (ImageView) v.findViewById(R.id.img_icon);
+            txtName = v.findViewById(R.id.txt_name);
+            icon = v.findViewById(R.id.img_icon);
             imgDelete = v.findViewById(R.id.img_delete);
             root = v.findViewById(R.id.container);
-
         }
     }
 }

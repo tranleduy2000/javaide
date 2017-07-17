@@ -16,6 +16,8 @@
 
 package com.duy.terminal;
 
+import android.util.Log;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -23,8 +25,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Locale;
-
-import android.util.Log;
 
 /**
  * Renders text into a screen. Contains all the terminal-specific knowledge and
@@ -1799,8 +1799,6 @@ class TerminalEmulator {
      * Send a Unicode code point to the screen.
      *
      * @param c The code point of the character to display
-     * @param foreColor The foreground color of the character
-     * @param backColor The background color of the character
      */
     private void emit(int c, int style) {
         boolean autoWrap = autoWrapEnabled();

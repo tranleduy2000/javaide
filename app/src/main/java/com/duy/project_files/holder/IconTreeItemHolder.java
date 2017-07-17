@@ -19,6 +19,7 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
     private TextView txtName;
     private LayoutInflater inflater;
     private ImageView imgArrow;
+    private boolean leaf = false;
     public IconTreeItemHolder(Context context) {
         super(context);
         inflater = LayoutInflater.from(context);
@@ -30,9 +31,13 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
         txtName = view.findViewById(R.id.node_value);
         txtName.setText(value.getFile().getName());
         imgArrow = view.findViewById(R.id.img_arrow);
-
+        this.leaf = node.isLeaf();
+        if (node.isLeaf()) {
+            imgArrow.setVisibility(View.GONE);
+        }
         File file = value.getFile();
         setIcon((ImageView) view.findViewById(R.id.img_icon), file);
+
         return view;
     }
 
@@ -53,8 +58,10 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
 
     @Override
     public void toggle(boolean active) {
-        imgArrow.setImageResource(active ? R.drawable.ic_keyboard_arrow_down_white_18dp :
-                R.drawable.ic_keyboard_arrow_right_white_24dp);
+        if (!leaf) {
+            imgArrow.setImageResource(active ? R.drawable.ic_keyboard_arrow_down_white_18dp :
+                    R.drawable.ic_keyboard_arrow_right_white_24dp);
+        }
     }
 
     public static class IconTreeItem {

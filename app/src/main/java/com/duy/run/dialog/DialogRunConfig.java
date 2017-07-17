@@ -127,6 +127,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
         ArrayList<String> name = FileManager.listClassName(src);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, name);
+        adapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
         mClasses = view.findViewById(R.id.spinner_main_class);
         mClasses.setAdapter(adapter);
 

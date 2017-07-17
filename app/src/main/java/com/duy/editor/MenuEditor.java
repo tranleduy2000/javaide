@@ -213,10 +213,10 @@ public class MenuEditor {
                 pascalPreferences.setWordWrap(menuItem.isChecked());
 
                 break;
-            case R.id.action_open_file:
-                activity.openDrawer(GravityCompat.START);
-
-                break;
+//            case R.id.action_open_file:
+//                activity.openDrawer(GravityCompat.START);
+//
+//                break;
             case R.id.action_insert_media_url:
                 Intent i = new Intent();
                 i.setType("audio/*");

@@ -409,4 +409,18 @@
     <string name="enter_name" translatable="false">Enter name</string>
     <string name="new_class" translatable="false">Create new class</string>
     <string name="open_project">Open project</string>
+    <string name="class_name">Class name</string>
+    <string name="kind">Kind</string>
+    <string name="package_">Package</string>
+    <string name="visibility">Visibility</string>
+    <string name="public_">Public</string>
+    <string name="package_private">Package private</string>
+    <string name="modifiers">Modifiers</string>
+    <string name="none">None</string>
+    <string name="abstract_">Abstract</string>
+    <string name="final_">Final</string>
+    <string name="project_name">Project name</string>
+    <string name="create_new_java_project">Create new Java project</string>
+    <string name="java_package_name_com_example">Java package name (com.example)</string>
+    <string name="main_class_name_main">Main class name (Main)</string>
 </resources>

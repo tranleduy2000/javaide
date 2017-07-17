@@ -82,7 +82,6 @@
     <string name="volume_down" translatable="false">Volume down (-)</string>
     <string name="volume_up" translatable="false">Volume up (+)</string>
     <string name="camera" translatable="false">Camera</string>
-    <string name="none" translatable="false">None</string>
     <string name="key_show_symbol" translatable="false">key_show_symbol</string>
     <string-array name="control_key">
         <item>@string/volume_down</item>

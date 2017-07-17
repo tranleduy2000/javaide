@@ -38,10 +38,9 @@
             android:name=".system.InstallActivity"
             android:configChanges="keyboardHidden|screenSize|screenLayout|orientation|keyboard"/>
 
-
         <activity
             android:name="com.spartacusrex.spartacuside.TerminalActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
 
         <activity android:name="com.spartacusrex.spartacuside.TerminalPreferences"/>

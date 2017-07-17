@@ -10,11 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputEditText
+        <com.duy.editor.view.LatinEditText
             android:id="@+id/edit_class_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Class name"/>
+            android:hint="@string/class_name"/>
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="Kind"/>
+            android:text="@string/kind"/>
 
         <Spinner
             android:id="@+id/spinner_kind"
@@ -41,11 +41,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputEditText
+        <com.duy.editor.view.LatinEditText
             android:id="@+id/edit_package_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Package"/>
+            android:hint="@string/package_"/>
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="Visibility"/>
+            android:text="@string/visibility"/>
 
         <RadioGroup
             android:id="@+id/visibility"
@@ -74,14 +74,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Public"/>
+                android:text="@string/public_"/>
 
             <RadioButton
                 android:id="@+id/rad_package_private"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Package private"/>
+                android:text="@string/package_private"/>
         </RadioGroup>
     </LinearLayout>
 
@@ -96,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="Modifiers"/>
+            android:text="@string/modifiers"/>
 
         <RadioGroup
             android:id="@+id/modifiers"
@@ -110,28 +110,28 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:layout_weight="1"
-                android:text="None"/>
+                android:text="@string/none"/>
 
             <RadioButton
                 android:id="@+id/rad_abstract"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Abstract"/>
+                android:text="@string/abstract_"/>
 
             <RadioButton
                 android:id="@+id/rad_final"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Final"/>
+                android:text="@string/final_"/>
         </RadioGroup>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="right"
+        android:gravity="end"
         android:orientation="horizontal">
 
         <Button

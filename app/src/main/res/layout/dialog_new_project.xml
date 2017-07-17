@@ -12,46 +12,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Create new Java project"/>
+        android:text="@string/create_new_java_project"/>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputEditText
+        <com.duy.editor.view.LatinEditText
             android:id="@+id/edit_project_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Project name"/>
+            android:hint="@string/project_name"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputEditText
+        <com.duy.editor.view.LatinEditText
             android:id="@+id/edit_package_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Java package name (com.example)"/>
+            android:hint="@string/java_package_name_com_example"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputEditText
+        <com.duy.editor.view.LatinEditText
             android:id="@+id/edit_main_class"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Main class name (Main)"/>
+            android:hint="@string/main_class_name_main"/>
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:gravity="right"
+        android:gravity="end"
         android:orientation="horizontal">
 
         <Button

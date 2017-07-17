@@ -199,7 +199,7 @@ public class TerminalActivity extends Activity {
             pw.flush();
 
             //now run file
-            pw.println("java -jar ./bin/${PROJECT_NAME}.dex.jar ${MAIN_CLASS}");
+            pw.println("java -jar ./bin/${PROJECT_NAME}.jar ${MAIN_CLASS}");
             pw.flush();
 
             File temp = new File(home, "tmp");

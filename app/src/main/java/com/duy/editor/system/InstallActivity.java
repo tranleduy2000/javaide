@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.duy.editor.R;
 import com.duy.editor.activities.AbstractAppCompatActivity;
 import com.duy.editor.setting.JavaPreferences;
-import com.spartacusrex.spartacuside.startup.setup.FileManager;
+import com.spartacusrex.spartacuside.startup.FileManager;
 
 import java.io.File;
 import java.io.IOException;

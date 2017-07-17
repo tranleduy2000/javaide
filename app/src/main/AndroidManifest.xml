@@ -46,11 +46,6 @@
         <activity android:name="com.spartacusrex.spartacuside.TerminalPreferences"/>
         <activity android:name="com.spartacusrex.spartacuside.WindowList"/>
 
-        <activity android:name="com.spartacusrex.spartacuside.startup.tutorial.tutlist"/>
-        <activity android:name="com.spartacusrex.spartacuside.startup.tutorial.vimlist"/>
-        <activity android:name="com.spartacusrex.spartacuside.startup.tutorial.tutview"/>
-        <activity android:name="com.spartacusrex.spartacuside.startup.tutorial.remotelist"/>
-
         <activity android:name="com.spartacusrex.spartacuside.startup.MainActivity"/>
 
         <activity

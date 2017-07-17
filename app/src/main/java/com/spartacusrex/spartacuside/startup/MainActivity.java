@@ -25,7 +25,6 @@ import com.duy.editor.R;
 import com.duy.editor.editor.EditorActivity;
 import com.spartacusrex.spartacuside.TermService;
 import com.spartacusrex.spartacuside.TerminalActivity;
-import com.spartacusrex.spartacuside.startup.tutorial.tutlist;
 
 /**
  * @author Spartacus Rex
@@ -144,11 +143,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 startActivity(new Intent(this, Installer.class));
 
                 break;
-            case (R.id.main_help):
-                //Open the Help Section
-                startActivity(new Intent(this, tutlist.class));
 
-                break;
             case (R.id.main_options):
                 //Show the Options..
                 startActivity(new Intent(this, TerminalIDEPrefs.class));

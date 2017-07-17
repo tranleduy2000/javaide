@@ -27,8 +27,6 @@ import android.widget.Toast;
 
 import com.duy.editor.R;
 import com.spartacusrex.spartacuside.TermService;
-import com.spartacusrex.spartacuside.startup.setup.FileManager;
-import com.spartacusrex.spartacuside.startup.tutorial.tutview;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,9 +111,6 @@ public class Installer extends Activity implements OnClickListener {
     public void onClick(View zButton) {
         if (zButton == findViewById(R.id.install_changelog)) {
 
-            Intent res = new Intent(this, tutview.class);
-            res.putExtra("com.spartacusrex.prodj.tutorial", R.layout.changelog);
-            startActivity(res);
 
         } else if (zButton == findViewById(R.id.install_start)) {
 

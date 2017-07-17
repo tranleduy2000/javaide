@@ -3,10 +3,9 @@
  * and open the template in the editor.
  */
 
-package com.spartacusrex.spartacuside.startup.setup;
+package com.spartacusrex.spartacuside.startup;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,9 +18,6 @@ import java.io.OutputStream;
  */
 public class FileManager {
 
-    private static void log(String zLog) {
-        Log.v("SpartacusRex", "BinaryManager : " + zLog);
-    }
 
     private static void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
@@ -47,7 +43,6 @@ public class FileManager {
                 deleteFolder(ff);
             }
         }
-
         //Now delete
         zFile.delete();
     }

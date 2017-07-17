@@ -44,7 +44,7 @@ public class ProjectManager {
 
     @Nullable
     public static ProjectFile createProjectIfNeed(File file) {
-        if (file.isFile() || !file.canWrite() || file.canRead()) {
+        if (file.isFile() || !file.canWrite() || !file.canRead()) {
             return null;
         }
         ProjectFile projectFile = new ProjectFile();

@@ -99,7 +99,7 @@ public class FolderStructureFragment extends Fragment
             root.addChildren(fileStructure);
         }
 
-        mTreeView = new AndroidTreeView(getActivity(), root);
+        mTreeView = new AndroidTreeView(getContext(), root);
         mTreeView.setDefaultAnimation(false);
         mTreeView.setDefaultContainerStyle(R.style.TreeNodeStyleCustom);
         mTreeView.setDefaultViewHolder(IconTreeItemHolder.class);
@@ -202,9 +202,23 @@ public class FolderStructureFragment extends Fragment
             root.addChildren(fileStructure);
         }
 
-        AndroidTreeView view = new AndroidTreeView(getActivity(), root);
+        String saveState = null;
+        if (mTreeView != null) {
+            saveState = mTreeView.getSaveState();
+        }
+
+        mTreeView = new AndroidTreeView(getContext(), root);
+        mTreeView.setDefaultAnimation(false);
+        mTreeView.setDefaultContainerStyle(R.style.TreeNodeStyleCustom);
+        mTreeView.setDefaultViewHolder(IconTreeItemHolder.class);
+        mTreeView.setDefaultNodeClickListener(nodeClickListener);
+        mTreeView.setDefaultNodeLongClickListener(nodeLongClickListener);
+        if (saveState != null) {
+            mTreeView.restoreState(saveState);
+        }
+
         mContainerView.removeAllViews();
-        mContainerView.addView(view.getView());
+        mContainerView.addView(mTreeView.getView());
     }
 
     @Override

@@ -166,7 +166,9 @@ public class TerminalActivity extends Activity {
             pw.println("PROJECT_NAME=" + pf.getProjectName());
             pw.println("MAIN_CLASS=" + pf.getMainClass().getName());
             pw.println("PATH_MAIN_CLASS=" + pf.getMainClass().getName().replace(".", "/"));
-            pw.println("ROOT_PACKAGE=" + pf.getPackageName().substring(0, pf.getPackageName().indexOf(".")));
+            String packageName = pf.getPackageName();
+            pw.println("ROOT_PACKAGE=" + (packageName.contains(".")
+                    ? packageName.substring(0, packageName.indexOf(".")) : packageName));
 
             InputStream stream = getAssets().open("builder/javabuilder2.sh");
             String builder = FileManager.streamToString(stream).toString();

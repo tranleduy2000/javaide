@@ -30,6 +30,7 @@ public class ProjectFile implements Serializable, Cloneable {
      * java package name: eg: com.duy.example
      */
     private String packageName;
+
     //project name
     private String projectName;
 
@@ -60,6 +61,7 @@ public class ProjectFile implements Serializable, Cloneable {
         return rootDir;
     }
 
+    @Nullable
     public ClassFile getMainClass() {
         return mainClass;
     }
@@ -143,18 +145,19 @@ public class ProjectFile implements Serializable, Cloneable {
             }
         } else {
             File[] files = javaF.listFiles();
+            packageName = "";
             if (files == null) {
-                packageName = "";
             } else {
                 File f = files[0];
                 while (f != null && f.isDirectory()) {
                     packageName += f.getName() + ".";
+
                     files = f.listFiles();
                     if (files == null) f = null;
                     else f = files[0];
                 }
                 if (packageName.charAt(packageName.length() - 1) == '.') {
-                    packageName = packageName.substring(0, packageName.length() - 2);
+                    packageName = packageName.substring(0, packageName.length() - 1);
                 }
             }
 

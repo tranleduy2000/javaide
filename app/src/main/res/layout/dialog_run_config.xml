@@ -24,6 +24,23 @@
             android:layout_width="match_parent"
             android:padding="4dp" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?colorAccent" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.duy.editor.view.LatinEditText
+            android:id="@+id/edit_package_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/java_package_name_com_example" />
+    </android.support.design.widget.TextInputLayout>
+
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

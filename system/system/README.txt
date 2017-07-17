@@ -1,1 +1,1 @@
-#TerminalIDE System v2.0
+System file for Java N-ide

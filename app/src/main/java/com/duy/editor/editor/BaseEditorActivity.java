@@ -53,6 +53,7 @@ import com.duy.editor.editor.view.EditorView;
 import com.duy.editor.file.FileManager;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.view.SymbolListView;
+import com.duy.project_files.ClassFile;
 import com.duy.project_files.ProjectFile;
 import com.duy.project_files.ProjectFileContract;
 import com.duy.project_files.ProjectFilePresenter;
@@ -311,7 +312,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        getPreferences().put(JavaPreferences.TAB_POSITION_FILE, mTabLayout.getSelectedTabPosition());
+        JavaPreferences preferences = getPreferences();
+        if (preferences != null) {
+            preferences.put(JavaPreferences.TAB_POSITION_FILE, mTabLayout.getSelectedTabPosition());
+        }
         ProjectManager.saveProject(this, projectFile);
     }
 
@@ -479,7 +483,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         while (mPageAdapter.getCount() > 0) {
             removePage(0);
         }
-        addNewPageEditor(new File(projectFile.getMainClass().getPath()), true);
+        ClassFile mainClass = projectFile.getMainClass();
+        if (mainClass != null) {
+            addNewPageEditor(new File(mainClass.getPath()), true);
+        }
     }
 
     @Override
@@ -524,7 +531,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         TextView txtInfo = (TextView) dialog.findViewById(R.id.txt_info);
         txtInfo.setText(file.getPath());
         EditorView editorView = (EditorView) dialog.findViewById(R.id.editor_view);
-        editorView.setTextHighlighted(mFileManager.fileToString(file));
+        if (editorView != null) {
+            editorView.setTextHighlighted(mFileManager.fileToString(file));
+        }
     }
 
     public void showDialogCreateProject() {

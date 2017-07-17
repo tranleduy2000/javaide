@@ -1,7 +1,9 @@
 package com.duy.project_files.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -74,14 +76,7 @@ public class FolderStructureFragment extends Fragment
 
     private AndroidTreeView mTreeView;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            this.listener = (ProjectFileContract.FileActionListener) getActivity();
-        } catch (ClassCastException e) {
-        }
-    }
+    private SharedPreferences mPref;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -107,10 +102,17 @@ public class FolderStructureFragment extends Fragment
                 if (mTreeView != null) mTreeView.collapseAll();
             }
         });
-        if (savedInstanceState != null && mTreeView != null) {
-            String state = savedInstanceState.getString("tState");
-            if (!TextUtils.isEmpty(state)) {
-                mTreeView.restoreState(state);
+        if (savedInstanceState != null) {
+            if (mTreeView != null) {
+                String state = savedInstanceState.getString("tState");
+                if (!TextUtils.isEmpty(state)) {
+                    mTreeView.restoreState(state);
+                }
+            }
+        } else {
+            if (mTreeView != null) {
+                String state = mPref.getString("tree_state", "");
+                if (!state.isEmpty()) mTreeView.restoreState(state);
             }
         }
     }
@@ -215,5 +217,22 @@ public class FolderStructureFragment extends Fragment
         this.presenter = presenter;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            this.listener = (ProjectFileContract.FileActionListener) getActivity();
+        } catch (ClassCastException e) {
+        }
+        mPref = PreferenceManager.getDefaultSharedPreferences(context);
+    }
 
+    @Override
+    public void onDestroyView() {
+        if (mTreeView != null) {
+            String saveState = mTreeView.getSaveState();
+            mPref.edit().putString("tree_state", saveState);
+        }
+        super.onDestroyView();
+    }
 }

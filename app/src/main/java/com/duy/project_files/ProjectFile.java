@@ -165,25 +165,24 @@ public class ProjectFile implements Serializable, Cloneable {
         return json;
     }
 
-    public void restore(@Nullable JSONObject jsonObject) throws JSONException {
-        if (jsonObject == null) return;
+    public void restore(@Nullable JSONObject json) throws JSONException {
+        if (json == null) return;
         mainClass = new ClassFile("", "");
-        if (jsonObject.has("main_class_mame")) mainClass.setSimpleName("main_class_mame");
-        if (jsonObject.has("main_class_pkg")) mainClass.setPackageName("main_class_pkg");
-        if (jsonObject.has("main_class_path")) {
-            mainClass.setPath(jsonObject.getString("main_class_path"));
+        if (json.has("main_class_mame")) {
+            mainClass.setSimpleName(json.getString("main_class_mame"));
         }
+        if (json.has("main_class_pkg")) {
+            mainClass.setPackageName(json.getString("main_class_pkg"));
+        }
+        if (json.has("main_class_path")) {
+            mainClass.setPath(json.getString("main_class_path"));
+        }
+        mainClass.setName(mainClass.getPackageName() + "." + mainClass.getSimpleName());
         Log.d(TAG, "restore mainClass = " + mainClass);
 
-        if (jsonObject.has("root_dir")) {
-            this.rootDir = jsonObject.getString("root_dir");
-        }
-        if (jsonObject.has("package_name")) {
-            this.packageName = jsonObject.getString("package_name");
-        }
-        if (jsonObject.has("project_name")) {
-            this.projectName = jsonObject.getString("project_name");
-        }
+        if (json.has("root_dir")) this.rootDir = json.getString("root_dir");
+        if (json.has("package_name")) this.packageName = json.getString("package_name");
+        if (json.has("project_name")) this.projectName = json.getString("project_name");
     }
 
     public void setMainClass(ClassFile classFile) {

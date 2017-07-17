@@ -72,4 +72,9 @@ public class ClassFile implements Serializable, Cloneable {
         File file = new File(src, name.replace(".", File.separator) + ".java");
         return file.exists();
     }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

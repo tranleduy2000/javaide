@@ -32,5 +32,6 @@ ext {
     targetSdkVersion = 26
     minSdkVersion = 14
     android_support_version = "26.+"
+    google_service_version = "11.0.2"
 }
 

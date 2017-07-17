@@ -21,7 +21,7 @@ import android.content.Intent;
 
 import com.duy.editor.debug.activities.DebugActivity;
 import com.duy.editor.editor.EditorActivity;
-import com.duy.editor.project_files.ProjectFile;
+import com.duy.project_files.ProjectFile;
 import com.spartacusrex.spartacuside.TerminalActivity;
 
 /**

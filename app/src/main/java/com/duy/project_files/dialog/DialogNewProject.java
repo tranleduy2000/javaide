@@ -1,4 +1,4 @@
-package com.duy.editor.project_files.fragments;
+package com.duy.project_files.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.duy.editor.R;
 import com.duy.editor.file.FileManager;
-import com.duy.editor.project_files.ProjectFile;
+import com.duy.project_files.ProjectFile;
 
 import java.io.File;
 import java.io.IOException;

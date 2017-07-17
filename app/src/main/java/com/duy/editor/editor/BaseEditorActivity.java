@@ -51,10 +51,10 @@ import com.duy.editor.code.CompileManager;
 import com.duy.editor.file.FileActionListener;
 import com.duy.editor.file.FileManager;
 import com.duy.editor.file.FragmentFileManager;
-import com.duy.editor.project_files.ProjectFile;
-import com.duy.editor.project_files.ProjectManager;
-import com.duy.editor.project_files.fragments.DialogNewClass;
-import com.duy.editor.project_files.fragments.DialogNewProject;
+import com.duy.project_files.ProjectFile;
+import com.duy.project_files.ProjectManager;
+import com.duy.project_files.dialog.DialogNewClass;
+import com.duy.project_files.dialog.DialogNewProject;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.view.SymbolListView;
 

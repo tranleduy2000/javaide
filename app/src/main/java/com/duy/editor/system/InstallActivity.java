@@ -208,7 +208,6 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
                 env[1] = "LD_LIBRARY_PATH=" + "/vendor/lib" + ":/vendor/lib64" + ":/system/lib" +
                         ":/system/lib64";
 
-
                 busytar.setReadable(true, true);
                 busytar.setWritable(true, true);
                 busytar.setExecutable(true, false);
@@ -250,6 +249,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
 
                 publishProgress("Cleaning up...");
                 FileManager.deleteFolder(worker);
+                FileManager.deleteFolder(params[0]);
 
                 mPreferences.put("system_installed", true);
                 mPreferences.put("system_version", SYSTEM_VERSION);

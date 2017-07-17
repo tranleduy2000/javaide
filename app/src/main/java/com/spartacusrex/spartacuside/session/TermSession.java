@@ -42,7 +42,7 @@ public class TermSession {
     private static final int DEFAULT_COLUMNS = 80;
     private static final int DEFAULT_ROWS = 24;
     private static final String DEFAULT_SHELL = "/system/bin/sh -";
-    private static final String DEFAULT_INITIAL_COMMAND = "export HOME=/data/data/com.spartacusrex.spartacuside/files;cd $HOME;export PATH=$HOME/bin:$HOME/bin/bbdir:$PATH;bash";
+    private static final String DEFAULT_INITIAL_COMMAND = "export HOME=/data/data/com.duy.compiler.javanide/files;cd $HOME;export PATH=$HOME/bin:$HOME/bin/bbdir:$PATH;bash";
     // Number of rows in the transcript
     private static final int TRANSCRIPT_ROWS = 10000;
     private static final int NEW_INPUT = 1;

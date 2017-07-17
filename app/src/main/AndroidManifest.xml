@@ -51,9 +51,6 @@
 
         <activity android:name="com.spartacusrex.spartacuside.startup.MainActivity"/>
 
-        <activity
-            android:name="com.spartacusrex.spartacuside.startup.Installer"
-            android:configChanges="keyboardHidden|orientation"/>
 
         <activity android:name="com.spartacusrex.spartacuside.startup.TerminalIDEPrefs"/>
 

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 
 import com.duy.editor.R;
 import com.duy.editor.editor.completion.Template;
-import com.duy.editor.file.FileManager;
 import com.duy.editor.project_files.ProjectFile;
 
 import java.io.File;
@@ -121,18 +119,12 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
 
 
         Bundle arguments = getArguments();
-        ProjectFile project_file = (ProjectFile) arguments.getSerializable("project_file");
+        ProjectFile projectFile = (ProjectFile) arguments.getSerializable("projectFile");
         String currentPackage = mPackage.getText().toString();
         currentPackage = currentPackage.replace(".", "/");
         File file;
-        if (project_file != null) {
-            file = new File(project_file.getRootDir(), "src/java/main/" + currentPackage);
-            Log.d(TAG, "createNewClass file = " + file);
-
-            if (!file.exists()) file.mkdirs();
-            File classf = new File(file, className + ".java");
-            FileManager.saveFile(classf, content);
-
+        if (projectFile != null) {
+            File classf = ProjectFile.createClass(projectFile, currentPackage, className, content);
             if (listener != null) {
                 listener.onClassCreated(classf);
                 Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();

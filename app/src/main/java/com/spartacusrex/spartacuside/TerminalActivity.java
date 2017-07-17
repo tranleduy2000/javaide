@@ -184,14 +184,13 @@ public class TerminalActivity extends Activity {
 
             //now compile
             pw.println("echo Compile java file");
-            pw.println("javac -verbose -d ../../../build/ ${PATH_MAIN_CLASS}");
+            pw.println("javac -verbose -d ../../../build/ ${PATH_MAIN_CLASS}.java");
             pw.flush();
 
             //go to build dir
             pw.println("cd ../../../build/");
 
             pw.println("echo Now convert to dex format");
-            String jarFile = projectFile.getProjectName() + ".jar";
             pw.println("dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.dex.jar ${PATH_MAIN_CLASS}.class");
             pw.flush();
 
@@ -199,7 +198,7 @@ public class TerminalActivity extends Activity {
             pw.flush();
 
             //now run file
-            pw.println("jjava -jar ./bin/${PROJECT_NAME}.dex.jar ${MAIN_CLASS}");
+            pw.println("java -jar ./bin/${PROJECT_NAME}.dex.jar ${MAIN_CLASS}");
             pw.flush();
 
             File temp = new File(home, "tmp");

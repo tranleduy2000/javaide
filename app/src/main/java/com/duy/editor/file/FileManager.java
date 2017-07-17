@@ -259,13 +259,14 @@ public class FileManager {
      *
      * @param file
      */
-    public static void saveFile(@NonNull File file, String text) {
+    public static File saveFile(@NonNull File file, String text) {
         try {
             FileOutputStream out = new FileOutputStream(file);
             if (text.length() > 0) out.write(text.getBytes());
             out.close();
         } catch (Exception ignored) {
         }
+        return file;
     }
 
     /**

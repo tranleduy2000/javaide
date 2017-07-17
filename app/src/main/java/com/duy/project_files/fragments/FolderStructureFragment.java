@@ -95,7 +95,18 @@ public class FolderStructureFragment extends Fragment
                 getArguments().getSerializable(CompileManager.PROJECT_FILE);
         mContainerView = view.findViewById(R.id.container);
         refresh();
-
+        view.findViewById(R.id.img_expand_all).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mTreeView != null) mTreeView.expandAll();
+            }
+        });
+        view.findViewById(R.id.img_collapse).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mTreeView != null) mTreeView.collapseAll();
+            }
+        });
         if (savedInstanceState != null && mTreeView != null) {
             String state = savedInstanceState.getString("tState");
             if (!TextUtils.isEmpty(state)) {

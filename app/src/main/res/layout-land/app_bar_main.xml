@@ -19,7 +19,7 @@
     android:weightSum="10">
 
     <include
-        layout="@layout/navigation_editor_left"
+        layout="@layout/project_file"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"

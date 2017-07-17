@@ -61,7 +61,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="bottom"
-                android:text="@string/install"/>
+                android:text="@string/download_system_file"/>
         </RelativeLayout>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

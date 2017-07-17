@@ -1,9 +1,12 @@
 package com.duy.editor.system;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +16,12 @@ import android.widget.TextView;
 import com.duy.editor.R;
 import com.duy.editor.activities.AbstractAppCompatActivity;
 import com.duy.editor.setting.JavaPreferences;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
 import com.spartacusrex.spartacuside.startup.FileManager;
 
 import java.io.File;
@@ -49,11 +58,66 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         findViewById(R.id.btn_install).setOnClickListener(this);
     }
 
+    private ProgressDialog progressDialog;
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_install) {
-            new InstallTask(this).execute();
+            if (isConnected()) {
+                downloadFile();
+            } else {
+                showDialogNotConnect();
+            }
         }
+    }
+
+    private void downloadFile() {
+        progressDialog = new ProgressDialog(InstallActivity.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle("Downloading system, please wait...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        String systemURL = "gs://calculator-a283d.appspot.com/java_nide/system/system3.tar.gz.mp3";
+        StorageReference systemFile = storage.getReferenceFromUrl(systemURL);
+
+        final File file = new File(getFilesDir(), "system3.tar.gz.mp3");
+        systemFile.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                progressDialog.dismiss();
+                new InstallTask(InstallActivity.this).execute(file);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                showDialogError(e);
+            }
+        }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                long totalByteCount = taskSnapshot.getTotalByteCount();
+                long bytesTransferred = taskSnapshot.getBytesTransferred();
+                if (bytesTransferred != 0 && totalByteCount != 0) {
+                    progressDialog.setMessage(bytesTransferred + "/" + totalByteCount);
+                }
+            }
+        });
+    }
+
+    private void showDialogError(Exception e) {
+
+    }
+
+    private boolean isConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
+    }
+
+    private void showDialogNotConnect() {
+
     }
 
     private void showDialogSuccess() {
@@ -98,8 +162,13 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         }
     }
 
+    private void showDialogDownload() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Download system");
+    }
+
     @SuppressWarnings("ConstantConditions")
-    private class InstallTask extends AsyncTask<Void, String, Boolean> {
+    private class InstallTask extends AsyncTask<File, String, Boolean> {
         private Exception error = null;
         private Context context;
 
@@ -117,7 +186,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Boolean doInBackground(File... params) {
             File home = getFilesDir();
             try {
                 File tmp = new File(home, "tmp");
@@ -146,11 +215,10 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
 
                 publishProgress("Extract system file");
                 File systar = new File(worker, "system.tar.gz");
-                FileManager.extractAsset(context, SYSTEM_ASSETFILE, systar);
+                org.apache.commons.io.FileUtils.copyFile(params[0], systar);
                 publishProgress("Extracted system");
 
                 Process pp;
-
                 publishProgress("Removing Old System");
 
                 File systemFolder = new File(home, "system");
@@ -285,4 +353,5 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             installing = false;
         }
     }
+
 }

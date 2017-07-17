@@ -515,6 +515,10 @@ public class FileManager {
 
     }
 
+    public static boolean canEdit(File file) {
+        return file.canWrite() && file.getName().toLowerCase().endsWith(".java");
+    }
+
     public Intent createShortcutIntent(Context context, File file) {
         // create shortcut if requested
         Intent.ShortcutIconResource icon =

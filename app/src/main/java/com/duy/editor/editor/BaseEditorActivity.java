@@ -479,10 +479,12 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     @Override
     public void onFileClick(File file, ProjectFileContract.ActionCallback callBack) {
-        //save current file
-        addNewPageEditor(file, SELECT);
-        //close drawer
-        mDrawerLayout.closeDrawers();
+        if (FileManager.canEdit(file)) {
+            //save current file
+            addNewPageEditor(file, SELECT);
+            //close drawer
+            mDrawerLayout.closeDrawers();
+        }
     }
 
     @Override

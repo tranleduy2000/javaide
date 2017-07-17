@@ -68,6 +68,7 @@ dependencies {
     compile "com.google.firebase:firebase-crash:$google_service_version"
     compile "com.google.firebase:firebase-messaging:$google_service_version"
     compile "com.google.android.gms:play-services-ads:$google_service_version"
+    compile "com.google.firebase:firebase-storage:$google_service_version"
 
     compile 'io.github.kobakei:ratethisapp:1.1.2'
     compile 'commons-io:commons-io:2.4'

@@ -163,6 +163,7 @@ public class TerminalActivity extends Activity {
             pw.println("PROJECT_NAME=" + projectFile.getProjectName());
             pw.println("MAIN_CLASS=" + projectFile.getMainClass().getName());
             pw.println("PATH_MAIN_CLASS=" + projectFile.getMainClass().getName().replace(".", "/"));
+            pw.println("ROOT_PACKAGE=" + projectFile.getPackageName().substring(0, projectFile.getPackageName().indexOf(".")));
 
             pw.println("cd ~"); //go to home
             pw.println("cd ${PROJECT_PATH}");//move to root project
@@ -191,7 +192,7 @@ public class TerminalActivity extends Activity {
             pw.println("cd ../../../build/");
 
             pw.println("echo Now convert to dex format");
-            pw.println("dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.dex.jar ${PATH_MAIN_CLASS}.class");
+            pw.println("dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.jar ${ROOT_PACKAGE}");
             pw.flush();
 
             pw.println("cd .."); //go to root dir

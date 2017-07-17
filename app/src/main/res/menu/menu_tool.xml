@@ -49,15 +49,22 @@
                 android:visible="false"
                 android:icon="@drawable/ic_fiber_new_white_24dp"
                 android:title="@string/new_file"/>
+            <!--<item-->
+            <!--android:id="@+id/action_open_file"-->
+            <!--android:title="@string/open_file"-->
+            <!--android:icon="@drawable/ic_folder_open_white_24dp"-->
+            <!--android:visible="false"/>-->
             <item
-                android:id="@+id/action_open_file"
+                android:id="@+id/action_open_project"
+                android:enabled="false"
                 android:icon="@drawable/ic_folder_open_white_24dp"
-                android:title="@string/open_file"/>
+                android:title="@string/open_project"/>
             <item
                 android:id="@+id/action_save"
                 android:icon="@drawable/ic_save_white_24dp"
                 android:title="@string/save"/>
             <item
+                android:visible="false"
                 android:id="@+id/action_save_as"
                 android:icon="@drawable/ic_save_white_24dp"
                 android:title="@string/save_as"/>

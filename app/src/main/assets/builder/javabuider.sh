@@ -5,6 +5,7 @@ PROJECT_PATH=""
 PROJECT_NAME=""
 MAIN_CLASS=""
 PATH_MAIN_CLASS=""
+ROOT_PACKAGE=""
 
 cd ~
 cd ${PROJECT_PATH}
@@ -14,23 +15,21 @@ rm -rf build/*
 rm -rf bin/*
 
 #cd to src dir
-cd src
+cd src/main/java
 
 #Now compile - note the use of a seperate lib (in non-dex format!)
 echo Compile the java code
-javac -verbose -cp ../libs/demolib.jar -d ../build/ ${PATH_MAIN_CLASS}.java
-javac -verbose -cp -d ../../../build/ ${PATH_MAIN_CLASS}.java
+javac -verbose -d ../../../build/ ${PATH_MAIN_CLASS}.java
 
 #Now into build dir
 cd ../../../build/
 
 #Now convert to dex format (need no-strict)
 echo Now convert to dex format
-dx --dex --verbose --output=../bin/${PROJECT_NAME}.jar ${PATH_MAIN_CLASS}.class
+#dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.jar
+dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.jar ${ROOT_PACKAGE}
 
 #Back out
 cd ..
 java -jar ./bin/${PROJECT_NAME}.jar ${MAIN_CLASS}
 
-///////////
-javac -verbose -cp ../libs/demolib.jar -d ../build/ main/java/${PATH_MAIN_CLASS}.java

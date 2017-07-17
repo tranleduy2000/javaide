@@ -408,4 +408,5 @@
     <string name="enter_project_name" translatable="false">Enter project name</string>
     <string name="enter_name" translatable="false">Enter name</string>
     <string name="new_class" translatable="false">Create new class</string>
+    <string name="open_project">Open project</string>
 </resources>

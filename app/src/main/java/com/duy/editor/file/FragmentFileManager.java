@@ -325,12 +325,12 @@ public class FragmentFileManager extends Fragment implements
 
             final File selectedFile = new File(currentFolder, name);
 
-            if (selectedFile.isFile() && wantAFile) {
-                // TODO: 15-Mar-17
-                if (listener != null) listener.onFileLongClick(selectedFile);
-            } else if (selectedFile.isDirectory()) {
-//            new UpdateList().execute(selectedFile.getAbsolutePath());
-            }
+//            if (selectedFile.isFile() && wantAFile) {
+//                // TODO: 15-Mar-17
+//                if (listener != null) listener.onFileLongClick(selectedFile);
+//            } else if (selectedFile.isDirectory()) {
+////            new UpdateList().execute(selectedFile.getAbsolutePath());
+//            }
         } else if (action == ACTION_CLICK) {
             if (name.equals("..")) {
                 if (currentFolder.equals("/")) {
@@ -356,7 +356,7 @@ public class FragmentFileManager extends Fragment implements
 
             if (selectedFile.isFile() && wantAFile) {
                 // TODO: 15-Mar-17
-                if (listener != null) listener.onFileSelected(selectedFile);
+//                if (listener != null) listener.onFileSelected(selectedFile);
             } else if (selectedFile.isDirectory()) {
                 new UpdateList(selectedFile.getAbsolutePath()).execute();
             }
@@ -364,7 +364,7 @@ public class FragmentFileManager extends Fragment implements
     }
 
     private void doRemoveFile(final File file) {
-        listener.doRemoveFile(file);
+//        listener.doRemoveFile(file);
     }
 
     public void refresh() {

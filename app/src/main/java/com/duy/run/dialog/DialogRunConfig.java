@@ -112,8 +112,16 @@ public class DialogRunConfig extends AppCompatDialogFragment {
         if (selectedItem != null) {
             String mainClass = selectedItem.toString();
             String pkg = mainClass.substring(0, mainClass.lastIndexOf("."));
-            String name = mainClass.substring(mainClass.lastIndexOf(".") + 1);
+            String name = mainClass.substring(mainClass.lastIndexOf(".") + 1, mainClass.length());
             ClassFile classFile = new ClassFile(name, pkg);
+
+            try {
+                File src = new File(projectFile.getRootDir(), "src/main/java");
+                File tmp = new File(src, mainClass.replace(".", File.separator) + ".java");
+                classFile.setPath(tmp.getPath());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             projectFile.setMainClass(classFile);
             if (listener != null) listener.onConfigChange(projectFile);
             this.dismiss();
@@ -127,7 +135,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
         ArrayList<String> name = FileManager.listClassName(src);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, name);
-        adapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         mClasses = view.findViewById(R.id.spinner_main_class);
         mClasses.setAdapter(adapter);
 

@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Created by Duy on 16-Jul-17.
@@ -35,11 +36,25 @@ public class ProjectManager {
             ProjectFile projectFile = new ProjectFile();
             projectFile.restore(new JSONObject(s));
             return projectFile;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (FileNotFoundException | JSONException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Nullable
+    public static ProjectFile createProjectIfNeed(File file) {
+        if (file.isFile() || !file.canWrite() || file.canRead()) {
+            return null;
+        }
+        ProjectFile projectFile = new ProjectFile();
+        projectFile.setProjectName(file.getName());
+        try {
+            projectFile.create(file.getParentFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return projectFile;
     }
 }

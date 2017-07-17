@@ -19,6 +19,16 @@ public class ClassFile implements Serializable, Cloneable {
         this.name = packageName + "." + simpleName;
     }
 
+    @Override
+    public String toString() {
+        return "ClassFile{" +
+                "simpleName='" + simpleName + '\'' +
+                ", packageName='" + packageName + '\'' +
+                ", name='" + name + '\'' +
+                ", path='" + path + '\'' +
+                '}';
+    }
+
     public String getName() {
         return name;
     }
@@ -47,6 +57,13 @@ public class ClassFile implements Serializable, Cloneable {
         return path;
     }
 
+    public boolean exist() {
+        try {
+            return new File(path).exists();
+        } catch (Exception e) {
+            return false;
+        }
+    }
     public boolean exist(ProjectFile parent) {
         String projectDir = parent.getProjectDir();
         File src = new File(projectDir, "src/main/java");

@@ -150,17 +150,15 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     private void setupEditor() {
-        mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), new ArrayList<PageDescriptor>());
+        ArrayList<File> editorFiles = mFileManager.getEditorFiles();
+        ArrayList<PageDescriptor> descriptors = new ArrayList<>();
+        for (File editorFile : editorFiles) {
+            descriptors.add(new SimplePageDescriptor(editorFile.getPath(), editorFile.getName()));
+        }
+        mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), descriptors);
         mViewPager.setAdapter(mPageAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
         invalidateTab();
-
-        if (projectFile == null) {
-            Toast.makeText(this, "Please create new project", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String path = projectFile.getMainClass().getPath();
-        if (path != null) addNewPageEditor(new File(path), true);
     }
 
     private void bindView() {
@@ -433,7 +431,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         closeKeyBoard();
         mDrawerLayout.getViewTreeObserver()
                 .removeGlobalOnLayoutListener(keyBoardListener);
-
+        mFileManager.destroy();
     }
 
     // closes the soft keyboard
@@ -529,6 +527,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
                 projectFile.getPackageName(), file);
         dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
     }
+
 
     private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {
         BaseEditorActivity activity;

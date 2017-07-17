@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -50,7 +49,7 @@ import java.util.Locale;
 public class DialogSelectDirectory extends AppCompatDialogFragment implements View.OnClickListener, View.OnLongClickListener,
         SwipeRefreshLayout.OnRefreshListener, FileAdapterListener {
     public static final String TAG = "DialogSelectDirectory";
-    private final Handler handler = new Handler();
+
     private FileSelectListener listener;
     private RecyclerView listFiles;
     private Activity activity;
@@ -85,8 +84,8 @@ public class DialogSelectDirectory extends AppCompatDialogFragment implements Vi
         } catch (Exception ignored) {
 
         }
+        activity = getActivity();
         request = getArguments().getInt("request");
-
     }
 
     @Override

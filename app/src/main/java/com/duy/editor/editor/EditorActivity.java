@@ -29,6 +29,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -168,11 +169,9 @@ public class EditorActivity extends BaseEditorActivity implements
     }
 
     @Override
-    public void runProject() {
+    public void buildProject() {
         if (projectFile != null) {
-            if (projectFile.getMainClass() == null
-                    || projectFile.getMainClass().getName().trim().isEmpty()
-                    || !projectFile.getMainClass().exist(projectFile)) {
+            if (projectFile.getMainClass() == null || !projectFile.getMainClass().exist()) {
                 showDialogRunConfig();
                 return;
             }
@@ -503,15 +502,6 @@ public class EditorActivity extends BaseEditorActivity implements
         mDrawerLayout.openDrawer(gravity);
     }
 
-    private String getCurrentFilePath() {
-        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-        if (editorFragment != null) {
-            return editorFragment.getFilePath();
-        }
-        return "";
-    }
-
-
     public void showDialogRunConfig() {
         if (projectFile != null) {
             DialogRunConfig dialogRunConfig = DialogRunConfig.newInstance(projectFile);
@@ -528,16 +518,22 @@ public class EditorActivity extends BaseEditorActivity implements
     }
 
     public void showDialogOpenProject() {
-        DialogSelectDirectory dialogSelectDirectory
-                = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR, 2);
-        dialogSelectDirectory.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
+        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR, 2);
+        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
     }
 
     @Override
     public void onFileSelected(File file, int request) {
+        Log.d(TAG, "onFileSelected() called with: file = [" + file + "], request = [" + request + "]");
+
         switch (request){
-            case 2:
+            case 2: //import new project
                 saveFile();
+                ProjectFile pf = ProjectManager.createProjectIfNeed(file);
+                Log.d(TAG, "onFileSelected pf = " + pf);
+                if (pf != null) {
+                    super.onProjectCreated(pf, new File(pf.getMainClass().getPath()));
+                }
                 break;
 
         }

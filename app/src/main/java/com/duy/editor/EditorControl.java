@@ -23,7 +23,7 @@ public interface EditorControl {
 
     void findAndReplace();
 
-    void runProject();
+    void buildProject();
 
 
     void saveFile();

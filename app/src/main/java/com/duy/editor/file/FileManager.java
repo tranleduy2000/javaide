@@ -299,9 +299,10 @@ public class FileManager {
         File directory = new File(path);
         File[] files = directory.listFiles();
         try {
-            if (files == null) return list;
-            for (File file : files) {
-                if (file.isFile()) list.add(file);
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) list.add(file);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -309,6 +310,10 @@ public class FileManager {
         ArrayList<File> listFile = mDatabase.getListFile();
         list.addAll(listFile);
         return list;
+    }
+
+    public ArrayList<File> getEditorFiles() {
+        return mDatabase.getListFile();
     }
 
     /**
@@ -564,6 +569,9 @@ public class FileManager {
         return intent;
     }
 
+    public void destroy() {
+        mDatabase.close();
+    }
     public static class SAVE_MODE {
         static final int INTERNAL = 1;
         static final int EXTERNAL = 2;

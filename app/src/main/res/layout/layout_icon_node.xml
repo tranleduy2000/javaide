@@ -15,7 +15,13 @@
         android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/img_con"
+            android:id="@+id/img_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_jar_file_white" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/img_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_jar_file_white" />

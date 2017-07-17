@@ -1,13 +1,14 @@
 package com.duy.project_files.holder;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import com.duy.editor.R;
 import com.unnamed.b.atv.model.TreeNode;
+
+import java.io.File;
 
 /**
  * Created by Bogdan Melnychuk on 2/12/15.
@@ -16,8 +17,6 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
     private static final String TAG = "IconTreeItemHolder";
     private TextView tvValue;
     private LayoutInflater inflater;
-    @Nullable
-    private TreeNode node;
 
     public IconTreeItemHolder(Context context) {
         super(context);
@@ -26,10 +25,11 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
 
     @Override
     public View createNodeView(final TreeNode node, IconTreeItem value) {
-        this.node = node;
         View view = inflater.inflate(R.layout.layout_icon_node, null, false);
         tvValue = view.findViewById(R.id.node_value);
-        tvValue.setText(value.text);
+        tvValue.setText(value.getFile().getName());
+
+        File file = value.getFile();
 
         return view;
     }
@@ -39,11 +39,15 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
     }
 
     public static class IconTreeItem {
-        public int icon;
-        public String text;
 
-        public IconTreeItem(String text) {
-            this.text = text;
+        private File file;
+
+        public IconTreeItem(File file) {
+            this.file = file;
+        }
+
+        public File getFile() {
+            return file;
         }
     }
 }

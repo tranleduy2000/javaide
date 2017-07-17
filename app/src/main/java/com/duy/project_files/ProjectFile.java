@@ -5,6 +5,9 @@ import android.util.Log;
 import com.duy.editor.editor.completion.Template;
 import com.duy.editor.file.FileManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -145,5 +148,19 @@ public class ProjectFile implements Serializable, Cloneable {
 
     public String getProjectDir() {
         return rootDir;
+    }
+
+    public JSONObject exportJson() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("main_class_mame", mainClass.getName());
+            json.put("main_class_pkg", mainClass.getPackageName());
+            json.put("root_dir", rootDir);
+            json.put("package_name", packageName);
+            json.put("project_name", projectName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 }

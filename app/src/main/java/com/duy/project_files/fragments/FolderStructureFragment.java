@@ -1,6 +1,8 @@
 package com.duy.project_files.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -11,10 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.duy.editor.R;
+import com.duy.editor.code.CompileManager;
 import com.duy.project_files.ProjectFile;
 import com.duy.project_files.holder.IconTreeItemHolder;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
+
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by Duy on 17-Jul-17.
@@ -36,10 +42,10 @@ public class FolderStructureFragment extends Fragment {
     };
 
 
-    public static FolderStructureFragment newInstance(ProjectFile projectFile) {
+    public static FolderStructureFragment newInstance(@NonNull ProjectFile projectFile) {
 
         Bundle args = new Bundle();
-
+        args.putSerializable(CompileManager.PROJECT_FILE, projectFile);
         FolderStructureFragment fragment = new FolderStructureFragment();
         fragment.setArguments(args);
         return fragment;
@@ -57,27 +63,7 @@ public class FolderStructureFragment extends Fragment {
         ViewGroup containerView = rootView.findViewById(R.id.container);
 
         TreeNode root = TreeNode.root();
-        TreeNode computerRoot = new TreeNode(new IconTreeItemHolder.IconTreeItem("My Computer"));
-
-        TreeNode myDocuments = new TreeNode(new IconTreeItemHolder.IconTreeItem("My Documents"));
-        TreeNode downloads = new TreeNode(new IconTreeItemHolder.IconTreeItem("Downloads"));
-        TreeNode file1 = new TreeNode(new IconTreeItemHolder.IconTreeItem("Folder 1"));
-        TreeNode file2 = new TreeNode(new IconTreeItemHolder.IconTreeItem("Folder 2"));
-        TreeNode file3 = new TreeNode(new IconTreeItemHolder.IconTreeItem("Folder 3"));
-        TreeNode file4 = new TreeNode(new IconTreeItemHolder.IconTreeItem("Folder 4"));
-        fillDownloadsFolder(downloads);
-        downloads.addChildren(file1, file2, file3, file4);
-
-        TreeNode myMedia = new TreeNode(new IconTreeItemHolder.IconTreeItem("Photos"));
-        TreeNode photo1 = new TreeNode(new IconTreeItemHolder.IconTreeItem("Folder 1"));
-        TreeNode photo2 = new TreeNode(new IconTreeItemHolder.IconTreeItem("Folder 2"));
-        TreeNode photo3 = new TreeNode(new IconTreeItemHolder.IconTreeItem("Folder 3"));
-        myMedia.addChildren(photo1, photo2, photo3);
-
-        myDocuments.addChild(downloads);
-        computerRoot.addChildren(myDocuments, myMedia);
-
-        root.addChildren(computerRoot);
+        root.addChildren(createFileStructure());
 
         tView = new AndroidTreeView(getActivity(), root);
         tView.setDefaultAnimation(false);
@@ -96,6 +82,46 @@ public class FolderStructureFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    @Nullable
+    private TreeNode createFileStructure() {
+        ProjectFile projectFile = (ProjectFile)
+                getArguments().getSerializable(CompileManager.PROJECT_FILE);
+        if (projectFile == null) return null;
+
+        File rootDir = new File(projectFile.getRootDir());
+        TreeNode root = new TreeNode(new IconTreeItemHolder.IconTreeItem(rootDir));
+        try {
+            root.addChildren(getNode(rootDir));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return root;
+    }
+
+    private ArrayList<TreeNode> getNode(File parent) {
+        ArrayList<TreeNode> nodes = new ArrayList<>();
+        try {
+            if (parent.isDirectory()) {
+                File[] child = parent.listFiles();
+                if (child != null) {
+                    for (File file : child) {
+                        TreeNode node = new TreeNode(new IconTreeItemHolder.IconTreeItem(file));
+                        if (file.isDirectory()) {
+                            node.addChildren(getNode(file));
+                        }
+                        nodes.add(node);
+                    }
+                }
+            } else {
+                TreeNode node = new TreeNode(new IconTreeItemHolder.IconTreeItem(parent));
+                nodes.add(node);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return nodes;
     }
 
     @Override
@@ -118,13 +144,6 @@ public class FolderStructureFragment extends Fragment {
         return true;
     }
 
-    private void fillDownloadsFolder(TreeNode node) {
-        TreeNode downloads = new TreeNode(new IconTreeItemHolder.IconTreeItem("Downloads" + (counter++)));
-        node.addChild(downloads);
-        if (counter < 5) {
-            fillDownloadsFolder(downloads);
-        }
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

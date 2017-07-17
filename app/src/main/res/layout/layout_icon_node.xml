@@ -1,31 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?android:attr/selectableItemBackground"
-                android:minHeight="24dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:minHeight="24dp">
 
-
-    <TextView
-        android:id="@+id/node_value"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:layout_toLeftOf="@+id/buttonsContainer"
-        android:layout_toRightOf="@+id/icon"
-        android:textSize="12sp"/>
+        android:layout_toStartOf="@+id/buttonsContainer"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/img_con"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_jar_file_white" />
+
+        <TextView
+            android:id="@+id/node_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="sample"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="12sp" />
+    </LinearLayout>
 
 
     <LinearLayout
         android:id="@+id/buttonsContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_alignBottom="@+id/linearLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
         android:orientation="horizontal">
 
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/img_add"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/fab_add" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/img_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/ic_close_white_24dp" />
     </LinearLayout>
 </RelativeLayout>

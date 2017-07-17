@@ -19,7 +19,6 @@ package com.duy.editor.editor;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -64,6 +63,8 @@ import com.duy.project_files.fragments.FolderStructureFragment;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 
 /**
  * Created by Duy on 09-Mar-17.
@@ -130,15 +131,21 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         }
         bindView();
         setupToolbar();
-        setupFileView();
+        setupFileView(savedInstanceState);
         setupEditor();
     }
 
-    private void setupFileView() {
-        FolderStructureFragment folderStructureFragment
-                = FolderStructureFragment.newInstance(projectFile);
+    private void setupFileView(Bundle savedInstanceState) {
+        FolderStructureFragment folderStructureFragment = null;
+        if (savedInstanceState != null) {
+            folderStructureFragment = (FolderStructureFragment)
+                    getSupportFragmentManager().findFragmentByTag(FolderStructureFragment.TAG);
+        }
+        if (folderStructureFragment == null) {
+            folderStructureFragment = FolderStructureFragment.newInstance(projectFile);
+        }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container_file, folderStructureFragment).commit();
+        ft.replace(R.id.container_file, folderStructureFragment, FolderStructureFragment.TAG).commit();
         mFilePresenter = new FilePresenter(folderStructureFragment);
     }
 
@@ -207,13 +214,17 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
+        if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {
+            ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
+                    R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            // Set the drawer toggle as the DrawerListener
+            mDrawerLayout.setDrawerListener(mDrawerToggle);
+            mDrawerToggle.syncState();
+        }
 
         //attach listener hide/show keyboard
         keyBoardListener = new KeyBoardEventListener(this);
@@ -240,11 +251,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         Toast.makeText(this, getString(R.string.closed) + " " + new File(filePath).getName(), Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        invalidateTab();
-    }
 
     /**
      * Add new page for editor

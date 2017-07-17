@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class FolderStructureFragment extends Fragment
         implements ProjectFileContract.View {
-    private static final String TAG = "FolderStructureFragment";
+    public static final String TAG = "FolderStructureFragment";
 
     private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
         @Override

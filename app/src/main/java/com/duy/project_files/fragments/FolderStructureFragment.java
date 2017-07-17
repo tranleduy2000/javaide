@@ -35,11 +35,19 @@ public class FolderStructureFragment extends Fragment
     private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
         @Override
         public void onClick(TreeNode node, Object value) {
+            IconTreeItemHolder.TreeItem i = (IconTreeItemHolder.TreeItem) value;
+            if (listener != null && i.getFile().isFile()) {
+                listener.onFileClick(i.getFile(), null);
+            }
         }
     };
     private TreeNode.TreeNodeLongClickListener nodeLongClickListener = new TreeNode.TreeNodeLongClickListener() {
         @Override
         public boolean onLongClick(TreeNode node, Object value) {
+            IconTreeItemHolder.TreeItem i = (IconTreeItemHolder.TreeItem) value;
+            if (listener != null && i.getFile().isFile()) {
+                listener.onFileLongClick(i.getFile(), null);
+            }
             return true;
         }
     };
@@ -187,12 +195,16 @@ public class FolderStructureFragment extends Fragment
 
     @Override
     public void refresh() {
+        if (mProjectFile == null) return;
         TreeNode root = TreeNode.root();
-        root.addChildren(createFileStructure(mProjectFile));
+        TreeNode fileStructure = createFileStructure(mProjectFile);
+        if (fileStructure != null) {
+            root.addChildren(fileStructure);
+        }
 
-        mTreeView = new AndroidTreeView(getActivity(), root);
+        AndroidTreeView view = new AndroidTreeView(getActivity(), root);
         mContainerView.removeAllViews();
-        mContainerView.addView(mTreeView.getView());
+        mContainerView.addView(view.getView());
     }
 
     @Override

@@ -467,7 +467,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     @Override
     public void onClassCreated(File classF) {
-        mFilePresenter.refresh();
+        mFilePresenter.show(projectFile);
         addNewPageEditor(classF, true);
     }
 

@@ -20,7 +20,7 @@ public class ProjectFileContract {
     public interface Presenter {
         void show(ProjectFile projectFile);
 
-        void refresh();
+        void refresh(ProjectFile projectFile);
     }
 
     public interface ActionCallback {
@@ -31,9 +31,9 @@ public class ProjectFileContract {
 
 
     public interface FileActionListener {
-        void onFileClick(File file, ActionCallback callBack);
+        void onFileClick(File file, @Nullable ActionCallback callBack);
 
-        void onFileLongClick(File file, ActionCallback callBack);
+        void onFileLongClick(File file, @Nullable  ActionCallback callBack);
 
         boolean doRemoveFile(File file, ActionCallback callBack);
 

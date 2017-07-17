@@ -18,7 +18,7 @@ public class FilePresenter implements ProjectFileContract.Presenter {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(ProjectFile projectFile) {
         view.refresh();
     }
 }

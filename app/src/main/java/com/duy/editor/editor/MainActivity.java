@@ -532,7 +532,7 @@ public class MainActivity extends BaseEditorActivity implements
                 ProjectFile pf = ProjectManager.createProjectIfNeed(file);
                 Log.d(TAG, "onFileSelected pf = " + pf);
                 if (pf != null) {
-                    super.onProjectCreated(pf, new File(pf.getMainClass().getPath()));
+                    super.onProjectCreated(pf);
                 }
                 break;
 

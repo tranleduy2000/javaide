@@ -19,22 +19,19 @@ import java.io.Serializable;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class ProjectFile implements Serializable, Cloneable {
+    private static final String TAG = "ProjectFile";
     //main class name, don't include package, ex: Main
     private ClassFile mainClass;
-
     /**
      * root director
      */
     private String rootDir;
-
     /**
      * java package name: eg: com.duy.example
      */
     private String packageName;
-
     //project name
     private String projectName;
-
 
     public ProjectFile(String mainClass, String packageName, String projectName) {
         this.mainClass = new ClassFile(mainClass, packageName);
@@ -47,13 +44,28 @@ public class ProjectFile implements Serializable, Cloneable {
 
     }
 
+    public static File createClass(ProjectFile projectFile,
+                                   String currentPackage, String className,
+                                   String content) {
+        File file = new File(projectFile.getRootDir(), "src/main/java/" + currentPackage.replace(".", File.separator));
+        if (!file.exists()) file.mkdirs();
+        File classf = new File(file, className + ".java");
+        FileManager.saveFile(classf, content);
+
+        Log.d(TAG, "createClass() returned: " + classf);
+        return classf;
+    }
+
     public String getRootDir() {
         return rootDir;
     }
 
-
     public ClassFile getMainClass() {
         return mainClass;
+    }
+
+    public void setMainClass(ClassFile classFile) {
+        this.mainClass = classFile;
     }
 
     public String getPackageName() {
@@ -72,38 +84,23 @@ public class ProjectFile implements Serializable, Cloneable {
         this.projectName = projectName;
     }
 
-
-    private static final String TAG = "ProjectFile";
-
-    public static File createClass(ProjectFile projectFile,
-                                   String currentPackage, String className,
-                                   String content) {
-        File file = new File(projectFile.getRootDir(), "src/main/java/" + currentPackage.replace(".", File.separator));
-        if (!file.exists()) file.mkdirs();
-        File classf = new File(file, className + ".java");
-        FileManager.saveFile(classf, content);
-
-        Log.d(TAG, "createClass() returned: " + classf);
-        return classf;
-    }
-
     /**
      * create new project as tree:
      * ├───bin
      * ├───build
      * ├───libs
      * └───src
-     *      └─main
-     *          └─ java
-     *             └──com
-     *                 └──...
-     *                     └──Main.class
+     * └─main
+     * └─ java
+     * └──com
+     * └──...
+     * └──Main.class
      *
      * @param dir - parent dir for project
      * @return - path of parent of  main class
      * @throws IOException
      */
-    public File create(File dir) throws IOException {
+    public ProjectFile create(File dir) throws IOException {
         this.rootDir = new File(dir, projectName).getPath();
 
         //now create root director
@@ -125,22 +122,44 @@ public class ProjectFile implements Serializable, Cloneable {
         File javaF = new File(main, "java");
         if (!javaF.exists()) javaF.mkdirs();
 
-        //create package file
-        File packageF = new File(javaF, packageName.replace(".", File.separator));
-        if (!packageF.exists()) {
-            packageF.getParentFile().mkdirs();
-            packageF.mkdirs();
-        }
+        if (packageName != null) {
 
-        //create main class
-        File mainFile = new File(packageF, mainClass.getSimpleName() + ".java");
-        if (!mainFile.exists()) {
-            mainFile.createNewFile();
-            String content = Template.createClass(packageName, mainClass.getSimpleName());
-            FileManager.saveFile(mainFile, content);
+            //create package file
+            File packageF = new File(javaF, packageName.replace(".", File.separator));
+            if (!packageF.exists()) {
+                packageF.getParentFile().mkdirs();
+                packageF.mkdirs();
+            }
+
+            //create main class
+            if (mainClass != null) {
+                File mainFile = new File(packageF, mainClass.getSimpleName() + ".java");
+                if (!mainFile.exists()) {
+                    mainFile.createNewFile();
+                    String content = Template.createClass(packageName, mainClass.getSimpleName());
+                    FileManager.saveFile(mainFile, content);
+                }
+                mainClass.setPath(mainFile.getPath());
+            }
+        } else {
+            File[] files = javaF.listFiles();
+            if (files == null) {
+                packageName = "";
+            } else {
+                File f = files[0];
+                while (f != null && f.isDirectory()) {
+                    packageName += f.getName() + ".";
+                    files = f.listFiles();
+                    if (files == null) f = null;
+                    else f = files[0];
+                }
+                if (packageName.charAt(packageName.length() - 1) == '.') {
+                    packageName = packageName.substring(0, packageName.length() - 2);
+                }
+            }
+
         }
-        mainClass.setPath(mainFile.getPath());
-        return mainFile;
+        return this;
     }
 
     public String getProjectDir() {
@@ -150,9 +169,11 @@ public class ProjectFile implements Serializable, Cloneable {
     public JSONObject exportJson() {
         JSONObject json = new JSONObject();
         try {
-            json.put("main_class_mame", mainClass.getSimpleName());
-            json.put("main_class_pkg", mainClass.getPackageName());
-            json.put("main_class_path", mainClass.getPath());
+            if (mainClass != null) {
+                json.put("main_class_mame", mainClass.getSimpleName());
+                json.put("main_class_pkg", mainClass.getPackageName());
+                json.put("main_class_path", mainClass.getPath());
+            }
 
             Log.d(TAG, "exportJson mainClass = " + mainClass);
 
@@ -183,10 +204,6 @@ public class ProjectFile implements Serializable, Cloneable {
         if (json.has("root_dir")) this.rootDir = json.getString("root_dir");
         if (json.has("package_name")) this.packageName = json.getString("package_name");
         if (json.has("project_name")) this.projectName = json.getString("project_name");
-    }
-
-    public void setMainClass(ClassFile classFile) {
-        this.mainClass = classFile;
     }
 
     @Override

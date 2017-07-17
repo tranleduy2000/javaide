@@ -472,7 +472,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
 
     @Override
-    public void onProjectCreated(ProjectFile projectFile, File mainClass) {
+    public void onProjectCreated(ProjectFile projectFile) {
         this.projectFile = projectFile;
         ProjectManager.saveProject(this, projectFile);
         mFilePresenter.show(projectFile);

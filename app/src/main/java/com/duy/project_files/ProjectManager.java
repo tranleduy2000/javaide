@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
  * Created by Duy on 16-Jul-17.
@@ -51,7 +50,7 @@ public class ProjectManager {
         projectFile.setProjectName(file.getName());
         try {
             projectFile.create(file.getParentFile());
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

@@ -93,9 +93,9 @@ public class DialogNewProject extends AppCompatDialogFragment implements View.On
             ProjectFile projectFile = new ProjectFile(editMainClass.getText().toString(),
                     editPackage.getText().toString(), editProjectName.getText().toString());
             try {
-                File f = projectFile.create(new File(FileManager.EXTERNAL_DIR));
+               projectFile.create(new File(FileManager.EXTERNAL_DIR));
                 if (listener != null) {
-                    listener.onProjectCreated(projectFile, f);
+                    listener.onProjectCreated(projectFile);
                 }
                 this.dismiss();
             } catch (IOException e) {
@@ -129,6 +129,6 @@ public class DialogNewProject extends AppCompatDialogFragment implements View.On
 
 
     public interface OnCreateProjectListener {
-        void onProjectCreated(ProjectFile projectFile, File mainClass);
+        void onProjectCreated(ProjectFile projectFile);
     }
 }

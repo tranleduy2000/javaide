@@ -18,5 +18,5 @@ You can build and run java file with JDK 1.5
 5. Run java file, class file
 6. Build java library
 7. Build Android app.
-8. Support github
-
+8. Support VCS
+9. Decompile class, jar

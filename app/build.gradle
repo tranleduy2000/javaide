@@ -73,13 +73,13 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile 'com.github.bmelnychuk:atv:1.2.9'
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
     compile 'com.sothree.slidinguppanel:library:3.3.1'
 
     compile project(':pager')
     compile project(':colorpicker')
     compile project(':splitview')
+    compile project(':treeview')
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
 }

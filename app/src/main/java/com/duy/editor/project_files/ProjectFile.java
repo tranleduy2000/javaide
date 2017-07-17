@@ -136,7 +136,7 @@ public class ProjectFile implements Serializable, Cloneable {
         File mainFile = new File(packageF, mainClass.getSimpleName() + ".java");
         if (!mainFile.exists()) {
             mainFile.createNewFile();
-            String content = Template.createClass(mainClass.getSimpleName());
+            String content = Template.createClass(packageName, mainClass.getSimpleName());
             FileManager.saveFile(mainFile, content);
         }
         mainClass.setPath(mainFile.getPath());

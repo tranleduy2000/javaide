@@ -123,7 +123,7 @@ class DialogCreateNewFile : AppCompatDialogFragment() {
         file = File(filePath)
 
         if (checkBoxClass!!.isChecked) {
-            FileManager.saveFile(file, Template.createClass(file.nameWithoutExtension))
+            FileManager.saveFile(file, Template.createClass("", file.nameWithoutExtension))
         } else if (checkBoxEnum!!.isChecked) {
             FileManager.saveFile(file, Template.createEnum(file.nameWithoutExtension))
         } else if (checkBoxInterface!!.isChecked) {

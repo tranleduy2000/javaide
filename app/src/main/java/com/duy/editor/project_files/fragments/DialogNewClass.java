@@ -117,7 +117,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
             modifier = Modifier.FINAL;
         }
         int kind = mKind.getSelectedItemPosition();
-        String content = Template.createJava(currentPackage, className, kind, visibility, modifier);
+        String content = Template.createJava(currentPackage, className, kind, visibility, modifier, false);
 
 
         Bundle arguments = getArguments();

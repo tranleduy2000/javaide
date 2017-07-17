@@ -10,6 +10,6 @@ import java.lang.reflect.Modifier;
 public class TemplateTest extends TestCase{
 
     public void testCreateClass() {
-        System.out.println(Template.createJava("com.duy.exmaple", "Main", 0, Modifier.PUBLIC, 0));
+        System.out.println(Template.createJava("com.duy.exmaple", "Main", 0, Modifier.PUBLIC, 0, true));
     }
 }

@@ -24,8 +24,9 @@ import java.lang.reflect.Modifier;
  * Created by Duy on 22-May-17.
  */
 public class Template {
-    public static final String PROGRAM_TEMPLATE =
-            "\n" +
+    public static final String CLASS_TEMPLATE =
+            "package %2$s;" +
+                    "\n" +
                     "public class %1$s {\n" +
                     "    public static void main(String[] args) {\n" +
                     "        \n" +
@@ -54,8 +55,8 @@ public class Template {
                     "}\n";
 
     @NonNull
-    public static String createClass(String name) {
-        return String.format(PROGRAM_TEMPLATE, name);
+    public static String createClass(String packageName, String name) {
+        return String.format(CLASS_TEMPLATE, name, packageName);
     }
 
     @NonNull
@@ -68,7 +69,7 @@ public class Template {
         return String.format(INTERFACE_TEMPLATE, name);
     }
 
-    public static String createJava(String zpackage, String name, int kind, int visibility, int modifier) {
+    public static String createJava(String zpackage, String name, int kind, int visibility, int modifier, boolean b) {
         String m = "";
         switch (modifier) {
             case Modifier.ABSTRACT:
@@ -97,6 +98,7 @@ public class Template {
                 break;
         }
         zpackage = zpackage.isEmpty() ? "" : "package " + zpackage + ";";
+
         return String.format(JAVA_TEMPLATE, v, m, k, name, zpackage);
     }
 

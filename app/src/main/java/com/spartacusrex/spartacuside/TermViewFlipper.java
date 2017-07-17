@@ -23,6 +23,8 @@ import android.view.View;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.duy.run.view.EmulatorView;
+
 import java.util.Iterator;
 
 public class TermViewFlipper extends ViewFlipper implements Iterable<View> {

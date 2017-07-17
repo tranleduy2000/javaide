@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.spartacusrex.spartacuside;
+package com.duy.run.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -49,8 +49,13 @@ import com.duy.editor.BuildConfig;
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
 import com.duy.project_files.ProjectFile;
+import com.duy.run.view.EmulatorView;
+import com.duy.run.view.TermKeyListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.spartacusrex.spartacuside.TermService;
+import com.spartacusrex.spartacuside.TermViewFlipper;
+import com.spartacusrex.spartacuside.TerminalPreferences;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.TermSettings;
 

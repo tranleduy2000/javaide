@@ -33,6 +33,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.duy.editor.R;
+import com.duy.run.activities.TerminalActivity;
 import com.spartacusrex.spartacuside.session.TermSession;
 
 import java.util.ArrayList;

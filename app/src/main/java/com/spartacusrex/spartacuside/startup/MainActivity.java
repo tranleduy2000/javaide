@@ -24,7 +24,7 @@ import android.widget.Button;
 import com.duy.editor.R;
 import com.duy.editor.editor.EditorActivity;
 import com.spartacusrex.spartacuside.TermService;
-import com.spartacusrex.spartacuside.TerminalActivity;
+import com.duy.run.activities.TerminalActivity;
 
 /**
  * @author Spartacus Rex

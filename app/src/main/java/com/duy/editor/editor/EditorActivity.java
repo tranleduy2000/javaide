@@ -47,12 +47,15 @@ import com.duy.editor.editor.view.EditorView;
 import com.duy.editor.editor.view.adapters.InfoItem;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.themefont.activities.ThemeFontActivity;
+import com.duy.project_files.ProjectFile;
+import com.duy.project_files.ProjectManager;
+import com.duy.run.dialog.DialogRunConfig;
 
 import java.io.File;
 import java.util.ArrayList;
 
 public class EditorActivity extends BaseEditorActivity implements
-        DrawerLayout.DrawerListener {
+        DrawerLayout.DrawerListener, DialogRunConfig.OnConfigChangeListener {
 
     public static final int ACTION_FILE_SELECT_CODE = 1012;
     public static final int ACTION_PICK_MEDIA_URL = 1013;
@@ -501,5 +504,18 @@ public class EditorActivity extends BaseEditorActivity implements
     }
 
 
+    public void showDialogRunConfig() {
+        if (projectFile != null) {
+            DialogRunConfig dialogRunConfig = DialogRunConfig.newInstance(projectFile);
+            dialogRunConfig.show(getSupportFragmentManager(), DialogRunConfig.TAG);
+        } else {
+            Toast.makeText(this, "Please create project", Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    @Override
+    public void onConfigChange(ProjectFile projectFile) {
+        this.projectFile = projectFile;
+        ProjectManager.saveProject(this, projectFile);
+    }
 }

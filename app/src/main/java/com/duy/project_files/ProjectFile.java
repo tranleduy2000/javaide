@@ -163,4 +163,8 @@ public class ProjectFile implements Serializable, Cloneable {
         }
         return json;
     }
+
+    public void setMainClass(ClassFile classFile) {
+        this.mainClass = classFile;
+    }
 }

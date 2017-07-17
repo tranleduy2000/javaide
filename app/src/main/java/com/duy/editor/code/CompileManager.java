@@ -22,7 +22,7 @@ import android.content.Intent;
 import com.duy.editor.debug.activities.DebugActivity;
 import com.duy.editor.editor.EditorActivity;
 import com.duy.project_files.ProjectFile;
-import com.spartacusrex.spartacuside.TerminalActivity;
+import com.duy.run.activities.TerminalActivity;
 
 /**
  * Created by Duy on 11-Feb-17.
@@ -36,6 +36,7 @@ public class CompileManager {
     public static final int ACTIVITY_EDITOR = 1001;
     public static final String MODE = "run_mode";
     public static final String PROJECT_FILE = "project_file";
+    public static final String ARGS = "program_args";
     private final Activity mActivity;
 
     public CompileManager(Activity activity) {

@@ -175,6 +175,10 @@ public class MenuEditor {
             case R.id.action_install:
                 activity.startActivity(new Intent(activity, InstallActivity.class));
                 break;
+            case R.id.action_edit_run:
+                activity.showDialogRunConfig
+                        ();
+                break;
         }
         return true;
     }

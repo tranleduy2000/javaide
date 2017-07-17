@@ -52,7 +52,7 @@ import com.duy.editor.editor.view.EditorView;
 import com.duy.editor.file.FileManager;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.view.SymbolListView;
-import com.duy.project_files.FilePresenter;
+import com.duy.project_files.ProjectFilePresenter;
 import com.duy.project_files.ProjectFile;
 import com.duy.project_files.ProjectFileContract;
 import com.duy.project_files.ProjectManager;
@@ -146,7 +146,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.container_file, folderStructureFragment, FolderStructureFragment.TAG).commit();
-        mFilePresenter = new FilePresenter(folderStructureFragment);
+        mFilePresenter = new ProjectFilePresenter(folderStructureFragment);
     }
 
     private void setupEditor() {

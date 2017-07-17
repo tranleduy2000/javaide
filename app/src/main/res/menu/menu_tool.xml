@@ -136,6 +136,11 @@
     </item>
 
     <item
+        android:id="@+id/action_edit_run"
+        android:icon="@drawable/ic_play_arrow_white_24dp"
+        android:title="@string/run_configuration" />
+
+    <item
         android:id="@+id/action_more_feature"
         android:icon="@drawable/ic_more_vert_white_24dp"
         android:title="@string/more_feature"

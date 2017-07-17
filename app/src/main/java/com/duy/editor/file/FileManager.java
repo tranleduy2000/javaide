@@ -28,6 +28,8 @@ import com.duy.editor.activities.ActivitySplashScreen;
 import com.duy.editor.code.CompileManager;
 import com.duy.editor.setting.JavaPreferences;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +43,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * File Manager
@@ -51,8 +54,14 @@ public class FileManager {
     /**
      * storage path for saveFile code
      */
-    public static final String EXTERNAL_DIR_SRC = Environment.getExternalStorageDirectory() + "/JavaNIDE/src/";
-    public static final String EXTERNAL_DIR = Environment.getExternalStorageDirectory() + "/JavaNIDE/";
+    public static final String EXTERNAL_DIR_SRC;
+    public static final String EXTERNAL_DIR;
+
+    static {
+        EXTERNAL_DIR_SRC = Environment.getExternalStorageDirectory() + "/JavaNIDE/src/";
+        EXTERNAL_DIR = Environment.getExternalStorageDirectory() + "/JavaNIDE/";
+    }
+
     private final String FILE_TEMP_NAME = "tmp.pas";
     private int mode = SAVE_MODE.EXTERNAL;
     private Context context;
@@ -97,6 +106,76 @@ public class FileManager {
             }
         }
         return result;
+    }
+
+    /**
+     * saveFile current project
+     *
+     * @param file
+     */
+    public static File saveFile(@NonNull File file, String text) {
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            if (text.length() > 0) out.write(text.getBytes());
+            out.close();
+        } catch (Exception ignored) {
+        }
+        return file;
+    }
+
+    /**
+     * saveFile file
+     *
+     * @param filePath - name of file
+     * @param text     - content of file
+     */
+    public static boolean saveFile(@NonNull String filePath, String text) {
+        try {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            }
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+            if (text.length() > 0) writer.write(text);
+            writer.close();
+            return true;
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    public static boolean deleteFolder(File zFile) {
+        if (zFile.isDirectory()) {
+            //Its a directory
+            File[] files = zFile.listFiles();
+            for (File ff : files) {
+                deleteFolder(ff);
+            }
+        }
+        //Now delete
+        return zFile.delete();
+    }
+
+    public static boolean canEdit(File file) {
+        return file.canWrite() && file.getName().toLowerCase().endsWith(".java");
+    }
+
+    public static ArrayList<String> listClassName(File src) {
+        if (!src.exists()) return new ArrayList<>();
+
+        String[] exts = new String[]{"java"};
+        Collection<File> files = FileUtils.listFiles(src, exts, true);
+
+        ArrayList<String> classes = new ArrayList<>();
+        String srcPath = src.getPath();
+        for (File file : files) {
+            String javaPath = file.getPath();
+            javaPath = javaPath.substring(srcPath.length() + 1, javaPath.length() - 5); //.java
+            javaPath = javaPath.replace(File.separator, ".");
+            classes.add(javaPath);
+        }
+        return classes;
     }
 
     /**
@@ -254,43 +333,6 @@ public class FileManager {
         return list;
     }
 
-    /**
-     * saveFile current project
-     *
-     * @param file
-     */
-    public static File saveFile(@NonNull File file, String text) {
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            if (text.length() > 0) out.write(text.getBytes());
-            out.close();
-        } catch (Exception ignored) {
-        }
-        return file;
-    }
-
-    /**
-     * saveFile file
-     *
-     * @param filePath - name of file
-     * @param text     - content of file
-     */
-    public static boolean saveFile(@NonNull String filePath, String text) {
-        try {
-            File file = new File(filePath);
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            }
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-            if (text.length() > 0) writer.write(text);
-            writer.close();
-            return true;
-        } catch (Exception ignored) {
-            return false;
-        }
-    }
-
     public String loadInMode(File file) {
         String res = "";
         try {
@@ -371,17 +413,6 @@ public class FileManager {
         }
     }
 
-    public static boolean deleteFolder(File zFile) {
-        if (zFile.isDirectory()) {
-            //Its a directory
-            File[] files = zFile.listFiles();
-            for (File ff : files) {
-                deleteFolder(ff);
-            }
-        }
-        //Now delete
-        return zFile.delete();
-    }
     public boolean deleteFile(File file) {
         try {
             if (file.isDirectory()) {
@@ -513,10 +544,6 @@ public class FileManager {
         out.flush();
         out.close();
 
-    }
-
-    public static boolean canEdit(File file) {
-        return file.canWrite() && file.getName().toLowerCase().endsWith(".java");
     }
 
     public Intent createShortcutIntent(Context context, File file) {

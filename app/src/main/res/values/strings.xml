@@ -431,4 +431,7 @@
         1. Press download button\n
         2. Wait for download finish\n
         3. Wait for install system file.</string>
+    <string name="run_configuration">Run configuration</string>
+    <string name="main_class">Main class</string>
+    <string name="program_arg">Program arguments</string>
 </resources>

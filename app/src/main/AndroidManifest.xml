@@ -47,7 +47,7 @@
             android:configChanges="keyboardHidden|screenSize|screenLayout|orientation|keyboard"/>
 
         <activity
-            android:name="com.spartacusrex.spartacuside.TerminalActivity"
+            android:name="com.duy.run.activities.TerminalActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
 

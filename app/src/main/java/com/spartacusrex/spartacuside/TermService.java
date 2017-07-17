@@ -452,7 +452,7 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
     }
 
     public class TSBinder extends Binder {
-        TermService getService() {
+        public TermService getService() {
             Log.i("TermService", "Activity binding to service");
             return TermService.this;
         }

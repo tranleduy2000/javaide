@@ -48,8 +48,7 @@ public class Template {
      * %4
      */
     private static final String JAVA_TEMPLATE =
-            "%5$s" +
-            "\n" +
+            "%5$s\n" + "\n" +
                     "%1$s%2$s%3$s %4$s {\n" +
                     "    \n" +
                     "}\n";

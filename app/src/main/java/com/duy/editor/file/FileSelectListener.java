@@ -18,10 +18,6 @@ package com.duy.editor.file;
 
 import java.io.File;
 
-public interface FileActionListener {
-    void onFileClick(File file);
-
-    void onFileLongClick(File file);
-
-    boolean doRemoveFile(File file);
+public interface FileSelectListener {
+    void onFileSelected(File file, int request);
 }

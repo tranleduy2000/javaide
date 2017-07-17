@@ -45,17 +45,22 @@ import com.duy.editor.dialog.DialogManager;
 import com.duy.editor.editor.view.AutoIndentEditText;
 import com.duy.editor.editor.view.EditorView;
 import com.duy.editor.editor.view.adapters.InfoItem;
+import com.duy.editor.file.FileManager;
+import com.duy.editor.file.FileSelectListener;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.themefont.activities.ThemeFontActivity;
 import com.duy.project_files.ProjectFile;
 import com.duy.project_files.ProjectManager;
+import com.duy.project_files.dialog.DialogSelectDirectory;
 import com.duy.run.dialog.DialogRunConfig;
 
 import java.io.File;
 import java.util.ArrayList;
 
 public class EditorActivity extends BaseEditorActivity implements
-        DrawerLayout.DrawerListener, DialogRunConfig.OnConfigChangeListener {
+        DrawerLayout.DrawerListener,
+        DialogRunConfig.OnConfigChangeListener,
+        FileSelectListener {
 
     public static final int ACTION_FILE_SELECT_CODE = 1012;
     public static final int ACTION_PICK_MEDIA_URL = 1013;
@@ -521,4 +526,22 @@ public class EditorActivity extends BaseEditorActivity implements
         this.projectFile = projectFile;
         ProjectManager.saveProject(this, projectFile);
     }
+
+    public void showDialogOpenProject() {
+        DialogSelectDirectory dialogSelectDirectory
+                = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR, 2);
+        dialogSelectDirectory.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
+    }
+
+    @Override
+    public void onFileSelected(File file, int request) {
+        switch (request){
+            case 2:
+                saveFile();
+                break;
+
+        }
+    }
+
+
 }

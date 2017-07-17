@@ -73,7 +73,7 @@ public class FragmentFileManager extends Fragment implements
     private static final int SORT_BY_SIZE = 2;
     private static final int SORT_BY_DATE = 3;
     private final Handler handler = new Handler();
-    private FileActionListener listener;
+    private FileSelectListener listener;
     private FloatingActionMenu fabMenu;
     private RecyclerView listFiles;
     private Activity activity;
@@ -130,7 +130,7 @@ public class FragmentFileManager extends Fragment implements
         super.onAttach(context);
         activity = getActivity();
         try {
-            listener = (FileActionListener) activity;
+            listener = (FileSelectListener) activity;
         } catch (Exception ignored) {
             listener = null;
         }
@@ -356,7 +356,7 @@ public class FragmentFileManager extends Fragment implements
 
             if (selectedFile.isFile() && wantAFile) {
                 // TODO: 15-Mar-17
-                if (listener != null) listener.onFileClick(selectedFile);
+                if (listener != null) listener.onFileSelected(selectedFile);
             } else if (selectedFile.isDirectory()) {
                 new UpdateList(selectedFile.getAbsolutePath()).execute();
             }

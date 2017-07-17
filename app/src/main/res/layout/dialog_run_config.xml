@@ -31,6 +31,7 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
+        android:layout_marginTop="16dp"
         android:layout_height="wrap_content">
 
         <com.duy.editor.view.LatinEditText
@@ -50,6 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/program_arg" />
+
+        <requestFocus />
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout

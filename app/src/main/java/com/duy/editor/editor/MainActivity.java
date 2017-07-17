@@ -171,7 +171,8 @@ public class MainActivity extends BaseEditorActivity implements
     @Override
     public void buildProject() {
         if (projectFile != null) {
-            if (projectFile.getMainClass() == null || !projectFile.getMainClass().exist()) {
+            if (projectFile.getMainClass() == null || !projectFile.getMainClass().exist()
+                    || projectFile.getPackageName() == null || projectFile.getPackageName().isEmpty()) {
                 showDialogRunConfig();
                 return;
             }

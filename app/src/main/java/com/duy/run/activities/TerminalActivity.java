@@ -147,9 +147,11 @@ public class TerminalActivity extends Activity {
             updatePrefs();
 
             Intent intent = getIntent();
-            ProjectFile projectFile = (ProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
-            if (projectFile != null) {
-                compileAndRun(mTermSessions.get(0), projectFile);
+            if (intent != null) {
+                ProjectFile projectFile = (ProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
+                if (projectFile != null) {
+                    compileAndRun(mTermSessions.get(0), projectFile);
+                }
             }
         }
     }
@@ -167,8 +169,9 @@ public class TerminalActivity extends Activity {
             pw.println("MAIN_CLASS=" + pf.getMainClass().getName());
             pw.println("PATH_MAIN_CLASS=" + pf.getMainClass().getName().replace(".", "/"));
             String packageName = pf.getPackageName();
-            pw.println("ROOT_PACKAGE=" + (packageName.contains(".")
-                    ? packageName.substring(0, packageName.indexOf(".")) : packageName));
+            String root = "ROOT_PACKAGE=" + (packageName.contains(".")
+                    ? packageName.substring(0, packageName.indexOf(".")) : packageName);
+            pw.println(root);
 
             InputStream stream = getAssets().open("builder/javabuilder2.sh");
             String builder = FileManager.streamToString(stream).toString();

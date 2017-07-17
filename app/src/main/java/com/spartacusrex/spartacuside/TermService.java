@@ -32,6 +32,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.duy.editor.R;
+import com.duy.editor.file.FileManager;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.ServiceForegroundCompat;
 import com.spartacusrex.spartacuside.util.TermSettings;
@@ -55,7 +56,7 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
     private static final int RUNNING_NOTIFICATION = 1;
     private static final String TAG = "TermService";
     private static final String SRC_DIR = Environment.getExternalStorageDirectory() + File.separator +
-            "JavaNIDE" + File.separator + "src";
+            "JavaNIDE";
     /*
      * Key logger HACK to get the keycodes..
      */
@@ -326,7 +327,7 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
             pw.println("");
             pw.println("# And finally cd $HOME");
             //set default dir
-            pw.println("cd " + SRC_DIR);
+            pw.println("cd " + FileManager.EXTERNAL_DIR);
             pw.println("");
             pw.flush();
             pw.close();

@@ -61,7 +61,6 @@ import com.spartacusrex.spartacuside.util.hardkeymappings;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * A view on a transcript and a terminal emulator. Displays the text of the
@@ -742,8 +741,7 @@ public class EmulatorView extends View implements GestureDetector.OnGestureListe
         distanceY += mScrollRemainder;
         int deltaRows = (int) (distanceY / mCharacterHeight);
         mScrollRemainder = distanceY - deltaRows * mCharacterHeight;
-        mTopRow =
-                Math.min(0, Math.max(-(mTranscriptScreen
+        mTopRow = Math.min(0, Math.max(-(mTranscriptScreen
                         .getActiveTranscriptRows()), mTopRow + deltaRows));
         invalidate();
 
@@ -770,7 +768,7 @@ public class EmulatorView extends View implements GestureDetector.OnGestureListe
 
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                            float velocityY) {
-        if (Math.abs(velocityX) > Math.abs(velocityY)) {
+       /* if (Math.abs(velocityX) > Math.abs(velocityY)) {
             // Assume user wanted side to side movement
             if (velocityX > 0) {
                 mViewFlipper.setOutAnimation(mAnimRightOut);
@@ -785,10 +783,10 @@ public class EmulatorView extends View implements GestureDetector.OnGestureListe
                 // Right to left swipe -- next window
                 mViewFlipper.showNext();
             }
-        } else {
+        } else */{
             // TODO: add animation man's (non animated) fling
             mScrollRemainder = 0.0f;
-            onScroll(e1, e2, 2 * velocityX, -2 * velocityY);
+            onScroll(e1, e2, /*2 **/ velocityX, -/*2 * */velocityY);
         }
         return true;
     }

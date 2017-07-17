@@ -74,6 +74,7 @@ public class FolderStructureFragment extends Fragment
         setHasOptionsMenu(true);
     }
 
+    @Nullable
     private AndroidTreeView mTreeView;
 
     private SharedPreferences mPref;
@@ -172,7 +173,9 @@ public class FolderStructureFragment extends Fragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("tState", mTreeView.getSaveState());
+        if (mTreeView != null) {
+            outState.putString("tState", mTreeView.getSaveState());
+        }
     }
 
 

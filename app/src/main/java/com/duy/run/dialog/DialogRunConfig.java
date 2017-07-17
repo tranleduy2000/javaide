@@ -35,6 +35,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     public static final String TAG = "DialogRunConfig";
     private Spinner mClasses;
     private EditText mArgs;
+    private EditText mPackage;
     private SharedPreferences mPref;
     private ProjectFile projectFile;
     @Nullable
@@ -90,6 +91,9 @@ public class DialogRunConfig extends AppCompatDialogFragment {
         setupSpinnerMainClass(view, projectFile);
         mArgs = view.findViewById(R.id.edit_arg);
         mArgs.setText(mPref.getString(CompileManager.ARGS, ""));
+        mPackage = view.findViewById(R.id.edit_package_name);
+        mPackage.setText(projectFile.getPackageName());
+
         view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,6 +127,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
                 e.printStackTrace();
             }
             projectFile.setMainClass(classFile);
+            projectFile.setPackageName(mPackage.getText().toString());
             if (listener != null) listener.onConfigChange(projectFile);
             this.dismiss();
         }
@@ -132,13 +137,23 @@ public class DialogRunConfig extends AppCompatDialogFragment {
         String projectDir = projectFile.getProjectDir();
         File root = new File(projectDir);
         File src = new File(root, "src/main/java");
-        ArrayList<String> name = FileManager.listClassName(src);
+        ArrayList<String> names = FileManager.listClassName(src);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_list_item_1, name);
+                android.R.layout.simple_list_item_1, names);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         mClasses = view.findViewById(R.id.spinner_main_class);
         mClasses.setAdapter(adapter);
 
+        if (projectFile.getMainClass() != null) {
+            String mainClassName = projectFile.getMainClass().getName();
+            for (int i = 0; i < names.size(); i++) {
+                String s = names.get(i);
+                if (s.equalsIgnoreCase(mainClassName)) {
+                    mClasses.setSelection(i);
+                    break;
+                }
+            }
+        }
     }
 
     public interface OnConfigChangeListener {

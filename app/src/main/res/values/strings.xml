@@ -434,4 +434,6 @@
     <string name="run_configuration">Run configuration</string>
     <string name="main_class">Main class</string>
     <string name="program_arg">Program arguments</string>
+    <string name="console">Console</string>
+    <string name="open_terminal">Open terminal</string>
 </resources>

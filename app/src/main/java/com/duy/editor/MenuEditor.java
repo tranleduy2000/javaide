@@ -28,6 +28,7 @@ import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.setting.SettingsActivity;
 import com.duy.editor.system.InstallActivity;
 import com.duy.editor.utils.DonateUtils;
+import com.duy.run.activities.TerminalActivity;
 import com.spartacusrex.spartacuside.TerminalPreferences;
 
 /**
@@ -180,6 +181,9 @@ public class MenuEditor {
                 break;
             case R.id.action_open_project:
                 activity.showDialogOpenProject();
+                break;
+            case R.id.action_open_terminal:
+                activity.startActivity(new Intent(activity, TerminalActivity.class));
                 break;
         }
         return true;

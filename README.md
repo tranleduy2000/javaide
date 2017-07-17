@@ -6,6 +6,8 @@ This project is develop to help the community learn java on android.
 
 You can download in https://play.google.com/store/apps/details?id=com.duy.compiler.javanide
 
+## Overview
+You can build and run java file with JDK 1.5
 
 ## Todo
 
@@ -16,4 +18,5 @@ You can download in https://play.google.com/store/apps/details?id=com.duy.compil
 5. Run java file, class file
 6. Build java library
 7. Build Android app.
+8. Support github
 

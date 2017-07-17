@@ -113,14 +113,15 @@ public class FileManager {
      *
      * @param file
      */
-    public static File saveFile(@NonNull File file, String text) {
+    public static boolean saveFile(@NonNull File file, String text) {
         try {
             FileOutputStream out = new FileOutputStream(file);
             if (text.length() > 0) out.write(text.getBytes());
             out.close();
+            return true;
         } catch (Exception ignored) {
         }
-        return file;
+        return false;
     }
 
     /**

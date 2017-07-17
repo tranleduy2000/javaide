@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
@@ -112,8 +111,8 @@ public class DialogRunConfig extends AppCompatDialogFragment {
         Object selectedItem = mClasses.getSelectedItem();
         if (selectedItem != null) {
             String mainClass = selectedItem.toString();
-            String pkg = mainClass.substring(0, mainClass.lastIndexOf(".") - 1);
-            String name = mainClass.substring(mainClass.indexOf(".") + 1);
+            String pkg = mainClass.substring(0, mainClass.lastIndexOf("."));
+            String name = mainClass.substring(mainClass.lastIndexOf(".") + 1);
             ClassFile classFile = new ClassFile(name, pkg);
             projectFile.setMainClass(classFile);
             if (listener != null) listener.onConfigChange(projectFile);

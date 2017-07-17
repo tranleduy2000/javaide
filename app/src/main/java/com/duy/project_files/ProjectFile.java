@@ -1,5 +1,6 @@
 package com.duy.project_files;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.duy.editor.editor.completion.Template;
@@ -39,6 +40,11 @@ public class ProjectFile implements Serializable, Cloneable {
         this.mainClass = new ClassFile(mainClass, packageName);
         this.packageName = packageName;
         this.projectName = projectName;
+    }
+
+    public ProjectFile() {
+
+
     }
 
     public String getRootDir() {
@@ -162,6 +168,23 @@ public class ProjectFile implements Serializable, Cloneable {
             e.printStackTrace();
         }
         return json;
+    }
+
+    public void restore(@NonNull JSONObject jsonObject) throws JSONException {
+        if (jsonObject.has("main_class_mame") &&
+                jsonObject.has("main_class_pkg")) {
+            this.mainClass = new ClassFile(jsonObject.getString("main_class_mame"),
+                    jsonObject.getString("main_class_pkg"));
+        }
+        if (jsonObject.has("root_dir")) {
+            this.rootDir = jsonObject.getString("root_dir");
+        }
+        if (jsonObject.has("package_name")) {
+            this.packageName = jsonObject.getString("package_name");
+        }
+        if (jsonObject.has("project_name")) {
+            this.projectName = jsonObject.getString("project_name");
+        }
     }
 
     public void setMainClass(ClassFile classFile) {

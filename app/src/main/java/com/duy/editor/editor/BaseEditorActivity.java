@@ -52,9 +52,9 @@ import com.duy.editor.editor.view.EditorView;
 import com.duy.editor.file.FileManager;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.view.SymbolListView;
-import com.duy.project_files.ProjectFilePresenter;
 import com.duy.project_files.ProjectFile;
 import com.duy.project_files.ProjectFileContract;
+import com.duy.project_files.ProjectFilePresenter;
 import com.duy.project_files.ProjectManager;
 import com.duy.project_files.dialog.DialogNewClass;
 import com.duy.project_files.dialog.DialogNewProject;
@@ -159,7 +159,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
             Toast.makeText(this, "Please create new project", Toast.LENGTH_SHORT).show();
             return;
         }
-        addNewPageEditor(new File(projectFile.getMainClass().getPath()), true);
+        String path = projectFile.getMainClass().getPath();
+        if (path != null) addNewPageEditor(new File(path), true);
     }
 
     private void bindView() {
@@ -260,6 +261,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
      * @param selectNewPage - if <code>true</code>, the tab of file will be selected when initialized
      */
     protected void addNewPageEditor(@NonNull File file, boolean selectNewPage) {
+        if (!file.exists()) return;
+
         int position = mPageAdapter.getPositionForTag(file.getPath());
         if (position != -1) { //existed in list file
             //check need select tab

@@ -33,4 +33,3 @@ dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.jar ${ROOT_PACKAG
 #Back out
 cd ..
 java -jar ./bin/${PROJECT_NAME}.jar ${MAIN_CLASS}
-

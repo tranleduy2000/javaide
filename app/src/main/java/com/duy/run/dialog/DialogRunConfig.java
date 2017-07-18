@@ -15,12 +15,14 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
 import com.duy.editor.file.FileManager;
 import com.duy.project_files.ClassFile;
 import com.duy.project_files.ProjectFile;
+import com.duy.project_files.utils.ClassUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -114,10 +116,16 @@ public class DialogRunConfig extends AppCompatDialogFragment {
 
         Object selectedItem = mClasses.getSelectedItem();
         if (selectedItem != null) {
-            String mainClass = selectedItem.toString();
-            ClassFile classFile = new ClassFile(mainClass);
+
+            //check main class
+            ClassFile classFile = new ClassFile(selectedItem.toString());
+            String path = classFile.getPath(projectFile);
+            if (!ClassUtil.hasMainFunction(new File(path))) {
+                Toast.makeText(getContext(), "Can not find main function", Toast.LENGTH_SHORT).show();
+            }
             projectFile.setMainClass(classFile);
             projectFile.setPackageName(mPackage.getText().toString());
+
             if (listener != null) listener.onConfigChange(projectFile);
             this.dismiss();
         }

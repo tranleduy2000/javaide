@@ -1,5 +1,7 @@
 package com.duy.project_files;
 
+import android.support.annotation.NonNull;
+
 import java.io.File;
 import java.io.Serializable;
 
@@ -33,7 +35,7 @@ public class ClassFile implements Serializable, Cloneable {
 
     public boolean exist(ProjectFile parent) {
         String path = getPath(parent);
-        return path != null && new File(path).exists();
+        return !path.isEmpty() && new File(path).exists();
     }
 
 
@@ -41,6 +43,7 @@ public class ClassFile implements Serializable, Cloneable {
         this.name = name;
     }
 
+    @NonNull
     public String getPath(ProjectFile parent) {
         try {
             String projectDir = parent.getProjectDir();
@@ -50,7 +53,7 @@ public class ClassFile implements Serializable, Cloneable {
             File file = new File(src, name.replace(".", File.separator) + ".java");
             return file.getPath();
         } catch (Exception e) {
-            return null;
+            return "";
         }
     }
 }

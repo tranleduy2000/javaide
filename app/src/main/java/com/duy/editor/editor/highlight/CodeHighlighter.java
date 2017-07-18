@@ -158,5 +158,14 @@ public class CodeHighlighter implements Highlighter {
                     start + m.end(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+
+        for (Matcher m = SYMBOLS.matcher(textToHighlight); m.find(); ) {
+            allText.setSpan(new ForegroundColorSpan(codeTheme.getOptColor()),
+                    start + m.start(),
+                    start + m.end(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+
     }
 }

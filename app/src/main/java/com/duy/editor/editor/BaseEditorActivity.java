@@ -220,7 +220,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         }
     }
 
-    protected void setupToolbar() {
+    public void setupToolbar() {
         //setup action bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);

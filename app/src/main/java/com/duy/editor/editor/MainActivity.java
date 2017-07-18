@@ -47,8 +47,6 @@ import com.duy.editor.MenuEditor;
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
 import com.duy.editor.code_sample.activities.DocumentActivity;
-import com.duy.editor.dialog.DialogCreateNewFile;
-import com.duy.editor.dialog.DialogManager;
 import com.duy.editor.editor.view.AutoIndentEditText;
 import com.duy.editor.editor.view.EditorView;
 import com.duy.editor.editor.view.adapters.InfoItem;
@@ -352,21 +350,21 @@ public class MainActivity extends BaseEditorActivity implements
      */
     @Override
     public void createNewFile(View view) {
-        DialogCreateNewFile dialogCreateNewFile = DialogCreateNewFile.Companion.getInstance();
-        dialogCreateNewFile.show(getSupportFragmentManager(), DialogCreateNewFile.Companion.getTAG());
-        dialogCreateNewFile.setListener(new DialogCreateNewFile.OnCreateNewFileListener() {
-            @Override
-            public void onFileCreated(@NonNull File file) {
-                saveFile();
-                //add to view
-                addNewPageEditor(file, SELECT);
-                mDrawerLayout.closeDrawers();
-            }
-
-            @Override
-            public void onCancel() {
-            }
-        });
+//        DialogCreateNewFile dialogCreateNewFile = DialogCreateNewFile.Companion.getInstance();
+//        dialogCreateNewFile.show(getSupportFragmentManager(), DialogCreateNewFile.Companion.getTAG());
+//        dialogCreateNewFile.setListener(new DialogCreateNewFile.OnCreateNewFileListener() {
+//            @Override
+//            public void onFileCreated(@NonNull File file) {
+//                saveFile();
+//                //add to view
+//                addNewPageEditor(file, SELECT);
+//                mDrawerLayout.closeDrawers();
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//            }
+//        });
     }
 
     @Override
@@ -408,7 +406,8 @@ public class MainActivity extends BaseEditorActivity implements
 
     @Override
     public void reportBug() {
-        DialogManager.Companion.createDialogReportBug(this, getCode());
+        // TODO: 18/07/2017  report bug
+//        DialogManager.Companion.createDialogReportBug(this, getCode());
     }
 
     @Override

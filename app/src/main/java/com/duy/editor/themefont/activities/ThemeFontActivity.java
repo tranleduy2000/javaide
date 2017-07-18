@@ -60,7 +60,7 @@ public class ThemeFontActivity extends AbstractAppCompatActivity
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    protected void setupToolbar() {
+    public void setupToolbar() {
         setSupportActionBar(toolbar);
         setTitle(R.string.theme);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

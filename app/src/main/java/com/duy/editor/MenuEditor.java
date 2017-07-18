@@ -17,6 +17,7 @@
 package com.duy.editor;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
@@ -104,9 +105,9 @@ public class MenuEditor {
                 }
                 break;
             case R.id.action_report_bug:
-                if (listener != null) {
-                    listener.reportBug();
-                }
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://github.com/tranleduy2000/javaide/issues"));
+                activity.startActivity(intent);
                 break;
 
             case R.id.action_undo:

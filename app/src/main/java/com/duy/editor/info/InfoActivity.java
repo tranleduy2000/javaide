@@ -83,7 +83,7 @@ public class InfoActivity extends AbstractAppCompatActivity {
         gotoSortApp(view);
     }
 
-    protected void setupToolbar() {
+    public void setupToolbar() {
         setSupportActionBar(toolbar);
         setTitle(R.string.information);
         if (getSupportActionBar() != null)

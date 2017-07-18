@@ -76,8 +76,8 @@ public class EditorFragment extends Fragment implements EditorListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_editor, container, false);
-        mCodeEditor = (EditorView) view.findViewById(R.id.code_editor);
-        mScrollView = (LockableScrollView) view.findViewById(R.id.vertical_scroll);
+        mCodeEditor = view.findViewById(R.id.code_editor);
+        mScrollView = view.findViewById(R.id.vertical_scroll);
 //        mHorizontalScrollView = (LockableHorizontalScrollView) view.findViewById(R.id.horizontal_scroll);
 
         FileManager fileManager = new FileManager(getContext());
@@ -171,7 +171,7 @@ public class EditorFragment extends Fragment implements EditorListener {
         if (filePath != null) {
             try {
                 String code = getCode();
-                result = mFileManager.saveFile(filePath, code);
+                result = FileManager.saveFile(filePath, code);
                 if (result) {
                     //do some thing
                 } else {

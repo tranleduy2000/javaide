@@ -56,7 +56,7 @@ public class CustomThemeActivity extends AbstractAppCompatActivity implements Vi
         mDatabase = new ThemeDatabase(this);
 
         setContentView(R.layout.acitivty_custom_theme);
-        setupToolbar();
+        super.setupToolbar();
         setTitle(getString(R.string.custom_theme));
         bindView();
 

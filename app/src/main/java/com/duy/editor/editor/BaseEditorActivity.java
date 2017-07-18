@@ -523,7 +523,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     @Override
-    public boolean doCreateNewFile(File file, ProjectFileContract.ActionCallback callBack) {
+    public boolean doCreateNewClass(File file, ProjectFileContract.ActionCallback callBack) {
         showDialogCreateClass(file);
         return false;
     }

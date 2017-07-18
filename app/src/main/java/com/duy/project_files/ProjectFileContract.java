@@ -37,6 +37,6 @@ public class ProjectFileContract {
 
         boolean doRemoveFile(File file, ActionCallback callBack);
 
-        boolean doCreateNewFile(File file, ActionCallback callBack);
+        boolean doCreateNewClass(File file, ActionCallback callBack);
     }
 }

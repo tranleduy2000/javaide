@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.duy.editor.R;
-import com.duy.project_files.ProjectFile;
 import com.duy.project_files.ProjectFileContract;
 import com.duy.project_files.utils.ProjectFileUtils;
 import com.unnamed.b.atv.model.TreeNode;
@@ -37,20 +36,27 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
         imgArrow = view.findViewById(R.id.img_arrow);
         this.leaf = node.isLeaf();
         View imgNew = view.findViewById(R.id.img_add);
-
+        View imgDelete = view.findViewById(R.id.img_delete);
         if (!ProjectFileUtils.inSrcDir(item.getProjectFile(), item.getFile())) {
             imgNew.setVisibility(View.GONE);
+        } else {
+            imgNew.setVisibility(View.VISIBLE);
+        }
+        if (ProjectFileUtils.isRoot(item.getProjectFile(), item.getFile())) {
+            imgDelete.setVisibility(View.GONE);
+        } else {
+            imgDelete.setVisibility(View.VISIBLE);
         }
         if (node.isLeaf()) {
             imgArrow.setVisibility(View.INVISIBLE);
-            imgNew.setVisibility(View.GONE);
+            imgNew.setVisibility(View.INVISIBLE);
         }
 
         final File file = item.getFile();
         setIcon((ImageView) view.findViewById(R.id.img_icon), file);
 
         final ProjectFileContract.FileActionListener listener = item.getListener();
-        view.findViewById(R.id.img_delete).setOnClickListener(new View.OnClickListener() {
+        imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listener != null) {
@@ -72,7 +78,7 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    listener.doCreateNewFile(file, new ProjectFileContract.ActionCallback() {
+                    listener.doCreateNewClass(file, new ProjectFileContract.ActionCallback() {
                         @Override
                         public void onSuccess(File newf) {
                             TreeNode child = new TreeNode(new TreeItem(item.getProjectFile(), newf, listener));

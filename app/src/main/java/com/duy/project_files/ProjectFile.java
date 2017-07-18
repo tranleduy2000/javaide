@@ -26,18 +26,13 @@ public class ProjectFile implements Serializable, Cloneable {
      * root director
      */
     private String rootDir;
-    /**
-     * java package name: eg: com.duy.example
-     */
+    private String projectName;
     private String packageName;
 
-    //project name
-    private String projectName;
-
-    public ProjectFile(String mainClass, String packageName, String projectName) {
-        this.mainClass = new ClassFile(mainClass, packageName);
-        this.packageName = packageName;
+    public ProjectFile(String mainClassName, String packageName, String projectName) {
+        this.mainClass = new ClassFile(mainClassName);
         this.projectName = projectName;
+        this.packageName = packageName;
     }
 
     public ProjectFile() {
@@ -125,7 +120,6 @@ public class ProjectFile implements Serializable, Cloneable {
         if (!javaF.exists()) javaF.mkdirs();
 
         if (packageName != null) {
-
             //create package file
             File packageF = new File(javaF, packageName.replace(".", File.separator));
             if (!packageF.exists()) {
@@ -141,7 +135,6 @@ public class ProjectFile implements Serializable, Cloneable {
                     String content = Template.createClass(packageName, mainClass.getSimpleName());
                     FileManager.saveFile(mainFile, content);
                 }
-                mainClass.setPath(mainFile.getPath());
             }
         } else {
             File[] files = javaF.listFiles();
@@ -173,9 +166,7 @@ public class ProjectFile implements Serializable, Cloneable {
         JSONObject json = new JSONObject();
         try {
             if (mainClass != null) {
-                json.put("main_class_mame", mainClass.getSimpleName());
-                json.put("main_class_pkg", mainClass.getPackageName());
-                json.put("main_class_path", mainClass.getPath());
+                json.put("main_class_mame", mainClass.getName());
             }
 
             Log.d(TAG, "exportJson mainClass = " + mainClass);
@@ -191,17 +182,10 @@ public class ProjectFile implements Serializable, Cloneable {
 
     public void restore(@Nullable JSONObject json) throws JSONException {
         if (json == null) return;
-        mainClass = new ClassFile("", "");
         if (json.has("main_class_mame")) {
-            mainClass.setSimpleName(json.getString("main_class_mame"));
+            mainClass = new ClassFile(json.getString("main_class_mame"));
         }
-        if (json.has("main_class_pkg")) {
-            mainClass.setPackageName(json.getString("main_class_pkg"));
-        }
-        if (json.has("main_class_path")) {
-            mainClass.setPath(json.getString("main_class_path"));
-        }
-        mainClass.setName(mainClass.getPackageName() + "." + mainClass.getSimpleName());
+        mainClass.setName(mainClass.getPackage() + "." + mainClass.getSimpleName());
         Log.d(TAG, "restore mainClass = " + mainClass);
 
         if (json.has("root_dir")) this.rootDir = json.getString("root_dir");

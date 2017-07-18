@@ -115,17 +115,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
         Object selectedItem = mClasses.getSelectedItem();
         if (selectedItem != null) {
             String mainClass = selectedItem.toString();
-            String pkg = mainClass.substring(0, mainClass.lastIndexOf("."));
-            String name = mainClass.substring(mainClass.lastIndexOf(".") + 1, mainClass.length());
-            ClassFile classFile = new ClassFile(name, pkg);
-
-            try {
-                File src = new File(projectFile.getRootDir(), "src/main/java");
-                File tmp = new File(src, mainClass.replace(".", File.separator) + ".java");
-                classFile.setPath(tmp.getPath());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ClassFile classFile = new ClassFile(mainClass);
             projectFile.setMainClass(classFile);
             projectFile.setPackageName(mPackage.getText().toString());
             if (listener != null) listener.onConfigChange(projectFile);

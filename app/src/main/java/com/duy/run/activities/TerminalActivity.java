@@ -167,7 +167,8 @@ public class TerminalActivity extends Activity {
             pw.println("MAIN_CLASS=" + pf.getMainClass().getName());
             pw.println("PATH_MAIN_CLASS=" + pf.getMainClass().getName().replace(".", "/"));
             String packageName = pf.getPackageName();
-            pw.println("ROOT_PACKAGE=" + (packageName.contains(".") ? packageName.substring(0, packageName.indexOf(".")) : packageName));
+            String rootPkg = (packageName.contains(".") ? packageName.substring(0, packageName.indexOf(".")) : packageName);
+            pw.println("ROOT_PACKAGE=" + rootPkg);
 
             InputStream stream = getAssets().open("builder/javabuilder_cat_error.sh");
             String builder = FileManager.streamToString(stream).toString();

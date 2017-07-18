@@ -8,25 +8,15 @@ import java.io.Serializable;
  */
 
 public class ClassFile implements Serializable, Cloneable {
-    private String simpleName;
-    private String packageName;
     private String name;
-    private String path;
 
-    public ClassFile(String simpleName, String packageName) {
-        this.simpleName = simpleName;
-        this.packageName = packageName;
-        this.name = packageName + "." + simpleName;
+    public ClassFile(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
-        return "ClassFile{" +
-                "simpleName='" + simpleName + '\'' +
-                ", packageName='" + packageName + '\'' +
-                ", name='" + name + '\'' +
-                ", path='" + path + '\'' +
-                '}';
+        return name;
     }
 
     public String getName() {
@@ -34,47 +24,33 @@ public class ClassFile implements Serializable, Cloneable {
     }
 
     public String getSimpleName() {
-        return simpleName;
+        return name.substring(name.lastIndexOf(".") + 1, name.length());
     }
 
-    public void setSimpleName(String simpleName) {
-        this.simpleName = simpleName;
+    public String getPackage() {
+        return name.substring(0, name.lastIndexOf("."));
     }
 
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public boolean exist() {
-        try {
-            return new File(path).exists();
-        } catch (Exception e) {
-            return false;
-        }
-    }
     public boolean exist(ProjectFile parent) {
-        String projectDir = parent.getProjectDir();
-        File src = new File(projectDir, "src/main/java");
-        if (!src.exists()) return false;
-
-        File file = new File(src, name.replace(".", File.separator) + ".java");
-        return file.exists();
+        String path = getPath(parent);
+        return path != null && new File(path).exists();
     }
 
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPath(ProjectFile parent) {
+        try {
+            String projectDir = parent.getProjectDir();
+            File src = new File(projectDir, "src/main/java");
+            if (!src.exists()) return null;
+
+            File file = new File(src, name.replace(".", File.separator) + ".java");
+            return file.getPath();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

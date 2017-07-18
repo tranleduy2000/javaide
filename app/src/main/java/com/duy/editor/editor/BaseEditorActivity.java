@@ -484,8 +484,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
             removePage(0);
         }
         ClassFile mainClass = projectFile.getMainClass();
-        if (mainClass != null) {
-            addNewPageEditor(new File(mainClass.getPath()), true);
+        if (mainClass != null && mainClass.exist(projectFile)) {
+            addNewPageEditor(new File(mainClass.getPath(projectFile)), true);
         }
     }
 

@@ -135,7 +135,7 @@
     </item>
     <item
         android:icon="@drawable/ic_build_white_24dp"
-        android:title="@string/setting_editor"
+        android:title="@string/build"
         app:showAsAction="ifRoom">
         <menu>
             <item

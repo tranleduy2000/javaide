@@ -19,8 +19,8 @@ import java.io.PrintWriter;
 
 public class CommandManager {
     private static final String TAG = "CommandManager";
-    private static final String LIBRARY_BUILDER_FILE = "builder/librarybuilder.sh";
-    private static final String JAVA_BUILDER_FILE = "builder/javabuilder.sh";
+    private static final String LIBRARY_BUILDER_FILE = "builder/library_builder.sh";
+    private static final String JAVA_BUILDER_FILE = "builder/java_builder.sh";
 
     public static void buildJarFile(Context context, TermSession termSession, ProjectFile pf) {
         Log.d(TAG, "compileAndRun() called with: filePath = [" + pf + "]");

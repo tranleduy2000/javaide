@@ -36,7 +36,7 @@ public class ClassFile implements Serializable, Cloneable {
     public String getRootPackage() {
         String aPackage = getPackage();
         if (aPackage.contains(".")) {
-            return aPackage.substring(0, aPackage.indexOf(".") - 1);
+            return aPackage.substring(0, aPackage.indexOf("."));
         } else {
             return aPackage;
         }

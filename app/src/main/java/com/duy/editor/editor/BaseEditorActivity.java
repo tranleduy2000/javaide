@@ -52,6 +52,7 @@ import com.duy.editor.activities.AbstractAppCompatActivity;
 import com.duy.editor.code.CompileManager;
 import com.duy.editor.editor.view.EditorView;
 import com.duy.editor.file.FileManager;
+import com.duy.editor.file.FileUtils;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.view.SymbolListView;
 import com.duy.project_files.ClassFile;
@@ -68,7 +69,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
-import static com.duy.project_files.dialog.DialogNewClass.newInstance;
 
 /**
  * Created by Duy on 09-Mar-17.
@@ -559,9 +559,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     public void showDialogCreateClass(@Nullable File file) {
         DialogNewClass dialogNewClass;
         if (file != null) {
-            dialogNewClass = newInstance(mProjectFile, null, file);
+            dialogNewClass = DialogNewClass.newInstance(mProjectFile, null, file);
         } else {
-            dialogNewClass = newInstance(mProjectFile, mProjectFile.getPackageName(), null);
+            dialogNewClass = DialogNewClass.newInstance(mProjectFile, mProjectFile.getPackageName(), null);
         }
         dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
     }

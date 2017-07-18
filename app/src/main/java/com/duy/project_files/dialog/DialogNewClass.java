@@ -3,6 +3,7 @@ package com.duy.project_files.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
@@ -66,7 +67,9 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         }
     }
 
-    public static DialogNewClass newInstance(ProjectFile p, String currentPackage, File currentFolder) {
+    public static DialogNewClass newInstance(@NonNull ProjectFile p,
+                                             @Nullable String currentPackage,
+                                             @Nullable File currentFolder) {
         Bundle args = new Bundle();
         args.putSerializable(KEY_PROJECT_FILE, p);
         args.putString(KEY_PACKAGE, currentPackage);
@@ -95,10 +98,10 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         mKind = view.findViewById(R.id.spinner_kind);
         mModifiers = view.findViewById(R.id.modifiers);
         mPackage = view.findViewById(R.id.edit_package_name);
+        mVisibility = view.findViewById(R.id.visibility);
 
         initPackage();
 
-        mVisibility = view.findViewById(R.id.visibility);
 
         view.findViewById(R.id.btn_create).setOnClickListener(this);
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
@@ -124,6 +127,10 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
             return;
         }
         String currentPackage = mPackage.getText().toString();
+        if (currentPackage.trim().isEmpty()) {
+            mPackage.setError(getString(R.string.enter_package));
+            return;
+        }
 
         int visibility = mVisibility.getCheckedRadioButtonId() == R.id.rad_public ? Modifier.PUBLIC : Modifier.PRIVATE;
         int checkedRadioButtonId = mModifiers.getCheckedRadioButtonId();
@@ -138,7 +145,6 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
 
 
         Bundle arguments = getArguments();
-        File folder = (File) arguments.getSerializable(KEY_PARENT_FILE);
         ProjectFile projectFile = (ProjectFile) arguments.getSerializable(KEY_PROJECT_FILE);
 
         if (projectFile != null) {

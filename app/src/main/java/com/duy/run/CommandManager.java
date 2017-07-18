@@ -31,9 +31,9 @@ public class CommandManager {
             pw.println("PROJECT_NAME=" + pf.getProjectName());
             pw.println("MAIN_CLASS=" + pf.getMainClass().getName());
             pw.println("PATH_MAIN_CLASS=" + pf.getMainClass().getName().replace(".", "/"));
-            String packageName = pf.getPackageName();
-            String rootPkg = (packageName.contains(".") ? packageName.substring(0, packageName.indexOf(".")) : packageName);
-            pw.println("ROOT_PACKAGE=" + rootPkg);
+            String root = pf.getMainClass().getPackage().substring(0, pf.getMainClass().getPackage().indexOf(".") - 1);
+            pw.println("ROOT_PACKAGE=" + root);
+
 
             InputStream stream = context.getAssets().open("builder/librarybuilder.sh");
             String builder = FileManager.streamToString(stream).toString();
@@ -60,9 +60,8 @@ public class CommandManager {
             pw.println("PROJECT_NAME=" + pf.getProjectName());
             pw.println("MAIN_CLASS=" + pf.getMainClass().getName());
             pw.println("PATH_MAIN_CLASS=" + pf.getMainClass().getName().replace(".", "/"));
-            String packageName = pf.getPackageName();
-            String rootPkg = (packageName.contains(".") ? packageName.substring(0, packageName.indexOf(".")) : packageName);
-            pw.println("ROOT_PACKAGE=" + rootPkg);
+            String root = pf.getMainClass().getPackage().substring(0, pf.getMainClass().getPackage().indexOf(".") - 1);
+            pw.println("ROOT_PACKAGE=" + root);
 
             InputStream stream = context.getAssets().open("builder/javabuilder.sh");
             String builder = FileManager.streamToString(stream).toString();

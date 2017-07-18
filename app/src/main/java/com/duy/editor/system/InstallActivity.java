@@ -28,6 +28,7 @@ import com.spartacusrex.spartacuside.startup.FileManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Created by Duy on 16-Jul-17.
@@ -103,8 +104,10 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
                 long totalByteCount = taskSnapshot.getTotalByteCount();
                 long bytesTransferred = taskSnapshot.getBytesTransferred();
                 if (bytesTransferred != 0 && totalByteCount != 0) {
-                    String msg = MemoryUtils.toMB(bytesTransferred) + "MB / "
-                            + MemoryUtils.toMB(totalByteCount) + "MB";
+                    String msg = String.format(Locale.ENGLISH,
+                            "%.2f MB / %.2f MB",
+                            MemoryUtils.toMB(bytesTransferred),
+                            MemoryUtils.toMB(totalByteCount));
                     progressDialog.setMessage(msg);
                 }
             }

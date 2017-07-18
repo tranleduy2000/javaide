@@ -56,7 +56,6 @@ public class ProjectFile implements Serializable, Cloneable {
         return rootDir;
     }
 
-    @Nullable
     public ClassFile getMainClass() {
         return mainClass;
     }

@@ -82,7 +82,6 @@ public class EmulatorView extends View implements GestureDetector.OnGestureListe
     Animation mAnimLeftOut;
     Animation mAnimRightOut;
     private TermSettings mSettings;
-    private TermViewFlipper mViewFlipper;
     /**
      * We defer some initialization until we have been layed out in the view
      * hierarchy. The boolean tracks when we know what our size is.
@@ -207,9 +206,9 @@ public class EmulatorView extends View implements GestureDetector.OnGestureListe
         }
     };
 
-    public EmulatorView(Context context, TermSession session, TermViewFlipper viewFlipper, DisplayMetrics metrics) {
+    public EmulatorView(Context context, TermSession session,  DisplayMetrics metrics) {
         super(context);
-        commonConstructor(session, viewFlipper);
+        commonConstructor(session);
         setDensity(metrics);
 
         mAnimLeftIn = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
@@ -602,7 +601,7 @@ public class EmulatorView extends View implements GestureDetector.OnGestureListe
         return mEmulator.getKeypadApplicationMode();
     }
 
-    private void commonConstructor(TermSession session, TermViewFlipper viewFlipper) {
+    private void commonConstructor(TermSession session) {
         mTextRenderer = null;
         mCursorPaint = new Paint();
         mCursorPaint.setARGB(255, 128, 128, 128);
@@ -632,7 +631,7 @@ public class EmulatorView extends View implements GestureDetector.OnGestureListe
         setFocusable(true);
         setFocusableInTouchMode(true);
 
-        initialize(session, viewFlipper);
+        initialize(session);
     }
 
     @Override
@@ -655,13 +654,11 @@ public class EmulatorView extends View implements GestureDetector.OnGestureListe
      *
      * @param session The terminal session this view will be displaying
      */
-    private void initialize(TermSession session, TermViewFlipper viewFlipper) {
+    private void initialize(TermSession session) {
         mTermSession = session;
         mTranscriptScreen = session.getTranscriptScreen();
         mEmulator = session.getEmulator();
         mTermOut = session.getTermOut();
-
-        mViewFlipper = viewFlipper;
 
         mKeyListener = new TermKeyListener();
         mTextSize = 10;

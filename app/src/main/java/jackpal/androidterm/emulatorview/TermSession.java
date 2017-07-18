@@ -16,8 +16,14 @@
 
 package jackpal.androidterm.emulatorview;
 
-import java.io.InputStream;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+
+import com.spartacusrex.spartacuside.model.UpdateCallback;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -25,10 +31,6 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
-
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 
 /**
  * A terminal session, consisting of a VT100 terminal emulator and its

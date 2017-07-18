@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -37,8 +38,8 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -47,25 +48,20 @@ import android.widget.Toast;
 
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
-import com.duy.editor.file.FileManager;
 import com.duy.project_files.ProjectFile;
+import com.duy.run.CommandManager;
 import com.duy.run.view.EmulatorView;
 import com.duy.run.view.TermKeyListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.spartacusrex.spartacuside.TermService;
-import com.spartacusrex.spartacuside.TermViewFlipper;
 import com.spartacusrex.spartacuside.TerminalPreferences;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.TermSettings;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Date;
+
 
 /**
  * A terminal emulator activity.
@@ -74,15 +70,7 @@ import java.util.Date;
 public class TerminalActivity extends Activity {
     public static final int REQUEST_CHOOSE_WINDOW = 1;
     public static final String EXTRA_WINDOW_ID = "jackpal.androidterm.window_id";
-    /**
-     * The name of the ViewFlipper in the resources.
-     */
-    private static final int VIEW_FLIPPER = R.id.view_flipper;
     private static final String TAG = "TerminalActivity";
-    /**
-     * The ViewFlipper which holds the collection of EmulatorView widgets.
-     */
-    private TermViewFlipper mViewFlipper;
     private TermSession mTermSession;
     private SharedPreferences mPrefs;
     private TermSettings mSettings;
@@ -118,8 +106,7 @@ public class TerminalActivity extends Activity {
         }
 
         setContentView(R.layout.term_activity);
-        mViewFlipper = findViewById(R.id.view_flipper);
-        registerForContextMenu(mViewFlipper);
+        mContainer = findViewById(R.id.container);
 
         updatePrefs();
         mAlreadyStarted = true;
@@ -127,10 +114,12 @@ public class TerminalActivity extends Activity {
     }
 
     private void loadAdView() {
-//        mAdView = findViewById(R.id.adView);
+        mAdView = findViewById(R.id.ad_view);
         if (mAdView != null)
             mAdView.loadAd(new AdRequest.Builder().build());
     }
+
+    private ViewGroup mContainer;
 
 
     private void populateViewFlipper() {
@@ -139,7 +128,8 @@ public class TerminalActivity extends Activity {
         if (mTermService != null) {
             mTermSession = mTermService.getSessions(getFilesDir());
             EmulatorView view = createEmulatorView(mTermSession);
-            mViewFlipper.addView(view);
+            mContainer.removeAllViews();
+            mContainer.addView(view);
 
             updatePrefs();
 
@@ -150,78 +140,22 @@ public class TerminalActivity extends Activity {
                 int action = intent.getIntExtra(CompileManager.ACTION, -1);
                 switch (action) {
                     case CompileManager.Action.RUN:
-                        compileAndRun(mTermSession, projectFile);
+                        CommandManager.compileAndRun(this, mTermSession, projectFile);
                         break;
                     case CompileManager.Action.BUILD_JAR:
-                        buildJarFile(mTermSession, projectFile);
+                        CommandManager.buildJarFile(this, mTermSession, projectFile);
                         break;
                 }
             }
         }
     }
 
-    private void buildJarFile(TermSession termSession, ProjectFile pf) {
-        Log.d(TAG, "compileAndRun() called with: filePath = [" + pf + "]");
-        File home = getFilesDir();
-        try {
-            FileOutputStream fos = termSession.getTermOut();
-            PrintWriter pw = new PrintWriter(fos);
-
-            //set value for variable
-            pw.println("PROJECT_PATH=" + pf.getProjectDir());
-            pw.println("PROJECT_NAME=" + pf.getProjectName());
-            pw.println("MAIN_CLASS=" + pf.getMainClass().getName());
-            pw.println("PATH_MAIN_CLASS=" + pf.getMainClass().getName().replace(".", "/"));
-            String packageName = pf.getPackageName();
-            String rootPkg = (packageName.contains(".") ? packageName.substring(0, packageName.indexOf(".")) : packageName);
-            pw.println("ROOT_PACKAGE=" + rootPkg);
-
-            InputStream stream = getAssets().open("builder/librarybuilder.sh");
-            String builder = FileManager.streamToString(stream).toString();
-            pw.print(builder);
-            pw.flush();
-
-            File temp = new File(home, "tmp");
-            if (!temp.exists()) temp.mkdirs();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void compileAndRun(TermSession termSession, ProjectFile pf) {
-        Log.d(TAG, "compileAndRun() called with: filePath = [" + pf + "]");
-        File home = getFilesDir();
-        try {
-            FileOutputStream fos = termSession.getTermOut();
-            PrintWriter pw = new PrintWriter(fos);
-
-            //set value for variable
-            pw.println("PROJECT_PATH=" + pf.getProjectDir());
-            pw.println("PROJECT_NAME=" + pf.getProjectName());
-            pw.println("MAIN_CLASS=" + pf.getMainClass().getName());
-            pw.println("PATH_MAIN_CLASS=" + pf.getMainClass().getName().replace(".", "/"));
-            String packageName = pf.getPackageName();
-            String rootPkg = (packageName.contains(".") ? packageName.substring(0, packageName.indexOf(".")) : packageName);
-            pw.println("ROOT_PACKAGE=" + rootPkg);
-
-            InputStream stream = getAssets().open("builder/javabuilder.sh");
-            String builder = FileManager.streamToString(stream).toString();
-            pw.print(builder);
-            pw.flush();
-
-            File temp = new File(home, "tmp");
-            if (!temp.exists()) temp.mkdirs();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (mAdView != null) mAdView.destroy();
-
-        mViewFlipper.removeAllViews();
+        mContainer.removeAllViews();
         unbindService(mTSConnection);
         mTermService = null;
         mTSConnection = null;
@@ -237,7 +171,7 @@ public class TerminalActivity extends Activity {
     private EmulatorView createEmulatorView(TermSession session) {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        EmulatorView emulatorView = new EmulatorView(this, session, mViewFlipper, metrics);
+        EmulatorView emulatorView = new EmulatorView(this, session, metrics);
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -248,22 +182,26 @@ public class TerminalActivity extends Activity {
 
         session.setUpdateCallback(emulatorView.getUpdateCallback());
 
+
         return emulatorView;
     }
+
 
     private TermSession getCurrentTermSession() {
         return mTermSession;
     }
 
+    @Nullable
     private EmulatorView getCurrentEmulatorView() {
-        return (EmulatorView) mViewFlipper.getCurrentView();
+        return (EmulatorView) mContainer.getChildAt(0);
     }
 
     private void updatePrefs() {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        for (View v : mViewFlipper) {
+        View v = getCurrentEmulatorView();
+        if (v != null) {
             ((EmulatorView) v).setDensity(metrics);
             ((EmulatorView) v).updatePrefs(mSettings);
         }
@@ -289,12 +227,12 @@ public class TerminalActivity extends Activity {
         super.onResume();
         if (mAdView != null) mAdView.resume();
 
-        if (mTermSession != null && 1 < mViewFlipper.getChildCount()) {
-            for (int i = 0; i < mViewFlipper.getChildCount(); ++i) {
-                EmulatorView v = (EmulatorView) mViewFlipper.getChildAt(i);
+        if (mTermSession != null && 1 < mContainer.getChildCount()) {
+            for (int i = 0; i < mContainer.getChildCount(); ++i) {
+                EmulatorView v = (EmulatorView) mContainer.getChildAt(i);
                 if (!mTermSession.equals(v.getTermSession())) {
                     v.onPause();
-                    mViewFlipper.removeView(v);
+                    mContainer.removeView(v);
                     --i;
                 }
             }
@@ -304,27 +242,24 @@ public class TerminalActivity extends Activity {
         mSettings.readPrefs(mPrefs);
         updatePrefs();
 
-        if (onResumeSelectWindow >= 0) {
-            mViewFlipper.setDisplayedChild(onResumeSelectWindow);
-            onResumeSelectWindow = -1;
-        } else {
-            mViewFlipper.resumeCurrentView();
-        }
+        EmulatorView v = getCurrentEmulatorView();
+        if (v != null) v.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         if (mAdView != null) mAdView.pause();
-
-        mViewFlipper.pauseCurrentView();
+        if (getCurrentEmulatorView() != null) {
+            getCurrentEmulatorView().onPause();
+            ;
+        }
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
-        EmulatorView v = (EmulatorView) mViewFlipper.getCurrentView();
+        EmulatorView v = getCurrentEmulatorView();
         if (v != null) {
             v.updateSize(true);
         }
@@ -336,37 +271,6 @@ public class TerminalActivity extends Activity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.menu_window_list) {
-            //startActivityForResult(new Intent(this, WindowList.class), REQUEST_CHOOSE_WINDOW);
-            //Show a list of windows..
-            openContextMenu(mViewFlipper);
-//        } else if (id == R.id.menu_reset) {
-//            doResetTerminal();
-        } else if (id == R.id.menu_toggle_soft_keyboard) {
-            doToggleSoftKeyboard();
-
-        } else if (id == R.id.menu_back_esc) {
-            doBACKtoESC();
-
-        } else if (id == R.id.menu_keylogger) {
-            doToggelKeyLogger();
-
-        } else if (id == R.id.menu_paste) {
-            doPaste();
-
-        } else if (id == R.id.menu_copyall) {
-            doCopyAll();
-
-        } else if (id == R.id.menu_copyemail) {
-            doEmailTranscript();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     private void doCreateNewWindow() {
     }
@@ -410,12 +314,6 @@ public class TerminalActivity extends Activity {
         menu.add(0, 3, 3, "Terminal 4");
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        //Set the selected window..
-        mViewFlipper.setDisplayedChild(item.getItemId());
-        return super.onContextItemSelected(item);
-    }
 
     private boolean canPaste() {
         ClipboardManager clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);

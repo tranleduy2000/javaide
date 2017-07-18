@@ -16,15 +16,6 @@
 
 package jackpal.androidterm.emulatorview;
 
-import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompat;
-import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompatFactory;
-import jackpal.androidterm.emulatorview.compat.KeycodeConstants;
-import jackpal.androidterm.emulatorview.compat.Patterns;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Hashtable;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -51,6 +42,17 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.widget.Scroller;
+
+import com.spartacusrex.spartacuside.model.UpdateCallback;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Hashtable;
+
+import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompat;
+import jackpal.androidterm.emulatorview.compat.ClipboardManagerCompatFactory;
+import jackpal.androidterm.emulatorview.compat.KeycodeConstants;
+import jackpal.androidterm.emulatorview.compat.Patterns;
 
 /**
  * A view on a {@link TermSession}.  Displays the terminal emulator's screen,
@@ -232,6 +234,9 @@ public class EmulatorView extends View implements GestureDetector.OnGestureListe
      * A hash table of underlying URLs to implement clickable links.
      */
     private Hashtable<Integer, URLSpan[]> mLinkLayer = new Hashtable<Integer, URLSpan[]>();
+
+
+
 
     /**
      * Accept links that start with http[s]:

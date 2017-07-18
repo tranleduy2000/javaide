@@ -16,6 +16,10 @@
 
 package jackpal.androidterm.emulatorview;
 
+import android.util.Log;
+
+import com.spartacusrex.spartacuside.model.UpdateCallback;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -23,8 +27,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Locale;
-
-import android.util.Log;
 
 /**
  * Renders text into a screen. Contains all the terminal-specific knowledge and

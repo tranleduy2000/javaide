@@ -23,8 +23,9 @@ public interface EditorControl {
 
     void findAndReplace();
 
-    void buildProject();
+    void runProject();
 
+    void buildJar();
 
     void saveFile();
 

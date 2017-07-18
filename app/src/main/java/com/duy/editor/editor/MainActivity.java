@@ -169,7 +169,7 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     @Override
-    public void buildProject() {
+    public void runProject() {
         if (projectFile != null) {
             if (projectFile.getMainClass() == null || !projectFile.getMainClass().exist(projectFile)
                     || projectFile.getPackageName() == null || projectFile.getPackageName().isEmpty()) {
@@ -177,6 +177,20 @@ public class MainActivity extends BaseEditorActivity implements
                 return;
             }
             mCompileManager.execute(projectFile);
+        } else {
+            Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void buildJar() {
+        if (projectFile != null) {
+            if (projectFile.getMainClass() == null || !projectFile.getMainClass().exist(projectFile)
+                    || projectFile.getPackageName() == null || projectFile.getPackageName().isEmpty()) {
+                showDialogRunConfig();
+                return;
+            }
+            mCompileManager.buildJar(projectFile);
         } else {
             Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
         }

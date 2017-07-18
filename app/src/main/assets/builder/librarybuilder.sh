@@ -51,7 +51,7 @@ else
     clear
 
     #Back out
-    cd ..
-
-    echo -e "\e[32mbuild finish\e[0m"
+    cd ../bin
+    ls
+    echo -e "\e[32mBuild finish\e[0m"
 fi

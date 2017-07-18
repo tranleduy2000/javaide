@@ -147,13 +147,49 @@ public class TerminalActivity extends Activity {
             updatePrefs();
 
             Intent intent = getIntent();
-            ProjectFile projectFile = (ProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
-            if (projectFile != null) {
-                compileAndRun(mTermSessions.get(0), projectFile);
+            if (intent != null) {
+                ProjectFile projectFile = (ProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
+                if (projectFile == null) return;
+                int action = intent.getIntExtra(CompileManager.ACTION, -1);
+                switch (action) {
+                    case CompileManager.Action.RUN:
+                        compileAndRun(mTermSessions.get(0), projectFile);
+                        break;
+                    case CompileManager.Action.BUILD_JAR:
+                        buildJarFile(mTermSessions.get(0), projectFile);
+                        break;
+                }
             }
         }
     }
 
+    private void buildJarFile(TermSession termSession, ProjectFile pf) {
+        Log.d(TAG, "compileAndRun() called with: filePath = [" + pf + "]");
+        File home = getFilesDir();
+        try {
+            FileOutputStream fos = termSession.getTermOut();
+            PrintWriter pw = new PrintWriter(fos);
+
+            //set value for variable
+            pw.println("PROJECT_PATH=" + pf.getProjectDir());
+            pw.println("PROJECT_NAME=" + pf.getProjectName());
+            pw.println("MAIN_CLASS=" + pf.getMainClass().getName());
+            pw.println("PATH_MAIN_CLASS=" + pf.getMainClass().getName().replace(".", "/"));
+            String packageName = pf.getPackageName();
+            String rootPkg = (packageName.contains(".") ? packageName.substring(0, packageName.indexOf(".")) : packageName);
+            pw.println("ROOT_PACKAGE=" + rootPkg);
+
+            InputStream stream = getAssets().open("builder/librarybuilder.sh");
+            String builder = FileManager.streamToString(stream).toString();
+            pw.print(builder);
+            pw.flush();
+
+            File temp = new File(home, "tmp");
+            if (!temp.exists()) temp.mkdirs();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void compileAndRun(TermSession termSession, ProjectFile pf) {
         Log.d(TAG, "compileAndRun() called with: filePath = [" + pf + "]");
         File home = getFilesDir();

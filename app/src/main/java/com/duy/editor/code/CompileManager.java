@@ -35,12 +35,22 @@ public class CompileManager {
     public static final String INITIAL_POS = "initial_pos";
     public static final int ACTIVITY_EDITOR = 1001;
     public static final String MODE = "run_mode";
+
     public static final String PROJECT_FILE = "project_file";
+    public static final String ACTION = "action";
     public static final String ARGS = "program_args";
+
     private final Activity mActivity;
 
     public CompileManager(Activity activity) {
         this.mActivity = activity;
+    }
+
+
+    public static void debug(Activity mActivity, String name) {
+        Intent intent = new Intent(mActivity, DebugActivity.class);
+        intent.putExtra(FILE_PATH, name);
+        mActivity.startActivity(intent);
     }
 
     public static void execute(Activity activity, String name) {
@@ -50,18 +60,6 @@ public class CompileManager {
         activity.startActivity(intent);
     }
 
-    public static void debug(Activity mActivity, String name) {
-        Intent intent = new Intent(mActivity, DebugActivity.class);
-        intent.putExtra(FILE_PATH, name);
-        mActivity.startActivity(intent);
-    }
-
-    // Execute compiled file
-    public void execute(ProjectFile projectFile) {
-        Intent intent = new Intent(mActivity, TerminalActivity.class);
-        intent.putExtra(PROJECT_FILE, projectFile);
-        mActivity.startActivity(intent);
-    }
 
     public void debug(String name) {
         Intent intent = new Intent(mActivity, DebugActivity.class);
@@ -77,4 +75,23 @@ public class CompileManager {
         mActivity.startActivityForResult(intent, ACTIVITY_EDITOR);
     }
 
+    // Execute compiled file
+    public void execute(ProjectFile projectFile) {
+        Intent intent = new Intent(mActivity, TerminalActivity.class);
+        intent.putExtra(ACTION, Action.RUN);
+        intent.putExtra(PROJECT_FILE, projectFile);
+        mActivity.startActivity(intent);
+    }
+
+    public void buildJar(ProjectFile projectFile) {
+        Intent intent = new Intent(mActivity, TerminalActivity.class);
+        intent.putExtra(ACTION, Action.BUILD_JAR);
+        intent.putExtra(PROJECT_FILE, projectFile);
+        mActivity.startActivity(intent);
+    }
+
+    public class Action {
+        public static final int RUN = 0;
+        public static final int BUILD_JAR = 1;
+    }
 }

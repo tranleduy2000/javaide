@@ -82,7 +82,7 @@ public class MenuEditor {
                 break;
             case R.id.nav_run:
                 if (listener != null) {
-                    listener.buildProject();
+                    listener.runProject();
                 }
                 break;
             case R.id.action_save:
@@ -184,6 +184,9 @@ public class MenuEditor {
                 break;
             case R.id.action_open_terminal:
                 activity.startActivity(new Intent(activity, TerminalActivity.class));
+                break;
+            case R.id.action_build_jar:
+                activity.buildJar();
                 break;
         }
         return true;

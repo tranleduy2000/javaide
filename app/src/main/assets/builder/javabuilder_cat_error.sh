@@ -27,11 +27,14 @@ javac -d ../../../build/ ${PATH_MAIN_CLASS}.java 2> ${ERROR_FILE}
 error_msg=$(< ${ERROR_FILE})
 
 if [ -n "${error_msg}" ]; then
+
     #clear screen
     clear
-    echo "\033[31mCompiled with error\e[0m"
+    echo -e "\033[31mCompiled with error\e[0m"
+
     # print error msg
     cat ${ERROR_FILE}
+
 else
 
     #Now into build dir
@@ -42,8 +45,13 @@ else
     #dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.jar
     dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.jar ${ROOT_PACKAGE}
 
+    #clear screen
+    clear
+
     #Back out
     cd ..
+
+    #exec jar file
     java -jar ./bin/${PROJECT_NAME}.jar ${MAIN_CLASS}
 
 fi

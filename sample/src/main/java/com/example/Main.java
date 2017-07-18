@@ -6,7 +6,5 @@ package com.example;
 
 public class Main {
     public static void main(String[] args) {
-        CC cc = new CCC();
-        cc.printCCC();
     }
 }

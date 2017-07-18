@@ -33,6 +33,15 @@ public class ClassFile implements Serializable, Cloneable {
         return name.substring(0, name.lastIndexOf("."));
     }
 
+    public String getRootPackage() {
+        String aPackage = getPackage();
+        if (aPackage.contains(".")) {
+            return aPackage.substring(0, aPackage.indexOf(".") - 1);
+        } else {
+            return aPackage;
+        }
+    }
+
     public boolean exist(ProjectFile parent) {
         String path = getPath(parent);
         return !path.isEmpty() && new File(path).exists();

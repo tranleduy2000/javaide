@@ -15,7 +15,7 @@ android {
             abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
         }
 
-        versionCode 7
+        versionCode 8
         versionName "1.0.7 beta"
     }
 

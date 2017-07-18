@@ -162,6 +162,8 @@ public class FileManager {
         return file.canWrite() && file.getName().toLowerCase().endsWith(".java");
     }
 
+
+
     public static ArrayList<String> listClassName(File src) {
         if (!src.exists()) return new ArrayList<>();
 
@@ -572,6 +574,7 @@ public class FileManager {
     public void destroy() {
         mDatabase.close();
     }
+
     public static class SAVE_MODE {
         static final int INTERNAL = 1;
         static final int EXTERNAL = 2;

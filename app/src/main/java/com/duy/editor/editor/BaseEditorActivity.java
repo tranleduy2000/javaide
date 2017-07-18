@@ -520,7 +520,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     @Override
     public void onFileLongClick(File file, ProjectFileContract.ActionCallback callBack) {
-        showFileInfo(file);
+        if (FileUtils.canRead(file)) {
+            showFileInfo(file);
+        }
     }
 
     @Override

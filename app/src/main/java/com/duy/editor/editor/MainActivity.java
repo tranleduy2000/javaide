@@ -25,11 +25,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -172,11 +177,11 @@ public class MainActivity extends BaseEditorActivity implements
 
     @Override
     public void runProject() {
-        if (projectFile != null) {
+        if (mProjectFile != null) {
             //check main class exist
-            if (projectFile.getMainClass() == null || !projectFile.getMainClass().exist(projectFile)
-                    || projectFile.getPackageName() == null || projectFile.getPackageName().isEmpty()) {
-                String msg = "Main class is not define";
+            if (mProjectFile.getMainClass() == null || !mProjectFile.getMainClass().exist(mProjectFile)
+                    || mProjectFile.getPackageName() == null || mProjectFile.getPackageName().isEmpty()) {
+                String msg = getString(R.string.main_class_not_define);
                 Snackbar.make(mDrawerLayout, msg, Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.config, new View.OnClickListener() {
                             @Override
@@ -187,8 +192,12 @@ public class MainActivity extends BaseEditorActivity implements
                 return;
             }
             //check main function exist
-            if (!ClassUtil.hasMainFunction(new File(projectFile.getMainClass().getPath(projectFile)))) {
-                String msg = "Couldn't find main function in class " + projectFile.getMainClass().getName();
+            if (!ClassUtil.hasMainFunction(new File(mProjectFile.getMainClass().getPath(mProjectFile)))) {
+                SpannableStringBuilder msg = new SpannableStringBuilder(getString(R.string.can_not_find_main_func));
+                Spannable clasz = new SpannableString(mProjectFile.getMainClass().getName());
+                clasz.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.dark_color_accent))
+                        , 0, clasz.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                msg.append(clasz);
                 Snackbar.make(mDrawerLayout, msg, Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.config, new View.OnClickListener() {
                             @Override
@@ -199,7 +208,7 @@ public class MainActivity extends BaseEditorActivity implements
                 return;
             }
             //now run project
-            mCompileManager.execute(projectFile);
+            mCompileManager.execute(mProjectFile);
         } else {
             Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
         }
@@ -207,13 +216,13 @@ public class MainActivity extends BaseEditorActivity implements
 
     @Override
     public void buildJar() {
-        if (projectFile != null) {
-            if (projectFile.getMainClass() == null || !projectFile.getMainClass().exist(projectFile)
-                    || projectFile.getPackageName() == null || projectFile.getPackageName().isEmpty()) {
+        if (mProjectFile != null) {
+            if (mProjectFile.getMainClass() == null || !mProjectFile.getMainClass().exist(mProjectFile)
+                    || mProjectFile.getPackageName() == null || mProjectFile.getPackageName().isEmpty()) {
                 showDialogRunConfig();
                 return;
             }
-            mCompileManager.buildJar(projectFile);
+            mCompileManager.buildJar(mProjectFile);
         } else {
             Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
         }
@@ -540,8 +549,8 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     public void showDialogRunConfig() {
-        if (projectFile != null) {
-            DialogRunConfig dialogRunConfig = DialogRunConfig.newInstance(projectFile);
+        if (mProjectFile != null) {
+            DialogRunConfig dialogRunConfig = DialogRunConfig.newInstance(mProjectFile);
             dialogRunConfig.show(getSupportFragmentManager(), DialogRunConfig.TAG);
         } else {
             Toast.makeText(this, "Please create project", Toast.LENGTH_SHORT).show();
@@ -550,7 +559,7 @@ public class MainActivity extends BaseEditorActivity implements
 
     @Override
     public void onConfigChange(ProjectFile projectFile) {
-        this.projectFile = projectFile;
+        this.mProjectFile = projectFile;
         ProjectManager.saveProject(this, projectFile);
     }
 

@@ -120,7 +120,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         mTabLayout.setVisibility(View.VISIBLE);
     }
 
-    protected ProjectFile projectFile;
+    protected ProjectFile mProjectFile;
 
     private ProjectFileContract.Presenter mFilePresenter;
 
@@ -129,16 +129,16 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState != null) {
-            this.projectFile = (ProjectFile) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
+            this.mProjectFile = (ProjectFile) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
         } else {
-            this.projectFile = ProjectManager.getLastProject(this);
+            this.mProjectFile = ProjectManager.getLastProject(this);
         }
         bindView();
         setupToolbar();
         setupFileView(savedInstanceState);
         setupEditor();
 
-        if (projectFile == null) {
+        if (mProjectFile == null) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -155,7 +155,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
                     getSupportFragmentManager().findFragmentByTag(FolderStructureFragment.TAG);
         }
         if (folderStructureFragment == null) {
-            folderStructureFragment = FolderStructureFragment.newInstance(projectFile);
+            folderStructureFragment = FolderStructureFragment.newInstance(mProjectFile);
         }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.container_file, folderStructureFragment, FolderStructureFragment.TAG).commit();
@@ -320,7 +320,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         if (preferences != null) {
             preferences.put(JavaPreferences.TAB_POSITION_FILE, mTabLayout.getSelectedTabPosition());
         }
-        ProjectManager.saveProject(this, projectFile);
+        ProjectManager.saveProject(this, mProjectFile);
     }
 
     @Override
@@ -475,7 +475,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(KEY_PROJECT_FILE, projectFile);
+        outState.putSerializable(KEY_PROJECT_FILE, mProjectFile);
     }
 
 
@@ -484,7 +484,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         Log.d(TAG, "onProjectCreated() called with: projectFile = [" + projectFile + "]");
 
         //save project
-        this.projectFile = projectFile;
+        this.mProjectFile = projectFile;
         ProjectManager.saveProject(this, projectFile);
 
         //remove all edit page
@@ -504,7 +504,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     @Override
     public void onClassCreated(File classF) {
-        mFilePresenter.show(projectFile);
+        mFilePresenter.show(mProjectFile);
         addNewPageEditor(classF, true);
     }
 
@@ -557,9 +557,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     public void showDialogCreateClass(@Nullable File file) {
         DialogNewClass dialogNewClass;
         if (file != null) {
-            dialogNewClass = newInstance(projectFile, null, file);
+            dialogNewClass = newInstance(mProjectFile, null, file);
         } else {
-            dialogNewClass = newInstance(projectFile, projectFile.getPackageName(), null);
+            dialogNewClass = newInstance(mProjectFile, mProjectFile.getPackageName(), null);
         }
         dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
     }

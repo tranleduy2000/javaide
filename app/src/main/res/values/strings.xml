@@ -436,4 +436,5 @@
     <string name="program_arg">Program arguments</string>
     <string name="console">Console</string>
     <string name="open_terminal">Open terminal</string>
+    <string name="enter_package">Enter package name</string>
 </resources>

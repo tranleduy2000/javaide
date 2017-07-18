@@ -36,6 +36,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
@@ -270,6 +271,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
      * @param selectNewPage - if <code>true</code>, the tab of file will be selected when initialized
      */
     protected void addNewPageEditor(@NonNull File file, boolean selectNewPage) {
+        Log.d(TAG, "addNewPageEditor() called with: file = [" + file + "], selectNewPage = [" + selectNewPage + "]");
+
         if (!file.exists()) return;
 
         int position = mPageAdapter.getPositionForTag(file.getPath());
@@ -477,12 +480,21 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     @Override
     public void onProjectCreated(ProjectFile projectFile) {
+        Log.d(TAG, "onProjectCreated() called with: projectFile = [" + projectFile + "]");
+
+        //save project
         this.projectFile = projectFile;
         ProjectManager.saveProject(this, projectFile);
-        mFilePresenter.show(projectFile);
+
+        //remove all edit page
         while (mPageAdapter.getCount() > 0) {
             removePage(0);
         }
+
+        //show file structure of project
+        mFilePresenter.show(projectFile);
+
+
         ClassFile mainClass = projectFile.getMainClass();
         if (mainClass != null && mainClass.exist(projectFile)) {
             addNewPageEditor(new File(mainClass.getPath(projectFile)), true);

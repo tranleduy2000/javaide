@@ -27,7 +27,7 @@ public class Template {
     public static final String CLASS_TEMPLATE =
             "package %2$s;\n" +
                     "\n" +
-                    "public class %1$s {\n" +
+                    "public class %1$s {\n\n" +
                     "    public static void main(String[] args) {\n" +
                     "        \n" +
                     "    }\n" +

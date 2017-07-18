@@ -1,7 +1,6 @@
 package com.duy.project_files.holder;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 
 import com.duy.editor.R;
 import com.duy.project_files.ProjectFileContract;
-import com.duy.project_files.utils.ProjectFileUtils;
+import com.duy.project_files.utils.ProjectFileUtil;
 import com.unnamed.b.atv.model.TreeNode;
 
 import java.io.File;
@@ -38,12 +37,12 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
         this.leaf = node.isLeaf();
         View imgNew = view.findViewById(R.id.img_add);
         View imgDelete = view.findViewById(R.id.img_delete);
-        if (!ProjectFileUtils.inSrcDir(item.getProjectFile(), item.getFile())) {
+        if (!ProjectFileUtil.inSrcDir(item.getProjectFile(), item.getFile())) {
             imgNew.setVisibility(View.GONE);
         } else {
             imgNew.setVisibility(View.VISIBLE);
         }
-        if (ProjectFileUtils.isRoot(item.getProjectFile(), item.getFile())) {
+        if (ProjectFileUtil.isRoot(item.getProjectFile(), item.getFile())) {
             imgDelete.setVisibility(View.GONE);
         } else {
             imgDelete.setVisibility(View.VISIBLE);

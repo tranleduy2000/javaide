@@ -8,7 +8,7 @@ import java.io.File;
  * Created by duy on 18/07/2017.
  */
 
-public class ProjectFileUtils {
+public class ProjectFileUtil {
     public static boolean inSrcDir(File projectF, File current) {
         try {
             String path = projectF.getPath();

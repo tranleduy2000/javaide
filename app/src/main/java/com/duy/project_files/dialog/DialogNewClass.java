@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.duy.editor.R;
 import com.duy.editor.editor.completion.Template;
 import com.duy.project_files.ProjectFile;
-import com.duy.project_files.utils.ProjectFileUtils;
+import com.duy.project_files.utils.ProjectFileUtil;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
@@ -110,7 +110,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
             File currentFolder = (File) getArguments().getSerializable(KEY_PARENT_FILE);
             ProjectFile projectFile = (ProjectFile) getArguments().getSerializable(KEY_PROJECT_FILE);
             if (currentFolder != null && projectFile != null) {
-                packageName = ProjectFileUtils.findPackage(projectFile.getRootDir(), currentFolder);
+                packageName = ProjectFileUtil.findPackage(projectFile.getRootDir(), currentFolder);
             }
         }
 

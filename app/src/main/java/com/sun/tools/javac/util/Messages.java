@@ -53,8 +53,7 @@ public class Messages {
      */
     public Messages(Context context) {
         context.put(messagesKey, this);
-//        add(getDefaultBundle());
-        // TODO: 13-Jul-17
+        add(getDefaultBundle());
     }
 
     /**

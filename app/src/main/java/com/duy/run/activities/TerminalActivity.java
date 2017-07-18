@@ -169,7 +169,7 @@ public class TerminalActivity extends Activity {
             String packageName = pf.getPackageName();
             pw.println("ROOT_PACKAGE=" + (packageName.contains(".") ? packageName.substring(0, packageName.indexOf(".")) : packageName));
 
-            InputStream stream = getAssets().open("builder/javabuilder2.sh");
+            InputStream stream = getAssets().open("builder/javabuilder_cat_error.sh");
             String builder = FileManager.streamToString(stream).toString();
             pw.print(builder);
             pw.flush();

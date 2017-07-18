@@ -16,7 +16,7 @@ cd src
 
 #Now compile
 echo Compile the Library first
-javac -verbose -d ../build/ $mainclass
+javac -verbose -d ../build/ ${mainclass}
 
 #Back out
 cd ..

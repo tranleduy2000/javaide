@@ -40,10 +40,12 @@ else
     #Now into build dir
     cd ../../../build/
 
+    echo Create normal jar - for use with javac
+    jar -v ../bin/{PROJECT_NAME}.jar org
+
     #Now convert to dex format (need no-strict)
     echo Now convert to dex format
-    #dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.jar
-    dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.jar ${ROOT_PACKAGE}
+    dx --dex --verbose --no-strict --output=../bin/${PROJECT_NAME}.dex.jar ${ROOT_PACKAGE}
 
     #clear screen
     clear
@@ -51,7 +53,5 @@ else
     #Back out
     cd ..
 
-    #exec jar file
-    java -jar ./bin/${PROJECT_NAME}.jar ${MAIN_CLASS}
-
+    echo -e "\e[32mbuild finish\e[0m"
 fi

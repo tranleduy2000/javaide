@@ -133,7 +133,18 @@
                 android:title="@string/show_suggest_popup"/>
         </menu>
     </item>
+    <item
+        android:icon="@drawable/ic_build_white_24dp"
+        android:title="@string/setting_editor"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/action_build_jar"
+                android:icon="@drawable/ic_jar_file_white"
+                android:title="@string/build_jar_file" />
 
+        </menu>
+    </item>
     <item
         android:id="@+id/action_edit_run"
         android:icon="@drawable/ic_play_arrow_white_24dp"

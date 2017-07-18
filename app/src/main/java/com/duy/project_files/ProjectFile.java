@@ -165,9 +165,7 @@ public class ProjectFile implements Serializable, Cloneable {
     public JSONObject exportJson() {
         JSONObject json = new JSONObject();
         try {
-            if (mainClass != null) {
-                json.put("main_class_mame", mainClass.getName());
-            }
+            if (mainClass != null) json.put("main_class_mame", mainClass.getName());
 
             Log.d(TAG, "exportJson mainClass = " + mainClass);
 
@@ -185,9 +183,6 @@ public class ProjectFile implements Serializable, Cloneable {
         if (json.has("main_class_mame")) {
             mainClass = new ClassFile(json.getString("main_class_mame"));
         }
-        mainClass.setName(mainClass.getPackage() + "." + mainClass.getSimpleName());
-        Log.d(TAG, "restore mainClass = " + mainClass);
-
         if (json.has("root_dir")) this.rootDir = json.getString("root_dir");
         if (json.has("package_name")) this.packageName = json.getString("package_name");
         if (json.has("project_name")) this.projectName = json.getString("project_name");

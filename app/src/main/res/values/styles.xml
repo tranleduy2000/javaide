@@ -19,9 +19,10 @@
 
     <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
 
-        <!--<item name="colorPrimary">@color/dark.color_primary</item>-->
-        <!--<item name="colorPrimaryDark">@color/dark.color_primary_dark</item>-->
-        <!--<item name="colorAccent">@color/dark.color_accent</item>-->
+        <item name="colorPrimary">@color/dark.color_primary</item>
+        <item name="colorPrimaryDark">@color/dark.color_primary_dark</item>
+        <item name="colorAccent">@color/dark.color_accent</item>
+        <item name="android:windowBackground">@color/dark.color_background</item>
     </style>
 
     <style name="AppThemeLight" parent="Theme.AppCompat.Light.DarkActionBar">

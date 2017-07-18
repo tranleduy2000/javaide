@@ -68,6 +68,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+import static com.duy.project_files.dialog.DialogNewClass.newInstance;
 
 /**
  * Created by Duy on 09-Mar-17.
@@ -553,13 +554,21 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         dialogNewProject.show(getSupportFragmentManager(), DialogNewProject.TAG);
     }
 
-    public void showDialogCreateClass(File file) {
-        DialogNewClass dialogNewClass = DialogNewClass.newInstance(projectFile,
-                projectFile.getPackageName(), file);
+    public void showDialogCreateClass(@Nullable File file) {
+        DialogNewClass dialogNewClass;
+        if (file != null) {
+            dialogNewClass = newInstance(projectFile, null, file);
+        } else {
+            dialogNewClass = newInstance(projectFile, projectFile.getPackageName(), null);
+        }
         dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
     }
 
 
+    /**
+     * Listener keyboard hide/show
+     * if the keyboard is showing, we will hide the toolbar for more space
+     */
     private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {
         BaseEditorActivity activity;
 

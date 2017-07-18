@@ -17,11 +17,11 @@
 package com.duy.editor.document;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import com.duy.editor.R;
 import com.duy.editor.activities.AbstractAppCompatActivity;
 
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by Duy on 12-Jun-17.

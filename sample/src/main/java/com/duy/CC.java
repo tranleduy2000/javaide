@@ -1,4 +1,4 @@
-package com.example;
+package com.duy;
 
 /**
  * Created by Duy on 17-Jul-17.

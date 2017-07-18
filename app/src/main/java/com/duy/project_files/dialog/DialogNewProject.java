@@ -25,11 +25,11 @@ import java.io.IOException;
  */
 
 public class DialogNewProject extends AppCompatDialogFragment implements View.OnClickListener {
+    public static final String TAG = "DialogNewProject";
     private EditText editProjectName, editMainClass, editPackage;
     private Button btnCreate, btnCancel;
     @Nullable
     private OnCreateProjectListener listener;
-    public static final String TAG = "DialogNewProject";
 
     public static DialogNewProject newInstance() {
 
@@ -57,6 +57,7 @@ public class DialogNewProject extends AppCompatDialogFragment implements View.On
             dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         }
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -93,7 +94,7 @@ public class DialogNewProject extends AppCompatDialogFragment implements View.On
             ProjectFile projectFile = new ProjectFile(editMainClass.getText().toString(),
                     editPackage.getText().toString(), editProjectName.getText().toString());
             try {
-               projectFile.create(new File(FileManager.EXTERNAL_DIR));
+                projectFile.create(new File(FileManager.EXTERNAL_DIR));
                 if (listener != null) {
                     listener.onProjectCreated(projectFile);
                 }

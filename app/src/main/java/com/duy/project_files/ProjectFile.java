@@ -127,16 +127,13 @@ public class ProjectFile implements Serializable, Cloneable {
                 packageF.mkdirs();
             }
 
-            //create main class
-            if (mainClass != null) {
-                File mainFile = new File(packageF, mainClass.getSimpleName() + ".java");
-                if (!mainFile.exists()) {
-                    mainFile.createNewFile();
-                    String content = Template.createClass(packageName, mainClass.getSimpleName());
-                    FileManager.saveFile(mainFile, content);
-                }
+            File mainFile = new File(packageF, mainClass.getSimpleName() + ".java");
+            if (!mainFile.exists()) {
+                mainFile.createNewFile();
+                String content = Template.createClass(packageName, mainClass.getSimpleName());
+                FileManager.saveFile(mainFile, content);
             }
-        } else {
+        } else { //find package name
             File[] files = javaF.listFiles();
             packageName = "";
             if (files == null) {

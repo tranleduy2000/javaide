@@ -1,57 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/refresh_view"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?colorPrimaryDark">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/img_expand_all"
-            android:padding="4dp"
-            android:text="@string/project_file"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/img_collapse"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignBottom="@+id/textView2"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            app:srcCompat="@drawable/ic_fullscreen_exit_white_24dp" />
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/img_expand_all"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignBottom="@+id/textView2"
-            android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/img_collapse"
-            app:srcCompat="@drawable/ic_fullscreen_white_24dp" />
-    </RelativeLayout>
-
-    <HorizontalScrollView
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fadeScrollbars="false"
-        android:fillViewport="true">
+        android:orientation="vertical">
 
-        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/container"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-    </HorizontalScrollView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorPrimaryDark">
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/img_expand_all"
+                android:padding="4dp"
+                android:text="@string/project_file"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_collapse"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignBottom="@+id/textView2"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                app:srcCompat="@drawable/ic_fullscreen_exit_white_24dp" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_expand_all"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignBottom="@+id/textView2"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/img_collapse"
+                app:srcCompat="@drawable/ic_fullscreen_white_24dp" />
+        </RelativeLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadeScrollbars="false"
+            android:fillViewport="true">
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+
+</android.support.v4.widget.SwipeRefreshLayout>

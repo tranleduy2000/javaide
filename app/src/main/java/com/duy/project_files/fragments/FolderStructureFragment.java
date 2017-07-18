@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import com.unnamed.b.atv.view.AndroidTreeView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Handler;
 
 import static android.widget.FrameLayout.LayoutParams;
 
@@ -57,6 +59,8 @@ public class FolderStructureFragment extends Fragment
     @Nullable
     private ProjectFileContract.FileActionListener listener;
     private ViewGroup mContainerView;
+    private SwipeRefreshLayout mRefreshView;
+
     private ProjectFileContract.Presenter presenter;
 
     public static FolderStructureFragment newInstance(@NonNull ProjectFile projectFile) {
@@ -84,12 +88,24 @@ public class FolderStructureFragment extends Fragment
         return inflater.inflate(R.layout.fragment_folder_structure, null, false);
     }
 
+    private final android.os.Handler mHandler = new android.os.Handler();
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mProjectFile = (ProjectFile)
                 getArguments().getSerializable(CompileManager.PROJECT_FILE);
         mContainerView = view.findViewById(R.id.container);
+        mRefreshView = view.findViewById(R.id.refresh_view);
+        mRefreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+
+            }
+        });
+
+
         refresh();
         view.findViewById(R.id.img_expand_all).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,7 +145,6 @@ public class FolderStructureFragment extends Fragment
         }
         return root;
     }
-
 
 
     private ArrayList<TreeNode> getNode(File parent) {
@@ -179,7 +194,6 @@ public class FolderStructureFragment extends Fragment
     }
 
 
-
     @Override
     public void display(ProjectFile projectFile) {
         this.mProjectFile = projectFile;
@@ -213,6 +227,15 @@ public class FolderStructureFragment extends Fragment
         View view = mTreeView.getView();
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mContainerView.addView(view, params);
+
+        if (mRefreshView.isRefreshing()) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mRefreshView.setRefreshing(false);
+                }
+            }, 400);
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.duy.editor.R;
 import com.duy.editor.activities.AbstractAppCompatActivity;
 import com.duy.editor.setting.JavaPreferences;
+import com.duy.editor.utils.MemoryUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
@@ -32,13 +34,13 @@ import java.io.IOException;
  */
 
 public class InstallActivity extends AbstractAppCompatActivity implements View.OnClickListener {
-    public static final String SYSTEM_ASSETFILE = "system3.tar.gz.mp3";
     public static final String SYSTEM_VERSION = "System v3.0";
     private JavaPreferences mPreferences;
     private ProgressBar mProgressBar;
     private TextView mInfo;
     private Button mInstallButton;
     private TextView mTxtVersion;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,14 +103,19 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
                 long totalByteCount = taskSnapshot.getTotalByteCount();
                 long bytesTransferred = taskSnapshot.getBytesTransferred();
                 if (bytesTransferred != 0 && totalByteCount != 0) {
-                    progressDialog.setMessage(bytesTransferred + "/" + totalByteCount);
+                    String msg = MemoryUtils.toMB(bytesTransferred) + "MB / "
+                            + MemoryUtils.toMB(totalByteCount) + "MB";
+                    progressDialog.setMessage(msg);
                 }
             }
         });
     }
 
     private void showDialogError(Exception e) {
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.error);
+        builder.setMessage(e == null ? " " : e.getMessage());
+        builder.create().show();
     }
 
     private boolean isConnected() {
@@ -181,7 +188,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             super.onPreExecute();
             mInfo.setText("Starting install system");
             mProgressBar.setIndeterminate(true);
-            findViewById(R.id.btn_install).setEnabled(false);
+            mInstallButton.setEnabled(false);
             installing = true;
         }
 
@@ -310,8 +317,31 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             pp = Runtime.getRuntime().exec(busyboxCmd_ + "cp -f " + inputrc.getPath() + " " + inputrcu.getPath(), env, home);
             pp.waitFor();
 
+            //config vim
+            File vimrc = new File(systemFolder, "vimrc");
+            File vimrcu = new File(home, ".vimrc");
+            pp = Runtime.getRuntime().exec(busyboxCmd_ + "cp -f " + vimrc.getPath() + " " + vimrcu.getPath(), env, home);
+            pp.waitFor();
+
+            //Check the home vim folder
+            File vimh = new File(systemFolder, "etc/default_vim");
+            File vimhu = new File(home, ".vim");
+            pp = Runtime.getRuntime().exec(busyboxCmd_ + "cp -rf " + vimh.getPath() + " " + vimhu.getPath(), env, home);
+            pp.waitFor();
+
+            //Create a link to the sdcard
+            File sdcard = Environment.getExternalStorageDirectory();
+            File lnsdcard = new File(home, "sdcard");
+            pp = Runtime.getRuntime().exec(busyboxCmd_ + "ln -s " + sdcard.getPath() + " " + lnsdcard.getPath(), env, home);
+            pp.waitFor();
+
         }
 
+        /**
+         * create local dir
+         *
+         * @param home
+         */
         private void createLocalFile(File home) {
             File local = new File(home, "local");
             if (!local.exists()) local.mkdirs();

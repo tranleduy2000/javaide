@@ -32,6 +32,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.duy.editor.R;
+import com.duy.editor.activities.ActivitySplashScreen;
 import com.duy.editor.file.FileManager;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.ServiceForegroundCompat;
@@ -153,7 +154,7 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
     }
 
     private Notification createNotification() {
-        Intent notifyIntent = new Intent(this, Start.class);
+        Intent notifyIntent = new Intent(this, ActivitySplashScreen.class);
         notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
         Notification.Builder builder = new Notification.Builder(this);

@@ -41,7 +41,7 @@ else
     cd ../../../build/
 
     echo Create normal jar - for use with javac
-    jar -v ../bin/{PROJECT_NAME}.jar org
+    jar -v ../bin/${PROJECT_NAME}.jar org
 
     #Now convert to dex format (need no-strict)
     echo Now convert to dex format

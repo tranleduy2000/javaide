@@ -47,7 +47,6 @@
             android:windowSoftInputMode="adjustResize|stateVisible"/>
 
         <activity android:name="com.spartacusrex.spartacuside.TerminalPreferences"/>
-        <activity android:name="com.spartacusrex.spartacuside.WindowList"/>
 
         <activity android:name="com.spartacusrex.spartacuside.startup.MainActivity"/>
 

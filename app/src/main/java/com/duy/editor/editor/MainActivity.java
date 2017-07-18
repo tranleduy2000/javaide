@@ -182,6 +182,7 @@ public class MainActivity extends BaseEditorActivity implements
             if (!ClassUtil.hasMainFunction(projectFile.getMainClass().getPath(projectFile))) {
                 Toast.makeText(this, "Can not find main function in class "
                         + projectFile.getMainClass().getName(), Toast.LENGTH_SHORT).show();
+                showDialogRunConfig();
                 return;
             }
             //now run project

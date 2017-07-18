@@ -83,7 +83,7 @@ public class TerminalActivity extends Activity {
      * The ViewFlipper which holds the collection of EmulatorView widgets.
      */
     private TermViewFlipper mViewFlipper;
-    private ArrayList<TermSession> mTermSessions;
+    private TermSession mTermSession;
     private SharedPreferences mPrefs;
     private TermSettings mSettings;
     private boolean mAlreadyStarted = false;
@@ -137,12 +137,9 @@ public class TerminalActivity extends Activity {
         Log.d(TAG, "populateViewFlipper() called");
 
         if (mTermService != null) {
-            mTermSessions = mTermService.getSessions(getFilesDir());
-
-            for (TermSession session : mTermSessions) {
-                EmulatorView view = createEmulatorView(session);
-                mViewFlipper.addView(view);
-            }
+            mTermSession = mTermService.getSessions(getFilesDir());
+            EmulatorView view = createEmulatorView(mTermSession);
+            mViewFlipper.addView(view);
 
             updatePrefs();
 
@@ -153,10 +150,10 @@ public class TerminalActivity extends Activity {
                 int action = intent.getIntExtra(CompileManager.ACTION, -1);
                 switch (action) {
                     case CompileManager.Action.RUN:
-                        compileAndRun(mTermSessions.get(0), projectFile);
+                        compileAndRun(mTermSession, projectFile);
                         break;
                     case CompileManager.Action.BUILD_JAR:
-                        buildJarFile(mTermSessions.get(0), projectFile);
+                        buildJarFile(mTermSession, projectFile);
                         break;
                 }
             }
@@ -190,6 +187,7 @@ public class TerminalActivity extends Activity {
             e.printStackTrace();
         }
     }
+
     private void compileAndRun(TermSession termSession, ProjectFile pf) {
         Log.d(TAG, "compileAndRun() called with: filePath = [" + pf + "]");
         File home = getFilesDir();
@@ -254,7 +252,7 @@ public class TerminalActivity extends Activity {
     }
 
     private TermSession getCurrentTermSession() {
-        return mTermSessions.get(mViewFlipper.getDisplayedChild());
+        return mTermSession;
     }
 
     private EmulatorView getCurrentEmulatorView() {
@@ -290,10 +288,11 @@ public class TerminalActivity extends Activity {
     public void onResume() {
         super.onResume();
         if (mAdView != null) mAdView.resume();
-        if (mTermSessions != null && mTermSessions.size() < mViewFlipper.getChildCount()) {
+
+        if (mTermSession != null && 1 < mViewFlipper.getChildCount()) {
             for (int i = 0; i < mViewFlipper.getChildCount(); ++i) {
                 EmulatorView v = (EmulatorView) mViewFlipper.getChildAt(i);
-                if (!mTermSessions.contains(v.getTermSession())) {
+                if (!mTermSession.equals(v.getTermSession())) {
                     v.onPause();
                     mViewFlipper.removeView(v);
                     --i;
@@ -320,6 +319,7 @@ public class TerminalActivity extends Activity {
 
         mViewFlipper.pauseCurrentView();
     }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -369,38 +369,8 @@ public class TerminalActivity extends Activity {
     }
 
     private void doCreateNewWindow() {
-        if (mTermSessions == null) {
-            Log.w(TAG, "Couldn't create new window because mTermSessions == null");
-            return;
-        }
-
-//        TermSession session = createTermSession();
-//        mTermSessions.add(session);
-//        EmulatorView view = createEmulatorView(session);
-//        view.updatePrefs(mSettings);
-//        mViewFlipper.addView(view);
-//        mViewFlipper.setDisplayedChild(mViewFlipper.getChildCount()-1);
     }
 
-    private void doCloseWindow() {
-        if (mTermSessions == null) {
-            return;
-        }
-
-        EmulatorView view = getCurrentEmulatorView();
-        if (view == null) {
-            return;
-        }
-        TermSession session = mTermSessions.remove(mViewFlipper.getDisplayedChild());
-        view.onPause();
-        session.finish();
-        mViewFlipper.removeView(view);
-        if (mTermSessions.size() == 0) {
-            finish();
-        } else {
-            mViewFlipper.showNext();
-        }
-    }
 
     @Override
     protected void onActivityResult(int request, int result, Intent data) {
@@ -416,7 +386,7 @@ public class TerminalActivity extends Activity {
                     }
                 } else {
                     // Close the activity if user closed all sessions
-                    if (mTermSessions.size() == 0) {
+                    if (mTermSession == null) {
                         finish();
                     }
                 }

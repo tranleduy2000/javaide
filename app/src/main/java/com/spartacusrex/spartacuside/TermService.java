@@ -47,7 +47,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,7 +67,7 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
     private final IBinder mTSBinder = new TSBinder();
     boolean mBacktoESC = false;
     private ServiceForegroundCompat compat;
-    private ArrayList<TermSession> mTermSessions;
+    private TermSession mTermSessions;
     private SharedPreferences mPrefs;
     private TermSettings mSettings;
     private boolean mSessionInit;
@@ -168,7 +167,6 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
     @Override
     public void onCreate() {
         compat = new ServiceForegroundCompat(this);
-        mTermSessions = new ArrayList<>();
         compat.startForeground(RUNNING_NOTIFICATION, createNotification());
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -274,13 +272,7 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
         if (!createBashInit(zHome)) {
             return;
         }
-
-        //Create 1 initial Terminals
-        mTermSessions.add(createTermSession(zHome));
-//        mTermSessions.add(createTermSession(zHome));
-//        mTermSessions.add(createTermSession(zHome));
-//        mTermSessions.add(createTermSession(zHome));
-//
+        mTermSessions = createTermSession(zHome);
         mSessionInit = true;
     }
 
@@ -352,10 +344,7 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
     @Override
     public void onDestroy() {
         compat.stopForeground(true);
-        for (TermSession session : mTermSessions) {
-            session.finish();
-        }
-        mTermSessions.clear();
+        mTermSessions.finish();
 
         if (mWakeLock.isHeld()) {
             mWakeLock.release();
@@ -372,16 +361,14 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
         //Close the key log file
         closeKeyLog();
 
-//        mServer.stop();
 
         return;
     }
 
-    public ArrayList<TermSession> getSessions(File zHome) {
+    public TermSession getSessions(File zHome) {
         if (zHome != null) {
             initSessions(zHome);
         }
-
         return mTermSessions;
     }
 

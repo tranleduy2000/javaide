@@ -27,9 +27,10 @@ All your contributions to the project are welcome. You can create issue, pull re
 
 ## Tutorials
 
-1. Create new project, class
-2. Build and run simple project
-3. Run configurations
+1. Setup system https://www.youtube.com/watch?v=UtEZDSdi9ek&t=1s
+2. Create new project, class
+3. Build and run simple project
+4. Run configurations
 
 ## Licence
 

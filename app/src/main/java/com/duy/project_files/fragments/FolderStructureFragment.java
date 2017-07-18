@@ -18,13 +18,12 @@ import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
 import com.duy.project_files.ProjectFile;
 import com.duy.project_files.ProjectFileContract;
-import com.duy.project_files.holder.IconTreeItemHolder;
+import com.duy.project_files.holder.FolderHolder;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.logging.Handler;
 
 import static android.widget.FrameLayout.LayoutParams;
 
@@ -39,7 +38,7 @@ public class FolderStructureFragment extends Fragment
     private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
         @Override
         public void onClick(TreeNode node, Object value) {
-            IconTreeItemHolder.TreeItem i = (IconTreeItemHolder.TreeItem) value;
+            FolderHolder.TreeItem i = (FolderHolder.TreeItem) value;
             if (listener != null && i.getFile().isFile()) {
                 listener.onFileClick(i.getFile(), null);
             }
@@ -48,7 +47,7 @@ public class FolderStructureFragment extends Fragment
     private TreeNode.TreeNodeLongClickListener nodeLongClickListener = new TreeNode.TreeNodeLongClickListener() {
         @Override
         public boolean onLongClick(TreeNode node, Object value) {
-            IconTreeItemHolder.TreeItem i = (IconTreeItemHolder.TreeItem) value;
+            FolderHolder.TreeItem i = (FolderHolder.TreeItem) value;
             if (listener != null && i.getFile().isFile()) {
                 listener.onFileLongClick(i.getFile(), null);
             }
@@ -137,9 +136,9 @@ public class FolderStructureFragment extends Fragment
     @Nullable
     private TreeNode createFileStructure(ProjectFile projectFile) {
         File rootDir = new File(projectFile.getRootDir());
-        TreeNode root = new TreeNode(new IconTreeItemHolder.TreeItem(rootDir, listener));
+        TreeNode root = new TreeNode(new FolderHolder.TreeItem(rootDir, rootDir, listener));
         try {
-            root.addChildren(getNode(rootDir));
+            root.addChildren(getNode(rootDir, rootDir));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -147,22 +146,22 @@ public class FolderStructureFragment extends Fragment
     }
 
 
-    private ArrayList<TreeNode> getNode(File parent) {
+    private ArrayList<TreeNode> getNode(File projectFile, File parent) {
         ArrayList<TreeNode> nodes = new ArrayList<>();
         try {
             if (parent.isDirectory()) {
                 File[] child = parent.listFiles();
                 if (child != null) {
                     for (File file : child) {
-                        TreeNode node = new TreeNode(new IconTreeItemHolder.TreeItem(file, listener));
+                        TreeNode node = new TreeNode(new FolderHolder.TreeItem(projectFile, file, listener));
                         if (file.isDirectory()) {
-                            node.addChildren(getNode(file));
+                            node.addChildren(getNode(projectFile, file));
                         }
                         nodes.add(node);
                     }
                 }
             } else {
-                TreeNode node = new TreeNode(new IconTreeItemHolder.TreeItem(parent, listener));
+                TreeNode node = new TreeNode(new FolderHolder.TreeItem(projectFile, parent, listener));
                 nodes.add(node);
             }
         } catch (Exception e) {
@@ -217,7 +216,7 @@ public class FolderStructureFragment extends Fragment
         mTreeView = new AndroidTreeView(getContext(), root);
         mTreeView.setDefaultAnimation(false);
         mTreeView.setDefaultContainerStyle(R.style.TreeNodeStyleCustom);
-        mTreeView.setDefaultViewHolder(IconTreeItemHolder.class);
+        mTreeView.setDefaultViewHolder(FolderHolder.class);
         mTreeView.setDefaultNodeClickListener(nodeClickListener);
         mTreeView.setDefaultNodeLongClickListener(nodeLongClickListener);
         if (saveState != null) {

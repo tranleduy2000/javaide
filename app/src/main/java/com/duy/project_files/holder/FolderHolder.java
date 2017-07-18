@@ -9,22 +9,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.duy.editor.R;
+import com.duy.project_files.ProjectFile;
 import com.duy.project_files.ProjectFileContract;
+import com.duy.project_files.utils.ProjectFileUtils;
 import com.unnamed.b.atv.model.TreeNode;
 
 import java.io.File;
 
-/**
- * Created by Bogdan Melnychuk on 2/12/15.
- */
-public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItemHolder.TreeItem> {
-    private static final String TAG = "IconTreeItemHolder";
+
+public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeItem> {
+    private static final String TAG = "FolderHolder";
     private TextView txtName;
     private LayoutInflater inflater;
     private ImageView imgArrow;
     private boolean leaf = false;
 
-    public IconTreeItemHolder(Context context) {
+    public FolderHolder(Context context) {
         super(context);
         inflater = LayoutInflater.from(context);
     }
@@ -38,6 +38,9 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
         this.leaf = node.isLeaf();
         View imgNew = view.findViewById(R.id.img_add);
 
+        if (!ProjectFileUtils.inSrcDir(item.getProjectFile(), item.getFile())) {
+            imgNew.setVisibility(View.GONE);
+        }
         if (node.isLeaf()) {
             imgArrow.setVisibility(View.INVISIBLE);
             imgNew.setVisibility(View.GONE);
@@ -72,7 +75,7 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
                     listener.doCreateNewFile(file, new ProjectFileContract.ActionCallback() {
                         @Override
                         public void onSuccess(File newf) {
-                            TreeNode child = new TreeNode(new TreeItem(newf, listener));
+                            TreeNode child = new TreeNode(new TreeItem(item.getProjectFile(), newf, listener));
                             getTreeView().addNode(node, child);
                         }
 
@@ -114,15 +117,21 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
 
 
     public static class TreeItem {
+        private File projectFile;
         @NonNull
         private File file;
         @Nullable
         private ProjectFileContract.FileActionListener listener;
 
-        public TreeItem(@Nullable File file,
+        public TreeItem(@NonNull File projectFile, @Nullable File file,
                         @Nullable ProjectFileContract.FileActionListener listener) {
+            this.projectFile = projectFile;
             this.file = file;
             this.listener = listener;
+        }
+
+        public File getProjectFile() {
+            return projectFile;
         }
 
         @Nullable

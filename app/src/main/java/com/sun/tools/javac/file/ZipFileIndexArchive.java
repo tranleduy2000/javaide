@@ -1,26 +1,26 @@
 /*
- * Copyright (c) 2005, 2009, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 2005, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.file;
@@ -28,6 +28,7 @@ package com.sun.tools.javac.file;
 import com.sun.tools.javac.file.JavacFileManager.Archive;
 import com.sun.tools.javac.file.RelativePath.RelativeDirectory;
 import com.sun.tools.javac.file.RelativePath.RelativeFile;
+import com.sun.tools.javac.util.Assert;
 import com.sun.tools.javac.util.List;
 
 import java.io.ByteArrayInputStream;
@@ -94,26 +95,25 @@ public class ZipFileIndexArchive implements Archive {
      */
     public static class ZipFileIndexFileObject extends BaseFileObject {
 
-        /**
-         * The zipfile containing the entry.
-         */
-        ZipFileIndex zfIndex;
-        /**
-         * The underlying zip entry object.
-         */
-        ZipFileIndex.Entry entry;
-        /**
-         * The InputStream for this zip entry (file.)
-         */
-        InputStream inputStream = null;
-        /**
-         * The name of the zip file where this entry resides.
-         */
-        File zipName;
-        /**
-         * The entry's name.
+        /** The entry's name.
          */
         private String name;
+
+        /** The zipfile containing the entry.
+         */
+        ZipFileIndex zfIndex;
+
+        /** The underlying zip entry object.
+         */
+        ZipFileIndex.Entry entry;
+
+        /** The InputStream for this zip entry (file.)
+         */
+        InputStream inputStream = null;
+
+        /** The name of the zip file where this entry resides.
+         */
+        File zipName;
 
 
         ZipFileIndexFileObject(JavacFileManager fileManager, ZipFileIndex zfIndex, ZipFileIndex.Entry entry, File zipFileName) {
@@ -124,41 +124,41 @@ public class ZipFileIndexArchive implements Archive {
             this.zipName = zipFileName;
         }
 
-        //@Override
+        @Override
         public URI toUri() {
             return createJarUri(zipName, getPrefixedEntryName());
         }
 
-        //@Override
+        @Override
         public String getName() {
             return zipName + "(" + getPrefixedEntryName() + ")";
         }
 
-        //@Override
+        @Override
         public String getShortName() {
             return zipName.getName() + "(" + entry.getName() + ")";
         }
 
-        //@Override
-        public JavaFileObject.Kind getKind() {
+        @Override
+        public Kind getKind() {
             return getKind(entry.getName());
         }
 
-        //@Override
+        @Override
         public InputStream openInputStream() throws IOException {
             if (inputStream == null) {
-                assert entry != null; // see constructor
+                Assert.checkNonNull(entry); // see constructor
                 inputStream = new ByteArrayInputStream(zfIndex.read(entry));
             }
             return inputStream;
         }
 
-        //@Override
+        @Override
         public OutputStream openOutputStream() throws IOException {
             throw new UnsupportedOperationException();
         }
 
-        //@Override
+        @Override
         public CharBuffer getCharContent(boolean ignoreEncodingErrors) throws IOException {
             CharBuffer cb = fileManager.getCachedContent(this);
             if (cb == null) {
@@ -181,27 +181,27 @@ public class ZipFileIndexArchive implements Archive {
             return cb;
         }
 
-        //@Override
+        @Override
         public Writer openWriter() throws IOException {
             throw new UnsupportedOperationException();
         }
 
-        //@Override
+        @Override
         public long getLastModified() {
             return entry.getLastModified();
         }
 
-        //@Override
+        @Override
         public boolean delete() {
             throw new UnsupportedOperationException();
         }
 
-        //@Override
+        @Override
         protected CharsetDecoder getDecoder(boolean ignoreEncodingErrors) {
             return fileManager.getDecoder(fileManager.getEncodingName(), ignoreEncodingErrors);
         }
 
-        //@Override
+        @Override
         protected String inferBinaryName(Iterable<? extends File> path) {
             String entryName = entry.getName();
             if (zfIndex.symbolFilePrefix != null) {
@@ -212,8 +212,8 @@ public class ZipFileIndexArchive implements Archive {
             return removeExtension(entryName).replace('/', '.');
         }
 
-        //@Override
-        public boolean isNameCompatible(String cn, JavaFileObject.Kind k) {
+        @Override
+        public boolean isNameCompatible(String cn, Kind k) {
             cn.getClass(); // null check
             if (k == Kind.OTHER && getKind() != k)
                 return false;
@@ -225,7 +225,7 @@ public class ZipFileIndexArchive implements Archive {
          * Two ZipFileIndexFileObjects are equal if the absolute paths of the underlying
          * zip files are equal and if the paths within those zip files are equal.
          */
-        //@Override
+        @Override
         public boolean equals(Object other) {
             if (this == other)
                 return true;
@@ -238,7 +238,7 @@ public class ZipFileIndexArchive implements Archive {
                     && name.equals(o.name);
         }
 
-        //@Override
+        @Override
         public int hashCode() {
             return zfIndex.getAbsoluteFile().hashCode() + name.hashCode();
         }

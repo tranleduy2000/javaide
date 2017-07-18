@@ -1,3 +1,4 @@
+
 package com.sun.tools.javac.file;
 
 import com.sun.tools.javac.util.Context;
@@ -14,9 +15,8 @@ import java.util.jar.Manifest;
 
 /**
  * Get meta-info about files. Default direct (non-caching) implementation.
- *
  * @see CacheFSInfo
- * <p>
+ *
  * <p><b>This is NOT part of any supported API.
  * If you write code that depends on this, you do so at your own risk.
  * This code and its internal interfaces are subject to change or
@@ -24,24 +24,22 @@ import java.util.jar.Manifest;
  */
 public class FSInfo {
 
-    protected FSInfo() {
-    }
-
-    protected FSInfo(Context context) {
-        context.put(FSInfo.class, this);
-    }
-
-    /**
-     * Get the FSInfo instance for this context.
-     *
-     * @param context the context
-     * @return the Paths instance for this context
+    /** Get the FSInfo instance for this context.
+     *  @param context the context
+     *  @return the Paths instance for this context
      */
     public static FSInfo instance(Context context) {
         FSInfo instance = context.get(FSInfo.class);
         if (instance == null)
             instance = new FSInfo();
         return instance;
+    }
+
+    protected FSInfo() {
+    }
+
+    protected FSInfo(Context context) {
+        context.put(FSInfo.class, this);
     }
 
     public File getCanonicalFile(File file) {

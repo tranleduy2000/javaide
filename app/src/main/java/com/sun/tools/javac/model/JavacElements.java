@@ -1,89 +1,58 @@
 /*
- * Copyright (c) 2005, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 2005, 2010, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.model;
 
-import com.sun.tools.javac.code.Attribute;
-import com.sun.tools.javac.code.Flags;
-import com.sun.tools.javac.code.Kinds;
-import com.sun.tools.javac.code.Scope;
-import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.code.Symbol.ClassSymbol;
-import com.sun.tools.javac.code.Symbol.CompletionFailure;
-import com.sun.tools.javac.code.Symbol.MethodSymbol;
-import com.sun.tools.javac.code.Symbol.PackageSymbol;
-import com.sun.tools.javac.code.Symbol.TypeSymbol;
-import com.sun.tools.javac.code.Symtab;
-import com.sun.tools.javac.code.Type;
-import com.sun.tools.javac.code.TypeTags;
-import com.sun.tools.javac.code.Types;
-import com.sun.tools.javac.comp.AttrContext;
-import com.sun.tools.javac.comp.Enter;
-import com.sun.tools.javac.comp.Env;
-import com.sun.tools.javac.jvm.ClassReader;
-import com.sun.tools.javac.main.JavaCompiler;
-import com.sun.tools.javac.processing.PrintingProcessor;
-import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.tree.JCTree.JCAnnotation;
-import com.sun.tools.javac.tree.JCTree.JCAssign;
-import com.sun.tools.javac.tree.JCTree.JCClassDecl;
-import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
-import com.sun.tools.javac.tree.JCTree.JCExpression;
-import com.sun.tools.javac.tree.JCTree.JCIdent;
-import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
-import com.sun.tools.javac.tree.JCTree.JCNewArray;
-import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
-import com.sun.tools.javac.tree.TreeInfo;
-import com.sun.tools.javac.tree.TreeScanner;
-import com.sun.tools.javac.util.Constants;
-import com.sun.tools.javac.util.Context;
-import com.sun.tools.javac.util.List;
-import com.sun.tools.javac.util.Name;
-import com.sun.tools.javac.util.Pair;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
 import java.util.Map;
-
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
+import com.sun.tools.javac.code.*;
+import com.sun.tools.javac.code.Symbol.*;
+import com.sun.tools.javac.code.TypeTags;
+import com.sun.tools.javac.comp.AttrContext;
+import com.sun.tools.javac.comp.Enter;
+import com.sun.tools.javac.comp.Env;
+import com.sun.tools.javac.main.JavaCompiler;
+import com.sun.tools.javac.processing.PrintingProcessor;
+import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.tree.JCTree.*;
+import com.sun.tools.javac.tree.TreeInfo;
+import com.sun.tools.javac.tree.TreeScanner;
+import com.sun.tools.javac.util.*;
+import com.sun.tools.javac.util.Name;
 
 import static javax.lang.model.util.ElementFilter.methodsIn;
 
 /**
  * Utility methods for operating on program elements.
- * <p>
+ *
  * <p><b>This is NOT part of any supported API.
  * If you write code that depends on this, you do so at your own
  * risk.  This code and its internal interfaces are subject to change
@@ -91,31 +60,39 @@ import static javax.lang.model.util.ElementFilter.methodsIn;
  */
 public class JavacElements implements Elements {
 
-    private static final Context.Key<JavacElements> KEY =
-            new Context.Key<JavacElements>();
     private JavaCompiler javaCompiler;
     private Symtab syms;
-    private Name.Table names;
+    private Names names;
     private Types types;
     private Enter enter;
-    private ClassReader reader;
+
+    public static JavacElements instance(Context context) {
+        JavacElements instance = context.get(JavacElements.class);
+        if (instance == null)
+            instance = new JavacElements(context);
+        return instance;
+    }
 
     /**
      * Public for use only by JavacProcessingEnvironment
      */
-    // TODO JavacElements constructor should be protected
-    public JavacElements(Context context) {
+    protected JavacElements(Context context) {
         setContext(context);
     }
 
-    public static JavacElements instance(Context context) {
-        JavacElements instance = context.get(KEY);
-        if (instance == null) {
-            instance = new JavacElements(context);
-            context.put(KEY, instance);
-        }
-        return instance;
+    /**
+     * Use a new context.  May be called from outside to update
+     * internal state for a new annotation-processing round.
+     */
+    public void setContext(Context context) {
+        context.put(JavacElements.class, this);
+        javaCompiler = JavaCompiler.instance(context);
+        syms = Symtab.instance(context);
+        names = Names.instance(context);
+        types = Types.instance(context);
+        enter = Enter.instance(context);
     }
+
 
     /**
      * An internal-use utility that creates a reified annotation.
@@ -124,7 +101,7 @@ public class JavacElements implements Elements {
                                                          Class<A> annoType) {
         if (!annoType.isAnnotation())
             throw new IllegalArgumentException("Not an annotation type: "
-                    + annoType);
+                                               + annoType);
         String name = annoType.getName();
         for (Attribute.Compound anno : annotated.getAnnotationMirrors())
             if (name.equals(anno.type.tsym.flatName().toString()))
@@ -140,8 +117,8 @@ public class JavacElements implements Elements {
                                                          Class<A> annoType) {
         boolean inherited = annoType.isAnnotationPresent(Inherited.class);
         A result = null;
-        while (annotated.name != annotated.name.table.java_lang_Object) {
-            result = getAnnotation((Symbol) annotated, annoType);
+        while (annotated.name != annotated.name.table.names.java_lang_Object) {
+            result = getAnnotation((Symbol)annotated, annoType);
             if (result != null || !inherited)
                 break;
             Type sup = annotated.getSuperclass();
@@ -152,59 +129,21 @@ public class JavacElements implements Elements {
         return result;
     }
 
-    /**
-     * Tests whether a list of annotations contains an annotation
-     * of a given type.
-     */
-    private static boolean containsAnnoOfType(List<Attribute.Compound> annos,
-                                              Type type) {
-        for (Attribute.Compound anno : annos) {
-            if (anno.type.tsym == type.tsym)
-                return true;
-        }
-        return false;
-    }
-
-    /**
-     * Returns an object cast to the specified type.
-     *
-     * @throws NullPointerException     if the object is {@code null}
-     * @throws IllegalArgumentException if the object is of the wrong type
-     */
-    private static <T> T cast(Class<T> clazz, Object o) {
-        if (!clazz.isInstance(o))
-            throw new IllegalArgumentException(o.toString());
-        return clazz.cast(o);
-    }
-
-    /**
-     * Use a new context.  May be called from outside to update
-     * internal state for a new annotation-processing round.
-     * This instance is *not* then registered with the new context.
-     */
-    public void setContext(Context context) {
-        javaCompiler = JavaCompiler.instance(context);
-        syms = Symtab.instance(context);
-        names = Name.Table.instance(context);
-        types = Types.instance(context);
-        enter = Enter.instance(context);
-        reader = ClassReader.instance(context);
-    }
 
     public PackageSymbol getPackageElement(CharSequence name) {
         String strName = name.toString();
         if (strName.equals(""))
             return syms.unnamedPackage;
         return SourceVersion.isName(strName)
-                ? nameToSymbol(strName, PackageSymbol.class)
-                : null;
+            ? nameToSymbol(strName, PackageSymbol.class)
+            : null;
     }
 
     public ClassSymbol getTypeElement(CharSequence name) {
         String strName = name.toString();
         return SourceVersion.isName(strName)
-                ? nameToSymbol(strName, ClassSymbol.class)
-                : null;
+            ? nameToSymbol(strName, ClassSymbol.class)
+            : null;
     }
 
     /**
@@ -215,8 +154,8 @@ public class JavacElements implements Elements {
         Name name = names.fromString(nameStr);
         // First check cache.
         Symbol sym = (clazz == ClassSymbol.class)
-                ? syms.classes.get(name)
-                : syms.packages.get(name);
+                    ? syms.classes.get(name)
+                    : syms.packages.get(name);
 
         try {
             if (sym == null)
@@ -228,8 +167,8 @@ public class JavacElements implements Elements {
                     sym.exists() &&
                     clazz.isInstance(sym) &&
                     name.equals(sym.getQualifiedName()))
-                    ? clazz.cast(sym)
-                    : null;
+                ? clazz.cast(sym)
+                : null;
         } catch (CompletionFailure e) {
             return null;
         }
@@ -261,11 +200,11 @@ public class JavacElements implements Elements {
         if (annoTree == null)
             return null;
         return new JavacSourcePosition(sourcefile, annoTree.pos,
-                toplevel.lineMap);
+                                       toplevel.lineMap);
     }
 
     public JavacSourcePosition getSourcePosition(Element e, AnnotationMirror a,
-                                                 AnnotationValue v) {
+                                            AnnotationValue v) {
         // TODO: better accuracy in getSourcePosition(... AnnotationValue)
         return getSourcePosition(e, a);
     }
@@ -279,19 +218,15 @@ public class JavacElements implements Elements {
         Symbol sym = cast(Symbol.class, e);
         class Vis extends JCTree.Visitor {
             List<JCAnnotation> result = null;
-
             public void visitTopLevel(JCCompilationUnit tree) {
                 result = tree.packageAnnotations;
             }
-
             public void visitClassDef(JCClassDecl tree) {
                 result = tree.mods.annotations;
             }
-
             public void visitMethodDef(JCMethodDecl tree) {
                 result = tree.mods.annotations;
             }
-
             public void visitVarDef(JCVariableDecl tree) {
                 result = tree.mods.annotations;
             }
@@ -301,8 +236,8 @@ public class JavacElements implements Elements {
         if (vis.result == null)
             return null;
         return matchAnnoToTree(cast(Attribute.Compound.class, findme),
-                sym.getAnnotationMirrors(),
-                vis.result);
+                               sym.getAnnotationMirrors(),
+                               vis.result);
     }
 
     /**
@@ -336,13 +271,10 @@ public class JavacElements implements Elements {
 
         class Vis implements Attribute.Visitor {
             JCTree result = null;
-
             public void visitConstant(Attribute.Constant value) {
             }
-
             public void visitClass(Attribute.Class clazz) {
             }
-
             public void visitCompound(Attribute.Compound anno) {
                 for (Pair<MethodSymbol, Attribute> pair : anno.values) {
                     JCExpression expr = scanForAssign(pair.fst, tree);
@@ -355,7 +287,6 @@ public class JavacElements implements Elements {
                     }
                 }
             }
-
             public void visitArray(Attribute.Array array) {
                 if (tree.getTag() == JCTree.NEWARRAY &&
                         types.elemtype(array.type).tsym == findme.type.tsym) {
@@ -369,10 +300,8 @@ public class JavacElements implements Elements {
                     }
                 }
             }
-
             public void visitEnum(Attribute.Enum e) {
             }
-
             public void visitError(Attribute.Error e) {
             }
         }
@@ -389,17 +318,14 @@ public class JavacElements implements Elements {
                                        final JCTree tree) {
         class TS extends TreeScanner {
             JCExpression result = null;
-
             public void scan(JCTree t) {
                 if (t != null && result == null)
                     t.accept(this);
             }
-
             public void visitAnnotation(JCAnnotation t) {
                 if (t == tree)
                     scan(t.args);
             }
-
             public void visitAssign(JCAssign t) {
                 if (t.lhs.getTag() == JCTree.IDENT) {
                     JCIdent ident = (JCIdent) t.lhs;
@@ -451,13 +377,13 @@ public class JavacElements implements Elements {
     }
 
     public Map<MethodSymbol, Attribute> getElementValuesWithDefaults(
-            AnnotationMirror a) {
+                                                        AnnotationMirror a) {
         Attribute.Compound anno = cast(Attribute.Compound.class, a);
         DeclaredType annotype = a.getAnnotationType();
         Map<MethodSymbol, Attribute> valmap = anno.getElementValues();
 
         for (ExecutableElement ex :
-                methodsIn(annotype.asElement().getEnclosedElements())) {
+                 methodsIn(annotype.asElement().getEnclosedElements())) {
             MethodSymbol meth = (MethodSymbol) ex;
             Attribute defaultValue = meth.getDefaultValue();
             if (defaultValue != null && !valmap.containsKey(meth)) {
@@ -478,37 +404,37 @@ public class JavacElements implements Elements {
             addMembers(scope, t);
         return new FilteredMemberList(scope);
     }
-
     // where
-    private void addMembers(Scope scope, Type type) {
-        members:
-        for (Scope.Entry e = type.asElement().members().elems; e != null; e = e.sibling) {
-            Scope.Entry overrider = scope.lookup(e.sym.getSimpleName());
-            while (overrider.scope != null) {
-                if (overrider.sym.kind == e.sym.kind
-                        && (overrider.sym.flags() & Flags.SYNTHETIC) == 0) {
-                    if (overrider.sym.getKind() == ElementKind.METHOD
-                            && overrides((ExecutableElement) overrider.sym, (ExecutableElement) e.sym, (TypeElement) type.asElement())) {
-                        continue members;
+        private void addMembers(Scope scope, Type type) {
+            members:
+            for (Scope.Entry e = type.asElement().members().elems; e != null; e = e.sibling) {
+                Scope.Entry overrider = scope.lookup(e.sym.getSimpleName());
+                while (overrider.scope != null) {
+                    if (overrider.sym.kind == e.sym.kind
+                        && (overrider.sym.flags() & Flags.SYNTHETIC) == 0)
+                    {
+                        if (overrider.sym.getKind() == ElementKind.METHOD
+                        && overrides((ExecutableElement)overrider.sym, (ExecutableElement)e.sym, (TypeElement)type.asElement())) {
+                            continue members;
+                        }
                     }
+                    overrider = overrider.next();
                 }
-                overrider = overrider.next();
-            }
-            boolean derived = e.sym.getEnclosingElement() != scope.owner;
-            ElementKind kind = e.sym.getKind();
-            boolean initializer = kind == ElementKind.CONSTRUCTOR
+                boolean derived = e.sym.getEnclosingElement() != scope.owner;
+                ElementKind kind = e.sym.getKind();
+                boolean initializer = kind == ElementKind.CONSTRUCTOR
                     || kind == ElementKind.INSTANCE_INIT
                     || kind == ElementKind.STATIC_INIT;
-            if (!derived || (!initializer && e.sym.isInheritedIn(scope.owner, types)))
-                scope.enter(e.sym);
+                if (!derived || (!initializer && e.sym.isInheritedIn(scope.owner, types)))
+                    scope.enter(e.sym);
+            }
         }
-    }
 
     /**
      * Returns all annotations of an element, whether
      * inherited or directly present.
      *
-     * @param e the element being examined
+     * @param e  the element being examined
      * @return all annotations of the element
      */
     public List<Attribute.Compound> getAllAnnotationMirrors(Element e) {
@@ -543,6 +469,19 @@ public class JavacElements implements Elements {
         return false;
     }
 
+    /**
+     * Tests whether a list of annotations contains an annotation
+     * of a given type.
+     */
+    private static boolean containsAnnoOfType(List<Attribute.Compound> annos,
+                                              Type type) {
+        for (Attribute.Compound anno : annos) {
+            if (anno.type.tsym == type.tsym)
+                return true;
+        }
+        return false;
+    }
+
     public boolean hides(Element hiderEl, Element hideeEl) {
         Symbol hider = cast(Symbol.class, hiderEl);
         Symbol hidee = cast(Symbol.class, hideeEl);
@@ -559,7 +498,7 @@ public class JavacElements implements Elements {
         // Methods only hide methods with matching signatures.
         if (hider.kind == Kinds.MTH) {
             if (!hider.isStatic() ||
-                    !types.isSubSignature(hider.type, hidee.type)) {
+                        !types.isSubSignature(hider.type, hidee.type)) {
                 return false;
             }
         }
@@ -587,18 +526,18 @@ public class JavacElements implements Elements {
 
         return rider.name == ridee.name &&
 
-                // not reflexive as per JLS
-                rider != ridee &&
+               // not reflexive as per JLS
+               rider != ridee &&
 
-                // we don't care if ridee is static, though that wouldn't
-                // compile
-                !rider.isStatic() &&
+               // we don't care if ridee is static, though that wouldn't
+               // compile
+               !rider.isStatic() &&
 
-                // Symbol.overrides assumes the following
-                ridee.isMemberOf(origin, types) &&
+               // Symbol.overrides assumes the following
+               ridee.isMemberOf(origin, types) &&
 
-                // check access and signatures; don't check return types
-                rider.overrides(ridee, origin, types, false);
+               // check access and signatures; don't check return types
+               rider.overrides(ridee, origin, types, false);
     }
 
     public String getConstantExpression(Object value) {
@@ -611,7 +550,7 @@ public class JavacElements implements Elements {
      * diagnostics.  The exact format of the output is <em>not</em>
      * specified and is subject to change.
      *
-     * @param w        the writer to print the output to
+     * @param w the writer to print the output to
      * @param elements the elements to print
      */
     public void printElements(java.io.Writer w, Element... elements) {
@@ -620,7 +559,7 @@ public class JavacElements implements Elements {
     }
 
     public Name getName(CharSequence cs) {
-        return Name.fromString(names, cs.toString());
+        return names.fromString(cs.toString());
     }
 
     /**
@@ -635,7 +574,7 @@ public class JavacElements implements Elements {
         JCTree tree = TreeInfo.declarationFor(sym, enterEnv.tree);
         if (tree == null || enterEnv.toplevel == null)
             return null;
-        return new Pair<JCTree, JCCompilationUnit>(tree, enterEnv.toplevel);
+        return new Pair<JCTree,JCCompilationUnit>(tree, enterEnv.toplevel);
     }
 
     /**
@@ -648,7 +587,7 @@ public class JavacElements implements Elements {
      * compilation unit for the annotation is returned.
      */
     public Pair<JCTree, JCCompilationUnit> getTreeAndTopLevel(
-            Element e, AnnotationMirror a, AnnotationValue v) {
+                      Element e, AnnotationMirror a, AnnotationValue v) {
         if (e == null)
             return null;
 
@@ -676,10 +615,21 @@ public class JavacElements implements Elements {
         // Get enclosing class of sym, or sym itself if it is a class
         // or package.
         TypeSymbol ts = (sym.kind != Kinds.PCK)
-                ? sym.enclClass()
-                : (PackageSymbol) sym;
+                        ? sym.enclClass()
+                        : (PackageSymbol) sym;
         return (ts != null)
                 ? enter.getEnv(ts)
                 : null;
+    }
+
+    /**
+     * Returns an object cast to the specified type.
+     * @throws NullPointerException if the object is {@code null}
+     * @throws IllegalArgumentException if the object is of the wrong type
+     */
+    private static <T> T cast(Class<T> clazz, Object o) {
+        if (! clazz.isInstance(o))
+            throw new IllegalArgumentException(o.toString());
+        return clazz.cast(o);
     }
 }

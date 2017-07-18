@@ -1,26 +1,26 @@
 /*
- * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 2006, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.main;
@@ -28,7 +28,7 @@ package com.sun.tools.javac.main;
 
 /**
  * TODO: describe com.sun.tools.javac.main.OptionName
- * <p>
+ *
  * <p><b>This is NOT part of any supported API.
  * If you write code that depends on this, you do so at your own
  * risk.  This code and its internal interfaces are subject to change
@@ -37,13 +37,10 @@ package com.sun.tools.javac.main;
 public enum OptionName {
     G("-g"),
     G_NONE("-g:none"),
-    G_CUSTOM("-g:{lines,vars,source}"),
+    G_CUSTOM("-g:"),
     XLINT("-Xlint"),
-    XLINT_CUSTOM("-Xlint:{"
-            + "all,"
-            + "cast,deprecation,divzero,empty,unchecked,fallthrough,path,serial,finally,overrides,"
-            + "-cast,-deprecation,-divzero,-empty,-unchecked,-fallthrough,-path,-serial,-finally,-overrides,"
-            + "none}"),
+    XLINT_CUSTOM("-Xlint:"),
+    DIAGS("-XDdiags="),
     NOWARN("-nowarn"),
     VERBOSE("-verbose"),
     DEPRECATION("-deprecation"),
@@ -58,12 +55,12 @@ public enum OptionName {
     DJAVA_EXT_DIRS("-Djava.ext.dirs="),
     ENDORSEDDIRS("-endorseddirs"),
     DJAVA_ENDORSED_DIRS("-Djava.endorsed.dirs="),
-    PROC_CUSTOM("-proc:{none,only}"),
+    PROC("-proc:"),
     PROCESSOR("-processor"),
     PROCESSORPATH("-processorpath"),
     D("-d"),
     S("-s"),
-    IMPLICIT("-implicit:{none,class}"),
+    IMPLICIT("-implicit:"),
     ENCODING("-encoding"),
     SOURCE("-source"),
     TARGET("-target"),
@@ -83,13 +80,15 @@ public enum OptionName {
     XMAXERRS("-Xmaxerrs"),
     XMAXWARNS("-Xmaxwarns"),
     XSTDOUT("-Xstdout"),
+    XPKGINFO("-Xpkginfo:"),
     XPRINT("-Xprint"),
     XPRINTROUNDS("-XprintRounds"),
     XPRINTPROCESSORINFO("-XprintProcessorInfo"),
-    XPREFER("-Xprefer:{source,newer}"),
+    XPREFER("-Xprefer:"),
     O("-O"),
     XJCOV("-Xjcov"),
     XD("-XD"),
+    AT("@"),
     SOURCEFILE("sourcefile");
 
     public final String optionName;

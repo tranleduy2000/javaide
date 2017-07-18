@@ -1,26 +1,26 @@
 /*
- * Copyright (c) 2005, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 2005, 2010, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.model;
@@ -33,9 +33,12 @@ import com.sun.tools.javac.code.Symbol.MethodSymbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.code.Type.ArrayType;
 import com.sun.tools.javac.util.List;
+import com.sun.tools.javac.util.ListBuffer;
 import com.sun.tools.javac.util.Name;
 import com.sun.tools.javac.util.Pair;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.AnnotationTypeMismatchException;
 import java.lang.reflect.Array;
@@ -56,12 +59,12 @@ import sun.reflect.annotation.ExceptionProxy;
 /**
  * A generator of dynamic proxy implementations of
  * java.lang.annotation.Annotation.
- * <p>
+ *
  * <p> The "dynamic proxy return form" of an annotation element value is
  * the form used by sun.reflect.annotation.AnnotationInvocationHandler.
- * <p>
+ *
  * <p><b>This is NOT part of any supported API.
- * you write code that depends on this, you do so at your own risk.
+ * If you write code that depends on this, you do so at your own risk.
  * This code and its internal interfaces are subject to change or
  * deletion without notice.</b>
  */
@@ -94,7 +97,7 @@ public class AnnotationProxyMaker {
      */
     private Annotation generateAnnotation() {
         return AnnotationParser.annotationForMap(annoType,
-                getAllReflectedValues());
+                                                 getAllReflectedValues());
     }
 
     /**
@@ -106,7 +109,7 @@ public class AnnotationProxyMaker {
         Map<String, Object> res = new LinkedHashMap<String, Object>();
 
         for (Map.Entry<MethodSymbol, Attribute> entry :
-                getAllValues().entrySet()) {
+                                                  getAllValues().entrySet()) {
             MethodSymbol meth = entry.getKey();
             Object value = generateValue(meth, entry.getValue());
             if (value != null) {
@@ -125,7 +128,7 @@ public class AnnotationProxyMaker {
      */
     private Map<MethodSymbol, Attribute> getAllValues() {
         Map<MethodSymbol, Attribute> res =
-                new LinkedHashMap<MethodSymbol, Attribute>();
+            new LinkedHashMap<MethodSymbol, Attribute>();
 
         // First find the default values.
         ClassSymbol sym = (ClassSymbol) anno.type.tsym;
@@ -153,76 +156,6 @@ public class AnnotationProxyMaker {
         return vv.getValue(attr);
     }
 
-    /**
-     * ExceptionProxy for MirroredTypeException.
-     * The toString, hashCode, and equals methods foward to the underlying
-     * type.
-     */
-    private static class MirroredTypeExceptionProxy extends ExceptionProxy {
-        static final long serialVersionUID = 269;
-
-        private transient final TypeMirror type;
-        private final String typeString;
-
-        MirroredTypeExceptionProxy(TypeMirror t) {
-            type = t;
-            typeString = t.toString();
-        }
-
-        public String toString() {
-            return typeString;
-        }
-
-        public int hashCode() {
-            return (type != null ? type : typeString).hashCode();
-        }
-
-        public boolean equals(Object obj) {
-            return type != null &&
-                    obj instanceof MirroredTypeExceptionProxy &&
-                    type.equals(((MirroredTypeExceptionProxy) obj).type);
-        }
-
-        protected RuntimeException generateException() {
-            return new MirroredTypeException(type);
-        }
-    }
-
-    /**
-     * ExceptionProxy for MirroredTypesException.
-     * The toString, hashCode, and equals methods foward to the underlying
-     * types.
-     */
-    private static class MirroredTypesExceptionProxy extends ExceptionProxy {
-        static final long serialVersionUID = 269;
-
-        private transient final List<TypeMirror> types;
-        private final String typeStrings;
-
-        MirroredTypesExceptionProxy(List<TypeMirror> ts) {
-            types = ts;
-            typeStrings = ts.toString();
-        }
-
-        public String toString() {
-            return typeStrings;
-        }
-
-        public int hashCode() {
-            return (types != null ? types : typeStrings).hashCode();
-        }
-
-        public boolean equals(Object obj) {
-            return types != null &&
-                    obj instanceof MirroredTypesExceptionProxy &&
-                    types.equals(
-                            ((MirroredTypesExceptionProxy) obj).types);
-        }
-
-        protected RuntimeException generateException() {
-            return new MirroredTypesException(types);
-        }
-    }
 
     private class ValueVisitor implements Attribute.Visitor {
 
@@ -244,8 +177,8 @@ public class AnnotationProxyMaker {
             returnClass = method.getReturnType();
             attr.accept(this);
             if (!(value instanceof ExceptionProxy) &&
-                    !AnnotationType.invocationHandlerReturnType(returnClass)
-                            .isInstance(value)) {
+                !AnnotationType.invocationHandlerReturnType(returnClass)
+                                                        .isInstance(value)) {
                 typeMismatch(method, attr);
             }
             return value;
@@ -261,16 +194,16 @@ public class AnnotationProxyMaker {
         }
 
         public void visitArray(Attribute.Array a) {
-            Name elemName = ((ArrayType) a.type).elemtype.tsym.name;
+            Name elemName = ((ArrayType) a.type).elemtype.tsym.getQualifiedName();
 
-            if (elemName == elemName.table.java_lang_Class) {   // Class[]
+            if (elemName.equals(elemName.table.names.java_lang_Class)) {   // Class[]
                 // Construct a proxy for a MirroredTypesException
-                List<TypeMirror> elems = List.nil();
+                ListBuffer<TypeMirror> elems = new ListBuffer<TypeMirror>();
                 for (Attribute value : a.values) {
                     Type elem = ((Attribute.Class) value).type;
-                    elems.add(elem);
+                    elems.append(elem);
                 }
-                value = new MirroredTypesExceptionProxy(elems);
+                value = new MirroredTypesExceptionProxy(elems.toList());
 
             } else {
                 int len = a.values.length;
@@ -297,15 +230,15 @@ public class AnnotationProxyMaker {
             }
         }
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes"})
         public void visitEnum(Attribute.Enum e) {
             if (returnClass.isEnum()) {
                 String constName = e.value.toString();
                 try {
-                    value = Enum.valueOf((Class) returnClass, constName);
+                    value = Enum.valueOf((Class)returnClass, constName);
                 } catch (IllegalArgumentException ex) {
                     value = new EnumConstantNotPresentExceptionProxy(
-                            (Class) returnClass, constName);
+                                        (Class<Enum<?>>) returnClass, constName);
                 }
             } else {
                 value = null;   // indicates a type mismatch
@@ -315,7 +248,7 @@ public class AnnotationProxyMaker {
         public void visitCompound(Attribute.Compound c) {
             try {
                 Class<? extends Annotation> nested =
-                        returnClass.asSubclass(Annotation.class);
+                    returnClass.asSubclass(Annotation.class);
                 value = generateAnnotation(c, nested);
             } catch (ClassCastException ex) {
                 value = null;   // indicates a type mismatch
@@ -330,19 +263,109 @@ public class AnnotationProxyMaker {
         /**
          * Sets "value" to an ExceptionProxy indicating a type mismatch.
          */
-        private void typeMismatch(final Method method, final Attribute attr) {
-            value = new ExceptionProxy() {
+        private void typeMismatch(Method method, final Attribute attr) {
+            class AnnotationTypeMismatchExceptionProxy extends ExceptionProxy {
                 static final long serialVersionUID = 269;
-
+                transient final Method method;
+                AnnotationTypeMismatchExceptionProxy(Method method) {
+                    this.method = method;
+                }
                 public String toString() {
                     return "<error>";   // eg:  @Anno(value=<error>)
                 }
-
                 protected RuntimeException generateException() {
                     return new AnnotationTypeMismatchException(method,
-                            attr.type.toString());
+                                attr.type.toString());
                 }
-            };
+            }
+            value = new AnnotationTypeMismatchExceptionProxy(method);
+        }
+    }
+
+
+    /**
+     * ExceptionProxy for MirroredTypeException.
+     * The toString, hashCode, and equals methods foward to the underlying
+     * type.
+     */
+    private static final class MirroredTypeExceptionProxy extends ExceptionProxy {
+        static final long serialVersionUID = 269;
+
+        private transient TypeMirror type;
+        private final String typeString;
+
+        MirroredTypeExceptionProxy(TypeMirror t) {
+            type = t;
+            typeString = t.toString();
+        }
+
+        public String toString() {
+            return typeString;
+        }
+
+        public int hashCode() {
+            return (type != null ? type : typeString).hashCode();
+        }
+
+        public boolean equals(Object obj) {
+            return type != null &&
+                   obj instanceof MirroredTypeExceptionProxy &&
+                   type.equals(((MirroredTypeExceptionProxy) obj).type);
+        }
+
+        protected RuntimeException generateException() {
+            return new MirroredTypeException(type);
+        }
+
+        // Explicitly set all transient fields.
+        private void readObject(ObjectInputStream s)
+            throws IOException, ClassNotFoundException {
+            s.defaultReadObject();
+            type = null;
+        }
+    }
+
+
+    /**
+     * ExceptionProxy for MirroredTypesException.
+     * The toString, hashCode, and equals methods foward to the underlying
+     * types.
+     */
+    private static final class MirroredTypesExceptionProxy extends ExceptionProxy {
+        static final long serialVersionUID = 269;
+
+        private transient List<TypeMirror> types;
+        private final String typeStrings;
+
+        MirroredTypesExceptionProxy(List<TypeMirror> ts) {
+            types = ts;
+            typeStrings = ts.toString();
+        }
+
+        public String toString() {
+            return typeStrings;
+        }
+
+        public int hashCode() {
+            return (types != null ? types : typeStrings).hashCode();
+        }
+
+        public boolean equals(Object obj) {
+            return types != null &&
+                   obj instanceof MirroredTypesExceptionProxy &&
+                   types.equals(
+                      ((MirroredTypesExceptionProxy) obj).types);
+        }
+
+        protected RuntimeException generateException() {
+            return new MirroredTypesException(types);
+        }
+
+        // Explicitly set all transient fields.
+        private void readObject(ObjectInputStream s)
+            throws IOException, ClassNotFoundException {
+            s.defaultReadObject();
+            types = null;
         }
     }
 }

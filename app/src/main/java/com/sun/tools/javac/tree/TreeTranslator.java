@@ -1,105 +1,54 @@
 /*
- * Copyright (c) 1999, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 1999, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.tree;
 
-import com.sun.tools.javac.tree.JCTree.JCAnnotation;
-import com.sun.tools.javac.tree.JCTree.JCArrayAccess;
-import com.sun.tools.javac.tree.JCTree.JCArrayTypeTree;
-import com.sun.tools.javac.tree.JCTree.JCAssert;
-import com.sun.tools.javac.tree.JCTree.JCAssign;
-import com.sun.tools.javac.tree.JCTree.JCAssignOp;
-import com.sun.tools.javac.tree.JCTree.JCBinary;
-import com.sun.tools.javac.tree.JCTree.JCBlock;
-import com.sun.tools.javac.tree.JCTree.JCBreak;
-import com.sun.tools.javac.tree.JCTree.JCCase;
-import com.sun.tools.javac.tree.JCTree.JCCatch;
-import com.sun.tools.javac.tree.JCTree.JCClassDecl;
-import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
-import com.sun.tools.javac.tree.JCTree.JCConditional;
-import com.sun.tools.javac.tree.JCTree.JCContinue;
-import com.sun.tools.javac.tree.JCTree.JCDoWhileLoop;
-import com.sun.tools.javac.tree.JCTree.JCEnhancedForLoop;
-import com.sun.tools.javac.tree.JCTree.JCErroneous;
-import com.sun.tools.javac.tree.JCTree.JCExpressionStatement;
-import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
-import com.sun.tools.javac.tree.JCTree.JCForLoop;
-import com.sun.tools.javac.tree.JCTree.JCIdent;
-import com.sun.tools.javac.tree.JCTree.JCIf;
-import com.sun.tools.javac.tree.JCTree.JCImport;
-import com.sun.tools.javac.tree.JCTree.JCInstanceOf;
-import com.sun.tools.javac.tree.JCTree.JCLabeledStatement;
-import com.sun.tools.javac.tree.JCTree.JCLiteral;
-import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
-import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
-import com.sun.tools.javac.tree.JCTree.JCModifiers;
-import com.sun.tools.javac.tree.JCTree.JCNewArray;
-import com.sun.tools.javac.tree.JCTree.JCNewClass;
-import com.sun.tools.javac.tree.JCTree.JCParens;
-import com.sun.tools.javac.tree.JCTree.JCPrimitiveTypeTree;
-import com.sun.tools.javac.tree.JCTree.JCReturn;
-import com.sun.tools.javac.tree.JCTree.JCSkip;
-import com.sun.tools.javac.tree.JCTree.JCSwitch;
-import com.sun.tools.javac.tree.JCTree.JCSynchronized;
-import com.sun.tools.javac.tree.JCTree.JCThrow;
-import com.sun.tools.javac.tree.JCTree.JCTry;
-import com.sun.tools.javac.tree.JCTree.JCTypeApply;
-import com.sun.tools.javac.tree.JCTree.JCTypeCast;
-import com.sun.tools.javac.tree.JCTree.JCTypeParameter;
-import com.sun.tools.javac.tree.JCTree.JCUnary;
-import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
-import com.sun.tools.javac.tree.JCTree.JCWhileLoop;
-import com.sun.tools.javac.tree.JCTree.JCWildcard;
-import com.sun.tools.javac.tree.JCTree.LetExpr;
-import com.sun.tools.javac.tree.JCTree.TypeBoundKind;
-import com.sun.tools.javac.util.List;
+import com.sun.tools.javac.util.*;
+import com.sun.tools.javac.tree.JCTree.*;
 
-/**
- * A subclass of Tree.Visitor, this class defines
- * a general tree translator pattern. Translation proceeds recursively in
- * left-to-right order down a tree, constructing translated nodes by
- * overwriting existing ones. There is one visitor method in this class
- * for every possible kind of tree node.  To obtain a specific
- * translator, it suffices to override those visitor methods which
- * do some interesting work. The translator class itself takes care of all
- * navigational aspects.
- * <p>
- * <p><b>This is NOT part of any supported API.
- * If you write code that depends on this, you do so at your own risk.
- * This code and its internal interfaces are subject to change or
- * deletion without notice.</b>
+/** A subclass of Tree.Visitor, this class defines
+ *  a general tree translator pattern. Translation proceeds recursively in
+ *  left-to-right order down a tree, constructing translated nodes by
+ *  overwriting existing ones. There is one visitor method in this class
+ *  for every possible kind of tree node.  To obtain a specific
+ *  translator, it suffices to override those visitor methods which
+ *  do some interesting work. The translator class itself takes care of all
+ *  navigational aspects.
+ *
+ *  <p><b>This is NOT part of any supported API.
+ *  If you write code that depends on this, you do so at your own risk.
+ *  This code and its internal interfaces are subject to change or
+ *  deletion without notice.</b>
  */
-public class TreeTranslator extends JCTree.Visitor {
+public class TreeTranslator extends Visitor {
 
-    /**
-     * Visitor result field: a tree
+    /** Visitor result field: a tree
      */
     protected JCTree result;
 
-    /**
-     * Visitor method: Translate a single node.
+    /** Visitor method: Translate a single node.
      */
     @SuppressWarnings("unchecked")
     public <T extends JCTree> T translate(T tree) {
@@ -109,12 +58,11 @@ public class TreeTranslator extends JCTree.Visitor {
             tree.accept(this);
             JCTree result = this.result;
             this.result = null;
-            return (T) result; // XXX cast
+            return (T)result; // XXX cast
         }
     }
 
-    /**
-     * Visitor method: translate a list of nodes.
+    /** Visitor method: translate a list of nodes.
      */
     public <T extends JCTree> List<T> translate(List<T> trees) {
         if (trees == null) return null;
@@ -123,8 +71,7 @@ public class TreeTranslator extends JCTree.Visitor {
         return trees;
     }
 
-    /**
-     * Visitor method: translate a list of variable definitions.
+    /**  Visitor method: translate a list of variable definitions.
      */
     public List<JCVariableDecl> translateVarDefs(List<JCVariableDecl> trees) {
         for (List<JCVariableDecl> l = trees; l.nonEmpty(); l = l.tail)
@@ -132,8 +79,7 @@ public class TreeTranslator extends JCTree.Visitor {
         return trees;
     }
 
-    /**
-     * Visitor method: translate a list of type parameters.
+    /**  Visitor method: translate a list of type parameters.
      */
     public List<JCTypeParameter> translateTypeParams(List<JCTypeParameter> trees) {
         for (List<JCTypeParameter> l = trees; l.nonEmpty(); l = l.tail)
@@ -141,8 +87,7 @@ public class TreeTranslator extends JCTree.Visitor {
         return trees;
     }
 
-    /**
-     * Visitor method: translate a list of case parts of switch statements.
+    /**  Visitor method: translate a list of case parts of switch statements.
      */
     public List<JCCase> translateCases(List<JCCase> trees) {
         for (List<JCCase> l = trees; l.nonEmpty(); l = l.tail)
@@ -150,8 +95,7 @@ public class TreeTranslator extends JCTree.Visitor {
         return trees;
     }
 
-    /**
-     * Visitor method: translate a list of catch clauses in try statements.
+    /**  Visitor method: translate a list of catch clauses in try statements.
      */
     public List<JCCatch> translateCatchers(List<JCCatch> trees) {
         for (List<JCCatch> l = trees; l.nonEmpty(); l = l.tail)
@@ -159,8 +103,7 @@ public class TreeTranslator extends JCTree.Visitor {
         return trees;
     }
 
-    /**
-     * Visitor method: translate a list of catch clauses in try statements.
+    /**  Visitor method: translate a list of catch clauses in try statements.
      */
     public List<JCAnnotation> translateAnnotations(List<JCAnnotation> trees) {
         for (List<JCAnnotation> l = trees; l.nonEmpty(); l = l.tail)
@@ -269,6 +212,7 @@ public class TreeTranslator extends JCTree.Visitor {
     }
 
     public void visitTry(JCTry tree) {
+        tree.resources = translate(tree.resources);
         tree.body = translate(tree.body);
         tree.catchers = translateCatchers(tree.catchers);
         tree.finalizer = translate(tree.finalizer);
@@ -416,6 +360,11 @@ public class TreeTranslator extends JCTree.Visitor {
     public void visitTypeApply(JCTypeApply tree) {
         tree.clazz = translate(tree.clazz);
         tree.arguments = translate(tree.arguments);
+        result = tree;
+    }
+
+    public void visitTypeUnion(JCTypeUnion tree) {
+        tree.alternatives = translate(tree.alternatives);
         result = tree;
     }
 

@@ -1,26 +1,26 @@
 /*
- * Copyright (c) 2005, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 2005, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.source.util;
@@ -33,9 +33,12 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ErrorType;
 import javax.lang.model.type.TypeMirror;
+import javax.tools.Diagnostic;
 import javax.tools.JavaCompiler.CompilationTask;
 
+import com.sun.source.tree.CatchTree;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.MethodTree;
@@ -50,6 +53,7 @@ import com.sun.source.tree.Tree;
 public abstract class Trees {
     /**
      * Gets a Trees object for a given CompilationTask.
+     * @param task the compilation task for which to get the Trees object
      * @throws IllegalArgumentException if the task does not support the Trees API.
      */
     public static Trees instance(CompilationTask task) {
@@ -59,7 +63,8 @@ public abstract class Trees {
     }
 
     /**
-     * Gets a Trees object for a given CompilationTask.
+     * Gets a Trees object for a given ProcessingEnvironment.
+     * @param env the processing environment for which to get the Trees object
      * @throws IllegalArgumentException if the env does not support the Trees API.
      */
     public static Trees instance(ProcessingEnvironment env) {
@@ -73,7 +78,7 @@ public abstract class Trees {
             ClassLoader cl = arg.getClass().getClassLoader();
             Class<?> c = Class.forName("com.sun.tools.javac.api.JavacTrees", false, cl);
             argType = Class.forName(argType.getName(), false, cl);
-            Method m = c.getMethod("instance", new Class[] { argType });
+            Method m = c.getMethod("instance", new Class<?>[] { argType });
             return (Trees) m.invoke(null, new Object[] { arg });
         } catch (Throwable e) {
             throw new AssertionError(e);
@@ -161,6 +166,12 @@ public abstract class Trees {
     public abstract Scope getScope(TreePath path);
 
     /**
+     * Gets the doc comment, if any, for the Tree node identified by a given TreePath.
+     * Returns null if no doc comment was found.
+     */
+    public abstract String getDocComment(TreePath path);
+
+    /**
      * Checks whether a given type is accessible in a given scope.
      * @param scope the scope to be checked
      * @param type the type to be checked
@@ -177,4 +188,31 @@ public abstract class Trees {
      * @return true if {@code member} is accessible in {@code type}
      */
     public abstract boolean isAccessible(Scope scope, Element member, DeclaredType type);
+
+    /**
+      * Gets the original type from the ErrorType object.
+      * @param errorType The errorType for which we want to get the original type.
+      * @return javax.lang.model.type.TypeMirror corresponding to the original type, replaced by the ErrorType.
+      */
+    public abstract TypeMirror getOriginalType(ErrorType errorType);
+
+    /**
+     * Prints a message of the specified kind at the location of the
+     * tree within the provided compilation unit
+     *
+     * @param kind the kind of message
+     * @param msg  the message, or an empty string if none
+     * @param t    the tree to use as a position hint
+     * @param root the compilation unit that contains tree
+     */
+    public abstract void printMessage(Diagnostic.Kind kind, CharSequence msg,
+            Tree t,
+            CompilationUnitTree root);
+
+    /**
+     * Gets the lub of an exception parameter declared in a catch clause.
+     * @param tree the tree for the catch clause
+     * @return The lub of the exception parameter
+     */
+    public abstract TypeMirror getLub(CatchTree tree);
 }

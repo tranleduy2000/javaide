@@ -38,8 +38,6 @@ import com.duy.editor.editor.view.EditorView;
 import com.duy.editor.file.FileManager;
 import com.duy.editor.view.LockableScrollView;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.googlejavaformat.java.Formatter;
-import com.google.googlejavaformat.java.FormatterException;
 
 import java.io.File;
 
@@ -221,12 +219,13 @@ public class EditorFragment extends Fragment implements EditorListener {
 
         @Override
         protected String doInBackground(String... params) {
-            try {
-                return new Formatter().formatSource(params[0]);
-            } catch (FormatterException e) {
-                e.printStackTrace();
+//            try {
+//                return new Formatter().formatSource(params[0]);
+//            } catch (FormatterException e) {
+//                e.printStackTrace();
                 return null;
-            }
+//            }
+            // TODO: 18/07/2017 format code
         }
 
         @Override

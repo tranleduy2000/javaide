@@ -1,37 +1,37 @@
 /*
- * Copyright (c) 2002, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 2002, 2010, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.jvm;
 
+import java.util.*;
+
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.util.Context;
-import com.sun.tools.javac.util.Options;
+import com.sun.tools.javac.util.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import static com.sun.tools.javac.main.OptionName.*;
 
 /**
  * The classfile version target.
@@ -74,13 +74,40 @@ public enum Target {
     /**
      * JDK 6.
      */
-    JDK1_6("1.6", 50, 0);
+    JDK1_6("1.6", 50, 0),
 
-    public static final Target DEFAULT = JDK1_6;
+    /**
+     * JDK 7.
+     */
+    JDK1_7("1.7", 51, 0);
+
     private static final Context.Key<Target> targetKey =
             new Context.Key<Target>();
+
+    public static Target instance(Context context) {
+        Target instance = context.get(targetKey);
+        if (instance == null) {
+            Options options = Options.instance(context);
+            String targetString = options.get(TARGET);
+            if (targetString != null) instance = lookup(targetString);
+            if (instance == null) instance = DEFAULT;
+            context.put(targetKey, instance);
+        }
+        return instance;
+    }
+
     private static Target MIN;
+
+    public static Target MIN() {
+        return MIN;
+    }
+
     private static Target MAX;
+
+    public static Target MAX() {
+        return MAX;
+    }
+
     private static Map<String, Target> tab = new HashMap<String, Target>();
 
     static {
@@ -91,36 +118,20 @@ public enum Target {
         }
         tab.put("5", JDK1_5);
         tab.put("6", JDK1_6);
+        tab.put("7", JDK1_7);
     }
 
     public final String name;
     public final int majorVersion;
     public final int minorVersion;
+
     private Target(String name, int majorVersion, int minorVersion) {
         this.name = name;
         this.majorVersion = majorVersion;
         this.minorVersion = minorVersion;
     }
 
-    public static Target instance(Context context) {
-        Target instance = context.get(targetKey);
-        if (instance == null) {
-            Options options = Options.instance(context);
-            String targetString = options.get("-target");
-            if (targetString != null) instance = lookup(targetString);
-            if (instance == null) instance = DEFAULT;
-            context.put(targetKey, instance);
-        }
-        return instance;
-    }
-
-    public static Target MIN() {
-        return MIN;
-    }
-
-    public static Target MAX() {
-        return MAX;
-    }
+    public static final Target DEFAULT = JDK1_7;
 
     public static Target lookup(String name) {
         return tab.get(name);
@@ -286,6 +297,22 @@ public enum Target {
      */
     public boolean hasClassLiterals() {
         return compareTo(JDK1_5) >= 0;
+    }
+
+    /**
+     * Does the VM support an invokedynamic instruction?
+     */
+    public boolean hasInvokedynamic() {
+        return compareTo(JDK1_7) >= 0;
+    }
+
+    /**
+     * Does the VM support polymorphic method handle invocation?
+     * Affects the linkage information output to the classfile.
+     * An alias for {@code hasInvokedynamic}, since all the JSR 292 features appear together.
+     */
+    public boolean hasMethodHandles() {
+        return hasInvokedynamic();
     }
 
     /**

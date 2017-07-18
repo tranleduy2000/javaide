@@ -1,86 +1,38 @@
 /*
- * Copyright (c) 1999, 2007, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 1999, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.jvm;
 
-import com.sun.tools.javac.code.Flags;
-import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.code.Symbol.VarSymbol;
-import com.sun.tools.javac.code.Symtab;
-import com.sun.tools.javac.code.Type;
-import com.sun.tools.javac.code.Type.MethodType;
-import com.sun.tools.javac.code.Types;
-import com.sun.tools.javac.jvm.Code.Chain;
+import com.sun.tools.javac.code.*;
+import com.sun.tools.javac.code.Symbol.*;
+import com.sun.tools.javac.code.Type.*;
+import com.sun.tools.javac.jvm.Code.*;
 import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.util.Assert;
 
-import static com.sun.tools.javac.jvm.ByteCodes.BYTEcode;
-import static com.sun.tools.javac.jvm.ByteCodes.CHARcode;
-import static com.sun.tools.javac.jvm.ByteCodes.DOUBLEcode;
-import static com.sun.tools.javac.jvm.ByteCodes.FLOATcode;
-import static com.sun.tools.javac.jvm.ByteCodes.INTcode;
-import static com.sun.tools.javac.jvm.ByteCodes.LONGcode;
-import static com.sun.tools.javac.jvm.ByteCodes.OBJECTcode;
-import static com.sun.tools.javac.jvm.ByteCodes.SHORTcode;
-import static com.sun.tools.javac.jvm.ByteCodes.TypeCodeCount;
-import static com.sun.tools.javac.jvm.ByteCodes.VOIDcode;
-import static com.sun.tools.javac.jvm.ByteCodes.aload_0;
-import static com.sun.tools.javac.jvm.ByteCodes.bipush;
-import static com.sun.tools.javac.jvm.ByteCodes.dconst_0;
-import static com.sun.tools.javac.jvm.ByteCodes.dontgoto;
-import static com.sun.tools.javac.jvm.ByteCodes.dup;
-import static com.sun.tools.javac.jvm.ByteCodes.dup2;
-import static com.sun.tools.javac.jvm.ByteCodes.dup_x1;
-import static com.sun.tools.javac.jvm.ByteCodes.dup_x2;
-import static com.sun.tools.javac.jvm.ByteCodes.fconst_0;
-import static com.sun.tools.javac.jvm.ByteCodes.getfield;
-import static com.sun.tools.javac.jvm.ByteCodes.getstatic;
-import static com.sun.tools.javac.jvm.ByteCodes.goto_;
-import static com.sun.tools.javac.jvm.ByteCodes.i2l;
-import static com.sun.tools.javac.jvm.ByteCodes.iadd;
-import static com.sun.tools.javac.jvm.ByteCodes.iaload;
-import static com.sun.tools.javac.jvm.ByteCodes.iastore;
-import static com.sun.tools.javac.jvm.ByteCodes.iconst_0;
-import static com.sun.tools.javac.jvm.ByteCodes.iconst_1;
-import static com.sun.tools.javac.jvm.ByteCodes.ifne;
-import static com.sun.tools.javac.jvm.ByteCodes.iinc;
-import static com.sun.tools.javac.jvm.ByteCodes.iload;
-import static com.sun.tools.javac.jvm.ByteCodes.iload_0;
-import static com.sun.tools.javac.jvm.ByteCodes.int2byte;
-import static com.sun.tools.javac.jvm.ByteCodes.istore;
-import static com.sun.tools.javac.jvm.ByteCodes.istore_0;
-import static com.sun.tools.javac.jvm.ByteCodes.isub;
-import static com.sun.tools.javac.jvm.ByteCodes.lconst_0;
-import static com.sun.tools.javac.jvm.ByteCodes.ldc1;
-import static com.sun.tools.javac.jvm.ByteCodes.ldc2;
-import static com.sun.tools.javac.jvm.ByteCodes.ldc2w;
-import static com.sun.tools.javac.jvm.ByteCodes.pop;
-import static com.sun.tools.javac.jvm.ByteCodes.pop2;
-import static com.sun.tools.javac.jvm.ByteCodes.putfield;
-import static com.sun.tools.javac.jvm.ByteCodes.putstatic;
-import static com.sun.tools.javac.jvm.ByteCodes.sipush;
-import static com.sun.tools.javac.jvm.ByteCodes.typecodeNames;
+import static com.sun.tools.javac.jvm.ByteCodes.*;
 
 /**
  * A helper class for code generation. Items are objects
@@ -100,28 +52,32 @@ import static com.sun.tools.javac.jvm.ByteCodes.typecodeNames;
 public class Items {
 
     /**
+     * The current constant pool.
+     */
+    Pool pool;
+
+    /**
+     * The current code buffer.
+     */
+    Code code;
+
+    /**
+     * The current symbol table.
+     */
+    Symtab syms;
+
+    /**
+     * Type utilities.
+     */
+    Types types;
+
+    /**
      * Items that exist only once (flyweight pattern).
      */
     private final Item voidItem;
     private final Item thisItem;
     private final Item superItem;
     private final Item[] stackItem = new Item[TypeCodeCount];
-    /**
-     * The current constant pool.
-     */
-    Pool pool;
-    /**
-     * The current code buffer.
-     */
-    Code code;
-    /**
-     * The current symbol table.
-     */
-    Symtab syms;
-    /**
-     * Type utilities.
-     */
-    Types types;
 
     public Items(Pool pool, Code code, Symtab syms, Types types) {
         this.code = code;
@@ -480,7 +436,7 @@ public class Items {
 
         LocalItem(Type type, int reg) {
             super(Code.typecode(type));
-            assert reg >= 0;
+            Assert.check(reg >= 0);
             this.type = type;
             this.reg = reg;
         }
@@ -549,9 +505,7 @@ public class Items {
 
         Item invoke() {
             MethodType mtype = (MethodType) member.erasure(types);
-            int argsize = Code.width(mtype.argtypes);
             int rescode = Code.typecode(mtype.restype);
-            int sdiff = Code.width(rescode) - argsize;
             code.emitInvokestatic(pool.put(member), mtype);
             return stackItem[rescode];
         }
@@ -693,7 +647,7 @@ public class Items {
                     ldc();
                     break;
                 default:
-                    assert false;
+                    Assert.error();
             }
             return stackItem[typecode];
         }
@@ -795,7 +749,7 @@ public class Items {
         }
 
         void stash(int toscode) {
-            assert false;
+            Assert.error();
         }
 
         int width() {
@@ -867,7 +821,7 @@ public class Items {
         }
 
         void stash(int toscode) {
-            assert false;
+            Assert.error();
         }
 
         CondItem mkCond() {
@@ -875,25 +829,25 @@ public class Items {
         }
 
         Chain jumpTrue() {
-            if (tree == null) return code.mergeChains(trueJumps, code.branch(opcode));
+            if (tree == null) return Code.mergeChains(trueJumps, code.branch(opcode));
             // we should proceed further in -Xjcov mode only
             int startpc = code.curPc();
-            Chain c = code.mergeChains(trueJumps, code.branch(opcode));
+            Chain c = Code.mergeChains(trueJumps, code.branch(opcode));
             code.crt.put(tree, CRTable.CRT_BRANCH_TRUE, startpc, code.curPc());
             return c;
         }
 
         Chain jumpFalse() {
-            if (tree == null) return code.mergeChains(falseJumps, code.branch(code.negate(opcode)));
+            if (tree == null) return Code.mergeChains(falseJumps, code.branch(Code.negate(opcode)));
             // we should proceed further in -Xjcov mode only
             int startpc = code.curPc();
-            Chain c = code.mergeChains(falseJumps, code.branch(code.negate(opcode)));
+            Chain c = Code.mergeChains(falseJumps, code.branch(Code.negate(opcode)));
             code.crt.put(tree, CRTable.CRT_BRANCH_FALSE, startpc, code.curPc());
             return c;
         }
 
         CondItem negate() {
-            CondItem c = new CondItem(code.negate(opcode), falseJumps, trueJumps);
+            CondItem c = new CondItem(Code.negate(opcode), falseJumps, trueJumps);
             c.tree = tree;
             return c;
         }

@@ -1,67 +1,39 @@
 /*
- * Copyright (c) 1999, 2007, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 1999, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.jvm;
 
-import com.sun.tools.javac.code.Flags;
-import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.code.Symbol.ClassSymbol;
-import com.sun.tools.javac.code.Symbol.MethodSymbol;
-import com.sun.tools.javac.code.Symbol.VarSymbol;
-import com.sun.tools.javac.code.Symtab;
-import com.sun.tools.javac.code.Type;
-import com.sun.tools.javac.code.TypeTags;
-import com.sun.tools.javac.code.Types;
-import com.sun.tools.javac.util.Bits;
+import com.sun.tools.javac.code.*;
+import com.sun.tools.javac.code.Symbol.*;
+import com.sun.tools.javac.util.*;
 import com.sun.tools.javac.util.JCDiagnostic.DiagnosticPosition;
-import com.sun.tools.javac.util.List;
-import com.sun.tools.javac.util.ListBuffer;
-import com.sun.tools.javac.util.Log;
-import com.sun.tools.javac.util.Name;
-import com.sun.tools.javac.util.Position;
 
-import static com.sun.tools.javac.code.TypeTags.ARRAY;
-import static com.sun.tools.javac.code.TypeTags.BOOLEAN;
-import static com.sun.tools.javac.code.TypeTags.BOT;
-import static com.sun.tools.javac.code.TypeTags.BYTE;
-import static com.sun.tools.javac.code.TypeTags.CHAR;
-import static com.sun.tools.javac.code.TypeTags.CLASS;
-import static com.sun.tools.javac.code.TypeTags.DOUBLE;
-import static com.sun.tools.javac.code.TypeTags.FLOAT;
-import static com.sun.tools.javac.code.TypeTags.INT;
-import static com.sun.tools.javac.code.TypeTags.LONG;
-import static com.sun.tools.javac.code.TypeTags.METHOD;
-import static com.sun.tools.javac.code.TypeTags.SHORT;
-import static com.sun.tools.javac.code.TypeTags.TYPEVAR;
-import static com.sun.tools.javac.code.TypeTags.VOID;
+import static com.sun.tools.javac.code.TypeTags.*;
 import static com.sun.tools.javac.jvm.ByteCodes.*;
+import static com.sun.tools.javac.jvm.UninitializedType.*;
 import static com.sun.tools.javac.jvm.ClassWriter.StackMapTableFrame;
-import static com.sun.tools.javac.jvm.UninitializedType.MethodType;
-import static com.sun.tools.javac.jvm.UninitializedType.UNINITIALIZED_OBJECT;
-import static com.sun.tools.javac.jvm.UninitializedType.UNINITIALIZED_THIS;
-import static com.sun.tools.javac.jvm.UninitializedType.uninitializedObject;
 
 /**
  * An internal structure that corresponds to the code attribute of
@@ -75,67 +47,123 @@ import static com.sun.tools.javac.jvm.UninitializedType.uninitializedObject;
  */
 public class Code {
 
-    static Type jsrReturnValue = new Type(TypeTags.INT, null);
     public final boolean debugCode;
     public final boolean needStackMap;
+
+    public enum StackMapFormat {
+        NONE,
+        CLDC {
+            Name getAttributeName(Names names) {
+                return names.StackMap;
+            }
+        },
+        JSR202 {
+            Name getAttributeName(Names names) {
+                return names.StackMapTable;
+            }
+        };
+
+        Name getAttributeName(Names names) {
+            return names.empty;
+        }
+    }
+
     final Types types;
     final Symtab syms;
 
 /*---------- classfile fields: --------------- */
-    /**
-     * The constant pool of the current class.
-     */
-    final Pool pool;
-    final MethodSymbol meth;
+
     /**
      * The maximum stack size.
      */
     public int max_stack = 0;
+
     /**
      * The maximum number of local variable slots.
      */
     public int max_locals = 0;
+
     /**
      * The code buffer.
      */
     public byte[] code = new byte[64];
+
     /**
      * the current code pointer.
      */
     public int cp = 0;
-    /**
-     * The CharacterRangeTable
-     */
-    public CRTable crt;
-    /**
-     * Are we generating code with jumps >= 32K?
-     */
-    public boolean fatcode;
 
-/*---------- internal fields: --------------- */
     /**
-     * The next available register.
+     * Check the code against VM spec limits; if
+     * problems report them and return true.
      */
-    public int nextreg = 0;
+    public boolean checkLimits(DiagnosticPosition pos, Log log) {
+        if (cp > ClassFile.MAX_CODE) {
+            log.error(pos, "limit.code");
+            return true;
+        }
+        if (max_locals > ClassFile.MAX_LOCALS) {
+            log.error(pos, "limit.locals");
+            return true;
+        }
+        if (max_stack > ClassFile.MAX_STACK) {
+            log.error(pos, "limit.stack");
+            return true;
+        }
+        return false;
+    }
+
     /**
      * A buffer for expression catch data. Each enter is a vector
      * of four unsigned shorts.
      */
     ListBuffer<char[]> catchInfo = new ListBuffer<char[]>();
+
     /**
      * A buffer for line number information. Each entry is a vector
      * of two unsigned shorts.
      */
     List<char[]> lineInfo = List.nil(); // handled in stack fashion
+
+    /**
+     * The CharacterRangeTable
+     */
+    public CRTable crt;
+
+/*---------- internal fields: --------------- */
+
+    /**
+     * Are we generating code with jumps >= 32K?
+     */
+    public boolean fatcode;
+
+    /**
+     * Code generation enabled?
+     */
+    private boolean alive = true;
+
     /**
      * The current machine state (registers and stack).
      */
     State state;
+
+    /**
+     * Is it forbidden to compactify code, because something is
+     * pointing to current location?
+     */
+    private boolean fixedPc = false;
+
+    /**
+     * The next available register.
+     */
+    public int nextreg = 0;
+
     /**
      * A chain for jumps to be resolved before the next opcode is emitted.
      * We do this lazily to avoid jumps to jumps.
      */
     Chain pendingJumps = null;
+
     /**
      * The position of the currently statement, if we are at the
      * start of this statement, NOPOS otherwise.
@@ -143,75 +171,38 @@ public class Code {
      * because of jump-to-jump optimization.
      */
     int pendingStatPos = Position.NOPOS;
+
     /**
      * Set true when a stackMap is needed at the current PC.
      */
     boolean pendingStackMap = false;
+
     /**
      * The stack map format to be generated.
      */
     StackMapFormat stackMap;
+
     /**
      * Switch: emit variable debug info.
      */
     boolean varDebugInfo;
+
     /**
      * Switch: emit line number info.
      */
     boolean lineDebugInfo;
+
     /**
      * Emit line number info if map supplied
      */
     Position.LineMap lineMap;
-    /**
-     * A buffer of cldc stack map entries.
-     */
-    StackMapFrame[] stackMapBuffer = null;
-    /**
-     * A buffer of compressed StackMapTable entries.
-     */
-    StackMapTableFrame[] stackMapTableBuffer = null;
-    int stackMapBufferSize = 0;
-    /**
-     * The last PC at which we generated a stack map.
-     */
-    int lastStackMapPC = -1;
 
+    /**
+     * The constant pool of the current class.
+     */
+    final Pool pool;
 
-/* **************************************************************************
- * Typecodes & related stuff
- ****************************************************************************/
-    /**
-     * The last stack map frame in StackMapTable.
-     */
-    StackMapFrame lastFrame = null;
-    /**
-     * The stack map frame before the last one.
-     */
-    StackMapFrame frameBeforeLast = null;
-    /**
-     * Local variables, indexed by register.
-     */
-    LocalVar[] lvar;
-    /**
-     * Previously live local variables, to be put into the variable table.
-     */
-    LocalVar[] varBuffer;
-    int varBufferSize;
-    /**
-     * Code generation enabled?
-     */
-    private boolean alive = true;
-
-
-/* **************************************************************************
- * Emit code
- ****************************************************************************/
-    /**
-     * Is it forbidden to compactify code, because something is
-     * pointing to current location?
-     */
-    private boolean fixedPc = false;
+    final MethodSymbol meth;
 
     /**
      * Construct a code object, given the settings of the fatcode,
@@ -249,6 +240,11 @@ public class Code {
         lvar = new LocalVar[20];
         this.pool = pool;
     }
+
+
+/* **************************************************************************
+ * Typecodes & related stuff
+ ****************************************************************************/
 
     /**
      * Given a type, return its type code (used implicitly in the
@@ -360,63 +356,10 @@ public class Code {
         }
     }
 
-    /**
-     * Negate a branch opcode.
-     */
-    public static int negate(int opcode) {
-        if (opcode == if_acmp_null) return if_acmp_nonnull;
-        else if (opcode == if_acmp_nonnull) return if_acmp_null;
-        else return ((opcode + 1) ^ 1) - 1;
-    }
 
-    /**
-     * Merge the jumps in of two chains into one.
-     */
-    public static Chain mergeChains(Chain chain1, Chain chain2) {
-        // recursive merge sort
-        if (chain2 == null) return chain1;
-        if (chain1 == null) return chain2;
-        assert
-                chain1.state.stacksize == chain2.state.stacksize &&
-                        chain1.state.nlocks == chain2.state.nlocks;
-        if (chain1.pc < chain2.pc)
-            return new Chain(
-                    chain2.pc,
-                    mergeChains(chain1, chain2.next),
-                    chain2.state);
-        return new Chain(
-                chain1.pc,
-                mergeChains(chain1.next, chain2),
-                chain1.state);
-    }
-
-    /**************************************************************************
-     * static tables
-     *************************************************************************/
-
-    public static String mnem(int opcode) {
-        return Mneumonics.mnem[opcode];
-    }
-
-    /**
-     * Check the code against VM spec limits; if
-     * problems report them and return true.
-     */
-    public boolean checkLimits(DiagnosticPosition pos, Log log) {
-        if (cp > ClassFile.MAX_CODE) {
-            log.error(pos, "limit.code");
-            return true;
-        }
-        if (max_locals > ClassFile.MAX_LOCALS) {
-            log.error(pos, "limit.locals");
-            return true;
-        }
-        if (max_stack > ClassFile.MAX_STACK) {
-            log.error(pos, "limit.stack");
-            return true;
-        }
-        return false;
-    }
+/* **************************************************************************
+ * Emit code
+ ****************************************************************************/
 
     /**
      * The current output code pointer.
@@ -494,7 +437,7 @@ public class Code {
     }
 
     void postop() {
-        assert alive || state.stacksize == 0;
+        Assert.check(alive || state.stacksize == 0);
     }
 
     /**
@@ -586,6 +529,20 @@ public class Code {
     }
 
     /**
+     * Emit an invokedynamic instruction.
+     */
+    public void emitInvokedynamic(int desc, Type mtype) {
+        // N.B. this format is under consideration by the JSR 292 EG
+        int argsize = width(mtype.getParameterTypes());
+        emitop(invokedynamic);
+        if (!alive) return;
+        emit2(desc);
+        emit2(0);
+        state.pop(argsize);
+        state.push(mtype.getReturnType());
+    }
+
+    /**
      * Emit an opcode with no operand field.
      */
     public void emitop0(int op) {
@@ -596,7 +553,12 @@ public class Code {
                 state.pop(1);// index
                 Type a = state.stack[state.stacksize - 1];
                 state.pop(1);
-                state.push(types.erasure(types.elemtype(a)));
+                //sometimes 'null type' is treated as a one-dimensional array type
+                //see Gen.visitLiteral - we should handle this case accordingly
+                Type stackType = a.tag == BOT ?
+                        syms.objectType :
+                        types.erasure(types.elemtype(a));
+                state.push(stackType);
             }
             break;
             case goto_:
@@ -701,7 +663,7 @@ public class Code {
             case areturn:
             case ireturn:
             case freturn:
-                assert state.nlocks == 0;
+                Assert.check(state.nlocks == 0);
                 state.pop(1);
                 markDead();
                 break;
@@ -722,7 +684,7 @@ public class Code {
                 break;
             case lreturn:
             case dreturn:
-                assert state.nlocks == 0;
+                Assert.check(state.nlocks == 0);
                 state.pop(2);
                 markDead();
                 break;
@@ -730,7 +692,7 @@ public class Code {
                 state.push(state.stack[state.stacksize - 1]);
                 break;
             case return_:
-                assert state.nlocks == 0;
+                Assert.check(state.nlocks == 0);
                 markDead();
                 break;
             case arraylength:
@@ -1018,7 +980,7 @@ public class Code {
         if (o instanceof Long) return syms.longType;
         if (o instanceof Double) return syms.doubleType;
         if (o instanceof ClassSymbol) return syms.classType;
-        if (o instanceof Type.ArrayType) return syms.classType;
+        if (o instanceof ArrayType) return syms.classType;
         throw new AssertionError(o);
     }
 
@@ -1191,11 +1153,6 @@ public class Code {
         // postop();
     }
 
-
-/**************************************************************************
- * Stack map generation
- *************************************************************************/
-
     /**
      * Align code pointer to next `incr' boundary.
      */
@@ -1289,7 +1246,7 @@ public class Code {
         int pc = curPc();
         alive = true;
         this.state = state.dup();
-        assert state.stacksize <= max_stack;
+        Assert.check(state.stacksize <= max_stack);
         if (debugCode) System.err.println("entry point " + state);
         pendingStackMap = needStackMap;
         return pc;
@@ -1303,7 +1260,7 @@ public class Code {
         int pc = curPc();
         alive = true;
         this.state = state.dup();
-        assert state.stacksize <= max_stack;
+        Assert.check(state.stacksize <= max_stack);
         this.state.push(pushed);
         if (debugCode) System.err.println("entry point " + state);
         pendingStackMap = needStackMap;
@@ -1312,8 +1269,43 @@ public class Code {
 
 
 /**************************************************************************
- * Operations having to do with jumps
+ * Stack map generation
  *************************************************************************/
+
+    /**
+     * An entry in the stack map.
+     */
+    static class StackMapFrame {
+        int pc;
+        Type[] locals;
+        Type[] stack;
+    }
+
+    /**
+     * A buffer of cldc stack map entries.
+     */
+    StackMapFrame[] stackMapBuffer = null;
+
+    /**
+     * A buffer of compressed StackMapTable entries.
+     */
+    StackMapTableFrame[] stackMapTableBuffer = null;
+    int stackMapBufferSize = 0;
+
+    /**
+     * The last PC at which we generated a stack map.
+     */
+    int lastStackMapPC = -1;
+
+    /**
+     * The last stack map frame in StackMapTable.
+     */
+    StackMapFrame lastFrame = null;
+
+    /**
+     * The stack map frame before the last one.
+     */
+    StackMapFrame frameBeforeLast = null;
 
     /**
      * Emit a stack map entry.
@@ -1412,7 +1404,7 @@ public class Code {
         }
         frame.locals = new Type[localCount];
         for (int i = 0, j = 0; i < localsSize; i++, j++) {
-            assert (j < localCount);
+            Assert.check(j < localCount);
             frame.locals[j] = locals[i];
             if (width(locals[i]) > 1) i++;
         }
@@ -1427,7 +1419,7 @@ public class Code {
         stackCount = 0;
         for (int i = 0; i < state.stacksize; i++) {
             if (state.stack[i] != null) {
-                frame.stack[stackCount++] = state.stack[i];
+                frame.stack[stackCount++] = types.erasure(state.stack[i]);
             }
         }
 
@@ -1469,6 +1461,54 @@ public class Code {
         frame.pc = -1;
         frame.stack = null;
         return frame;
+    }
+
+
+/**************************************************************************
+ * Operations having to do with jumps
+ *************************************************************************/
+
+    /**
+     * A chain represents a list of unresolved jumps. Jump locations
+     * are sorted in decreasing order.
+     */
+    public static class Chain {
+
+        /**
+         * The position of the jump instruction.
+         */
+        public final int pc;
+
+        /**
+         * The machine state after the jump instruction.
+         * Invariant: all elements of a chain list have the same stacksize
+         * and compatible stack and register contents.
+         */
+        State state;
+
+        /**
+         * The next jump in the list.
+         */
+        public final Chain next;
+
+        /**
+         * Construct a chain from its jump position, stacksize, previous
+         * chain, and machine state.
+         */
+        public Chain(int pc, Chain next, State state) {
+            this.pc = pc;
+            this.next = next;
+            this.state = state;
+        }
+    }
+
+    /**
+     * Negate a branch opcode.
+     */
+    public static int negate(int opcode) {
+        if (opcode == if_acmp_null) return if_acmp_nonnull;
+        else if (opcode == if_acmp_nonnull) return if_acmp_null;
+        else return ((opcode + 1) ^ 1) - 1;
     }
 
     /**
@@ -1519,8 +1559,8 @@ public class Code {
         boolean changed = false;
         State newState = state;
         for (; chain != null; chain = chain.next) {
-            assert state != chain.state;
-            assert target > chain.pc || state.stacksize == 0;
+            Assert.check(state != chain.state
+                    && (target > chain.pc || state.stacksize == 0));
             if (target >= cp) {
                 target = cp;
             } else if (get1(target) == goto_) {
@@ -1548,9 +1588,9 @@ public class Code {
                     fatcode = true;
                 else
                     put2(chain.pc + 1, target - chain.pc);
-                assert !alive ||
+                Assert.check(!alive ||
                         chain.state.stacksize == newState.stacksize &&
-                                chain.state.nlocks == newState.nlocks;
+                                chain.state.nlocks == newState.nlocks);
             }
             fixedPc = true;
             if (cp == target) {
@@ -1565,7 +1605,7 @@ public class Code {
                 }
             }
         }
-        assert !changed || state != newState;
+        Assert.check(!changed || state != newState);
         if (state != newState) {
             setDefined(newState.defined);
             state = newState;
@@ -1573,27 +1613,17 @@ public class Code {
         }
     }
 
-
-/* **************************************************************************
- * Catch clauses
- ****************************************************************************/
-
     /**
      * Resolve chain to point to current code pointer.
      */
     public void resolve(Chain chain) {
-        assert
+        Assert.check(
                 !alive ||
                         chain == null ||
                         state.stacksize == chain.state.stacksize &&
-                                state.nlocks == chain.state.nlocks;
+                                state.nlocks == chain.state.nlocks);
         pendingJumps = mergeChains(chain, pendingJumps);
     }
-
-
-/* **************************************************************************
- * Line numbers
- ****************************************************************************/
 
     /**
      * Resolve any pending jumps.
@@ -1605,12 +1635,43 @@ public class Code {
     }
 
     /**
+     * Merge the jumps in of two chains into one.
+     */
+    public static Chain mergeChains(Chain chain1, Chain chain2) {
+        // recursive merge sort
+        if (chain2 == null) return chain1;
+        if (chain1 == null) return chain2;
+        Assert.check(
+                chain1.state.stacksize == chain2.state.stacksize &&
+                        chain1.state.nlocks == chain2.state.nlocks);
+        if (chain1.pc < chain2.pc)
+            return new Chain(
+                    chain2.pc,
+                    mergeChains(chain1, chain2.next),
+                    chain2.state);
+        return new Chain(
+                chain1.pc,
+                mergeChains(chain1.next, chain2),
+                chain1.state);
+    }
+
+
+/* **************************************************************************
+ * Catch clauses
+ ****************************************************************************/
+
+    /**
      * Add a catch clause to code.
      */
     public void addCatch(
             char startPc, char endPc, char handlerPc, char catchType) {
         catchInfo.append(new char[]{startPc, endPc, handlerPc, catchType});
     }
+
+
+/* **************************************************************************
+ * Line numbers
+ ****************************************************************************/
 
     /**
      * Add a line number entry.
@@ -1623,11 +1684,6 @@ public class Code {
                 lineInfo = lineInfo.prepend(new char[]{startPc, lineNumber});
         }
     }
-
-
-/* **************************************************************************
- * Simulated VM machine state
- ****************************************************************************/
 
     /**
      * Mark beginning of statement.
@@ -1654,8 +1710,282 @@ public class Code {
 
 
 /* **************************************************************************
+ * Simulated VM machine state
+ ****************************************************************************/
+
+    class State implements Cloneable {
+        /**
+         * The set of registers containing values.
+         */
+        Bits defined;
+
+        /**
+         * The (types of the) contents of the machine stack.
+         */
+        Type[] stack;
+
+        /**
+         * The first stack position currently unused.
+         */
+        int stacksize;
+
+        /**
+         * The numbers of registers containing locked monitors.
+         */
+        int[] locks;
+        int nlocks;
+
+        State() {
+            defined = new Bits();
+            stack = new Type[16];
+        }
+
+        State dup() {
+            try {
+                State state = (State) super.clone();
+                state.defined = defined.dup();
+                state.stack = stack.clone();
+                if (locks != null) state.locks = locks.clone();
+                if (debugCode) {
+                    System.err.println("duping state " + this);
+                    dump();
+                }
+                return state;
+            } catch (CloneNotSupportedException ex) {
+                throw new AssertionError(ex);
+            }
+        }
+
+        void lock(int register) {
+            if (locks == null) {
+                locks = new int[20];
+            } else if (locks.length == nlocks) {
+                int[] newLocks = new int[locks.length << 1];
+                System.arraycopy(locks, 0, newLocks, 0, locks.length);
+                locks = newLocks;
+            }
+            locks[nlocks] = register;
+            nlocks++;
+        }
+
+        void unlock(int register) {
+            nlocks--;
+            Assert.check(locks[nlocks] == register);
+            locks[nlocks] = -1;
+        }
+
+        void push(Type t) {
+            if (debugCode) System.err.println("   pushing " + t);
+            switch (t.tag) {
+                case TypeTags.VOID:
+                    return;
+                case TypeTags.BYTE:
+                case TypeTags.CHAR:
+                case TypeTags.SHORT:
+                case TypeTags.BOOLEAN:
+                    t = syms.intType;
+                    break;
+                default:
+                    break;
+            }
+            if (stacksize + 2 >= stack.length) {
+                Type[] newstack = new Type[2 * stack.length];
+                System.arraycopy(stack, 0, newstack, 0, stack.length);
+                stack = newstack;
+            }
+            stack[stacksize++] = t;
+            switch (width(t)) {
+                case 1:
+                    break;
+                case 2:
+                    stack[stacksize++] = null;
+                    break;
+                default:
+                    throw new AssertionError(t);
+            }
+            if (stacksize > max_stack)
+                max_stack = stacksize;
+        }
+
+        Type pop1() {
+            if (debugCode) System.err.println("   popping " + 1);
+            stacksize--;
+            Type result = stack[stacksize];
+            stack[stacksize] = null;
+            Assert.check(result != null && width(result) == 1);
+            return result;
+        }
+
+        Type peek() {
+            return stack[stacksize - 1];
+        }
+
+        Type pop2() {
+            if (debugCode) System.err.println("   popping " + 2);
+            stacksize -= 2;
+            Type result = stack[stacksize];
+            stack[stacksize] = null;
+            Assert.check(stack[stacksize + 1] == null
+                    && result != null && width(result) == 2);
+            return result;
+        }
+
+        void pop(int n) {
+            if (debugCode) System.err.println("   popping " + n);
+            while (n > 0) {
+                stack[--stacksize] = null;
+                n--;
+            }
+        }
+
+        void pop(Type t) {
+            pop(width(t));
+        }
+
+        /**
+         * Force the top of the stack to be treated as this supertype
+         * of its current type.
+         */
+        void forceStackTop(Type t) {
+            if (!alive) return;
+            switch (t.tag) {
+                case CLASS:
+                case ARRAY:
+                    int width = width(t);
+                    Type old = stack[stacksize - width];
+                    Assert.check(types.isSubtype(types.erasure(old),
+                            types.erasure(t)));
+                    stack[stacksize - width] = t;
+                    break;
+                default:
+            }
+        }
+
+        void markInitialized(UninitializedType old) {
+            Type newtype = old.initializedType();
+            for (int i = 0; i < stacksize; i++)
+                if (stack[i] == old) stack[i] = newtype;
+            for (int i = 0; i < lvar.length; i++) {
+                LocalVar lv = lvar[i];
+                if (lv != null && lv.sym.type == old) {
+                    VarSymbol sym = lv.sym;
+                    sym = sym.clone(sym.owner);
+                    sym.type = newtype;
+                    LocalVar newlv = lvar[i] = new LocalVar(sym);
+                    // should the following be initialized to cp?
+                    newlv.start_pc = lv.start_pc;
+                }
+            }
+        }
+
+        State join(State other) {
+            defined = defined.andSet(other.defined);
+            Assert.check(stacksize == other.stacksize
+                    && nlocks == other.nlocks);
+            for (int i = 0; i < stacksize; ) {
+                Type t = stack[i];
+                Type tother = other.stack[i];
+                Type result =
+                        t == tother ? t :
+                                types.isSubtype(t, tother) ? tother :
+                                        types.isSubtype(tother, t) ? t :
+                                                error();
+                int w = width(result);
+                stack[i] = result;
+                if (w == 2) Assert.checkNull(stack[i + 1]);
+                i += w;
+            }
+            return this;
+        }
+
+        Type error() {
+            throw new AssertionError("inconsistent stack types at join point");
+        }
+
+        void dump() {
+            dump(-1);
+        }
+
+        void dump(int pc) {
+            System.err.print("stackMap for " + meth.owner + "." + meth);
+            if (pc == -1)
+                System.out.println();
+            else
+                System.out.println(" at " + pc);
+            System.err.println(" stack (from bottom):");
+            for (int i = 0; i < stacksize; i++)
+                System.err.println("  " + i + ": " + stack[i]);
+
+            int lastLocal = 0;
+            for (int i = max_locals - 1; i >= 0; i--) {
+                if (defined.isMember(i)) {
+                    lastLocal = i;
+                    break;
+                }
+            }
+            if (lastLocal >= 0)
+                System.err.println(" locals:");
+            for (int i = 0; i <= lastLocal; i++) {
+                System.err.print("  " + i + ": ");
+                if (defined.isMember(i)) {
+                    LocalVar var = lvar[i];
+                    if (var == null) {
+                        System.err.println("(none)");
+                    } else if (var.sym == null)
+                        System.err.println("UNKNOWN!");
+                    else
+                        System.err.println("" + var.sym + " of type " +
+                                var.sym.erasure(types));
+                } else {
+                    System.err.println("undefined");
+                }
+            }
+            if (nlocks != 0) {
+                System.err.print(" locks:");
+                for (int i = 0; i < nlocks; i++) {
+                    System.err.print(" " + locks[i]);
+                }
+                System.err.println();
+            }
+        }
+    }
+
+    static Type jsrReturnValue = new Type(TypeTags.INT, null);
+
+
+/* **************************************************************************
  * Local variables
  ****************************************************************************/
+
+    /**
+     * A live range of a local variable.
+     */
+    static class LocalVar {
+        final VarSymbol sym;
+        final char reg;
+        char start_pc = Character.MAX_VALUE;
+        char length = Character.MAX_VALUE;
+
+        LocalVar(VarSymbol v) {
+            this.sym = v;
+            this.reg = (char) v.adr;
+        }
+
+        public LocalVar dup() {
+            return new LocalVar(sym);
+        }
+
+        public String toString() {
+            return "" + sym + " in register " + ((int) reg) + " starts at pc=" + ((int) start_pc) + " length=" + ((int) length);
+        }
+    }
+
+    ;
+
+    /**
+     * Local variables, indexed by register.
+     */
+    LocalVar[] lvar;
 
     /**
      * Add a new local variable.
@@ -1669,13 +1999,11 @@ public class Code {
             System.arraycopy(lvar, 0, new_lvar, 0, lvar.length);
             lvar = new_lvar;
         }
-        assert lvar[adr] == null;
+        Assert.checkNull(lvar[adr]);
         if (pendingJumps != null) resolvePending();
         lvar[adr] = new LocalVar(v);
         state.defined.excl(adr);
     }
-
-    ;
 
     /**
      * Set the current variable defined state.
@@ -1768,6 +2096,12 @@ public class Code {
     }
 
     /**
+     * Previously live local variables, to be put into the variable table.
+     */
+    LocalVar[] varBuffer;
+    int varBufferSize;
+
+    /**
      * Create a new local variable address and return it.
      */
     private int newLocal(int typecode) {
@@ -1804,86 +2138,12 @@ public class Code {
         for (int i = nextreg; i < prevNextReg; i++) endScope(i);
     }
 
-    public enum StackMapFormat {
-        NONE,
-        CLDC {
-            Name getAttributeName(Name.Table names) {
-                return names.StackMap;
-            }
-        },
-        JSR202 {
-            Name getAttributeName(Name.Table names) {
-                return names.StackMapTable;
-            }
-        };
+    /**************************************************************************
+     * static tables
+     *************************************************************************/
 
-        Name getAttributeName(Name.Table names) {
-            return names.empty;
-        }
-    }
-
-    /**
-     * An entry in the stack map.
-     */
-    static class StackMapFrame {
-        int pc;
-        Type[] locals;
-        Type[] stack;
-    }
-
-    /**
-     * A chain represents a list of unresolved jumps. Jump locations
-     * are sorted in decreasing order.
-     */
-    public static class Chain {
-
-        /**
-         * The position of the jump instruction.
-         */
-        public final int pc;
-        /**
-         * The next jump in the list.
-         */
-        public final Chain next;
-        /**
-         * The machine state after the jump instruction.
-         * Invariant: all elements of a chain list have the same stacksize
-         * and compatible stack and register contents.
-         */
-        Code.State state;
-
-        /**
-         * Construct a chain from its jump position, stacksize, previous
-         * chain, and machine state.
-         */
-        public Chain(int pc, Chain next, Code.State state) {
-            this.pc = pc;
-            this.next = next;
-            this.state = state;
-        }
-    }
-
-    /**
-     * A live range of a local variable.
-     */
-    static class LocalVar {
-        final VarSymbol sym;
-        final char reg;
-        char start_pc = Character.MAX_VALUE;
-        char length = Character.MAX_VALUE;
-
-        LocalVar(VarSymbol v) {
-            this.sym = v;
-            this.reg = (char) v.adr;
-        }
-
-        public LocalVar dup() {
-            return new LocalVar(sym);
-        }
-
-        public String toString() {
-            return "" + sym + " in register " + ((int) reg) + " starts at pc=" + ((int) start_pc) + " length=" + ((int) length);
-        }
+    public static String mnem(int opcode) {
+        return Mneumonics.mnem[opcode];
     }
 
     private static class Mneumonics {
@@ -2076,7 +2336,7 @@ public class Code {
             mnem[invokespecial] = "invokespecial";
             mnem[invokestatic] = "invokestatic";
             mnem[invokeinterface] = "invokeinterface";
-            // mnem[___unused___] = "___unused___";
+            mnem[invokedynamic] = "invokedynamic";
             mnem[new_] = "new_";
             mnem[newarray] = "newarray";
             mnem[anewarray] = "anewarray";
@@ -2093,243 +2353,6 @@ public class Code {
             mnem[goto_w] = "goto_w";
             mnem[jsr_w] = "jsr_w";
             mnem[breakpoint] = "breakpoint";
-        }
-    }
-
-    class State implements Cloneable {
-        /**
-         * The set of registers containing values.
-         */
-        Bits defined;
-
-        /**
-         * The (types of the) contents of the machine stack.
-         */
-        Type[] stack;
-
-        /**
-         * The first stack position currently unused.
-         */
-        int stacksize;
-
-        /**
-         * The numbers of registers containing locked monitors.
-         */
-        int[] locks;
-        int nlocks;
-
-        State() {
-            defined = new Bits();
-            stack = new Type[16];
-        }
-
-        State dup() {
-            try {
-                State state = (State) super.clone();
-                state.defined = defined.dup();
-                state.stack = stack.clone();
-                if (locks != null) state.locks = locks.clone();
-                if (debugCode) {
-                    System.err.println("duping state " + this);
-                    dump();
-                }
-                return state;
-            } catch (CloneNotSupportedException ex) {
-                throw new AssertionError(ex);
-            }
-        }
-
-        void lock(int register) {
-            if (locks == null) {
-                locks = new int[20];
-            } else if (locks.length == nlocks) {
-                int[] newLocks = new int[locks.length << 1];
-                System.arraycopy(locks, 0, newLocks, 0, locks.length);
-                locks = newLocks;
-            }
-            locks[nlocks] = register;
-            nlocks++;
-        }
-
-        void unlock(int register) {
-            nlocks--;
-            assert locks[nlocks] == register;
-            locks[nlocks] = -1;
-        }
-
-        void push(Type t) {
-            if (debugCode) System.err.println("   pushing " + t);
-            switch (t.tag) {
-                case TypeTags.VOID:
-                    return;
-                case TypeTags.BYTE:
-                case TypeTags.CHAR:
-                case TypeTags.SHORT:
-                case TypeTags.BOOLEAN:
-                    t = syms.intType;
-                    break;
-                default:
-                    break;
-            }
-            if (stacksize + 2 >= stack.length) {
-                Type[] newstack = new Type[2 * stack.length];
-                System.arraycopy(stack, 0, newstack, 0, stack.length);
-                stack = newstack;
-            }
-            stack[stacksize++] = t;
-            switch (width(t)) {
-                case 1:
-                    break;
-                case 2:
-                    stack[stacksize++] = null;
-                    break;
-                default:
-                    throw new AssertionError(t);
-            }
-            if (stacksize > max_stack)
-                max_stack = stacksize;
-        }
-
-        Type pop1() {
-            if (debugCode) System.err.println("   popping " + 1);
-            stacksize--;
-            Type result = stack[stacksize];
-            stack[stacksize] = null;
-            assert result != null && width(result) == 1;
-            return result;
-        }
-
-        Type peek() {
-            return stack[stacksize - 1];
-        }
-
-        Type pop2() {
-            if (debugCode) System.err.println("   popping " + 2);
-            stacksize -= 2;
-            Type result = stack[stacksize];
-            stack[stacksize] = null;
-            assert stack[stacksize + 1] == null;
-            assert result != null && width(result) == 2;
-            return result;
-        }
-
-        void pop(int n) {
-            if (debugCode) System.err.println("   popping " + n);
-            while (n > 0) {
-                stack[--stacksize] = null;
-                n--;
-            }
-        }
-
-        void pop(Type t) {
-            pop(width(t));
-        }
-
-        /**
-         * Force the top of the stack to be treated as this supertype
-         * of its current type.
-         */
-        void forceStackTop(Type t) {
-            if (!alive) return;
-            switch (t.tag) {
-                case CLASS:
-                case ARRAY:
-                    int width = width(t);
-                    Type old = stack[stacksize - width];
-                    assert types.isSubtype(types.erasure(old),
-                            types.erasure(t));
-                    stack[stacksize - width] = t;
-                    break;
-                default:
-            }
-        }
-
-        void markInitialized(UninitializedType old) {
-            Type newtype = old.initializedType();
-            for (int i = 0; i < stacksize; i++)
-                if (stack[i] == old) stack[i] = newtype;
-            for (int i = 0; i < lvar.length; i++) {
-                LocalVar lv = lvar[i];
-                if (lv != null && lv.sym.type == old) {
-                    VarSymbol sym = lv.sym;
-                    sym = sym.clone(sym.owner);
-                    sym.type = newtype;
-                    LocalVar newlv = lvar[i] = new LocalVar(sym);
-                    // should the following be initialized to cp?
-                    newlv.start_pc = lv.start_pc;
-                }
-            }
-        }
-
-        State join(State other) {
-            defined = defined.andSet(other.defined);
-            assert stacksize == other.stacksize;
-            assert nlocks == other.nlocks;
-            for (int i = 0; i < stacksize; ) {
-                Type t = stack[i];
-                Type tother = other.stack[i];
-                Type result =
-                        t == tother ? t :
-                                types.isSubtype(t, tother) ? tother :
-                                        types.isSubtype(tother, t) ? t :
-                                                error();
-                int w = width(result);
-                stack[i] = result;
-                if (w == 2) assert stack[i + 1] == null;
-                i += w;
-            }
-            return this;
-        }
-
-        Type error() {
-            throw new AssertionError("inconsistent stack types at join point");
-        }
-
-        void dump() {
-            dump(-1);
-        }
-
-        void dump(int pc) {
-            System.err.print("stackMap for " + meth.owner + "." + meth);
-            if (pc == -1)
-                System.out.println();
-            else
-                System.out.println(" at " + pc);
-            System.err.println(" stack (from bottom):");
-            for (int i = 0; i < stacksize; i++)
-                System.err.println("  " + i + ": " + stack[i]);
-
-            int lastLocal = 0;
-            for (int i = max_locals - 1; i >= 0; i--) {
-                if (defined.isMember(i)) {
-                    lastLocal = i;
-                    break;
-                }
-            }
-            if (lastLocal >= 0)
-                System.err.println(" locals:");
-            for (int i = 0; i <= lastLocal; i++) {
-                System.err.print("  " + i + ": ");
-                if (defined.isMember(i)) {
-                    LocalVar var = lvar[i];
-                    if (var == null) {
-                        System.err.println("(none)");
-                    } else if (var.sym == null)
-                        System.err.println("UNKNOWN!");
-                    else
-                        System.err.println("" + var.sym + " of type " +
-                                var.sym.erasure(types));
-                } else {
-                    System.err.println("undefined");
-                }
-            }
-            if (nlocks != 0) {
-                System.err.print(" locks:");
-                for (int i = 0; i < nlocks; i++) {
-                    System.err.print(" " + locks[i]);
-                }
-                System.err.println();
-            }
         }
     }
 }

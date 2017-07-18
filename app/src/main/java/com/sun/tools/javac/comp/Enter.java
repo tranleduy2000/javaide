@@ -1,32 +1,34 @@
 /*
- * Copyright (c) 1999, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 1999, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.comp;
 
 import com.sun.tools.javac.code.Lint;
 import com.sun.tools.javac.code.Scope;
+import com.sun.tools.javac.code.Scope.ImportScope;
+import com.sun.tools.javac.code.Scope.StarImportScope;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.CompletionFailure;
@@ -35,9 +37,10 @@ import com.sun.tools.javac.code.Symbol.TypeSymbol;
 import com.sun.tools.javac.code.Symtab;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.code.Type.ClassType;
-import com.sun.tools.javac.code.Type.ErrorType;
 import com.sun.tools.javac.code.Type.TypeVar;
+import com.sun.tools.javac.code.Types;
 import com.sun.tools.javac.jvm.ClassReader;
+import com.sun.tools.javac.main.RecognizedOptions.PkgInfo;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCClassDecl;
 import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
@@ -50,6 +53,8 @@ import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.ListBuffer;
 import com.sun.tools.javac.util.Log;
 import com.sun.tools.javac.util.Name;
+import com.sun.tools.javac.util.Names;
+import com.sun.tools.javac.util.Options;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,59 +71,54 @@ import static com.sun.tools.javac.code.Kinds.PCK;
 import static com.sun.tools.javac.code.Kinds.TYP;
 import static com.sun.tools.javac.code.Kinds.VAR;
 
-/**
- * This class enters symbols for all encountered definitions into
- * the symbol table. The pass consists of two phases, organized as
- * follows:
- * <p>
- * <p>In the first phase, all class symbols are intered into their
- * enclosing scope, descending recursively down the tree for classes
- * which are members of other classes. The class symbols are given a
- * MemberEnter object as completer.
- * <p>
- * <p>In the second phase classes are completed using
- * MemberEnter.complete().  Completion might occur on demand, but
- * any classes that are not completed that way will be eventually
- * completed by processing the `uncompleted' queue.  Completion
- * entails (1) determination of a class's parameters, supertype and
- * interfaces, as well as (2) entering all symbols defined in the
- * class into its scope, with the exception of class symbols which
- * have been entered in phase 1.  (2) depends on (1) having been
- * completed for a class and all its superclasses and enclosing
- * classes. That's why, after doing (1), we put classes in a
- * `halfcompleted' queue. Only when we have performed (1) for a class
- * and all it's superclasses and enclosing classes, we proceed to
- * (2).
- * <p>
- * <p>Whereas the first phase is organized as a sweep through all
- * compiled syntax trees, the second phase is demand. Members of a
- * class are entered when the contents of a class are first
- * accessed. This is accomplished by installing completer objects in
- * class symbols for compiled classes which invoke the member-enter
- * phase for the corresponding class tree.
- * <p>
- * <p>Classes migrate from one phase to the next via queues:
- * <p>
- * <pre>
+/** This class enters symbols for all encountered definitions into
+ *  the symbol table. The pass consists of two phases, organized as
+ *  follows:
+ *
+ *  <p>In the first phase, all class symbols are intered into their
+ *  enclosing scope, descending recursively down the tree for classes
+ *  which are members of other classes. The class symbols are given a
+ *  MemberEnter object as completer.
+ *
+ *  <p>In the second phase classes are completed using
+ *  MemberEnter.complete().  Completion might occur on demand, but
+ *  any classes that are not completed that way will be eventually
+ *  completed by processing the `uncompleted' queue.  Completion
+ *  entails (1) determination of a class's parameters, supertype and
+ *  interfaces, as well as (2) entering all symbols defined in the
+ *  class into its scope, with the exception of class symbols which
+ *  have been entered in phase 1.  (2) depends on (1) having been
+ *  completed for a class and all its superclasses and enclosing
+ *  classes. That's why, after doing (1), we put classes in a
+ *  `halfcompleted' queue. Only when we have performed (1) for a class
+ *  and all it's superclasses and enclosing classes, we proceed to
+ *  (2).
+ *
+ *  <p>Whereas the first phase is organized as a sweep through all
+ *  compiled syntax trees, the second phase is demand. Members of a
+ *  class are entered when the contents of a class are first
+ *  accessed. This is accomplished by installing completer objects in
+ *  class symbols for compiled classes which invoke the member-enter
+ *  phase for the corresponding class tree.
+ *
+ *  <p>Classes migrate from one phase to the next via queues:
+ *
+ *  <pre>
  *  class enter -> (Enter.uncompleted)         --> member enter (1)
  *              -> (MemberEnter.halfcompleted) --> member enter (2)
  *              -> (Todo)                      --> attribute
  *                                              (only for toplevel classes)
  *  </pre>
- * <p>
- * <p><b>This is NOT part of any supported API.
- * If you write code that depends on this, you do so at your own risk.
- * This code and its internal interfaces are subject to change or
- * deletion without notice.</b>
+ *
+ *  <p><b>This is NOT part of any supported API.
+ *  If you write code that depends on this, you do so at your own risk.
+ *  This code and its internal interfaces are subject to change or
+ *  deletion without notice.</b>
  */
 public class Enter extends JCTree.Visitor {
     protected static final Context.Key<Enter> enterKey =
-            new Context.Key<Enter>();
-    private final Todo todo;
-    /**
-     * Visitor argument: the current environment.
-     */
-    protected Env<AttrContext> env;
+        new Context.Key<Enter>();
+
     Log log;
     Symtab syms;
     Check chk;
@@ -126,28 +126,20 @@ public class Enter extends JCTree.Visitor {
     ClassReader reader;
     Annotate annotate;
     MemberEnter memberEnter;
+    Types types;
     Lint lint;
-    Name.Table names;
+    Names names;
     JavaFileManager fileManager;
-    /**
-     * A hashtable mapping classes and packages to the environments current
-     * at the points of their definitions.
-     */
-    Map<TypeSymbol, Env<AttrContext>> typeEnvs =
-            new HashMap<TypeSymbol, Env<AttrContext>>();
-    /**
-     * The queue of all classes that might still need to be completed;
-     * saved and initialized by main().
-     */
-    ListBuffer<ClassSymbol> uncompleted;
-    /**
-     * Visitor result: the computed type.
-     */
-    Type result;
-    /**
-     * A dummy class to serve as enclClass for toplevel environments.
-     */
-    private JCClassDecl predefClassDef;
+    PkgInfo pkginfoOpt;
+
+    private final Todo todo;
+
+    public static Enter instance(Context context) {
+        Enter instance = context.get(enterKey);
+        if (instance == null)
+            instance = new Enter(context);
+        return instance;
+    }
 
     protected Enter(Context context) {
         context.put(enterKey, this);
@@ -158,40 +150,29 @@ public class Enter extends JCTree.Visitor {
         syms = Symtab.instance(context);
         chk = Check.instance(context);
         memberEnter = MemberEnter.instance(context);
+        types = Types.instance(context);
         annotate = Annotate.instance(context);
         lint = Lint.instance(context);
-        names = Name.Table.instance(context);
+        names = Names.instance(context);
 
         predefClassDef = make.ClassDef(
-                make.Modifiers(PUBLIC),
-                syms.predefClass.name, null, null, null, null);
+            make.Modifiers(PUBLIC),
+            syms.predefClass.name, null, null, null, null);
         predefClassDef.sym = syms.predefClass;
         todo = Todo.instance(context);
         fileManager = context.get(JavaFileManager.class);
+
+        Options options = Options.instance(context);
+        pkginfoOpt = PkgInfo.get(options);
     }
 
-    public static Enter instance(Context context) {
-        Enter instance = context.get(enterKey);
-        if (instance == null)
-            instance = new Enter(context);
-        return instance;
-    }
-
-/* ************************************************************************
- * environment construction
- *************************************************************************/
-
-    /**
-     * Does class have the same name as the file it appears in?
+    /** A hashtable mapping classes and packages to the environments current
+     *  at the points of their definitions.
      */
-    private static boolean classNameMatchesFileName(ClassSymbol c,
-                                                    Env<AttrContext> env) {
-        return env.toplevel.sourcefile.isNameCompatible(c.name.toString(),
-                JavaFileObject.Kind.SOURCE);
-    }
+    Map<TypeSymbol,Env<AttrContext>> typeEnvs =
+            new HashMap<TypeSymbol,Env<AttrContext>>();
 
-    /**
-     * Accessor for typeEnvs
+    /** Accessor for typeEnvs
      */
     public Env<AttrContext> getEnv(TypeSymbol sym) {
         return typeEnvs.get(sym);
@@ -206,46 +187,53 @@ public class Enter extends JCTree.Visitor {
         return localEnv;
     }
 
-    /**
-     * Create a fresh environment for class bodies.
-     * This will create a fresh scope for local symbols of a class, referred
-     * to by the environments info.scope field.
-     * This scope will contain
-     * - symbols for this and super
-     * - symbols for any type parameters
-     * In addition, it serves as an anchor for scopes of methods and initializers
-     * which are nested in this scope via Scope.dup().
-     * This scope should not be confused with the members scope of a class.
+    /** The queue of all classes that might still need to be completed;
+     *  saved and initialized by main().
+     */
+    ListBuffer<ClassSymbol> uncompleted;
+
+    /** A dummy class to serve as enclClass for toplevel environments.
+     */
+    private JCClassDecl predefClassDef;
+
+/* ************************************************************************
+ * environment construction
+ *************************************************************************/
+
+
+    /** Create a fresh environment for class bodies.
+     *  This will create a fresh scope for local symbols of a class, referred
+     *  to by the environments info.scope field.
+     *  This scope will contain
+     *    - symbols for this and super
+     *    - symbols for any type parameters
+     *  In addition, it serves as an anchor for scopes of methods and initializers
+     *  which are nested in this scope via Scope.dup().
+     *  This scope should not be confused with the members scope of a class.
      *
-     * @param tree The class definition.
-     * @param env  The environment current outside of the class definition.
+     *  @param tree     The class definition.
+     *  @param env      The environment current outside of the class definition.
      */
     public Env<AttrContext> classEnv(JCClassDecl tree, Env<AttrContext> env) {
         Env<AttrContext> localEnv =
-                env.dup(tree, env.info.dup(new Scope(tree.sym)));
+            env.dup(tree, env.info.dup(new Scope(tree.sym)));
         localEnv.enclClass = tree;
         localEnv.outer = env;
         localEnv.info.isSelfCall = false;
         localEnv.info.lint = null; // leave this to be filled in by Attr,
-        // when annotations have been processed
+                                   // when annotations have been processed
         return localEnv;
     }
 
-/* ************************************************************************
- * Visitor methods for phase 1: class enter
- *************************************************************************/
-
-    /**
-     * Create a fresh environment for toplevels.
-     *
-     * @param tree The toplevel tree.
+    /** Create a fresh environment for toplevels.
+     *  @param tree     The toplevel tree.
      */
     Env<AttrContext> topLevelEnv(JCCompilationUnit tree) {
         Env<AttrContext> localEnv = new Env<AttrContext>(tree, new AttrContext());
         localEnv.toplevel = tree;
         localEnv.enclClass = predefClassDef;
-        tree.namedImportScope = new Scope.ImportScope(tree.packge);
-        tree.starImportScope = new Scope.ImportScope(tree.packge);
+        tree.namedImportScope = new ImportScope(tree.packge);
+        tree.starImportScope = new StarImportScope(tree.packge);
         localEnv.info.scope = tree.namedImportScope;
         localEnv.info.lint = lint;
         return localEnv;
@@ -260,24 +248,34 @@ public class Enter extends JCTree.Visitor {
         return localEnv;
     }
 
-    /**
-     * The scope in which a member definition in environment env is to be entered
-     * This is usually the environment's scope, except for class environments,
-     * where the local scope is for type variables, and the this and super symbol
-     * only, and members go into the class member scope.
+    /** The scope in which a member definition in environment env is to be entered
+     *  This is usually the environment's scope, except for class environments,
+     *  where the local scope is for type variables, and the this and super symbol
+     *  only, and members go into the class member scope.
      */
     Scope enterScope(Env<AttrContext> env) {
         return (env.tree.getTag() == JCTree.CLASSDEF)
-                ? ((JCClassDecl) env.tree).sym.members_field
-                : env.info.scope;
+            ? ((JCClassDecl) env.tree).sym.members_field
+            : env.info.scope;
     }
 
-    /**
-     * Visitor method: enter all classes in given tree, catching any
-     * completion failure exceptions. Return the tree's type.
+/* ************************************************************************
+ * Visitor methods for phase 1: class enter
+ *************************************************************************/
+
+    /** Visitor argument: the current environment.
+     */
+    protected Env<AttrContext> env;
+
+    /** Visitor result: the computed type.
+     */
+    Type result;
+
+    /** Visitor method: enter all classes in given tree, catching any
+     *  completion failure exceptions. Return the tree's type.
      *
-     * @param tree The tree to be visited.
-     * @param env  The environment visitor argument.
+     *  @param tree    The tree to be visited.
+     *  @param env     The environment visitor argument.
      */
     Type classEnter(JCTree tree, Env<AttrContext> env) {
         Env<AttrContext> prevEnv = this.env;
@@ -285,15 +283,14 @@ public class Enter extends JCTree.Visitor {
             this.env = env;
             tree.accept(this);
             return result;
-        } catch (CompletionFailure ex) {
+        }  catch (CompletionFailure ex) {
             return chk.completionError(tree.pos(), ex);
         } finally {
             this.env = prevEnv;
         }
     }
 
-    /**
-     * Visitor method: enter classes of a list of trees, returning a list of types.
+    /** Visitor method: enter classes of a list of trees, returning a list of types.
      */
     <T extends JCTree> List<Type> classEnter(List<T> trees, Env<AttrContext> env) {
         ListBuffer<Type> ts = new ListBuffer<Type>();
@@ -305,43 +302,44 @@ public class Enter extends JCTree.Visitor {
         return ts.toList();
     }
 
+    @Override
     public void visitTopLevel(JCCompilationUnit tree) {
         JavaFileObject prev = log.useSource(tree.sourcefile);
         boolean addEnv = false;
         boolean isPkgInfo = tree.sourcefile.isNameCompatible("package-info",
-                JavaFileObject.Kind.SOURCE);
+                                                             JavaFileObject.Kind.SOURCE);
         if (tree.pid != null) {
             tree.packge = reader.enterPackage(TreeInfo.fullName(tree.pid));
-            if (tree.packageAnnotations.nonEmpty()) {
+            if (tree.packageAnnotations.nonEmpty() || pkginfoOpt == PkgInfo.ALWAYS) {
                 if (isPkgInfo) {
                     addEnv = true;
                 } else {
                     log.error(tree.packageAnnotations.head.pos(),
-                            "pkg.annotations.sb.in.package-info.java");
+                              "pkg.annotations.sb.in.package-info.java");
                 }
             }
         } else {
             tree.packge = syms.unnamedPackage;
         }
         tree.packge.complete(); // Find all classes in package.
-        Env<AttrContext> env = topLevelEnv(tree);
+        Env<AttrContext> topEnv = topLevelEnv(tree);
 
         // Save environment of package-info.java file.
         if (isPkgInfo) {
             Env<AttrContext> env0 = typeEnvs.get(tree.packge);
             if (env0 == null) {
-                typeEnvs.put(tree.packge, env);
+                typeEnvs.put(tree.packge, topEnv);
             } else {
                 JCCompilationUnit tree0 = env0.toplevel;
                 if (!fileManager.isSameFile(tree.sourcefile, tree0.sourcefile)) {
                     log.warning(tree.pid != null ? tree.pid.pos()
-                                    : null,
-                            "pkg-info.already.seen",
-                            tree.packge);
+                                                 : null,
+                                "pkg-info.already.seen",
+                                tree.packge);
                     if (addEnv || (tree0.packageAnnotations.isEmpty() &&
-                            tree.docComments != null &&
-                            tree.docComments.get(tree) != null)) {
-                        typeEnvs.put(tree.packge, env);
+                                   tree.docComments != null &&
+                                   tree.docComments.get(tree) != null)) {
+                        typeEnvs.put(tree.packge, topEnv);
                     }
                 }
             }
@@ -357,39 +355,39 @@ public class Enter extends JCTree.Visitor {
             c.members_field = new Scope(c);
             tree.packge.package_info = c;
         }
-        classEnter(tree.defs, env);
+        classEnter(tree.defs, topEnv);
         if (addEnv) {
-            todo.append(env);
+            todo.append(topEnv);
         }
         log.useSource(prev);
         result = null;
     }
-    //where
 
+    @Override
     public void visitClassDef(JCClassDecl tree) {
         Symbol owner = env.info.scope.owner;
         Scope enclScope = enterScope(env);
         ClassSymbol c;
         if (owner.kind == PCK) {
             // We are seeing a toplevel class.
-            PackageSymbol packge = (PackageSymbol) owner;
+            PackageSymbol packge = (PackageSymbol)owner;
             for (Symbol q = packge; q != null && q.kind == PCK; q = q.owner)
                 q.flags_field |= EXISTS;
             c = reader.enterClass(tree.name, packge);
             packge.members().enterIfAbsent(c);
             if ((tree.mods.flags & PUBLIC) != 0 && !classNameMatchesFileName(c, env)) {
                 log.error(tree.pos(),
-                        "class.public.should.be.in.file", tree.name);
+                          "class.public.should.be.in.file", tree.name);
             }
         } else {
-            if (tree.name.len != 0 &&
-                    !chk.checkUniqueClassName(tree.pos(), tree.name, enclScope)) {
+            if (!tree.name.isEmpty() &&
+                !chk.checkUniqueClassName(tree.pos(), tree.name, enclScope)) {
                 result = null;
                 return;
             }
             if (owner.kind == TYP) {
                 // We are seeing a member class.
-                c = reader.enterClass(tree.name, (TypeSymbol) owner);
+                c = reader.enterClass(tree.name, (TypeSymbol)owner);
                 if ((owner.flags_field & INTERFACE) != 0) {
                     tree.mods.flags |= PUBLIC | STATIC;
                 }
@@ -397,7 +395,7 @@ public class Enter extends JCTree.Visitor {
                 // We are seeing a local class.
                 c = reader.defineClass(tree.name, owner);
                 c.flatname = chk.localClassName(c);
-                if (c.name.len != 0)
+                if (!c.name.isEmpty())
                     chk.checkTransparentClass(tree.pos(), c, env.info.scope);
             }
         }
@@ -406,8 +404,8 @@ public class Enter extends JCTree.Visitor {
         // Enter class into `compiled' table and enclosing scope.
         if (chk.compiled.get(c.flatname) != null) {
             duplicateClass(tree.pos(), c);
-            result = new ErrorType(tree.name, (TypeSymbol) owner);
-            tree.sym = (ClassSymbol) result.tsym;
+            result = types.createErrorType(tree.name, (TypeSymbol)owner, Type.noType);
+            tree.sym = (ClassSymbol)result.tsym;
             return;
         }
         chk.compiled.put(c.flatname, c);
@@ -424,7 +422,7 @@ public class Enter extends JCTree.Visitor {
         c.sourcefile = env.toplevel.sourcefile;
         c.members_field = new Scope(c);
 
-        ClassType ct = (ClassType) c.type;
+        ClassType ct = (ClassType)c.type;
         if (owner.kind != PCK && (c.flags_field & STATIC) == 0) {
             // We are seeing a local or inner class.
             // Set outer_field of this class to closest enclosing class
@@ -432,7 +430,7 @@ public class Enter extends JCTree.Visitor {
             // (its "enclosing instance class"), provided such a class exists.
             Symbol owner1 = owner;
             while ((owner1.kind & (VAR | MTH)) != 0 &&
-                    (owner1.flags_field & STATIC) == 0) {
+                   (owner1.flags_field & STATIC) == 0) {
                 owner1 = owner1.owner;
             }
             if (owner1.kind == TYP) {
@@ -453,23 +451,29 @@ public class Enter extends JCTree.Visitor {
 
         result = c.type;
     }
+    //where
+        /** Does class have the same name as the file it appears in?
+         */
+        private static boolean classNameMatchesFileName(ClassSymbol c,
+                                                        Env<AttrContext> env) {
+            return env.toplevel.sourcefile.isNameCompatible(c.name.toString(),
+                                                            JavaFileObject.Kind.SOURCE);
+        }
 
-    /**
-     * Complain about a duplicate class.
-     */
+    /** Complain about a duplicate class. */
     protected void duplicateClass(DiagnosticPosition pos, ClassSymbol c) {
         log.error(pos, "duplicate.class", c.fullname);
     }
 
-    /**
-     * Class enter visitor method for type parameters.
-     * Enter a symbol for type parameter in local scope, after checking that it
-     * is unique.
+    /** Class enter visitor method for type parameters.
+     *  Enter a symbol for type parameter in local scope, after checking that it
+     *  is unique.
      */
+    @Override
     public void visitTypeParameter(JCTypeParameter tree) {
         TypeVar a = (tree.type != null)
-                ? (TypeVar) tree.type
-                : new TypeVar(tree.name, env.info.scope.owner, syms.botType);
+            ? (TypeVar)tree.type
+            : new TypeVar(tree.name, env.info.scope.owner, syms.botType);
         tree.type = a;
         if (chk.checkUnique(tree.pos(), a.tsym, env.info.scope)) {
             env.info.scope.enter(a.tsym);
@@ -477,28 +481,24 @@ public class Enter extends JCTree.Visitor {
         result = a;
     }
 
-    /**
-     * Default class enter visitor method: do nothing.
+    /** Default class enter visitor method: do nothing.
      */
+    @Override
     public void visitTree(JCTree tree) {
         result = null;
     }
 
-    /**
-     * Main method: enter all classes in a list of toplevel trees.
-     *
-     * @param trees The list of trees to be processed.
+    /** Main method: enter all classes in a list of toplevel trees.
+     *  @param trees      The list of trees to be processed.
      */
     public void main(List<JCCompilationUnit> trees) {
         complete(trees, null);
     }
 
-    /**
-     * Main method: enter one class from a list of toplevel trees and
-     * place the rest on uncompleted for later processing.
-     *
-     * @param trees The list of trees to be processed.
-     * @param c     The class symbol to be processed.
+    /** Main method: enter one class from a list of toplevel trees and
+     *  place the rest on uncompleted for later processing.
+     *  @param trees      The list of trees to be processed.
+     *  @param c          The class symbol to be processed.
      */
     public void complete(List<JCCompilationUnit> trees, ClassSymbol c) {
         annotate.enterStart();
@@ -510,7 +510,7 @@ public class Enter extends JCTree.Visitor {
             classEnter(trees, null);
 
             // complete all uncompleted classes in memberEnter
-            if (memberEnter.completionEnabled) {
+            if  (memberEnter.completionEnabled) {
                 while (uncompleted.nonEmpty()) {
                     ClassSymbol clazz = uncompleted.next();
                     if (c == null || c == clazz || prevUncompleted == null)
@@ -525,10 +525,8 @@ public class Enter extends JCTree.Visitor {
                 for (JCCompilationUnit tree : trees) {
                     if (tree.starImportScope.elems == null) {
                         JavaFileObject prev = log.useSource(tree.sourcefile);
-                        Env<AttrContext> env = typeEnvs.get(tree);
-                        if (env == null)
-                            env = topLevelEnv(tree);
-                        memberEnter.memberEnter(tree, env);
+                        Env<AttrContext> topEnv = topLevelEnv(tree);
+                        memberEnter.memberEnter(tree, topEnv);
                         log.useSource(prev);
                     }
                 }

@@ -1,112 +1,60 @@
 /*
- * Copyright (c) 2001, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 2001, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.tree;
 
-import com.sun.tools.javac.tree.JCTree.JCAnnotation;
-import com.sun.tools.javac.tree.JCTree.JCArrayAccess;
-import com.sun.tools.javac.tree.JCTree.JCArrayTypeTree;
-import com.sun.tools.javac.tree.JCTree.JCAssert;
-import com.sun.tools.javac.tree.JCTree.JCAssign;
-import com.sun.tools.javac.tree.JCTree.JCAssignOp;
-import com.sun.tools.javac.tree.JCTree.JCBinary;
-import com.sun.tools.javac.tree.JCTree.JCBlock;
-import com.sun.tools.javac.tree.JCTree.JCBreak;
-import com.sun.tools.javac.tree.JCTree.JCCase;
-import com.sun.tools.javac.tree.JCTree.JCCatch;
-import com.sun.tools.javac.tree.JCTree.JCClassDecl;
-import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
-import com.sun.tools.javac.tree.JCTree.JCConditional;
-import com.sun.tools.javac.tree.JCTree.JCContinue;
-import com.sun.tools.javac.tree.JCTree.JCDoWhileLoop;
-import com.sun.tools.javac.tree.JCTree.JCEnhancedForLoop;
-import com.sun.tools.javac.tree.JCTree.JCErroneous;
-import com.sun.tools.javac.tree.JCTree.JCExpressionStatement;
-import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
-import com.sun.tools.javac.tree.JCTree.JCForLoop;
-import com.sun.tools.javac.tree.JCTree.JCIdent;
-import com.sun.tools.javac.tree.JCTree.JCIf;
-import com.sun.tools.javac.tree.JCTree.JCImport;
-import com.sun.tools.javac.tree.JCTree.JCInstanceOf;
-import com.sun.tools.javac.tree.JCTree.JCLabeledStatement;
-import com.sun.tools.javac.tree.JCTree.JCLiteral;
-import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
-import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
-import com.sun.tools.javac.tree.JCTree.JCModifiers;
-import com.sun.tools.javac.tree.JCTree.JCNewArray;
-import com.sun.tools.javac.tree.JCTree.JCNewClass;
-import com.sun.tools.javac.tree.JCTree.JCParens;
-import com.sun.tools.javac.tree.JCTree.JCPrimitiveTypeTree;
-import com.sun.tools.javac.tree.JCTree.JCReturn;
-import com.sun.tools.javac.tree.JCTree.JCSkip;
-import com.sun.tools.javac.tree.JCTree.JCSwitch;
-import com.sun.tools.javac.tree.JCTree.JCSynchronized;
-import com.sun.tools.javac.tree.JCTree.JCThrow;
-import com.sun.tools.javac.tree.JCTree.JCTry;
-import com.sun.tools.javac.tree.JCTree.JCTypeApply;
-import com.sun.tools.javac.tree.JCTree.JCTypeCast;
-import com.sun.tools.javac.tree.JCTree.JCTypeParameter;
-import com.sun.tools.javac.tree.JCTree.JCUnary;
-import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
-import com.sun.tools.javac.tree.JCTree.JCWhileLoop;
-import com.sun.tools.javac.tree.JCTree.JCWildcard;
-import com.sun.tools.javac.tree.JCTree.LetExpr;
-import com.sun.tools.javac.tree.JCTree.TypeBoundKind;
-import com.sun.tools.javac.tree.JCTree.Visitor;
-import com.sun.tools.javac.util.List;
+import com.sun.tools.javac.util.*;
+import com.sun.tools.javac.tree.JCTree.*;
 
-/**
- * A subclass of Tree.Visitor, this class defines
- * a general tree scanner pattern. Translation proceeds recursively in
- * left-to-right order down a tree. There is one visitor method in this class
- * for every possible kind of tree node.  To obtain a specific
- * scanner, it suffices to override those visitor methods which
- * do some interesting work. The scanner class itself takes care of all
- * navigational aspects.
- * <p>
- * <p><b>This is NOT part of any supported API.
- * If you write code that depends on this, you do so at your own risk.
- * This code and its internal interfaces are subject to change or
- * deletion without notice.</b>
+/** A subclass of Tree.Visitor, this class defines
+ *  a general tree scanner pattern. Translation proceeds recursively in
+ *  left-to-right order down a tree. There is one visitor method in this class
+ *  for every possible kind of tree node.  To obtain a specific
+ *  scanner, it suffices to override those visitor methods which
+ *  do some interesting work. The scanner class itself takes care of all
+ *  navigational aspects.
+ *
+ *  <p><b>This is NOT part of any supported API.
+ *  If you write code that depends on this, you do so at your own risk.
+ *  This code and its internal interfaces are subject to change or
+ *  deletion without notice.</b>
  */
 public class TreeScanner extends Visitor {
 
-    /**
-     * Visitor method: Scan a single node.
+    /** Visitor method: Scan a single node.
      */
     public void scan(JCTree tree) {
-        if (tree != null) tree.accept(this);
+        if(tree!=null) tree.accept(this);
     }
 
-    /**
-     * Visitor method: scan a list of nodes.
+    /** Visitor method: scan a list of nodes.
      */
     public void scan(List<? extends JCTree> trees) {
         if (trees != null)
-            for (List<? extends JCTree> l = trees; l.nonEmpty(); l = l.tail)
-                scan(l.head);
+        for (List<? extends JCTree> l = trees; l.nonEmpty(); l = l.tail)
+            scan(l.head);
     }
 
 
@@ -198,6 +146,7 @@ public class TreeScanner extends Visitor {
     }
 
     public void visitTry(JCTry tree) {
+        scan(tree.resources);
         scan(tree.body);
         scan(tree.catchers);
         scan(tree.finalizer);
@@ -244,6 +193,7 @@ public class TreeScanner extends Visitor {
     }
 
     public void visitApply(JCMethodInvocation tree) {
+        scan(tree.typeargs);
         scan(tree.meth);
         scan(tree.args);
     }
@@ -251,6 +201,7 @@ public class TreeScanner extends Visitor {
     public void visitNewClass(JCNewClass tree) {
         scan(tree.encl);
         scan(tree.clazz);
+        scan(tree.typeargs);
         scan(tree.args);
         scan(tree.def);
     }
@@ -321,6 +272,10 @@ public class TreeScanner extends Visitor {
         scan(tree.arguments);
     }
 
+    public void visitTypeUnion(JCTypeUnion tree) {
+        scan(tree.alternatives);
+    }
+
     public void visitTypeParameter(JCTypeParameter tree) {
         scan(tree.bounds);
     }
@@ -354,6 +309,6 @@ public class TreeScanner extends Visitor {
     }
 
     public void visitTree(JCTree tree) {
-        assert false;
+        Assert.error();
     }
 }

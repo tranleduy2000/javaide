@@ -1,37 +1,37 @@
 /*
  * Copyright (c) 2005, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.parser;
 
-import com.sun.tools.javac.util.Name;
+import com.sun.tools.javac.util.*;
 import com.sun.tools.javac.util.Position.LineMap;
 
 /**
  * The lexical analyzer maps an input stream consisting of ASCII
  * characters and Unicode escapes into a token sequence.
- * <p>
+ *
  * <p><b>This is NOT part of any supported API.
  * If you write code that depends on this, you do so at your own risk.
  * This code and its internal interfaces are subject to change or
@@ -91,9 +91,9 @@ public interface Lexer {
      * Unicode escape sequences are not translated.
      *
      * @param beginIndex the beginning index, inclusive.
-     * @param endIndex   the ending index, exclusive.
+     * @param endIndex the ending index, exclusive.
      * @throws IndexOutOfBounds if either offset is outside of the
-     *                          array bounds
+     *         array bounds
      */
     char[] getRawCharacters(int beginIndex, int endIndex);
 
@@ -109,8 +109,8 @@ public interface Lexer {
 
     /**
      * Return the current token's position: a 0-based
-     * offset from beginning of the raw input stream
-     * (before unicode translation)
+     *  offset from beginning of the raw input stream
+     *  (before unicode translation)
      */
     int pos();
 
@@ -126,7 +126,7 @@ public interface Lexer {
 
     /**
      * The value of a literal token, recorded as a string.
-     * For integers, leading 0x and 'l' suffixes are suppressed.
+     *  For integers, leading 0x and 'l' suffixes are suppressed.
      */
     String stringVal();
 

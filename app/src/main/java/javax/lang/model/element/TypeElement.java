@@ -1,26 +1,26 @@
 /*
- * Copyright (c) 2005, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 2005, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package javax.lang.model.element;
@@ -59,7 +59,23 @@ import javax.lang.model.util.*;
  * @see DeclaredType
  * @since 1.6
  */
-public interface TypeElement extends Element {
+public interface TypeElement extends Element, Parameterizable, QualifiedNameable {
+    /**
+     * {@inheritDoc}
+     *
+     * <p> Note that as a particular instance of the {@linkplain
+     * javax.lang.model.element general accuracy requirements} and the
+     * ordering behavior required of this interface, the list of
+     * enclosed elements will be returned in the natural order for the
+     * originating source of information about the type.  For example,
+     * if the information about the type is originating from a source
+     * file, the elements will be returned in source code order.
+     * (However, in that case the the ordering of synthesized
+     * elements, such as a default constructor, is not specified.)
+     *
+     * @return the enclosed elements in proper order, or an empty list if none
+     */
+    List<? extends Element> getEnclosedElements();
 
     /**
      * Returns the <i>nesting kind</i> of this type element.
@@ -85,9 +101,22 @@ public interface TypeElement extends Element {
      * an empty name if none
      *
      * @see Elements#getBinaryName
-     * @jls3 6.7 Fully Qualified Names and Canonical Names
+     * @jls 6.7 Fully Qualified Names and Canonical Names
      */
     Name getQualifiedName();
+
+
+    /**
+     * Returns the simple name of this type element.
+     *
+     * For an anonymous class, an empty name is returned.
+     *
+     * @return the simple name of this class or interface,
+     * an empty name for an anonymous class
+     *
+     */
+    @Override
+    Name getSimpleName();
 
     /**
      * Returns the direct superclass of this type element.
@@ -116,4 +145,16 @@ public interface TypeElement extends Element {
      * if there are none
      */
     List<? extends TypeParameterElement> getTypeParameters();
+
+
+    /**
+     * Returns the package of a top-level type and returns the
+     * immediately lexically enclosing element for a {@linkplain
+     * NestingKind#isNested nested} type.
+     *
+     * @return the package of a top-level type, the immediately
+     * lexically enclosing element for a nested type
+     */
+    @Override
+    Element getEnclosingElement();
 }

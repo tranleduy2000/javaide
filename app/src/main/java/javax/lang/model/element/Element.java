@@ -1,26 +1,26 @@
 /*
- * Copyright (c) 2005, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 2005, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package javax.lang.model.element;
@@ -159,17 +159,25 @@ public interface Element {
     Set<Modifier> getModifiers();
 
     /**
-     * Returns the simple (unqualified) name of this element.
-     * The name of a generic type does not include any reference
-     * to its formal type parameters.
-     * For example, the simple name of the type element
-     * {@code java.util.Set<E>} is {@code "Set"}.
-     * If this element represents an unnamed package, an empty name is
-     * returned.  If it represents a constructor, the name "{@code
-     * <init>}" is returned.  If it represents a static initializer,
-     * the name "{@code <clinit>}" is returned.  If it represents an
-     * anonymous class or instance initializer, an empty name is
+     * Returns the simple (unqualified) name of this element.  The
+     * name of a generic type does not include any reference to its
+     * formal type parameters.
+     *
+     * For example, the simple name of the type element {@code
+     * java.util.Set<E>} is {@code "Set"}.
+     *
+     * If this element represents an unnamed {@linkplain
+     * PackageElement#getSimpleName package}, an empty name is
      * returned.
+     *
+     * If it represents a {@linkplain ExecutableElement#getSimpleName
+     * constructor}, the name "{@code <init>}" is returned.  If it
+     * represents a {@linkplain ExecutableElement#getSimpleName static
+     * initializer}, the name "{@code <clinit>}" is returned.
+     *
+     * If it represents an {@linkplain TypeElement#getSimpleName
+     * anonymous class} or {@linkplain ExecutableElement#getSimpleName
+     * instance initializer}, an empty name is returned.
      *
      * @return the simple name of this element
      */
@@ -182,9 +190,19 @@ public interface Element {
      * <li> If this element is one whose declaration is lexically enclosed
      * immediately within the declaration of another element, that other
      * element is returned.
-     * <li> If this is a top-level type, its package is returned.
-     * <li> If this is a package, {@code null} is returned.
-     * <li> If this is a type parameter, {@code null} is returned.
+     *
+     * <li> If this is a {@linkplain TypeElement#getEnclosingElement
+     * top-level type}, its package is returned.
+     *
+     * <li> If this is a {@linkplain
+     * PackageElement#getEnclosingElement package}, {@code null} is
+     * returned.
+     *
+     * <li> If this is a {@linkplain
+     * TypeParameterElement#getEnclosingElement type parameter},
+     * {@linkplain TypeParameterElement#getGenericElement the
+     * generic element} of the type parameter is returned.
+     *
      * </ul>
      *
      * @return the enclosing element, or {@code null} if there is none
@@ -214,8 +232,8 @@ public interface Element {
      *
      * @return the enclosed elements, or an empty list if none
      * @see Elements#getAllMembers
-     * @jls3 8.8.9 Default Constructor
-     * @jls3 8.9 Enums
+     * @jls 8.8.9 Default Constructor
+     * @jls 8.9 Enums
      */
     List<? extends Element> getEnclosedElements();
 

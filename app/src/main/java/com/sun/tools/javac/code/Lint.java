@@ -1,26 +1,26 @@
 /*
- * Copyright (c) 2005, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 2005, 2010, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.code;
@@ -40,47 +40,18 @@ import static com.sun.tools.javac.code.Flags.DEPRECATED;
 
 /**
  * A class for handling -Xlint suboptions and @SuppresssWarnings.
- * <p>
- * <p><b>This is NOT part of any supported API.
- * If you write code that depends on this, you do so at your own risk.
- * This code and its internal interfaces are subject to change or
- * deletion without notice.</b>
+ *
+ *  <p><b>This is NOT part of any supported API.
+ *  If you write code that depends on this, you do so at your own risk.
+ *  This code and its internal interfaces are subject to change or
+ *  deletion without notice.</b>
  */
-public class Lint {
-    /**
-     * The context key for the root Lint object.
-     */
+public class Lint
+{
+    /** The context key for the root Lint object. */
     protected static final Context.Key<Lint> lintKey = new Context.Key<Lint>();
-    private static Map<String, LintCategory> map = new HashMap<String, LintCategory>();
-    private final AugmentVisitor augmentor;
-    private final EnumSet<LintCategory> values;
-    private final EnumSet<LintCategory> suppressedValues;
 
-
-    protected Lint(Context context) {
-        // initialize values according to the lint options
-        Options options = Options.instance(context);
-        values = EnumSet.noneOf(LintCategory.class);
-        for (Map.Entry<String, LintCategory> e : map.entrySet()) {
-            if (options.lint(e.getKey()))
-                values.add(e.getValue());
-        }
-
-        suppressedValues = EnumSet.noneOf(LintCategory.class);
-
-        context.put(lintKey, this);
-        augmentor = new AugmentVisitor(context);
-    }
-
-    protected Lint(Lint other) {
-        this.augmentor = other.augmentor;
-        this.values = other.values.clone();
-        this.suppressedValues = other.suppressedValues.clone();
-    }
-
-    /**
-     * Get the root Lint instance.
-     */
+    /** Get the root Lint instance. */
     public static Lint instance(Context context) {
         Lint instance = context.get(lintKey);
         if (instance == null)
@@ -95,6 +66,7 @@ public class Lint {
     public Lint augment(Attribute.Compound attr) {
         return augmentor.augment(this, attr);
     }
+
 
     /**
      * Returns the result of combining the values in this object with
@@ -119,29 +91,39 @@ public class Lint {
         return l;
     }
 
+
+    private final AugmentVisitor augmentor;
+
+    private final EnumSet<LintCategory> values;
+    private final EnumSet<LintCategory> suppressedValues;
+
+    private static Map<String, LintCategory> map = new HashMap<String,LintCategory>();
+
+
+    protected Lint(Context context) {
+        // initialize values according to the lint options
+        Options options = Options.instance(context);
+        values = EnumSet.noneOf(LintCategory.class);
+        for (Map.Entry<String, LintCategory> e: map.entrySet()) {
+            if (options.lint(e.getKey()))
+                values.add(e.getValue());
+        }
+
+        suppressedValues = EnumSet.noneOf(LintCategory.class);
+
+        context.put(lintKey, this);
+        augmentor = new AugmentVisitor(context);
+    }
+
+    protected Lint(Lint other) {
+        this.augmentor = other.augmentor;
+        this.values = other.values.clone();
+        this.suppressedValues = other.suppressedValues.clone();
+    }
+
+    @Override
     public String toString() {
         return "Lint:[values" + values + " suppressedValues" + suppressedValues + "]";
-    }
-
-    /**
-     * Checks if a warning category is enabled. A warning category may be enabled
-     * on the command line, or by default, and can be temporarily disabled with
-     * the SuppressWarnings annotation.
-     */
-    public boolean isEnabled(LintCategory lc) {
-        return values.contains(lc);
-    }
-
-    ;
-
-    /**
-     * Checks is a warning category has been specifically suppressed, by means
-     * of the SuppressWarnings annotation, or, in the case of the deprecated
-     * category, whether it has been implicitly suppressed by virtue of the
-     * current entity being itself deprecated.
-     */
-    public boolean isSuppressed(LintCategory lc) {
-        return suppressedValues.contains(lc);
     }
 
     /**
@@ -152,6 +134,11 @@ public class Lint {
          * Warn about use of unnecessary casts.
          */
         CAST("cast"),
+
+        /**
+         * Warn about issues related to classfile contents
+         */
+        CLASSFILE("classfile"),
 
         /**
          * Warn about use of deprecated items.
@@ -185,6 +172,11 @@ public class Lint {
         FINALLY("finally"),
 
         /**
+         * Warn about issues relating to use of command line options
+         */
+        OPTIONS("options"),
+
+        /**
          * Warn about issues regarding method overrides.
          */
         OVERRIDES("overrides"),
@@ -197,25 +189,80 @@ public class Lint {
         PATH("path"),
 
         /**
+         * Warn about issues regarding annotation processing.
+         */
+        PROCESSING("processing"),
+
+        /**
+         * Warn about unchecked operations on raw types.
+         */
+        RAW("rawtypes"),
+
+        /**
          * Warn about Serializable classes that do not provide a serial version ID.
          */
         SERIAL("serial"),
 
         /**
+         * Warn about issues relating to use of statics
+         */
+        STATIC("static"),
+
+        /**
+         * Warn about proprietary API that may be removed in a future release.
+         */
+        SUNAPI("sunapi", true),
+
+        /**
+         * Warn about issues relating to use of try blocks (i.e. try-with-resources)
+         */
+        TRY("try"),
+
+        /**
          * Warn about unchecked operations on raw types.
          */
-        UNCHECKED("unchecked");
+        UNCHECKED("unchecked"),
 
-        private final String option;
+        /**
+         * Warn about potentially unsafe vararg methods
+         */
+        VARARGS("varargs");
 
         LintCategory(String option) {
+            this(option, false);
+        }
+
+        LintCategory(String option, boolean hidden) {
             this.option = option;
+            this.hidden = hidden;
             map.put(option, this);
         }
 
         static LintCategory get(String option) {
             return map.get(option);
         }
+
+        public final String option;
+        public final boolean hidden;
+    };
+
+    /**
+     * Checks if a warning category is enabled. A warning category may be enabled
+     * on the command line, or by default, and can be temporarily disabled with
+     * the SuppressWarnings annotation.
+     */
+    public boolean isEnabled(LintCategory lc) {
+        return values.contains(lc);
+    }
+
+    /**
+     * Checks is a warning category has been specifically suppressed, by means
+     * of the SuppressWarnings annotation, or, in the case of the deprecated
+     * category, whether it has been implicitly suppressed by virtue of the
+     * current entity being itself deprecated.
+     */
+    public boolean isSuppressed(LintCategory lc) {
+        return suppressedValues.contains(lc);
     }
 
     protected static class AugmentVisitor implements Attribute.Visitor {
@@ -242,7 +289,7 @@ public class Lint {
             initSyms();
             this.parent = parent;
             lint = null;
-            for (Attribute.Compound a : attrs) {
+            for (Attribute.Compound a: attrs) {
                 a.accept(this);
             }
             return (lint == null ? parent : lint);
@@ -276,9 +323,9 @@ public class Lint {
         // specified in the @SuppressWarnings annotation.
         public void visitCompound(Attribute.Compound compound) {
             if (compound.type.tsym == syms.suppressWarningsType.tsym) {
-                for (List<Pair<MethodSymbol, Attribute>> v = compound.values;
+                for (List<Pair<MethodSymbol,Attribute>> v = compound.values;
                      v.nonEmpty(); v = v.tail) {
-                    Pair<MethodSymbol, Attribute> value = v.head;
+                    Pair<MethodSymbol,Attribute> value = v.head;
                     if (value.fst.name.toString().equals("value"))
                         value.snd.accept(this);
                 }
@@ -296,7 +343,5 @@ public class Lint {
 
         public void visitError(Attribute.Error e) {
         }
-    }
-
-    ;
+    };
 }

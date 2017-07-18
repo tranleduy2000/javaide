@@ -1,81 +1,36 @@
 /*
- * Copyright (c) 2001, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 2001, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.jvm;
 
-import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.tree.JCTree.JCArrayAccess;
-import com.sun.tools.javac.tree.JCTree.JCArrayTypeTree;
-import com.sun.tools.javac.tree.JCTree.JCAssert;
-import com.sun.tools.javac.tree.JCTree.JCAssign;
-import com.sun.tools.javac.tree.JCTree.JCAssignOp;
-import com.sun.tools.javac.tree.JCTree.JCBinary;
-import com.sun.tools.javac.tree.JCTree.JCBlock;
-import com.sun.tools.javac.tree.JCTree.JCBreak;
-import com.sun.tools.javac.tree.JCTree.JCCase;
-import com.sun.tools.javac.tree.JCTree.JCCatch;
-import com.sun.tools.javac.tree.JCTree.JCConditional;
-import com.sun.tools.javac.tree.JCTree.JCContinue;
-import com.sun.tools.javac.tree.JCTree.JCDoWhileLoop;
-import com.sun.tools.javac.tree.JCTree.JCEnhancedForLoop;
-import com.sun.tools.javac.tree.JCTree.JCErroneous;
-import com.sun.tools.javac.tree.JCTree.JCExpressionStatement;
-import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
-import com.sun.tools.javac.tree.JCTree.JCForLoop;
-import com.sun.tools.javac.tree.JCTree.JCIdent;
-import com.sun.tools.javac.tree.JCTree.JCIf;
-import com.sun.tools.javac.tree.JCTree.JCInstanceOf;
-import com.sun.tools.javac.tree.JCTree.JCLabeledStatement;
-import com.sun.tools.javac.tree.JCTree.JCLiteral;
-import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
-import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
-import com.sun.tools.javac.tree.JCTree.JCNewArray;
-import com.sun.tools.javac.tree.JCTree.JCNewClass;
-import com.sun.tools.javac.tree.JCTree.JCParens;
-import com.sun.tools.javac.tree.JCTree.JCPrimitiveTypeTree;
-import com.sun.tools.javac.tree.JCTree.JCReturn;
-import com.sun.tools.javac.tree.JCTree.JCSkip;
-import com.sun.tools.javac.tree.JCTree.JCSwitch;
-import com.sun.tools.javac.tree.JCTree.JCSynchronized;
-import com.sun.tools.javac.tree.JCTree.JCThrow;
-import com.sun.tools.javac.tree.JCTree.JCTry;
-import com.sun.tools.javac.tree.JCTree.JCTypeApply;
-import com.sun.tools.javac.tree.JCTree.JCTypeCast;
-import com.sun.tools.javac.tree.JCTree.JCTypeParameter;
-import com.sun.tools.javac.tree.JCTree.JCUnary;
-import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
-import com.sun.tools.javac.tree.JCTree.JCWhileLoop;
-import com.sun.tools.javac.tree.JCTree.JCWildcard;
-import com.sun.tools.javac.util.ByteBuffer;
-import com.sun.tools.javac.util.List;
-import com.sun.tools.javac.util.ListBuffer;
-import com.sun.tools.javac.util.Log;
-import com.sun.tools.javac.util.Position;
+import java.util.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.sun.tools.javac.tree.*;
+import com.sun.tools.javac.util.*;
+import com.sun.tools.javac.util.List;
+import com.sun.tools.javac.tree.JCTree.*;
 
 /**
  * This class contains the CharacterRangeTable for some method
@@ -91,28 +46,32 @@ public class CRTable
         implements CRTFlags {
 
     private final boolean crtDebug = false;
-    /**
-     * The tree of the method this table is intended for.
-     * We should traverse this tree to get source ranges.
-     */
-    JCTree.JCMethodDecl methodTree;
+
     /**
      * The list of CRTable entries.
      */
     private ListBuffer<CRTEntry> entries = new ListBuffer<CRTEntry>();
+
     /**
      * The hashtable for source positions.
      */
     private Map<Object, SourceRange> positions = new HashMap<Object, SourceRange>();
+
     /**
      * The hashtable for ending positions stored in the parser.
      */
     private Map<JCTree, Integer> endPositions;
 
     /**
+     * The tree of the method this table is intended for.
+     * We should traverse this tree to get source ranges.
+     */
+    JCMethodDecl methodTree;
+
+    /**
      * Constructor
      */
-    public CRTable(JCTree.JCMethodDecl tree, Map<JCTree, Integer> endPositions) {
+    public CRTable(JCMethodDecl tree, Map<JCTree, Integer> endPositions) {
         this.methodTree = tree;
         this.endPositions = endPositions;
     }
@@ -152,7 +111,7 @@ public class CRTable
                 continue;
 
             SourceRange pos = positions.get(entry.tree);
-            assert pos != null : "CRT: tree source positions are undefined";
+            Assert.checkNonNull(pos, "CRT: tree source positions are undefined");
             if ((pos.startPos == Position.NOPOS) || (pos.endPos == Position.NOPOS))
                 continue;
 
@@ -236,97 +195,10 @@ public class CRTable
  *************************************************************************/
 
     /**
-     * This class contains a CharacterRangeTableEntry.
-     */
-    static class CRTEntry {
-
-        /**
-         * A tree or a list of trees to obtain source positions.
-         */
-        Object tree;
-
-        /**
-         * The flags described in the CharacterRangeTable spec.
-         */
-        int flags;
-
-        /**
-         * The starting code position of this entry.
-         */
-        int startPc;
-
-        /**
-         * The ending code position of this entry.
-         */
-        int endPc;
-
-        /**
-         * Constructor
-         */
-        CRTEntry(Object tree, int flags, int startPc, int endPc) {
-            this.tree = tree;
-            this.flags = flags;
-            this.startPc = startPc;
-            this.endPc = endPc;
-        }
-    }
-
-    /**
-     * This class contains source positions
-     * for some tree or list of trees.
-     */
-    static class SourceRange {
-
-        /**
-         * The starting source position.
-         */
-        int startPos;
-
-        /**
-         * The ending source position.
-         */
-        int endPos;
-
-        /**
-         * Constructor
-         */
-        SourceRange() {
-            startPos = Position.NOPOS;
-            endPos = Position.NOPOS;
-        }
-
-        /**
-         * Constructor
-         */
-        SourceRange(int startPos, int endPos) {
-            this.startPos = startPos;
-            this.endPos = endPos;
-        }
-
-        /**
-         * Compare the starting and the ending positions
-         * of the source range and combines them assigning
-         * the widest range to this.
-         */
-        SourceRange mergeWith(SourceRange sr) {
-            if (sr == null) return this;
-            if (startPos == Position.NOPOS)
-                startPos = sr.startPos;
-            else if (sr.startPos != Position.NOPOS)
-                startPos = (startPos < sr.startPos ? startPos : sr.startPos);
-            if (endPos == Position.NOPOS)
-                endPos = sr.endPos;
-            else if (sr.endPos != Position.NOPOS)
-                endPos = (endPos > sr.endPos ? endPos : sr.endPos);
-            return this;
-        }
-    }
-
-    /**
      * This class contains methods to compute source positions for trees.
      * Extends Tree.Visitor to traverse the abstract syntax tree.
      */
-    class SourceComputer extends JCTree.Visitor {
+    class SourceComputer extends Visitor {
 
         /**
          * The result of the tree traversal methods.
@@ -471,6 +343,7 @@ public class CRTable
 
         public void visitTry(JCTry tree) {
             SourceRange sr = new SourceRange(startPos(tree), endPos(tree));
+            sr.mergeWith(csp(tree.resources));
             sr.mergeWith(csp(tree.body));
             sr.mergeWith(cspCatchers(tree.catchers));
             sr.mergeWith(csp(tree.finalizer));
@@ -662,7 +535,7 @@ public class CRTable
         }
 
         public void visitTree(JCTree tree) {
-            assert false;
+            Assert.error();
         }
 
         /**
@@ -685,6 +558,94 @@ public class CRTable
             if (endpos != null)
                 return endpos.intValue();
             return Position.NOPOS;
+        }
+    }
+
+    /**
+     * This class contains a CharacterRangeTableEntry.
+     */
+    static class CRTEntry {
+
+        /**
+         * A tree or a list of trees to obtain source positions.
+         */
+        Object tree;
+
+        /**
+         * The flags described in the CharacterRangeTable spec.
+         */
+        int flags;
+
+        /**
+         * The starting code position of this entry.
+         */
+        int startPc;
+
+        /**
+         * The ending code position of this entry.
+         */
+        int endPc;
+
+        /**
+         * Constructor
+         */
+        CRTEntry(Object tree, int flags, int startPc, int endPc) {
+            this.tree = tree;
+            this.flags = flags;
+            this.startPc = startPc;
+            this.endPc = endPc;
+        }
+    }
+
+
+    /**
+     * This class contains source positions
+     * for some tree or list of trees.
+     */
+    static class SourceRange {
+
+        /**
+         * The starting source position.
+         */
+        int startPos;
+
+        /**
+         * The ending source position.
+         */
+        int endPos;
+
+        /**
+         * Constructor
+         */
+        SourceRange() {
+            startPos = Position.NOPOS;
+            endPos = Position.NOPOS;
+        }
+
+        /**
+         * Constructor
+         */
+        SourceRange(int startPos, int endPos) {
+            this.startPos = startPos;
+            this.endPos = endPos;
+        }
+
+        /**
+         * Compare the starting and the ending positions
+         * of the source range and combines them assigning
+         * the widest range to this.
+         */
+        SourceRange mergeWith(SourceRange sr) {
+            if (sr == null) return this;
+            if (startPos == Position.NOPOS)
+                startPos = sr.startPos;
+            else if (sr.startPos != Position.NOPOS)
+                startPos = (startPos < sr.startPos ? startPos : sr.startPos);
+            if (endPos == Position.NOPOS)
+                endPos = sr.endPos;
+            else if (sr.endPos != Position.NOPOS)
+                endPos = (endPos > sr.endPos ? endPos : sr.endPos);
+            return this;
         }
     }
 

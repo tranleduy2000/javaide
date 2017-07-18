@@ -1,112 +1,53 @@
 /*
- * Copyright (c) 1999, 2006, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (c) 1999, 2011, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 package com.sun.tools.javac.jvm;
 
-import com.sun.tools.javac.code.Attribute;
-import com.sun.tools.javac.code.Scope;
-import com.sun.tools.javac.code.Source;
-import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.code.Symbol.ClassSymbol;
-import com.sun.tools.javac.code.Symbol.CompletionFailure;
-import com.sun.tools.javac.code.Symbol.MethodSymbol;
-import com.sun.tools.javac.code.Symbol.TypeSymbol;
-import com.sun.tools.javac.code.Symbol.VarSymbol;
-import com.sun.tools.javac.code.Symtab;
-import com.sun.tools.javac.code.Type;
-import com.sun.tools.javac.code.Type.ArrayType;
-import com.sun.tools.javac.code.Type.ClassType;
-import com.sun.tools.javac.code.Type.ForAll;
-import com.sun.tools.javac.code.Type.MethodType;
-import com.sun.tools.javac.code.Type.TypeVar;
-import com.sun.tools.javac.code.Type.WildcardType;
-import com.sun.tools.javac.code.TypeTags;
-import com.sun.tools.javac.code.Types;
-import com.sun.tools.javac.file.BaseFileObject;
-import com.sun.tools.javac.util.ByteBuffer;
-import com.sun.tools.javac.util.Context;
-import com.sun.tools.javac.util.List;
-import com.sun.tools.javac.util.ListBuffer;
-import com.sun.tools.javac.util.Log;
-import com.sun.tools.javac.util.Name;
-import com.sun.tools.javac.util.Options;
-import com.sun.tools.javac.util.Pair;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashSet;
+import java.io.*;
 import java.util.Set;
+import java.util.HashSet;
 
-import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 
-import static com.sun.tools.javac.code.Flags.ABSTRACT;
-import static com.sun.tools.javac.code.Flags.ACC_BRIDGE;
-import static com.sun.tools.javac.code.Flags.ACC_SUPER;
-import static com.sun.tools.javac.code.Flags.ACC_VARARGS;
-import static com.sun.tools.javac.code.Flags.ANNOTATION;
-import static com.sun.tools.javac.code.Flags.ANONCONSTR;
-import static com.sun.tools.javac.code.Flags.BRIDGE;
-import static com.sun.tools.javac.code.Flags.COMPOUND;
-import static com.sun.tools.javac.code.Flags.ClassFlags;
-import static com.sun.tools.javac.code.Flags.DEPRECATED;
-import static com.sun.tools.javac.code.Flags.ENUM;
-import static com.sun.tools.javac.code.Flags.FINAL;
-import static com.sun.tools.javac.code.Flags.HYPOTHETICAL;
-import static com.sun.tools.javac.code.Flags.INTERFACE;
-import static com.sun.tools.javac.code.Flags.PRIVATE;
-import static com.sun.tools.javac.code.Flags.PROTECTED;
-import static com.sun.tools.javac.code.Flags.PUBLIC;
-import static com.sun.tools.javac.code.Flags.STRICTFP;
-import static com.sun.tools.javac.code.Flags.SYNTHETIC;
-import static com.sun.tools.javac.code.Flags.StandardFlags;
-import static com.sun.tools.javac.code.Flags.VARARGS;
-import static com.sun.tools.javac.code.Kinds.MTH;
-import static com.sun.tools.javac.code.Kinds.PCK;
-import static com.sun.tools.javac.code.Kinds.TYP;
-import static com.sun.tools.javac.code.Kinds.VAR;
-import static com.sun.tools.javac.code.TypeTags.ARRAY;
-import static com.sun.tools.javac.code.TypeTags.BOOLEAN;
-import static com.sun.tools.javac.code.TypeTags.BOT;
-import static com.sun.tools.javac.code.TypeTags.BYTE;
-import static com.sun.tools.javac.code.TypeTags.CHAR;
-import static com.sun.tools.javac.code.TypeTags.CLASS;
-import static com.sun.tools.javac.code.TypeTags.DOUBLE;
-import static com.sun.tools.javac.code.TypeTags.FLOAT;
-import static com.sun.tools.javac.code.TypeTags.FORALL;
-import static com.sun.tools.javac.code.TypeTags.INT;
-import static com.sun.tools.javac.code.TypeTags.LONG;
-import static com.sun.tools.javac.code.TypeTags.METHOD;
-import static com.sun.tools.javac.code.TypeTags.SHORT;
-import static com.sun.tools.javac.code.TypeTags.TYPEVAR;
-import static com.sun.tools.javac.code.TypeTags.VOID;
-import static com.sun.tools.javac.code.TypeTags.WILDCARD;
-import static com.sun.tools.javac.jvm.UninitializedType.UNINITIALIZED_OBJECT;
-import static com.sun.tools.javac.jvm.UninitializedType.UNINITIALIZED_THIS;
+import com.sun.tools.javac.code.*;
+import com.sun.tools.javac.code.Attribute.RetentionPolicy;
+import com.sun.tools.javac.code.Symbol.*;
+import com.sun.tools.javac.code.Type.*;
+import com.sun.tools.javac.file.BaseFileObject;
+import com.sun.tools.javac.util.*;
+
+import static com.sun.tools.javac.code.BoundKind.*;
+import static com.sun.tools.javac.code.Flags.*;
+import static com.sun.tools.javac.code.Kinds.*;
+import static com.sun.tools.javac.code.TypeTags.*;
+import static com.sun.tools.javac.jvm.UninitializedType.*;
+import static com.sun.tools.javac.main.OptionName.*;
 import static javax.tools.StandardLocation.CLASS_OUTPUT;
+
 
 /**
  * This class provides operations to map an internal symbol table graph
@@ -120,12 +61,114 @@ import static javax.tools.StandardLocation.CLASS_OUTPUT;
 public class ClassWriter extends ClassFile {
     protected static final Context.Key<ClassWriter> classWriterKey =
             new Context.Key<ClassWriter>();
+
+    private final Symtab syms;
+
+    private final Options options;
+
+    /**
+     * Switch: verbose output.
+     */
+    private boolean verbose;
+
+    /**
+     * Switch: scrable private names.
+     */
+    private boolean scramble;
+
+    /**
+     * Switch: scrable private names.
+     */
+    private boolean scrambleAll;
+
+    /**
+     * Switch: retrofit mode.
+     */
+    private boolean retrofit;
+
+    /**
+     * Switch: emit source file attribute.
+     */
+    private boolean emitSourceFile;
+
+    /**
+     * Switch: generate CharacterRangeTable attribute.
+     */
+    private boolean genCrt;
+
+    /**
+     * Switch: describe the generated stackmap
+     */
+    boolean debugstackmap;
+
+    /**
+     * Target class version.
+     */
+    private Target target;
+
+    /**
+     * Source language version.
+     */
+    private Source source;
+
+    /**
+     * Type utilities.
+     */
+    private Types types;
+
     /**
      * The initial sizes of the data and constant pool buffers.
      * sizes are increased when buffers get full.
      */
     static final int DATA_BUF_SIZE = 0x0fff0;
     static final int POOL_BUF_SIZE = 0x1fff0;
+
+    /**
+     * An output buffer for member info.
+     */
+    ByteBuffer databuf = new ByteBuffer(DATA_BUF_SIZE);
+
+    /**
+     * An output buffer for the constant pool.
+     */
+    ByteBuffer poolbuf = new ByteBuffer(POOL_BUF_SIZE);
+
+    /**
+     * An output buffer for type signatures.
+     */
+    ByteBuffer sigbuf = new ByteBuffer();
+
+    /**
+     * The constant pool.
+     */
+    Pool pool;
+
+    /**
+     * The inner classes to be written, as a set.
+     */
+    Set<ClassSymbol> innerClasses;
+
+    /**
+     * The inner classes to be written, as a queue where
+     * enclosing classes come first.
+     */
+    ListBuffer<ClassSymbol> innerClassesQueue;
+
+    /**
+     * The log to use for verbose output.
+     */
+    private final Log log;
+
+    /**
+     * The name table.
+     */
+    private final Names names;
+
+    /**
+     * Access to files.
+     */
+    private final JavaFileManager fileManager;
+
     /**
      * The tags and constants used in compressed stackmap.
      */
@@ -134,25 +177,57 @@ public class ClassWriter extends ClassFile {
     static final int SAME_FRAME_EXTENDED = 251;
     static final int FULL_FRAME = 255;
     static final int MAX_LOCAL_LENGTH_DIFF = 4;
-    //where
-    private final static String[] flagName = {
-            "PUBLIC", "PRIVATE", "PROTECTED", "STATIC", "FINAL",
-            "SUPER", "VOLATILE", "TRANSIENT", "NATIVE", "INTERFACE",
-            "ABSTRACT", "STRICTFP"};
-    private final Symtab syms;
-    private final Options options;
+
     /**
-     * The log to use for verbose output.
+     * Get the ClassWriter instance for this context.
      */
-    private final Log log;
+    public static ClassWriter instance(Context context) {
+        ClassWriter instance = context.get(classWriterKey);
+        if (instance == null)
+            instance = new ClassWriter(context);
+        return instance;
+    }
+
     /**
-     * The name table.
+     * Construct a class writer, given an options table.
      */
-    private final Name.Table names;
-    /**
-     * Access to files.
-     */
-    private final JavaFileManager fileManager;
+    private ClassWriter(Context context) {
+        context.put(classWriterKey, this);
+
+        log = Log.instance(context);
+        names = Names.instance(context);
+        syms = Symtab.instance(context);
+        options = Options.instance(context);
+        target = Target.instance(context);
+        source = Source.instance(context);
+        types = Types.instance(context);
+        fileManager = context.get(JavaFileManager.class);
+
+        verbose = options.isSet(VERBOSE);
+        scramble = options.isSet("-scramble");
+        scrambleAll = options.isSet("-scrambleAll");
+        retrofit = options.isSet("-retrofit");
+        genCrt = options.isSet(XJCOV);
+        debugstackmap = options.isSet("debugstackmap");
+
+        emitSourceFile = options.isUnset(G_CUSTOM) ||
+                options.isSet(G_CUSTOM, "source");
+
+        String dumpModFlags = options.get("dumpmodifiers");
+        dumpClassModifiers =
+                (dumpModFlags != null && dumpModFlags.indexOf('c') != -1);
+        dumpFieldModifiers =
+                (dumpModFlags != null && dumpModFlags.indexOf('f') != -1);
+        dumpInnerClassModifiers =
+                (dumpModFlags != null && dumpModFlags.indexOf('i') != -1);
+        dumpMethodModifiers =
+                (dumpModFlags != null && dumpModFlags.indexOf('m') != -1);
+    }
+
+/******************************************************************
+ * Diagnostics: dump generated class names and modifiers
+ ******************************************************************/
+
     /**
      * Value of option 'dumpmodifiers' is a string
      * indicating which modifiers should be dumped for debugging:
@@ -167,141 +242,35 @@ public class ClassWriter extends ClassFile {
     private final boolean dumpFieldModifiers; // -XDdumpmodifiers=f
     private final boolean dumpInnerClassModifiers; // -XDdumpmodifiers=i
     private final boolean dumpMethodModifiers; // -XDdumpmodifiers=m
-    /**
-     * Switch: describe the generated stackmap
-     */
-    boolean debugstackmap;
-    /**
-     * An output buffer for member info.
-     */
-    ByteBuffer databuf = new ByteBuffer(DATA_BUF_SIZE);
-    /**
-     * An output buffer for the constant pool.
-     */
-    ByteBuffer poolbuf = new ByteBuffer(POOL_BUF_SIZE);
-    /**
-     * An output buffer for type signatures.
-     */
-    ByteBuffer sigbuf = new ByteBuffer();
-    /**
-     * The constant pool.
-     */
-    Pool pool;
-    /**
-     * The inner classes to be written, as a set.
-     */
-    Set<ClassSymbol> innerClasses;
-    /**
-     * The inner classes to be written, as a queue where
-     * enclosing classes come first.
-     */
-    ListBuffer<ClassSymbol> innerClassesQueue;
-    AttributeWriter awriter = new AttributeWriter();
-    /**
-     * Switch: verbose output.
-     */
-    private boolean verbose;
-    /**
-     * Switch: scrable private names.
-     */
-    private boolean scramble;
-    /**
-     * Switch: scrable private names.
-     */
-    private boolean scrambleAll;
-    /**
-     * Switch: retrofit mode.
-     */
-    private boolean retrofit;
-    /**
-     * Switch: emit source file attribute.
-     */
-    private boolean emitSourceFile;
 
-/******************************************************************
- * Diagnostics: dump generated class names and modifiers
- ******************************************************************/
-    /**
-     * Switch: generate CharacterRangeTable attribute.
-     */
-    private boolean genCrt;
-    /**
-     * Target class version.
-     */
-    private Target target;
-    /**
-     * Source language version.
-     */
-    private Source source;
-    /**
-     * Type utilities.
-     */
-    private Types types;
-
-
-    /**
-     * Construct a class writer, given an options table.
-     */
-    private ClassWriter(Context context) {
-        context.put(classWriterKey, this);
-
-        log = Log.instance(context);
-        names = Name.Table.instance(context);
-        syms = Symtab.instance(context);
-        options = Options.instance(context);
-        target = Target.instance(context);
-        source = Source.instance(context);
-        types = Types.instance(context);
-        fileManager = context.get(JavaFileManager.class);
-
-        verbose = options.get("-verbose") != null;
-        scramble = options.get("-scramble") != null;
-        scrambleAll = options.get("-scrambleAll") != null;
-        retrofit = options.get("-retrofit") != null;
-        genCrt = options.get("-Xjcov") != null;
-        debugstackmap = options.get("debugstackmap") != null;
-
-        emitSourceFile = options.get("-g:") == null || options.get("-g:source") != null;
-
-        String dumpModFlags = options.get("dumpmodifiers");
-        dumpClassModifiers =
-                (dumpModFlags != null && dumpModFlags.indexOf('c') != -1);
-        dumpFieldModifiers =
-                (dumpModFlags != null && dumpModFlags.indexOf('f') != -1);
-        dumpInnerClassModifiers =
-                (dumpModFlags != null && dumpModFlags.indexOf('i') != -1);
-        dumpMethodModifiers =
-                (dumpModFlags != null && dumpModFlags.indexOf('m') != -1);
-    }
-
-    /**
-     * Get the ClassWriter instance for this context.
-     */
-    public static ClassWriter instance(Context context) {
-        ClassWriter instance = context.get(classWriterKey);
-        if (instance == null)
-            instance = new ClassWriter(context);
-        return instance;
-    }
-
-/******************************************************************
- * Output routines
- ******************************************************************/
 
     /**
      * Return flags as a string, separated by " ".
      */
     public static String flagNames(long flags) {
-        StringBuffer sbuf = new StringBuffer();
+        StringBuilder sbuf = new StringBuilder();
         int i = 0;
         long f = flags & StandardFlags;
         while (f != 0) {
-            if ((f & 1) != 0) sbuf.append(" " + flagName[i]);
+            if ((f & 1) != 0) {
+                sbuf.append(" ");
+                sbuf.append(flagName[i]);
+            }
             f = f >> 1;
             i++;
         }
         return sbuf.toString();
     }
+
+    //where
+    private final static String[] flagName = {
+            "PUBLIC", "PRIVATE", "PROTECTED", "STATIC", "FINAL",
+            "SUPER", "VOLATILE", "TRANSIENT", "NATIVE", "INTERFACE",
+            "ABSTRACT", "STRICTFP"};
+
+/******************************************************************
+ * Output routines
+ ******************************************************************/
 
     /**
      * Write a character into given byte buffer;
@@ -311,10 +280,6 @@ public class ClassWriter extends ClassFile {
         buf.elems[op] = (byte) ((x >> 8) & 0xFF);
         buf.elems[op + 1] = (byte) ((x) & 0xFF);
     }
-
-/******************************************************************
- * Signature Generation
- ******************************************************************/
 
     /**
      * Write an integer into given byte buffer;
@@ -326,6 +291,10 @@ public class ClassWriter extends ClassFile {
         buf.elems[adr + 2] = (byte) ((x >> 8) & 0xFF);
         buf.elems[adr + 3] = (byte) ((x) & 0xFF);
     }
+
+/******************************************************************
+ * Signature Generation
+ ******************************************************************/
 
     /**
      * Assemble signature of given type in string buffer.
@@ -443,11 +412,9 @@ public class ClassWriter extends ClassFile {
                     ? types.erasure(outer)
                     : outer);
             sigbuf.appendByte('.');
-            assert c.flatname.startsWith(c.owner.enclClass().flatname);
+            Assert.check(c.flatname.startsWith(c.owner.enclClass().flatname));
             sigbuf.appendName(rawOuter
-                    ? c.flatname.subName(c.owner.enclClass()
-                            .flatname.len + 1,
-                    c.flatname.len)
+                    ? c.flatname.subName(c.owner.enclClass().flatname.getByteLength() + 1, c.flatname.getByteLength())
                     : c.name);
         } else {
             sigbuf.appendBytes(externalize(c.flatname));
@@ -458,6 +425,7 @@ public class ClassWriter extends ClassFile {
             sigbuf.appendByte('>');
         }
     }
+
 
     void assembleSig(List<Type> types) {
         for (List<Type> ts = types; ts.nonEmpty(); ts = ts.tail)
@@ -485,7 +453,7 @@ public class ClassWriter extends ClassFile {
      * Return signature of given type
      */
     Name typeSig(Type type) {
-        assert sigbuf.length == 0;
+        Assert.check(sigbuf.length == 0);
         //- System.out.println(" ? " + type);
         assembleSig(type);
         Name n = sigbuf.toName(names);
@@ -493,10 +461,6 @@ public class ClassWriter extends ClassFile {
         //- System.out.println("   " + n);
         return n;
     }
-
-/******************************************************************
- * Writing the Constant Pool
- ******************************************************************/
 
     /**
      * Given a type t, return the extended class name of its erasure in
@@ -512,6 +476,29 @@ public class ClassWriter extends ClassFile {
         }
     }
 
+/******************************************************************
+ * Writing the Constant Pool
+ ******************************************************************/
+
+    /**
+     * Thrown when the constant pool is over full.
+     */
+    public static class PoolOverflow extends Exception {
+        private static final long serialVersionUID = 0;
+
+        public PoolOverflow() {
+        }
+    }
+
+    public static class StringOverflow extends Exception {
+        private static final long serialVersionUID = 0;
+        public final String value;
+
+        public StringOverflow(String s) {
+            value = s;
+        }
+    }
+
     /**
      * Write constant pool to pool buffer.
      * Note: during writing, constant pool
@@ -523,7 +510,7 @@ public class ClassWriter extends ClassFile {
         int i = 1;
         while (i < pool.pp) {
             Object value = pool.pool[i];
-            assert value != null;
+            Assert.checkNonNull(value);
             if (value instanceof Pool.Method)
                 value = ((Pool.Method) value).m;
             else if (value instanceof Pool.Variable)
@@ -586,7 +573,7 @@ public class ClassWriter extends ClassFile {
                 poolbuf.appendByte(CONSTANT_Class);
                 poolbuf.appendChar(pool.put(xClassName(type)));
             } else {
-                assert false : "writePool " + value;
+                Assert.error("writePool " + value);
             }
             i++;
         }
@@ -601,7 +588,7 @@ public class ClassWriter extends ClassFile {
     Name fieldName(Symbol sym) {
         if (scramble && (sym.flags() & PRIVATE) != 0 ||
                 scrambleAll && (sym.flags() & (PROTECTED | PUBLIC)) == 0)
-            return names.fromString("_$" + sym.name.index);
+            return names.fromString("_$" + sym.name.getIndex());
         else
             return sym.name;
     }
@@ -620,6 +607,10 @@ public class ClassWriter extends ClassFile {
         // adjustment of adding an additional this$n parameter needs to be made.
     }
 
+/******************************************************************
+ * Writing Attributes
+ ******************************************************************/
+
     /**
      * Write header for an attribute to data buffer and return
      * position past attribute length index.
@@ -629,10 +620,6 @@ public class ClassWriter extends ClassFile {
         databuf.appendInt(0);
         return databuf.length;
     }
-
-/******************************************************************
- * Writing Attributes
- ******************************************************************/
 
     /**
      * Fill in attribute length.
@@ -750,7 +737,7 @@ public class ClassWriter extends ClassFile {
         boolean hasInvisible = false;
         if (m.params != null) for (VarSymbol s : m.params) {
             for (Attribute.Compound a : s.getAnnotationMirrors()) {
-                switch (getRetention(a.type.tsym)) {
+                switch (types.getRetention(a)) {
                     case SOURCE:
                         break;
                     case CLASS:
@@ -772,7 +759,7 @@ public class ClassWriter extends ClassFile {
             for (VarSymbol s : m.params) {
                 ListBuffer<Attribute.Compound> buf = new ListBuffer<Attribute.Compound>();
                 for (Attribute.Compound a : s.getAnnotationMirrors())
-                    if (getRetention(a.type.tsym) == RetentionPolicy.RUNTIME)
+                    if (types.getRetention(a) == RetentionPolicy.RUNTIME)
                         buf.append(a);
                 databuf.appendChar(buf.length());
                 for (Attribute.Compound a : buf)
@@ -787,7 +774,7 @@ public class ClassWriter extends ClassFile {
             for (VarSymbol s : m.params) {
                 ListBuffer<Attribute.Compound> buf = new ListBuffer<Attribute.Compound>();
                 for (Attribute.Compound a : s.getAnnotationMirrors())
-                    if (getRetention(a.type.tsym) == RetentionPolicy.CLASS)
+                    if (types.getRetention(a) == RetentionPolicy.CLASS)
                         buf.append(a);
                 databuf.appendChar(buf.length());
                 for (Attribute.Compound a : buf)
@@ -799,6 +786,10 @@ public class ClassWriter extends ClassFile {
         return attrCount;
     }
 
+/**********************************************************************
+ * Writing Java-language annotations (aka metadata, attributes)
+ **********************************************************************/
+
     /**
      * Write Java-language annotations; return number of JVM
      * attributes written (zero or one).
@@ -808,7 +799,7 @@ public class ClassWriter extends ClassFile {
         ListBuffer<Attribute.Compound> visibles = new ListBuffer<Attribute.Compound>();
         ListBuffer<Attribute.Compound> invisibles = new ListBuffer<Attribute.Compound>();
         for (Attribute.Compound a : attrs) {
-            switch (getRetention(a.type.tsym)) {
+            switch (types.getRetention(a)) {
                 case SOURCE:
                     break;
                 case CLASS:
@@ -842,25 +833,79 @@ public class ClassWriter extends ClassFile {
         return attrCount;
     }
 
-/**********************************************************************
- * Writing Java-language annotations (aka metadata, attributes)
- **********************************************************************/
+    /**
+     * A visitor to write an attribute including its leading
+     * single-character marker.
+     */
+    class AttributeWriter implements Attribute.Visitor {
+        public void visitConstant(Attribute.Constant _value) {
+            Object value = _value.value;
+            switch (_value.type.tag) {
+                case BYTE:
+                    databuf.appendByte('B');
+                    break;
+                case CHAR:
+                    databuf.appendByte('C');
+                    break;
+                case SHORT:
+                    databuf.appendByte('S');
+                    break;
+                case INT:
+                    databuf.appendByte('I');
+                    break;
+                case LONG:
+                    databuf.appendByte('J');
+                    break;
+                case FLOAT:
+                    databuf.appendByte('F');
+                    break;
+                case DOUBLE:
+                    databuf.appendByte('D');
+                    break;
+                case BOOLEAN:
+                    databuf.appendByte('Z');
+                    break;
+                case CLASS:
+                    Assert.check(value instanceof String);
+                    databuf.appendByte('s');
+                    value = names.fromString(value.toString()); // CONSTANT_Utf8
+                    break;
+                default:
+                    throw new AssertionError(_value.type);
+            }
+            databuf.appendChar(pool.put(value));
+        }
 
-    RetentionPolicy getRetention(TypeSymbol annotationType) {
-        RetentionPolicy vis = RetentionPolicy.CLASS; // the default
-        Attribute.Compound c = annotationType.attribute(syms.retentionType.tsym);
-        if (c != null) {
-            Attribute value = c.member(names.value);
-            if (value != null && value instanceof Attribute.Enum) {
-                Name levelName = ((Attribute.Enum) value).value.name;
-                if (levelName == names.SOURCE) vis = RetentionPolicy.SOURCE;
-                else if (levelName == names.CLASS) vis = RetentionPolicy.CLASS;
-                else if (levelName == names.RUNTIME) vis = RetentionPolicy.RUNTIME;
-                else ;// /* fail soft */ throw new AssertionError(levelName);
+        public void visitEnum(Attribute.Enum e) {
+            databuf.appendByte('e');
+            databuf.appendChar(pool.put(typeSig(e.value.type)));
+            databuf.appendChar(pool.put(e.value.name));
+        }
+
+        public void visitClass(Attribute.Class clazz) {
+            databuf.appendByte('c');
+            databuf.appendChar(pool.put(typeSig(clazz.type)));
+        }
+
+        public void visitCompound(Attribute.Compound compound) {
+            databuf.appendByte('@');
+            writeCompoundAttribute(compound);
+        }
+
+        public void visitError(Attribute.Error x) {
+            throw new AssertionError(x);
+        }
+
+        public void visitArray(Attribute.Array array) {
+            databuf.appendByte('[');
+            databuf.appendChar(array.values.length);
+            for (Attribute a : array.values) {
+                a.accept(this);
             }
         }
-        return vis;
     }
+
+    AttributeWriter awriter = new AttributeWriter();
 
     /**
      * Write a compound attribute excluding the '@' marker.
@@ -868,17 +913,22 @@ public class ClassWriter extends ClassFile {
     void writeCompoundAttribute(Attribute.Compound c) {
         databuf.appendChar(pool.put(typeSig(c.type)));
         databuf.appendChar(c.values.length());
-        for (Pair<Symbol.MethodSymbol, Attribute> p : c.values) {
+        for (Pair<MethodSymbol, Attribute> p : c.values) {
             databuf.appendChar(pool.put(p.fst.name));
             p.snd.accept(awriter);
         }
     }
+/**********************************************************************
+ * Writing Objects
+ **********************************************************************/
 
     /**
      * Enter an inner class into the `innerClasses' set/queue.
      */
     void enterInner(ClassSymbol c) {
-        assert !c.type.isCompound();
+        if (c.type.isCompound()) {
+            throw new AssertionError("Unexpected intersection type: " + c.type);
+        }
         try {
             c.complete();
         } catch (CompletionFailure ex) {
@@ -887,10 +937,10 @@ public class ClassWriter extends ClassFile {
         }
         if (c.type.tag != CLASS) return; // arrays
         if (pool != null && // pool might be null if called from xClassName
-                c.owner.kind != PCK &&
+                c.owner.enclClass() != null &&
                 (innerClasses == null || !innerClasses.contains(c))) {
 //          log.errWriter.println("enter inner " + c);//DEBUG
-            if (c.owner.kind == TYP) enterInner((ClassSymbol) c.owner);
+            enterInner(c.owner.enclClass());
             pool.put(c);
             pool.put(c.name);
             if (innerClasses == null) {
@@ -924,7 +974,7 @@ public class ClassWriter extends ClassFile {
             databuf.appendChar(
                     inner.owner.kind == TYP ? pool.get(inner.owner) : 0);
             databuf.appendChar(
-                    inner.name.len != 0 ? pool.get(inner.name) : 0);
+                    !inner.name.isEmpty() ? pool.get(inner.name) : 0);
             databuf.appendChar(flags);
         }
         endAttr(alenIdx);
@@ -995,10 +1045,6 @@ public class ClassWriter extends ClassFile {
         endAttrs(acountIdx, acount);
     }
 
-/**********************************************************************
- * Writing Objects
- **********************************************************************/
-
     /**
      * Write code attribute of method.
      */
@@ -1050,16 +1096,16 @@ public class ClassWriter extends ClassFile {
                 Code.LocalVar var = code.varBuffer[i];
 
                 // write variable info
-                assert var.start_pc >= 0;
-                assert var.start_pc <= code.cp;
+                Assert.check(var.start_pc >= 0
+                        && var.start_pc <= code.cp);
                 databuf.appendChar(var.start_pc);
-                assert var.length >= 0;
-                assert (var.start_pc + var.length) <= code.cp;
+                Assert.check(var.length >= 0
+                        && (var.start_pc + var.length) <= code.cp);
                 databuf.appendChar(var.length);
                 VarSymbol sym = var.sym;
                 databuf.appendChar(pool.put(sym.name));
                 Type vartype = sym.erasure(types);
-                if (!types.isSameType(sym.type, vartype))
+                if (needsLocalVariableTypeEntry(sym.type))
                     nGenericVars++;
                 databuf.appendChar(pool.put(typeSig(vartype)));
                 databuf.appendChar(var.reg);
@@ -1076,7 +1122,7 @@ public class ClassWriter extends ClassFile {
             for (int i = 0; i < code.varBufferSize; i++) {
                 Code.LocalVar var = code.varBuffer[i];
                 VarSymbol sym = var.sym;
-                if (types.isSameType(sym.type, sym.erasure(types)))
+                if (!needsLocalVariableTypeEntry(sym.type))
                     continue;
                 count++;
                 // write variable info
@@ -1086,7 +1132,7 @@ public class ClassWriter extends ClassFile {
                 databuf.appendChar(pool.put(typeSig(sym.type)));
                 databuf.appendChar(var.reg);
             }
-            assert count == nGenericVars;
+            Assert.check(count == nGenericVars);
             endAttr(alenIdx);
             acount++;
         }
@@ -1099,6 +1145,15 @@ public class ClassWriter extends ClassFile {
             acount++;
         }
         endAttrs(acountIdx, acount);
+    }
+
+    //where
+    private boolean needsLocalVariableTypeEntry(Type t) {
+        //a local variable needs a type-entry if its type T is generic
+        //(i.e. |T| != T) and if it's not an intersection type (not supported
+        //in signature attribute grammar)
+        return (!types.isSameType(t, types.erasure(t)) &&
+                !t.isCompound());
     }
 
     void writeStackMap(Code code) {
@@ -1149,7 +1204,7 @@ public class ClassWriter extends ClassFile {
                 }
                 break;
             case JSR202: {
-                assert code.stackMapBuffer == null;
+                Assert.checkNull(code.stackMapBuffer);
                 for (int i = 0; i < nframes; i++) {
                     if (debugstackmap) System.out.print("  " + i + ":");
                     StackMapTableFrame frame = code.stackMapTableBuffer[i];
@@ -1220,326 +1275,10 @@ public class ClassWriter extends ClassFile {
         }
     }
 
-    void writeFields(Scope.Entry e) {
-        // process them in reverse sibling order;
-        // i.e., process them in declaration order.
-        List<VarSymbol> vars = List.nil();
-        for (Scope.Entry i = e; i != null; i = i.sibling) {
-            if (i.sym.kind == VAR) vars = vars.prepend((VarSymbol) i.sym);
-        }
-        while (vars.nonEmpty()) {
-            writeField(vars.head);
-            vars = vars.tail;
-        }
-    }
-
-    void writeMethods(Scope.Entry e) {
-        List<MethodSymbol> methods = List.nil();
-        for (Scope.Entry i = e; i != null; i = i.sibling) {
-            if (i.sym.kind == MTH && (i.sym.flags() & HYPOTHETICAL) == 0)
-                methods = methods.prepend((MethodSymbol) i.sym);
-        }
-        while (methods.nonEmpty()) {
-            writeMethod(methods.head);
-            methods = methods.tail;
-        }
-    }
-
-    /**
-     * Emit a class file for a given class.
-     *
-     * @param c The class from which a class file is generated.
-     */
-    public JavaFileObject writeClass(ClassSymbol c)
-            throws IOException, PoolOverflow, StringOverflow {
-        JavaFileObject outFile
-                = fileManager.getJavaFileForOutput(CLASS_OUTPUT,
-                c.flatname.toString(),
-                JavaFileObject.Kind.CLASS,
-                c.sourcefile);
-        OutputStream out = outFile.openOutputStream();
-        try {
-            writeClassFile(out, c);
-            if (verbose)
-                log.errWriter.println(log.getLocalizedString("verbose.wrote.file", outFile));
-            out.close();
-            out = null;
-        } finally {
-            if (out != null) {
-                // if we are propogating an exception, delete the file
-                out.close();
-                outFile.delete();
-                outFile = null;
-            }
-        }
-        return outFile; // may be null if write failed
-    }
-
-    /**
-     * Write class `c' to outstream `out'.
-     */
-    public void writeClassFile(OutputStream out, ClassSymbol c)
-            throws IOException, PoolOverflow, StringOverflow {
-        assert (c.flags() & COMPOUND) == 0;
-        databuf.reset();
-        poolbuf.reset();
-        sigbuf.reset();
-        pool = c.pool;
-        innerClasses = null;
-        innerClassesQueue = null;
-
-        Type supertype = types.supertype(c.type);
-        List<Type> interfaces = types.interfaces(c.type);
-        List<Type> typarams = c.type.getTypeArguments();
-
-        int flags = adjustFlags(c.flags());
-        if ((flags & PROTECTED) != 0) flags |= PUBLIC;
-        flags = flags & ClassFlags & ~STRICTFP;
-        if ((flags & INTERFACE) == 0) flags |= ACC_SUPER;
-        if (c.isInner() && c.name.isEmpty()) flags &= ~FINAL;
-        if (dumpClassModifiers) {
-            log.errWriter.println();
-            log.errWriter.println("CLASSFILE  " + c.getQualifiedName());
-            log.errWriter.println("---" + flagNames(flags));
-        }
-        databuf.appendChar(flags);
-
-        databuf.appendChar(pool.put(c));
-        databuf.appendChar(supertype.tag == CLASS ? pool.put(supertype.tsym) : 0);
-        databuf.appendChar(interfaces.length());
-        for (List<Type> l = interfaces; l.nonEmpty(); l = l.tail)
-            databuf.appendChar(pool.put(l.head.tsym));
-        int fieldsCount = 0;
-        int methodsCount = 0;
-        for (Scope.Entry e = c.members().elems; e != null; e = e.sibling) {
-            switch (e.sym.kind) {
-                case VAR:
-                    fieldsCount++;
-                    break;
-                case MTH:
-                    if ((e.sym.flags() & HYPOTHETICAL) == 0) methodsCount++;
-                    break;
-                case TYP:
-                    enterInner((ClassSymbol) e.sym);
-                    break;
-                default:
-                    assert false;
-            }
-        }
-        databuf.appendChar(fieldsCount);
-        writeFields(c.members().elems);
-        databuf.appendChar(methodsCount);
-        writeMethods(c.members().elems);
-
-        int acountIdx = beginAttrs();
-        int acount = 0;
-
-        boolean sigReq =
-                typarams.length() != 0 || supertype.getTypeArguments().length() != 0;
-        for (List<Type> l = interfaces; !sigReq && l.nonEmpty(); l = l.tail)
-            sigReq = l.head.getTypeArguments().length() != 0;
-        if (sigReq) {
-            assert source.allowGenerics();
-            int alenIdx = writeAttr(names.Signature);
-            if (typarams.length() != 0) assembleParamsSig(typarams);
-            assembleSig(supertype);
-            for (List<Type> l = interfaces; l.nonEmpty(); l = l.tail)
-                assembleSig(l.head);
-            databuf.appendChar(pool.put(sigbuf.toName(names)));
-            sigbuf.reset();
-            endAttr(alenIdx);
-            acount++;
-        }
-
-        if (c.sourcefile != null && emitSourceFile) {
-            int alenIdx = writeAttr(names.SourceFile);
-            // WHM 6/29/1999: Strip file path prefix.  We do it here at
-            // the last possible moment because the sourcefile may be used
-            // elsewhere in error diagnostics. Fixes 4241573.
-            //databuf.appendChar(c.pool.put(c.sourcefile));
-            String simpleName = BaseFileObject.getSimpleName(c.sourcefile);
-            databuf.appendChar(c.pool.put(names.fromString(simpleName)));
-            endAttr(alenIdx);
-            acount++;
-        }
-
-        if (genCrt) {
-            // Append SourceID attribute
-            int alenIdx = writeAttr(names.SourceID);
-            databuf.appendChar(c.pool.put(names.fromString(Long.toString(getLastModified(c.sourcefile)))));
-            endAttr(alenIdx);
-            acount++;
-            // Append CompilationID attribute
-            alenIdx = writeAttr(names.CompilationID);
-            databuf.appendChar(c.pool.put(names.fromString(Long.toString(System.currentTimeMillis()))));
-            endAttr(alenIdx);
-            acount++;
-        }
-
-        acount += writeFlagAttrs(c.flags());
-        acount += writeJavaAnnotations(c.getAnnotationMirrors());
-        acount += writeEnclosingMethodAttribute(c);
-
-        poolbuf.appendInt(JAVA_MAGIC);
-        poolbuf.appendChar(target.minorVersion);
-        poolbuf.appendChar(target.majorVersion);
-
-        writePool(c.pool);
-
-        if (innerClasses != null) {
-            writeInnerClasses();
-            acount++;
-        }
-        endAttrs(acountIdx, acount);
-
-        poolbuf.appendBytes(databuf.elems, 0, databuf.length);
-        out.write(poolbuf.elems, 0, poolbuf.length);
-
-        pool = c.pool = null; // to conserve space
-    }
-
-    int adjustFlags(final long flags) {
-        int result = (int) flags;
-        if ((flags & SYNTHETIC) != 0 && !target.useSyntheticFlag())
-            result &= ~SYNTHETIC;
-        if ((flags & ENUM) != 0 && !target.useEnumFlag())
-            result &= ~ENUM;
-        if ((flags & ANNOTATION) != 0 && !target.useAnnotationFlag())
-            result &= ~ANNOTATION;
-
-        if ((flags & BRIDGE) != 0 && target.useBridgeFlag())
-            result |= ACC_BRIDGE;
-        if ((flags & VARARGS) != 0 && target.useVarargsFlag())
-            result |= ACC_VARARGS;
-        return result;
-    }
-
-    long getLastModified(FileObject filename) {
-        long mod = 0;
-        try {
-            mod = filename.getLastModified();
-        } catch (SecurityException e) {
-            throw new AssertionError("CRT: couldn't get source file modification date: " + e.getMessage());
-        }
-        return mod;
-    }
-
-    /**
-     * A mirror of java.lang.annotation.RetentionPolicy.
-     */
-    enum RetentionPolicy {
-        SOURCE,
-        CLASS,
-        RUNTIME
-    }
-
-    /**
-     * Thrown when the constant pool is over full.
-     */
-    public static class PoolOverflow extends Exception {
-        private static final long serialVersionUID = 0;
-
-        public PoolOverflow() {
-        }
-    }
-
-    public static class StringOverflow extends Exception {
-        private static final long serialVersionUID = 0;
-        public final String value;
-
-        public StringOverflow(String s) {
-            value = s;
-        }
-    }
-
     /**
      * An entry in the JSR202 StackMapTable
      */
     abstract static class StackMapTableFrame {
-        /**
-         * Compare this frame with the previous frame and produce
-         * an entry of compressed stack map frame.
-         */
-        static StackMapTableFrame getInstance(Code.StackMapFrame this_frame,
-                                              int prev_pc,
-                                              Type[] prev_locals,
-                                              Types types) {
-            Type[] locals = this_frame.locals;
-            Type[] stack = this_frame.stack;
-            int offset_delta = this_frame.pc - prev_pc - 1;
-            if (stack.length == 1) {
-                if (locals.length == prev_locals.length
-                        && compare(prev_locals, locals, types) == 0) {
-                    return new SameLocals1StackItemFrame(offset_delta, stack[0]);
-                }
-            } else if (stack.length == 0) {
-                int diff_length = compare(prev_locals, locals, types);
-                if (diff_length == 0) {
-                    return new SameFrame(offset_delta);
-                } else if (-MAX_LOCAL_LENGTH_DIFF < diff_length && diff_length < 0) {
-                    // APPEND
-                    Type[] local_diff = new Type[-diff_length];
-                    for (int i = prev_locals.length, j = 0; i < locals.length; i++, j++) {
-                        local_diff[j] = locals[i];
-                    }
-                    return new AppendFrame(SAME_FRAME_EXTENDED - diff_length,
-                            offset_delta,
-                            local_diff);
-                } else if (0 < diff_length && diff_length < MAX_LOCAL_LENGTH_DIFF) {
-                    // CHOP
-                    return new ChopFrame(SAME_FRAME_EXTENDED - diff_length,
-                            offset_delta);
-                }
-            }
-            // FULL_FRAME
-            return new FullFrame(offset_delta, locals, stack);
-        }
-
-        static boolean isInt(Type t) {
-            return (t.tag < TypeTags.INT || t.tag == TypeTags.BOOLEAN);
-        }
-
-        static boolean isSameType(Type t1, Type t2, Types types) {
-            if (t1 == null) {
-                return t2 == null;
-            }
-            if (t2 == null) {
-                return false;
-            }
-
-            if (isInt(t1) && isInt(t2)) {
-                return true;
-            }
-
-            if (t1.tag == UNINITIALIZED_THIS) {
-                return t2.tag == UNINITIALIZED_THIS;
-            } else if (t1.tag == UNINITIALIZED_OBJECT) {
-                if (t2.tag == UNINITIALIZED_OBJECT) {
-                    return ((UninitializedType) t1).offset == ((UninitializedType) t2).offset;
-                } else {
-                    return false;
-                }
-            } else if (t2.tag == UNINITIALIZED_THIS || t2.tag == UNINITIALIZED_OBJECT) {
-                return false;
-            }
-
-            return types.isSameType(t1, t2);
-        }
-
-        static int compare(Type[] arr1, Type[] arr2, Types types) {
-            int diff_length = arr1.length - arr2.length;
-            if (diff_length > MAX_LOCAL_LENGTH_DIFF || diff_length < -MAX_LOCAL_LENGTH_DIFF) {
-                return Integer.MAX_VALUE;
-            }
-            int len = (diff_length > 0) ? arr2.length : arr1.length;
-            for (int i = 0; i < len; i++) {
-                if (!isSameType(arr1[i], arr2[i], types)) {
-                    return Integer.MAX_VALUE;
-                }
-            }
-            return diff_length;
-        }
-
         abstract int getFrameType();
 
         void write(ClassWriter writer) {
@@ -1693,77 +1432,300 @@ public class ClassWriter extends ClassFile {
                 }
             }
         }
+
+        /**
+         * Compare this frame with the previous frame and produce
+         * an entry of compressed stack map frame.
+         */
+        static StackMapTableFrame getInstance(Code.StackMapFrame this_frame,
+                                              int prev_pc,
+                                              Type[] prev_locals,
+                                              Types types) {
+            Type[] locals = this_frame.locals;
+            Type[] stack = this_frame.stack;
+            int offset_delta = this_frame.pc - prev_pc - 1;
+            if (stack.length == 1) {
+                if (locals.length == prev_locals.length
+                        && compare(prev_locals, locals, types) == 0) {
+                    return new SameLocals1StackItemFrame(offset_delta, stack[0]);
+                }
+            } else if (stack.length == 0) {
+                int diff_length = compare(prev_locals, locals, types);
+                if (diff_length == 0) {
+                    return new SameFrame(offset_delta);
+                } else if (-MAX_LOCAL_LENGTH_DIFF < diff_length && diff_length < 0) {
+                    // APPEND
+                    Type[] local_diff = new Type[-diff_length];
+                    for (int i = prev_locals.length, j = 0; i < locals.length; i++, j++) {
+                        local_diff[j] = locals[i];
+                    }
+                    return new AppendFrame(SAME_FRAME_EXTENDED - diff_length,
+                            offset_delta,
+                            local_diff);
+                } else if (0 < diff_length && diff_length < MAX_LOCAL_LENGTH_DIFF) {
+                    // CHOP
+                    return new ChopFrame(SAME_FRAME_EXTENDED - diff_length,
+                            offset_delta);
+                }
+            }
+            // FULL_FRAME
+            return new FullFrame(offset_delta, locals, stack);
+        }
+
+        static boolean isInt(Type t) {
+            return (t.tag < TypeTags.INT || t.tag == TypeTags.BOOLEAN);
+        }
+
+        static boolean isSameType(Type t1, Type t2, Types types) {
+            if (t1 == null) {
+                return t2 == null;
+            }
+            if (t2 == null) {
+                return false;
+            }
+
+            if (isInt(t1) && isInt(t2)) {
+                return true;
+            }
+
+            if (t1.tag == UNINITIALIZED_THIS) {
+                return t2.tag == UNINITIALIZED_THIS;
+            } else if (t1.tag == UNINITIALIZED_OBJECT) {
+                if (t2.tag == UNINITIALIZED_OBJECT) {
+                    return ((UninitializedType) t1).offset == ((UninitializedType) t2).offset;
+                } else {
+                    return false;
+                }
+            } else if (t2.tag == UNINITIALIZED_THIS || t2.tag == UNINITIALIZED_OBJECT) {
+                return false;
+            }
+
+            return types.isSameType(t1, t2);
+        }
+
+        static int compare(Type[] arr1, Type[] arr2, Types types) {
+            int diff_length = arr1.length - arr2.length;
+            if (diff_length > MAX_LOCAL_LENGTH_DIFF || diff_length < -MAX_LOCAL_LENGTH_DIFF) {
+                return Integer.MAX_VALUE;
+            }
+            int len = (diff_length > 0) ? arr2.length : arr1.length;
+            for (int i = 0; i < len; i++) {
+                if (!isSameType(arr1[i], arr2[i], types)) {
+                    return Integer.MAX_VALUE;
+                }
+            }
+            return diff_length;
+        }
+    }
+
+    void writeFields(Scope.Entry e) {
+        // process them in reverse sibling order;
+        // i.e., process them in declaration order.
+        List<VarSymbol> vars = List.nil();
+        for (Scope.Entry i = e; i != null; i = i.sibling) {
+            if (i.sym.kind == VAR) vars = vars.prepend((VarSymbol) i.sym);
+        }
+        while (vars.nonEmpty()) {
+            writeField(vars.head);
+            vars = vars.tail;
+        }
+    }
+
+    void writeMethods(Scope.Entry e) {
+        List<MethodSymbol> methods = List.nil();
+        for (Scope.Entry i = e; i != null; i = i.sibling) {
+            if (i.sym.kind == MTH && (i.sym.flags() & HYPOTHETICAL) == 0)
+                methods = methods.prepend((MethodSymbol) i.sym);
+        }
+        while (methods.nonEmpty()) {
+            writeMethod(methods.head);
+            methods = methods.tail;
+        }
     }
 
     /**
-     * A visitor to write an attribute including its leading
-     * single-character marker.
+     * Emit a class file for a given class.
+     *
+     * @param c The class from which a class file is generated.
      */
-    class AttributeWriter implements Attribute.Visitor {
-        public void visitConstant(Attribute.Constant _value) {
-            Object value = _value.value;
-            switch (_value.type.tag) {
-                case BYTE:
-                    databuf.appendByte('B');
+    public JavaFileObject writeClass(ClassSymbol c)
+            throws IOException, PoolOverflow, StringOverflow {
+        JavaFileObject outFile
+                = fileManager.getJavaFileForOutput(CLASS_OUTPUT,
+                c.flatname.toString(),
+                JavaFileObject.Kind.CLASS,
+                c.sourcefile);
+        OutputStream out = outFile.openOutputStream();
+        try {
+            writeClassFile(out, c);
+            if (verbose)
+                log.printVerbose("wrote.file", outFile);
+            out.close();
+            out = null;
+        } finally {
+            if (out != null) {
+                // if we are propogating an exception, delete the file
+                out.close();
+                outFile.delete();
+                outFile = null;
+            }
+        }
+        return outFile; // may be null if write failed
+    }
+
+    /**
+     * Write class `c' to outstream `out'.
+     */
+    public void writeClassFile(OutputStream out, ClassSymbol c)
+            throws IOException, PoolOverflow, StringOverflow {
+        Assert.check((c.flags() & COMPOUND) == 0);
+        databuf.reset();
+        poolbuf.reset();
+        sigbuf.reset();
+        pool = c.pool;
+        innerClasses = null;
+        innerClassesQueue = null;
+
+        Type supertype = types.supertype(c.type);
+        List<Type> interfaces = types.interfaces(c.type);
+        List<Type> typarams = c.type.getTypeArguments();
+
+        int flags = adjustFlags(c.flags());
+        if ((flags & PROTECTED) != 0) flags |= PUBLIC;
+        flags = flags & ClassFlags & ~STRICTFP;
+        if ((flags & INTERFACE) == 0) flags |= ACC_SUPER;
+        if (c.isInner() && c.name.isEmpty()) flags &= ~FINAL;
+        if (dumpClassModifiers) {
+            log.errWriter.println();
+            log.errWriter.println("CLASSFILE  " + c.getQualifiedName());
+            log.errWriter.println("---" + flagNames(flags));
+        }
+        databuf.appendChar(flags);
+
+        databuf.appendChar(pool.put(c));
+        databuf.appendChar(supertype.tag == CLASS ? pool.put(supertype.tsym) : 0);
+        databuf.appendChar(interfaces.length());
+        for (List<Type> l = interfaces; l.nonEmpty(); l = l.tail)
+            databuf.appendChar(pool.put(l.head.tsym));
+        int fieldsCount = 0;
+        int methodsCount = 0;
+        for (Scope.Entry e = c.members().elems; e != null; e = e.sibling) {
+            switch (e.sym.kind) {
+                case VAR:
+                    fieldsCount++;
                     break;
-                case CHAR:
-                    databuf.appendByte('C');
+                case MTH:
+                    if ((e.sym.flags() & HYPOTHETICAL) == 0) methodsCount++;
                     break;
-                case SHORT:
-                    databuf.appendByte('S');
-                    break;
-                case INT:
-                    databuf.appendByte('I');
-                    break;
-                case LONG:
-                    databuf.appendByte('J');
-                    break;
-                case FLOAT:
-                    databuf.appendByte('F');
-                    break;
-                case DOUBLE:
-                    databuf.appendByte('D');
-                    break;
-                case BOOLEAN:
-                    databuf.appendByte('Z');
-                    break;
-                case CLASS:
-                    assert value instanceof String;
-                    databuf.appendByte('s');
-                    value = names.fromString(value.toString()); // CONSTANT_Utf8
+                case TYP:
+                    enterInner((ClassSymbol) e.sym);
                     break;
                 default:
-                    throw new AssertionError(_value.type);
-            }
-            databuf.appendChar(pool.put(value));
-        }
-
-        public void visitEnum(Attribute.Enum e) {
-            databuf.appendByte('e');
-            databuf.appendChar(pool.put(typeSig(e.value.type)));
-            databuf.appendChar(pool.put(e.value.name));
-        }
-
-        public void visitClass(Attribute.Class clazz) {
-            databuf.appendByte('c');
-            databuf.appendChar(pool.put(typeSig(clazz.type)));
-        }
-
-        public void visitCompound(Attribute.Compound compound) {
-            databuf.appendByte('@');
-            writeCompoundAttribute(compound);
-        }
-
-        public void visitError(Attribute.Error x) {
-            throw new AssertionError(x);
-        }
-
-        public void visitArray(Attribute.Array array) {
-            databuf.appendByte('[');
-            databuf.appendChar(array.values.length);
-            for (Attribute a : array.values) {
-                a.accept(this);
+                    Assert.error();
             }
         }
+
+        if (c.trans_local != null) {
+            for (ClassSymbol local : c.trans_local) {
+                enterInner(local);
+            }
+        }
+
+        databuf.appendChar(fieldsCount);
+        writeFields(c.members().elems);
+        databuf.appendChar(methodsCount);
+        writeMethods(c.members().elems);
+
+        int acountIdx = beginAttrs();
+        int acount = 0;
+
+        boolean sigReq =
+                typarams.length() != 0 || supertype.allparams().length() != 0;
+        for (List<Type> l = interfaces; !sigReq && l.nonEmpty(); l = l.tail)
+            sigReq = l.head.allparams().length() != 0;
+        if (sigReq) {
+            Assert.check(source.allowGenerics());
+            int alenIdx = writeAttr(names.Signature);
+            if (typarams.length() != 0) assembleParamsSig(typarams);
+            assembleSig(supertype);
+            for (List<Type> l = interfaces; l.nonEmpty(); l = l.tail)
+                assembleSig(l.head);
+            databuf.appendChar(pool.put(sigbuf.toName(names)));
+            sigbuf.reset();
+            endAttr(alenIdx);
+            acount++;
+        }
+
+        if (c.sourcefile != null && emitSourceFile) {
+            int alenIdx = writeAttr(names.SourceFile);
+            // WHM 6/29/1999: Strip file path prefix.  We do it here at
+            // the last possible moment because the sourcefile may be used
+            // elsewhere in error diagnostics. Fixes 4241573.
+            //databuf.appendChar(c.pool.put(c.sourcefile));
+            String simpleName = BaseFileObject.getSimpleName(c.sourcefile);
+            databuf.appendChar(c.pool.put(names.fromString(simpleName)));
+            endAttr(alenIdx);
+            acount++;
+        }
+
+        if (genCrt) {
+            // Append SourceID attribute
+            int alenIdx = writeAttr(names.SourceID);
+            databuf.appendChar(c.pool.put(names.fromString(Long.toString(getLastModified(c.sourcefile)))));
+            endAttr(alenIdx);
+            acount++;
+            // Append CompilationID attribute
+            alenIdx = writeAttr(names.CompilationID);
+            databuf.appendChar(c.pool.put(names.fromString(Long.toString(System.currentTimeMillis()))));
+            endAttr(alenIdx);
+            acount++;
+        }
+
+        acount += writeFlagAttrs(c.flags());
+        acount += writeJavaAnnotations(c.getAnnotationMirrors());
+        acount += writeEnclosingMethodAttribute(c);
+
+        poolbuf.appendInt(JAVA_MAGIC);
+        poolbuf.appendChar(target.minorVersion);
+        poolbuf.appendChar(target.majorVersion);
+
+        writePool(c.pool);
+
+        if (innerClasses != null) {
+            writeInnerClasses();
+            acount++;
+        }
+        endAttrs(acountIdx, acount);
+
+        poolbuf.appendBytes(databuf.elems, 0, databuf.length);
+        out.write(poolbuf.elems, 0, poolbuf.length);
+
+        pool = c.pool = null; // to conserve space
+    }
+
+    int adjustFlags(final long flags) {
+        int result = (int) flags;
+        if ((flags & SYNTHETIC) != 0 && !target.useSyntheticFlag())
+            result &= ~SYNTHETIC;
+        if ((flags & ENUM) != 0 && !target.useEnumFlag())
+            result &= ~ENUM;
+        if ((flags & ANNOTATION) != 0 && !target.useAnnotationFlag())
+            result &= ~ANNOTATION;
+
+        if ((flags & BRIDGE) != 0 && target.useBridgeFlag())
+            result |= ACC_BRIDGE;
+        if ((flags & VARARGS) != 0 && target.useVarargsFlag())
+            result |= ACC_VARARGS;
+        return result;
+    }
+
+    long getLastModified(FileObject filename) {
+        long mod = 0;
+        try {
+            mod = filename.getLastModified();
+        } catch (SecurityException e) {
+            throw new AssertionError("CRT: couldn't get source file modification date: " + e.getMessage());
+        }
+        return mod;
     }
 }

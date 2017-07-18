@@ -307,7 +307,7 @@ public class Paths {
                 : Collections.unmodifiableCollection(p);
     }
 
-    boolean isBootClassPathRtJar(File file) {
+    boolean isDefaultBootClassPathRtJar(File file) {
         return file.equals(bootClassPathRtJar);
     }
 
@@ -454,6 +454,10 @@ public class Paths {
         String n = file.getName().toLowerCase();
         boolean arch = fsInfo.isFile(file) && (n.endsWith(".jar") || n.endsWith(".zip"));
         return arch;
+    }
+
+    public boolean isDefaultBootClassPath() {
+        return false;
     }
 
     private class Path extends LinkedHashSet<File> {

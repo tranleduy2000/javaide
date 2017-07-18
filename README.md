@@ -14,7 +14,7 @@ You can build and run java file with JDK 1.5
 1. Java compiler (OK)
 2. Java editor
 3. Auto complete code
-4. Java debugger.
+4. Java debugger (jdb).
 5. Run java file, class file
 6. Build java library
 7. Build Android app.

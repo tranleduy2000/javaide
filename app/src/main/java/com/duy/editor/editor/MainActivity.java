@@ -53,6 +53,7 @@ import com.duy.editor.themefont.activities.ThemeFontActivity;
 import com.duy.project_files.ProjectFile;
 import com.duy.project_files.ProjectManager;
 import com.duy.project_files.dialog.DialogSelectDirectory;
+import com.duy.project_files.utils.ClassUtil;
 import com.duy.run.dialog.DialogRunConfig;
 
 import java.io.File;
@@ -171,11 +172,19 @@ public class MainActivity extends BaseEditorActivity implements
     @Override
     public void runProject() {
         if (projectFile != null) {
+            //chekc main class exist
             if (projectFile.getMainClass() == null || !projectFile.getMainClass().exist(projectFile)
                     || projectFile.getPackageName() == null || projectFile.getPackageName().isEmpty()) {
                 showDialogRunConfig();
                 return;
             }
+            //check main function exist
+            if (!ClassUtil.hasMainFunction(projectFile.getMainClass().getPath(projectFile))) {
+                Toast.makeText(this, "Can not find main function in class "
+                        + projectFile.getMainClass().getName(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            //now run project
             mCompileManager.execute(projectFile);
         } else {
             Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
@@ -313,7 +322,6 @@ public class MainActivity extends BaseEditorActivity implements
             super.onSharedPreferenceChanged(sharedPreferences, s);
         }
     }
-
 
 
     /**
@@ -541,7 +549,7 @@ public class MainActivity extends BaseEditorActivity implements
     public void onFileSelected(File file, int request) {
         Log.d(TAG, "onFileSelected() called with: file = [" + file + "], request = [" + request + "]");
 
-        switch (request){
+        switch (request) {
             case 2: //import new project
                 saveFile();
                 ProjectFile pf = ProjectManager.createProjectIfNeed(file);

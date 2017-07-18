@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -172,17 +173,29 @@ public class MainActivity extends BaseEditorActivity implements
     @Override
     public void runProject() {
         if (projectFile != null) {
-            //chekc main class exist
+            //check main class exist
             if (projectFile.getMainClass() == null || !projectFile.getMainClass().exist(projectFile)
                     || projectFile.getPackageName() == null || projectFile.getPackageName().isEmpty()) {
-                showDialogRunConfig();
+                String msg = "Main class is not define";
+                Snackbar.make(mDrawerLayout, msg, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.config, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                showDialogRunConfig();
+                            }
+                        }).show();
                 return;
             }
             //check main function exist
             if (!ClassUtil.hasMainFunction(new File(projectFile.getMainClass().getPath(projectFile)))) {
-                Toast.makeText(this, "Can not find main function in class "
-                        + projectFile.getMainClass().getName(), Toast.LENGTH_SHORT).show();
-                showDialogRunConfig();
+                String msg = "Couldn't find main function in class " + projectFile.getMainClass().getName();
+                Snackbar.make(mDrawerLayout, msg, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.config, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                showDialogRunConfig();
+                            }
+                        }).show();
                 return;
             }
             //now run project

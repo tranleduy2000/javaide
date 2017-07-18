@@ -444,4 +444,5 @@
     <string name="build_jar_file">Build jar file</string>
     <string name="error">Error</string>
     <string name="build">Build</string>
+    <string name="config">Config</string>
 </resources>

@@ -21,6 +21,7 @@
         <com.duy.editor.view.LatinEditText
             android:id="@+id/edit_project_name"
             android:layout_width="match_parent"
+
             android:layout_height="wrap_content"
             android:hint="@string/project_name"/>
     </android.support.design.widget.TextInputLayout>

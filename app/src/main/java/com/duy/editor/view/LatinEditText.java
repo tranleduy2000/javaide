@@ -3,6 +3,7 @@ package com.duy.editor.view;
 import android.content.Context;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.Spanned;
 import android.util.AttributeSet;
 
@@ -40,5 +41,6 @@ public class LatinEditText extends AppCompatEditText {
             }
         };
         setFilters(new InputFilter[]{filter});
+        setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
     }
 }

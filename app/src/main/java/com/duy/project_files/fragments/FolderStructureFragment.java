@@ -84,7 +84,7 @@ public class FolderStructureFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_folder_structure, null, false);
+        return inflater.inflate(R.layout.fragment_folder_structure, container, false);
     }
 
     private final android.os.Handler mHandler = new android.os.Handler();

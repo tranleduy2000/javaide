@@ -41,7 +41,6 @@ import com.sun.tools.javac.code.Type.TypeVar;
 import com.sun.tools.javac.code.Type.WildcardType;
 import com.sun.tools.javac.code.Types;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -53,7 +52,7 @@ import static com.sun.tools.javac.code.TypeTags.ERROR;
 import static com.sun.tools.javac.code.TypeTags.FORALL;
 import static com.sun.tools.javac.code.TypeTags.NONE;
 import static com.sun.tools.javac.util.LayoutCharacters.DetailsInc;
-import static com.sun.tools.javac.util.RichDiagnosticFormatter.RichConfiguration.RichFormatterFeature;
+import static com.sun.tools.javac.util.RichConfiguration.*;
 
 /**
  * A rich diagnostic formatter is a formatter that provides better integration
@@ -69,7 +68,7 @@ import static com.sun.tools.javac.util.RichDiagnosticFormatter.RichConfiguration
  * formatted and (iii) type-variable disambiguation - when the diagnostic refers
  * to two different type-variables with the same name, their representation is
  * disambiguated by appending an index to the type variable name.
- *
+ * <p>
  * <p><b>This is NOT part of any supported API.
  * If you write code that depends on this, you do so at your own risk.
  * This code and its internal interfaces are subject to change or
@@ -92,7 +91,9 @@ public class RichDiagnosticFormatter extends
     /* map for keeping track of a where clause associated to a given type */
     Map<WhereClauseKind, Map<Type, JCDiagnostic>> whereClauses;
 
-    /** Get the DiagnosticFormatter instance for this context. */
+    /**
+     * Get the DiagnosticFormatter instance for this context.
+     */
     public static RichDiagnosticFormatter instance(Context context) {
         RichDiagnosticFormatter instance = context.get(RichDiagnosticFormatter.class);
         if (instance == null)
@@ -101,7 +102,7 @@ public class RichDiagnosticFormatter extends
     }
 
     protected RichDiagnosticFormatter(Context context) {
-        super((AbstractDiagnosticFormatter)Log.instance(context).getDiagnosticFormatter());
+        super((AbstractDiagnosticFormatter) Log.instance(context).getDiagnosticFormatter());
         setRichPrinter(new RichPrinter());
         this.syms = Symtab.instance(context);
         this.diags = JCDiagnostic.Factory.instance(context);
@@ -124,7 +125,7 @@ public class RichDiagnosticFormatter extends
         if (getConfiguration().isEnabled(RichFormatterFeature.WHERE_CLAUSES)) {
             List<JCDiagnostic> clauses = getWhereClauses();
             String indent = formatter.isRaw() ? "" :
-                formatter.indentString(DetailsInc);
+                    formatter.indentString(DetailsInc);
             for (JCDiagnostic d : clauses) {
                 String whereClause = formatter.format(d, l);
                 if (whereClause.length() > 0) {
@@ -137,6 +138,7 @@ public class RichDiagnosticFormatter extends
 
     /**
      * Sets the type/symbol printer used by this formatter.
+     *
      * @param printer the rich printer to be set
      */
     protected void setRichPrinter(RichPrinter printer) {
@@ -146,6 +148,7 @@ public class RichDiagnosticFormatter extends
 
     /**
      * Gets the type/symbol printer used by this formatter.
+     *
      * @return type/symbol rich printer
      */
     protected RichPrinter getRichPrinter() {
@@ -180,16 +183,13 @@ public class RichDiagnosticFormatter extends
      */
     protected void preprocessArgument(Object arg) {
         if (arg instanceof Type) {
-            preprocessType((Type)arg);
-        }
-        else if (arg instanceof Symbol) {
-            preprocessSymbol((Symbol)arg);
-        }
-        else if (arg instanceof JCDiagnostic) {
-            preprocessDiagnostic((JCDiagnostic)arg);
-        }
-        else if (arg instanceof Iterable<?>) {
-            for (Object o : (Iterable<?>)arg) {
+            preprocessType((Type) arg);
+        } else if (arg instanceof Symbol) {
+            preprocessSymbol((Symbol) arg);
+        } else if (arg instanceof JCDiagnostic) {
+            preprocessDiagnostic((JCDiagnostic) arg);
+        } else if (arg instanceof Iterable<?>) {
+            for (Object o : (Iterable<?>) arg) {
                 preprocessArgument(o);
             }
         }
@@ -246,20 +246,29 @@ public class RichDiagnosticFormatter extends
         return found == 1;
     }
     //where
+
     /**
      * This enum defines all posssible kinds of where clauses that can be
      * attached by a rich diagnostic formatter to a given diagnostic
      */
     enum WhereClauseKind {
 
-        /** where clause regarding a type variable */
+        /**
+         * where clause regarding a type variable
+         */
         TYPEVAR("where.description.typevar"),
-        /** where clause regarding a captured type */
+        /**
+         * where clause regarding a captured type
+         */
         CAPTURED("where.description.captured"),
-        /** where clause regarding an intersection type */
+        /**
+         * where clause regarding an intersection type
+         */
         INTERSECTION("where.description.intersection");
 
-        /** resource key for this where clause kind */
+        /**
+         * resource key for this where clause kind
+         */
         private String key;
 
         WhereClauseKind(String key) {
@@ -272,6 +281,7 @@ public class RichDiagnosticFormatter extends
     }
 
     // <editor-fold defaultstate="collapsed" desc="name simplifier">
+
     /**
      * A name simplifier keeps track of class names usages in order to determine
      * whether a class name can be compacted or not. Short names are not used
@@ -302,8 +312,8 @@ public class RichDiagnosticFormatter extends
             if (!s.type.isCompound()) {
                 List<Symbol> conflicts = nameClashes.get(s.getSimpleName());
                 if (conflicts == null ||
-                    (conflicts.size() == 1 &&
-                    conflicts.contains(s))) {
+                        (conflicts.size() == 1 &&
+                                conflicts.contains(s))) {
                     List<Name> l = List.nil();
                     Symbol s2 = s;
                     while (s2.type.getEnclosingType().tag == CLASS
@@ -324,10 +334,13 @@ public class RichDiagnosticFormatter extends
             }
             return name;
         }
-    };
+    }
+
+    ;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="rich printer">
+
     /**
      * Enhanced type/symbol printer that provides support for features like simple names
      * and type variable disambiguation. This enriched printer exploits the info
@@ -358,10 +371,9 @@ public class RichDiagnosticFormatter extends
         public String visitCapturedType(CapturedType t, Locale locale) {
             if (getConfiguration().isEnabled(RichFormatterFeature.WHERE_CLAUSES)) {
                 return localize(locale,
-                    "compiler.misc.captured.type",
-                    indexOf(t, WhereClauseKind.CAPTURED));
-            }
-            else
+                        "compiler.misc.captured.type",
+                        indexOf(t, WhereClauseKind.CAPTURED));
+            } else
                 return super.visitCapturedType(t, locale);
         }
 
@@ -372,8 +384,7 @@ public class RichDiagnosticFormatter extends
                 return localize(locale,
                         "compiler.misc.intersection.type",
                         indexOf(t, WhereClauseKind.INTERSECTION));
-            }
-            else
+            } else
                 return super.visitClassType(t, locale);
         }
 
@@ -383,8 +394,7 @@ public class RichDiagnosticFormatter extends
             if (sym.name.length() == 0 ||
                     !getConfiguration().isEnabled(RichFormatterFeature.SIMPLE_NAMES)) {
                 return super.className(t, longform, locale);
-            }
-            else if (longform)
+            } else if (longform)
                 return nameSimplifier.simplify(sym).toString();
             else
                 return sym.name.toString();
@@ -395,8 +405,7 @@ public class RichDiagnosticFormatter extends
             if (unique(t) ||
                     !getConfiguration().isEnabled(RichFormatterFeature.UNIQUE_TYPEVAR_NAMES)) {
                 return t.toString();
-            }
-            else {
+            } else {
                 return localize(locale,
                         "compiler.misc.type.var",
                         t.toString(), indexOf(t, WhereClauseKind.TYPEVAR));
@@ -414,8 +423,7 @@ public class RichDiagnosticFormatter extends
             if (name.length() == 0 ||
                     !getConfiguration().isEnabled(RichFormatterFeature.SIMPLE_NAMES)) {
                 return super.visitClassSymbol(s, locale);
-            }
-            else {
+            } else {
                 return name;
             }
         }
@@ -424,11 +432,11 @@ public class RichDiagnosticFormatter extends
         public String visitMethodSymbol(MethodSymbol s, Locale locale) {
             String ownerName = visit(s.owner, locale);
             if (s.isStaticOrInstanceInit()) {
-               return ownerName;
+                return ownerName;
             } else {
                 String ms = (s.name == s.name.table.names.init)
-                    ? ownerName
-                    : s.name.toString();
+                        ? ownerName
+                        : s.name.toString();
                 if (s.type != null) {
                     if (s.type.tag == FORALL) {
                         ms = "<" + visitTypes(s.type.getTypeArguments(), locale) + ">" + ms;
@@ -441,10 +449,13 @@ public class RichDiagnosticFormatter extends
                 return ms;
             }
         }
-    };
+    }
+
+    ;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="type scanner">
+
     /**
      * Preprocess a given type looking for (i) additional info (where clauses) to be
      * added to the main diagnostic (ii) names to be compacted.
@@ -452,119 +463,121 @@ public class RichDiagnosticFormatter extends
     protected void preprocessType(Type t) {
         typePreprocessor.visit(t);
     }
+
     //where
     protected Types.UnaryVisitor<Void> typePreprocessor =
             new Types.UnaryVisitor<Void>() {
 
-        public Void visit(List<Type> ts) {
-            for (Type t : ts)
-                visit(t);
-            return null;
-        }
-
-        @Override
-        public Void visitForAll(ForAll t, Void ignored) {
-            visit(t.tvars);
-            visit(t.qtype);
-            return null;
-        }
-
-        @Override
-        public Void visitMethodType(MethodType t, Void ignored) {
-            visit(t.argtypes);
-            visit(t.restype);
-            return null;
-        }
-
-        @Override
-        public Void visitErrorType(ErrorType t, Void ignored) {
-            Type ot = t.getOriginalType();
-            if (ot != null)
-                visit(ot);
-            return null;
-        }
-
-        @Override
-        public Void visitArrayType(ArrayType t, Void ignored) {
-            visit(t.elemtype);
-            return null;
-        }
-
-        @Override
-        public Void visitWildcardType(WildcardType t, Void ignored) {
-            visit(t.type);
-            return null;
-        }
-
-        public Void visitType(Type t, Void ignored) {
-            return null;
-        }
-
-        @Override
-        public Void visitCapturedType(CapturedType t, Void ignored) {
-            if (indexOf(t, WhereClauseKind.CAPTURED) == -1) {
-                String suffix = t.lower == syms.botType ? ".1" : "";
-                JCDiagnostic d = diags.fragment("where.captured"+ suffix, t, t.bound, t.lower, t.wildcard);
-                whereClauses.get(WhereClauseKind.CAPTURED).put(t, d);
-                visit(t.wildcard);
-                visit(t.lower);
-                visit(t.bound);
-            }
-            return null;
-        }
-
-        @Override
-        public Void visitClassType(ClassType t, Void ignored) {
-            if (t.isCompound()) {
-                if (indexOf(t, WhereClauseKind.INTERSECTION) == -1) {
-                    Type supertype = types.supertype(t);
-                    List<Type> interfaces = types.interfaces(t);
-                    JCDiagnostic d = diags.fragment("where.intersection", t, interfaces.prepend(supertype));
-                    whereClauses.get(WhereClauseKind.INTERSECTION).put(t, d);
-                    visit(supertype);
-                    visit(interfaces);
+                public Void visit(List<Type> ts) {
+                    for (Type t : ts)
+                        visit(t);
+                    return null;
                 }
-            }
-            nameSimplifier.addUsage(t.tsym);
-            visit(t.getTypeArguments());
-            if (t.getEnclosingType() != Type.noType)
-                visit(t.getEnclosingType());
-            return null;
-        }
 
-        @Override
-        public Void visitTypeVar(TypeVar t, Void ignored) {
-            if (indexOf(t, WhereClauseKind.TYPEVAR) == -1) {
-                //access the bound type and skip error types
-                Type bound = t.bound;
-                while ((bound instanceof ErrorType))
-                    bound = ((ErrorType)bound).getOriginalType();
-                //retrieve the bound list - if the type variable
-                //has not been attributed the bound is not set
-                List<Type> bounds = bound != null ?
-                    types.getBounds(t) :
-                    List.<Type>nil();
+                @Override
+                public Void visitForAll(ForAll t, Void ignored) {
+                    visit(t.tvars);
+                    visit(t.qtype);
+                    return null;
+                }
 
-                nameSimplifier.addUsage(t.tsym);
+                @Override
+                public Void visitMethodType(MethodType t, Void ignored) {
+                    visit(t.argtypes);
+                    visit(t.restype);
+                    return null;
+                }
 
-                boolean boundErroneous = bounds.head == null ||
-                                         bounds.head.tag == NONE ||
-                                         bounds.head.tag == ERROR;
+                @Override
+                public Void visitErrorType(ErrorType t, Void ignored) {
+                    Type ot = t.getOriginalType();
+                    if (ot != null)
+                        visit(ot);
+                    return null;
+                }
+
+                @Override
+                public Void visitArrayType(ArrayType t, Void ignored) {
+                    visit(t.elemtype);
+                    return null;
+                }
+
+                @Override
+                public Void visitWildcardType(WildcardType t, Void ignored) {
+                    visit(t.type);
+                    return null;
+                }
+
+                public Void visitType(Type t, Void ignored) {
+                    return null;
+                }
+
+                @Override
+                public Void visitCapturedType(CapturedType t, Void ignored) {
+                    if (indexOf(t, WhereClauseKind.CAPTURED) == -1) {
+                        String suffix = t.lower == syms.botType ? ".1" : "";
+                        JCDiagnostic d = diags.fragment("where.captured" + suffix, t, t.bound, t.lower, t.wildcard);
+                        whereClauses.get(WhereClauseKind.CAPTURED).put(t, d);
+                        visit(t.wildcard);
+                        visit(t.lower);
+                        visit(t.bound);
+                    }
+                    return null;
+                }
+
+                @Override
+                public Void visitClassType(ClassType t, Void ignored) {
+                    if (t.isCompound()) {
+                        if (indexOf(t, WhereClauseKind.INTERSECTION) == -1) {
+                            Type supertype = types.supertype(t);
+                            List<Type> interfaces = types.interfaces(t);
+                            JCDiagnostic d = diags.fragment("where.intersection", t, interfaces.prepend(supertype));
+                            whereClauses.get(WhereClauseKind.INTERSECTION).put(t, d);
+                            visit(supertype);
+                            visit(interfaces);
+                        }
+                    }
+                    nameSimplifier.addUsage(t.tsym);
+                    visit(t.getTypeArguments());
+                    if (t.getEnclosingType() != Type.noType)
+                        visit(t.getEnclosingType());
+                    return null;
+                }
+
+                @Override
+                public Void visitTypeVar(TypeVar t, Void ignored) {
+                    if (indexOf(t, WhereClauseKind.TYPEVAR) == -1) {
+                        //access the bound type and skip error types
+                        Type bound = t.bound;
+                        while ((bound instanceof ErrorType))
+                            bound = ((ErrorType) bound).getOriginalType();
+                        //retrieve the bound list - if the type variable
+                        //has not been attributed the bound is not set
+                        List<Type> bounds = bound != null ?
+                                types.getBounds(t) :
+                                List.<Type>nil();
+
+                        nameSimplifier.addUsage(t.tsym);
+
+                        boolean boundErroneous = bounds.head == null ||
+                                bounds.head.tag == NONE ||
+                                bounds.head.tag == ERROR;
 
 
-                JCDiagnostic d = diags.fragment("where.typevar" +
-                        (boundErroneous ? ".1" : ""), t, bounds,
-                        Kinds.kindName(t.tsym.location()), t.tsym.location());
-                whereClauses.get(WhereClauseKind.TYPEVAR).put(t, d);
-                symbolPreprocessor.visit(t.tsym.location(), null);
-                visit(bounds);
-            }
-            return null;
-        }
-    };
+                        JCDiagnostic d = diags.fragment("where.typevar" +
+                                        (boundErroneous ? ".1" : ""), t, bounds,
+                                Kinds.kindName(t.tsym.location()), t.tsym.location());
+                        whereClauses.get(WhereClauseKind.TYPEVAR).put(t, d);
+                        symbolPreprocessor.visit(t.tsym.location(), null);
+                        visit(bounds);
+                    }
+                    return null;
+                }
+            };
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="symbol scanner">
+
     /**
      * Preprocess a given symbol looking for (i) additional info (where clauses) to be
      * asdded to the main diagnostic (ii) names to be compacted
@@ -572,119 +585,36 @@ public class RichDiagnosticFormatter extends
     protected void preprocessSymbol(Symbol s) {
         symbolPreprocessor.visit(s, null);
     }
+
     //where
     protected Types.DefaultSymbolVisitor<Void, Void> symbolPreprocessor =
             new Types.DefaultSymbolVisitor<Void, Void>() {
 
-        @Override
-        public Void visitClassSymbol(ClassSymbol s, Void ignored) {
-            nameSimplifier.addUsage(s);
-            return null;
-        }
+                @Override
+                public Void visitClassSymbol(ClassSymbol s, Void ignored) {
+                    nameSimplifier.addUsage(s);
+                    return null;
+                }
 
-        @Override
-        public Void visitSymbol(Symbol s, Void ignored) {
-            return null;
-        }
+                @Override
+                public Void visitSymbol(Symbol s, Void ignored) {
+                    return null;
+                }
 
-        @Override
-        public Void visitMethodSymbol(MethodSymbol s, Void ignored) {
-            visit(s.owner, null);
-            if (s.type != null)
-                typePreprocessor.visit(s.type);
-            return null;
-        }
-    };
+                @Override
+                public Void visitMethodSymbol(MethodSymbol s, Void ignored) {
+                    visit(s.owner, null);
+                    if (s.type != null)
+                        typePreprocessor.visit(s.type);
+                    return null;
+                }
+            };
     // </editor-fold>
 
     @Override
     public RichConfiguration getConfiguration() {
         //the following cast is always safe - see init
-        return (RichConfiguration)configuration;
+        return (RichConfiguration) configuration;
     }
 
-    /**
-     * Configuration object provided by the rich formatter.
-     */
-    public static class RichConfiguration extends ForwardingConfiguration {
-
-        /** set of enabled rich formatter's features */
-        protected EnumSet<RichFormatterFeature> features;
-
-        @SuppressWarnings("fallthrough")
-        public RichConfiguration(Options options, AbstractDiagnosticFormatter formatter) {
-            super(formatter.getConfiguration());
-            features = formatter.isRaw() ? EnumSet.noneOf(RichFormatterFeature.class) :
-                EnumSet.of(RichFormatterFeature.SIMPLE_NAMES,
-                    RichFormatterFeature.WHERE_CLAUSES,
-                    RichFormatterFeature.UNIQUE_TYPEVAR_NAMES);
-            String diagOpts = options.get("diags");
-            if (diagOpts != null) {
-                for (String args: diagOpts.split(",")) {
-                    if (args.equals("-where")) {
-                        features.remove(RichFormatterFeature.WHERE_CLAUSES);
-                    }
-                    else if (args.equals("where")) {
-                        features.add(RichFormatterFeature.WHERE_CLAUSES);
-                    }
-                    if (args.equals("-simpleNames")) {
-                        features.remove(RichFormatterFeature.SIMPLE_NAMES);
-                    }
-                    else if (args.equals("simpleNames")) {
-                        features.add(RichFormatterFeature.SIMPLE_NAMES);
-                    }
-                    if (args.equals("-disambiguateTvars")) {
-                        features.remove(RichFormatterFeature.UNIQUE_TYPEVAR_NAMES);
-                    }
-                    else if (args.equals("disambiguateTvars")) {
-                        features.add(RichFormatterFeature.UNIQUE_TYPEVAR_NAMES);
-                    }
-                }
-            }
-        }
-
-        /**
-         * Returns a list of all the features supported by the rich formatter.
-         * @return list of supported features
-         */
-        public RichFormatterFeature[] getAvailableFeatures() {
-            return RichFormatterFeature.values();
-        }
-
-        /**
-         * Enable a specific feature on this rich formatter.
-         * @param feature feature to be enabled
-         */
-        public void enable(RichFormatterFeature feature) {
-            features.add(feature);
-        }
-
-        /**
-         * Disable a specific feature on this rich formatter.
-         * @param feature feature to be disabled
-         */
-        public void disable(RichFormatterFeature feature) {
-            features.remove(feature);
-        }
-
-        /**
-         * Is a given feature enabled on this formatter?
-         * @param feature feature to be tested
-         */
-        public boolean isEnabled(RichFormatterFeature feature) {
-            return features.contains(feature);
-        }
-
-        /**
-         * The advanced formatting features provided by the rich formatter
-         */
-        public enum RichFormatterFeature {
-            /** a list of additional info regarding a given type/symbol */
-            WHERE_CLAUSES,
-            /** full class names simplification (where possible) */
-            SIMPLE_NAMES,
-            /** type-variable names disambiguation */
-            UNIQUE_TYPEVAR_NAMES;
-        }
-    }
 }

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.duy.editor.R;
+import com.duy.editor.themefont.fonts.FontManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,20 +44,33 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Er
 
     @Override
     public void onBindViewHolder(ErrorHolder holder, int position) {
-        Diagnostic diagnostic = mDiagnostics.get(position);
+        final Diagnostic diagnostic = mDiagnostics.get(position);
+        holder.line.setText(SpanUtil.createSrcSpan(mContext.getResources(), diagnostic));
         switch (diagnostic.getKind()) {
             case ERROR:
+                holder.icon.setImageResource(R.drawable.ic_error_red);
                 break;
             case WARNING:
+                holder.icon.setImageResource(R.drawable.ic_warning_yellow);
                 break;
             case MANDATORY_WARNING:
+                holder.icon.setImageResource(R.drawable.ic_warning_yellow);
                 break;
             case NOTE:
+                holder.icon.setImageResource(R.drawable.ic_note_organe_24dp);
                 break;
             case OTHER:
+                holder.icon.setImageResource(R.drawable.ic_warning_yellow);
                 break;
         }
+        holder.message.setTypeface(FontManager.getFontFromAsset(mContext, "Roboto-Light.ttf"));
         holder.message.setText(diagnostic.getMessage(null));
+        holder.root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (listener != null) listener.onClick(diagnostic);
+            }
+        });
     }
 
     @Override
@@ -84,13 +98,16 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Er
     }
 
     public static class ErrorHolder extends RecyclerView.ViewHolder {
-        private ImageView icon;
-        private TextView message;
+        ImageView icon;
+        TextView message, line;
+        View root;
 
         public ErrorHolder(View itemView) {
             super(itemView);
             icon = itemView.findViewById(R.id.img_icon);
             message = itemView.findViewById(R.id.txt_message);
+            line = itemView.findViewById(R.id.txt_line);
+            root = itemView.findViewById(R.id.container);
         }
     }
 }

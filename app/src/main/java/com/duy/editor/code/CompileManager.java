@@ -21,8 +21,11 @@ import android.content.Intent;
 
 import com.duy.editor.debug.activities.DebugActivity;
 import com.duy.editor.editor.MainActivity;
+import com.duy.external.CommandManager;
 import com.duy.project_files.ProjectFile;
 import com.duy.run.activities.TerminalActivity;
+
+import java.io.File;
 
 /**
  * Created by Duy on 11-Feb-17.
@@ -39,6 +42,7 @@ public class CompileManager {
     public static final String PROJECT_FILE = "project_file";
     public static final String ACTION = "action";
     public static final String ARGS = "program_args";
+    public static final String DEX_FILE = "dex_path";
 
     private final Activity mActivity;
 
@@ -78,20 +82,23 @@ public class CompileManager {
     // Execute compiled file
     public void execute(ProjectFile projectFile) {
         Intent intent = new Intent(mActivity, TerminalActivity.class);
-        intent.putExtra(ACTION, Action.RUN);
+        intent.putExtra(ACTION, CommandManager.Action.RUN);
         intent.putExtra(PROJECT_FILE, projectFile);
         mActivity.startActivity(intent);
     }
 
     public void buildJar(ProjectFile projectFile) {
         Intent intent = new Intent(mActivity, TerminalActivity.class);
-        intent.putExtra(ACTION, Action.BUILD_JAR);
+        intent.putExtra(ACTION, CommandManager.Action.BUILD_JAR);
         intent.putExtra(PROJECT_FILE, projectFile);
         mActivity.startActivity(intent);
     }
 
-    public class Action {
-        public static final int RUN = 0;
-        public static final int BUILD_JAR = 1;
+    public void executeDex(ProjectFile projectFile, File dex) {
+        Intent intent = new Intent(mActivity, TerminalActivity.class);
+        intent.putExtra(ACTION, CommandManager.Action.RUN_DEX);
+        intent.putExtra(PROJECT_FILE, projectFile);
+        intent.putExtra(DEX_FILE, dex);
+        mActivity.startActivity(intent);
     }
 }

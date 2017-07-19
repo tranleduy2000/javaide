@@ -25,6 +25,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -42,6 +43,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -59,14 +61,13 @@ import com.duy.editor.file.FileManager;
 import com.duy.editor.file.FileSelectListener;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.themefont.activities.ThemeFontActivity;
+import com.duy.external.CommandManager;
 import com.duy.project_files.ProjectFile;
 import com.duy.project_files.ProjectManager;
 import com.duy.project_files.dialog.DialogSelectDirectory;
 import com.duy.project_files.utils.ClassUtil;
-import com.duy.run.CommandManager;
 import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.sun.tools.javac.main.Main;
 
 import java.io.File;
 import java.io.IOException;
@@ -596,7 +597,18 @@ public class MainActivity extends BaseEditorActivity implements
         }
     }
 
-    private class CompileTask extends AsyncTask<ProjectFile, Object, Integer> {
+    private void hideKeyboard() {
+        View currentFocus = getCurrentFocus();
+        if (currentFocus != null) {
+            IBinder windowToken = currentFocus.getWindowToken();
+            if (windowToken != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromInputMethod(windowToken, 0);
+            }
+        }
+    }
+
+    private class CompileTask extends AsyncTask<ProjectFile, Object, File> {
         private Context mContext;
 
         CompileTask(Context context) {
@@ -608,13 +620,14 @@ public class MainActivity extends BaseEditorActivity implements
             super.onPreExecute();
             if (mActionRun != null) mActionRun.setEnabled(false);
             if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
+            hideKeyboard();
             mCompileStatus.setText("");
             mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         }
 
         @Override
-        protected Integer doInBackground(ProjectFile... params) {
-            if (params[0] == null) return Main.EXIT_ERROR;
+        protected File doInBackground(ProjectFile... params) {
+            if (params[0] == null) return null;
             PrintWriter printWriter = new PrintWriter(new Writer() {
                 @Override
                 public void write(@NonNull char[] chars, int i, int i1) throws IOException {
@@ -648,16 +661,23 @@ public class MainActivity extends BaseEditorActivity implements
         }
 
         @Override
-        protected void onPostExecute(Integer result) {
+        protected void onPostExecute(final File result) {
             super.onPostExecute(result);
             Log.d(TAG, "onPostExecute() called with: result = [" + result + "]");
 
             if (mActionRun != null) mActionRun.setEnabled(true);
             if (mCompileProgress != null) mCompileProgress.setVisibility(View.GONE);
-            if (result != Main.EXIT_OK) {
-                Toast.makeText(mContext, "Compile failed", Toast.LENGTH_SHORT).show();
+            if (result == null) {
+                Toast.makeText(mContext, "Compile failed, see error msg", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(mContext, "Compile success", Toast.LENGTH_SHORT).show();
+                mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCompileManager.executeDex(mProjectFile, result);
+                    }
+                }, 200);
             }
         }
     }

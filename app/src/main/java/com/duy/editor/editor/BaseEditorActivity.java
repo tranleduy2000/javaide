@@ -85,7 +85,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected final boolean SAVE_LAST_FILE = true;
     protected final boolean UN_SELECT = false;
     protected final boolean UN_SAVE_LAST_FILE = false;
-    private final Handler mHandler = new Handler();
+    protected final Handler mHandler = new Handler();
     protected FileManager mFileManager;
     protected EditorPagerAdapter mPageAdapter;
     protected SlidingUpPanelLayout mContainerOutput;

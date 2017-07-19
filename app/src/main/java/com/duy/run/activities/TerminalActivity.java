@@ -46,8 +46,8 @@ import android.widget.Toast;
 
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
+import com.duy.external.CommandManager;
 import com.duy.project_files.ProjectFile;
-import com.duy.run.CommandManager;
 import com.duy.run.view.EmulatorView;
 import com.duy.run.view.TermKeyListener;
 import com.google.android.gms.ads.AdRequest;
@@ -57,6 +57,7 @@ import com.spartacusrex.spartacuside.TerminalPreferences;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.TermSettings;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
@@ -76,6 +77,8 @@ public class TerminalActivity extends Activity {
     private Intent TSIntent;
     private int onResumeSelectWindow = -1;
     private TermService mTermService;
+    private AdView mAdView;
+    private ViewGroup mContainer;
     private ServiceConnection mTSConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             Log.i(TAG, "Bound to TermService");
@@ -88,8 +91,6 @@ public class TerminalActivity extends Activity {
             mTermService = null;
         }
     };
-
-    private AdView mAdView;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -117,9 +118,6 @@ public class TerminalActivity extends Activity {
             mAdView.loadAd(new AdRequest.Builder().build());
     }
 
-    private ViewGroup mContainer;
-
-
     private void populateViewFlipper() {
         Log.d(TAG, "populateViewFlipper() called");
 
@@ -137,10 +135,17 @@ public class TerminalActivity extends Activity {
                 if (projectFile == null) return;
                 int action = intent.getIntExtra(CompileManager.ACTION, -1);
                 switch (action) {
-                    case CompileManager.Action.RUN:
-                        CommandManager.compileAndRun(this, mTermSession, projectFile);
+                    case CommandManager.Action.RUN:
+                        CommandManager.compileAndRun(mTermSession, projectFile);
                         break;
-                    case CompileManager.Action.BUILD_JAR:
+                    case CommandManager.Action.RUN_DEX:
+                        File dex = (File) intent.getSerializableExtra(CompileManager.DEX_FILE);
+                        if (dex != null) {
+                            CommandManager.executeDex(mTermSession, dex,
+                                    projectFile.getMainClass().getName());
+                        }
+                        break;
+                    case CommandManager.Action.BUILD_JAR:
                         CommandManager.buildJarFile(this, mTermSession, projectFile);
                         break;
                 }

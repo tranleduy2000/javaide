@@ -85,7 +85,7 @@ public class MainActivity extends BaseEditorActivity implements
     public static final int ACTION_FILE_SELECT_CODE = 1012;
     public static final int ACTION_PICK_MEDIA_URL = 1013;
     public static final int ACTION_CREATE_SHORTCUT = 1014;
-
+    private static final String KEY_COMPILE_MSG = "compile_msg";
     private CompileManager mCompileManager;
     private MenuEditor mMenuEditor;
     private Dialog mDialog;
@@ -98,10 +98,10 @@ public class MainActivity extends BaseEditorActivity implements
         super.onCreate(savedInstanceState);
         mCompileManager = new CompileManager(this);
         mMenuEditor = new MenuEditor(this, this);
-        initView();
+        initView(savedInstanceState);
     }
 
-    public void initView() {
+    public void initView(Bundle savedInstanceState) {
         mDrawerLayout.addDrawerListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -117,8 +117,12 @@ public class MainActivity extends BaseEditorActivity implements
             }
         });
         mCompileProgress = (ProgressBar) findViewById(R.id.compile_progress);
+
         mCompileStatus = (TextView) findViewById(R.id.output);
         mCompileStatus.setTypeface(Typeface.MONOSPACE);
+        if (savedInstanceState != null) {
+            mCompileStatus.setText(savedInstanceState.getString(KEY_COMPILE_MSG));
+        }
     }
 
     @Override
@@ -604,6 +608,14 @@ public class MainActivity extends BaseEditorActivity implements
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mCompileStatus != null) {
+            outState.putString(KEY_COMPILE_MSG, mCompileStatus.getText().toString());
         }
     }
 

@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,7 +30,6 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -226,20 +224,20 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         if (tab == null) return;
         View view = tab.getCustomView();
 
-        if (view != null) {
-            View container = view.findViewById(R.id.container_tab);
-            TextView txtTitle = view.findViewById(R.id.txt_title);
-
-            if (select) {
-                container.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_color_background));
-                txtTitle.setTextColor(ContextCompat.getColor(this, android.R.color.primary_text_dark));
-                txtTitle.setTypeface(Typeface.DEFAULT_BOLD);
-            } else {
-                container.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_color_primary_dark));
-                txtTitle.setTextColor(ContextCompat.getColor(this, android.R.color.secondary_text_dark));
-                txtTitle.setTypeface(Typeface.DEFAULT);
-            }
-        }
+//        if (view != null) {
+//            View container = view.findViewById(R.id.container_tab);
+//            TextView txtTitle = view.findViewById(R.id.txt_title);
+//
+//            if (select) {
+//                container.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_color_background));
+//                txtTitle.setTextColor(ContextCompat.getColor(this, android.R.color.primary_text_dark));
+//                txtTitle.setTypeface(Typeface.DEFAULT_BOLD);
+//            } else {
+//                container.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_color_primary_dark));
+//                txtTitle.setTextColor(ContextCompat.getColor(this, android.R.color.secondary_text_dark));
+//                txtTitle.setTypeface(Typeface.DEFAULT);
+//            }
+//        }
     }
 
     public void setupToolbar() {

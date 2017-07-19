@@ -28,6 +28,7 @@
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center|start"
+
         android:padding="4dp"
         android:text="@string/code_sample" />
 
@@ -41,6 +42,6 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
         android:padding="4dp"
-        app:srcCompat="@drawable/ic_close_white_24dp" />
+        app:srcCompat="@drawable/ic_close" />
 
 </LinearLayout>

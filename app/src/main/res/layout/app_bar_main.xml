@@ -34,17 +34,8 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_height"
-            android:clipChildren="true"
-            app:tabGravity="fill"
-            app:tabMode="scrollable"
-            app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
-            app:tabPaddingEnd="0dp"
-            app:tabPaddingStart="0dp" />
     </android.support.design.widget.AppBarLayout>
+
 
     <include layout="@layout/content_main" />
 

@@ -16,9 +16,9 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_tab"
     android:layout_width="wrap_content"
     android:layout_height="40dp"
-
     android:orientation="horizontal">
 
     <android.support.v7.widget.AppCompatTextView

@@ -55,13 +55,9 @@ public class CommandManager {
         }
     }
 
-    public static void compile(Context context, ProjectFile pf, PrintWriter out) {
+    public static int compile(ProjectFile pf, PrintWriter out) {
         try {
             String projectPath = pf.getProjectDir();
-            String projectName = pf.getProjectName();
-            String mainClass = pf.getMainClass().getName();
-            String mainClassPath = pf.getMainClass().getName().replace(".", File.separator);
-            String rootPkg = pf.getMainClass().getRootPackage();
 
             //create build director, delete all file if exists
             File buildDir = new File(projectPath, "build/classes");
@@ -81,18 +77,7 @@ public class CommandManager {
             };
             System.out.println("args = " + Arrays.toString(args));
             //exec javac command
-            int compile = javac.compile(args, out);
-            switch (compile) {
-                case Main.EXIT_OK: {
-                    break;
-                }
-                case Main.EXIT_CMDERR:
-                    return;
-                case Main.EXIT_ABNORMAL:
-                    return;
-                case Main.EXIT_ERROR:
-                    break;
-            }
+            return javac.compile(args, out);
         } catch (Exception e) {
             e.printStackTrace();
         } catch (Error e) {
@@ -100,7 +85,7 @@ public class CommandManager {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-
+        return Main.EXIT_SYSERR;
     }
 
     public static void compileAndRun(Context context, TermSession termSession, ProjectFile pf) {

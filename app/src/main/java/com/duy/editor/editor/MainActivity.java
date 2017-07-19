@@ -64,6 +64,7 @@ import com.duy.project_files.dialog.DialogSelectDirectory;
 import com.duy.project_files.utils.ClassUtil;
 import com.duy.run.CommandManager;
 import com.duy.run.dialog.DialogRunConfig;
+import com.sun.tools.javac.main.Main;
 
 import java.io.File;
 import java.io.IOException;
@@ -89,10 +90,10 @@ public class MainActivity extends BaseEditorActivity implements
         super.onCreate(savedInstanceState);
         mCompileManager = new CompileManager(this);
         mMenuEditor = new MenuEditor(this, this);
-        bindView();
+        initView();
     }
 
-    public void bindView() {
+    public void initView() {
         mDrawerLayout.addDrawerListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -231,7 +232,7 @@ public class MainActivity extends BaseEditorActivity implements
     private ProgressBar mCompileProgress;
     private TextView mCompileStatus;
 
-    private class CompileTask extends AsyncTask<ProjectFile, Object, Void> {
+    private class CompileTask extends AsyncTask<ProjectFile, Object, Integer> {
         private Context mContext;
 
         CompileTask(Context context) {
@@ -246,8 +247,8 @@ public class MainActivity extends BaseEditorActivity implements
         }
 
         @Override
-        protected Void doInBackground(ProjectFile... params) {
-            if (params[0] == null) return null;
+        protected Integer doInBackground(ProjectFile... params) {
+            if (params[0] == null) return Main.EXIT_ERROR;
             PrintWriter printWriter = new PrintWriter(new Writer() {
                 @Override
                 public void write(@NonNull char[] chars, int i, int i1) throws IOException {
@@ -264,8 +265,7 @@ public class MainActivity extends BaseEditorActivity implements
 
                 }
             });
-            CommandManager.compile(mContext, mProjectFile, printWriter);
-            return null;
+            return CommandManager.compile(mProjectFile, printWriter);
         }
 
         @Override
@@ -282,10 +282,15 @@ public class MainActivity extends BaseEditorActivity implements
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
             if (mActionRun != null) mActionRun.setEnabled(true);
             if (mCompileProgress != null) mCompileProgress.setIndeterminate(false);
+            if (result != Main.EXIT_OK) {
+
+            } else {
+                Toast.makeText(mContext, "Compile failed", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

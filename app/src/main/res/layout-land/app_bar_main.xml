@@ -39,18 +39,11 @@
             android:layout_weight="3"
             android:fitsSystemWindows="true" />
 
-        <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <include
+            layout="@layout/content_main"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="7"
-            android:fitsSystemWindows="true"
-            android:orientation="vertical">
-
-
-            <include layout="@layout/content_main" />
-
-        </android.support.design.widget.CoordinatorLayout>
+            android:layout_weight="7" />
     </LinearLayout>
 
     <LinearLayout

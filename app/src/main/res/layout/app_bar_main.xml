@@ -20,8 +20,6 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-
-
     <include layout="@layout/content_main" />
 
 </android.support.design.widget.CoordinatorLayout>

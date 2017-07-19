@@ -19,5 +19,10 @@ public class DiagnosticContract {
 
     public interface Presenter {
         public void click(Diagnostic diagnostic);
+
+        public void clear();
+
+        public void display(List<Diagnostic> diagnostics);
+
     }
 }

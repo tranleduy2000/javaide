@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/output_view"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="250dp"
     android:clickable="true"
     android:foreground="?selectableItemBackground"
     android:orientation="vertical">
@@ -42,12 +42,12 @@
         android:visibility="gone" />
 
 
-
     <android.support.design.widget.TabLayout
         android:id="@+id/bottom_tab"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         app:tabIndicatorColor="@color/dark.color_folder"
+        app:tabIndicatorHeight="1dp"
         app:tabTextAppearance="@style/Base.TextAppearance.AppCompat.Small">
 
     </android.support.design.widget.TabLayout>
@@ -56,12 +56,7 @@
         android:id="@+id/bottom_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.v4.view.PagerTitleStrip
-            android:id="@+id/page_tab_strip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
-        </android.support.v4.view.PagerTitleStrip>
     </android.support.v4.view.ViewPager>
 
 </LinearLayout>

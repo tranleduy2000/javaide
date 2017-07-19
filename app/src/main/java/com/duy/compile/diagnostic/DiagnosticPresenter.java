@@ -34,6 +34,11 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
     }
 
+    @Override
+    public void clear() {
+        view.clear();
+    }
+
     public void display(List<Diagnostic> diagnostics) {
         view.display(diagnostics);
     }

@@ -89,6 +89,7 @@ public class MainActivity extends BaseEditorActivity implements
     private Dialog mDialog;
     private MenuItem mActionRun;
     private ProgressBar mCompileProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -617,6 +618,7 @@ public class MainActivity extends BaseEditorActivity implements
             hideKeyboard();
             mMessagePresenter.clear();
             mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            mDiagnosticPresenter.clear();
         }
 
         @Override
@@ -670,16 +672,14 @@ public class MainActivity extends BaseEditorActivity implements
         @Override
         protected void onPostExecute(final File result) {
             super.onPostExecute(result);
-            Log.d(TAG, "onPostExecute() called with: result = [" + result + "]");
+            mDiagnosticPresenter.display(mDiagnostics);
 
             if (mActionRun != null) mActionRun.setEnabled(true);
             if (mCompileProgress != null) mCompileProgress.setVisibility(View.GONE);
             if (result == null) {
                 Toast.makeText(mContext, "Compile failed, see error msg", Toast.LENGTH_SHORT).show();
-
             } else {
                 Toast.makeText(mContext, "Compile success", Toast.LENGTH_SHORT).show();
-//                mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

@@ -13,53 +13,135 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="10">
+    android:gravity="bottom"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    app:umanoDragView="@+id/container_symbol"
+    app:umanoFadeColor="@android:color/transparent"
+    app:umanoPanelHeight="@dimen/bottom_editor_height"
+    app:umanoScrollableView="@+id/scrollView"
+    app:umanoShadowHeight="4dp">
 
-    <include
-        layout="@layout/project_file"
-        android:layout_width="0dp"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:layout_weight="3"
-        android:fitsSystemWindows="true" />
+        android:weightSum="10">
 
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="7"
-        android:fitsSystemWindows="true"
+        <include
+            layout="@layout/project_file"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_weight="3"
+            android:fitsSystemWindows="true" />
+
+        <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:fitsSystemWindows="true"
+            android:orientation="vertical">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/toolbar_height">
+
+                </android.support.v7.widget.Toolbar>
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tab_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/toolbar_height"
+                    android:clipChildren="true"
+                    app:tabGravity="fill"
+                    app:tabMode="scrollable"
+                    app:tabPaddingEnd="0dp"
+                    app:tabPaddingStart="0dp"
+                    app:tabTextAppearance="@style/TextAppearance.AppCompat.Small" />
+            </android.support.design.widget.AppBarLayout>
+
+            <include layout="@layout/content_main" />
+
+        </android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/output_view"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:clickable="true"
+        android:foreground="?selectableItemBackground"
         android:orientation="vertical">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar"
+        <LinearLayout
+            android:id="@+id/container_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_tab"
+                android:layout_width="@dimen/bottom_editor_height"
+                android:layout_height="@dimen/bottom_editor_height"
+                android:background="#651fff"
+                android:clickable="true"
+                android:contentDescription="@string/tab"
+                android:foreground="?attr/selectableItemBackground"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_keyboard_tab_white_24dp" />
+
+            <com.duy.editor.view.SymbolListView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_editor_height">
+
+            </com.duy.editor.view.SymbolListView>
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/compile_progress"
+            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true">
+            android:visibility="gone" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadeScrollbars="false"
+            android:fillViewport="true">
+
+            <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/toolbar_height">
+                android:layout_height="wrap_content"
+                android:fadeScrollbars="false"
+                android:fillViewport="true"
+                android:scrollbarSize="4dp">
 
-            </android.support.v7.widget.Toolbar>
+                <TextView
+                    android:id="@+id/output"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:singleLine="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textIsSelectable="true"
+                    android:textSize="12sp" />
+            </HorizontalScrollView>
+        </ScrollView>
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tab_layout"
-                android:layout_width="match_parent"
-                app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
-                android:layout_height="@dimen/toolbar_height"
-                android:clipChildren="true"
-                app:tabGravity="fill"
-                app:tabMode="scrollable"
-                app:tabPaddingEnd="0dp"
-                app:tabPaddingStart="0dp" />
-        </android.support.design.widget.AppBarLayout>
-
-        <include layout="@layout/content_main" />
-
-    </android.support.design.widget.CoordinatorLayout>
-</LinearLayout>
+    </LinearLayout>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

@@ -39,6 +39,17 @@ public class BottomPageAdapter extends FragmentPagerAdapter {
     }
 
     @Override
+    public CharSequence getPageTitle(int position) {
+        switch (position){
+            case 0:
+                return "Message";
+            case 1:
+                return "Diagnostics";
+        }
+        return super.getPageTitle(position);
+    }
+
+    @Override
     public int getCount() {
         return COUNT;
     }

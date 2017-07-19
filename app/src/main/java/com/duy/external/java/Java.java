@@ -1,26 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package com.duy.external.java;
 
-package com.spartacusrex.spartacuside.external;
-
-import com.spartacusrex.spartacuside.external.dexloader.dexclassloader;
+import com.duy.external.dex.DexClassLoader;
 
 import java.lang.reflect.Method;
 
 /**
- * @author Spartacus Rex
+ * Created by duy on 19/07/2017.
  */
-public class java {
 
+public class Java {
     public static void usage() {
         System.out.println("Usage : java -v -jar [List of Jar files] CLASSNAME");
     }
 
     public static void main(String[] zArgs) {
         try {
-            String dexfolder = null;
+            String dexfolder;
             String jarfile = "";
             String classname = "";
             boolean verbose = false;
@@ -86,7 +81,7 @@ public class java {
 
             //Now load this class..
             //DexClassLoader loader = new DexClassLoader(jarfile, dexfolder, null, ClassLoader.getSystemClassLoader());
-            dexclassloader loader = new dexclassloader(jarfile, dexfolder, null, ClassLoader.getSystemClassLoader(), verbose);
+            DexClassLoader loader = new DexClassLoader(jarfile, dexfolder, null, ClassLoader.getSystemClassLoader(), verbose);
             Class loadedclass = loader.loadClass(classname);
 
             //Now sort the command line inputs
@@ -121,19 +116,6 @@ public class java {
         } catch (Exception ex) {
             ex.printStackTrace();
             usage();
-            //Logger.getLogger(java.class.getName()).log(Level.SEVERE, null, ex);
-        } /*catch (IllegalAccessException ex) {     s//Err..
-            Logger.getLogger(java.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(java.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(java.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(java.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(java.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(java.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }
 }

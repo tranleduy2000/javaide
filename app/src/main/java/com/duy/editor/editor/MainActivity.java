@@ -86,6 +86,9 @@ public class MainActivity extends BaseEditorActivity implements
     private CompileManager mCompileManager;
     private MenuEditor mMenuEditor;
     private Dialog mDialog;
+    private MenuItem mActionRun;
+    private ProgressBar mCompileProgress;
+    private TextView mCompileStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +117,6 @@ public class MainActivity extends BaseEditorActivity implements
         mCompileStatus = (TextView) findViewById(R.id.output);
         mCompileStatus.setTypeface(Typeface.MONOSPACE);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -232,77 +234,6 @@ public class MainActivity extends BaseEditorActivity implements
         }
     }
 
-
-    private MenuItem mActionRun;
-    private ProgressBar mCompileProgress;
-    private TextView mCompileStatus;
-
-    private class CompileTask extends AsyncTask<ProjectFile, Object, Integer> {
-        private Context mContext;
-
-        CompileTask(Context context) {
-            this.mContext = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if (mActionRun != null) mActionRun.setEnabled(false);
-            if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
-            mCompileStatus.setText("");
-            mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-        }
-
-        @Override
-        protected Integer doInBackground(ProjectFile... params) {
-            if (params[0] == null) return Main.EXIT_ERROR;
-            PrintWriter printWriter = new PrintWriter(new Writer() {
-                @Override
-                public void write(@NonNull char[] chars, int i, int i1) throws IOException {
-                    publishProgress(chars, i, i1);
-                }
-
-                @Override
-                public void flush() throws IOException {
-
-                }
-
-                @Override
-                public void close() throws IOException {
-
-                }
-            });
-            return CommandManager.compile(mProjectFile, printWriter);
-        }
-
-        @Override
-        protected void onProgressUpdate(Object... values) {
-            super.onProgressUpdate(values);
-            try {
-                char[] chars = (char[]) values[0];
-                int start = (int) values[1];
-                int end = (int) values[2];
-                mCompileStatus.append(new String(chars), start, end);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            super.onPostExecute(result);
-            Log.d(TAG, "onPostExecute() called with: result = [" + result + "]");
-
-            if (mActionRun != null) mActionRun.setEnabled(true);
-            if (mCompileProgress != null) mCompileProgress.setVisibility(View.GONE);
-            if (result != Main.EXIT_OK) {
-
-            } else {
-                Toast.makeText(mContext, "Compile failed", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     @Override
     public void buildJar() {
         if (mProjectFile != null) {
@@ -368,7 +299,6 @@ public class MainActivity extends BaseEditorActivity implements
         startActivity(intent);
     }
 
-
     public String getCode() {
         EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
@@ -403,7 +333,6 @@ public class MainActivity extends BaseEditorActivity implements
         }
     }
 
-
     @Override
     public void onSharedPreferenceChanged(@NonNull SharedPreferences sharedPreferences, @NonNull String s) {
         if (s.equals(getString(R.string.key_show_suggest_popup))
@@ -434,7 +363,6 @@ public class MainActivity extends BaseEditorActivity implements
             super.onSharedPreferenceChanged(sharedPreferences, s);
         }
     }
-
 
     /**
      * show dialog create new source file
@@ -510,7 +438,6 @@ public class MainActivity extends BaseEditorActivity implements
             editorFragment.redo();
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -666,6 +593,72 @@ public class MainActivity extends BaseEditorActivity implements
                 }
                 break;
 
+        }
+    }
+
+    private class CompileTask extends AsyncTask<ProjectFile, Object, Integer> {
+        private Context mContext;
+
+        CompileTask(Context context) {
+            this.mContext = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (mActionRun != null) mActionRun.setEnabled(false);
+            if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
+            mCompileStatus.setText("");
+            mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        }
+
+        @Override
+        protected Integer doInBackground(ProjectFile... params) {
+            if (params[0] == null) return Main.EXIT_ERROR;
+            PrintWriter printWriter = new PrintWriter(new Writer() {
+                @Override
+                public void write(@NonNull char[] chars, int i, int i1) throws IOException {
+                    publishProgress(chars, i, i1);
+                }
+
+                @Override
+                public void flush() throws IOException {
+
+                }
+
+                @Override
+                public void close() throws IOException {
+
+                }
+            });
+            return CommandManager.compile(mProjectFile, printWriter);
+        }
+
+        @Override
+        protected void onProgressUpdate(Object... values) {
+            super.onProgressUpdate(values);
+            try {
+                char[] chars = (char[]) values[0];
+                int start = (int) values[1];
+                int end = (int) values[2];
+                mCompileStatus.append(new String(chars), start, end);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+            Log.d(TAG, "onPostExecute() called with: result = [" + result + "]");
+
+            if (mActionRun != null) mActionRun.setEnabled(true);
+            if (mCompileProgress != null) mCompileProgress.setVisibility(View.GONE);
+            if (result != Main.EXIT_OK) {
+                Toast.makeText(mContext, "Compile failed", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(mContext, "Compile success", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

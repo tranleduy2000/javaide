@@ -80,13 +80,17 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         DialogNewProject.OnCreateProjectListener, DialogNewClass.OnCreateClassListener {
 
     protected final static String TAG = BaseEditorActivity.class.getSimpleName();
-
+    private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
     protected final boolean SELECT = true;
     protected final boolean SAVE_LAST_FILE = true;
     protected final boolean UN_SELECT = false;
     protected final boolean UN_SAVE_LAST_FILE = false;
+    private final Handler mHandler = new Handler();
     protected FileManager mFileManager;
     protected EditorPagerAdapter mPageAdapter;
+    protected SlidingUpPanelLayout mContainerOutput;
+    protected ProjectFile mProjectFile;
+    protected ProjectFileContract.Presenter mFilePresenter;
     Toolbar toolbar;
     AppBarLayout appBarLayout;
     DrawerLayout mDrawerLayout;
@@ -96,40 +100,26 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     View mContainerSymbol;
     ViewPager mViewPager;
     private KeyBoardEventListener keyBoardListener;
-    private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
-    protected SlidingUpPanelLayout mContainerOutput;
-
 
     protected void onShowKeyboard() {
-        hideAppBar();
-        if (mContainerOutput != null) {
-            if (mContainerOutput.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
-                mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        mTabLayout.setVisibility(View.GONE);
+
+        //hide panel
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mContainerOutput != null) {
+                    if (mContainerOutput.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    }
+                }
             }
-        }
+        }, 200);
     }
 
     protected void onHideKeyboard() {
-        showAppBar();
-    }
-
-    /**
-     * hide appbar layout when keyboard visible
-     */
-    private void hideAppBar() {
-        mTabLayout.setVisibility(View.GONE);
-    }
-
-    /**
-     * show appbar layout when keyboard gone
-     */
-    private void showAppBar() {
         mTabLayout.setVisibility(View.VISIBLE);
     }
-
-    protected ProjectFile mProjectFile;
-
-    private ProjectFileContract.Presenter mFilePresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

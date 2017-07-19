@@ -13,49 +13,73 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:gravity="bottom"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    app:umanoPanelHeight="@dimen/bottom_editor_height"
+    app:umanoShadowHeight="4dp">
 
-    <android.support.v4.view.ViewPager
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/view_pager"
-        android:layout_above="@+id/container_symbol">
+        android:orientation="vertical">
 
-    </android.support.v4.view.ViewPager>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v4.view.ViewPager>
+
+
+    </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/container_symbol"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:orientation="horizontal">
+        android:id="@+id/output_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/img_tab"
-            android:layout_width="@dimen/bottom_editor_height"
-            android:layout_height="@dimen/bottom_editor_height"
-            android:background="#651fff"
-            android:clickable="true"
-            android:contentDescription="@string/tab"
-            android:foreground="?attr/selectableItemBackground"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_keyboard_tab_white_24dp" />
+        <LinearLayout
+            android:id="@+id/container_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <com.duy.editor.view.SymbolListView
-            android:id="@+id/recycler_view"
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_tab"
+                android:layout_width="@dimen/bottom_editor_height"
+                android:layout_height="@dimen/bottom_editor_height"
+                android:background="#651fff"
+                android:clickable="true"
+                android:contentDescription="@string/tab"
+                android:foreground="?attr/selectableItemBackground"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_keyboard_tab_white_24dp" />
+
+            <com.duy.editor.view.SymbolListView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_editor_height">
+
+            </com.duy.editor.view.SymbolListView>
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/compile_progress"
+            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_editor_height">
+            android:layout_height="wrap_content" />
 
-        </com.duy.editor.view.SymbolListView>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/output"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
-
-</RelativeLayout>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

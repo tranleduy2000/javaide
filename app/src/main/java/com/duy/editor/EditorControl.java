@@ -37,10 +37,6 @@ public interface EditorControl {
 
     void formatCode();
 
-    void reportBug();
-
-    void openTool();
-
     void undo();
 
     void redo();

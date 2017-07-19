@@ -81,7 +81,7 @@ public class MenuEditor {
                     listener.findAndReplace();
                 }
                 break;
-            case R.id.nav_run:
+            case R.id.action_run:
                 if (listener != null) {
                     listener.runProject();
                 }

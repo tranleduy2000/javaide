@@ -174,7 +174,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         invalidateTab();
     }
 
-    private void bindView() {
+    protected void bindView() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mKeyList = (SymbolListView) findViewById(R.id.recycler_view);
         mFileManager = new FileManager(this);

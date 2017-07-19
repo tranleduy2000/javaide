@@ -18,7 +18,7 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/nav_run"
+        android:id="@+id/action_run"
         android:icon="@drawable/ic_play_arrow_white_24dp"
         android:title="@string/run"
         app:showAsAction="always"/>

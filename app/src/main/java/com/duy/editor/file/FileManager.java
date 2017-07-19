@@ -147,6 +147,7 @@ public class FileManager {
     }
 
     public static boolean deleteFolder(File zFile) {
+        if (!zFile.exists()) return false;
         if (zFile.isDirectory()) {
             //Its a directory
             File[] files = zFile.listFiles();
@@ -161,7 +162,6 @@ public class FileManager {
     public static boolean canEdit(File file) {
         return file.canWrite() && file.getName().toLowerCase().endsWith(".java");
     }
-
 
 
     public static ArrayList<String> listClassName(File src) {
@@ -573,6 +573,12 @@ public class FileManager {
 
     public void destroy() {
         mDatabase.close();
+    }
+
+    public static void ensureFileExist(File file) throws FileNotFoundException {
+        if (!file.exists()) {
+            throw new FileNotFoundException(file + "");
+        }
     }
 
     public static class SAVE_MODE {

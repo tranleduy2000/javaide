@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #Build script
 
 #cd into the home dir - this way it works when run from inside vim or any other folder

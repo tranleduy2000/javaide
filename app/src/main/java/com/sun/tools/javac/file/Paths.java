@@ -318,7 +318,9 @@ public class Paths {
 
         Map<String, String> envs = System.getenv();
 
-        path.addFiles(envs.get("BOOTCLASSPATH"));
+        String bootclasspath = envs.get("BOOTCLASSPATH");
+        path.addFiles(bootclasspath);
+        path.addFiles("/data/data/com.duy.compiler.javanide/files/system/classes/android.jar");
 
         /*path.addFiles(options.get(XBOOTCLASSPATH_PREPEND));
 

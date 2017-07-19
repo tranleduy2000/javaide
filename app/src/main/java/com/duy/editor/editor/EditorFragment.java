@@ -39,7 +39,13 @@ import com.duy.editor.file.FileManager;
 import com.duy.editor.view.LockableScrollView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import net.barenca.jastyle.ASFormatter;
+import net.barenca.jastyle.FormatterHelper;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.Reader;
+import java.io.StringReader;
 
 /**
  * Created by Duy on 15-Mar-17.
@@ -219,13 +225,16 @@ public class EditorFragment extends Fragment implements EditorListener {
 
         @Override
         protected String doInBackground(String... params) {
-//            try {
-//                return new Formatter().formatSource(params[0]);
-//            } catch (FormatterException e) {
-//                e.printStackTrace();
+            try {
+                String source = params[0];
+                source = source.replace("{", "{\n");
+                ASFormatter formatter = new ASFormatter();
+                Reader in = new BufferedReader(new StringReader(source));
+                formatter.setJavaStyle();
+                return FormatterHelper.format(in, formatter);
+            } catch (Exception e) {
                 return null;
-//            }
-            // TODO: 18/07/2017 format code
+            }
         }
 
         @Override

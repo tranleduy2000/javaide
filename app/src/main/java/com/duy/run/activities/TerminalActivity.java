@@ -33,8 +33,6 @@ import android.support.annotation.Nullable;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -276,45 +274,6 @@ public class TerminalActivity extends Activity {
     }
 
 
-    @Override
-    protected void onActivityResult(int request, int result, Intent data) {
-        switch (request) {
-            case REQUEST_CHOOSE_WINDOW:
-                if (result == RESULT_OK && data != null) {
-                    int position = data.getIntExtra(EXTRA_WINDOW_ID, -2);
-                    if (position >= 0) {
-                        // Switch windows after session list is in sync, not here
-                        onResumeSelectWindow = position;
-                    } else if (position == -1) {
-                        doCreateNewWindow();
-                    }
-                } else {
-                    // Close the activity if user closed all sessions
-                    if (mTermSession == null) {
-                        finish();
-                    }
-                }
-                break;
-        }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        //Show alist of windows
-        menu.setHeaderTitle("Terminals");
-        menu.add(0, 0, 0, "Terminal 1");
-        menu.add(0, 1, 1, "Terminal 2");
-        menu.add(0, 2, 2, "Terminal 3");
-        menu.add(0, 3, 3, "Terminal 4");
-    }
-
-
     private boolean canPaste() {
         ClipboardManager clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clip.hasText()) {
@@ -456,19 +415,4 @@ public class TerminalActivity extends Activity {
     }
 
 
-    private void doToggleWakeLock() {
-//        if (mWakeLock.isHeld()) {
-//            mWakeLock.release();
-//        } else {
-//            mWakeLock.acquire();
-//        }
-    }
-
-    private void doToggleWifiLock() {
-//        if (mWifiLock.isHeld()) {
-//            mWifiLock.release();
-//        } else {
-//            mWifiLock.acquire();
-//        }
-    }
 }

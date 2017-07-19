@@ -17,10 +17,12 @@
 package com.duy.editor.editor;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -41,6 +43,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duy.editor.MenuEditor;
@@ -58,9 +62,13 @@ import com.duy.project_files.ProjectFile;
 import com.duy.project_files.ProjectManager;
 import com.duy.project_files.dialog.DialogSelectDirectory;
 import com.duy.project_files.utils.ClassUtil;
+import com.duy.run.CommandManager;
 import com.duy.run.dialog.DialogRunConfig;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 
 public class MainActivity extends BaseEditorActivity implements
@@ -81,7 +89,10 @@ public class MainActivity extends BaseEditorActivity implements
         super.onCreate(savedInstanceState);
         mCompileManager = new CompileManager(this);
         mMenuEditor = new MenuEditor(this, this);
+        bindView();
+    }
 
+    public void bindView() {
         mDrawerLayout.addDrawerListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -96,7 +107,10 @@ public class MainActivity extends BaseEditorActivity implements
                 insertTab(v);
             }
         });
+        mCompileProgress = (ProgressBar) findViewById(R.id.compile_progress);
+        mCompileStatus = (TextView) findViewById(R.id.output);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -130,7 +144,9 @@ public class MainActivity extends BaseEditorActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return mMenuEditor.onCreateOptionsMenu(menu);
+        boolean r = mMenuEditor.onCreateOptionsMenu(menu);
+        mActionRun = menu.findItem(R.id.action_edit_run);
+        return r;
     }
 
     /**
@@ -205,10 +221,71 @@ public class MainActivity extends BaseEditorActivity implements
                         }).show();
                 return;
             }
-            //now run project
-            mCompileManager.execute(mProjectFile);
+            new CompileTask(this).execute(mProjectFile);
         } else {
             Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private MenuItem mActionRun;
+    private ProgressBar mCompileProgress;
+    private TextView mCompileStatus;
+
+    private class CompileTask extends AsyncTask<ProjectFile, Object, Void> {
+        private Context mContext;
+
+        CompileTask(Context context) {
+            this.mContext = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (mActionRun != null) mActionRun.setEnabled(false);
+            if (mCompileProgress != null) mCompileProgress.setIndeterminate(true);
+        }
+
+        @Override
+        protected Void doInBackground(ProjectFile... params) {
+            if (params[0] == null) return null;
+            PrintWriter printWriter = new PrintWriter(new Writer() {
+                @Override
+                public void write(@NonNull char[] chars, int i, int i1) throws IOException {
+                    publishProgress(chars, i, i1);
+                }
+
+                @Override
+                public void flush() throws IOException {
+
+                }
+
+                @Override
+                public void close() throws IOException {
+
+                }
+            });
+            CommandManager.compile(mContext, mProjectFile, printWriter);
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Object... values) {
+            super.onProgressUpdate(values);
+            try {
+                char[] chars = (char[]) values[0];
+                int start = (int) values[1];
+                int end = (int) values[2];
+                mCompileStatus.append(new String(chars), start, end);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (mActionRun != null) mActionRun.setEnabled(true);
+            if (mCompileProgress != null) mCompileProgress.setIndeterminate(false);
         }
     }
 
@@ -402,17 +479,6 @@ public class MainActivity extends BaseEditorActivity implements
         if (editorFragment != null) {
             editorFragment.formatCode();
         }
-    }
-
-    @Override
-    public void reportBug() {
-        // TODO: 18/07/2017  report bug
-//        DialogManager.Companion.createDialogReportBug(this, getCode());
-    }
-
-    @Override
-    public void openTool() {
-        mDrawerLayout.openDrawer(GravityCompat.END);
     }
 
     @Override

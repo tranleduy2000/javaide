@@ -55,6 +55,7 @@ import java.util.MissingResourceException;
 import java.util.Set;
 
 import javax.annotation.processing.Processor;
+import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 
@@ -78,23 +79,6 @@ import static com.sun.tools.javac.main.OptionName.X;
 public class Main {
 
     /**
-     * The name of the compiler, for use in diagnostics.
-     */
-    String ownName;
-
-    /**
-     * The writer to use for diagnostic output.
-     */
-    PrintWriter out;
-
-    /**
-     * If true, certain errors will cause an exception, such as command line
-     * arg errors, or exceptions in user provided code.
-     */
-    boolean apiMode;
-
-
-    /**
      * Result codes.
      */
     public static final int
@@ -103,7 +87,30 @@ public class Main {
             EXIT_CMDERR = 2,    // Bad command-line arguments
             EXIT_SYSERR = 3,    // System error or resource exhaustion.
             EXIT_ABNORMAL = 4;  // Compiler terminated abnormally
-
+    private static final String javacBundleName =
+            "com.sun.tools.javac.resources.javac";
+    private static JavacMessages messages;
+    /**
+     * The list of source files to process
+     */
+    public Set<File> filenames = null; // XXX sb protected
+    /**
+     * List of class files names passed on the command line
+     */
+    public ListBuffer<String> classnames = null; // XXX sb protected
+    /**
+     * The name of the compiler, for use in diagnostics.
+     */
+    String ownName;
+    /**
+     * The writer to use for diagnostic output.
+     */
+    PrintWriter out;
+    /**
+     * If true, certain errors will cause an exception, such as command line
+     * arg errors, or exceptions in user provided code.
+     */
+    boolean apiMode;
     private Option[] recognizedOptions = RecognizedOptions.getJavaCompilerOptions(new OptionHelper() {
 
         public void setOut(PrintWriter out) {
@@ -139,6 +146,12 @@ public class Main {
         }
 
     });
+    /**
+     * A table of all options that's passed to the JavaCompiler constructor.
+     */
+    private Options options = null;
+    private JavaFileManager fileManager;
+    private DiagnosticListener diagnosticListener;
 
     /**
      * Construct a compiler instance.
@@ -156,19 +169,40 @@ public class Main {
     }
 
     /**
-     * A table of all options that's passed to the JavaCompiler constructor.
+     * Find a localized string in the resource bundle.
+     *
+     * @param key The key for the localized string.
      */
-    private Options options = null;
+    public static String getLocalizedString(String key, Object... args) { // FIXME sb private
+        try {
+            if (messages == null)
+                messages = new JavacMessages(javacBundleName);
+            return messages.getLocalizedString("javac." + key, args);
+        } catch (MissingResourceException e) {
+            throw new Error("Fatal Error: Resource for javac is missing", e);
+        }
+    }
 
-    /**
-     * The list of source files to process
-     */
-    public Set<File> filenames = null; // XXX sb protected
+    public static void useRawMessages(boolean enable) {
+        if (enable) {
+            messages = new JavacMessages(javacBundleName) {
+                @Override
+                public String getLocalizedString(String key, Object... args) {
+                    return key;
+                }
+            };
+        } else {
+            messages = new JavacMessages(javacBundleName);
+        }
+    }
 
-    /**
-     * List of class files names passed on the command line
-     */
-    public ListBuffer<String> classnames = null; // XXX sb protected
+    public DiagnosticListener getDiagnosticListener() {
+        return diagnosticListener;
+    }
+
+    public void setDiagnosticListener(DiagnosticListener diagnosticListener) {
+        this.diagnosticListener = diagnosticListener;
+    }
 
     /**
      * Print a string that explains usage.
@@ -447,6 +481,11 @@ public class Main {
 
             context.put(Log.outKey, out);
 
+            if (diagnosticListener != null) {
+                context.put(DiagnosticListener.class, diagnosticListener);
+            }
+
+
             // allow System property in following line as a Mustang legacy
             boolean batchMode = (options.isUnset("nonBatchMode")
                     && System.getProperty("nonBatchMode") == null);
@@ -550,6 +589,10 @@ public class Main {
         }
     }
 
+    /* ************************************************************************
+     * Internationalization
+     *************************************************************************/
+
     /**
      * Print a message reporting an input/output error.
      */
@@ -611,43 +654,4 @@ public class Main {
             }
         }
     }
-
-    private JavaFileManager fileManager;
-
-    /* ************************************************************************
-     * Internationalization
-     *************************************************************************/
-
-    /**
-     * Find a localized string in the resource bundle.
-     *
-     * @param key The key for the localized string.
-     */
-    public static String getLocalizedString(String key, Object... args) { // FIXME sb private
-        try {
-            if (messages == null)
-                messages = new JavacMessages(javacBundleName);
-            return messages.getLocalizedString("javac." + key, args);
-        } catch (MissingResourceException e) {
-            throw new Error("Fatal Error: Resource for javac is missing", e);
-        }
-    }
-
-    public static void useRawMessages(boolean enable) {
-        if (enable) {
-            messages = new JavacMessages(javacBundleName) {
-                @Override
-                public String getLocalizedString(String key, Object... args) {
-                    return key;
-                }
-            };
-        } else {
-            messages = new JavacMessages(javacBundleName);
-        }
-    }
-
-    private static final String javacBundleName =
-            "com.sun.tools.javac.resources.javac";
-
-    private static JavacMessages messages;
 }

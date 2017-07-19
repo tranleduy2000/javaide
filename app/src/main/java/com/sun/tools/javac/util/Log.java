@@ -110,33 +110,43 @@ public class Log extends AbstractLog {
      * Print multiple errors for same source locations.
      */
     public boolean multipleErrors;
-
+    /**
+     * Keys for expected diagnostics.
+     */
+    public Set<String> expectDiagKeys;
+    /**
+     * Deferred diagnostics
+     */
+    public boolean deferDiagnostics;
+    public Queue<JCDiagnostic> deferredDiagnostics = new ListBuffer<>();
+    /**
+     * The number of errors encountered so far.
+     */
+    public int nerrors = 0;
+    /**
+     * The number of warnings encountered so far.
+     */
+    public int nwarnings = 0;
     /**
      * Diagnostic listener, if provided through programmatic
      * interface to javac (JSR 199).
      */
     protected DiagnosticListener<? super JavaFileObject> diagListener;
-
     /**
      * Formatter for diagnostics.
      */
     private DiagnosticFormatter<JCDiagnostic> diagFormatter;
-
-    /**
-     * Keys for expected diagnostics.
-     */
-    public Set<String> expectDiagKeys;
-
     /**
      * JavacMessages object used for localization.
      */
     private JavacMessages messages;
-
     /**
-     * Deferred diagnostics
+     * A set of all errors generated so far. This is used to avoid printing an
+     * error message more than once. For each error, a pair consisting of the
+     * source file name and source code position of the error is added to the set.
      */
-    public boolean deferDiagnostics;
-    public Queue<JCDiagnostic> deferredDiagnostics = new ListBuffer<JCDiagnostic>();
+    private Set<Pair<JavaFileObject, Integer>> recorded = new HashSet<>();
+
 
     /**
      * Construct a log with given I/O redirections.
@@ -171,6 +181,69 @@ public class Log extends AbstractLog {
             expectDiagKeys = new HashSet<String>(Arrays.asList(ek.split(", *")));
     }
 
+    /**
+     * Construct a log with default settings.
+     */
+    protected Log(Context context) {
+        this(context, defaultWriter(context));
+    }
+
+    /**
+     * Construct a log with all output redirected.
+     */
+    protected Log(Context context, PrintWriter defaultWriter) {
+        this(context, defaultWriter, defaultWriter, defaultWriter);
+    }
+
+    /**
+     * The default writer for diagnostics
+     */
+    static final PrintWriter defaultWriter(Context context) {
+        PrintWriter result = context.get(outKey);
+        if (result == null)
+            context.put(outKey, result = new PrintWriter(System.err));
+        return result;
+    }
+
+    /**
+     * Get the Log instance for this context.
+     */
+    public static Log instance(Context context) {
+        Log instance = context.get(logKey);
+        if (instance == null)
+            instance = new Log(context);
+        return instance;
+    }
+
+    /**
+     * Print the text of a message, translating newlines appropriately
+     * for the platform.
+     */
+    public static void printLines(PrintWriter writer, String msg) {
+        int nl;
+        while ((nl = msg.indexOf('\n')) != -1) {
+            writer.println(msg.substring(0, nl));
+            msg = msg.substring(nl + 1);
+        }
+        if (msg.length() != 0) writer.println(msg);
+    }
+
+    /**
+     * Find a localized string in the resource bundle.
+     * Because this method is static, it ignores the locale.
+     * Use localize(key, args) when possible.
+     *
+     * @param key  The key for the localized string.
+     * @param args Fields to substitute into the string.
+     */
+    public static String getLocalizedString(String key, Object... args) {
+        return JavacMessages.getDefaultLocalizedString("compiler.misc." + key, args);
+    }
+
+    public static String format(String fmt, Object... args) {
+        return String.format((java.util.Locale) null, fmt, args);
+    }
+
     // where
     private int getIntOption(Options options, OptionName optionName, int defaultValue) {
         String s = options.get(optionName);
@@ -198,57 +271,6 @@ public class Log extends AbstractLog {
     protected int getDefaultMaxWarnings() {
         return 100;
     }
-
-    /**
-     * The default writer for diagnostics
-     */
-    static final PrintWriter defaultWriter(Context context) {
-        PrintWriter result = context.get(outKey);
-        if (result == null)
-            context.put(outKey, result = new PrintWriter(System.err));
-        return result;
-    }
-
-    /**
-     * Construct a log with default settings.
-     */
-    protected Log(Context context) {
-        this(context, defaultWriter(context));
-    }
-
-    /**
-     * Construct a log with all output redirected.
-     */
-    protected Log(Context context, PrintWriter defaultWriter) {
-        this(context, defaultWriter, defaultWriter, defaultWriter);
-    }
-
-    /**
-     * Get the Log instance for this context.
-     */
-    public static Log instance(Context context) {
-        Log instance = context.get(logKey);
-        if (instance == null)
-            instance = new Log(context);
-        return instance;
-    }
-
-    /**
-     * The number of errors encountered so far.
-     */
-    public int nerrors = 0;
-
-    /**
-     * The number of warnings encountered so far.
-     */
-    public int nwarnings = 0;
-
-    /**
-     * A set of all errors generated so far. This is used to avoid printing an
-     * error message more than once. For each error, a pair consisting of the
-     * source file name and source code position of the error is added to the set.
-     */
-    private Set<Pair<JavaFileObject, Integer>> recorded = new HashSet<Pair<JavaFileObject, Integer>>();
 
     public boolean hasDiagnosticListener() {
         return diagListener != null;
@@ -349,19 +371,6 @@ public class Log extends AbstractLog {
         }
         writer.println("^");
         writer.flush();
-    }
-
-    /**
-     * Print the text of a message, translating newlines appropriately
-     * for the platform.
-     */
-    public static void printLines(PrintWriter writer, String msg) {
-        int nl;
-        while ((nl = msg.indexOf('\n')) != -1) {
-            writer.println(msg.substring(0, nl));
-            msg = msg.substring(nl + 1);
-        }
-        if (msg.length() != 0) writer.println(msg);
     }
 
     /**
@@ -476,7 +485,7 @@ public class Log extends AbstractLog {
     protected void writeDiagnostic(JCDiagnostic diag) {
         if (diagListener != null) {
             diagListener.report(diag);
-            return;
+//            return; // TODO: 19/07/2017 alway report
         }
 
         PrintWriter writer = getWriterForDiagnosticType(diag.getType());
@@ -517,17 +526,10 @@ public class Log extends AbstractLog {
         }
     }
 
-    /**
-     * Find a localized string in the resource bundle.
-     * Because this method is static, it ignores the locale.
-     * Use localize(key, args) when possible.
-     *
-     * @param key  The key for the localized string.
-     * @param args Fields to substitute into the string.
-     */
-    public static String getLocalizedString(String key, Object... args) {
-        return JavacMessages.getDefaultLocalizedString("compiler.misc." + key, args);
-    }
+/***************************************************************************
+ * raw error messages without internationalization; used for experimentation
+ * and quick prototyping
+ ***************************************************************************/
 
     /**
      * Find a localized string in the resource bundle.
@@ -538,11 +540,6 @@ public class Log extends AbstractLog {
     public String localize(String key, Object... args) {
         return messages.getLocalizedString("compiler.misc." + key, args);
     }
-
-/***************************************************************************
- * raw error messages without internationalization; used for experimentation
- * and quick prototyping
- ***************************************************************************/
 
     /**
      * print an error or warning message:
@@ -584,10 +581,6 @@ public class Log extends AbstractLog {
         prompt();
         nwarnings++;
         errWriter.flush();
-    }
-
-    public static String format(String fmt, Object... args) {
-        return String.format((java.util.Locale) null, fmt, args);
     }
 
 }

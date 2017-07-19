@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 
+import javax.tools.DiagnosticListener;
+
 /**
  * Created by duy on 18/07/2017.
  */
@@ -60,6 +62,11 @@ public class CommandManager {
 
     @Nullable
     public static File compile(ProjectFile pf, PrintWriter out) {
+        return compile(pf, out, null);
+    }
+
+    public static File compile(ProjectFile pf, @Nullable PrintWriter out,
+                               @Nullable DiagnosticListener listener) {
         try {
             String projectPath = pf.getProjectDir();
             String projectName = pf.getProjectName();
@@ -80,7 +87,8 @@ public class CommandManager {
                     "-d", buildDir.getPath(), //output dir
                     pf.getMainClass().getPath(pf) //main class
             };
-            int compileStatus = out != null ? Javac.compile(args, out) : Javac.compile(args);
+            int compileStatus;
+            compileStatus = out != null ? Javac.compile(args, out, listener) : Javac.compile(args);
             switch (compileStatus) {
                 case Main.EXIT_OK: {
                     return convertToDexFormat(projectPath, projectName, buildDir, rootPkg);

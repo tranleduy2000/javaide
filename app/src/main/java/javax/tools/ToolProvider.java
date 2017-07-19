@@ -26,13 +26,15 @@
 package javax.tools;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.MalformedURLException;
 import java.util.Locale;
-import java.util.logging.Logger;
 import java.util.logging.Level;
-import static java.util.logging.Level.*;
+import java.util.logging.Logger;
+
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.WARNING;
 
 /**
  * Provides methods for locating tool providers, for example,
@@ -44,10 +46,10 @@ import static java.util.logging.Level.*;
  */
 public class ToolProvider {
 
-    private ToolProvider() {}
-
     private static final String propertyName = "sun.tools.ToolProvider";
-    private static final String loggerName   = "javax.tools";
+    private static final String loggerName = "javax.tools";
+    private ToolProvider() {
+    }
 
     /*
      * Define the system property "sun.tools.ToolProvider" to enable
@@ -64,25 +66,25 @@ public class ToolProvider {
                 String cls = ToolProvider.class.getName();
                 if (st.length > 2) {
                     StackTraceElement frame = st[2];
-                    method = String.format((Locale)null, "%s(%s:%s)",
-                                           frame.getMethodName(),
-                                           frame.getFileName(),
-                                           frame.getLineNumber());
+                    method = String.format((Locale) null, "%s(%s:%s)",
+                            frame.getMethodName(),
+                            frame.getFileName(),
+                            frame.getLineNumber());
                     cls = frame.getClassName();
                 }
                 Logger logger = Logger.getLogger(loggerName);
                 if (reason instanceof Throwable) {
                     logger.logp(level, cls, method,
-                                reason.getClass().getName(), (Throwable)reason);
+                            reason.getClass().getName(), (Throwable) reason);
                 } else {
                     logger.logp(level, cls, method, String.valueOf(reason));
                 }
             }
         } catch (SecurityException ex) {
-            System.err.format((Locale)null, "%s: %s; %s%n",
-                              ToolProvider.class.getName(),
-                              reason,
-                              ex.getLocalizedMessage());
+            System.err.format((Locale) null, "%s: %s; %s%n",
+                    ToolProvider.class.getName(),
+                    reason,
+                    ex.getLocalizedMessage());
         }
         return null;
     }
@@ -90,6 +92,7 @@ public class ToolProvider {
     /**
      * Gets the Java&trade; programming language compiler provided
      * with this platform.
+     *
      * @return the compiler provided with this platform or
      * {@code null} if no compiler is provided
      */
@@ -123,12 +126,13 @@ public class ToolProvider {
      * methods are called.  This ensures that searching for the
      * compiler does not affect platform start up.
      */
-    static class Lazy  {
-        private static final String defaultJavaCompilerName
-            = "com.sun.tools.javac.api.JavacTool";
-        private static final String[] defaultToolsLocation
-            = { "lib", "tools.jar" };
+    static class Lazy {
         static final Class<? extends JavaCompiler> compilerClass;
+        private static final String defaultJavaCompilerName
+                = "com.sun.tools.javac.api.JavacTool";
+        private static final String[] defaultToolsLocation
+                = {"lib", "tools.jar"};
+
         static {
             Class<? extends JavaCompiler> c = null;
             try {
@@ -140,8 +144,7 @@ public class ToolProvider {
         }
 
         private static Class<?> findClass()
-            throws MalformedURLException, ClassNotFoundException
-        {
+                throws MalformedURLException, ClassNotFoundException {
             try {
                 return enableAsserts(Class.forName(defaultJavaCompilerName, false, null));
             } catch (ClassNotFoundException e) {
@@ -150,6 +153,7 @@ public class ToolProvider {
             File file = new File(System.getProperty("java.home"));
             if (file.getName().equalsIgnoreCase("jre"))
                 file = file.getParentFile();
+
             for (String name : defaultToolsLocation)
                 file = new File(file, name);
             URL[] urls = {file.toURI().toURL()};

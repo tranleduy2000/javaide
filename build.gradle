@@ -33,5 +33,10 @@ ext {
     minSdkVersion = 14
     android_support_version = "26.+"
     google_service_version = "11.0.2"
+
+    supportLibVersion = "26.+"
+    runnerVersion = "0.5"
+    rulesVersion = "0.5"
+    espressoVersion = "2.2.2"
 }
 

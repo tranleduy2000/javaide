@@ -25,7 +25,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -598,13 +597,10 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     private void hideKeyboard() {
-        View currentFocus = getCurrentFocus();
-        if (currentFocus != null) {
-            IBinder windowToken = currentFocus.getWindowToken();
-            if (windowToken != null) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromInputMethod(windowToken, 0);
-            }
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 

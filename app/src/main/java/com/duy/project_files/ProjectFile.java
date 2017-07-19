@@ -56,6 +56,10 @@ public class ProjectFile implements Serializable, Cloneable {
         return rootDir;
     }
 
+    public void setRootDir(String rootDir) {
+        this.rootDir = rootDir;
+    }
+
     public ClassFile getMainClass() {
         return mainClass;
     }

@@ -28,6 +28,8 @@ package com.sun.tools.javac;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
+import javax.tools.DiagnosticListener;
+
 
 /**
  * The programmatic interface for the Java Programming Language
@@ -99,6 +101,24 @@ public class Main {
     public static int compile(String[] args, PrintWriter out) {
         com.sun.tools.javac.main.Main compiler =
                 new com.sun.tools.javac.main.Main("javac", out);
+        return compiler.compile(args);
+    }
+
+    /**
+     * Programmatic interface to the Java Programming Language
+     * compiler, javac.
+     *
+     * @param args The command line arguments that would normally be
+     *             passed to the javac program as described in the man page.
+     * @param out  PrintWriter to which the compiler's diagnostic
+     *             output is directed.
+     * @return an integer equivalent to the exit value from invoking
+     * javac, see the man page for details.
+     */
+    public static int compile(String[] args, PrintWriter out, DiagnosticListener listener) {
+        com.sun.tools.javac.main.Main compiler =
+                new com.sun.tools.javac.main.Main("javac", out);
+        compiler.setDiagnosticListener(listener);
         return compiler.compile(args);
     }
 }

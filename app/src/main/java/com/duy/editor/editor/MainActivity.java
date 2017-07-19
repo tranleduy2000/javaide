@@ -61,10 +61,10 @@ import com.duy.editor.file.FileSelectListener;
 import com.duy.editor.setting.JavaPreferences;
 import com.duy.editor.themefont.activities.ThemeFontActivity;
 import com.duy.external.CommandManager;
-import com.duy.project_files.ProjectFile;
-import com.duy.project_files.ProjectManager;
-import com.duy.project_files.dialog.DialogSelectDirectory;
-import com.duy.project_files.utils.ClassUtil;
+import com.duy.project_file.ProjectFile;
+import com.duy.project_file.ProjectManager;
+import com.duy.project_file.dialog.DialogSelectDirectory;
+import com.duy.project_file.utils.ClassUtil;
 import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -73,6 +73,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticListener;
 
 public class MainActivity extends BaseEditorActivity implements
         DrawerLayout.DrawerListener,
@@ -599,7 +602,7 @@ public class MainActivity extends BaseEditorActivity implements
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
@@ -640,7 +643,13 @@ public class MainActivity extends BaseEditorActivity implements
 
                 }
             });
-            return CommandManager.compile(mProjectFile, printWriter);
+            DiagnosticListener diagnosticListener = new DiagnosticListener() {
+                @Override
+                public void report(Diagnostic diagnostic) {
+                    Log.e(TAG, "report: " + diagnostic);
+                }
+            };
+            return CommandManager.compile(mProjectFile, printWriter, diagnosticListener);
         }
 
         @Override

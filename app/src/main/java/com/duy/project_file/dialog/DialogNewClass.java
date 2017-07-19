@@ -1,4 +1,4 @@
-package com.duy.project_files.dialog;
+package com.duy.project_file.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import com.duy.editor.R;
 import com.duy.editor.editor.completion.Template;
-import com.duy.project_files.ProjectFile;
-import com.duy.project_files.utils.ProjectFileUtil;
+import com.duy.project_file.ProjectFile;
+import com.duy.project_file.utils.ProjectFileUtil;
 
 import java.io.File;
 import java.lang.reflect.Modifier;

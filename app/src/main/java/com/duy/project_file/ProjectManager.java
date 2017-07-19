@@ -1,4 +1,4 @@
-package com.duy.project_files;
+package com.duy.project_file;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

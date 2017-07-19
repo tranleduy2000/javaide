@@ -20,9 +20,9 @@ import android.widget.Toast;
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
 import com.duy.editor.file.FileManager;
-import com.duy.project_files.ClassFile;
-import com.duy.project_files.ProjectFile;
-import com.duy.project_files.utils.ClassUtil;
+import com.duy.project_file.ClassFile;
+import com.duy.project_file.ProjectFile;
+import com.duy.project_file.utils.ClassUtil;
 
 import java.io.File;
 import java.util.ArrayList;

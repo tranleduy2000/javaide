@@ -1,4 +1,4 @@
-package com.duy.project_files;
+package com.duy.project_file;
 
 /**
  * Created by Duy on 17-Jul-17.

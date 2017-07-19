@@ -1,4 +1,4 @@
-package com.duy.project_files.holder;
+package com.duy.project_file.holder;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.duy.editor.R;
-import com.duy.project_files.ProjectFileContract;
-import com.duy.project_files.utils.ProjectFileUtil;
+import com.duy.project_file.ProjectFileContract;
+import com.duy.project_file.utils.ProjectFileUtil;
 import com.unnamed.b.atv.model.TreeNode;
 
 import java.io.File;

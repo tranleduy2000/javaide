@@ -1,4 +1,4 @@
-package com.duy.project_files.dialog;
+package com.duy.project_file.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;

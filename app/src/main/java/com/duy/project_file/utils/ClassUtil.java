@@ -1,12 +1,9 @@
-package com.duy.project_files.utils;
-
-import android.util.Log;
+package com.duy.project_file.utils;
 
 import com.duy.editor.file.FileManager;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.regex.Pattern;
 
 /**

@@ -1,7 +1,7 @@
 package com.duy.external.java;
 
 import com.duy.editor.file.FileManager;
-import com.duy.project_files.ProjectFile;
+import com.duy.project_file.ProjectFile;
 import com.spartacusrex.spartacuside.helper.Arrays;
 
 import org.apache.commons.io.FileUtils;

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~  Copyright (c) 2017 Tran Le Duy
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,16 +16,16 @@
 
 <resources>
     <declare-styleable name="CodeTheme">
-        <attr name="key_word_color" format="color"/>
-        <attr name="comment_color" format="color"/>
-        <attr name="error_color" format="color"/>
-        <attr name="number_color" format="color"/>
-        <attr name="string_color" format="color"/>
-        <attr name="boolean_color" format="color"/>
-        <attr name="background_color" format="color"/>
-        <attr name="opt_color" format="color"/>
-        <attr name="normal_text_color" format="color"/>
-        <attr name="can_edit" format="boolean"/>
+        <attr name="key_word_color" format="color" />
+        <attr name="comment_color" format="color" />
+        <attr name="error_color" format="color" />
+        <attr name="number_color" format="color" />
+        <attr name="string_color" format="color" />
+        <attr name="boolean_color" format="color" />
+        <attr name="background_color" format="color" />
+        <attr name="opt_color" format="color" />
+        <attr name="normal_text_color" format="color" />
+        <attr name="can_edit" format="boolean" />
     </declare-styleable>
 
     <style name="CodeTheme.BrightYellow">
@@ -150,7 +149,7 @@
     <color name="color.number_color">#af7eff</color>
     <color name="color.string_color">#e6dc6e</color>
     <color name="color.boolean_color">#60d9f1</color>
-    <color name="color.background_color">#282b2d</color>
+    <color name="color.background_color">@color/dark.color_background</color>
     <color name="color.opt_color">#fc216e</color>
     <color name="color.normal_text_color">#ffffff</color>
 </resources>

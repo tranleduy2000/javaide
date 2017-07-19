@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.duy.editor.R;
+import com.duy.editor.themefont.fonts.FontManager;
 import com.duy.project_file.ProjectFileContract;
 import com.duy.project_file.utils.ProjectFileUtil;
 import com.unnamed.b.atv.model.TreeNode;
@@ -32,7 +33,9 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
     public View createNodeView(final TreeNode node, final TreeItem item) {
         View view = inflater.inflate(R.layout.list_item_file, null, false);
         txtName = view.findViewById(R.id.node_value);
+        txtName.setTypeface(FontManager.getFontFromAsset(context, "Roboto-Light.ttf"));
         txtName.setText(item.getFile().getName());
+
         imgArrow = view.findViewById(R.id.img_arrow);
         this.leaf = node.isLeaf();
         View imgNew = view.findViewById(R.id.img_add);

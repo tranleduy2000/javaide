@@ -16,15 +16,15 @@
 
 package com.duy.editor.editor.highlight;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import android.text.Editable;
 import android.text.Spannable;
-import android.text.style.BackgroundColorSpan;
+import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 
 import com.duy.editor.editor.view.HighlightEditor;
+import com.duy.editor.editor.view.spans.CustomUnderlineSpan;
 import com.duy.editor.themefont.themes.database.CodeTheme;
 
 import java.util.ArrayList;
@@ -32,10 +32,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 
-import static com.duy.editor.editor.completion.Patterns.ARGB_FUNCTION;
 import static com.duy.editor.editor.completion.Patterns.KEYWORDS;
 import static com.duy.editor.editor.completion.Patterns.NUMBERS;
-import static com.duy.editor.editor.completion.Patterns.RGB_FUNCTION;
 import static com.duy.editor.editor.completion.Patterns.SYMBOLS;
 
 /**
@@ -46,6 +44,7 @@ public class CodeHighlighter implements Highlighter {
     private CodeTheme codeTheme;
     private StringHighlighter stringHighlighter;
     private CommentHighlighter commentHighlighter;
+    private int startError, endError;
 
     public CodeHighlighter(HighlightEditor highlightEditor) {
         this.codeTheme = highlightEditor.getCodeTheme();
@@ -91,12 +90,20 @@ public class CodeHighlighter implements Highlighter {
                             allText.subSequence(startIndex, endIndex), startIndex);
                 }
             }
+
+            highlightError(allText);
         } catch (Exception ignored) {
             ignored.printStackTrace();
         }
 
     }
 
+    private void highlightError(Editable allText) {
+        if (startError >= 0 && endError >= startError && endError <= allText.length()) {
+            allText.setSpan(new CustomUnderlineSpan(codeTheme.getErrorColor(), startError, endError),
+                    startError, endError, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
 
     @Override
     public void setCodeTheme(CodeTheme codeTheme) {
@@ -167,5 +174,10 @@ public class CodeHighlighter implements Highlighter {
         }
 
 
+    }
+
+    public void setErrorRange(long startPosition, long endPosition) {
+        this.startError = (int) startPosition;
+        this.endError = (int) endPosition;
     }
 }

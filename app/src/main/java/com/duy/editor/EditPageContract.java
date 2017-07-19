@@ -1,14 +1,12 @@
 package com.duy.editor;
 
-import com.duy.compile.diagnostic.DiagnosticContract;
-
 import java.io.File;
 
 /**
  * Created by duy on 19/07/2017.
  */
 
-public class EditContract {
+public class EditPageContract {
     public interface View {
         void gotoLine(int line, int col);
 
@@ -30,12 +28,13 @@ public class EditContract {
 
         void formatCode();
 
+        void highlightError(long startPosition, long endPosition);
     }
 
     public interface Presenter {
-        void gotoPage(File path);
+        int gotoPage(File path);
 
-        void gotoPage(String path);
+        int gotoPage(String path);
 
         void addPage(String path, boolean select);
 
@@ -51,8 +50,8 @@ public class EditContract {
 
         int getPagePosition(String path);
 
-        DiagnosticContract.View getCurrentPage();
+        View getCurrentPage();
 
-        void showError(DiagnosticContract.View view, int line);
+        void showError(View view, int line);
     }
 }

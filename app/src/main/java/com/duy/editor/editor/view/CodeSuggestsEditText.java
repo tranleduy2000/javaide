@@ -231,6 +231,8 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
         setSuggestData(oldItems);
     }
 
+
+
     private class SymbolsTokenizer implements MultiAutoCompleteTextView.Tokenizer {
         static final String TOKEN = "!@#$%^&*()_+-={}|[]:;'<>/<.? \r\n\t";
 

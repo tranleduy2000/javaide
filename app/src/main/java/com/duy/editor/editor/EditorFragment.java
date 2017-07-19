@@ -31,7 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.duy.editor.EditContract;
+import com.duy.editor.EditPageContract;
 import com.duy.editor.EditorControl;
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
@@ -54,7 +54,7 @@ import java.io.StringReader;
  * Created by Duy on 15-Mar-17.
  * Editor fragment
  */
-public class EditorFragment extends Fragment implements EditorListener, EditContract.View {
+public class EditorFragment extends Fragment implements EditorListener, EditPageContract.View {
     private static final String TAG = "EditorFragment";
     @Nullable
     private EditorView mCodeEditor;
@@ -63,7 +63,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditCont
     private FileManager mFileManager;
     private Handler handler = new Handler();
     private Dialog dialog;
-    private EditContract.Presenter mPresenter;
+    private EditPageContract.Presenter mPresenter;
 
 //    private LockableHorizontalScrollView mHorizontalScrollView;
 
@@ -195,7 +195,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditCont
     }
 
     @Override
-    public void setPresenter(EditContract.Presenter presenter) {
+    public void setPresenter(EditPageContract.Presenter presenter) {
         mPresenter = presenter;
     }
 
@@ -228,6 +228,11 @@ public class EditorFragment extends Fragment implements EditorListener, EditCont
     @Override
     public void formatCode() {
         new TaskFormatCode().execute(getCode());
+    }
+
+    @Override
+    public void highlightError(long startPosition, long endPosition) {
+        mCodeEditor.highlightError(startPosition, endPosition);
     }
 
     private void showDialog(String msg) {

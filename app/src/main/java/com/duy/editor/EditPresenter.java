@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.commonsware.cwac.pager.SimplePageDescriptor;
-import com.duy.compile.diagnostic.DiagnosticContract;
 import com.duy.editor.editor.EditorPagerAdapter;
 import com.duy.editor.file.FileManager;
 import com.duy.editor.setting.JavaPreferences;
@@ -23,7 +22,7 @@ import java.io.File;
  * Created by duy on 19/07/2017.
  */
 
-public class EditPresenter implements EditContract.Presenter {
+public class EditPresenter implements EditPageContract.Presenter {
 
     private static final String TAG = "EditPresenter";
     private ViewPager mViewPager;
@@ -46,15 +45,18 @@ public class EditPresenter implements EditContract.Presenter {
     }
 
     @Override
-    public void gotoPage(File file) {
-        if (file == null) return;
-        gotoPage(file.getPath());
+    public int gotoPage(File file) {
+        if (file == null) return -1;
+        return gotoPage(file.getPath());
     }
 
     @Override
-    public void gotoPage(@NonNull String path) {
+    public int gotoPage(@NonNull String path) {
         int pos = mPageAdapter.getPositionForTag(path);
-        mViewPager.setCurrentItem(pos);
+        if (pos != -1) {
+            mViewPager.setCurrentItem(pos);
+        }
+        return pos;
     }
 
     @Override
@@ -187,12 +189,12 @@ public class EditPresenter implements EditContract.Presenter {
     }
 
     @Override
-    public DiagnosticContract.View getCurrentPage() {
+    public EditPageContract.View getCurrentPage() {
         return null;
     }
 
     @Override
-    public void showError(DiagnosticContract.View view, int line) {
+    public void showError(EditPageContract.View view, int line) {
 
     }
 }

@@ -823,6 +823,11 @@ public class HighlightEditor extends CodeSuggestsEditText
         mHighlighter.highlight(getText(), getText(), 0);
     }
 
+    public void highlightError(long startPosition, long endPosition) {
+        mHighlighter.setErrorRange(startPosition, endPosition);
+        refresh();
+    }
+
     /**
      * Class that listens to changes in the text.
      */

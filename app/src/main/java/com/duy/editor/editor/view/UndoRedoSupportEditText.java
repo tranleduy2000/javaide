@@ -212,7 +212,7 @@ public class UndoRedoSupportEditText extends HighlightEditor {
                     return true;
                 case KeyEvent.KEYCODE_S:
                     if (editorControl != null)
-                        editorControl.saveFile();
+                        editorControl.saveCurrentFile();
                     return true;
                 case KeyEvent.KEYCODE_N:
                     if (editorControl != null)

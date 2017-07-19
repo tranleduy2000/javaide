@@ -20,7 +20,9 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    app:umanoDragView="@+id/container_symbol"
     app:umanoPanelHeight="@dimen/bottom_editor_height"
+    app:umanoScrollableView="@+id/scrollView"
     app:umanoShadowHeight="4dp">
 
     <RelativeLayout
@@ -41,7 +43,10 @@
     <LinearLayout
         android:id="@+id/output_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:foreground="?selectableItemBackground"
+        android:minHeight="200dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -76,10 +81,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/output"
+        <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:fadeScrollbars="false"
+            android:fillViewport="true">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fadeScrollbars="false"
+                android:fillViewport="true"
+                android:scrollbarSize="4dp">
+
+                <TextView
+                    android:id="@+id/output"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:singleLine="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textIsSelectable="true"
+                    android:textSize="12sp" />
+            </HorizontalScrollView>
+        </ScrollView>
 
     </LinearLayout>
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

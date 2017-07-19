@@ -88,7 +88,7 @@ public class MenuEditor {
                 break;
             case R.id.action_save:
                 if (listener != null) {
-                    listener.saveFile();
+                    listener.saveCurrentFile();
                 }
 
                 break;

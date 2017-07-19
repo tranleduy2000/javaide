@@ -63,6 +63,7 @@ import com.duy.project_files.ProjectManager;
 import com.duy.project_files.dialog.DialogNewClass;
 import com.duy.project_files.dialog.DialogNewProject;
 import com.duy.project_files.fragments.FolderStructureFragment;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,10 +97,16 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     ViewPager mViewPager;
     private KeyBoardEventListener keyBoardListener;
     private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
+    protected SlidingUpPanelLayout mContainerOutput;
 
 
     protected void onShowKeyboard() {
         hideAppBar();
+        if (mContainerOutput != null) {
+            if (mContainerOutput.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        }
     }
 
     protected void onHideKeyboard() {
@@ -182,6 +189,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mContainerSymbol = findViewById(R.id.container_symbol);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mContainerOutput = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
     }
 
     private void invalidateTab() {
@@ -411,7 +419,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     @Override
     public void saveAs() {
-        saveFile();
+        saveCurrentFile();
         final AppCompatEditText edittext = new AppCompatEditText(this);
         edittext.setHint(R.string.enter_new_file_name);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -441,6 +449,16 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
                     }
                 });
         builder.create().show();
+    }
+
+    @Override
+    public void saveAllFile() {
+        for (int i = 0; i < mPageAdapter.getCount(); i++) {
+            EditorFragment fm = mPageAdapter.getExistingFragment(i);
+            if (fm != null) {
+                fm.saveFile();
+            }
+        }
     }
 
     @Override

@@ -27,7 +27,9 @@ public interface EditorControl {
 
     void buildJar();
 
-    void saveFile();
+    void saveCurrentFile();
+
+    void saveAllFile();
 
     void showDocumentActivity();
 

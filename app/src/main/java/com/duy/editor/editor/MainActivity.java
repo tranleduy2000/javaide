@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -64,6 +65,7 @@ import com.duy.project_files.dialog.DialogSelectDirectory;
 import com.duy.project_files.utils.ClassUtil;
 import com.duy.run.CommandManager;
 import com.duy.run.dialog.DialogRunConfig;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sun.tools.javac.main.Main;
 
 import java.io.File;
@@ -110,6 +112,7 @@ public class MainActivity extends BaseEditorActivity implements
         });
         mCompileProgress = (ProgressBar) findViewById(R.id.compile_progress);
         mCompileStatus = (TextView) findViewById(R.id.output);
+        mCompileStatus.setTypeface(Typeface.MONOSPACE);
     }
 
 
@@ -222,11 +225,13 @@ public class MainActivity extends BaseEditorActivity implements
                         }).show();
                 return;
             }
+            saveAllFile();
             new CompileTask(this).execute(mProjectFile);
         } else {
             Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private MenuItem mActionRun;
     private ProgressBar mCompileProgress;
@@ -244,6 +249,8 @@ public class MainActivity extends BaseEditorActivity implements
             super.onPreExecute();
             if (mActionRun != null) mActionRun.setEnabled(false);
             if (mCompileProgress != null) mCompileProgress.setIndeterminate(true);
+            mCompileStatus.setText("");
+            mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         }
 
         @Override
@@ -346,7 +353,7 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     @Override
-    public void saveFile() {
+    public void saveCurrentFile() {
         EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
             editorFragment.saveFile();
@@ -588,6 +595,11 @@ public class MainActivity extends BaseEditorActivity implements
             return;
         }
 
+        if (mContainerOutput.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            return;
+        }
+
         /*
           check can undo
          */
@@ -644,7 +656,7 @@ public class MainActivity extends BaseEditorActivity implements
 
         switch (request) {
             case 2: //import new project
-                saveFile();
+                saveCurrentFile();
                 ProjectFile pf = ProjectManager.createProjectIfNeed(file);
                 Log.d(TAG, "onFileSelected pf = " + pf);
                 if (pf != null) {

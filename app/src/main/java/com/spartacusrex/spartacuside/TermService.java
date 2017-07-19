@@ -31,9 +31,9 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.duy.editor.R;
-import com.duy.editor.activities.ActivitySplashScreen;
-import com.duy.editor.file.FileManager;
+import com.duy.ide.R;
+import com.duy.ide.activities.ActivitySplashScreen;
+import com.duy.ide.file.FileManager;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.ServiceForegroundCompat;
 import com.spartacusrex.spartacuside.util.TermSettings;

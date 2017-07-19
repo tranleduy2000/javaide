@@ -47,7 +47,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <com.duy.editor.editor.view.EditorView
+        <com.duy.ide.editor.view.EditorView
             android:id="@+id/editor_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

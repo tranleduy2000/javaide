@@ -2,7 +2,7 @@ package com.duy;
 
 import android.support.multidex.MultiDexApplication;
 
-import com.duy.editor.BuildConfig;
+import com.duy.ide.BuildConfig;
 import com.google.firebase.crash.FirebaseCrash;
 
 /**

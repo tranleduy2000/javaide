@@ -25,7 +25,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.duy.editor.R;
+import com.duy.ide.R;
 import com.spartacusrex.spartacuside.TermService;
 
 import java.io.File;

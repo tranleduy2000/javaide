@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<com.duy.editor.view.LockableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.duy.ide.view.LockableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/vertical_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">-->
 
-    <com.duy.editor.editor.view.EditorView
+    <com.duy.ide.editor.view.EditorView
         android:id="@+id/code_editor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,4 +44,4 @@
 
  </com.duy.frontend.view.LockableHorizontalScrollView>
 -->
-</com.duy.editor.view.LockableScrollView>
+</com.duy.ide.view.LockableScrollView>

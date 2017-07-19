@@ -3,8 +3,8 @@ package com.duy.compile.diagnostic;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.duy.editor.EditPageContract;
-import com.duy.editor.editor.MainActivity;
+import com.duy.ide.EditPageContract;
+import com.duy.ide.editor.MainActivity;
 
 import java.util.List;
 

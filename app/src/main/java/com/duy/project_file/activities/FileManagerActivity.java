@@ -3,9 +3,9 @@ package com.duy.project_file.activities;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
-import com.duy.editor.R;
-import com.duy.editor.activities.AbstractAppCompatActivity;
-import com.duy.editor.file.FileManager;
+import com.duy.ide.R;
+import com.duy.ide.activities.AbstractAppCompatActivity;
+import com.duy.ide.file.FileManager;
 import com.duy.project_file.ProjectFile;
 import com.duy.project_file.fragments.FolderStructureFragment;
 

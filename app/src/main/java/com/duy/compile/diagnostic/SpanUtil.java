@@ -7,7 +7,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 
-import com.duy.editor.R;
+import com.duy.ide.R;
 
 import java.io.File;
 

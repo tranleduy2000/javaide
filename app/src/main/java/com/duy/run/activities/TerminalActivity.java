@@ -44,8 +44,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.duy.editor.R;
-import com.duy.editor.code.CompileManager;
+import com.duy.ide.R;
+import com.duy.ide.code.CompileManager;
 import com.duy.external.CommandManager;
 import com.duy.project_file.ProjectFile;
 import com.duy.run.view.EmulatorView;

@@ -25,12 +25,12 @@
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_keyboard_tab_white_24dp" />
 
-        <com.duy.editor.view.SymbolListView
+        <com.duy.ide.view.SymbolListView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_editor_height">
 
-        </com.duy.editor.view.SymbolListView>
+        </com.duy.ide.view.SymbolListView>
 
     </LinearLayout>
 

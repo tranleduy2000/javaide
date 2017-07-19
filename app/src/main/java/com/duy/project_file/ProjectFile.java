@@ -3,8 +3,8 @@ package com.duy.project_file;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.duy.editor.editor.completion.Template;
-import com.duy.editor.file.FileManager;
+import com.duy.ide.editor.completion.Template;
+import com.duy.ide.file.FileManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -177,6 +177,8 @@ public class ProjectFile implements Serializable, Cloneable {
         }
         return json;
     }
+
+
 
     public void restore(@Nullable JSONObject json) throws JSONException {
         if (json == null) return;

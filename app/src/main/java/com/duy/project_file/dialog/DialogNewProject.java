@@ -13,8 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.duy.editor.R;
-import com.duy.editor.file.FileManager;
+import com.duy.ide.R;
+import com.duy.ide.file.FileManager;
 import com.duy.project_file.ProjectFile;
 
 import java.io.File;

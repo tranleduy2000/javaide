@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.duy.editor.R;
-import com.duy.editor.themefont.fonts.FontManager;
+import com.duy.ide.R;
+import com.duy.ide.themefont.fonts.FontManager;
 
 import java.util.ArrayList;
 import java.util.List;

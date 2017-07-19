@@ -19,7 +19,7 @@ package com.spartacusrex.spartacuside.startup;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-import com.duy.editor.R;
+import com.duy.ide.R;
 
 public class TerminalIDEPrefs extends PreferenceActivity {
 

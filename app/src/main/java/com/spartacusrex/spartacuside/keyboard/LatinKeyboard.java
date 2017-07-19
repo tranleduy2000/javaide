@@ -23,7 +23,7 @@ import android.inputmethodservice.Keyboard;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 
-import com.duy.editor.R;
+import com.duy.ide.R;
 
 public class LatinKeyboard extends Keyboard {
 

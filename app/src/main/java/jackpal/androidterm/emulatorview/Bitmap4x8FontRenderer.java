@@ -28,7 +28,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 
-import com.duy.editor.R;
+import com.duy.ide.R;
 
 
 class Bitmap4x8FontRenderer extends BaseTextRenderer {

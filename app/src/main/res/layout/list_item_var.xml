@@ -18,7 +18,7 @@
     android:layout_height="wrap_content"
     android:fillViewport="true">
 
-    <com.duy.editor.view.MonospaceTextView
+    <com.duy.ide.view.MonospaceTextView
         android:id="@+id/txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

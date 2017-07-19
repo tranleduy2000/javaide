@@ -47,10 +47,9 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputContentInfo;
 import android.view.inputmethod.InputMethodManager;
 
-import com.duy.editor.R;
+import com.duy.ide.R;
 import com.spartacusrex.spartacuside.TermDebug;
 import com.spartacusrex.spartacuside.TermService;
-import com.spartacusrex.spartacuside.TermViewFlipper;
 import com.spartacusrex.spartacuside.model.TextRenderer;
 import com.spartacusrex.spartacuside.model.UpdateCallback;
 import com.spartacusrex.spartacuside.session.TermSession;

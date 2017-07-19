@@ -19,6 +19,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.duy.editor.code_sample.activities.SearchResultSampleActivity">
+    tools:context="com.duy.ide.code_sample.activities.SearchResultSampleActivity">
 
 </FrameLayout>

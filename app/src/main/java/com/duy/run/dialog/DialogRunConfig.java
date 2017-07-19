@@ -17,9 +17,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.duy.editor.R;
-import com.duy.editor.code.CompileManager;
-import com.duy.editor.file.FileManager;
+import com.duy.ide.R;
+import com.duy.ide.code.CompileManager;
+import com.duy.ide.file.FileManager;
 import com.duy.project_file.ClassFile;
 import com.duy.project_file.ProjectFile;
 import com.duy.project_file.utils.ClassUtil;

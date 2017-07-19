@@ -11,12 +11,12 @@ You can build and run java file with JDK 1.7
 
 ## Todo
 
-1. Java compiler (OK)
-2. Java editor
+1. Java compiler JDK 1.7 &#10004;
+2. Java editor &#10004;
 3. Auto complete code
 4. Java debugger (jdb).
-5. Run java file, class file
-6. Build java library
+5. Run java file, class file &#10004;
+6. Build java library &#10004;
 7. Build Android app.
 8. Support VCS
 9. Decompile class, jar

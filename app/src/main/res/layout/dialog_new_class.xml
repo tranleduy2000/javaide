@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.duy.editor.view.LatinEditText
+        <com.duy.ide.view.LatinEditText
             android:id="@+id/edit_class_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.duy.editor.view.LatinEditText
+        <com.duy.ide.view.LatinEditText
             android:id="@+id/edit_package_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

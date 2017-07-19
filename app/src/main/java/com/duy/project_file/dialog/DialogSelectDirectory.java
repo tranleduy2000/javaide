@@ -25,14 +25,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.duy.editor.R;
-import com.duy.editor.file.FileManager;
-import com.duy.editor.file.FileSelectListener;
-import com.duy.editor.file.PreferenceHelper;
-import com.duy.editor.file.adapter.FileAdapterListener;
-import com.duy.editor.file.adapter.FileDetail;
-import com.duy.editor.file.adapter.FileListAdapter;
-import com.duy.editor.utils.Build;
+import com.duy.ide.R;
+import com.duy.ide.file.FileManager;
+import com.duy.ide.file.FileSelectListener;
+import com.duy.ide.file.PreferenceHelper;
+import com.duy.ide.file.adapter.FileAdapterListener;
+import com.duy.ide.file.adapter.FileDetail;
+import com.duy.ide.file.adapter.FileListAdapter;
+import com.duy.ide.utils.Build;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.duy.editor.R;
+import com.duy.ide.R;
 
 /**
  * Created by duy on 19/07/2017.

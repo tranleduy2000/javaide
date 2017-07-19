@@ -1,6 +1,6 @@
 package com.duy.project_file.utils;
 
-import com.duy.editor.file.FileManager;
+import com.duy.ide.file.FileManager;
 
 import java.io.File;
 import java.io.FileInputStream;

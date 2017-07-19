@@ -14,8 +14,8 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.duy.editor.R;
-import com.duy.editor.editor.completion.Template;
+import com.duy.ide.R;
+import com.duy.ide.editor.completion.Template;
 import com.duy.project_file.ProjectFile;
 import com.duy.project_file.utils.ProjectFileUtil;
 

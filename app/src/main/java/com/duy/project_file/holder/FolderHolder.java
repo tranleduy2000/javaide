@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.duy.editor.R;
-import com.duy.editor.themefont.fonts.FontManager;
+import com.duy.ide.R;
+import com.duy.ide.themefont.fonts.FontManager;
 import com.duy.project_file.ProjectFileContract;
 import com.duy.project_file.utils.ProjectFileUtil;
 import com.unnamed.b.atv.model.TreeNode;

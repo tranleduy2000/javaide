@@ -13,8 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.duy.editor.R;
-import com.duy.editor.code.CompileManager;
+import com.duy.ide.R;
+import com.duy.ide.code.CompileManager;
 import com.duy.project_file.ProjectFile;
 import com.duy.project_file.ProjectFileContract;
 import com.duy.project_file.holder.FolderHolder;

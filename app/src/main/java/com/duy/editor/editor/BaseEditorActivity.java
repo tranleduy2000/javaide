@@ -103,7 +103,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     protected void onShowKeyboard() {
         mTabLayout.setVisibility(View.GONE);
-
         //hide panel
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -111,14 +110,20 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
                 if (mContainerOutput != null) {
                     if (mContainerOutput.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
                         mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                        mContainerOutput.setTouchEnabled(false);
+                        mContainerOutput.setEnabled(false);
                     }
                 }
             }
-        }, 200);
+        }, 100);
     }
 
     protected void onHideKeyboard() {
         mTabLayout.setVisibility(View.VISIBLE);
+        if (mContainerOutput != null) {
+            mContainerOutput.setEnabled(true);
+            mContainerOutput.setTouchEnabled(true);
+        }
     }
 
     @Override

@@ -26,7 +26,6 @@ import android.widget.MultiAutoCompleteTextView;
 
 import com.duy.editor.DLog;
 import com.duy.editor.EditorSetting;
-import com.duy.editor.R;
 import com.duy.editor.editor.completion.KeyWord;
 import com.duy.editor.editor.view.adapters.CodeSuggestAdapter;
 import com.duy.editor.editor.view.adapters.InfoItem;
@@ -161,7 +160,10 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
     public void showDropDown() {
         if (!isPopupShowing()) {
             if (hasFocus()) {
-                super.showDropDown();
+                try {
+                    super.showDropDown();
+                } catch (Exception e) {
+                }
             }
         }
     }
@@ -211,10 +213,11 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
      * invalidate data for auto suggest
      */
     public void setSuggestData(ArrayList<InfoItem> data) {
-        DLog.d(TAG, "setSuggestData: ");
-        mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
-
-        setAdapter(mAdapter);
+//        DLog.d(TAG, "setSuggestData: ");
+//        mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
+//
+//        setAdapter(mAdapter);
+        // TODO: 19/07/2017  disable popup view
 //        onDropdownChangeSize(getWidth(), getHeight());
     }
 

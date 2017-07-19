@@ -621,6 +621,7 @@ public class MainActivity extends BaseEditorActivity implements
 
     private class CompileTask extends AsyncTask<ProjectFile, Object, File> {
         private Context mContext;
+        private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
 
         CompileTask(Context context) {
             this.mContext = context;
@@ -659,6 +660,7 @@ public class MainActivity extends BaseEditorActivity implements
                 @Override
                 public void report(Diagnostic diagnostic) {
                     Log.e(TAG, "report: " + diagnostic);
+                    mDiagnostics.add(diagnostic);
                 }
             };
             return CommandManager.compile(mProjectFile, printWriter, diagnosticListener);
@@ -686,6 +688,7 @@ public class MainActivity extends BaseEditorActivity implements
             if (mCompileProgress != null) mCompileProgress.setVisibility(View.GONE);
             if (result == null) {
                 Toast.makeText(mContext, "Compile failed, see error msg", Toast.LENGTH_SHORT).show();
+
             } else {
                 Toast.makeText(mContext, "Compile success", Toast.LENGTH_SHORT).show();
 //                mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);

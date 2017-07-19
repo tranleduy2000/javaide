@@ -10,7 +10,6 @@ public class MessagePresenter implements MessageContract.Presenter {
     private MessageContract.View view;
 
     public MessagePresenter(MessageContract.View view) {
-
         this.view = view;
     }
 

@@ -14,23 +14,32 @@ import com.duy.compile.message.MessageFragment;
 public class BottomPageAdapter extends FragmentPagerAdapter {
 
 
-    public BottomPageAdapter(FragmentManager fm) {
+    public static final int COUNT = 2;
+    private final FragmentManager fm;
+    private final DiagnosticFragment mDiagnosticFragment;
+    private final MessageFragment mMessageFragment;
+
+    public BottomPageAdapter(FragmentManager fm,
+                             DiagnosticFragment mDiagnosticFragment, MessageFragment mMessageFragment) {
         super(fm);
+        this.fm = fm;
+        this.mDiagnosticFragment = mDiagnosticFragment;
+        this.mMessageFragment = mMessageFragment;
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return MessageFragment.newInstance();
+                return mMessageFragment;
             case 1:
-                return DiagnosticFragment.newInstance();
+                return mDiagnosticFragment;
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return COUNT;
     }
 }

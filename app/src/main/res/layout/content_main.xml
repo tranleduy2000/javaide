@@ -103,30 +103,12 @@
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
-        <ScrollView
-            android:id="@+id/scrollView"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/bottom_page"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fadeScrollbars="false"
-            android:fillViewport="true">
+            android:layout_height="match_parent">
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fadeScrollbars="false"
-                android:fillViewport="true"
-                android:scrollbarSize="4dp">
-
-                <TextView
-                    android:id="@+id/output"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:singleLine="false"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textIsSelectable="true"
-                    android:textSize="12sp" />
-            </HorizontalScrollView>
-        </ScrollView>
+        </android.support.v4.view.ViewPager>
 
     </LinearLayout>
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

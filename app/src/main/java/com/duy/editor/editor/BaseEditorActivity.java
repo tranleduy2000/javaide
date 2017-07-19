@@ -44,8 +44,11 @@ import android.widget.Toast;
 
 import com.commonsware.cwac.pager.PageDescriptor;
 import com.commonsware.cwac.pager.SimplePageDescriptor;
+import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.compile.diagnostic.DiagnosticPresenter;
+import com.duy.compile.message.MessageFragment;
 import com.duy.compile.message.MessagePresenter;
+import com.duy.editor.BottomPageAdapter;
 import com.duy.editor.EditPresenter;
 import com.duy.editor.EditorControl;
 import com.duy.editor.R;
@@ -92,6 +95,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected SlidingUpPanelLayout mContainerOutput;
     protected ProjectFile mProjectFile;
     protected ProjectFileContract.Presenter mFilePresenter;
+    protected EditPresenter mPagePresenter;
+    protected DiagnosticPresenter mDiagnosticPresenter;
+    protected MessagePresenter mMessagePresenter;
     Toolbar toolbar;
     AppBarLayout appBarLayout;
     DrawerLayout mDrawerLayout;
@@ -101,9 +107,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     View mContainerSymbol;
     ViewPager mViewPager;
     private KeyBoardEventListener keyBoardListener;
-    protected EditPresenter mPagePresenter;
-    protected DiagnosticPresenter mDiagnosticPresenter;
-    protected MessagePresenter mMessagePresenter;
+    private MessageFragment mMessageFragment;
+    private DiagnosticFragment mDiagnosticFragment;
+    private ViewPager mBottomPage;
 
     protected void onShowKeyboard() {
         mTabLayout.setVisibility(View.GONE);
@@ -144,8 +150,16 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         setupFileView(savedInstanceState);
         setupEditor();
 
-        mDiagnosticPresenter = new DiagnosticPresenter(null, mPagePresenter);
+        mMessageFragment = MessageFragment.newInstance();
+        mMessagePresenter = new MessagePresenter(mMessageFragment);
 
+        mDiagnosticFragment = DiagnosticFragment.newInstance();
+        mDiagnosticPresenter = new DiagnosticPresenter(mDiagnosticFragment, mPagePresenter);
+
+        mBottomPage = (ViewPager) findViewById(R.id.bottom_page);
+        mBottomPage.setAdapter(new BottomPageAdapter(getSupportFragmentManager(),
+                mDiagnosticFragment, mMessageFragment));
+        mBottomPage.setOffscreenPageLimit(BottomPageAdapter.COUNT);
 
         if (mProjectFile == null) {
             new Handler().postDelayed(new Runnable() {

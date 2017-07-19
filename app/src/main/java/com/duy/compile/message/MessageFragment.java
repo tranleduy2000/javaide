@@ -16,6 +16,8 @@ import com.duy.editor.R;
 
 public class MessageFragment extends android.support.v4.app.Fragment implements MessageContract.View {
     private static final String KEY_COMPILE_MSG = "compile_msg";
+    public static final String TAG = "MessageFragment";
+
     private TextView mCompileMsg;
     @Nullable
     private MessageContract.Presenter presenter;

@@ -1,5 +1,6 @@
 package com.duy.compile.diagnostic;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.duy.editor.EditContract;
@@ -20,7 +21,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private MainActivity mainActivity;
     private EditContract.Presenter mEditPresenter;
 
-    public DiagnosticPresenter(DiagnosticContract.View view, EditContract.Presenter editPresenter) {
+    public DiagnosticPresenter(@NonNull DiagnosticContract.View view,
+                               EditContract.Presenter editPresenter) {
         this.view = view;
         this.mEditPresenter = editPresenter;
     }

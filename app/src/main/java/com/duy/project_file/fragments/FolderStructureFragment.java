@@ -7,8 +7,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -59,7 +57,6 @@ public class FolderStructureFragment extends Fragment
         }
     };
     private ViewGroup mContainerView;
-    private SwipeRefreshLayout mRefreshView;
     private ProjectFileContract.Presenter presenter;
     @Nullable
     private AndroidTreeView mTreeView;
@@ -91,15 +88,12 @@ public class FolderStructureFragment extends Fragment
         mProjectFile = (ProjectFile)
                 getArguments().getSerializable(CompileManager.PROJECT_FILE);
         mContainerView = view.findViewById(R.id.container);
-        mRefreshView = view.findViewById(R.id.refresh_view);
-        mRefreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        view.findViewById(R.id.img_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onRefresh() {
+            public void onClick(View view) {
                 refresh();
-
             }
         });
-        mRefreshView.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.dark_color_accent));
 
         refresh();
         view.findViewById(R.id.img_expand_all).setOnClickListener(new View.OnClickListener() {
@@ -223,14 +217,6 @@ public class FolderStructureFragment extends Fragment
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mContainerView.addView(view, params);
 
-        if (mRefreshView.isRefreshing()) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mRefreshView.setRefreshing(false);
-                }
-            }, 400);
-        }
     }
 
     @Override

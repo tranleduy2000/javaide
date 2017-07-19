@@ -3,20 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:windowBackground"
+    android:background="?colorPrimaryDark"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?colorPrimaryDark">
+        android:layout_gravity="center_vertical"
+        android:background="?colorPrimaryDark"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/img_expand_all"
+            android:layout_toStartOf="@+id/linearLayout3"
             android:gravity="center"
             android:padding="4dp"
             android:text="@string/project"
@@ -24,45 +26,52 @@
             android:textColor="?android:textColorPrimary"
             android:textStyle="bold" />
 
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/img_collapse"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignBottom="@+id/textView2"
-            android:layout_alignParentEnd="true"
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/textView2"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            app:srcCompat="@drawable/ic_fullscreen_exit_white_24dp" />
+            android:gravity="center">
 
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/img_expand_all"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignBottom="@+id/textView2"
-            android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/img_collapse"
-            app:srcCompat="@drawable/ic_fullscreen_white_24dp" />
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_refresh"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="4dp"
+                app:srcCompat="@drawable/ic_refresh_white_24dp" />
+
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_collapse"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                app:srcCompat="@drawable/ic_fullscreen_exit_white_24dp" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_expand_all"
+                android:layout_width="24dp"
+
+                android:layout_height="24dp"
+                android:layout_marginLeft="4dp"
+                app:srcCompat="@drawable/ic_fullscreen_white_24dp" />
+        </LinearLayout>
     </RelativeLayout>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginRight="1dp"
+        android:layout_marginRight="2dp"
         android:background="?android:windowBackground"
         android:fadeScrollbars="false"
         android:fillViewport="true">
 
-        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/refresh_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true">
-
-            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/container"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-        </android.support.v4.widget.SwipeRefreshLayout>
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
 
     </HorizontalScrollView>
 

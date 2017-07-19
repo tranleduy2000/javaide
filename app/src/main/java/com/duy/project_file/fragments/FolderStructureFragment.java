@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -98,7 +99,7 @@ public class FolderStructureFragment extends Fragment
 
             }
         });
-
+        mRefreshView.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.dark_color_accent));
 
         refresh();
         view.findViewById(R.id.img_expand_all).setOnClickListener(new View.OnClickListener() {

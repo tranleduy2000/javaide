@@ -63,52 +63,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/output_view"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:foreground="?selectableItemBackground"
-        android:orientation="vertical">
+    <include layout="@layout/bottom_content" />
 
-        <LinearLayout
-            android:id="@+id/container_symbol"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/img_tab"
-                android:layout_width="@dimen/bottom_editor_height"
-                android:layout_height="@dimen/bottom_editor_height"
-                android:background="#651fff"
-                android:clickable="true"
-                android:contentDescription="@string/tab"
-                android:foreground="?attr/selectableItemBackground"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_keyboard_tab_white_24dp" />
-
-            <com.duy.editor.view.SymbolListView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/bottom_editor_height">
-
-            </com.duy.editor.view.SymbolListView>
-
-        </LinearLayout>
-
-        <ProgressBar
-            android:id="@+id/compile_progress"
-            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/bottom_page"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </android.support.v4.view.ViewPager>
-
-    </LinearLayout>
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

@@ -48,11 +48,11 @@ import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.compile.diagnostic.DiagnosticPresenter;
 import com.duy.compile.message.MessageFragment;
 import com.duy.compile.message.MessagePresenter;
-import com.duy.editor.BottomPageAdapter;
 import com.duy.editor.EditPresenter;
 import com.duy.editor.EditorControl;
 import com.duy.editor.R;
 import com.duy.editor.activities.AbstractAppCompatActivity;
+import com.duy.editor.adapters.BottomPageAdapter;
 import com.duy.editor.code.CompileManager;
 import com.duy.editor.editor.view.EditorView;
 import com.duy.editor.file.FileManager;
@@ -156,11 +156,21 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         mDiagnosticFragment = DiagnosticFragment.newInstance();
         mDiagnosticPresenter = new DiagnosticPresenter(mDiagnosticFragment, mPagePresenter);
 
-        mBottomPage = (ViewPager) findViewById(R.id.bottom_page);
-        mBottomPage.setAdapter(new BottomPageAdapter(getSupportFragmentManager(),
-                mDiagnosticFragment, mMessageFragment));
-        mBottomPage.setOffscreenPageLimit(BottomPageAdapter.COUNT);
+        BottomPageAdapter bottomAdapter = new BottomPageAdapter(getSupportFragmentManager(),
+                mDiagnosticFragment, mMessageFragment);
 
+        mBottomPage = (ViewPager) findViewById(R.id.bottom_page);
+        mBottomPage.setAdapter(bottomAdapter);
+        mBottomPage.setOffscreenPageLimit(BottomPageAdapter.COUNT);
+        TabLayout bottomTab = (TabLayout) findViewById(R.id.bottom_tab);
+        bottomTab.setupWithViewPager(mBottomPage);
+
+
+        //create project if need
+        createProjectIfNeed();
+    }
+
+    private void createProjectIfNeed() {
         if (mProjectFile == null) {
             new Handler().postDelayed(new Runnable() {
                 @Override

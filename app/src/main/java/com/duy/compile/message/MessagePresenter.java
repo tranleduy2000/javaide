@@ -11,6 +11,7 @@ public class MessagePresenter implements MessageContract.Presenter {
 
     public MessagePresenter(MessageContract.View view) {
         this.view = view;
+        view.setPresenter(this);
     }
 
     @Override

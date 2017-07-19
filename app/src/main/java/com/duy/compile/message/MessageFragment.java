@@ -40,7 +40,7 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mCompileMsg = view.findViewById(R.id.txt_msg);
+        mCompileMsg = view.findViewById(R.id.txt_message);
         mCompileMsg.setTypeface(Typeface.MONOSPACE);
         if (savedInstanceState != null) {
             mCompileMsg.setText(savedInstanceState.getString(KEY_COMPILE_MSG));

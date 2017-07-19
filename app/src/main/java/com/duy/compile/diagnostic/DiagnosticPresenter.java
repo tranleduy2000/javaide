@@ -25,6 +25,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                                EditContract.Presenter editPresenter) {
         this.view = view;
         this.mEditPresenter = editPresenter;
+        view.setPresenter(this);
     }
 
     @Override

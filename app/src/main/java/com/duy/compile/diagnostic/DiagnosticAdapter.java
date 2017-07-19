@@ -44,12 +44,24 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Er
     @Override
     public void onBindViewHolder(ErrorHolder holder, int position) {
         Diagnostic diagnostic = mDiagnostics.get(position);
+        switch (diagnostic.getKind()) {
+            case ERROR:
+                break;
+            case WARNING:
+                break;
+            case MANDATORY_WARNING:
+                break;
+            case NOTE:
+                break;
+            case OTHER:
+                break;
+        }
         holder.message.setText(diagnostic.getMessage(null));
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mDiagnostics.size();
     }
 
     public void clear() {

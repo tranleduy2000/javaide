@@ -184,40 +184,46 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     private void invalidateTab() {
-        for (int i = 0; i < mPageAdapter.getCount(); i++) {
-            final TabLayout.Tab tab = mTabLayout.getTabAt(i);
-            View view = null;
-            if (tab != null) {
-                tab.setCustomView(R.layout.item_tab_file);
-                view = tab.getCustomView();
-            }
-
-            if (view != null) {
-                View close = view.findViewById(R.id.img_close);
-                View container = view.findViewById(R.id.container_tab);
-
-                final int position = i;
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        removePage(position);
+        Log.d(TAG, "invalidateTab() called");
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < mPageAdapter.getCount(); i++) {
+                    final TabLayout.Tab tab = mTabLayout.getTabAt(i);
+                    View view = null;
+                    if (tab != null) {
+                        tab.setCustomView(R.layout.item_tab_file);
+                        view = tab.getCustomView();
                     }
-                });
-                TextView txtTitle = view.findViewById(R.id.txt_title);
-                txtTitle.setText(mPageAdapter.getPageTitle(i));
-                txtTitle.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mViewPager.setCurrentItem(position);
-                    }
-                });
 
-                if (i == mViewPager.getCurrentItem()) {
-                    tab.select();
+                    if (view != null) {
+                        View close = view.findViewById(R.id.img_close);
+                        View container = view.findViewById(R.id.container_tab);
+
+                        final int position = i;
+                        close.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                removePage(position);
+                            }
+                        });
+                        TextView txtTitle = view.findViewById(R.id.txt_title);
+                        txtTitle.setText(mPageAdapter.getPageTitle(i));
+                        txtTitle.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mViewPager.setCurrentItem(position);
+                            }
+                        });
+
+                        if (i == mViewPager.getCurrentItem()) {
+                            tab.select();
+                        }
+                        setTabColor(tab, i == mViewPager.getCurrentItem());
+                    }
                 }
-                setTabColor(tab, i == mViewPager.getCurrentItem());
             }
-        }
+        }, 200);
     }
 
     private void setTabColor(TabLayout.Tab tab, boolean select) {

@@ -248,7 +248,7 @@ public class MainActivity extends BaseEditorActivity implements
         protected void onPreExecute() {
             super.onPreExecute();
             if (mActionRun != null) mActionRun.setEnabled(false);
-            if (mCompileProgress != null) mCompileProgress.setIndeterminate(true);
+            if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
             mCompileStatus.setText("");
             mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         }
@@ -291,8 +291,10 @@ public class MainActivity extends BaseEditorActivity implements
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
+            Log.d(TAG, "onPostExecute() called with: result = [" + result + "]");
+
             if (mActionRun != null) mActionRun.setEnabled(true);
-            if (mCompileProgress != null) mCompileProgress.setIndeterminate(false);
+            if (mCompileProgress != null) mCompileProgress.setVisibility(View.GONE);
             if (result != Main.EXIT_OK) {
 
             } else {

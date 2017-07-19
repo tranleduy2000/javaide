@@ -79,7 +79,8 @@
             android:id="@+id/compile_progress"
             style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <ScrollView
             android:id="@+id/scrollView"

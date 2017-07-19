@@ -76,7 +76,6 @@ public class CommandManager {
                     pf.getMainClass().getPath(pf) //main class
             };
             System.out.println("args = " + Arrays.toString(args));
-            //exec javac command
             return javac.compile(args, out);
         } catch (Exception e) {
             e.printStackTrace();

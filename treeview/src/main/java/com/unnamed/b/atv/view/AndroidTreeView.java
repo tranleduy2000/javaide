@@ -1,6 +1,7 @@
 package com.unnamed.b.atv.view;
 
 import android.content.Context;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -9,7 +10,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 import com.unnamed.b.atv.R;
 import com.unnamed.b.atv.holder.SimpleViewHolder;
@@ -407,9 +407,9 @@ public class AndroidTreeView {
         final ViewGroup view;
         if (style > 0) {
             ContextThemeWrapper newContext = new ContextThemeWrapper(mContext, style);
-            view = use2dScroll ? new TwoDScrollView(newContext) : new ScrollView(newContext);
+            view = use2dScroll ? new TwoDScrollView(newContext) : new NestedScrollView(newContext);
         } else {
-            view = use2dScroll ? new TwoDScrollView(mContext) : new ScrollView(mContext);
+            view = use2dScroll ? new TwoDScrollView(mContext) : new NestedScrollView(mContext);
         }
 
         Context containerContext = mContext;

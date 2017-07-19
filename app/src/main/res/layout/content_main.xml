@@ -21,6 +21,7 @@
     android:gravity="bottom"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     app:umanoDragView="@+id/container_symbol"
+    app:umanoFadeColor="@android:color/transparent"
     app:umanoPanelHeight="@dimen/bottom_editor_height"
     app:umanoScrollableView="@+id/scrollView"
     app:umanoShadowHeight="4dp">
@@ -43,10 +44,9 @@
     <LinearLayout
         android:id="@+id/output_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:clickable="true"
         android:foreground="?selectableItemBackground"
-        android:minHeight="200dp"
         android:orientation="vertical">
 
         <LinearLayout

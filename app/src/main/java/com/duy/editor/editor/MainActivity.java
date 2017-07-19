@@ -671,7 +671,7 @@ public class MainActivity extends BaseEditorActivity implements
                 Toast.makeText(mContext, "Compile failed, see error msg", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(mContext, "Compile success", Toast.LENGTH_SHORT).show();
-                mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+//                mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

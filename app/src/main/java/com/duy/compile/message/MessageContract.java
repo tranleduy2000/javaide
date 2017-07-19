@@ -17,5 +17,8 @@ public class MessageContract {
 
     public interface Presenter {
 
+        void clear();
+
+        void append(char[] chars, int start, int end);
     }
 }

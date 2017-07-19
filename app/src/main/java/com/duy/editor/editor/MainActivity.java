@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,7 +45,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duy.editor.MenuEditor;
@@ -86,13 +84,11 @@ public class MainActivity extends BaseEditorActivity implements
     public static final int ACTION_FILE_SELECT_CODE = 1012;
     public static final int ACTION_PICK_MEDIA_URL = 1013;
     public static final int ACTION_CREATE_SHORTCUT = 1014;
-    private static final String KEY_COMPILE_MSG = "compile_msg";
     private CompileManager mCompileManager;
     private MenuEditor mMenuEditor;
     private Dialog mDialog;
     private MenuItem mActionRun;
     private ProgressBar mCompileProgress;
-    private TextView mCompileStatus;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,12 +113,6 @@ public class MainActivity extends BaseEditorActivity implements
             }
         });
         mCompileProgress = (ProgressBar) findViewById(R.id.compile_progress);
-
-        mCompileStatus = (TextView) findViewById(R.id.output);
-        mCompileStatus.setTypeface(Typeface.MONOSPACE);
-        if (savedInstanceState != null) {
-            mCompileStatus.setText(savedInstanceState.getString(KEY_COMPILE_MSG));
-        }
     }
 
     @Override
@@ -611,14 +601,6 @@ public class MainActivity extends BaseEditorActivity implements
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mCompileStatus != null) {
-            outState.putString(KEY_COMPILE_MSG, mCompileStatus.getText().toString());
-        }
-    }
-
     private class CompileTask extends AsyncTask<ProjectFile, Object, File> {
         private Context mContext;
         private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
@@ -633,7 +615,7 @@ public class MainActivity extends BaseEditorActivity implements
             if (mActionRun != null) mActionRun.setEnabled(false);
             if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
             hideKeyboard();
-            mCompileStatus.setText("");
+            mMessagePresenter.clear();
             mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         }
 
@@ -679,7 +661,7 @@ public class MainActivity extends BaseEditorActivity implements
                 char[] chars = (char[]) values[0];
                 int start = (int) values[1];
                 int end = (int) values[2];
-                mCompileStatus.append(new String(chars), start, end);
+                mMessagePresenter.append(chars, start, end);
             } catch (Exception e) {
                 e.printStackTrace();
             }

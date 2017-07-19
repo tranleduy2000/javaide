@@ -45,6 +45,7 @@ import android.widget.Toast;
 import com.commonsware.cwac.pager.PageDescriptor;
 import com.commonsware.cwac.pager.SimplePageDescriptor;
 import com.duy.compile.diagnostic.DiagnosticPresenter;
+import com.duy.compile.message.MessagePresenter;
 import com.duy.editor.EditPresenter;
 import com.duy.editor.EditorControl;
 import com.duy.editor.R;
@@ -100,8 +101,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     View mContainerSymbol;
     ViewPager mViewPager;
     private KeyBoardEventListener keyBoardListener;
-    private EditPresenter mPagePresenter;
-    private DiagnosticPresenter mDiagnosticPresenter;
+    protected EditPresenter mPagePresenter;
+    protected DiagnosticPresenter mDiagnosticPresenter;
+    protected MessagePresenter mMessagePresenter;
 
     protected void onShowKeyboard() {
         mTabLayout.setVisibility(View.GONE);

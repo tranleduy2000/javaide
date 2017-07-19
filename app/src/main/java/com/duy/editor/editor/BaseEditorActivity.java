@@ -28,7 +28,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -45,7 +44,8 @@ import android.widget.Toast;
 
 import com.commonsware.cwac.pager.PageDescriptor;
 import com.commonsware.cwac.pager.SimplePageDescriptor;
-import com.duy.editor.DLog;
+import com.duy.compile.diagnostic.DiagnosticPresenter;
+import com.duy.editor.EditPresenter;
 import com.duy.editor.EditorControl;
 import com.duy.editor.R;
 import com.duy.editor.activities.AbstractAppCompatActivity;
@@ -100,6 +100,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     View mContainerSymbol;
     ViewPager mViewPager;
     private KeyBoardEventListener keyBoardListener;
+    private EditPresenter mPagePresenter;
+    private DiagnosticPresenter mDiagnosticPresenter;
 
     protected void onShowKeyboard() {
         mTabLayout.setVisibility(View.GONE);
@@ -140,6 +142,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         setupFileView(savedInstanceState);
         setupEditor();
 
+        mDiagnosticPresenter = new DiagnosticPresenter(null, mPagePresenter);
+
+
         if (mProjectFile == null) {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -175,6 +180,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         mTabLayout.setupWithViewPager(mViewPager);
         invalidateTab();
         mViewPager.addOnPageChangeListener(this);
+
+        mPagePresenter = new EditPresenter(this, mViewPager, mPageAdapter, mTabLayout, mFileManager);
+
     }
 
     protected void bindView() {
@@ -278,20 +286,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
      * remove a page in <code>position</code>
      */
     protected void removePage(int position) {
-        Fragment existingFragment = mPageAdapter.getExistingFragment(position);
-        if (existingFragment == null) {
-            if (DLog.DEBUG) DLog.d(TAG, "removePage: " + "null page " + position);
-            return;
-        }
-
-        //delete in database
-        String filePath = existingFragment.getTag();
-        mFileManager.removeTabFile(filePath);
-
-        //remove page
-        mPageAdapter.remove(position);
-        invalidateTab();
-        Toast.makeText(this, getString(R.string.closed) + " " + new File(filePath).getName(), Toast.LENGTH_SHORT).show();
+        mPagePresenter.removePage(position);
     }
 
 
@@ -303,45 +298,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
      * @param selectNewPage - if <code>true</code>, the tab of file will be selected when initialized
      */
     protected void addNewPageEditor(@NonNull File file, boolean selectNewPage) {
-        Log.d(TAG, "addNewPageEditor() called with: file = [" + file + "], selectNewPage = [" + selectNewPage + "]");
-
-        if (!file.exists()) return;
-
-        int position = mPageAdapter.getPositionForTag(file.getPath());
-        if (position != -1) { //existed in list file
-            //check need select tab
-            if (selectNewPage) {
-                TabLayout.Tab tab = mTabLayout.getTabAt(position);
-                if (tab != null) {
-                    tab.select();
-                    mViewPager.setCurrentItem(position);
-                }
-            }
-        } else { //new file
-            if (mPageAdapter.getCount() >= getPreferences().getMaxPage()) {
-                Fragment existingFragment = mPageAdapter.getExistingFragment(0);
-                if (existingFragment != null) {
-                    mFileManager.removeTabFile(existingFragment.getTag());
-                    removePage(0);
-                }
-            }
-
-            //add to database
-            mFileManager.addNewPath(file.getPath());
-
-            //new page
-            mPageAdapter.add(new SimplePageDescriptor(file.getPath(), file.getName()));
-            invalidateTab();
-
-            if (selectNewPage) {
-                int indexOfNewPage = mPageAdapter.getCount() - 1;
-                TabLayout.Tab tab = mTabLayout.getTabAt(indexOfNewPage);
-                if (tab != null) {
-                    tab.select();
-                    mViewPager.setCurrentItem(indexOfNewPage);
-                }
-            }
-        }
+        mPagePresenter.addPage(file, selectNewPage);
     }
 
     @Override

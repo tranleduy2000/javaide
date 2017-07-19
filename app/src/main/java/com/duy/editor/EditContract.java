@@ -1,6 +1,6 @@
 package com.duy.editor;
 
-import com.duy.editor.compile.DiagnosticContract;
+import com.duy.compile.diagnostic.DiagnosticContract;
 
 import java.io.File;
 
@@ -17,6 +17,19 @@ public class EditContract {
         void display(File src);
 
         void setPresenter(Presenter presenter);
+
+        void saveFile();
+
+        void undo();
+
+        void redo();
+
+        void paste();
+
+        void copyAll();
+
+        void formatCode();
+
     }
 
     public interface Presenter {
@@ -24,9 +37,15 @@ public class EditContract {
 
         void gotoPage(String path);
 
-        void addPage(String path);
+        void addPage(String path, boolean select);
 
-        void addPage(File path);
+        void addPage(File path, boolean select);
+
+        void invalidateTab();
+
+        void removePage(String path);
+
+        void removePage(int pos);
 
         boolean hasPage(String path);
 

@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.duy.editor.EditContract;
 import com.duy.editor.EditorControl;
 import com.duy.editor.R;
 import com.duy.editor.code.CompileManager;
@@ -44,6 +45,8 @@ import net.barenca.jastyle.FormatterHelper;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -51,14 +54,18 @@ import java.io.StringReader;
  * Created by Duy on 15-Mar-17.
  * Editor fragment
  */
-public class EditorFragment extends Fragment implements EditorListener {
+public class EditorFragment extends Fragment implements EditorListener, EditContract.View {
     private static final String TAG = "EditorFragment";
+    @Nullable
     private EditorView mCodeEditor;
     @Nullable
     private LockableScrollView mScrollView;
     private FileManager mFileManager;
     private Handler handler = new Handler();
+    private Dialog dialog;
+    private EditContract.Presenter mPresenter;
 
+//    private LockableHorizontalScrollView mHorizontalScrollView;
 
     public static EditorFragment newInstance(String filePath) {
         EditorFragment editorFragment = new EditorFragment();
@@ -73,8 +80,6 @@ public class EditorFragment extends Fragment implements EditorListener {
         super.onCreate(savedInstanceState);
         mFileManager = new FileManager(getContext());
     }
-
-//    private LockableHorizontalScrollView mHorizontalScrollView;
 
     @Nullable
     @Override
@@ -119,7 +124,6 @@ public class EditorFragment extends Fragment implements EditorListener {
         return view;
     }
 
-
     @Override
     public void onStop() {
         saveFile();
@@ -146,7 +150,6 @@ public class EditorFragment extends Fragment implements EditorListener {
         mCodeEditor.restoreHistory(getFilePath());
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -165,6 +168,35 @@ public class EditorFragment extends Fragment implements EditorListener {
     @Override
     public void doFind(@NonNull String find, boolean regex, boolean wordOnly, boolean matchCase) {
         mCodeEditor.find(find, regex, wordOnly, matchCase);
+    }
+
+    @Override
+    public void gotoLine(int line, int col) {
+        // TODO: 19/07/2017
+    }
+
+    @Override
+    public void display(String src) {
+        if (mCodeEditor != null) {
+            mCodeEditor.setText(src);
+        }
+    }
+
+    @Override
+    public void display(File src) {
+        try {
+            StringBuilder srcStr = FileManager.streamToString(new FileInputStream(src));
+            if (mCodeEditor != null) {
+                mCodeEditor.setText(srcStr);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void setPresenter(EditContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 
     @Override
@@ -193,8 +225,6 @@ public class EditorFragment extends Fragment implements EditorListener {
         mCodeEditor.goToLine(line);
     }
 
-    private Dialog dialog;
-
     @Override
     public void formatCode() {
         new TaskFormatCode().execute(getCode());
@@ -213,37 +243,6 @@ public class EditorFragment extends Fragment implements EditorListener {
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
-        }
-    }
-
-    private class TaskFormatCode extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showDialog("Formatting...");
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                String source = params[0];
-                source = source.replace("{", "{\n");
-                ASFormatter formatter = new ASFormatter();
-                Reader in = new BufferedReader(new StringReader(source));
-                formatter.setJavaStyle();
-                return FormatterHelper.format(in, formatter);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            if (result != null) {
-                mCodeEditor.setTextHighlighted(result);
-            }
-            dismissDialog();
         }
     }
 
@@ -290,7 +289,6 @@ public class EditorFragment extends Fragment implements EditorListener {
         return mCodeEditor;
     }
 
-
     public void refreshCodeEditor() {
         mCodeEditor.updateFromSettings();
         mCodeEditor.refresh();
@@ -302,6 +300,37 @@ public class EditorFragment extends Fragment implements EditorListener {
             return "";
         } else {
             return path;
+        }
+    }
+
+    private class TaskFormatCode extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showDialog("Formatting...");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                String source = params[0];
+                source = source.replace("{", "{\n");
+                ASFormatter formatter = new ASFormatter();
+                Reader in = new BufferedReader(new StringReader(source));
+                formatter.setJavaStyle();
+                return FormatterHelper.format(in, formatter);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                mCodeEditor.setTextHighlighted(result);
+            }
+            dismissDialog();
         }
     }
 

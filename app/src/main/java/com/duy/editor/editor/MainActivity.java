@@ -76,6 +76,7 @@ import java.util.ArrayList;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
+import javax.tools.JavaFileObject;
 
 public class MainActivity extends BaseEditorActivity implements
         DrawerLayout.DrawerListener,
@@ -92,7 +93,6 @@ public class MainActivity extends BaseEditorActivity implements
     private MenuItem mActionRun;
     private ProgressBar mCompileProgress;
     private TextView mCompileStatus;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -656,14 +656,20 @@ public class MainActivity extends BaseEditorActivity implements
 
                 }
             });
-            DiagnosticListener diagnosticListener = new DiagnosticListener() {
+            DiagnosticListener listener = new DiagnosticListener() {
                 @Override
                 public void report(Diagnostic diagnostic) {
-                    Log.e(TAG, "report: " + diagnostic);
+                    Object source = diagnostic.getSource();
+                    if (source instanceof JavaFileObject) {
+                        String name = ((JavaFileObject) source).getName();
+                        System.out.println("name = " + name);
+                    }
+                    Log.w(TAG, "report: " + source + " " + diagnostic.getCode());
+                    Log.w(TAG, "report: " + diagnostic);
                     mDiagnostics.add(diagnostic);
                 }
             };
-            return CommandManager.compile(mProjectFile, printWriter, diagnosticListener);
+            return CommandManager.compile(mProjectFile, printWriter, listener);
         }
 
         @Override

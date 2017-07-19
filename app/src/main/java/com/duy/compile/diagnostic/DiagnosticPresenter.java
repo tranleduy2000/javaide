@@ -1,4 +1,4 @@
-package com.duy.editor.compile;
+package com.duy.compile.diagnostic;
 
 import android.util.Log;
 

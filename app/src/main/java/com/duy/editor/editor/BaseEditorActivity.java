@@ -86,9 +86,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected final static String TAG = BaseEditorActivity.class.getSimpleName();
     private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
     protected final boolean SELECT = true;
-    protected final boolean SAVE_LAST_FILE = true;
-    protected final boolean UN_SELECT = false;
-    protected final boolean UN_SAVE_LAST_FILE = false;
+
     protected final Handler mHandler = new Handler();
     protected FileManager mFileManager;
     protected EditorPagerAdapter mPageAdapter;
@@ -204,11 +202,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), descriptors);
         mViewPager.setAdapter(mPageAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
-        invalidateTab();
         mViewPager.addOnPageChangeListener(this);
 
         mPagePresenter = new EditPresenter(this, mViewPager, mPageAdapter, mTabLayout, mFileManager);
-
+        mPagePresenter.invalidateTab();
     }
 
     protected void bindView() {
@@ -237,8 +234,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
                     if (view != null) {
                         View close = view.findViewById(R.id.img_close);
-                        View container = view.findViewById(R.id.container_tab);
-
                         final int position = i;
                         close.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -258,32 +253,12 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
                         if (i == mViewPager.getCurrentItem()) {
                             tab.select();
                         }
-                        setTabColor(tab, i == mViewPager.getCurrentItem());
                     }
                 }
             }
         }, 200);
     }
 
-    private void setTabColor(TabLayout.Tab tab, boolean select) {
-        if (tab == null) return;
-        View view = tab.getCustomView();
-
-//        if (view != null) {
-//            View container = view.findViewById(R.id.container_tab);
-//            TextView txtTitle = view.findViewById(R.id.txt_title);
-//
-//            if (select) {
-//                container.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_color_background));
-//                txtTitle.setTextColor(ContextCompat.getColor(this, android.R.color.primary_text_dark));
-//                txtTitle.setTypeface(Typeface.DEFAULT_BOLD);
-//            } else {
-//                container.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_color_primary_dark));
-//                txtTitle.setTextColor(ContextCompat.getColor(this, android.R.color.secondary_text_dark));
-//                txtTitle.setTypeface(Typeface.DEFAULT);
-//            }
-//        }
-    }
 
     public void setupToolbar() {
         //setup action bar
@@ -597,11 +572,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     @Override
     public void onPageSelected(int position) {
-        if (mTabLayout != null) {
-            for (int i = 0; i < mTabLayout.getTabCount(); i++) {
-                setTabColor(mTabLayout.getTabAt(i), position == i);
-            }
-        }
     }
 
     @Override

@@ -1,10 +1,14 @@
 package com.duy.editor;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.commonsware.cwac.pager.SimplePageDescriptor;
@@ -28,6 +32,7 @@ public class EditPresenter implements EditContract.Presenter {
     private JavaPreferences mPreferences;
     private FileManager mFileManager;
     private Context mContext;
+    private Handler mHandler = new Handler();
 
     public EditPresenter(Context context, ViewPager mViewPager,
                          EditorPagerAdapter mPageAdapter, TabLayout tabLayout,
@@ -106,7 +111,43 @@ public class EditPresenter implements EditContract.Presenter {
 
     @Override
     public void invalidateTab() {
+        Log.d(TAG, "invalidateTab() called");
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < mPageAdapter.getCount(); i++) {
+                    final TabLayout.Tab tab = mTabLayout.getTabAt(i);
+                    View view = null;
+                    if (tab != null) {
+                        tab.setCustomView(R.layout.item_tab_file);
+                        view = tab.getCustomView();
+                    }
 
+                    if (view != null) {
+                        View close = view.findViewById(R.id.img_close);
+                        final int position = i;
+                        close.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                removePage(position);
+                            }
+                        });
+                        TextView txtTitle = view.findViewById(R.id.txt_title);
+                        txtTitle.setText(mPageAdapter.getPageTitle(i));
+                        txtTitle.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mViewPager.setCurrentItem(position);
+                            }
+                        });
+
+                        if (i == mViewPager.getCurrentItem()) {
+                            tab.select();
+                        }
+                    }
+                }
+            }
+        }, 200);
     }
 
     @Override

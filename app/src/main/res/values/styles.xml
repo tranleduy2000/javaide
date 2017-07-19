@@ -31,6 +31,8 @@
         <item name="colorPrimary">@color/light.color_primary</item>
         <item name="colorPrimaryDark">@color/light.color_primary_dark</item>
         <item name="colorAccent">@color/light.color_accent</item>
+        <item name="android:windowBackground">@color/light.color_background</item>
+
     </style>
 
     <style name="AppThemeDark.NoActionBar" parent="AppThemeDark">

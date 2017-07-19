@@ -101,9 +101,9 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
     private void setIcon(ImageView view, File fileDetail) {
         String fileName = fileDetail.getName();
         if (fileDetail.isDirectory()) {
-            view.setImageResource(R.drawable.ic_folder_white_24dp);
+            view.setImageResource(R.drawable.ic_folder_green);
         } else if (fileName.endsWith(".java")) {
-            view.setImageResource(R.drawable.ic_java_file_white);
+            view.setImageResource(R.drawable.ic_java_file_yellow);
         } else if (fileName.endsWith(".jar")) {
             view.setImageResource(R.drawable.ic_jar_file_white);
         } else if (fileName.endsWith(".class")) {

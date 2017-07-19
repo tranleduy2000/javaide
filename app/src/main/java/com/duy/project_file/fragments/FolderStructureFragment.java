@@ -34,7 +34,10 @@ import static android.widget.FrameLayout.LayoutParams;
 public class FolderStructureFragment extends Fragment
         implements ProjectFileContract.View {
     public static final String TAG = "FolderStructureFragment";
-
+    private final android.os.Handler mHandler = new android.os.Handler();
+    private ProjectFile mProjectFile;
+    @Nullable
+    private ProjectFileContract.FileActionListener listener;
     private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
         @Override
         public void onClick(TreeNode node, Object value) {
@@ -54,13 +57,12 @@ public class FolderStructureFragment extends Fragment
             return true;
         }
     };
-    private ProjectFile mProjectFile;
-    @Nullable
-    private ProjectFileContract.FileActionListener listener;
     private ViewGroup mContainerView;
     private SwipeRefreshLayout mRefreshView;
-
     private ProjectFileContract.Presenter presenter;
+    @Nullable
+    private AndroidTreeView mTreeView;
+    private SharedPreferences mPref;
 
     public static FolderStructureFragment newInstance(@NonNull ProjectFile projectFile) {
 
@@ -77,17 +79,10 @@ public class FolderStructureFragment extends Fragment
         setHasOptionsMenu(true);
     }
 
-    @Nullable
-    private AndroidTreeView mTreeView;
-
-    private SharedPreferences mPref;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_folder_structure, container, false);
     }
-
-    private final android.os.Handler mHandler = new android.os.Handler();
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

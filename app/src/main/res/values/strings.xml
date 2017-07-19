@@ -447,4 +447,5 @@
     <string name="config">Config</string>
     <string name="can_not_find_main_func">Couldn\'t find main function in class</string>
     <string name="main_class_not_define">Main class is not define</string>
+    <string name="project">Project</string>
 </resources>

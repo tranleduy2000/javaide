@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /* 
 **
 ** Copyright 2008, The Android Open Source Project
@@ -23,12 +22,15 @@
     <color name="candidate_other">#ff808080</color>
     <color name="candidate_background">#bbffffff</color>
 
-    <color name="dark.color_primary_dark">#2a2b37</color>
-    <color name="dark.color_primary">#353847</color>
-    <color name="dark.color_accent">#80deea</color>
-    <color name="dark.color_background">#2a2b37</color>
+    <color name="dark.color_primary_dark">#17191c</color>
+    <color name="dark.color_primary">#20242A</color>
+    <color name="dark.color_accent">#ff025b</color>
+    <color name="dark.color_background">#20242a</color>
+    <color name="dark.color_folder">#02cb6d</color>
 
     <color name="light.color_primary_dark">#283593</color>
     <color name="light.color_primary">#3949ab</color>
     <color name="light.color_accent">#d50000</color>
+    <color name="light.color_background">#e8e8e8</color>
+
 </resources>

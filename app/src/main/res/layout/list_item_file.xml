@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
@@ -27,10 +28,10 @@
 
         <TextView
             android:id="@+id/node_value"
+            tools:text="sample"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="sample"
-            android:textColor="?android:textColorPrimary"
+            android:textColor="@color/dark.color_folder"
             android:textSize="12sp" />
     </LinearLayout>
 

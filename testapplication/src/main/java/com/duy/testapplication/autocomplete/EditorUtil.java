@@ -2,6 +2,9 @@ package com.duy.testapplication.autocomplete;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
+import android.text.Layout;
+import android.util.Log;
 import android.widget.EditText;
 
 import java.util.ArrayList;
@@ -9,6 +12,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.duy.testapplication.autocomplete.PatternFactory.firstMatch;
+import static com.duy.testapplication.autocomplete.PatternFactory.lastMatchStr;
 
 /**
  * Created by Duy on 20-Jul-17.
@@ -30,22 +36,20 @@ public class EditorUtil {
         return null;
     }
 
+    private static final String TAG = "EditorUtil";
+
+    public String getCurrentClassName() {
+        return null;
+    }
+
     @NonNull
-    public String getCurrentClassSimpleName() {
+    public String getCurrentClassSimpleName(EditText editor) {
         String className = getCurrentClassName();
         int i = className.indexOf(".");
         if (i == -1) return className;
         else {
             return className.substring(className.lastIndexOf(".") + 1);
         }
-    }
-
-    public String getCurrentClassName() {
-        return null;
-    }
-
-    public String getImportedClassName(String className) {
-        return match(editor.getText(), PatternFactory.makeImport(className));
     }
 
 
@@ -65,26 +69,45 @@ public class EditorUtil {
         return classList;
     }
 
+    @Nullable
     public CharSequence getLine(EditText editText, int pos) {
+        if (pos < 0 || pos > editText.length()) return null;
         int lineStart = editText.getLayout().getLineStart(pos);
         int lineEnd = editText.getLayout().getLineEnd(pos);
         return editText.getText().subSequence(lineStart, lineEnd);
     }
 
-    @NonNull
+    @Nullable
     public String getWord(EditText editText, int pos, boolean removeParentheses) {
         String line = getLine(editText, pos).toString();
         return getLastWord(line, removeParentheses);
     }
 
-    @NonNull
+    @Nullable
+    public String getWord(EditText editText, int pos) {
+        String line = getLine(editText, pos).toString();
+        return getLastWord(line, false);
+    }
+
+    @Nullable
     public String getLastWord(String line, boolean removeParentheses) {
-        String result = lastMatch(line, PatternFactory.WORD);
+        String result = PatternFactory.lastMatchStr(line, PatternFactory.WORD);
         if (result != null) {
             return removeParentheses ? result.replaceAll(".*\\(", "") : result;
         } else {
-            return line;
+            return null;
         }
+    }
+
+    @Nullable
+    public String getPreWord(EditText editor, int pos) {
+        CharSequence line = getLine(editor, pos);
+        String[] split = line.toString().split("[^\\s-]+$");
+        return split.length >= 2 ? split[split.length - 2] : null;
+    }
+
+    public String getImportedClassName(String className) {
+        return PatternFactory.match(editor.getText(), PatternFactory.makeImport(className));
     }
 
     /**
@@ -103,6 +126,8 @@ public class EditorUtil {
     }
 
     public void organizeImports(EditText editor, String importStr) {
+        Log.d(TAG, "organizeImports() called with: editor = [" + editor + "], importStr = [" + importStr + "]");
+
         ArrayList<String> imports = getImports(editor);
         imports.add(importStr);
         Collections.sort(imports, new Comparator<String>() {
@@ -112,61 +137,75 @@ public class EditorUtil {
             }
         });
         StringBuilder imp = new StringBuilder();
-        for (String anImport : imports) {
-            imp.append(imp.toString()).append("\n");
+        for (String s : imports) {
+            imp.append(s).append("\n");
         }
         int first = firstMatch(editor, PatternFactory.IMPORT);
-        int last = lastMatch(editor, PatternFactory.IMPORT);
+        int last = PatternFactory.lastMatch(editor, PatternFactory.IMPORT);
         if (first >= 0 && last > first) {
             editor.getText().replace(first, last, "");
             editor.getText().insert(first, imp);
         }
     }
 
-    private int firstMatch(EditText editor, Pattern pattern) {
-        Matcher matcher = pattern.matcher(editor.getText());
-        if (matcher.find()) {
-            return matcher.start();
-        }
-        return -1;
-    }
-
-    private int lastMatch(EditText editor, Pattern pattern) {
-        int last = -1;
-        Matcher matcher = pattern.matcher(editor.getText());
-        while (matcher.find()) last = matcher.end();
-        return last;
-    }
-
 
     public ArrayList<String> getImports(EditText editor) {
-        return allMatch(editor.getText(), PatternFactory.IMPORT);
+        return PatternFactory.allMatch(editor.getText(), PatternFactory.IMPORT);
     }
 
-    @Nullable
-    private String lastMatch(CharSequence text, Pattern pattern) {
-        Matcher matcher = pattern.matcher(text);
-        ArrayList<String> list = new ArrayList<>();
-        while (matcher.find()) {
-            list.add(matcher.group());
+
+    public Pair<ArrayList<String>, Boolean> determineClassName(EditText editor, int pos, String text,
+                                                               @Nullable String prefix, String suffix,
+                                                               String preReturnType) {
+        try {
+            ArrayList<String> classNames = null;
+            String classSimpleName = null;
+            boolean instance = false;
+            if (prefix != null) {
+                instance = prefix.matches("\\)$");
+            }
+            if (prefix != null && prefix.equals("this")) {
+                classSimpleName = this.getCurrentClassSimpleName(editor);
+                instance = true;
+            } else if (prefix != null) {
+                String word = this.getWord(editor, pos);
+                if (word.contains("((")) {
+                    classSimpleName = Pattern.compile("[^)]*").matcher(prefix).group(); // TODO: 20-Jul-17  exception
+                } else {
+                    classSimpleName = prefix;
+                }
+            }
+
+            if (!JavaUtil.isValidClassName(classSimpleName)
+                    && !prefix.matches("\\.\\)")) {
+                Layout layout = editor.getLayout();
+                int start = Math.max(0, pos - 2500);
+                int end = pos;
+                CharSequence range = editor.getText().subSequence(start, end);
+
+                //BigInteger num = new BigInteger(); -> BigInteger num =
+                classSimpleName = lastMatchStr(range, PatternFactory.makeInstance(prefix));
+                //BigInteger num =  -> BigInteger
+                classSimpleName = classSimpleName.replaceAll("\\s?" + prefix + "[,;=\\s)]]", "");
+                //generic ArrayList<String> -> ArrayList
+                classSimpleName = classSimpleName.replaceAll("<.*>", "");
+
+                instance = true;
+            } else {
+
+            }
+            if (JavaUtil.isValidClassName(classSimpleName)) {
+                classNames = getPossibleClassName(editor.getText(), classSimpleName, prefix);
+            } else {
+                classNames = new ArrayList<>();
+                classNames.add(preReturnType);
+                instance = true;
+            }
+
+            return new Pair<>(classNames, instance);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (list.size() == 0) return null;
-        return list.get(list.size() - 1);
-    }
-
-    @Nullable
-    private String match(CharSequence text, Pattern pattern) {
-        Matcher matcher = pattern.matcher(text);
-        if (matcher.find()) return matcher.group();
-        else return null;
-    }
-
-    private ArrayList<String> allMatch(CharSequence text, Pattern pattern) {
-        Matcher matcher = pattern.matcher(text);
-        ArrayList<String> list = new ArrayList<>();
-        while (matcher.find()) {
-            list.add(matcher.group());
-        }
-        return list;
+        return null;
     }
 }

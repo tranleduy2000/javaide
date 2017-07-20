@@ -1,9 +1,10 @@
 package com.duy.testapplication.autocomplete;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
- * Created by Duy on 20-Jul-17.
+ *Created by Duy on 20-Jul-17.
  */
 
 public class JavaUtil {
@@ -31,6 +32,12 @@ public class JavaUtil {
             result = s + result;
         }
         return result;
+    }
+
+
+    public static boolean isValidClassName(@Nullable String name) {
+        if (name == null) return false;
+        return name.matches("[A-Za-z][A-Za-z0-9]*");
     }
 
 }

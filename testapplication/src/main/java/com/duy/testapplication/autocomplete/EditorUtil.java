@@ -21,15 +21,13 @@ import static com.duy.testapplication.autocomplete.PatternFactory.lastMatchStr;
  */
 
 public class EditorUtil {
-    private EditText editor;
 
-    public EditorUtil(EditText editable) {
-        this.editor = editable;
+    public EditorUtil() {
     }
 
     @Nullable
-    public String getCurrentPackage() {
-        Matcher matcher = PatternFactory.PACKAGE.matcher(editor.getText());
+    public static String getCurrentPackage(EditText editText) {
+        Matcher matcher = PatternFactory.PACKAGE.matcher(editText.getText());
         if (matcher.find()) {
             return matcher.group();
         }
@@ -53,14 +51,14 @@ public class EditorUtil {
     }
 
 
-    public ArrayList<String> getPossibleClassName(CharSequence text, String simpleName, String prefix) {
+    public static ArrayList<String> getPossibleClassName(EditText editText, String simpleName, String prefix) {
         ArrayList<String> classList = new ArrayList<>();
-        String importedClassName = getImportedClassName(simpleName);
+        String importedClassName = getImportedClassName(editText, simpleName);
         if (importedClassName != null) {
             classList.add(importedClassName);
         } else {
             if (!prefix.contains(".")) {
-                classList.add(getCurrentPackage() + "." + simpleName);
+                classList.add(getCurrentPackage(editText) + "." + simpleName);
                 classList.add("java.lang." + simpleName);
             } else {
                 classList.add(prefix);
@@ -106,53 +104,9 @@ public class EditorUtil {
         return split.length >= 2 ? split[split.length - 2] : null;
     }
 
-    public static String getImportedClassName(String className) {
+    public static String getImportedClassName(EditText editor, String className) {
         return PatternFactory.match(editor.getText(), PatternFactory.makeImport(className));
     }
-
-    /**
-     * Add import statement if import does not already exist.
-     *
-     * @param editor
-     * @param className
-     */
-    public  void importClass(EditText editor, String className) {
-        String packageName = JavaUtil.getPackageName(className);
-        if (this.getImportedClassName(className) == null
-                && !packageName.equals("java.lang")
-                && !packageName.equals(this.getCurrentPackage())) {
-            this.organizeImports(editor, "import " + className + ";");
-        }
-    }
-
-    public static void organizeImports(EditText editor, String importStr) {
-        Log.d(TAG, "organizeImports() called with: editor = [" + editor + "], importStr = [" + importStr + "]");
-
-        ArrayList<String> imports = getImports(editor);
-        imports.add(importStr);
-        Collections.sort(imports, new Comparator<String>() {
-            @Override
-            public int compare(String s, String t1) {
-                return s.compareTo(t1);
-            }
-        });
-        StringBuilder imp = new StringBuilder();
-        for (String s : imports) {
-            imp.append(s).append("\n");
-        }
-        int first = firstMatch(editor, PatternFactory.IMPORT);
-        int last = PatternFactory.lastMatch(editor, PatternFactory.IMPORT);
-        if (first >= 0 && last > first) {
-            editor.getText().replace(first, last, "");
-            editor.getText().insert(first, imp);
-        }
-    }
-
-
-    public static ArrayList<String> getImports(EditText editor) {
-        return PatternFactory.allMatch(editor.getText(), PatternFactory.IMPORT);
-    }
-
 
     public static Pair<ArrayList<String>, Boolean> determineClassName(EditText editor, int pos, String text,
                                                                       @Nullable String prefix, String suffix,
@@ -195,10 +149,10 @@ public class EditorUtil {
 
             }
             if (JavaUtil.isValidClassName(classSimpleName)) {
-                classNames = getPossibleClassName(editor.getText(), classSimpleName, prefix);
+                classNames = getPossibleClassName(editor, classSimpleName, prefix);
             } else {
                 classNames = new ArrayList<>();
-                classNames.add(preReturnType);
+                classNames.add(preReturnType.getName()); // TODO: 20-Jul-17
                 instance = true;
             }
 
@@ -207,5 +161,48 @@ public class EditorUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void organizeImports(EditText editor, String importStr) {
+        Log.d(TAG, "organizeImports() called with: editor = [" + editor + "], importStr = [" + importStr + "]");
+
+        ArrayList<String> imports = getImports(editor);
+        imports.add(importStr);
+        Collections.sort(imports, new Comparator<String>() {
+            @Override
+            public int compare(String s, String t1) {
+                return s.compareTo(t1);
+            }
+        });
+        StringBuilder imp = new StringBuilder();
+        for (String s : imports) {
+            imp.append(s).append("\n");
+        }
+        int first = firstMatch(editor, PatternFactory.IMPORT);
+        int last = PatternFactory.lastMatch(editor, PatternFactory.IMPORT);
+        if (first >= 0 && last > first) {
+            editor.getText().replace(first, last, "");
+            editor.getText().insert(first, imp);
+        }
+    }
+
+
+    public static ArrayList<String> getImports(EditText editor) {
+        return PatternFactory.allMatch(editor.getText(), PatternFactory.IMPORT);
+    }
+
+    /**
+     * Add import statement if import does not already exist.
+     *
+     * @param editor
+     * @param className
+     */
+    public void importClass(EditText editor, String className) {
+        String packageName = JavaUtil.getPackageName(className);
+        if (getImportedClassName(editor, className) == null
+                && !packageName.equals("java.lang")
+                && !packageName.equals(getCurrentPackage(editor))) {
+            organizeImports(editor, "import " + className + ";");
+        }
     }
 }

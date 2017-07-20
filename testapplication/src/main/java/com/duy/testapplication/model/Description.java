@@ -7,6 +7,12 @@ package com.duy.testapplication.model;
 public class Description {
     private String className;
     private Member member;
+    private Type type;
+    private String simpleName;
+
+    public Type getType() {
+        return type;
+    }
 
     public Member getMember() {
         return member;
@@ -14,5 +20,9 @@ public class Description {
 
     public String getClassName() {
         return className;
+    }
+
+    public String getSimpleName() {
+        return simpleName;
     }
 }

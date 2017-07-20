@@ -4,6 +4,7 @@ import android.support.v4.util.Pair;
 import android.widget.EditText;
 
 import com.duy.testapplication.dex.JavaDexClassLoader;
+import com.duy.testapplication.model.Description;
 import com.duy.testapplication.model.SuggestModel;
 
 import java.lang.reflect.Constructor;
@@ -87,6 +88,22 @@ public class AutoCompleteProvider {
     public String getFormattedReturnType(Member member) {
         // TODO: 20-Jul-17
         return null;
+    }
+
+    private String createSnippet(Description desc, String line, String prefix, boolean addMemberClass) {
+        boolean useFullClassName = desc.getType().equals("class")
+                ? line.matches("^(import)") : prefix.contains(".");
+        String text = useFullClassName ? desc.getClassName() : desc.getSimpleName();
+        if (desc.getMember() != null) {
+            text = (addMemberClass ? "${1:" + text + "}." : "")
+                    + createMemberSnippet(desc.getMember(), desc.getType());
+        }
+        return text;
+    }
+
+    private String createMemberSnippet(com.duy.testapplication.model.Member member, com.duy.testapplication.model.Type type) {
+        return null;
+        // TODO: 20-Jul-17
     }
 
     public void onDidInsertSuggestion(EditText editText, SuggestModel suggestion) {

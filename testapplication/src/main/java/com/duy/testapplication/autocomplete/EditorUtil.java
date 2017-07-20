@@ -70,8 +70,9 @@ public class EditorUtil {
     @Nullable
     public static String getLine(EditText editText, int pos) {
         if (pos < 0 || pos > editText.length()) return null;
-        int lineStart = editText.getLayout().getLineStart(pos);
-        int lineEnd = editText.getLayout().getLineEnd(pos);
+        int line = LineUtils.getLineFromIndex(pos, editText.getLayout().getLineCount(), editText.getLayout());
+        int lineStart = editText.getLayout().getLineStart(line);
+        int lineEnd = editText.getLayout().getLineEnd(line);
         return editText.getText().subSequence(lineStart, lineEnd).toString();
     }
 

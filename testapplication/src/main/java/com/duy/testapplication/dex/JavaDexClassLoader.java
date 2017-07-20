@@ -23,7 +23,6 @@ public class JavaDexClassLoader {
     private Dictionary mDictionary;
 
     public JavaDexClassLoader(File classpath, File outDir) {
-
         mDictionary = new Dictionary();
         mClassReader = new JavaClassReader(classpath.getPath(), outDir.getPath());
     }
@@ -70,7 +69,7 @@ public class JavaDexClassLoader {
         return this.addClass(aClass, System.currentTimeMillis());
     }
 
-    public void loadClasses(boolean fullRefresh) {
+    public void loadAllClasses(boolean fullRefresh) {
         if (fullRefresh) {
             mClassReader.dispose();
             mClassReader.load();

@@ -31,8 +31,13 @@ public class ClassDescription implements Description {
         methods = new ArrayList<>();
     }
 
-    public String getType() {
-        return type;
+    public Class getType() {
+        return null;
+    }
+
+    @Override
+    public String getSnippet() {
+        return null;
     }
 
     public void setType(String type) {

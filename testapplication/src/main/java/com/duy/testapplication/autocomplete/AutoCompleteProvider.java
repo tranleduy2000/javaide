@@ -3,18 +3,16 @@ package com.duy.testapplication.autocomplete;
 import android.content.Context;
 import android.os.Environment;
 import android.support.v4.util.Pair;
+import android.util.Log;
 import android.widget.EditText;
 
-import com.duy.testapplication.datastructure.Dictionary;
-import com.duy.testapplication.dex.JavaClassReader;
 import com.duy.testapplication.dex.JavaDexClassLoader;
+import com.duy.testapplication.model.ClassConstructor;
+import com.duy.testapplication.model.ClassDescription;
 import com.duy.testapplication.model.Description;
-import com.duy.testapplication.model.MemberDescription;
-import com.duy.testapplication.model.SuggestModel;
+import com.duy.testapplication.model.Member;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
 import java.util.ArrayList;
 
 /**
@@ -23,23 +21,25 @@ import java.util.ArrayList;
 
 public class AutoCompleteProvider {
     private JavaDexClassLoader mClassLoader;
-    private JavaClassReader mJavaClassReader;
     private Class preReturnType;
-    private Dictionary mDictionary;
 
     public AutoCompleteProvider(Context context) {
         File classpath = new File(Environment.getExternalStorageDirectory(), "android.jar");
-        mDictionary = new Dictionary();
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
         mClassLoader = new JavaDexClassLoader(classpath, outDir);
-        mJavaClassReader = new JavaClassReader(classpath.getPath(), outDir.getPath());
     }
+
+    private static final String TAG = "AutoCompleteProvider";
 
     public void load() {
-        mJavaClassReader.load();
+        mClassLoader.loadAllClasses(false);
     }
 
+
     public ArrayList<Object> getSuggestions(EditText editor, int position, String origPrefix) {
+        Log.d(TAG, "getSuggestions() called with: editor = [" + editor + "], position = ["
+                + position + "], origPrefix = [" + origPrefix + "]");
+
         // text: 'package.Class.me', prefix: 'package.Class', suffix: 'me'
         // text: 'package.Cla', prefix: 'package', suffix: 'Cla'
         // text: 'Cla', prefix: '', suffix: 'Cla'
@@ -55,16 +55,15 @@ public class AutoCompleteProvider {
         boolean couldBeClass = suffix.matches(PatternFactory.CLASS_NAME.toString()) || prefix != null;
         boolean instance = false;
 
-        ArrayList<Object> result = null;
+        ArrayList<Description> result = null;
 
         if (couldBeClass) {
-            ArrayList<Class> classes = this.mClassLoader.findClass(text);
+            ArrayList<ClassDescription> classes = this.mClassLoader.findClass(text);
             if (preWord.equals("new") && classes.size() > 0) {
-                for (Class aClass : classes) {
-                    Constructor[] constructors = aClass.getConstructors();
-                    for (Constructor constructor : constructors) {
+                for (ClassDescription description : classes) {
+                    ArrayList<ClassConstructor> constructors = description.getConstructors();
+                    for (ClassConstructor constructor : constructors) {
                         // TODO: 20-Jul-17
-                        result.add(new SuggestModel());
                     }
                 }
             } else {
@@ -75,7 +74,8 @@ public class AutoCompleteProvider {
 
 
         if (result == null || result.size() == 0) {
-            Pair<ArrayList<String>, Boolean> r = EditorUtil.determineClassName(editor, position, text, prefix, suffix, preReturnType);
+            Pair<ArrayList<String>, Boolean> r
+                    = EditorUtil.determineClassName(editor, position, text, prefix, suffix, preReturnType);
             if (r != null) {
                 ArrayList<String> classes = r.first;
                 instance = r.second;
@@ -83,14 +83,13 @@ public class AutoCompleteProvider {
                     result = mClassLoader.findClassMember(className, suffix);
                     String superClass = mClassLoader.findSuperClassName(className);
                     while (superClass != null) {
-                        ArrayList<Object> classMember = mClassLoader.findClassMember(superClass, suffix);
+                        ArrayList<Description> classMember = mClassLoader.findClassMember(superClass, suffix);
                         if (classMember != null) {
                             result.addAll(classMember);
                         }
                         superClass = mClassLoader.findSuperClassName(superClass);
                     }
                 }
-                return result;
             }
         }
         ArrayList<String> duplicateWorkaround = new ArrayList<>();
@@ -103,28 +102,29 @@ public class AutoCompleteProvider {
     }
 
     private String createSnippet(Description desc, String line, String prefix, boolean addMemberClass) {
-        boolean useFullClassName = desc.getType().equals("class")
-                ? line.matches("^(import)") : prefix.contains(".");
-        String text = useFullClassName ? desc.getClassName() : desc.getSimpleName();
-        if (desc.getMember() != null) {
-            text = (addMemberClass ? "${1:" + text + "}." : "")
-                    + createMemberSnippet(desc.getMember(), desc.getType());
-        }
-        return text;
+//        boolean useFullClassName = desc.getType().equals("class")
+//                ? line.matches("^(import)") : prefix.contains(".");
+//        String text = useFullClassName ? desc.getClassName() : desc.getSimpleName();
+//        if (desc.getMember() != null) {
+//            text = (addMemberClass ? "${1:" + text + "}." : "")
+//                    + createMemberSnippet(desc.getMember(), desc.getType());
+//        }
+//        return text;
+        return "";
     }
 
-    private String createMemberSnippet(MemberDescription member, com.duy.testapplication.model.Type type) {
+    private String createMemberSnippet(Description member, com.duy.testapplication.model.Type type) {
         return null;
         // TODO: 20-Jul-17
     }
 
-    public void onDidInsertSuggestion(EditText editText, SuggestModel suggestion) {
-        if (suggestion.getType().equals("class")) {
+    public void onDidInsertSuggestion(EditText editText, Description suggestion) {
+        if (suggestion instanceof ClassDescription) {
             if (!suggestion.getSnippet().contains(".")) {
-                EditorUtil.organizeImports(editText, suggestion.getDescription().getClassName());
+                EditorUtil.organizeImports(editText, ((ClassDescription) suggestion).getClassName());
             }
-        } else if (suggestion.getDescription().getMember() != null) {
-            this.preReturnType = suggestion.getDescription().getMember().getReturnType();
+        } else if (suggestion instanceof Member) {
+            this.preReturnType = suggestion.getType();
         }
         mClassLoader.touchClass(suggestion.getDescription());
     }

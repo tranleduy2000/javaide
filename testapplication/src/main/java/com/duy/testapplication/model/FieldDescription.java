@@ -34,7 +34,22 @@ public class FieldDescription implements Member , Description {
     }
 
     @Override
+    public Class getType() {
+        return null;
+    }
+
+    @Override
+    public String getSnippet() {
+        return null;
+    }
+
+    @Override
     public String getPrototype() {
         return field.getName();
+    }
+
+    @Override
+    public Class getReturnType() {
+        return null;
     }
 }

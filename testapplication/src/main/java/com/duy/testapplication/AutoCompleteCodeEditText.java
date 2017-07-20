@@ -1,6 +1,7 @@
 package com.duy.testapplication;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 
@@ -20,19 +21,30 @@ public class AutoCompleteCodeEditText extends AppCompatEditText {
 
     public AutoCompleteCodeEditText(Context context) {
         super(context);
+        init(context);
     }
 
     public AutoCompleteCodeEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context);
+
     }
 
     public AutoCompleteCodeEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
+
+    }
+
+    private void init(Context context) {
+        setTypeface(Typeface.MONOSPACE);
     }
 
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
-//        mAutoCompleteProvider.getSuggestions(this, getSelectionEnd(), )
+        if (mAutoCompleteProvider != null) {
+            mAutoCompleteProvider.getSuggestions(this, getSelectionEnd(), "");
+        }
     }
 }

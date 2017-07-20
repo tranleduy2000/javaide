@@ -8,4 +8,6 @@ public interface Member {
     String getName();
 
     String getPrototype();
+
+    Class getReturnType();
 }

@@ -6,7 +6,7 @@ package com.duy.testapplication.model;
 
 public class Description {
     private String className;
-    private Member member;
+    private MemberDescription member;
     private Type type;
     private String simpleName;
     private long lastUsed;
@@ -25,7 +25,7 @@ public class Description {
         return type;
     }
 
-    public Member getMember() {
+    public MemberDescription getMember() {
         return member;
     }
 

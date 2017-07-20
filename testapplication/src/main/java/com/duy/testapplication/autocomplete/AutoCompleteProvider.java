@@ -9,6 +9,7 @@ import com.duy.testapplication.datastructure.Dictionary;
 import com.duy.testapplication.dex.JavaClassReader;
 import com.duy.testapplication.dex.JavaDexClassLoader;
 import com.duy.testapplication.model.Description;
+import com.duy.testapplication.model.MemberDescription;
 import com.duy.testapplication.model.SuggestModel;
 
 import java.io.File;
@@ -112,7 +113,7 @@ public class AutoCompleteProvider {
         return text;
     }
 
-    private String createMemberSnippet(com.duy.testapplication.model.Member member, com.duy.testapplication.model.Type type) {
+    private String createMemberSnippet(MemberDescription member, com.duy.testapplication.model.Type type) {
         return null;
         // TODO: 20-Jul-17
     }
@@ -125,6 +126,6 @@ public class AutoCompleteProvider {
         } else if (suggestion.getDescription().getMember() != null) {
             this.preReturnType = suggestion.getDescription().getMember().getReturnType();
         }
-        mClassLoader.touch(suggestion.getDescription());
+        mClassLoader.touchClass(suggestion.getDescription());
     }
 }

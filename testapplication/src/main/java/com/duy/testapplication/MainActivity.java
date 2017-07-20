@@ -6,11 +6,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.duy.testapplication.dex.JavaDexClassLoader;
-
-import java.lang.reflect.Constructor;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,17 +26,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         mClassLoader = new JavaDexClassLoader(this);
-        testLoadClass();
 
     }
 
-    private void testLoadClass() {
-        Class aClass = mClassLoader.loadClass("java.util.ArrayList");
-        Log.d(TAG, "testLoadClass: " + aClass);
-        if (aClass != null) {
-            for (Constructor constructor : aClass.getConstructors()) {
-                Log.d(TAG, "testLoadClass constructor = " + constructor);
-            }
-        }
-    }
 }

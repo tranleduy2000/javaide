@@ -9,6 +9,16 @@ public class Description {
     private Member member;
     private Type type;
     private String simpleName;
+    private long lastUsed;
+
+    public long getLastUsed() {
+        return lastUsed;
+
+    }
+
+    public void setLastUsed(long lastUsed) {
+        this.lastUsed = lastUsed;
+    }
 
     public Type getType() {
         return type;

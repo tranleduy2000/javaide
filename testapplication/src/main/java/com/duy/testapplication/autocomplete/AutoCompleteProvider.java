@@ -1,5 +1,6 @@
 package com.duy.testapplication.autocomplete;
 
+import android.content.Context;
 import android.support.v4.util.Pair;
 import android.widget.EditText;
 
@@ -19,9 +20,10 @@ public class AutoCompleteProvider {
     private JavaDexClassLoader mClassLoader;
     private Class preReturnType;
 
-    public AutoCompleteProvider() {
-
+    public AutoCompleteProvider(Context context) {
+        mClassLoader = new JavaDexClassLoader(context);
     }
+
 
     public ArrayList<Object> getSuggestions(EditText editor, int position, String origPrefix) {
         // text: 'package.Class.me', prefix: 'package.Class', suffix: 'me'

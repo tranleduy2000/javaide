@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by Duy on 20-Jul-17.
  */
 
-public class ClassDescription {
+public class ClassDescription implements Description {
     private String type;
     private String name, simpleName, className, extend, packageName;
     private long lastUsed = 0;
@@ -41,6 +41,11 @@ public class ClassDescription {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
     }
 
     public void setName(String name) {
@@ -106,5 +111,13 @@ public class ClassDescription {
 
     public void addField(FieldDescription fieldDescription) {
         fields.add(fieldDescription);
+    }
+
+    public void addMethod(MethodDescription methodDescription) {
+        methods.add(methodDescription);
+    }
+
+    public ArrayList<MethodDescription> getMethods() {
+        return methods;
     }
 }

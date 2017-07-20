@@ -6,10 +6,12 @@ import android.util.Log;
 import com.duy.testapplication.model.ClassConstructor;
 import com.duy.testapplication.model.ClassDescription;
 import com.duy.testapplication.model.FieldDescription;
+import com.duy.testapplication.model.MethodDescription;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
@@ -87,8 +89,11 @@ public class JavaClassReader {
             for (Constructor constructor : aClass.getConstructors()) {
                 desc.addConstructor(new ClassConstructor(constructor));
             }
-            for (Field field : aClass.getFields()) {
+            for (Field field : aClass.getDeclaredFields()) {
                 desc.addField(new FieldDescription(field));
+            }
+            for (Method method : aClass.getDeclaredMethods()) {
+                desc.addMethod(new MethodDescription(method));
             }
 
             return desc;

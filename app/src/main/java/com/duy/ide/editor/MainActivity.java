@@ -47,6 +47,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.duy.compile.external.CommandManager;
+import com.duy.compile.external.dex.JavaDexClassLoader;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
 import com.duy.ide.code.CompileManager;
@@ -58,7 +60,6 @@ import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
-import com.duy.compile.external.CommandManager;
 import com.duy.project_file.ProjectFile;
 import com.duy.project_file.ProjectManager;
 import com.duy.project_file.dialog.DialogSelectDirectory;
@@ -96,6 +97,16 @@ public class MainActivity extends BaseEditorActivity implements
         mCompileManager = new CompileManager(this);
         mMenuEditor = new MenuEditor(this, this);
         initView(savedInstanceState);
+
+        testLoadClass();
+    }
+
+    private void testLoadClass() {
+        JavaDexClassLoader dexClassLoader = new JavaDexClassLoader(this);
+        Class aClass = dexClassLoader.loadClass("java.lang.String");
+        if (aClass != null) {
+            Log.d(TAG, "testLoadClass: " + aClass);
+        }
     }
 
     public void initView(Bundle savedInstanceState) {

@@ -4,15 +4,17 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import com.duy.testapplication.dex.JavaDexClassLoader;
+import com.duy.testapplication.dex.JavaClassReader;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private JavaDexClassLoader mClassLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +27,16 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
-        mClassLoader = new JavaDexClassLoader(this);
 
+        String classpath = Environment.getExternalStorageDirectory() + "/android.jar";
+        File outDir = this.getDir("dex", MODE_PRIVATE);
+        final JavaClassReader reader = new JavaClassReader(classpath, outDir.getPath());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                reader.load();
+            }
+        }).start();
     }
 
 }

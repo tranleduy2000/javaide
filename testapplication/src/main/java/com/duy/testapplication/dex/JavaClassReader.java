@@ -1,13 +1,10 @@
 package com.duy.testapplication.dex;
 
-import org.apache.commons.io.FileUtils;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -17,20 +14,25 @@ import java.util.jar.JarFile;
  */
 
 public class JavaClassReader {
-    private String javaHome;
+    private static final String TAG = "JavaClassReader";
+    private String classpath;
+    private String outDir;
+    private ArrayList<Class> mClasses = new ArrayList<>();
 
-    public JavaClassReader(String javaHome) {
-        this.javaHome = javaHome;
+    public JavaClassReader(String classpath, String outDir) {
+        this.classpath = classpath;
+        this.outDir = outDir;
     }
 
-    public static ArrayList<Class> readAllClassesFromJar(String path) {
+    public static ArrayList<Class> readAllClassesFromJar(String path, String outDir) {
+        Log.d(TAG, "readAllClassesFromJar() called with: path = [" + path + "]");
+
         ArrayList<Class> classes = new ArrayList<>();
         try {
             JarFile jarFile = new JarFile(path);
             Enumeration<JarEntry> e = jarFile.entries();
 
-            URL[] urls = {new URL("jar:file:" + path + "!/")};
-            URLClassLoader cl = URLClassLoader.newInstance(urls);
+            JavaDexClassLoader cl = new JavaDexClassLoader(new File(path), new File(outDir));
 
             while (e.hasMoreElements()) {
                 JarEntry je = e.nextElement();
@@ -39,10 +41,9 @@ public class JavaClassReader {
                 }
                 String className = je.getName().substring(0, je.getName().length() - 6);
                 className = className.replace('/', '.');
-                try {
-                    Class c = cl.loadClass(className);
+                Class c = cl.loadClass(className);
+                if (c != null) {
                     classes.add(c);
-                } catch (ClassNotFoundException e2) {
                 }
             }
         } catch (IOException e) {
@@ -51,32 +52,17 @@ public class JavaClassReader {
         return classes;
     }
 
-    public void readAllClassesFromClasspath(String classPath, boolean skipLibs) {
-        String[] split = classPath.split(":");
-        ArrayList<Class> result = new ArrayList<>();
-        for (String s : split) {
-            result.addAll(readAllClassesFromPath(classPath, false));
-        }
+    public void load() {
+        Log.d(TAG, "load() called");
+
+        this.mClasses.clear();
+        this.mClasses.addAll(readAllClassesFromJar(classpath, outDir));
+        Log.d(TAG, "load: " + mClasses.size());
     }
 
-    private ArrayList<Class> readAllClassesFromPath(String path, boolean skipLib) {
-        ArrayList<Class> result = new ArrayList<>();
-        if (skipLib && (path.endsWith(".jar") || path.endsWith("*"))) {
-            return result;
-        } else if (path.endsWith(".jar")) {
-            result = readAllClassesFromJar(path);
-        } else if (path.endsWith("*")) {
-            path = path.replace("*", "");
-            File file = new File(path);
-            Collection<File> files = FileUtils.listFiles(file, new String[]{".jar"}, true);
-            for (File f : files) {
-                result.addAll(readAllClassesFromJar(f.getPath()));
-            }
-        }
-        return result;
-    }
+    public void dispose() {
+        Log.d(TAG, "dispose() called");
 
-    private Class readClasses(String path) {
-        return null;
+        mClasses.clear();
     }
 }

@@ -1,13 +1,16 @@
 package com.duy.testapplication.autocomplete;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.v4.util.Pair;
 import android.widget.EditText;
 
+import com.duy.testapplication.datastructure.Dictionary;
 import com.duy.testapplication.dex.JavaDexClassLoader;
 import com.duy.testapplication.model.Description;
 import com.duy.testapplication.model.SuggestModel;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
@@ -19,9 +22,12 @@ import java.util.ArrayList;
 public class AutoCompleteProvider {
     private JavaDexClassLoader mClassLoader;
     private Class preReturnType;
+    private Dictionary mDictionary;
 
     public AutoCompleteProvider(Context context) {
-        mClassLoader = new JavaDexClassLoader(context);
+        File classpath = new File(Environment.getDownloadCacheDirectory(), "android.jar");
+        mDictionary = new Dictionary();
+        mClassLoader = new JavaDexClassLoader(classpath, context.getDir("dex", Context.MODE_PRIVATE));
     }
 
 
@@ -79,11 +85,7 @@ public class AutoCompleteProvider {
                 return result;
             }
         }
-
-
         ArrayList<String> duplicateWorkaround = new ArrayList<>();
-
-
         return null;
     }
 

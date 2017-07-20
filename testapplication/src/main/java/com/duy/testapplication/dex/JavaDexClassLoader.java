@@ -1,7 +1,5 @@
 package com.duy.testapplication.dex;
 
-import android.content.Context;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -19,11 +17,9 @@ import dalvik.system.DexClassLoader;
 public class JavaDexClassLoader {
     private DexClassLoader dexClassLoader;
 
-    public JavaDexClassLoader(Context context) {
-        File classes = new File(Environment.getExternalStorageDirectory(), "android.jar");
-        File dexOutputDir = context.getDir("dex", Context.MODE_PRIVATE);
-        dexClassLoader = new DexClassLoader(classes.getAbsolutePath(),
-                dexOutputDir.getAbsolutePath(), null,
+    public JavaDexClassLoader(File classpath, File outDir) {
+        dexClassLoader = new DexClassLoader(classpath.getAbsolutePath(),
+                outDir.getAbsolutePath(), null,
                 ClassLoader.getSystemClassLoader());
     }
 
@@ -32,7 +28,7 @@ public class JavaDexClassLoader {
         try {
             return dexClassLoader.loadClass(name);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return null;
     }

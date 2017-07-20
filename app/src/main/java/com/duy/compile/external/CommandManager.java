@@ -1,4 +1,4 @@
-package com.duy.external;
+package com.duy.compile.external;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.duy.ide.file.FileManager;
-import com.duy.external.dex.Dex;
-import com.duy.external.java.Javac;
+import com.duy.compile.external.dex.Dex;
+import com.duy.compile.external.java.Javac;
 import com.duy.project_file.ClassFile;
 import com.duy.project_file.ProjectFile;
 import com.google.common.base.Verify;

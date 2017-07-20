@@ -9,13 +9,16 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion as Integer
         targetSdkVersion rootProject.ext.targetSdkVersion as Integer
         multiDexEnabled true
+        versionCode 8
+        versionName "1.0.7 beta"
         ndk {
             moduleName "libjackpal-androidterm2"
             abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
         }
+//        jackOptions {
+//            enabled true
+//        }
 
-        versionCode 8
-        versionName "1.0.7 beta"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -43,7 +46,11 @@ android {
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
     }
-
+//
+//    compileOptions {
+//        targetCompatibility 1.8
+//        sourceCompatibility 1.8
+//    }
 }
 repositories {
     mavenCentral()
@@ -91,8 +98,6 @@ dependencies {
     compile project(':treeview')
 
     compile 'com.google.guava:guava:22.0-android'
-
-
 }
 
 apply plugin: 'com.google.gms.google-services'

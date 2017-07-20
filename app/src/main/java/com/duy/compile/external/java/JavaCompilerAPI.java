@@ -1,4 +1,4 @@
-package com.duy.external.java;
+package com.duy.compile.external.java;
 
 import com.duy.ide.file.FileManager;
 import com.duy.project_file.ProjectFile;

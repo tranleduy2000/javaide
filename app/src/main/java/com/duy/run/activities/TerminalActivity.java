@@ -46,7 +46,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.code.CompileManager;
-import com.duy.external.CommandManager;
+import com.duy.compile.external.CommandManager;
 import com.duy.project_file.ProjectFile;
 import com.duy.run.view.EmulatorView;
 import com.duy.run.view.TermKeyListener;

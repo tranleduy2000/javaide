@@ -58,7 +58,7 @@ import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
-import com.duy.external.CommandManager;
+import com.duy.compile.external.CommandManager;
 import com.duy.project_file.ProjectFile;
 import com.duy.project_file.ProjectManager;
 import com.duy.project_file.dialog.DialogSelectDirectory;

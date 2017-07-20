@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.external.dex;
+package com.duy.compile.external.dex;
 
 import java.io.File;
 import java.io.IOException;

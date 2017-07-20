@@ -1,4 +1,4 @@
-package com.duy.external.java;
+package com.duy.compile.external.java;
 
 import com.sun.tools.javac.Main;
 

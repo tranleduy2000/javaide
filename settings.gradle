@@ -1,1 +1,1 @@
-include ':app', ':splitview', ':colorpicker', ':pager', ':sample', ':treeview', ':javaformatter', ':javaparser'
+include ':app', ':splitview', ':colorpicker', ':pager', ':sample', ':treeview', ':javaformatter'

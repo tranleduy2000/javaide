@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.duy.external.java;
+package com.duy.compile.external.java;
 
 import java.io.BufferedInputStream;
 import java.io.File;

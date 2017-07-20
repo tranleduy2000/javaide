@@ -1,6 +1,6 @@
-package com.duy.external.java;
+package com.duy.compile.external.java;
 
-import com.duy.external.dex.DexClassLoader;
+import com.duy.compile.external.dex.DexClassLoader;
 
 import java.lang.reflect.Method;
 

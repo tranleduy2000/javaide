@@ -1,4 +1,4 @@
-package com.duy.external.dex;
+package com.duy.compile.external.dex;
 
 import com.android.dx.command.Main;
 

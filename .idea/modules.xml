@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/javaformatter/javaformatter.iml" filepath="$PROJECT_DIR$/javaformatter/javaformatter.iml" />
       <module fileurl="file://$PROJECT_DIR$/javaide.iml" filepath="$PROJECT_DIR$/javaide.iml" />
       <module fileurl="file://$PROJECT_DIR$/javaide2.iml" filepath="$PROJECT_DIR$/javaide2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/javaparser/javaparser.iml" filepath="$PROJECT_DIR$/javaparser/javaparser.iml" />
       <module fileurl="file://$PROJECT_DIR$/pager/pager.iml" filepath="$PROJECT_DIR$/pager/pager.iml" />
       <module fileurl="file://$PROJECT_DIR$/pager/pager.iml" filepath="$PROJECT_DIR$/pager/pager.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />

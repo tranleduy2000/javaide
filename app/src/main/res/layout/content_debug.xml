@@ -50,7 +50,7 @@
                 android:scrollbarStyle="insideInset"
                 android:scrollbars="vertical">
 
-            </com.duy.editor.editor.view.HighlightEditor>
+            </com.duy.ide.editor.view.HighlightEditor>
         </HorizontalScrollView>
 
     </com.duy.ide.view.LockableScrollView>

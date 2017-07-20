@@ -10,6 +10,7 @@ public class Description {
     private Type type;
     private String simpleName;
     private long lastUsed;
+    private Object superClass;
 
     public long getLastUsed() {
         return lastUsed;
@@ -34,5 +35,9 @@ public class Description {
 
     public String getSimpleName() {
         return simpleName;
+    }
+
+    public Object getSuperClass() {
+        return superClass;
     }
 }

@@ -3,6 +3,7 @@ package com.duy.testapplication.dex;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.duy.testapplication.datastructure.Dictionary;
 import com.duy.testapplication.model.Description;
 
 import java.io.File;
@@ -15,40 +16,52 @@ import dalvik.system.DexClassLoader;
  */
 
 public class JavaDexClassLoader {
-    private DexClassLoader dexClassLoader;
+    private DexClassLoader mDexClassLoader;
+    private Dictionary mDictionary;
 
     public JavaDexClassLoader(File classpath, File outDir) {
-        dexClassLoader = new DexClassLoader(classpath.getAbsolutePath(),
+        mDexClassLoader = new DexClassLoader(classpath.getAbsolutePath(),
                 outDir.getAbsolutePath(), null,
                 ClassLoader.getSystemClassLoader());
+        mDictionary = new Dictionary();
     }
 
     @Nullable
     public Class loadClass(String name) {
         try {
-            return dexClassLoader.loadClass(name);
+            return mDexClassLoader.loadClass(name);
         } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
         }
         return null;
     }
 
     @NonNull
-    public ArrayList<Class> findClass(String text) {
-        return null;
+    public ArrayList<Description> findClass(String namePrefix) {
+        return mDictionary.find("class", namePrefix);
     }
 
+    @Nullable
+    public void findSuperClassName(String className) {
+        ArrayList<Description> classes = this.findClass(className);
+        Description currentClass = null;
+        for (Description aClass : classes) {
+            if (aClass.getClassName().equals(className)) {
+                currentClass = aClass;
+                break;
+            }
+        }
+        return currentClass == null ? null : currentClass.getSuperClass();
+    }
 
     public ArrayList<Object> findClassMember(String className, String suffix) {
         return null;
     }
 
-    @Nullable
-    public String findSuperClassName(String className) {
-        return null;
+    public void touch(Description description) {
+
     }
 
-    public void touch(Description description) {
+    public void loadAll() {
 
     }
 }

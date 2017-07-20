@@ -4,17 +4,15 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import com.duy.testapplication.dex.JavaClassReader;
-
-import java.io.File;
+import com.duy.testapplication.autocomplete.AutoCompleteProvider;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String TAG = "MainActivity";
+    private AutoCompleteCodeEditText mEditText;
+    private AutoCompleteProvider mAutoCompleteProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +25,14 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
+        mEditText = (AutoCompleteCodeEditText) findViewById(R.id.edit_input);
 
-        String classpath = Environment.getExternalStorageDirectory() + "/android.jar";
-        File outDir = this.getDir("dex", MODE_PRIVATE);
-        final JavaClassReader reader = new JavaClassReader(classpath, outDir.getPath());
+        mAutoCompleteProvider = new AutoCompleteProvider(this);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                reader.load();
+                mAutoCompleteProvider.load();
+                mEditText.setAutoCompleteProvider(mAutoCompleteProvider);
             }
         }).start();
     }

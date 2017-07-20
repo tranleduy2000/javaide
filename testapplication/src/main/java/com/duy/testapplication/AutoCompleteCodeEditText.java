@@ -3,7 +3,8 @@ package com.duy.testapplication;
 import android.content.Context;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
-import android.util.Log;
+
+import com.duy.testapplication.autocomplete.AutoCompleteProvider;
 
 /**
  * Created by Duy on 20-Jul-17.
@@ -11,6 +12,11 @@ import android.util.Log;
 
 public class AutoCompleteCodeEditText extends AppCompatEditText {
     private static final String TAG = "AutoCompleteCodeEditTex";
+    private AutoCompleteProvider mAutoCompleteProvider;
+
+    public void setAutoCompleteProvider(AutoCompleteProvider mAutoCompleteProvider) {
+        this.mAutoCompleteProvider = mAutoCompleteProvider;
+    }
 
     public AutoCompleteCodeEditText(Context context) {
         super(context);
@@ -27,7 +33,6 @@ public class AutoCompleteCodeEditText extends AppCompatEditText {
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
-        Log.d(TAG, "onTextChanged() called with: text = [" + text + "], start = [" + start + "], lengthBefore = [" + lengthBefore + "], lengthAfter = [" + lengthAfter + "]");
-
+//        mAutoCompleteProvider.getSuggestions(this, getSelectionEnd(), )
     }
 }

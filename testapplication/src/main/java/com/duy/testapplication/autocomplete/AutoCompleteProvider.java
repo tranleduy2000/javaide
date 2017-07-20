@@ -6,6 +6,7 @@ import android.support.v4.util.Pair;
 import android.widget.EditText;
 
 import com.duy.testapplication.datastructure.Dictionary;
+import com.duy.testapplication.dex.JavaClassReader;
 import com.duy.testapplication.dex.JavaDexClassLoader;
 import com.duy.testapplication.model.Description;
 import com.duy.testapplication.model.SuggestModel;
@@ -21,15 +22,21 @@ import java.util.ArrayList;
 
 public class AutoCompleteProvider {
     private JavaDexClassLoader mClassLoader;
+    private JavaClassReader mJavaClassReader;
     private Class preReturnType;
     private Dictionary mDictionary;
 
     public AutoCompleteProvider(Context context) {
-        File classpath = new File(Environment.getDownloadCacheDirectory(), "android.jar");
+        File classpath = new File(Environment.getExternalStorageDirectory(), "android.jar");
         mDictionary = new Dictionary();
-        mClassLoader = new JavaDexClassLoader(classpath, context.getDir("dex", Context.MODE_PRIVATE));
+        File outDir = context.getDir("dex", Context.MODE_PRIVATE);
+        mClassLoader = new JavaDexClassLoader(classpath, outDir);
+        mJavaClassReader = new JavaClassReader(classpath.getPath(), outDir.getPath());
     }
 
+    public void load() {
+        mJavaClassReader.load();
+    }
 
     public ArrayList<Object> getSuggestions(EditText editor, int position, String origPrefix) {
         // text: 'package.Class.me', prefix: 'package.Class', suffix: 'me'

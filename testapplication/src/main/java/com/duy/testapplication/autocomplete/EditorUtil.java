@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,14 +44,14 @@ public class EditorUtil {
         return null;
     }
 
-    public String isImportedClassName(String className) {
+    public String getImportedClassName(String className) {
         return match(editor.getText(), PatternFactory.makeImport(className));
     }
 
 
     public ArrayList<String> getPossibleClassName(CharSequence text, String simpleName, String prefix) {
         ArrayList<String> classList = new ArrayList<>();
-        String importedClassName = isImportedClassName(simpleName);
+        String importedClassName = getImportedClassName(simpleName);
         if (importedClassName != null) {
             classList.add(importedClassName);
         } else {
@@ -85,8 +87,55 @@ public class EditorUtil {
         }
     }
 
+    /**
+     * Add import statement if import does not already exist.
+     *
+     * @param editor
+     * @param className
+     */
     public void importClass(EditText editor, String className) {
-        // TODO: 20-Jul-17  import class
+        String packageName = JavaUtil.getPackageName(className);
+        if (this.getImportedClassName(className) == null
+                && !packageName.equals("java.lang")
+                && !packageName.equals(this.getCurrentPackage())) {
+            this.organizeImports(editor, "import " + className + ";");
+        }
+    }
+
+    public void organizeImports(EditText editor, String importStr) {
+        ArrayList<String> imports = getImports(editor);
+        imports.add(importStr);
+        Collections.sort(imports, new Comparator<String>() {
+            @Override
+            public int compare(String s, String t1) {
+                return s.compareTo(t1);
+            }
+        });
+        StringBuilder imp = new StringBuilder();
+        for (String anImport : imports) {
+            imp.append(imp.toString()).append("\n");
+        }
+        int first = firstMatch(editor, PatternFactory.IMPORT);
+        int last = lastMatch(editor, PatternFactory.IMPORT);
+        if (first >= 0 && last > first) {
+            editor.getText().replace(first, last, "");
+            editor.getText().insert(first, imp);
+        }
+    }
+
+    private int firstMatch(EditText editor, Pattern pattern) {
+        Matcher matcher = pattern.matcher(editor.getText());
+        if (matcher.find()) {
+            return matcher.start();
+        }
+        return -1;
+    }
+
+    private int lastMatch(EditText editor, Pattern pattern) {
+        int last = -1;
+        Matcher matcher = pattern.matcher(editor.getText());
+        while (matcher.find()) last = matcher.end();
+        return last;
     }
 
 

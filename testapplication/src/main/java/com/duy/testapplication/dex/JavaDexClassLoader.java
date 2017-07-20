@@ -1,10 +1,14 @@
-package com.duy.testapplication;
+package com.duy.testapplication.dex;
 
 import android.content.Context;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.duy.testapplication.model.Description;
+
 import java.io.File;
+import java.util.ArrayList;
 
 import dalvik.system.DexClassLoader;
 
@@ -33,4 +37,22 @@ public class JavaDexClassLoader {
         return null;
     }
 
+    @NonNull
+    public ArrayList<Class> findClass(String text) {
+        return null;
+    }
+
+
+    public ArrayList<Object> findClassMember(String className, String suffix) {
+        return null;
+    }
+
+    @Nullable
+    public String findSuperClassName(String className) {
+        return null;
+    }
+
+    public void touch(Description description) {
+
+    }
 }

@@ -8,6 +8,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.duy.testapplication.dex.JavaDexClassLoader;
+
 import java.lang.reflect.Constructor;
 
 public class MainActivity extends AppCompatActivity {

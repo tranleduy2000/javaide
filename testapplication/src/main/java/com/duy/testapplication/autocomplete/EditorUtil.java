@@ -38,13 +38,13 @@ public class EditorUtil {
 
     private static final String TAG = "EditorUtil";
 
-    public String getCurrentClassName() {
+    public static String getCurrentClassName(EditText editor) {
         return null;
     }
 
     @NonNull
-    public String getCurrentClassSimpleName(EditText editor) {
-        String className = getCurrentClassName();
+    public static String getCurrentClassSimpleName(EditText editor) {
+        String className = getCurrentClassName(editor);
         int i = className.indexOf(".");
         if (i == -1) return className;
         else {
@@ -70,27 +70,27 @@ public class EditorUtil {
     }
 
     @Nullable
-    public CharSequence getLine(EditText editText, int pos) {
+    public static String getLine(EditText editText, int pos) {
         if (pos < 0 || pos > editText.length()) return null;
         int lineStart = editText.getLayout().getLineStart(pos);
         int lineEnd = editText.getLayout().getLineEnd(pos);
-        return editText.getText().subSequence(lineStart, lineEnd);
+        return editText.getText().subSequence(lineStart, lineEnd).toString();
     }
 
     @Nullable
-    public String getWord(EditText editText, int pos, boolean removeParentheses) {
+    public static String getWord(EditText editText, int pos, boolean removeParentheses) {
         String line = getLine(editText, pos).toString();
         return getLastWord(line, removeParentheses);
     }
 
     @Nullable
-    public String getWord(EditText editText, int pos) {
+    public static String getWord(EditText editText, int pos) {
         String line = getLine(editText, pos).toString();
         return getLastWord(line, false);
     }
 
     @Nullable
-    public String getLastWord(String line, boolean removeParentheses) {
+    public static String getLastWord(String line, boolean removeParentheses) {
         String result = PatternFactory.lastMatchStr(line, PatternFactory.WORD);
         if (result != null) {
             return removeParentheses ? result.replaceAll(".*\\(", "") : result;
@@ -100,13 +100,13 @@ public class EditorUtil {
     }
 
     @Nullable
-    public String getPreWord(EditText editor, int pos) {
+    public static String getPreWord(EditText editor, int pos) {
         CharSequence line = getLine(editor, pos);
         String[] split = line.toString().split("[^\\s-]+$");
         return split.length >= 2 ? split[split.length - 2] : null;
     }
 
-    public String getImportedClassName(String className) {
+    public static String getImportedClassName(String className) {
         return PatternFactory.match(editor.getText(), PatternFactory.makeImport(className));
     }
 
@@ -116,7 +116,7 @@ public class EditorUtil {
      * @param editor
      * @param className
      */
-    public void importClass(EditText editor, String className) {
+    public  void importClass(EditText editor, String className) {
         String packageName = JavaUtil.getPackageName(className);
         if (this.getImportedClassName(className) == null
                 && !packageName.equals("java.lang")
@@ -125,7 +125,7 @@ public class EditorUtil {
         }
     }
 
-    public void organizeImports(EditText editor, String importStr) {
+    public static void organizeImports(EditText editor, String importStr) {
         Log.d(TAG, "organizeImports() called with: editor = [" + editor + "], importStr = [" + importStr + "]");
 
         ArrayList<String> imports = getImports(editor);
@@ -149,14 +149,14 @@ public class EditorUtil {
     }
 
 
-    public ArrayList<String> getImports(EditText editor) {
+    public static ArrayList<String> getImports(EditText editor) {
         return PatternFactory.allMatch(editor.getText(), PatternFactory.IMPORT);
     }
 
 
-    public Pair<ArrayList<String>, Boolean> determineClassName(EditText editor, int pos, String text,
-                                                               @Nullable String prefix, String suffix,
-                                                               String preReturnType) {
+    public static Pair<ArrayList<String>, Boolean> determineClassName(EditText editor, int pos, String text,
+                                                                      @Nullable String prefix, String suffix,
+                                                                      Class preReturnType) {
         try {
             ArrayList<String> classNames = null;
             String classSimpleName = null;
@@ -165,10 +165,10 @@ public class EditorUtil {
                 instance = prefix.matches("\\)$");
             }
             if (prefix != null && prefix.equals("this")) {
-                classSimpleName = this.getCurrentClassSimpleName(editor);
+                classSimpleName = getCurrentClassSimpleName(editor);
                 instance = true;
             } else if (prefix != null) {
-                String word = this.getWord(editor, pos);
+                String word = getWord(editor, pos);
                 if (word.contains("((")) {
                     classSimpleName = Pattern.compile("[^)]*").matcher(prefix).group(); // TODO: 20-Jul-17  exception
                 } else {

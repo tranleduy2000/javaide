@@ -25,10 +25,7 @@ import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-
-import com.duy.ide.editor.completion.Patterns;
-
-import java.util.regex.Matcher;
+import android.util.Log;
 
 /**
  * Created by Duy on 12-May-17.
@@ -165,17 +162,10 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
         return editableText.subSequence(start, end);
     }
 
-    /**
-     * This method will be called when the character which user have just input is \n
-     * First, get the text of the previous lineInfo. Then we will uses pattern matching for check some
-     * key word: if the text of the previous lineInfo is 'OPEN_PATTERN', we will return <code>source</code>
-     * with a new tab "\t", and so on...
-     * example
-     * source is "OPEN_PATTERN \n"
-     * >> return "OPEN_PATTERN \n \t"
-     */
+
     private CharSequence indentLine(CharSequence source, int start, int end, Spanned dest,
                                     int dstart, int dend) {
+        Log.d(TAG, "indentLine() called with: source = [" + source + "], start = [" + start + "], end = [" + end + "], dest = [" + dest + "], dstart = [" + dstart + "], dend = [" + dend + "]");
 
         String indent = "";
         int indexStart = dstart - 1;
@@ -223,18 +213,25 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
         }
         if (parenthesesCount < 0)
             indent += TAB_CHARACTER;
-
-
-        start = dstart - 1; //because charAt(dstart) always is '\n'
-        while (start > 0 && dest.charAt(start) != '\n') {
-            start--;
-        }
-        if (start < 0) return source + indent;
-
-        String prev = dest.subSequence(start, dstart).toString().trim();
-        Matcher matcher = Patterns.OPEN_PATTERN.matcher(prev);
-        if (matcher.find()) {
-            indent += TAB;
+        Log.d(TAG, "indentLine: " + dest.charAt(dend) + " " + dest.charAt(dstart));
+        //new line in bracket
+        if (dest.charAt(dend) == '}' && dstart - 1 >= 0 && dest.charAt(dstart - 1) == '{') {
+            int mstart = start - 2;
+            while (mstart >= 0 && dest.charAt(mstart) != '\n') {
+                mstart--;
+            }
+            String closeIndent = "";
+            if (mstart < 0) {
+                mstart = 0;
+            } else {
+                mstart++;
+                int zstart = mstart;
+                while (zstart < dest.length() && dest.charAt(zstart) == ' ') {
+                    zstart++;
+                }
+                closeIndent = dest.toString().substring(mstart, zstart);
+            }
+            return source + indent + "\n" + closeIndent;
         }
         return source + indent;
     }

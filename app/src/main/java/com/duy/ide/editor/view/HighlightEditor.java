@@ -64,11 +64,6 @@ public class HighlightEditor extends CodeSuggestsEditText
     public static final int CHARS_TO_COLOR = 2500;
     private final Handler updateHandler = new Handler();
     private final Object objectThread = new Object();
-    /**
-     * Thread for automatically interpreting the program to catch errors.
-     * Then show to edit text if there are errors
-     */
-    private final Runnable compileProgram = new CompileRunnable();
     public boolean showLines = true;
     public boolean wordWrap = true;
     public LineInfo lineError = null;
@@ -434,13 +429,6 @@ public class HighlightEditor extends CodeSuggestsEditText
 
     public String getCleanText() {
         return getText().toString();
-    }
-
-    private void startCompile(int longDelay) {
-        if (isAutoCompile()) {
-            updateHandler.removeCallbacks(compileProgram);
-            updateHandler.postDelayed(compileProgram, longDelay);
-        }
     }
 
     /**
@@ -839,8 +827,6 @@ public class HighlightEditor extends CodeSuggestsEditText
      */
     private final class EditTextChangeListener
             implements TextWatcher {
-        private int start;
-        private int count;
 
         public void beforeTextChanged(
                 CharSequence s, int start, int count,
@@ -850,8 +836,6 @@ public class HighlightEditor extends CodeSuggestsEditText
         public void onTextChanged(CharSequence s,
                                   int start, int before,
                                   int count) {
-            this.start = start;
-            this.count = count;
             isFinding = false;
         }
 
@@ -861,39 +845,10 @@ public class HighlightEditor extends CodeSuggestsEditText
             if (!autoCompile) {
                 lineError = null;
             }
-            startCompile(200);
-            if (s.length() > start && count == 1) {
-                char textToInsert = getCloseBracket(s.charAt(start), start);
-                if (textToInsert != 0) {
-                    try {
-                        s.insert(start + 1, Character.toString(textToInsert));
-                        setSelection(start);
-                    } catch (Exception ignored) {
-                    }
-                }
-            }
 
         }
     }
 
-    private class CompileRunnable implements Runnable {
-        @Override
-        public void run() {
-//            try {
-//                PascalCompiler.loadPascal("temp", new StringReader(getCleanText()),
-//                        new ArrayList<ScriptSource>(), null);
-//                lineError = null;
-//            } catch (ParsingException e) {
-//                if (e.getLineInfo() != null) {
-//                    synchronized (objectThread) {
-//                        lineError = e.getLineInfo();
-//                    }
-//                }
-//                e.printStackTrace();
-//            } catch (Exception ignored) {
-//            }
-        }
-    }
 
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {

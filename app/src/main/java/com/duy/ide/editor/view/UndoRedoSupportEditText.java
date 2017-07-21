@@ -232,7 +232,12 @@ public class UndoRedoSupportEditText extends HighlightEditor {
                             textToInsert, 0, textToInsert.length());
                     return true;
                 default:
-                    return super.onKeyDown(keyCode, event);
+                    try {
+                        return super.onKeyDown(keyCode, event);
+                    } catch (Exception e) {
+                    }
+                    return false;
+
             }
         }
     }

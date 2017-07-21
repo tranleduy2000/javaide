@@ -140,23 +140,22 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
         super.onSizeChanged(w, h, oldw, oldh);
             DLog.d(TAG, "onSizeChanged() called with: w = [" + w + "], h = [" + h + "], oldw = [" +
                     oldw + "], oldh = [" + oldh + "]");
-        onDropdownChangeSize(w, h);
+        onDropdownChangeSize();
     }
 
     /**
      * this method will be change size of popup window
      */
-    protected void onDropdownChangeSize(int w, int h) {
+    protected void onDropdownChangeSize() {
 
         Rect rect = new Rect();
         getWindowVisibleDisplayFrame(rect);
 
         Log.d(TAG, "onDropdownChangeSize: " + rect);
-        w = rect.width();
-        h = rect.height();
-
+        int w = rect.width();
+        int h = rect.height();
         // 1/2 width of screen
-        setDropDownWidth((int) (w * 0.5f));
+        setDropDownWidth((int) (w * 0.6f));
 
         // 0.5 height of screen
         setDropDownHeight((int) (h * 0.5f));
@@ -233,7 +232,7 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
         mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
 
         setAdapter(mAdapter);
-        onDropdownChangeSize(getWidth(), getHeight());
+        onDropdownChangeSize();
         if (data.size() > 0) {
             showDropDown();
         }

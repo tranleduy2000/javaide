@@ -118,7 +118,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
 
         if (item != null) {
             txtName.setText(item.getName());
-            txtType.setText(item.getType() != null ? item.getType().getName() : "");
+            txtType.setText(item.getType() != null ? item.getType().getSimpleName() : "");
         }
         return convertView;
     }

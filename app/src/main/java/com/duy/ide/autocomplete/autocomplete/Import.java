@@ -65,7 +65,7 @@ public class Import {
         for (int i = 0; i < imports.size(); i++) {
             String current = imports.get(i);
             String currentPkg = "";
-            if (current.contains(".")) {
+            if (current.contains(".") && !lastPkg.isEmpty()) {
                 currentPkg = current.substring(0, current.indexOf(".")).replaceAll("\\s+", "");
                 if (!currentPkg.equals(lastPkg)) {
                     imp.append("\n");

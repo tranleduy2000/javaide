@@ -91,8 +91,8 @@ public class PatternFactory {
 
     public static Pattern makeInstance(String prefix) {
         //ArrayList<String> list = new ArrayList();
-        return Pattern.compile("(" + IDENTIFIER_STR + ")" +
-                "(\\s?)" + "((" + GENERIC_STR + ")?(\\s?)|(\\s+))" +
-                "(" + prefix + ")(\\s?)([,;=)])");
+        return Pattern.compile("(" + IDENTIFIER_STR + ")" + "(\\s?)" + //type
+                "((" + GENERIC_STR + ")?(\\s?)|(\\s+))" + //generic or space
+                "(" + prefix + ")(\\s?)([,;=)])"); //name
     }
 }

@@ -30,7 +30,6 @@ import dalvik.system.DexClassLoader;
 public class JavaClassReader {
     private static final String TAG = "JavaClassReader";
     private String classpath;
-    private String outDir;
     private HashMap<String, Class> mClasses = new HashMap<>();
     private WeakHashMap<String, ClassDescription> mCache = new WeakHashMap<>();
 
@@ -43,8 +42,6 @@ public class JavaClassReader {
 
     public JavaClassReader(String classpath, String outDir) {
         this.classpath = classpath;
-        this.outDir = outDir;
-
         mDexClassLoader = new DexClassLoader(classpath, outDir, null,
                 ClassLoader.getSystemClassLoader());
     }
@@ -71,7 +68,6 @@ public class JavaClassReader {
                         classes.put(c.getName(), c);
                     }
                 } catch (ClassNotFoundException e1) {
-//                    e1.printStackTrace();
                 }
             }
         } catch (IOException e) {
@@ -81,18 +77,14 @@ public class JavaClassReader {
     }
 
     public void load() {
-        Log.d(TAG, "load() called");
         if (loaded) {
             return;
         }
         this.mClasses.putAll(getAllClassesFromJar(false));
         loaded = true;
-        Log.d(TAG, "load: " + mClasses.size());
     }
 
     public void dispose() {
-        Log.d(TAG, "dispose() called");
-
         mClasses.clear();
     }
 

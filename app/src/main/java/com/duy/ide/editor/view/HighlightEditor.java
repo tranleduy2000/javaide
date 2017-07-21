@@ -47,6 +47,7 @@ import android.widget.ScrollView;
 import android.widget.Scroller;
 
 import com.duy.ide.R;
+import com.duy.ide.editor.highlight.BracketHighlighter;
 import com.duy.ide.editor.highlight.CodeHighlighter;
 import com.duy.ide.themefont.themes.ThemeManager;
 import com.duy.ide.themefont.themes.database.CodeTheme;
@@ -114,7 +115,9 @@ public class HighlightEditor extends CodeSuggestsEditText
      */
     private EditTextChangeListener mChangeListener;
     private int numberWidth = 0;
-    private CodeHighlighter mHighlighter;
+    private CodeHighlighter mCodeHighlighter;
+    private BracketHighlighter mBracketHighlighter;
+
     private final Runnable colorRunnable_duringEditing =
             new Runnable() {
                 @Override
@@ -151,7 +154,7 @@ public class HighlightEditor extends CodeSuggestsEditText
 
     public void setCodeTheme(CodeTheme codeTheme) {
         this.codeTheme = codeTheme;
-        this.mHighlighter.setCodeTheme(codeTheme);
+        this.mCodeHighlighter.setCodeTheme(codeTheme);
         setTextColor(codeTheme.getTextColor());
         setBackgroundColor(codeTheme.getBackground());
         mPaintNumbers.setColor(codeTheme.getNumberColor());
@@ -192,7 +195,8 @@ public class HighlightEditor extends CodeSuggestsEditText
         mLineBounds = new Rect();
         mGestureDetector = new GestureDetector(getContext(), HighlightEditor.this);
         mChangeListener = new EditTextChangeListener();
-        mHighlighter = new CodeHighlighter(this);
+        mCodeHighlighter = new CodeHighlighter(this);
+        mBracketHighlighter = new BracketHighlighter(this);
 
         updateFromSettings();
 
@@ -788,7 +792,7 @@ public class HighlightEditor extends CodeSuggestsEditText
         clearSpans(editable, firstVisibleIndex, lastVisibleIndex);
 
         CharSequence textToHighlight = editable.subSequence(firstVisibleIndex, lastVisibleIndex);
-        mHighlighter.highlight(editable, textToHighlight, firstVisibleIndex);
+        mCodeHighlighter.highlight(editable, textToHighlight, firstVisibleIndex);
         applyTabWidth(editable, firstVisibleIndex, lastVisibleIndex);
     }
 
@@ -820,11 +824,11 @@ public class HighlightEditor extends CodeSuggestsEditText
     }
 
     public void highlightAll() {
-        mHighlighter.highlight(getText(), getText(), 0);
+        mCodeHighlighter.highlight(getText(), getText(), 0);
     }
 
     public void highlightError(long startPosition, long endPosition) {
-        mHighlighter.setErrorRange(startPosition, endPosition);
+        mCodeHighlighter.setErrorRange(startPosition, endPosition);
         refresh();
     }
 
@@ -887,7 +891,11 @@ public class HighlightEditor extends CodeSuggestsEditText
 //            } catch (Exception ignored) {
 //            }
         }
+    }
 
-
+    @Override
+    protected void onSelectionChanged(int selStart, int selEnd) {
+        super.onSelectionChanged(selStart, selEnd);
+            mBracketHighlighter.onSelectChange(selStart, selEnd);
     }
 }

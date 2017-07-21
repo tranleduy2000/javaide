@@ -22,7 +22,8 @@ public class CustomUnderlineSpan implements LineBackgroundSpan {
     }
 
     @Override
-    public void drawBackground(Canvas c, Paint p, int left, int right, int top, int baseline, int bottom, CharSequence text, int start, int end, int lnum) {
+    public void drawBackground(Canvas c, Paint p, int left, int right, int top, int baseline,
+                               int bottom, CharSequence text, int start, int end, int lnum) {
 
         if (this.end < start) return;
         if (this.start > end) return;

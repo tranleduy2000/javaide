@@ -1,7 +1,6 @@
 package com.duy.ide.autocomplete.autocomplete;
 
 import android.content.Context;
-import android.os.Environment;
 import android.support.v4.util.Pair;
 import android.util.Log;
 import android.widget.EditText;
@@ -31,8 +30,8 @@ public class AutoCompleteProvider {
     private Class preReturnType;
 
     public AutoCompleteProvider(Context context) {
-//        File classpath = new File(context.getFilesDir(), "system/classes/android.jar");
-        File classpath = new File(Environment.getExternalStorageDirectory(), "android.jar");
+        File classpath = new File(context.getFilesDir(), "system/classes/android.jar");
+//        File classpath = new File(Environment.getExternalStorageDirectory(), "android.jar");
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
         mClassLoader = new JavaDexClassLoader(classpath, outDir);
     }
@@ -64,7 +63,7 @@ public class AutoCompleteProvider {
         ArrayList<Description> result = null;
 
         if (couldBeClass) {
-            Log.d(TAG, "getSuggestions couldBeClass = " + couldBeClass);
+            Log.d(TAG, "getSuggestions couldBeClass = " + true);
             ArrayList<ClassDescription> classes = this.mClassLoader.findClass(current);
 
             //Object o = new Object(); //handle new keyword

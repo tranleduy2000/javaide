@@ -117,6 +117,11 @@ public class CodeTheme implements Serializable {
         return getColor(KEY_WORD);
     }
 
+    public int getBracketColor() {
+        // TODO: 21-Jul-17  change color dynamic
+        return Color.YELLOW;
+    }
+
     public int getOptColor() {
         return getColor(OPERATOR);
     }

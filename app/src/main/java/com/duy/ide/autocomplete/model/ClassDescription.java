@@ -140,17 +140,17 @@ public class ClassDescription implements Description {
     public ArrayList<Description> getMember(String suffix) {
         ArrayList<Description> result = new ArrayList<>();
         for (ClassConstructor constructor : constructors) {
-            if (constructor.getName().startsWith(suffix)) {
+            if (suffix.isEmpty() || constructor.getName().startsWith(suffix)) {
                 result.add(constructor);
             }
         }
         for (FieldDescription field : fields) {
-            if (field.getName().startsWith(suffix)) {
+            if (suffix.isEmpty() || field.getName().startsWith(suffix)) {
                 result.add(field);
             }
         }
         for (MethodDescription method : methods) {
-            if (method.getName().startsWith(suffix)) {
+            if (suffix.isEmpty() || method.getName().startsWith(suffix)) {
                 result.add(method);
             }
         }

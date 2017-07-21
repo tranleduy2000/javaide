@@ -2,6 +2,7 @@ package com.duy.ide.editor.highlight;
 
 import android.text.Editable;
 import android.text.Spanned;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.duy.ide.editor.view.spans.BracketSpan;
@@ -32,29 +33,22 @@ public class BracketHighlighter {
         this.codeTheme = codeTheme;
     }
 
-    private boolean isRelative(char open, char close) {
-        if (open == '(' && close == ')') {
-            return true;
-        } else if (open == '{' && close == '}') {
-            return true;
-        } else if (open == '[' && close == ']') {
-            return true;
-        }
-        return false;
-    }
+
+    private static final String TAG = "BracketHighlighter";
 
     public void onSelectChange(int selStart, int selEnd) {
         try {
-            if (selEnd > -1 && selEnd < editText.length() && selEnd - 1 >= 0) {
+            if (selEnd > -1 && selEnd <= editText.length()) {
                 Editable text = editText.getText();
-                int index = selEnd - 1;
-                char bracket = text.charAt(index);
-                if (Arrays.binarySearch(BRACKET, bracket) > 0) {
-                    if (isOpen(bracket)) {
-                        findClose(bracket, index);
-                    } else { //close cursor
-                        findOpen(bracket, index);
-                    }
+                char bracket = 0;
+                if (selEnd < editText.length()) {
+                    bracket = text.charAt(selEnd);
+                }
+                char before = selEnd > 0 ? text.charAt(selEnd - 1) : 0;
+                if (Arrays.binarySearch(BRACKET, bracket) > 0 && isOpen(bracket)) { //is close
+                    findClose(bracket, selEnd);
+                } else if (Arrays.binarySearch(BRACKET, before) > 0 && !isOpen(before)) {
+                    findOpen(before, selEnd - 1);
                 }
             }
         } catch (Exception e) {
@@ -63,22 +57,57 @@ public class BracketHighlighter {
     }
 
     private void findClose(char open, int selEnd) {
+        Log.d(TAG, "findClose() called with: open = [" + open + "], selEnd = [" + selEnd + "]");
+
         Editable text = editText.getText();
         int cursor = selEnd + 1;
         int count = 1;
+        char close = getClose(open);
+
         boolean find = false;
         while (cursor < text.length()) {
             char chatAtCursor = text.charAt(cursor);
-            if (isRelative(open, chatAtCursor)) {
-                if (!isOpen(chatAtCursor)) {
-                    count++;
-                } else {
-                    count--;
-                }
-                if (count == 0) {
-                    find = true;
-                    break;
-                }
+            if (chatAtCursor == open) {
+                count++;
+            } else if (chatAtCursor == close) {
+                count--;
+            }
+            if (count == 0) {
+                find = true;
+                break;
+            }
+            cursor++;
+        }
+        BracketSpan[] spans = text.getSpans(0, text.length(), BracketSpan.class);
+        for (BracketSpan span : spans) {
+            text.removeSpan(span);
+        }
+        text.setSpan(new BracketSpan(codeTheme.getBracketColor(),
+                codeTheme.getTextColor()), selEnd, selEnd + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (find) {
+            text.setSpan(new BracketSpan(codeTheme.getBracketColor(),
+                    codeTheme.getTextColor()), cursor, cursor + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
+
+    private void findOpen(char close, int selEnd) {
+        Editable text = editText.getText();
+        int cursor = selEnd - 1;
+        int count = 1;
+        boolean find = false;
+        char open = getOpen(close);
+
+        while (cursor > 0) {
+            char chatAtCursor = text.charAt(cursor);
+            if (chatAtCursor == open) {
+                count--;
+            } else if (chatAtCursor == close) {
+                count++;
+            }
+            if (count == 0) {
+                find = true;
+                break;
             }
             cursor--;
         }
@@ -94,35 +123,29 @@ public class BracketHighlighter {
         }
     }
 
-    private void findOpen(char bracket, int selEnd) {
-        Editable text = editText.getText();
-        int cursor = selEnd - 1;
-        int count = 1;
-        boolean find = false;
-        while (cursor > 0) {
-            char chatAtCursor = text.charAt(cursor);
-            if (isRelative(chatAtCursor, bracket)) {
-                if (isOpen(chatAtCursor)) {
-                    count--;
-                } else {
-                    count++;
-                }
-                if (count == 0) {
-                    find = true;
-                    break;
-                }
-            }
-            cursor--;
+    private char getClose(char open) {
+        switch (open) {
+            case '[':
+                return ']';
+            case '{':
+                return '}';
+            case '(':
+                return ')';
+            default:
+                return 0;
         }
-        BracketSpan[] spans = text.getSpans(0, text.length(), BracketSpan.class);
-        for (BracketSpan span : spans) {
-            text.removeSpan(span);
-        }
-        text.setSpan(new BracketSpan(codeTheme.getBracketColor(),
-                codeTheme.getTextColor()), selEnd, selEnd + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        if (find) {
-            text.setSpan(new BracketSpan(codeTheme.getBracketColor(),
-                    codeTheme.getTextColor()), cursor, cursor + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private char getOpen(char close) {
+        switch (close) {
+            case ']':
+                return '[';
+            case '}':
+                return '{';
+            case ')':
+                return '(';
+            default:
+                return 0;
         }
     }
 

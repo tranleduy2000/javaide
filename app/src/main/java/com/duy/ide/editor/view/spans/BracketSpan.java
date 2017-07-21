@@ -22,7 +22,7 @@ public class BracketSpan extends ReplacementSpan {
         this.textColor = textColor;
         mBackgroundPaint.setColor(backgroundColor);
         mBackgroundPaint.setStyle(Paint.Style.STROKE);
-        mBackgroundPaint.setStrokeWidth(3f);
+        mBackgroundPaint.setStrokeWidth(1f);
     }
 
     @Override

@@ -78,13 +78,13 @@ public class EditorUtil {
 
     @Nullable
     public static String getWord(EditText editText, int pos, boolean removeParentheses) {
-        String line = getLine(editText, pos);
+        String line = getLine(editText, pos).trim();
         return getLastWord(line, removeParentheses);
     }
 
     @NonNull
     public static String getWord(EditText editText, int pos) {
-        String line = getLine(editText, pos);
+        String line = getLine(editText, pos).trim();
         return getLastWord(line, false);
     }
 

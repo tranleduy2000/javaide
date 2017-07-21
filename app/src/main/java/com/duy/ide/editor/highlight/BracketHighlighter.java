@@ -38,7 +38,7 @@ public class BracketHighlighter {
 
     public void onSelectChange(int selStart, int selEnd) {
         try {
-            if (selEnd > -1 && selEnd <= editText.length()) {
+            if (selEnd > -1 && selEnd < editText.length()) {
                 Editable text = editText.getText();
                 char bracket = text.charAt(selEnd);
                 boolean isBracket = Arrays.binarySearch(BRACKET, bracket) > 0;

@@ -103,7 +103,6 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
         addTextChangedListener(new TextWatcher() {
             private int start;
             private int count;
-            private CharSequence change;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -112,29 +111,27 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Log.d(TAG, "onTextChanged() called with: s = [" + s + "], start = [" + start + "], before = [" + before + "], count = [" + count + "]");
-
                 this.start = start;
                 this.count = count;
-                this.change = s;
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > start && count == 1) {
-                    Character textToInsert = getCloseBracket(s.charAt(start), start);
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > start && count == 1) {
+                    Character textToInsert = getCloseBracket(editable.charAt(start), start);
                     if (textToInsert != 0) {
                         try {
-                            s.insert(start + 1, Character.toString(textToInsert));
+                            editable.insert(start + 1, Character.toString(textToInsert));
                             setSelection(start);
                         } catch (Exception ignored) {
                         }
                     }
-                } else if (s.length() > start) {
-                    CharSequence newText = change.subSequence(start, start + count);
+                } else if (editable.length() > start && count > 1) {
+                    CharSequence newText = editable.subSequence(start, start + count);
                     int i = newText.toString().indexOf(CURSOR);
                     if (i > -1) {
-                        s.delete(start + i, start + i + 1);
-                        setSelection(start + i);
+                        editable.delete(start + i, start + i + 1);
+                        setSelection(start);
                     }
                 }
             }

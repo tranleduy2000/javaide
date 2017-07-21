@@ -31,7 +31,10 @@ import android.widget.TextView;
 import com.duy.compile.diagnostic.SpanUtil;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.model.ClassDescription;
+import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.Description;
+import com.duy.ide.autocomplete.model.FieldDescription;
+import com.duy.ide.autocomplete.model.MethodDescription;
 import com.duy.ide.setting.JavaPreferences;
 
 import java.util.ArrayList;
@@ -86,13 +89,21 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
         TextView txtType = convertView.findViewById(R.id.txt_type);
         txtType.setTypeface(Typeface.MONOSPACE);
         txtType.setTextSize(editorTextSize);
-
+        TextView txtHeader = convertView.findViewById(R.id.txt_header);
         if (item != null) {
             if (item instanceof ClassDescription) {
                 txtName.setText(SpanUtil.formatClass(context, (ClassDescription) item));
             } else {
                 txtName.setText(item.toString());
                 txtType.setText(item.getType() != null ? item.getType().getSimpleName() : "");
+            }
+
+            if (item instanceof ClassDescription || item instanceof ConstructorDescription) {
+                txtHeader.setText("c");
+            } else if (item instanceof FieldDescription) {
+                txtHeader.setText("f");
+            } else if (item instanceof MethodDescription) {
+                txtHeader.setText("m");
             }
         }
         return convertView;

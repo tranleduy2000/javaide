@@ -51,7 +51,7 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText implements
     protected EditorSetting mEditorSetting;
     protected SymbolsTokenizer mTokenizer;
     private CodeSuggestAdapter mAdapter;
-    private boolean enoughToFilter = false;
+    private boolean enoughToFilter = true;
     private AutoCompleteProvider mAutoCompleteProvider;
     private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
@@ -306,7 +306,7 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText implements
 
 
     private class SymbolsTokenizer implements MultiAutoCompleteTextView.Tokenizer {
-        static final String TOKEN = "!@#$%^&*()_+-={}|[]:;'<>/<.? \r\n\t";
+        static final String TOKEN = "!@#$%^&*()_+-={}|[]:;'<>/<?. \r\n\t";
 
         @Override
         public int findTokenStart(CharSequence text, int cursor) {

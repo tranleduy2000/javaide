@@ -1,10 +1,12 @@
 package com.duy.ide.autocomplete.autocomplete;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.v4.util.Pair;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.duy.ide.autocomplete.dex.JavaClassReader;
 import com.duy.ide.autocomplete.dex.JavaDexClassLoader;
 import com.duy.ide.autocomplete.model.ClassConstructor;
 import com.duy.ide.autocomplete.model.ClassDescription;
@@ -30,7 +32,8 @@ public class AutoCompleteProvider {
     private Class preReturnType;
 
     public AutoCompleteProvider(Context context) {
-        File classpath = new File(context.getFilesDir(), "system/classes/android.jar");
+//        File classpath = new File(context.getFilesDir(), "system/classes/android.jar");
+        File classpath = new File(Environment.getExternalStorageDirectory(), "android.jar");
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
         mClassLoader = new JavaDexClassLoader(classpath, outDir);
     }
@@ -92,20 +95,26 @@ public class AutoCompleteProvider {
                     = determineClassName(editor, position, current, prefix, suffix, preReturnType);
             if (r != null) {
                 ArrayList<String> classes = r.first;
-
                 instance = r.second;
+
                 for (String className : classes) {
                     Log.d(TAG, "getSuggestions className = " + className);
-                    result = mClassLoader.findClassMember(className, suffix);
-                    String superClass = mClassLoader.findSuperClassName(className);
-                    while (superClass != null) {
-                        ArrayList<Description> classMember = mClassLoader.findClassMember(superClass, suffix);
-                        if (classMember != null) {
-                            for (Description description : classMember) {
-                                result.add(description);
+                    JavaClassReader classReader = mClassLoader.getClassReader();
+                    ClassDescription classDescription = classReader.readClassByName(className);
+                    if (classDescription != null) {
+                        result = new ArrayList<>();
+                        result.addAll(classDescription.getMember(suffix));
+
+                        String superClassName = classDescription.getSuperClass();
+                        while (superClassName != null) {
+                            ClassDescription superClass = classReader.readClassByName(superClassName);
+                            if (superClass != null) {
+                                result.addAll(superClass.getMember(suffix));
+                                superClassName = superClass.getSuperClass();
+                            } else {
+                                superClassName = null;
                             }
                         }
-                        superClass = mClassLoader.findSuperClassName(superClass);
                     }
                 }
             }

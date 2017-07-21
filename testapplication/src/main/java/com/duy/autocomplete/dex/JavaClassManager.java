@@ -30,7 +30,7 @@ public class JavaClassManager {
         Log.d(TAG, "determineClassName() called with: text = [" + text + "], prefix = [" + prefix + "], suffix = [" + suffix + "], preReturnType = [" + preReturnType + "]");
 
         try {
-            ArrayList<String> classNames;
+            ArrayList<String> classNames = null;
             String className;
             boolean isInstance;
             isInstance = prefix.matches("\\)$");
@@ -64,11 +64,8 @@ public class JavaClassManager {
                 }
             }
             Log.d(TAG, "determineClassName className = " + className);
-            if (!JavaUtil.isValidClassName(className)) {
+            if (JavaUtil.isValidClassName(className)) {
                 classNames = getPossibleClassName(editor, className, prefix);
-            } else {
-                classNames = new ArrayList<>();
-                classNames.add(className);
                 if (preReturnType != null) {
                     classNames.add(preReturnType.getName()); // TODO: 20-Jul-17 quickhack
                 }

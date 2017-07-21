@@ -92,7 +92,6 @@ public class AutoCompleteProvider {
                     = determineClassName(editor, position, current, prefix, suffix, preReturnType);
             if (r != null) {
                 ArrayList<String> classes = r.first;
-
                 instance = r.second;
                 for (String className : classes) {
                     result = mClassLoader.findClassMember(className, suffix);
@@ -109,7 +108,6 @@ public class AutoCompleteProvider {
                 }
             }
         }
-        ArrayList<String> duplicateWorkaround = new ArrayList<>();
         return result;
     }
 

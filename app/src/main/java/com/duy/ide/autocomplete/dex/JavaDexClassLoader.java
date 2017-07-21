@@ -8,9 +8,7 @@ import com.duy.ide.autocomplete.datastructure.Dictionary;
 import com.duy.ide.autocomplete.model.ClassDescription;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.model.FieldDescription;
-import com.duy.ide.autocomplete.model.Member;
 import com.duy.ide.autocomplete.model.MethodDescription;
-import com.duy.ide.autocomplete.util.JavaUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,6 +23,10 @@ public class JavaDexClassLoader {
     private static final String TAG = "JavaDexClassLoader";
     private JavaClassReader mClassReader;
     private Dictionary mDictionary;
+
+    public JavaClassReader getClassReader() {
+        return mClassReader;
+    }
 
     public JavaDexClassLoader(File classpath, File outDir) {
         mDictionary = new Dictionary();
@@ -54,7 +56,6 @@ public class JavaDexClassLoader {
 
     public ArrayList<Description> findClassMember(String className, String namePrefix) {
         Log.d(TAG, "findClassMember() called with: className = [" + className + "], namePrefix = [" + namePrefix + "]");
-
         return mDictionary.find(className, namePrefix);
     }
 
@@ -70,7 +71,9 @@ public class JavaDexClassLoader {
     }
 
     public ClassDescription loadClass(String className) {
-        ClassDescription aClass = mClassReader.readClassByName(className, true);
+        Log.d(TAG, "loadClass() called with: className = [" + className + "]");
+
+        ClassDescription aClass = mClassReader.readClassByName(className);
         return addClass(aClass, System.currentTimeMillis());
     }
 
@@ -81,38 +84,26 @@ public class JavaDexClassLoader {
             for (Map.Entry<String, Class> entry : classes.entrySet()) {
                 loadClass(entry.getKey());
             }
-        } else {
         }
     }
 
     private ClassDescription addClass(ClassDescription classDescription, long lastUsed) {
         String className = classDescription.getClassName();
-        String inverseName = JavaUtil.getInverseName(className);
-
-        mDictionary.remove("class", className);
-        mDictionary.remove("class", inverseName);
-        mDictionary.add("class", className, classDescription);
-        mDictionary.add("class", inverseName, classDescription);
+        mDictionary.put("class", className, classDescription);
 
         if (classDescription.getFields().size() > 0) {
-            HashMap<String, Description> hashMap = new HashMap<>();
+            HashMap<String, Description> value = new HashMap<>();
             for (FieldDescription member : classDescription.getFields()) {
-                hashMap.put(className, member);
+                Log.d(TAG, "addClass member = " + member);
+                value.put(className, member);
             }
             for (MethodDescription member : classDescription.getMethods()) {
-                hashMap.put(className, member);
+                Log.d(TAG, "addClass member = " + member);
+                value.put(className, member);
             }
-            mDictionary.putAll(className, hashMap);
+            mDictionary.putAll(className, value);
         }
 
         return classDescription;
-    }
-
-    private void addClassMember(String category, Member member, Description description, long lastUsed) {
-        mDictionary.add(category, member.getName(), description);
-    }
-
-    public void loadAll() {
-
     }
 }

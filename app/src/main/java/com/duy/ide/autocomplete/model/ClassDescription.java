@@ -1,6 +1,8 @@
 package com.duy.ide.autocomplete.model;
 
 
+import android.util.Log;
+
 import com.duy.ide.autocomplete.util.JavaUtil;
 
 import java.util.ArrayList;
@@ -111,10 +113,13 @@ public class ClassDescription implements Description {
     }
 
 
+    private static final String TAG = "ClassDescription";
+
     public void addConstructor(ClassConstructor classConstructor) {
+        Log.d(TAG, "addConstructor() called with: classConstructor = [" + classConstructor + "]");
+
         this.constructors.add(classConstructor);
     }
-
     public void addField(FieldDescription fieldDescription) {
         fields.add(fieldDescription);
     }
@@ -130,5 +135,25 @@ public class ClassDescription implements Description {
     @Override
     public String toString() {
         return className;
+    }
+
+    public ArrayList<Description> getMember(String suffix) {
+        ArrayList<Description> result = new ArrayList<>();
+        for (ClassConstructor constructor : constructors) {
+            if (constructor.getName().startsWith(suffix)) {
+                result.add(constructor);
+            }
+        }
+        for (FieldDescription field : fields) {
+            if (field.getName().startsWith(suffix)) {
+                result.add(field);
+            }
+        }
+        for (MethodDescription method : methods) {
+            if (method.getName().startsWith(suffix)) {
+                result.add(method);
+            }
+        }
+        return result;
     }
 }

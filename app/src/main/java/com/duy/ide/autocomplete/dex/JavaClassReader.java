@@ -44,7 +44,7 @@ public class JavaClassReader {
                 ClassLoader.getSystemClassLoader());
     }
 
-    public HashMap<String, Class> getAllClassesFromJar() {
+    public HashMap<String, Class> getAllClassesFromJar(boolean usesAndroid) {
         HashMap<String, Class> classes = new HashMap<>();
         try {
             JarFile jarFile = new JarFile(classpath);
@@ -58,8 +58,13 @@ public class JavaClassReader {
                 String className = je.getName().substring(0, je.getName().length() - 6);
                 className = className.replace('/', '.');
                 try {
-                    Class c = mDexClassLoader.loadClass(className);
-                    classes.put(c.getName(), c);
+                    if (usesAndroid) {
+                        Class c = mDexClassLoader.loadClass(className);
+                        classes.put(c.getName(), c);
+                    } else if (!className.startsWith("android")) {
+                        Class c = mDexClassLoader.loadClass(className);
+                        classes.put(c.getName(), c);
+                    }
                 } catch (ClassNotFoundException e1) {
 //                    e1.printStackTrace();
                 }
@@ -75,7 +80,8 @@ public class JavaClassReader {
         if (loaded) {
             return;
         }
-        this.mClasses.putAll(getAllClassesFromJar());
+        this.mClasses.putAll(getAllClassesFromJar(false));
+        loaded = true;
         Log.d(TAG, "load: " + mClasses.size());
     }
 
@@ -86,8 +92,10 @@ public class JavaClassReader {
     }
 
     @Nullable
-    public ClassDescription readClassByName(String className, boolean b) {
+    public ClassDescription readClassByName(String className) {
         Class aClass = mClasses.get(className);
+        Log.d(TAG, "readClassByName() called with: className = [" + className + "]");
+
         if (aClass != null) {
             String superclass = aClass.getSuperclass() != null ? aClass.getSuperclass().getName() : "";
             ClassDescription desc = new ClassDescription(aClass.getSimpleName(), aClass.getName(), superclass, 0);

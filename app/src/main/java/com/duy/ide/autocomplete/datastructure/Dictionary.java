@@ -16,32 +16,34 @@ import java.util.Set;
 
 public class Dictionary {
     private static final String TAG = "Dictionary";
-    private HashMap<String, HashMap<String, Description>> mTrie;
+    private HashMap<String, HashMap<String, Description>> map;
 
     public Dictionary() {
-        mTrie = new HashMap<>();
+        map = new HashMap<>();
     }
 
-    public void add(String category, String name, Description description) {
-        HashMap<String, Description> map = mTrie.get(category);
+    public void put(String category, String name, Description description) {
+        Log.d(TAG, "put() called with: category = [" + category + "], name = [" + name + "], description = [" + description + "]");
+
+        HashMap<String, Description> map = this.map.get(category);
         if (map == null) map = new HashMap<>();
         map.put(name, description);
-        this.mTrie.put(category, map);
+        this.map.put(category, map);
     }
 
     public void addAdd(String category, String name, Description description) {
-        HashMap<String, Description> map = mTrie.get(category);
+        HashMap<String, Description> map = this.map.get(category);
         if (map == null) map = new HashMap<>();
         map.put(name, description);
-        this.mTrie.put(category, map);
+        this.map.put(category, map);
     }
 
     public void putAll(String category, HashMap<String, Description> hashMap) {
-        mTrie.put(category, hashMap);
+        map.put(category, hashMap);
     }
 
-    public Description remove(String caterogry, String name) {
-        HashMap<String, Description> map = mTrie.get(caterogry);
+    public Description remove(String category, String name) {
+        HashMap<String, Description> map = this.map.get(category);
         if (map != null) {
             return map.remove(name);
         }
@@ -50,11 +52,11 @@ public class Dictionary {
 
     public HashMap<String, Description> removeCategory(String key) {
 
-        return mTrie.remove(key);
+        return map.remove(key);
     }
 
     public ArrayList<Description> find(String category, String namePrefix) {
-        HashMap<String, Description> map = mTrie.get(category);
+        HashMap<String, Description> map = this.map.get(category);
         ArrayList<Description> result = new ArrayList<>();
         if (map != null) {
             Set<Map.Entry<String, Description>> entries = map.entrySet();
@@ -69,7 +71,7 @@ public class Dictionary {
     }
 
     public <T> ArrayList<T> find(Class<T> t, String category, String namePrefix) {
-        HashMap<String, Description> map = mTrie.get(category);
+        HashMap<String, Description> map = this.map.get(category);
         ArrayList<T> result = new ArrayList<>();
         if (map != null) {
             Set<Map.Entry<String, Description>> entries = map.entrySet();
@@ -89,12 +91,7 @@ public class Dictionary {
         description.setLastUsed(System.currentTimeMillis());
     }
 
-    public HashMap<String, Description> getTrie(String category, boolean create) {
-        HashMap<String, Description> map = mTrie.get(category);
-        if (map != null && create) {
-            map = new HashMap<>();
-            mTrie.put(category, map);
-        }
-        return map;
+    public int size() {
+        return map.size();
     }
 }

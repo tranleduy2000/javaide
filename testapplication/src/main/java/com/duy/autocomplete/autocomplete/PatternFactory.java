@@ -30,14 +30,14 @@ public class PatternFactory {
     public static final String[] KEYWORD_MODIFIERS = new String[]{"public", "private", "protected",
             "static", "final", "synchronized", "volatile", "transient", "native", "strictfp"};
     public static final String[] KEYWORD_TYPE = new String[]{"class", "interface", "enum"};
-    public static final String[] KEYWORD;
+//    public static final String[] KEYWORD;
 
     static {
         ArrayList<String> list = new ArrayList<>();
         Collections.addAll(list, PRIMITIVE_TYPE);
         Collections.addAll(list, KEYWORD_MODIFIERS);
         Collections.addAll(list, KEYWORD_TYPE);
-        KEYWORD = (String[]) list.toArray();
+//        KEYWORD = (String[]) list.toArray();
     }
     public static Pattern makeImport(String className) {
         return Pattern.compile("(import\\s+)(.*" + className + ")(\\s?;)");

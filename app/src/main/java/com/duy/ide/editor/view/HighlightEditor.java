@@ -319,7 +319,7 @@ public class HighlightEditor extends CodeSuggestsEditText
             }
             if (showLines && isGoodLineArray[i]) {
                 int realLine = realLines[i];
-                canvas.drawText("" + (realLine), mDrawingRect.left, baseline, mPaintNumbers);
+                canvas.drawText("" + (realLine) + 1, mDrawingRect.left, baseline, mPaintNumbers);
             }
         }
         if (showLines) {

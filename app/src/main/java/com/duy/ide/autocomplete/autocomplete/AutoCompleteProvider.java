@@ -97,16 +97,16 @@ public class AutoCompleteProvider {
                             result = new ArrayList<>();
                             result.addAll(classDescription.getMember(suffix));
 
-                            String superClassName = classDescription.getSuperClass();
-                            while (superClassName != null) {
-                                ClassDescription superClass = classReader.readClassByName(superClassName);
-                                if (superClass != null) {
-                                    result.addAll(superClass.getMember(suffix));
-                                    superClassName = superClass.getSuperClass();
-                                } else {
-                                    superClassName = null;
-                                }
-                            }
+//                            String superClassName = classDescription.getSuperClass();
+//                            while (superClassName != null) {
+//                                ClassDescription superClass = classReader.readClassByName(superClassName);
+//                                if (superClass != null) {
+//                                    result.addAll(superClass.getMember(suffix));
+//                                    superClassName = superClass.getSuperClass();
+//                                } else {
+//                                    superClassName = null;
+//                                }
+//                            }
                         }
                     }
                 }

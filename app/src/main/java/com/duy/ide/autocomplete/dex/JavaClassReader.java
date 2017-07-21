@@ -111,12 +111,12 @@ public class JavaClassReader {
                     classDesc.addConstructor(new ConstructorDescription(constructor));
                 }
             }
-            for (Field field : aClass.getDeclaredFields()) {
+            for (Field field : aClass.getFields()) {
                 if (Modifier.isPublic(field.getModifiers())) {
                     classDesc.addField(new FieldDescription(field));
                 }
             }
-            for (Method method : aClass.getDeclaredMethods()) {
+            for (Method method : aClass.getMethods()) {
                 if (Modifier.isPublic(method.getModifiers())) {
                     classDesc.addMethod(new MethodDescription(method));
                 }

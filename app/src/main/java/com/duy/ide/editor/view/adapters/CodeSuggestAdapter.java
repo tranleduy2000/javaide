@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.model.Description;
+import com.duy.ide.setting.JavaPreferences;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,10 +40,7 @@ import java.util.Collection;
  */
 public class CodeSuggestAdapter extends ArrayAdapter<Description> {
     private static final String TAG = "CodeSuggestAdapter";
-    private final Context context;
-    private final int colorKeyWord;
-    private final int colorNormal;
-    private final int colorVariable = 0xffFFB74D;
+    private Context context;
     private LayoutInflater inflater;
     private ArrayList<Description> clone;
     private ArrayList<Description> suggestion;
@@ -84,6 +82,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
             notifyDataSetChanged();
         }
     };
+    private float editorTextSize;
 
     @SuppressWarnings("unchecked")
     public CodeSuggestAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<Description> objects) {
@@ -93,14 +92,14 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
         this.clone = (ArrayList<Description>) objects.clone();
         this.suggestion = new ArrayList<>();
         this.resourceID = resource;
-        colorKeyWord = context.getResources().getColor(R.color.color_key_word_color);
-        colorNormal = context.getResources().getColor(android.R.color.primary_text_dark);
+
+        JavaPreferences javaPreferences = new JavaPreferences(context);
+        editorTextSize = javaPreferences.getEditorTextSize();
     }
 
     public ArrayList<Description> getAllItems() {
         return clone;
     }
-
 
     @NonNull
     @Override
@@ -112,7 +111,11 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
         final Description item = getItem(position);
         TextView txtName = convertView.findViewById(R.id.txt_name);
         txtName.setTypeface(Typeface.MONOSPACE);
+        txtName.setTextSize(editorTextSize);
         TextView txtType = convertView.findViewById(R.id.txt_type);
+        txtType.setTypeface(Typeface.MONOSPACE);
+        txtType.setTextSize(editorTextSize);
+
         if (item != null) {
             txtName.setText(item.getName());
             txtType.setText(item.getType() != null ? item.getType().getName() : "");

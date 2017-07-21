@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.EditText;
@@ -54,17 +55,17 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
 
     public CodeSuggestsEditText(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public CodeSuggestsEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public CodeSuggestsEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
 
     /**
@@ -78,13 +79,15 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
 //        setSuggestData(data);
     }
 
-    private void init() {
+    private void init(Context context) {
         mEditorSetting = new EditorSetting(getContext());
         setDefaultKeyword();
         mTokenizer = new SymbolsTokenizer();
         setTokenizer(mTokenizer);
         setThreshold(1);
         invalidateCharHeight();
+
+        setDropDownBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_popup_suggest));
     }
 
     /**

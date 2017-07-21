@@ -133,8 +133,8 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
                     CharSequence newText = change.subSequence(start, start + count);
                     int i = newText.toString().indexOf(CURSOR);
                     if (i > -1) {
-                        s.delete(i, i + 1);
-                        setSelection(i);
+                        s.delete(start + i, start + i + 1);
+                        setSelection(start + i);
                     }
                 }
             }

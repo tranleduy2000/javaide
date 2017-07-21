@@ -16,10 +16,14 @@ public class PatternFactory {
     public static final Pattern IMPORT = Pattern.compile("(import\\s+)([^;]*)(\\s?);");
     public static final Pattern WORD = Pattern.compile("[^\\s-]+$");
 
-    public static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z][A-Za-z0-9]*");
+    public static final String IDENTIFIER_STR = "[A-Za-z][A-Za-z0-9]*";
+    public static final Pattern IDENTIFIER = Pattern.compile(IDENTIFIER_STR);
+
     public static final Pattern ANNOTATION = Pattern.compile("@[A-Za-z][A-Za-z0-9]*");
     public static final Pattern BRACKET = Pattern.compile("\\[(.*?)\\]");
     public static final Pattern MODIFIERS = Pattern.compile("\\b(public|protected|private|abstract|static|final|strictfp)\\b");
+
+    private static final String GENERIC_STR = "<[A-Z][a-zA-Z0-9_<>, ]*>";
 
     public static final Pattern SPLIT_NON_WORD = Pattern.compile("\\W+");
     public static final String SPLIT_NON_WORD_STR = "\\W+";
@@ -86,7 +90,9 @@ public class PatternFactory {
     }
 
     public static Pattern makeInstance(String prefix) {
-        return Pattern.compile("([A-Z][a-zA-Z0-9_]*)(<[A-Z][a-zA-Z0-9_<>, ]*>)?\\s?" +
-                prefix + "\\s?[,;=)]");
+        //ArrayList<String> list = new ArrayList();
+        return Pattern.compile("(" + IDENTIFIER_STR + ")" +
+                "(\\s?)" + "((" + GENERIC_STR + ")?(\\s?)|(\\s+))" +
+                "(" + prefix + ")(\\s?)([,;=)])");
     }
 }

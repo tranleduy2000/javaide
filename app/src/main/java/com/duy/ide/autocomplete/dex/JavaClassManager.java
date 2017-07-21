@@ -54,6 +54,7 @@ public class JavaClassManager {
 
                 //BigInteger num = new BigInteger(); -> BigInteger num =
                 className = lastMatchStr(range, PatternFactory.makeInstance(prefix));
+                Log.d(TAG, "determineClassName lastMatchStr className = " + className);
 
                 if (className != null) {
                     //BigInteger num =  -> BigInteger

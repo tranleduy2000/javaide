@@ -1,5 +1,7 @@
 package com.duy.ide.autocomplete.model;
 
+import com.duy.ide.autocomplete.util.JavaUtil;
+
 import java.lang.reflect.Constructor;
 
 /**
@@ -8,9 +10,15 @@ import java.lang.reflect.Constructor;
 
 public class ConstructorDescription extends DescriptionImpl {
     private Constructor constructor;
+    private String simpleName;
 
     public ConstructorDescription(Constructor constructor) {
         this.constructor = constructor;
+        this.simpleName = JavaUtil.getSimpleName(constructor.getName());
+    }
+
+    public String getSimpleName() {
+        return simpleName;
     }
 
     @Override
@@ -45,6 +53,6 @@ public class ConstructorDescription extends DescriptionImpl {
             }
             params.append(parameterType.getSimpleName()).append(",");
         }
-        return constructor.getName() + "(" + params.toString() + ")";
+        return JavaUtil.getSimpleName(constructor.getName()) + "(" + params.toString() + ")";
     }
 }

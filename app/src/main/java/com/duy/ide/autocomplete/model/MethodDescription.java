@@ -1,5 +1,9 @@
 package com.duy.ide.autocomplete.model;
 
+import android.support.annotation.NonNull;
+
+import com.duy.ide.autocomplete.util.JavaUtil;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -10,9 +14,12 @@ import java.util.Arrays;
 public class MethodDescription implements Member, Description {
 
     private Method method;
+    private String simpleName;
 
-    public MethodDescription(Method method) {
+    public MethodDescription(@NonNull Method method) {
         this.method = method;
+        method.getClass(); //check null
+        this.simpleName = JavaUtil.getSimpleName(method.getName());
     }
 
     @Override
@@ -68,5 +75,9 @@ public class MethodDescription implements Member, Description {
     @Override
     public Class getReturnType() {
         return method.getReturnType();
+    }
+
+    public String getSimpleName() {
+        return simpleName;
     }
 }

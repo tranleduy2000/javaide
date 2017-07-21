@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 public class JavaUtil {
     public static String getSimpleName(String className) {
         if (className.contains(".")) {
-            return className.substring(className.lastIndexOf("."));
+            return className.substring(className.lastIndexOf(".") + 1);
         } else {
             return className;
         }
@@ -19,7 +19,7 @@ public class JavaUtil {
     @NonNull
     public static String getPackageName(String classname) {
         if (classname.contains(".")) {
-            return classname.substring(0, classname.indexOf("."));
+            return classname.substring(0, classname.lastIndexOf("."));
         } else {
             return "";
         }

@@ -50,6 +50,8 @@ public class ImportUtil {
         Log.d(TAG, "organizeImports() called with: editor = [" + editor + "], importStr = [" + importStr + "]");
 
         ArrayList<String> imports = getImports(editor);
+        Log.d(TAG, "organizeImports imports = " + imports);
+
         imports.add(importStr);
         Collections.sort(imports, new Comparator<String>() {
             @Override

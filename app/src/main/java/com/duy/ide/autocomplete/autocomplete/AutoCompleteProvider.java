@@ -146,14 +146,14 @@ public class AutoCompleteProvider {
         // TODO: 20-Jul-17
     }
 
-    public void onDidInsertSuggestion(EditText editText, Description suggestion) {
+    public void onInsertSuggestion(EditText editText, Description suggestion) {
         if (suggestion instanceof ClassDescription) {
-            if (!suggestion.getSnippet().contains(".")) {
-                ImportUtil.organizeImports(editText, ((ClassDescription) suggestion).getClassName());
-            }
+//            if (!suggestion.getSnippet().contains(".")) {
+            ImportUtil.importClass(editText, ((ClassDescription) suggestion).getClassName());
+//            }/
         } else if (suggestion instanceof Member) {
             this.preReturnType = suggestion.getType();
         }
-        mClassLoader.touchClass(suggestion.getDescription());
+//        mClassLoader.touchClass(suggestion.getDescription());
     }
 }

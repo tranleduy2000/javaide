@@ -23,6 +23,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
@@ -41,7 +43,7 @@ import java.util.ArrayList;
  * Created by Duy on 28-Feb-17.
  */
 
-public abstract class CodeSuggestsEditText extends AutoIndentEditText {
+public abstract class CodeSuggestsEditText extends AutoIndentEditText implements CodeSuggestAdapter.OnSuggestItemClickListener {
     protected static final String TAG = CodeSuggestsEditText.class.getSimpleName();
 
     public int mCharHeight = 0;
@@ -229,12 +231,32 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
     public void setSuggestData(ArrayList<Description> data) {
         Log.d(TAG, "setSuggestData() called with: data = [" + data + "]");
 
+        if (mAdapter != null) {
+            mAdapter.clearAllData(); //gc
+            mAdapter.setListener(null);
+        }
         mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
+        mAdapter.setListener(this);
+        setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Description description = mAdapter.getAllItems().get(position);
+                onClickSuggest(description);
+            }
+        });
 
         setAdapter(mAdapter);
         onDropdownChangeSize();
         if (data.size() > 0) {
             showDropDown();
+        }
+    }
+
+    @Override
+    public void onClickSuggest(Description description) {
+        Log.d(TAG, "onClickSuggest() called with: description = [" + description + "]");
+        if (mAutoCompleteProvider != null) {
+            mAutoCompleteProvider.onInsertSuggestion(this, description);
         }
     }
 

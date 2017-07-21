@@ -1,7 +1,5 @@
 package com.duy.testapplication.datastructure;
 
-import android.util.Log;
-
 import com.duy.testapplication.model.Description;
 
 import java.util.ArrayList;
@@ -9,13 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static android.content.ContentValues.TAG;
-
 /**
  * Created by Duy on 20-Jul-17.
  */
 
 public class Dictionary {
+    private static final String TAG = "Dictionary";
     private HashMap<String, HashMap<String, Description>> mTrie;
 
     public Dictionary() {
@@ -23,6 +20,13 @@ public class Dictionary {
     }
 
     public void add(String category, String name, Description description) {
+        HashMap<String, Description> map = mTrie.get(category);
+        if (map == null) map = new HashMap<>();
+        map.put(name, description);
+        this.mTrie.put(category, map);
+    }
+
+    public void addAdd(String category, String name, Description description) {
         HashMap<String, Description> map = mTrie.get(category);
         if (map == null) map = new HashMap<>();
         map.put(name, description);
@@ -38,24 +42,25 @@ public class Dictionary {
     }
 
     public HashMap<String, Description> removeCategory(String key) {
+
         return mTrie.remove(key);
     }
 
     public ArrayList<Description> find(String category, String namePrefix) {
         HashMap<String, Description> map = mTrie.get(category);
-        Set<Map.Entry<String, Description>> entries = map.entrySet();
         ArrayList<Description> result = new ArrayList<>();
-        for (Map.Entry<String, Description> entry : entries) {
-            if (entry.getKey().startsWith(namePrefix)) {
-                result.add(entry.getValue());
+        if (map != null) {
+            Set<Map.Entry<String, Description>> entries = map.entrySet();
+            for (Map.Entry<String, Description> entry : entries) {
+                if (entry.getKey().startsWith(namePrefix)) {
+                    result.add(entry.getValue());
+                }
             }
         }
         return result;
     }
 
     public <T> ArrayList<T> find(Class<T> t, String category, String namePrefix) {
-        Log.d(TAG, "find() called with: t = [" + t + "], category = [" + category + "], namePrefix = [" + namePrefix + "]");
-
         HashMap<String, Description> map = mTrie.get(category);
         ArrayList<T> result = new ArrayList<>();
         if (map != null) {
@@ -64,12 +69,11 @@ public class Dictionary {
                 if (entry.getKey().startsWith(namePrefix)) {
                     try {
                         result.add(t.cast(entry.getValue()));
-                    } catch (ClassCastException e) {
+                    } catch (ClassCastException ignored) {
                     }
                 }
             }
         }
-        Log.d(TAG, "find() returned: " + result);
         return result;
     }
 

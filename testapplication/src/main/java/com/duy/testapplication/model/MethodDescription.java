@@ -51,6 +51,11 @@ public class MethodDescription implements Member, Description {
     }
 
     @Override
+    public String toString() {
+        return method.toString();
+    }
+
+    @Override
     public Class getReturnType() {
         return null;
     }

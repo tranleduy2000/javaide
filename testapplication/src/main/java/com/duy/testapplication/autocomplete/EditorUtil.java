@@ -37,7 +37,8 @@ public class EditorUtil {
     private static final String TAG = "EditorUtil";
 
     public static String getCurrentClassName(EditText editor) {
-        return null;
+        // TODO: 21-Jul-17
+        return "com.duy.Main";
     }
 
     @NonNull
@@ -52,24 +53,26 @@ public class EditorUtil {
 
 
     public static ArrayList<String> getPossibleClassName(EditText editText, String simpleName, String prefix) {
+        Log.d(TAG, "getPossibleClassName() called with: editText = [" + editText + "], simpleName = [" + simpleName + "], prefix = [" + prefix + "]");
+
         ArrayList<String> classList = new ArrayList<>();
         String importedClassName = getImportedClassName(editText, simpleName);
         if (importedClassName != null) {
             classList.add(importedClassName);
         } else {
             if (!prefix.contains(".")) {
-                classList.add(getCurrentPackage(editText) + "." + simpleName);
-                classList.add("java.lang." + simpleName);
+                classList.add(getCurrentClassName(editText));
+                classList.add("java.lang." + prefix);
             } else {
                 classList.add(prefix);
             }
         }
+        Log.d(TAG, "getPossibleClassName() returned: " + classList);
         return classList;
     }
 
-    @Nullable
     public static String getLine(EditText editText, int pos) {
-        if (pos < 0 || pos > editText.length()) return null;
+        if (pos < 0 || pos > editText.length()) return "";
         int line = LineUtils.getLineFromIndex(pos, editText.getLayout().getLineCount(), editText.getLayout());
         Log.d(TAG, "getLine: " + line);
 
@@ -84,82 +87,93 @@ public class EditorUtil {
         return getLastWord(line, removeParentheses);
     }
 
-    @Nullable
+    @NonNull
     public static String getWord(EditText editText, int pos) {
         String line = getLine(editText, pos);
         return getLastWord(line, false);
     }
 
-    @Nullable
+    @NonNull
     public static String getLastWord(String line, boolean removeParentheses) {
         String result = PatternFactory.lastMatchStr(line, PatternFactory.WORD);
         if (result != null) {
             return removeParentheses ? result.replaceAll(".*\\(", "") : result;
         } else {
-            return null;
+            return "";
         }
     }
 
     @Nullable
     public static String getPreWord(EditText editor, int pos) {
-        CharSequence line = getLine(editor, pos);
-        String[] split = line.toString().split(PatternFactory.SPLIT_NON_WORD_STR);
+        String line = getLine(editor, pos);
+        String[] split = line.split(PatternFactory.SPLIT_NON_WORD_STR);
         return split.length >= 2 ? split[split.length - 2] : null;
     }
 
     public static String getImportedClassName(EditText editor, String className) {
-        return PatternFactory.match(editor.getText(), PatternFactory.makeImport(className));
+        Pattern pattern = PatternFactory.makeImport(className);
+        Matcher matcher = pattern.matcher(editor.getText());
+        if (matcher.find()) {
+            return matcher.group(2);
+        }
+        return PatternFactory.match(editor.getText(), pattern);
     }
 
     public static Pair<ArrayList<String>, Boolean> determineClassName(EditText editor, int pos, String text,
-                                                                      @Nullable String prefix, String suffix,
+                                                                      @NonNull String prefix, String suffix,
                                                                       Class preReturnType) {
+        Log.d(TAG, "determineClassName() called with: editor = [" + editor + "], pos = [" + pos + "], text = [" + text + "], prefix = [" + prefix + "], suffix = [" + suffix + "], preReturnType = [" + preReturnType + "]");
+
         try {
-            ArrayList<String> classNames = null;
-            String classSimpleName = null;
-            boolean instance = false;
-            if (prefix != null) {
-                instance = prefix.matches("\\)$");
-            }
-            if (prefix != null && prefix.equals("this")) {
-                classSimpleName = getCurrentClassSimpleName(editor);
-                instance = true;
-            } else if (prefix != null) {
+            ArrayList<String> classNames;
+            String className;
+            boolean isInstance;
+            isInstance = prefix.matches("\\)$");
+
+            if (prefix.isEmpty() || prefix.equals("this")) {
+                className = getCurrentClassSimpleName(editor);
+                isInstance = true;
+            } else {
                 String word = getWord(editor, pos);
                 if (word.contains("((")) {
-                    classSimpleName = Pattern.compile("[^)]*").matcher(prefix).group(); // TODO: 20-Jul-17  exception
+                    className = Pattern.compile("[^)]*").matcher(prefix).group(); // TODO: 20-Jul-17  exception
                 } else {
-                    classSimpleName = prefix;
+                    className = prefix;
                 }
             }
 
-            if (!JavaUtil.isValidClassName(classSimpleName)
-                    && !prefix.matches("\\.\\)")) {
+            Log.d(TAG, "determineClassName prefix = " + prefix);
+            Log.d(TAG, "determineClassName instance = " + isInstance);
+
+            if (JavaUtil.isValidClassName(className) && text.contains(".")) {
                 Layout layout = editor.getLayout();
                 int start = Math.max(0, pos - 2500);
                 int end = pos;
                 CharSequence range = editor.getText().subSequence(start, end);
 
                 //BigInteger num = new BigInteger(); -> BigInteger num =
-                classSimpleName = lastMatchStr(range, PatternFactory.makeInstance(prefix));
-                //BigInteger num =  -> BigInteger
-                classSimpleName = classSimpleName.replaceAll("\\s?" + prefix + "[,;=\\s)]]", "");
-                //generic ArrayList<String> -> ArrayList
-                classSimpleName = classSimpleName.replaceAll("<.*>", "");
+                className = lastMatchStr(range, PatternFactory.makeInstance(prefix));
 
-                instance = true;
-            } else {
-
+                if (className != null) {
+                    //BigInteger num =  -> BigInteger
+                    className = className.replaceAll("\\s?" + prefix + "\\s?[,;=)]", "");
+                    //generic ArrayList<String> -> ArrayList
+                    className = className.replaceAll("<.*>", "");
+                    isInstance = true;
+                }
             }
-            if (JavaUtil.isValidClassName(classSimpleName)) {
-                classNames = getPossibleClassName(editor, classSimpleName, prefix);
+            Log.d(TAG, "determineClassName className = " + className);
+            if (!JavaUtil.isValidClassName(className)) {
+                classNames = getPossibleClassName(editor, className, prefix);
             } else {
                 classNames = new ArrayList<>();
+                classNames.add(className);
                 classNames.add(preReturnType.getName()); // TODO: 20-Jul-17
-                instance = true;
+                isInstance = true;
             }
 
-            return new Pair<>(classNames, instance);
+            Log.d(TAG, "determineClassName() returned: " + classNames);
+            return new Pair<>(classNames, isInstance);
         } catch (Exception e) {
             e.printStackTrace();
         }

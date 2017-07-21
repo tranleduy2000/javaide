@@ -20,7 +20,7 @@ public class PatternFactory {
     public static final String SPLIT_NON_WORD_STR = "\\W+";
 
     public static Pattern makeImport(String className) {
-        return Pattern.compile("import\\s+(.*" + className + ")\\s?;");
+        return Pattern.compile("(import\\s+)(.*" + className + ")(\\s?;)");
     }
 
 
@@ -69,6 +69,6 @@ public class PatternFactory {
 
     public static Pattern makeInstance(String prefix) {
         return Pattern.compile("([A-Z][a-zA-Z0-9_]*)(<[A-Z][a-zA-Z0-9_<>, ]*>)?\\s?" +
-                prefix + "[,;=\\s)]");
+                prefix + "\\s?[,;=)]");
     }
 }

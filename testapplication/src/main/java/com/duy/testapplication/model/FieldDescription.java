@@ -52,4 +52,9 @@ public class FieldDescription implements Member , Description {
     public Class getReturnType() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return field.getName();
+    }
 }

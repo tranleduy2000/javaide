@@ -31,11 +31,9 @@ public class JavaDexClassLoader {
     }
 
     private static final String TAG = "JavaDexClassLoader";
-
     @NonNull
     public ArrayList<ClassDescription> findClass(String namePrefix) {
         Log.d(TAG, "findClass() called with: namePrefix = [" + namePrefix + "]");
-
         return mDictionary.find(ClassDescription.class, "class", namePrefix);
     }
 
@@ -55,6 +53,8 @@ public class JavaDexClassLoader {
     }
 
     public ArrayList<Description> findClassMember(String className, String namePrefix) {
+        Log.d(TAG, "findClassMember() called with: className = [" + className + "], namePrefix = [" + namePrefix + "]");
+
         return mDictionary.find(className, namePrefix);
     }
 
@@ -70,10 +70,8 @@ public class JavaDexClassLoader {
     }
 
     public ClassDescription loadClass(String className) {
-        Log.d(TAG, "loadClass() called with: className = [" + className + "]");
-
         ClassDescription aClass = mClassReader.readClassByName(className, true);
-        return this.addClass(aClass, System.currentTimeMillis());
+        return addClass(aClass, System.currentTimeMillis());
     }
 
     public void loadAllClasses(boolean fullRefresh) {
@@ -88,7 +86,7 @@ public class JavaDexClassLoader {
     }
 
     private ClassDescription addClass(ClassDescription classDescription, long lastUsed) {
-        String className = classDescription.getName();
+        String className = classDescription.getClassName();
         String inverseName = JavaUtil.getInverseName(className);
 
         mDictionary.remove("class", className);
@@ -99,19 +97,18 @@ public class JavaDexClassLoader {
         if (classDescription.getFields().size() > 0) {
             mDictionary.removeCategory(classDescription.getClassName());
             for (FieldDescription member : classDescription.getFields()) {
-                this.addClassMember(classDescription, member, member, lastUsed);
+                this.addClassMember(classDescription.getClassName(), member, member, lastUsed);
             }
             for (MethodDescription member : classDescription.getMethods()) {
-                this.addClassMember(classDescription, member, member, lastUsed);
+                this.addClassMember(classDescription.getClassName(), member, member, lastUsed);
             }
         }
-
 
         return classDescription;
     }
 
-    private void addClassMember(ClassDescription classDesc, Member member, Description description, long lastUsed) {
-        mDictionary.add(classDesc.getClassName(), member.getPrototype(), description);
+    private void addClassMember(String category, Member member, Description description, long lastUsed) {
+        mDictionary.add(category, member.getName(), description);
     }
 
     public void loadAll() {

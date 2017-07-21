@@ -36,10 +36,7 @@ public class AutoCompleteProvider {
     }
 
 
-    public ArrayList<? extends Description> getSuggestions(EditText editor, int position, String origPrefix) {
-        Log.d(TAG, "getSuggestions() called with: position = ["
-                + position + "], origPrefix = [" + origPrefix + "]");
-
+    public ArrayList<? extends Description> getSuggestions(EditText editor, int position) {
         // text: 'package.Class.me', prefix: 'package.Class', suffix: 'me'
         // text: 'package.Cla', prefix: 'package', suffix: 'Cla'
         // text: 'Cla', prefix: '', suffix: 'Cla'
@@ -54,7 +51,7 @@ public class AutoCompleteProvider {
         String suffix = "";
         if (current.contains(".")) {
             prefix = current.substring(0, current.lastIndexOf("."));
-            suffix = current.substring(current.lastIndexOf("."));
+            suffix = current.substring(current.lastIndexOf(".") + 1);
         } else {
             suffix = current;
         }
@@ -69,11 +66,11 @@ public class AutoCompleteProvider {
 
         if (couldBeClass) {
             ArrayList<ClassDescription> classes = this.mClassLoader.findClass(current);
-            if (preWord.equals("new") && classes.size() > 0) {
+            if (preWord != null && preWord.equals("new")) {
+                result = new ArrayList<>();
                 for (ClassDescription description : classes) {
                     ArrayList<ClassConstructor> constructors = description.getConstructors();
                     for (ClassConstructor constructor : constructors) {
-                        // TODO: 20-Jul-17
                         result.add(constructor);
                     }
                 }
@@ -91,6 +88,7 @@ public class AutoCompleteProvider {
                     = EditorUtil.determineClassName(editor, position, current, prefix, suffix, preReturnType);
             if (r != null) {
                 ArrayList<String> classes = r.first;
+
                 instance = r.second;
                 for (String className : classes) {
                     result = mClassLoader.findClassMember(className, suffix);
@@ -108,7 +106,7 @@ public class AutoCompleteProvider {
             }
         }
         ArrayList<String> duplicateWorkaround = new ArrayList<>();
-        return null;
+        return result;
     }
 
     public String getFormattedReturnType(Member member) {

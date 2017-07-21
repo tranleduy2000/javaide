@@ -6,7 +6,7 @@ import java.lang.reflect.Constructor;
  * Created by Duy on 20-Jul-17.
  */
 
-public class ClassConstructor implements Description{
+public class ClassConstructor extends DescriptionImpl {
     private Constructor constructor;
 
     public ClassConstructor(Constructor constructor) {
@@ -24,16 +24,6 @@ public class ClassConstructor implements Description{
     }
 
     @Override
-    public long getLastUsed() {
-        return 0;
-    }
-
-    @Override
-    public void setLastUsed(long time) {
-
-    }
-
-    @Override
     public Class getType() {
         return null;
     }
@@ -41,5 +31,10 @@ public class ClassConstructor implements Description{
     @Override
     public String getSnippet() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return constructor.toString();
     }
 }

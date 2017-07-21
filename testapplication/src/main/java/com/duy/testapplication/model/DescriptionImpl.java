@@ -5,5 +5,15 @@ package com.duy.testapplication.model;
  */
 
 public abstract class DescriptionImpl implements Description{
+    protected long lastUsed;
 
+    @Override
+    public long getLastUsed() {
+        return lastUsed;
+    }
+
+    @Override
+    public void setLastUsed(long lastUsed) {
+        this.lastUsed = lastUsed;
+    }
 }

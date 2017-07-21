@@ -155,6 +155,8 @@ public class HighlightEditor extends CodeSuggestsEditText
     public void setCodeTheme(CodeTheme codeTheme) {
         this.codeTheme = codeTheme;
         this.mCodeHighlighter.setCodeTheme(codeTheme);
+        this.mBracketHighlighter.setCodeTheme(codeTheme);
+
         setTextColor(codeTheme.getTextColor());
         setBackgroundColor(codeTheme.getBackground());
         mPaintNumbers.setColor(codeTheme.getNumberColor());
@@ -196,7 +198,7 @@ public class HighlightEditor extends CodeSuggestsEditText
         mGestureDetector = new GestureDetector(getContext(), HighlightEditor.this);
         mChangeListener = new EditTextChangeListener();
         mCodeHighlighter = new CodeHighlighter(this);
-        mBracketHighlighter = new BracketHighlighter(this);
+        mBracketHighlighter = new BracketHighlighter(this, codeTheme);
 
         updateFromSettings();
 
@@ -896,6 +898,8 @@ public class HighlightEditor extends CodeSuggestsEditText
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
         super.onSelectionChanged(selStart, selEnd);
+        if (mBracketHighlighter != null) {
             mBracketHighlighter.onSelectChange(selStart, selEnd);
+        }
     }
 }

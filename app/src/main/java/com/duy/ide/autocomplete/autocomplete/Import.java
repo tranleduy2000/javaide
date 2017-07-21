@@ -71,14 +71,18 @@ public class Import {
                     imp.append("\n");
                 }
             }
-            imp.append(current).append("\n");
+            if (i == imports.size() - 1) {
+                imp.append(current);
+            } else {
+                imp.append(current).append("\n");
+            }
             lastPkg = currentPkg;
         }
         int first = firstMatch(editor, PatternFactory.IMPORT);
         int last = PatternFactory.lastMatch(editor, PatternFactory.IMPORT);
         if (first >= 0 && last > first) {
-            editor.getText().replace(first, last, "");
-            editor.getText().insert(first, imp);
+            editor.getText().replace(first, last, ""); //clear import
+            editor.getText().insert(first, imp); //insert new
         }
     }
 

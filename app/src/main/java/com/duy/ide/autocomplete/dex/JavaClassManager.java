@@ -58,9 +58,9 @@ public class JavaClassManager {
 
                 if (className != null) {
                     //BigInteger num =  -> BigInteger
-                    className = className.replaceAll("\\s?" + prefix + "\\s?[,;=)]", "");
+                    className = className.replaceAll("(\\s?)(" + prefix + ")(\\s?[,;=)])", "").trim(); //clear name
                     //generic ArrayList<String> -> ArrayList
-                    className = className.replaceAll("<.*>", "");
+                    className = className.replaceAll("<.*>", ""); //clear generic
                     isInstance = true;
                 }
             }

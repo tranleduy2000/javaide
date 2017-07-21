@@ -24,9 +24,6 @@ public class Import {
 
     /**
      * Add import statement if import does not already exist.
-     *
-     * @param editor
-     * @param className
      */
     public static void importClass(EditText editor, String className) {
         String packageName = JavaUtil.getPackageName(className);

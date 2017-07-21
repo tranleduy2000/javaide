@@ -35,6 +35,16 @@ public class ConstructorDescription extends DescriptionImpl {
 
     @Override
     public String toString() {
-        return constructor.toString();
+        Class<?>[] parameterTypes = constructor.getParameterTypes();
+        StringBuilder params = new StringBuilder();
+        for (int i = 0; i < parameterTypes.length; i++) {
+            Class<?> parameterType = parameterTypes[i];
+            if (i == parameterTypes.length - 1) {
+                params.append(parameterType.getSimpleName());
+                break;
+            }
+            params.append(parameterType.getSimpleName()).append(",");
+        }
+        return constructor.getName() + "(" + params.toString() + ")";
     }
 }

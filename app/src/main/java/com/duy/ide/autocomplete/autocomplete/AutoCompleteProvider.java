@@ -8,13 +8,13 @@ import android.widget.EditText;
 
 import com.duy.ide.autocomplete.dex.JavaClassReader;
 import com.duy.ide.autocomplete.dex.JavaDexClassLoader;
-import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.ClassDescription;
+import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.model.Member;
-import com.duy.ide.autocomplete.model.Type;
 import com.duy.ide.autocomplete.util.EditorUtil;
 import com.duy.ide.autocomplete.util.ImportUtil;
+import com.duy.ide.autocomplete.util.JavaUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,7 +48,6 @@ public class AutoCompleteProvider {
         // text: 'package.Cla', prefix: 'package', suffix: 'Cla'
         // text: 'Cla', prefix: '', suffix: 'Cla'
         // line: 'new Cla', text: 'Cla', prevWord: 'new'
-        String line = EditorUtil.getLine(editor, position);
         String preWord = EditorUtil.getPreWord(editor, position);
         String current = EditorUtil.getWord(editor, position).replace("@", "");
         String prefix = "";
@@ -59,13 +58,17 @@ public class AutoCompleteProvider {
         } else {
             suffix = current;
         }
+        Log.d(TAG, "getSuggestions suffix = " + suffix + " prefix = " + prefix + " current = " + current
+                + " preWord = " + preWord);
         boolean couldBeClass = suffix.matches(PatternFactory.IDENTIFIER.toString());
-        boolean instance = false;
 
         ArrayList<Description> result = null;
 
         if (couldBeClass) {
+            Log.d(TAG, "getSuggestions couldBeClass = " + couldBeClass);
             ArrayList<ClassDescription> classes = this.mClassLoader.findClass(current);
+
+            //Object o = new Object(); //handle new keyword
             if (preWord != null && preWord.equals("new")) {
                 result = new ArrayList<>();
                 for (ClassDescription description : classes) {
@@ -74,6 +77,7 @@ public class AutoCompleteProvider {
                         result.add(constructor);
                     }
                 }
+                return result;
             } else {
                 result = new ArrayList<>();
                 for (ClassDescription aClass : classes) {
@@ -88,7 +92,6 @@ public class AutoCompleteProvider {
                     = determineClassName(editor, position, current, prefix, suffix, preReturnType);
             if (r != null) {
                 ArrayList<String> classes = r.first;
-                instance = r.second;
                 if (classes != null) {
                     for (String className : classes) {
                         JavaClassReader classReader = mClassLoader.getClassReader();
@@ -109,10 +112,15 @@ public class AutoCompleteProvider {
 //                            }
                         }
                     }
+                } else {
+                    if (prefix.isEmpty() && !suffix.isEmpty()) {
+                        if (JavaUtil.isValidClassName(suffix)) { //could be class
+                            ArrayList<ClassDescription> possibleClass = mClassLoader.findClass(suffix);
+                        }
+                    }
                 }
             }
         }
-        Log.d(TAG, "getSuggestions() returned: " + result);
         return result;
     }
 
@@ -133,7 +141,7 @@ public class AutoCompleteProvider {
         return "";
     }
 
-    private String createMemberSnippet(Description member, Type type) {
+    private String createMemberSnippet(Description member) {
         return null;
         // TODO: 20-Jul-17
     }

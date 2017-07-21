@@ -5,6 +5,10 @@ import android.util.Log;
 
 import com.duy.ide.autocomplete.util.JavaUtil;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
 /**
@@ -12,7 +16,6 @@ import java.util.ArrayList;
  */
 
 public class ClassDescription implements Description {
-    private String type;
     private String name, simpleName, className, extend, packageName;
     private long lastUsed = 0;
 
@@ -21,7 +24,6 @@ public class ClassDescription implements Description {
     private ArrayList<MethodDescription> methods;
 
     public ClassDescription(String simpleName, String className, String extend, long lastUsed) {
-        this.type = "class";
         this.name = simpleName;
         this.simpleName = simpleName;
         this.className = className;
@@ -34,6 +36,40 @@ public class ClassDescription implements Description {
         methods = new ArrayList<>();
     }
 
+    public ClassDescription(Class value) {
+        this.simpleName = value.getSimpleName();
+        this.name = value.getSimpleName();
+        this.className = value.getName();
+        if (value.getSuperclass() != null) {
+            this.extend = value.getSuperclass().getName();
+        }
+        this.packageName = JavaUtil.getPackageName(className);
+        this.lastUsed = 0;
+
+
+        constructors = new ArrayList<>();
+        fields = new ArrayList<>();
+        methods = new ArrayList<>();
+
+        for (Constructor constructor : value.getConstructors()) {
+            if (Modifier.isPublic(constructor.getModifiers())) {
+                addConstructor(new ConstructorDescription(constructor));
+            }
+        }
+        for (Field field : value.getDeclaredFields()) {
+            if (Modifier.isPublic(field.getModifiers())) {
+                if (!field.getName().equals(field.getDeclaringClass().getName())) {
+                    addField(new FieldDescription(field));
+                }
+            }
+        }
+        for (Method method : value.getMethods()) {
+            if (Modifier.isPublic(method.getModifiers())) {
+                addMethod(new MethodDescription(method));
+            }
+        }
+    }
+
     public Class getType() {
         return null;
     }
@@ -43,9 +79,7 @@ public class ClassDescription implements Description {
         return null;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+
 
     public String getName() {
         return name;
@@ -64,9 +98,6 @@ public class ClassDescription implements Description {
         return simpleName;
     }
 
-    public void setSimpleName(String simpleName) {
-        this.simpleName = simpleName;
-    }
 
     public String getClassName() {
         return className;
@@ -80,16 +111,8 @@ public class ClassDescription implements Description {
         return extend;
     }
 
-    public void setExtend(String extend) {
-        this.extend = extend;
-    }
-
     public String getPackageName() {
         return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
     }
 
     public long getLastUsed() {
@@ -111,7 +134,6 @@ public class ClassDescription implements Description {
     public ArrayList<FieldDescription> getFields() {
         return fields;
     }
-
 
     private static final String TAG = "ClassDescription";
 

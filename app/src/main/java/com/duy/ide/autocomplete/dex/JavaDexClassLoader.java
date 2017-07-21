@@ -2,7 +2,6 @@ package com.duy.ide.autocomplete.dex;
 
 import android.support.annotation.NonNull;
 
-import com.duy.ide.autocomplete.datastructure.Dictionary;
 import com.duy.ide.autocomplete.model.ClassDescription;
 
 import java.io.File;
@@ -15,32 +14,26 @@ import java.util.ArrayList;
 public class JavaDexClassLoader {
     private static final String TAG = "JavaDexClassLoader";
     private JavaClassReader mClassReader;
-    private Dictionary mDictionary;
 
     public JavaClassReader getClassReader() {
         return mClassReader;
     }
 
     public JavaDexClassLoader(File classpath, File outDir) {
-        mDictionary = new Dictionary();
         mClassReader = new JavaClassReader(classpath.getPath(), outDir.getPath());
     }
 
     @NonNull
-    public ArrayList<ClassDescription> findClass(String namePrefix) {
-        return mDictionary.find(ClassDescription.class,  namePrefix);
+    public ArrayList<ClassDescription> findClass(String simpleNamePrefix) {
+        return mClassReader.findClass(simpleNamePrefix);
     }
 
 
     public void touchClass(String className) {
         ArrayList<ClassDescription> classDescriptions = findClass(className);
         if (classDescriptions.size() > 0) {
-            this.touch(classDescriptions.get(0));
+            classDescriptions.get(0).setLastUsed(System.currentTimeMillis());
         }
-    }
-
-    private void touch(ClassDescription classDescription) {
-        mDictionary.touch(classDescription);
     }
 
     public ClassDescription loadClass(String className) {

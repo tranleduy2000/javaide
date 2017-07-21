@@ -3,8 +3,8 @@ package com.duy.ide.autocomplete.dex;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.ClassDescription;
+import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.FieldDescription;
 import com.duy.ide.autocomplete.model.MethodDescription;
 
@@ -13,8 +13,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -111,9 +113,11 @@ public class JavaClassReader {
                     classDesc.addConstructor(new ConstructorDescription(constructor));
                 }
             }
-            for (Field field : aClass.getFields()) {
+            for (Field field : aClass.getDeclaredFields()) {
                 if (Modifier.isPublic(field.getModifiers())) {
-                    classDesc.addField(new FieldDescription(field));
+                    if (!field.getName().equals(field.getDeclaringClass().getName())) {
+                        classDesc.addField(new FieldDescription(field));
+                    }
                 }
             }
             for (Method method : aClass.getMethods()) {
@@ -125,5 +129,15 @@ public class JavaClassReader {
             return classDesc;
         }
         return null;
+    }
+
+    public ArrayList<ClassDescription> findClass(String simpleNamePrefix) {
+        ArrayList<ClassDescription> classDescriptions = new ArrayList<>();
+        for (Map.Entry<String, Class> entry : mClasses.entrySet()) {
+            if (entry.getValue().getSimpleName().startsWith(simpleNamePrefix)) {
+                classDescriptions.add(new ClassDescription(entry.getValue()));
+            }
+        }
+        return classDescriptions;
     }
 }

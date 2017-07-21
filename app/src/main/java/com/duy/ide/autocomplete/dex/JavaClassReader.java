@@ -3,7 +3,7 @@ package com.duy.ide.autocomplete.dex;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.duy.ide.autocomplete.model.ClassConstructor;
+import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.ClassDescription;
 import com.duy.ide.autocomplete.model.FieldDescription;
 import com.duy.ide.autocomplete.model.MethodDescription;
@@ -108,7 +108,7 @@ public class JavaClassReader {
             ClassDescription classDesc = new ClassDescription(aClass.getSimpleName(), aClass.getName(), superclass, 0);
             for (Constructor constructor : aClass.getConstructors()) {
                 if (Modifier.isPublic(constructor.getModifiers())) {
-                    classDesc.addConstructor(new ClassConstructor(constructor));
+                    classDesc.addConstructor(new ConstructorDescription(constructor));
                 }
             }
             for (Field field : aClass.getDeclaredFields()) {

@@ -19,10 +19,9 @@ package com.duy.ide.editor.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
@@ -31,10 +30,7 @@ import com.duy.ide.EditorSetting;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
 import com.duy.ide.autocomplete.model.Description;
-import com.duy.ide.editor.completion.KeyWord;
 import com.duy.ide.editor.view.adapters.CodeSuggestAdapter;
-import com.duy.ide.editor.view.adapters.InfoItem;
-import com.duy.ide.structure.viewholder.StructureType;
 
 import java.util.ArrayList;
 
@@ -75,11 +71,11 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
      * slipt string in edittext and put it to list keyword
      */
     public void setDefaultKeyword() {
-        ArrayList<InfoItem> data = new ArrayList<>();
-        for (String s : KeyWord.RESERVED_KEY_WORDS) {
-            data.add(new InfoItem(StructureType.TYPE_KEY_WORD, s));
-        }
-        setSuggestData(data);
+//        ArrayList<InfoItem> data = new ArrayList<>();
+//        for (String s : KeyWord.RESERVED_KEY_WORDS) {
+//            data.add(new InfoItem(StructureType.TYPE_KEY_WORD, s));
+//        }
+//        setSuggestData(data);
     }
 
     private void init() {
@@ -129,11 +125,11 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
      * invalidate data for auto suggest
      */
     public void setSuggestData(String[] data) {
-        ArrayList<InfoItem> items = new ArrayList<>();
-        for (String s : data) {
-            items.add(new InfoItem(StructureType.TYPE_KEY_WORD, s));
-        }
-        setSuggestData(items);
+//        ArrayList<InfoItem> items = new ArrayList<>();
+//        for (String s : data) {
+//            items.add(new InfoItem(StructureType.TYPE_KEY_WORD, s));
+//        }
+//        setSuggestData(items);
     }
 
     @Override
@@ -146,9 +142,6 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
 
     /**
      * this method will be change size of popup window
-     *
-     * @param w
-     * @param h
      */
     protected void onDropdownChangeSize(int w, int h) {
 
@@ -196,31 +189,31 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
     }
 
     public void restoreAfterClick(final String[] data) {
-        final ArrayList<InfoItem> suggestData = (ArrayList<InfoItem>) getSuggestData().clone();
-        setSuggestData(data);
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setEnoughToFilter(true);
-                showDropDown();
-                setEnoughToFilter(false);
-
-                //when user click item, restore data
-                setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        setSuggestData(suggestData);
-
-                        //don't handle twice
-                        setOnItemClickListener(null);
-                    }
-                });
-
-            }
-        }, 50);
+//        final ArrayList<InfoItem> suggestData = (ArrayList<InfoItem>) getSuggestData().clone();
+//        setSuggestData(data);
+//        postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                setEnoughToFilter(true);
+//                showDropDown();
+//                setEnoughToFilter(false);
+//
+//                //when user click item, restore data
+//                setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        setSuggestData(suggestData);
+//
+//                        //don't handle twice
+//                        setOnItemClickListener(null);
+//                    }
+//                });
+//
+//            }
+//        }, 50);
     }
 
-    public ArrayList<InfoItem> getSuggestData() {
+    public ArrayList<Description> getSuggestData() {
         return mAdapter.getAllItems();
     }
 
@@ -231,31 +224,29 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
     /**
      * invalidate data for auto suggest
      */
-    public void setSuggestData(ArrayList<InfoItem> data) {
-        DLog.d(TAG, "setSuggestData: ");
+    public void setSuggestData(ArrayList<Description> data) {
+        Log.d(TAG, "setSuggestData() called with: data = [" + data + "]");
+
         mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
 
         setAdapter(mAdapter);
-//        onDropdownChangeSize(getWidth(), getHeight());
-    }
-    public void addKeywords(String[] allKeyWord) {
-        ArrayList<InfoItem> newData = new ArrayList<>();
-        for (String s : allKeyWord) {
-            newData.add(new InfoItem(StructureType.TYPE_KEY_WORD, s));
+        onDropdownChangeSize(getWidth(), getHeight());
+        if (data.size() > 0) {
+            showDropDown();
         }
-        ArrayList<InfoItem> oldItems = mAdapter.getAllItems();
-        oldItems.addAll(newData);
-        setSuggestData(oldItems);
     }
 
-    private class GenerateSuggestDataTask extends AsyncTask<Void, Void, ArrayList<InfoItem>> {
+
+    private class GenerateSuggestDataTask extends AsyncTask<Void, Void, ArrayList<Description>> {
         private final EditText editText;
         private final AutoCompleteProvider provider;
         private int selection;
 
-        GenerateSuggestDataTask(EditText editText, AutoCompleteProvider provider) {
+        GenerateSuggestDataTask(@NonNull EditText editText, @NonNull AutoCompleteProvider provider) {
             this.editText = editText;
             this.provider = provider;
+            provider.getClass();
+            editText.getClass();
         }
 
         @Override
@@ -265,30 +256,24 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
         }
 
         @Override
-        protected ArrayList<InfoItem> doInBackground(Void... params) {
-            ArrayList<InfoItem> items = new ArrayList<>();
+        protected ArrayList<Description> doInBackground(Void... params) {
             try {
-                ArrayList<? extends Description> suggestions = provider.getSuggestions(editText, selection);
-                if (suggestions != null) {
-                    for (Description suggestion : suggestions) {
-                        items.add(new InfoItem(0, suggestion.getName()));
-                    }
-                }
+                return provider.getSuggestions(editText, selection);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return items;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<InfoItem> infoItems) {
-            super.onPostExecute(infoItems);
-            if (isCancelled() || infoItems == null) {
+        protected void onPostExecute(ArrayList<Description> descriptions) {
+            super.onPostExecute(descriptions);
+            if (isCancelled() || descriptions == null) {
                 Log.d(TAG, "onPostExecute: canceled");
                 return;
             }
-            setSuggestData(infoItems);
-            Log.d(TAG, "onPostExecute() called with: infoItems = [" + infoItems + "]");
+            setSuggestData(descriptions);
+            Log.d(TAG, "onPostExecute() called with: infoItems = [" + descriptions + "]");
         }
     }
 

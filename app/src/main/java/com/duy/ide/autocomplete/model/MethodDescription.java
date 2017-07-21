@@ -37,12 +37,12 @@ public class MethodDescription implements Member, Description {
 
     @Override
     public Class getType() {
-        return null;
+        return method.getReturnType();
     }
 
     @Override
     public String getSnippet() {
-        return null;
+        return method.getName() + "()";
     }
 
     @Override
@@ -57,6 +57,6 @@ public class MethodDescription implements Member, Description {
 
     @Override
     public Class getReturnType() {
-        return null;
+        return method.getReturnType();
     }
 }

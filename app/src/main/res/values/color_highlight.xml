@@ -152,4 +152,7 @@
     <color name="color.background_color">@color/dark.color_background</color>
     <color name="color.opt_color">#fc216e</color>
     <color name="color.normal_text_color">#ffffff</color>
+
+    <!--Popup-->
+    <color name="popup.variable">#26a69a</color>
 </resources>

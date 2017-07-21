@@ -27,10 +27,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.structure.viewholder.StructureType;
+import com.duy.ide.autocomplete.model.Description;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,15 +37,15 @@ import java.util.Collection;
 /**
  * Created by Duy on 26-Apr-17.
  */
-public class CodeSuggestAdapter extends ArrayAdapter<InfoItem> {
+public class CodeSuggestAdapter extends ArrayAdapter<Description> {
     private static final String TAG = "CodeSuggestAdapter";
     private final Context context;
     private final int colorKeyWord;
     private final int colorNormal;
     private final int colorVariable = 0xffFFB74D;
     private LayoutInflater inflater;
-    private ArrayList<InfoItem> clone;
-    private ArrayList<InfoItem> suggestion;
+    private ArrayList<Description> clone;
+    private ArrayList<Description> suggestion;
     private int resourceID;
     private Filter codeFilter = new Filter() {
         @Override
@@ -54,7 +53,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<InfoItem> {
             if (resultValue == null) {
                 return "";
             }
-            return ((InfoItem) resultValue).getName();
+            return ((Description) resultValue).getName();
         }
 
         @Override
@@ -62,10 +61,10 @@ public class CodeSuggestAdapter extends ArrayAdapter<InfoItem> {
             FilterResults filterResults = new FilterResults();
             suggestion.clear();
             if (constraint != null) {
-                for (InfoItem item : clone) {
-                    if (item.compareTo(constraint.toString()) == 0) {
+                for (Description item : clone) {
+//                    if (item.compareTo(constraint.toString()) == 0) {
                         suggestion.add(item);
-                    }
+//                    }
                 }
                 filterResults.values = suggestion;
                 filterResults.count = suggestion.size();
@@ -77,7 +76,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<InfoItem> {
         @SuppressWarnings("unchecked")
 
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            ArrayList<InfoItem> filteredList = (ArrayList<InfoItem>) results.values;
+            ArrayList<Description> filteredList = (ArrayList<Description>) results.values;
             clear();
             if (filteredList != null && filteredList.size() > 0) {
                 addAll(filteredList);
@@ -87,18 +86,18 @@ public class CodeSuggestAdapter extends ArrayAdapter<InfoItem> {
     };
 
     @SuppressWarnings("unchecked")
-    public CodeSuggestAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<InfoItem> objects) {
+    public CodeSuggestAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<Description> objects) {
         super(context, resource, objects);
         this.inflater = LayoutInflater.from(context);
         this.context = context;
-        this.clone = (ArrayList<InfoItem>) objects.clone();
+        this.clone = (ArrayList<Description>) objects.clone();
         this.suggestion = new ArrayList<>();
         this.resourceID = resource;
         colorKeyWord = context.getResources().getColor(R.color.color_key_word_color);
         colorNormal = context.getResources().getColor(android.R.color.primary_text_dark);
     }
 
-    public ArrayList<InfoItem> getAllItems() {
+    public ArrayList<Description> getAllItems() {
         return clone;
     }
 
@@ -110,35 +109,14 @@ public class CodeSuggestAdapter extends ArrayAdapter<InfoItem> {
             convertView = inflater.inflate(resourceID, null);
         }
 
-        final InfoItem item = getItem(position);
-
-        TextView txtName = (TextView) convertView.findViewById(R.id.txt_title);
-        txtName.setText(item.getShow() != null ? item.getShow() : item.getName());
-        switch (item.getType()) {
-            case StructureType.TYPE_KEY_WORD:
-                txtName.setTextColor(colorKeyWord);
-                txtName.setTypeface(Typeface.DEFAULT_BOLD);
-                break;
-            case StructureType.TYPE_VARIABLE:
-                txtName.setTextColor(colorVariable);
-                txtName.setTypeface(Typeface.DEFAULT);
-                break;
-            default:
-                txtName.setTextColor(colorNormal);
-                txtName.setTypeface(Typeface.DEFAULT);
-                break;
+        final Description item = getItem(position);
+        TextView txtName = convertView.findViewById(R.id.txt_name);
+        txtName.setTypeface(Typeface.MONOSPACE);
+        TextView txtType = convertView.findViewById(R.id.txt_type);
+        if (item != null) {
+            txtName.setText(item.getName());
+            txtType.setText(item.getType() != null ? item.getType().getName() : "");
         }
-        View btnInfo = convertView.findViewById(R.id.img_info);
-        btnInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (item.getDescription() == null) {
-                    Toast.makeText(context, R.string.no_document, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, item.getDescription(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         return convertView;
     }
 
@@ -148,7 +126,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<InfoItem> {
         clone.clear();
     }
 
-    public void addData(@NonNull Collection<? extends InfoItem> collection) {
+    public void addData(@NonNull Collection<? extends Description> collection) {
         addAll(collection);
         clone.addAll(collection);
     }

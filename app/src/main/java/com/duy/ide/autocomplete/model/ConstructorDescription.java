@@ -6,10 +6,10 @@ import java.lang.reflect.Constructor;
  * Created by Duy on 20-Jul-17.
  */
 
-public class ClassConstructor extends DescriptionImpl {
+public class ConstructorDescription extends DescriptionImpl {
     private Constructor constructor;
 
-    public ClassConstructor(Constructor constructor) {
+    public ConstructorDescription(Constructor constructor) {
         this.constructor = constructor;
     }
 
@@ -30,7 +30,7 @@ public class ClassConstructor extends DescriptionImpl {
 
     @Override
     public String getSnippet() {
-        return null;
+        return constructor.getName();
     }
 
     @Override

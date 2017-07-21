@@ -35,12 +35,12 @@ public class FieldDescription implements Member , Description {
 
     @Override
     public Class getType() {
-        return null;
+        return field.getType();
     }
 
     @Override
     public String getSnippet() {
-        return null;
+        return field.getName();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class FieldDescription implements Member , Description {
 
     @Override
     public Class getReturnType() {
-        return null;
+        return field.getType();
     }
 
     @Override

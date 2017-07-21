@@ -16,7 +16,7 @@ public class ClassDescription implements Description {
     private String name, simpleName, className, extend, packageName;
     private long lastUsed = 0;
 
-    private ArrayList<ClassConstructor> constructors;
+    private ArrayList<ConstructorDescription> constructors;
     private ArrayList<FieldDescription> fields;
     private ArrayList<MethodDescription> methods;
 
@@ -100,11 +100,11 @@ public class ClassDescription implements Description {
         this.lastUsed = lastUsed;
     }
 
-    public ArrayList<ClassConstructor> getConstructors() {
+    public ArrayList<ConstructorDescription> getConstructors() {
         return constructors;
     }
 
-    public void setConstructors(ArrayList<ClassConstructor> constructors) {
+    public void setConstructors(ArrayList<ConstructorDescription> constructors) {
         this.constructors = constructors;
     }
 
@@ -115,10 +115,10 @@ public class ClassDescription implements Description {
 
     private static final String TAG = "ClassDescription";
 
-    public void addConstructor(ClassConstructor classConstructor) {
-        Log.d(TAG, "addConstructor() called with: classConstructor = [" + classConstructor + "]");
+    public void addConstructor(ConstructorDescription constructorDescription) {
+        Log.d(TAG, "addConstructor() called with: classConstructor = [" + constructorDescription + "]");
 
-        this.constructors.add(classConstructor);
+        this.constructors.add(constructorDescription);
     }
     public void addField(FieldDescription fieldDescription) {
         fields.add(fieldDescription);
@@ -139,8 +139,8 @@ public class ClassDescription implements Description {
 
     public ArrayList<Description> getMember(String suffix) {
         ArrayList<Description> result = new ArrayList<>();
-        for (ClassConstructor constructor : constructors) {
-            if (suffix.isEmpty() || constructor.getName().startsWith(suffix)) {
+        for (ConstructorDescription constructor : constructors) {
+            if (constructor.getName().startsWith(suffix)) {
                 result.add(constructor);
             }
         }

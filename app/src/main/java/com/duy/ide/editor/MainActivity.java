@@ -51,11 +51,11 @@ import com.duy.compile.external.CommandManager;
 import com.duy.compile.external.dex.JavaDexClassLoader;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
+import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.code.CompileManager;
 import com.duy.ide.code_sample.activities.DocumentActivity;
 import com.duy.ide.editor.view.AutoIndentEditText;
 import com.duy.ide.editor.view.EditorView;
-import com.duy.ide.editor.view.adapters.InfoItem;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.setting.JavaPreferences;
@@ -358,7 +358,7 @@ public class MainActivity extends BaseEditorActivity implements
             EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
             if (editorFragment != null) {
                 EditorView editor = editorFragment.getEditor();
-                editor.setSuggestData(new ArrayList<InfoItem>());
+                editor.setSuggestData(new ArrayList<Description>());
             }
         }
         //toggle ime/no suggest mode

@@ -8,7 +8,7 @@ import android.widget.EditText;
 
 import com.duy.ide.autocomplete.dex.JavaClassReader;
 import com.duy.ide.autocomplete.dex.JavaDexClassLoader;
-import com.duy.ide.autocomplete.model.ClassConstructor;
+import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.ClassDescription;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.model.Member;
@@ -43,7 +43,7 @@ public class AutoCompleteProvider {
     }
 
 
-    public ArrayList<? extends Description> getSuggestions(EditText editor, int position) {
+    public ArrayList<Description> getSuggestions(EditText editor, int position) {
         // text: 'package.Class.me', prefix: 'package.Class', suffix: 'me'
         // text: 'package.Cla', prefix: 'package', suffix: 'Cla'
         // text: 'Cla', prefix: '', suffix: 'Cla'
@@ -69,8 +69,8 @@ public class AutoCompleteProvider {
             if (preWord != null && preWord.equals("new")) {
                 result = new ArrayList<>();
                 for (ClassDescription description : classes) {
-                    ArrayList<ClassConstructor> constructors = description.getConstructors();
-                    for (ClassConstructor constructor : constructors) {
+                    ArrayList<ConstructorDescription> constructors = description.getConstructors();
+                    for (ConstructorDescription constructor : constructors) {
                         result.add(constructor);
                     }
                 }

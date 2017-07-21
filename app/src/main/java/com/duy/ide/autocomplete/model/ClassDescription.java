@@ -162,7 +162,7 @@ public class ClassDescription implements Description {
     public ArrayList<Description> getMember(String suffix) {
         ArrayList<Description> result = new ArrayList<>();
         for (ConstructorDescription constructor : constructors) {
-            if (constructor.getName().startsWith(suffix)) {
+            if (!suffix.isEmpty() && constructor.getName().startsWith(suffix)) {
                 result.add(constructor);
             }
         }

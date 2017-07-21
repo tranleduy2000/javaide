@@ -16,6 +16,8 @@ public class PatternFactory {
     public static final Pattern IMPORT = Pattern.compile("import\\s+[^;]*\\s?;");
     public static final Pattern WORD = Pattern.compile("[^\\s-]+$");
     public static final Pattern CLASS_NAME = Pattern.compile("[A-Za-z][A-Za-z0-9]*");
+    public static final Pattern SPLIT_NON_WORD = Pattern.compile("\\W+");
+    public static final String SPLIT_NON_WORD_STR = "\\W+";
 
     public static Pattern makeImport(String className) {
         return Pattern.compile("import\\s+(.*" + className + ")\\s?;");

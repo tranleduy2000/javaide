@@ -33,18 +33,27 @@ public class AutoCompleteCodeEditText extends AppCompatEditText {
     public AutoCompleteCodeEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
-
     }
 
     private void init(Context context) {
         setTypeface(Typeface.MONOSPACE);
+        setText("ArrayList aa = new Arr");
     }
 
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
         if (mAutoCompleteProvider != null) {
-            mAutoCompleteProvider.getSuggestions(this, getSelectionEnd(), "");
+            try {
+                mAutoCompleteProvider.getSuggestions(this, getSelectionStart(), "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    @Override
+    protected void onSelectionChanged(int selStart, int selEnd) {
+        super.onSelectionChanged(selStart, selEnd);
     }
 }

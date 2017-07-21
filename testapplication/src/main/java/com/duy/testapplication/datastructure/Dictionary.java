@@ -1,11 +1,15 @@
 package com.duy.testapplication.datastructure;
 
+import android.util.Log;
+
 import com.duy.testapplication.model.Description;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by Duy on 20-Jul-17.
@@ -50,17 +54,22 @@ public class Dictionary {
     }
 
     public <T> ArrayList<T> find(Class<T> t, String category, String namePrefix) {
+        Log.d(TAG, "find() called with: t = [" + t + "], category = [" + category + "], namePrefix = [" + namePrefix + "]");
+
         HashMap<String, Description> map = mTrie.get(category);
-        Set<Map.Entry<String, Description>> entries = map.entrySet();
         ArrayList<T> result = new ArrayList<>();
-        for (Map.Entry<String, Description> entry : entries) {
-            if (entry.getKey().startsWith(namePrefix)) {
-                try {
-                    result.add(t.cast(entry.getValue()));
-                } catch (ClassCastException e) {
+        if (map != null) {
+            Set<Map.Entry<String, Description>> entries = map.entrySet();
+            for (Map.Entry<String, Description> entry : entries) {
+                if (entry.getKey().startsWith(namePrefix)) {
+                    try {
+                        result.add(t.cast(entry.getValue()));
+                    } catch (ClassCastException e) {
+                    }
                 }
             }
         }
+        Log.d(TAG, "find() returned: " + result);
         return result;
     }
 

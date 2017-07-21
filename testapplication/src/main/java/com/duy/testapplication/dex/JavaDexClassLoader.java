@@ -2,6 +2,7 @@ package com.duy.testapplication.dex;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.duy.testapplication.autocomplete.JavaUtil;
 import com.duy.testapplication.datastructure.Dictionary;
@@ -13,6 +14,8 @@ import com.duy.testapplication.model.MethodDescription;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Duy on 20-Jul-17.
@@ -27,9 +30,12 @@ public class JavaDexClassLoader {
         mClassReader = new JavaClassReader(classpath.getPath(), outDir.getPath());
     }
 
+    private static final String TAG = "JavaDexClassLoader";
 
     @NonNull
     public ArrayList<ClassDescription> findClass(String namePrefix) {
+        Log.d(TAG, "findClass() called with: namePrefix = [" + namePrefix + "]");
+
         return mDictionary.find(ClassDescription.class, "class", namePrefix);
     }
 
@@ -63,18 +69,21 @@ public class JavaDexClassLoader {
         mDictionary.touch(classDescription);
     }
 
-    public ClassDescription loadClass(String className, String classpath, boolean loadClassMembers) {
-        mClassReader.load();
+    public ClassDescription loadClass(String className) {
+        Log.d(TAG, "loadClass() called with: className = [" + className + "]");
+
         ClassDescription aClass = mClassReader.readClassByName(className, true);
         return this.addClass(aClass, System.currentTimeMillis());
     }
 
     public void loadAllClasses(boolean fullRefresh) {
+        mClassReader.load();
         if (fullRefresh) {
-            mClassReader.dispose();
-            mClassReader.load();
+            HashMap<String, Class> classes = mClassReader.getClasses();
+            for (Map.Entry<String, Class> entry : classes.entrySet()) {
+                loadClass(entry.getKey());
+            }
         } else {
-            mClassReader.load();
         }
     }
 

@@ -31,6 +31,10 @@ public class JavaClassReader {
     private DexClassLoader mDexClassLoader;
     private boolean loaded = false;
 
+    public HashMap<String, Class> getClasses() {
+        return mClasses;
+    }
+
     public JavaClassReader(String classpath, String outDir) {
         this.classpath = classpath;
         this.outDir = outDir;
@@ -56,7 +60,7 @@ public class JavaClassReader {
                     Class c = mDexClassLoader.loadClass(className);
                     classes.put(c.getName(), c);
                 } catch (ClassNotFoundException e1) {
-                    e1.printStackTrace();
+//                    e1.printStackTrace();
                 }
             }
         } catch (IOException e) {

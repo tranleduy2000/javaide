@@ -71,6 +71,8 @@ public class EditorUtil {
     public static String getLine(EditText editText, int pos) {
         if (pos < 0 || pos > editText.length()) return null;
         int line = LineUtils.getLineFromIndex(pos, editText.getLayout().getLineCount(), editText.getLayout());
+        Log.d(TAG, "getLine: " + line);
+
         int lineStart = editText.getLayout().getLineStart(line);
         int lineEnd = editText.getLayout().getLineEnd(line);
         return editText.getText().subSequence(lineStart, lineEnd).toString();
@@ -78,13 +80,13 @@ public class EditorUtil {
 
     @Nullable
     public static String getWord(EditText editText, int pos, boolean removeParentheses) {
-        String line = getLine(editText, pos).toString();
+        String line = getLine(editText, pos);
         return getLastWord(line, removeParentheses);
     }
 
     @Nullable
     public static String getWord(EditText editText, int pos) {
-        String line = getLine(editText, pos).toString();
+        String line = getLine(editText, pos);
         return getLastWord(line, false);
     }
 
@@ -101,7 +103,7 @@ public class EditorUtil {
     @Nullable
     public static String getPreWord(EditText editor, int pos) {
         CharSequence line = getLine(editor, pos);
-        String[] split = line.toString().split("[^\\s-]+$");
+        String[] split = line.toString().split(PatternFactory.SPLIT_NON_WORD_STR);
         return split.length >= 2 ? split[split.length - 2] : null;
     }
 

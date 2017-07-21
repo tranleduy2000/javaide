@@ -32,12 +32,12 @@ public class AutoCompleteProvider {
     private static final String TAG = "AutoCompleteProvider";
 
     public void load() {
-        mClassLoader.loadAllClasses(false);
+        mClassLoader.loadAllClasses(true);
     }
 
 
-    public ArrayList<Object> getSuggestions(EditText editor, int position, String origPrefix) {
-        Log.d(TAG, "getSuggestions() called with: editor = [" + editor + "], position = ["
+    public ArrayList<? extends Description> getSuggestions(EditText editor, int position, String origPrefix) {
+        Log.d(TAG, "getSuggestions() called with: position = ["
                 + position + "], origPrefix = [" + origPrefix + "]");
 
         // text: 'package.Class.me', prefix: 'package.Class', suffix: 'me'
@@ -45,37 +45,50 @@ public class AutoCompleteProvider {
         // text: 'Cla', prefix: '', suffix: 'Cla'
         // line: 'new Cla', text: 'Cla', prevWord: 'new'
         String line = EditorUtil.getLine(editor, position);
+        Log.d(TAG, "getSuggestions line = " + line);
         String preWord = EditorUtil.getPreWord(editor, position);
-        String text = EditorUtil.getWord(editor, position).replace("@", "");
-        String prefix = null;
-        if (text.contains(".")) {
-            prefix = text.substring(0, text.lastIndexOf("."));
+        Log.d(TAG, "getSuggestions preWord = " + preWord);
+        String current = EditorUtil.getWord(editor, position).replace("@", "");
+        Log.d(TAG, "getSuggestions text = " + current);
+        String prefix = "";
+        String suffix = "";
+        if (current.contains(".")) {
+            prefix = current.substring(0, current.lastIndexOf("."));
+            suffix = current.substring(current.lastIndexOf("."));
+        } else {
+            suffix = current;
         }
-        String suffix = origPrefix.replace(".", "");
-        boolean couldBeClass = suffix.matches(PatternFactory.CLASS_NAME.toString()) || prefix != null;
+        Log.d(TAG, "getSuggestions prefix = " + prefix + " ; suffix = " + suffix);
+
+        boolean couldBeClass = suffix.matches(PatternFactory.CLASS_NAME.toString());
+        Log.d(TAG, "getSuggestions couldBeClass = " + couldBeClass);
+
         boolean instance = false;
 
         ArrayList<Description> result = null;
 
         if (couldBeClass) {
-            ArrayList<ClassDescription> classes = this.mClassLoader.findClass(text);
+            ArrayList<ClassDescription> classes = this.mClassLoader.findClass(current);
             if (preWord.equals("new") && classes.size() > 0) {
                 for (ClassDescription description : classes) {
                     ArrayList<ClassConstructor> constructors = description.getConstructors();
                     for (ClassConstructor constructor : constructors) {
                         // TODO: 20-Jul-17
+                        result.add(constructor);
                     }
                 }
             } else {
                 result = new ArrayList<>();
-                result.addAll(classes);
+                for (ClassDescription aClass : classes) {
+                    result.add(aClass);
+                }
             }
         }
 
 
         if (result == null || result.size() == 0) {
             Pair<ArrayList<String>, Boolean> r
-                    = EditorUtil.determineClassName(editor, position, text, prefix, suffix, preReturnType);
+                    = EditorUtil.determineClassName(editor, position, current, prefix, suffix, preReturnType);
             if (r != null) {
                 ArrayList<String> classes = r.first;
                 instance = r.second;
@@ -85,7 +98,9 @@ public class AutoCompleteProvider {
                     while (superClass != null) {
                         ArrayList<Description> classMember = mClassLoader.findClassMember(superClass, suffix);
                         if (classMember != null) {
-                            result.addAll(classMember);
+                            for (Description description : classMember) {
+                                result.add(description);
+                            }
                         }
                         superClass = mClassLoader.findSuperClassName(superClass);
                     }

@@ -125,4 +125,9 @@ public class ClassDescription implements Description {
     public ArrayList<MethodDescription> getMethods() {
         return methods;
     }
+
+    @Override
+    public String toString() {
+        return className;
+    }
 }

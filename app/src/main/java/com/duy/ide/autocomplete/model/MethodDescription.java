@@ -3,6 +3,7 @@ package com.duy.ide.autocomplete.model;
 import android.support.annotation.NonNull;
 
 import com.duy.ide.autocomplete.util.JavaUtil;
+import com.duy.ide.editor.view.AutoIndentEditText;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -49,7 +50,11 @@ public class MethodDescription implements Member, Description {
 
     @Override
     public String getSnippet() {
-        return method.getName() + "()";
+        if (method.getParameterTypes().length > 0) {
+            return getSimpleName() + "(" + AutoIndentEditText.CURSOR + ");";
+        } else {
+            return getSimpleName() + "();" + AutoIndentEditText.CURSOR;
+        }
     }
 
     @Override

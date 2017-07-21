@@ -4,6 +4,7 @@ package com.duy.ide.autocomplete.model;
 import android.util.Log;
 
 import com.duy.ide.autocomplete.util.JavaUtil;
+import com.duy.ide.editor.view.CodeSuggestsEditText;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -76,7 +77,7 @@ public class ClassDescription implements Description {
 
     @Override
     public String getSnippet() {
-        return null;
+        return getSimpleName() + " " + CodeSuggestsEditText.CURSOR;
     }
 
 

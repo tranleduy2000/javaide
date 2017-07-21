@@ -31,10 +31,7 @@ import android.widget.TextView;
 import com.duy.compile.diagnostic.SpanUtil;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.model.ClassDescription;
-import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.Description;
-import com.duy.ide.autocomplete.model.FieldDescription;
-import com.duy.ide.autocomplete.model.MethodDescription;
 import com.duy.ide.setting.JavaPreferences;
 
 import java.util.ArrayList;
@@ -124,16 +121,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
             if (value == null) {
                 return "";
             }
-            if (value instanceof ClassDescription) {
-                return ((ClassDescription) value).getSimpleName() + " ";
-            } else if (value instanceof ConstructorDescription) {
-                return ((ConstructorDescription) value).getSimpleName() + "()";
-            } else if (value instanceof MethodDescription) {
-                return ((MethodDescription) value).getSimpleName() + "(" + ")";
-            } else if (value instanceof FieldDescription) {
-                return ((FieldDescription) value).getName();
-            }
-            return ((Description) value).getName();
+            return ((Description) value).getSnippet();
         }
 
         @Override

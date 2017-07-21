@@ -35,7 +35,7 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
     public static final String TAB_CHARACTER = "    ";
     public static final String TAB = "  "; //2 space
     private static final String TAG = "AutoIndentEditText";
-    private static final String CURSOR = "\u2622";
+    public static final String CURSOR = "\u2622";
     public AutoIndentEditText(Context context) {
         super(context);
         init();

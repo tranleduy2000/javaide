@@ -40,16 +40,22 @@ public class BracketHighlighter {
         try {
             if (selEnd > -1 && selEnd <= editText.length()) {
                 Editable text = editText.getText();
-                char bracket = 0;
-                if (selEnd < editText.length()) {
-                    bracket = text.charAt(selEnd);
-                }
-                char before = selEnd > 0 ? text.charAt(selEnd - 1) : 0;
-                if (Arrays.binarySearch(BRACKET, bracket) > 0 && isOpen(bracket)) { //is close
+                char bracket = text.charAt(selEnd);
+                boolean isBracket = Arrays.binarySearch(BRACKET, bracket) > 0;
+                if (isBracket && isOpen(bracket)) { //is close
                     findClose(bracket, selEnd);
-                } else if (Arrays.binarySearch(BRACKET, before) > 0 && !isOpen(before)) {
-                    findOpen(before, selEnd - 1);
+                } else if (isBracket) {
+                    findOpen(bracket, selEnd);
+                } else {
+                    char before = selEnd > 0 ? text.charAt(selEnd - 1) : 0;
+                    isBracket = Arrays.binarySearch(BRACKET, bracket) > 0;
+                    if (isBracket && isOpen(bracket)) { //is close
+                        findClose(bracket, selEnd - 1);
+                    } else if (isBracket) {
+                        findOpen(before, selEnd - 1);
+                    }
                 }
+
             }
         } catch (Exception e) {
             e.printStackTrace();

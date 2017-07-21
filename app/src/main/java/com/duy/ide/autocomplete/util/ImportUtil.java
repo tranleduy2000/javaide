@@ -3,7 +3,7 @@ package com.duy.ide.autocomplete.util;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.duy.autocomplete.autocomplete.PatternFactory;
+import com.duy.ide.autocomplete.autocomplete.PatternFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +11,8 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.duy.autocomplete.autocomplete.PatternFactory.firstMatch;
+import static com.duy.ide.autocomplete.autocomplete.PatternFactory.firstMatch;
+
 
 /**
  * Created by Duy on 21-Jul-17.

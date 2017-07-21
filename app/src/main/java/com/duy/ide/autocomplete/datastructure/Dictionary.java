@@ -1,6 +1,8 @@
 package com.duy.ide.autocomplete.datastructure;
 
 
+import android.util.Log;
+
 import com.duy.ide.autocomplete.model.Description;
 
 import java.util.ArrayList;
@@ -34,6 +36,10 @@ public class Dictionary {
         this.mTrie.put(category, map);
     }
 
+    public void putAll(String category, HashMap<String, Description> hashMap) {
+        mTrie.put(category, hashMap);
+    }
+
     public Description remove(String caterogry, String name) {
         HashMap<String, Description> map = mTrie.get(caterogry);
         if (map != null) {
@@ -58,6 +64,7 @@ public class Dictionary {
                 }
             }
         }
+        Log.d(TAG, "find() returned: " + result);
         return result;
     }
 

@@ -95,13 +95,14 @@ public class JavaDexClassLoader {
         mDictionary.add("class", inverseName, classDescription);
 
         if (classDescription.getFields().size() > 0) {
-            mDictionary.removeCategory(classDescription.getClassName());
+            HashMap<String, Description> hashMap = new HashMap<>();
             for (FieldDescription member : classDescription.getFields()) {
-                this.addClassMember(classDescription.getClassName(), member, member, lastUsed);
+                hashMap.put(className, member);
             }
             for (MethodDescription member : classDescription.getMethods()) {
-                this.addClassMember(classDescription.getClassName(), member, member, lastUsed);
+                hashMap.put(className, member);
             }
+            mDictionary.putAll(className, hashMap);
         }
 
         return classDescription;

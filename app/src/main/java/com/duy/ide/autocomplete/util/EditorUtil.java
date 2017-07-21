@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.duy.autocomplete.autocomplete.PatternFactory;
+import com.duy.ide.autocomplete.autocomplete.PatternFactory;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -51,6 +51,7 @@ public class EditorUtil {
 
         ArrayList<String> classList = new ArrayList<>();
         String importedClassName = ImportUtil.getImportedClassName(editText, simpleName);
+        Log.d(TAG, "getPossibleClassName importedClassName = " + importedClassName);
         if (importedClassName != null) {
             classList.add(importedClassName);
         } else {

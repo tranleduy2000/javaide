@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.duy.ide.EditPageContract;
 import com.duy.ide.EditorControl;
 import com.duy.ide.R;
+import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
 import com.duy.ide.code.CompileManager;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.FileManager;
@@ -64,6 +65,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     private Handler handler = new Handler();
     private Dialog dialog;
     private EditPageContract.Presenter mPresenter;
+    private AutoCompleteProvider autoCompleteProvider;
 
 //    private LockableHorizontalScrollView mHorizontalScrollView;
 
@@ -305,6 +307,12 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
             return "";
         } else {
             return path;
+        }
+    }
+
+    public void setAutoCompleteProvider(AutoCompleteProvider autoCompleteProvider) {
+        if (mCodeEditor != null){
+            mCodeEditor.setAutoCompleteProvider(autoCompleteProvider);
         }
     }
 

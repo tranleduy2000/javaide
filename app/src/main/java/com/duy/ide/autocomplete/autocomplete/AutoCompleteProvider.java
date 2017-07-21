@@ -95,6 +95,7 @@ public class AutoCompleteProvider {
 
                 instance = r.second;
                 for (String className : classes) {
+                    Log.d(TAG, "getSuggestions className = " + className);
                     result = mClassLoader.findClassMember(className, suffix);
                     String superClass = mClassLoader.findSuperClassName(className);
                     while (superClass != null) {
@@ -109,7 +110,7 @@ public class AutoCompleteProvider {
                 }
             }
         }
-        ArrayList<String> duplicateWorkaround = new ArrayList<>();
+        Log.d(TAG, "getSuggestions() returned: " + result);
         return result;
     }
 

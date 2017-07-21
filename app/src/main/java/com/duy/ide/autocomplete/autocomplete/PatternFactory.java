@@ -4,9 +4,10 @@ import android.support.annotation.Nullable;
 import android.widget.EditText;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static android.R.id.list;
 
 /**
  * Created by Duy on 20-Jul-17.
@@ -33,11 +34,10 @@ public class PatternFactory {
     public static final String[] KEYWORD;
 
     static {
-        ArrayList<String> list = new ArrayList<>();
-        Collections.addAll(list, PRIMITIVE_TYPE);
-        Collections.addAll(list, KEYWORD_MODIFIERS);
-        Collections.addAll(list, KEYWORD_TYPE);
-        KEYWORD = (String[]) list.toArray();
+        KEYWORD = new String[PRIMITIVE_TYPE.length + KEYWORD_MODIFIERS.length + KEYWORD_TYPE.length];
+        System.arraycopy(PRIMITIVE_TYPE, 0, KEYWORD, 0, PRIMITIVE_TYPE.length);
+        System.arraycopy(KEYWORD_MODIFIERS, 0, KEYWORD, PRIMITIVE_TYPE.length, KEYWORD_MODIFIERS.length);
+        System.arraycopy(KEYWORD_TYPE, 0, KEYWORD, KEYWORD_MODIFIERS.length, KEYWORD_TYPE.length);
     }
     public static Pattern makeImport(String className) {
         return Pattern.compile("(import\\s+)(.*" + className + ")(\\s?;)");

@@ -18,14 +18,19 @@ package com.duy.ide.editor.view;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
 import com.duy.ide.DLog;
 import com.duy.ide.EditorSetting;
+import com.duy.ide.R;
+import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
+import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.editor.completion.KeyWord;
 import com.duy.ide.editor.view.adapters.CodeSuggestAdapter;
 import com.duy.ide.editor.view.adapters.InfoItem;
@@ -48,6 +53,7 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
     protected SymbolsTokenizer mTokenizer;
     private CodeSuggestAdapter mAdapter;
     private boolean enoughToFilter = false;
+    private AutoCompleteProvider mAutoCompleteProvider;
 
 
     public CodeSuggestsEditText(Context context) {
@@ -101,10 +107,31 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
         mCharHeight = (int) getPaint().measureText("M");
     }
 
+    private GenerateSuggestDataTask mGenerateSuggestDataTask = null;
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
+
+        if (mAutoCompleteProvider != null) {
+            if (mGenerateSuggestDataTask != null) {
+                mGenerateSuggestDataTask.cancel(true);
+            }
+            mGenerateSuggestDataTask = new GenerateSuggestDataTask(this, mAutoCompleteProvider);
+            mGenerateSuggestDataTask.execute();
+        }
+
         onPopupChangePosition();
+    }
+
+    /**
+     * invalidate data for auto suggest
+     */
+    public void setSuggestData(ArrayList<InfoItem> data) {
+        DLog.d(TAG, "setSuggestData: ");
+        mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
+
+        setAdapter(mAdapter);
+        onDropdownChangeSize(getWidth(), getHeight());
     }
 
     public abstract void onPopupChangePosition();
@@ -209,16 +236,8 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
         return mAdapter.getAllItems();
     }
 
-    /**
-     * invalidate data for auto suggest
-     */
-    public void setSuggestData(ArrayList<InfoItem> data) {
-//        DLog.d(TAG, "setSuggestData: ");
-//        mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
-//
-//        setAdapter(mAdapter);
-        // TODO: 19/07/2017  disable popup view
-//        onDropdownChangeSize(getWidth(), getHeight());
+    public void setAutoCompleteProvider(AutoCompleteProvider autoCompleteProvider) {
+        this.mAutoCompleteProvider = autoCompleteProvider;
     }
 
     public void addKeywords(String[] allKeyWord) {
@@ -231,6 +250,46 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
         setSuggestData(oldItems);
     }
 
+    private class GenerateSuggestDataTask extends AsyncTask<Void, Void, ArrayList<InfoItem>> {
+        private final EditText editText;
+        private final AutoCompleteProvider provider;
+        private int selection;
+
+        GenerateSuggestDataTask(EditText editText, AutoCompleteProvider provider) {
+            this.editText = editText;
+            this.provider = provider;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            this.selection = editText.getSelectionEnd();
+        }
+
+        @Override
+        protected ArrayList<InfoItem> doInBackground(Void... params) {
+            ArrayList<InfoItem> items = new ArrayList<>();
+            try {
+                ArrayList<? extends Description> suggestions = provider.getSuggestions(editText, selection);
+                if (suggestions != null) {
+                    for (Description suggestion : suggestions) {
+                        Log.d(TAG, "doInBackground suggestion = " + suggestion);
+                        items.add(new InfoItem(0, suggestion.getName()));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return items;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<InfoItem> infoItems) {
+            super.onPostExecute(infoItems);
+            if (isCancelled() || infoItems == null) return;
+            setSuggestData(infoItems);
+        }
+    }
 
 
     private class SymbolsTokenizer implements MultiAutoCompleteTextView.Tokenizer {

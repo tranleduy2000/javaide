@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.duy.testapplication.MainActivity">
+    tools:context="com.duy.autocomplete.MainActivity">
 
-    <com.duy.testapplication.AutoCompleteCodeEditText
+    <com.duy.autocomplete.AutoCompleteCodeEditText
         android:id="@+id/edit_input"
         android:gravity="top"
         android:layout_width="match_parent"

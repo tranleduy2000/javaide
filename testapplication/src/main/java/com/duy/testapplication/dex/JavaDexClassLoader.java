@@ -13,6 +13,7 @@ import com.duy.testapplication.model.Member;
 import com.duy.testapplication.model.MethodDescription;
 
 import java.io.File;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class JavaDexClassLoader {
     }
 
     public ClassDescription loadClass(String className) {
-        ClassDescription aClass = mClassReader.readClassByName(className, true);
+        ClassDescription aClass = mClassReader.readClassByName(className, true, Modifier.PUBLIC);
         return addClass(aClass, System.currentTimeMillis());
     }
 

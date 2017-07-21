@@ -85,19 +85,25 @@ public class JavaClassReader {
     }
 
     @Nullable
-    public ClassDescription readClassByName(String className, boolean b) {
+    public ClassDescription readClassByName(String className, boolean b, int modifier) {
         Class aClass = mClasses.get(className);
         if (aClass != null) {
             String superclass = aClass.getSuperclass() != null ? aClass.getSuperclass().getName() : "";
             ClassDescription desc = new ClassDescription(aClass.getSimpleName(), aClass.getName(), superclass, 0);
             for (Constructor constructor : aClass.getConstructors()) {
-                desc.addConstructor(new ClassConstructor(constructor));
+                if (constructor.getModifiers() == modifier) {
+                    desc.addConstructor(new ClassConstructor(constructor));
+                }
             }
             for (Field field : aClass.getDeclaredFields()) {
-                desc.addField(new FieldDescription(field));
+                if (field.getModifiers() == modifier) {
+                    desc.addField(new FieldDescription(field));
+                }
             }
             for (Method method : aClass.getDeclaredMethods()) {
-                desc.addMethod(new MethodDescription(method));
+                if (method.getModifiers() == modifier) {
+                    desc.addMethod(new MethodDescription(method));
+                }
             }
 
             return desc;

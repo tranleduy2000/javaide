@@ -7,15 +7,13 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static android.R.id.list;
-
 /**
  * Created by Duy on 20-Jul-17.
  */
 
 public class PatternFactory {
     public static final Pattern PACKAGE = Pattern.compile("package\\s+[^;]*;");
-    public static final Pattern IMPORT = Pattern.compile("import\\s+[^;]*\\s?;");
+    public static final Pattern IMPORT = Pattern.compile("(import\\s+)([^;]*)(\\s?);");
     public static final Pattern WORD = Pattern.compile("[^\\s-]+$");
 
     public static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z][A-Za-z0-9]*");

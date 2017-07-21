@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.duy.ide.autocomplete.autocomplete.ImportUtil;
 import com.duy.ide.autocomplete.autocomplete.PatternFactory;
 
 import java.util.ArrayList;

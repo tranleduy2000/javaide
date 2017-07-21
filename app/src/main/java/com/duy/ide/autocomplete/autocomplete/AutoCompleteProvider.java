@@ -13,7 +13,6 @@ import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.model.Member;
 import com.duy.ide.autocomplete.util.EditorUtil;
-import com.duy.ide.autocomplete.util.ImportUtil;
 import com.duy.ide.autocomplete.util.JavaUtil;
 
 import java.io.File;
@@ -149,7 +148,7 @@ public class AutoCompleteProvider {
     public void onInsertSuggestion(EditText editText, Description suggestion) {
         if (suggestion instanceof ClassDescription) {
 //            if (!suggestion.getSnippet().contains(".")) {
-            ImportUtil.importClass(editText, ((ClassDescription) suggestion).getClassName());
+            Import.importClass(editText, ((ClassDescription) suggestion).getClassName());
 //            }/
         } else if (suggestion instanceof Member) {
             this.preReturnType = suggestion.getType();

@@ -127,7 +127,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
             if (value instanceof ClassDescription) {
                 return ((ClassDescription) value).getSimpleName() + " ";
             } else if (value instanceof ConstructorDescription) {
-                return ((ConstructorDescription) value).getName() + "()";
+                return ((ConstructorDescription) value).getSimpleName() + "()";
             } else if (value instanceof MethodDescription) {
                 return ((MethodDescription) value).getSimpleName() + "(" + ")";
             } else if (value instanceof FieldDescription) {

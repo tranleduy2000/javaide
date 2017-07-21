@@ -53,7 +53,16 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText implements
     private CodeSuggestAdapter mAdapter;
     private boolean enoughToFilter = false;
     private AutoCompleteProvider mAutoCompleteProvider;
-
+    private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if (mAdapter != null) {
+                Description description = mAdapter.getAllItems().get(position);
+                onClickSuggest(description);
+            }
+        }
+    };
+    private GenerateSuggestDataTask mGenerateSuggestDataTask = null;
 
     public CodeSuggestsEditText(Context context) {
         super(context);
@@ -81,17 +90,6 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText implements
 //        setSuggestData(data);
     }
 
-    private void init(Context context) {
-        mEditorSetting = new EditorSetting(getContext());
-        setDefaultKeyword();
-        mTokenizer = new SymbolsTokenizer();
-        setTokenizer(mTokenizer);
-        setThreshold(1);
-        invalidateCharHeight();
-
-        setDropDownBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_popup_suggest));
-    }
-
     /**
      * @return the height of view display on screen
      */
@@ -108,7 +106,6 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText implements
         mCharHeight = (int) getPaint().measureText("M");
     }
 
-    private GenerateSuggestDataTask mGenerateSuggestDataTask = null;
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
@@ -140,8 +137,8 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText implements
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-            DLog.d(TAG, "onSizeChanged() called with: w = [" + w + "], h = [" + h + "], oldw = [" +
-                    oldw + "], oldh = [" + oldh + "]");
+        DLog.d(TAG, "onSizeChanged() called with: w = [" + w + "], h = [" + h + "], oldw = [" +
+                oldw + "], oldh = [" + oldh + "]");
         onDropdownChangeSize();
     }
 
@@ -221,10 +218,6 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText implements
         return mAdapter.getAllItems();
     }
 
-    public void setAutoCompleteProvider(AutoCompleteProvider autoCompleteProvider) {
-        this.mAutoCompleteProvider = autoCompleteProvider;
-    }
-
     /**
      * invalidate data for auto suggest
      */
@@ -237,19 +230,29 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText implements
         }
         mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
         mAdapter.setListener(this);
-        setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Description description = mAdapter.getAllItems().get(position);
-                onClickSuggest(description);
-            }
-        });
+
 
         setAdapter(mAdapter);
         onDropdownChangeSize();
         if (data.size() > 0) {
             showDropDown();
         }
+    }
+
+    public void setAutoCompleteProvider(AutoCompleteProvider autoCompleteProvider) {
+        this.mAutoCompleteProvider = autoCompleteProvider;
+    }
+
+    private void init(Context context) {
+        mEditorSetting = new EditorSetting(getContext());
+        setDefaultKeyword();
+        mTokenizer = new SymbolsTokenizer();
+        setTokenizer(mTokenizer);
+        setThreshold(1);
+        invalidateCharHeight();
+
+        setDropDownBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_popup_suggest));
+        setOnItemClickListener(itemClickListener);
     }
 
     @Override

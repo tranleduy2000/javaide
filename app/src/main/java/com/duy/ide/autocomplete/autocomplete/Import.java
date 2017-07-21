@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.duy.ide.autocomplete.autocomplete.PatternFactory.firstMatch;
+import static com.duy.ide.autocomplete.autocomplete.PatternFactory.lastMatch;
 
 
 /**
@@ -80,6 +81,14 @@ public class Import {
         if (first >= 0 && last > first) {
             editor.getText().replace(first, last, ""); //clear import
             editor.getText().insert(first, imp); //insert new
+        } else {
+            int i = lastMatch(editor, PatternFactory.PACKAGE);
+            if (i < 0) {
+                editor.getText().insert(0, imp); //insert new
+            } else {
+                editor.getText().insert(i, "\n" + imp);
+            }
+
         }
     }
 

@@ -35,7 +35,7 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
     public static final String TAB_CHARACTER = "    ";
     public static final String TAB = "  "; //2 space
     private static final String TAG = "AutoIndentEditText";
-
+    private static final String CURSOR = "\u2622";
     public AutoIndentEditText(Context context) {
         super(context);
         init();
@@ -103,7 +103,7 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
         addTextChangedListener(new TextWatcher() {
             private int start;
             private int count;
-
+            private CharSequence change;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -111,20 +111,30 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d(TAG, "onTextChanged() called with: s = [" + s + "], start = [" + start + "], before = [" + before + "], count = [" + count + "]");
+
                 this.start = start;
                 this.count = count;
+                this.change = s;
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > start && count == 1) {
-                    char textToInsert = getCloseBracket(s.charAt(start), start);
+                    Character textToInsert = getCloseBracket(s.charAt(start), start);
                     if (textToInsert != 0) {
                         try {
                             s.insert(start + 1, Character.toString(textToInsert));
                             setSelection(start);
                         } catch (Exception ignored) {
                         }
+                    }
+                } else if (s.length() > start) {
+                    CharSequence newText = change.subSequence(start, start + count);
+                    int i = newText.toString().indexOf(CURSOR);
+                    if (i > -1) {
+                        s.delete(i, i + 1);
+                        setSelection(i);
                     }
                 }
             }
@@ -216,14 +226,12 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
         Log.d(TAG, "indentLine: " + dest.charAt(dend) + " " + dest.charAt(dstart));
         //new line in bracket
         if (dest.charAt(dend) == '}' && dstart - 1 >= 0 && dest.charAt(dstart - 1) == '{') {
-            int mstart = start - 2;
+            int mstart = dstart - 2;
             while (mstart >= 0 && dest.charAt(mstart) != '\n') {
                 mstart--;
             }
             String closeIndent = "";
-            if (mstart < 0) {
-                mstart = 0;
-            } else {
+            if (mstart >= 0) {
                 mstart++;
                 int zstart = mstart;
                 while (zstart < dest.length() && dest.charAt(zstart) == ' ') {
@@ -231,7 +239,7 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
                 }
                 closeIndent = dest.toString().substring(mstart, zstart);
             }
-            return source + indent + "\n" + closeIndent;
+            return source + indent + CURSOR + "\n" + closeIndent;
         }
         return source + indent;
     }

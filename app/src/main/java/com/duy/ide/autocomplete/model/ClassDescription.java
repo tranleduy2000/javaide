@@ -156,7 +156,7 @@ public class ClassDescription implements Description {
 
     @Override
     public String toString() {
-        return className;
+        return simpleName + "(" + packageName + ")";
     }
 
     public ArrayList<Description> getMember(String suffix) {

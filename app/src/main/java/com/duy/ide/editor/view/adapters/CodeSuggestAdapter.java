@@ -28,7 +28,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
+import com.duy.compile.diagnostic.SpanUtil;
 import com.duy.ide.R;
+import com.duy.ide.autocomplete.model.ClassDescription;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.setting.JavaPreferences;
 
@@ -117,8 +119,12 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
         txtType.setTextSize(editorTextSize);
 
         if (item != null) {
-            txtName.setText(item.toString());
-            txtType.setText(item.getType() != null ? item.getType().getSimpleName() : "");
+            if (item instanceof ClassDescription) {
+                txtName.setText(SpanUtil.formatClass(context, (ClassDescription) item));
+            } else {
+                txtName.setText(item.toString());
+                txtType.setText(item.getType() != null ? item.getType().getSimpleName() : "");
+            }
         }
         return convertView;
     }

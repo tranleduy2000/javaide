@@ -58,7 +58,11 @@ public class EditorUtil {
         } else {
             if (!prefix.contains(".")) {
                 classList.add(getCurrentClassName(editText)); //current member
-                classList.add("java.lang." + simpleName); //default java.lang package
+                if (simpleName != null && !simpleName.isEmpty()) {
+                    classList.add("java.lang." + simpleName); //default java.lang package
+                } else if (!prefix.isEmpty()) {
+                    classList.add("java.lang." + prefix);
+                }
             } else {
                 classList.add(prefix);
             }

@@ -1,7 +1,6 @@
 package com.duy.ide.autocomplete.autocomplete;
 
 import android.content.Context;
-import android.support.v4.util.Pair;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -86,35 +85,20 @@ public class AutoCompleteProvider {
 
 
         if (result == null || result.size() == 0) {
-            Pair<ArrayList<String>, Boolean> r
-                    = determineClassName(editor, position, current, prefix, suffix, preReturnType);
-            if (r != null) {
-                ArrayList<String> classes = r.first;
-                if (classes != null) {
-                    for (String className : classes) {
-                        JavaClassReader classReader = mClassLoader.getClassReader();
-                        ClassDescription classDescription = classReader.readClassByName(className);
-                        if (classDescription != null) {
-                            result = new ArrayList<>();
-                            result.addAll(classDescription.getMember(suffix));
-
-//                            String superClassName = classDescription.getSuperClass();
-//                            while (superClassName != null) {
-//                                ClassDescription superClass = classReader.readClassByName(superClassName);
-//                                if (superClass != null) {
-//                                    result.addAll(superClass.getMember(suffix));
-//                                    superClassName = superClass.getSuperClass();
-//                                } else {
-//                                    superClassName = null;
-//                                }
-//                            }
-                        }
+            ArrayList<String> classes = determineClassName(editor, position, current, prefix, suffix, preReturnType);
+            if (classes != null) {
+                for (String className : classes) {
+                    JavaClassReader classReader = mClassLoader.getClassReader();
+                    ClassDescription classDescription = classReader.readClassByName(className);
+                    if (classDescription != null) {
+                        result = new ArrayList<>();
+                        result.addAll(classDescription.getMember(suffix));
                     }
-                } else {
-                    if (prefix.isEmpty() && !suffix.isEmpty()) {
-                        if (JavaUtil.isValidClassName(suffix)) { //could be class
-                            ArrayList<ClassDescription> possibleClass = mClassLoader.findClass(suffix);
-                        }
+                }
+            } else {
+                if (prefix.isEmpty() && !suffix.isEmpty()) {
+                    if (JavaUtil.isValidClassName(suffix)) { //could be class
+                        ArrayList<ClassDescription> possibleClass = mClassLoader.findClass(suffix);
                     }
                 }
             }

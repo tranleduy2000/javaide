@@ -1,5 +1,6 @@
 package com.duy.ide.autocomplete.autocomplete;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -35,7 +36,9 @@ public class Import {
         }
     }
 
-    public static String getImportedClassName(EditText editor, String className) {
+    public static String getImportedClassName(EditText editor, @Nullable String className) {
+        if (className == null) return null;
+
         Pattern pattern = PatternFactory.makeImport(className);
         Matcher matcher = pattern.matcher(editor.getText());
         if (matcher.find()) {
@@ -86,7 +89,7 @@ public class Import {
             if (i < 0) {
                 editor.getText().insert(0, imp); //insert new
             } else {
-                editor.getText().insert(i, "\n" + imp);
+                editor.getText().insert(i, "\n\n" + imp + "\n");
             }
 
         }

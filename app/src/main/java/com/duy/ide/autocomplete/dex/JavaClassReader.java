@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.WeakHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -29,6 +30,8 @@ public class JavaClassReader {
     private String classpath;
     private String outDir;
     private HashMap<String, Class> mClasses = new HashMap<>();
+    private WeakHashMap<String, ClassDescription> mCache = new WeakHashMap<>();
+
     private DexClassLoader mDexClassLoader;
     private boolean loaded = false;
 
@@ -93,6 +96,10 @@ public class JavaClassReader {
 
     @Nullable
     public ClassDescription readClassByName(String className) {
+        ClassDescription classDescription = mCache.get(className);
+        if (classDescription != null) {
+            return classDescription;
+        }
         Class aClass = mClasses.get(className);
         Log.d(TAG, "readClassByName() called with: className = [" + className + "]");
 
@@ -110,7 +117,7 @@ public class JavaClassReader {
                 }
             }
             for (Method method : aClass.getDeclaredMethods()) {
-                if (Modifier.isPublic(method.getModifiers())) {
+                if (Modifier.isPublic(method.getModifiers()) && method.isSynthetic()) {
                     desc.addMethod(new MethodDescription(method));
                 }
             }

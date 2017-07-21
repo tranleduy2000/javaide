@@ -127,7 +127,8 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
      * invalidate data for auto suggest
      */
     public void setSuggestData(ArrayList<InfoItem> data) {
-        DLog.d(TAG, "setSuggestData: ");
+        Log.d(TAG, "setSuggestData() called with: data = [" + data + "]");
+
         mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
 
         setAdapter(mAdapter);
@@ -150,10 +151,8 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        if (DLog.DEBUG) {
             DLog.d(TAG, "onSizeChanged() called with: w = [" + w + "], h = [" + h + "], oldw = [" +
                     oldw + "], oldh = [" + oldh + "]");
-        }
         onDropdownChangeSize(w, h);
     }
 
@@ -190,6 +189,7 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
                 try {
                     super.showDropDown();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }

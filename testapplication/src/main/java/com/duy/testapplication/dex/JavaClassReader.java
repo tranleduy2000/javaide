@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
@@ -85,27 +86,26 @@ public class JavaClassReader {
     }
 
     @Nullable
-    public ClassDescription readClassByName(String className, boolean b, int modifier) {
+    public ClassDescription readClassByName(String className, boolean b) {
         Class aClass = mClasses.get(className);
         if (aClass != null) {
             String superclass = aClass.getSuperclass() != null ? aClass.getSuperclass().getName() : "";
             ClassDescription desc = new ClassDescription(aClass.getSimpleName(), aClass.getName(), superclass, 0);
             for (Constructor constructor : aClass.getConstructors()) {
-                if (constructor.getModifiers() == modifier) {
+                if (Modifier.isPublic(constructor.getModifiers())) {
                     desc.addConstructor(new ClassConstructor(constructor));
                 }
             }
             for (Field field : aClass.getDeclaredFields()) {
-                if (field.getModifiers() == modifier) {
+                if (Modifier.isPublic(field.getModifiers())) {
                     desc.addField(new FieldDescription(field));
                 }
             }
             for (Method method : aClass.getDeclaredMethods()) {
-                if (method.getModifiers() == modifier) {
+                if (Modifier.isPublic(method.getModifiers())) {
                     desc.addMethod(new MethodDescription(method));
                 }
             }
-
             return desc;
         }
         return null;

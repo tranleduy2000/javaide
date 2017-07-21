@@ -15,6 +15,8 @@ import com.duy.testapplication.model.Member;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.duy.testapplication.autocomplete.JavaClassManager.determineClassName;
+
 /**
  * Created by Duy on 20-Jul-17.
  */
@@ -85,7 +87,7 @@ public class AutoCompleteProvider {
 
         if (result == null || result.size() == 0) {
             Pair<ArrayList<String>, Boolean> r
-                    = EditorUtil.determineClassName(editor, position, current, prefix, suffix, preReturnType);
+                    = determineClassName(editor, position, current, prefix, suffix, preReturnType);
             if (r != null) {
                 ArrayList<String> classes = r.first;
 
@@ -134,7 +136,7 @@ public class AutoCompleteProvider {
     public void onDidInsertSuggestion(EditText editText, Description suggestion) {
         if (suggestion instanceof ClassDescription) {
             if (!suggestion.getSnippet().contains(".")) {
-                EditorUtil.organizeImports(editText, ((ClassDescription) suggestion).getClassName());
+                ImportUtil.organizeImports(editText, ((ClassDescription) suggestion).getClassName());
             }
         } else if (suggestion instanceof Member) {
             this.preReturnType = suggestion.getType();

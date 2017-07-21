@@ -2,19 +2,13 @@ package com.duy.testapplication.autocomplete;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
-import android.text.Layout;
 import android.util.Log;
 import android.widget.EditText;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static com.duy.testapplication.autocomplete.PatternFactory.firstMatch;
-import static com.duy.testapplication.autocomplete.PatternFactory.lastMatchStr;
+import static com.duy.testapplication.autocomplete.ImportUtil.getImportedClassName;
 
 /**
  * Created by Duy on 20-Jul-17.
@@ -53,7 +47,7 @@ public class EditorUtil {
 
 
     public static ArrayList<String> getPossibleClassName(EditText editText, String simpleName, String prefix) {
-        Log.d(TAG, "getPossibleClassName() called with: editText = [" + editText + "], simpleName = [" + simpleName + "], prefix = [" + prefix + "]");
+        Log.d(TAG, "getPossibleClassName() called with:  simpleName = [" + simpleName + "], prefix = [" + prefix + "]");
 
         ArrayList<String> classList = new ArrayList<>();
         String importedClassName = getImportedClassName(editText, simpleName);
@@ -74,7 +68,6 @@ public class EditorUtil {
     public static String getLine(EditText editText, int pos) {
         if (pos < 0 || pos > editText.length()) return "";
         int line = LineUtils.getLineFromIndex(pos, editText.getLayout().getLineCount(), editText.getLayout());
-        Log.d(TAG, "getLine: " + line);
 
         int lineStart = editText.getLayout().getLineStart(line);
         int lineEnd = editText.getLayout().getLineEnd(line);
@@ -110,116 +103,6 @@ public class EditorUtil {
         return split.length >= 2 ? split[split.length - 2] : null;
     }
 
-    public static String getImportedClassName(EditText editor, String className) {
-        Pattern pattern = PatternFactory.makeImport(className);
-        Matcher matcher = pattern.matcher(editor.getText());
-        if (matcher.find()) {
-            return matcher.group(2);
-        }
-        return PatternFactory.match(editor.getText(), pattern);
-    }
-
-    public static Pair<ArrayList<String>, Boolean> determineClassName(EditText editor, int pos, String text,
-                                                                      @NonNull String prefix, String suffix,
-                                                                      Class preReturnType) {
-        Log.d(TAG, "determineClassName() called with: editor = [" + editor + "], pos = [" + pos + "], text = [" + text + "], prefix = [" + prefix + "], suffix = [" + suffix + "], preReturnType = [" + preReturnType + "]");
-
-        try {
-            ArrayList<String> classNames;
-            String className;
-            boolean isInstance;
-            isInstance = prefix.matches("\\)$");
-
-            if (prefix.isEmpty() || prefix.equals("this")) {
-                className = getCurrentClassSimpleName(editor);
-                isInstance = true;
-            } else {
-                String word = getWord(editor, pos);
-                if (word.contains("((")) {
-                    className = Pattern.compile("[^)]*").matcher(prefix).group(); // TODO: 20-Jul-17  exception
-                } else {
-                    className = prefix;
-                }
-            }
-
-            Log.d(TAG, "determineClassName prefix = " + prefix);
-            Log.d(TAG, "determineClassName instance = " + isInstance);
-
-            if (JavaUtil.isValidClassName(className) && text.contains(".")) {
-                Layout layout = editor.getLayout();
-                int start = Math.max(0, pos - 2500);
-                int end = pos;
-                CharSequence range = editor.getText().subSequence(start, end);
-
-                //BigInteger num = new BigInteger(); -> BigInteger num =
-                className = lastMatchStr(range, PatternFactory.makeInstance(prefix));
-
-                if (className != null) {
-                    //BigInteger num =  -> BigInteger
-                    className = className.replaceAll("\\s?" + prefix + "\\s?[,;=)]", "");
-                    //generic ArrayList<String> -> ArrayList
-                    className = className.replaceAll("<.*>", "");
-                    isInstance = true;
-                }
-            }
-            Log.d(TAG, "determineClassName className = " + className);
-            if (!JavaUtil.isValidClassName(className)) {
-                classNames = getPossibleClassName(editor, className, prefix);
-            } else {
-                classNames = new ArrayList<>();
-                classNames.add(className);
-                classNames.add(preReturnType.getName()); // TODO: 20-Jul-17
-                isInstance = true;
-            }
-
-            Log.d(TAG, "determineClassName() returned: " + classNames);
-            return new Pair<>(classNames, isInstance);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static void organizeImports(EditText editor, String importStr) {
-        Log.d(TAG, "organizeImports() called with: editor = [" + editor + "], importStr = [" + importStr + "]");
-
-        ArrayList<String> imports = getImports(editor);
-        imports.add(importStr);
-        Collections.sort(imports, new Comparator<String>() {
-            @Override
-            public int compare(String s, String t1) {
-                return s.compareTo(t1);
-            }
-        });
-        StringBuilder imp = new StringBuilder();
-        for (String s : imports) {
-            imp.append(s).append("\n");
-        }
-        int first = firstMatch(editor, PatternFactory.IMPORT);
-        int last = PatternFactory.lastMatch(editor, PatternFactory.IMPORT);
-        if (first >= 0 && last > first) {
-            editor.getText().replace(first, last, "");
-            editor.getText().insert(first, imp);
-        }
-    }
 
 
-    public static ArrayList<String> getImports(EditText editor) {
-        return PatternFactory.allMatch(editor.getText(), PatternFactory.IMPORT);
-    }
-
-    /**
-     * Add import statement if import does not already exist.
-     *
-     * @param editor
-     * @param className
-     */
-    public void importClass(EditText editor, String className) {
-        String packageName = JavaUtil.getPackageName(className);
-        if (getImportedClassName(editor, className) == null
-                && !packageName.equals("java.lang")
-                && !packageName.equals(getCurrentPackage(editor))) {
-            organizeImports(editor, "import " + className + ";");
-        }
-    }
 }

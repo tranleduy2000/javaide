@@ -36,7 +36,7 @@ public class JavaUtil {
 
 
     public static boolean isValidClassName(@Nullable String name) {
-        return name != null && name.matches("[A-Za-z][A-Za-z0-9]*");
+        return name != null && name.matches("[A-Za-z_][A-Za-z0-9_]*");
     }
 
 }

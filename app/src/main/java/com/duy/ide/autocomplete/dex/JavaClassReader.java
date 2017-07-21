@@ -117,7 +117,7 @@ public class JavaClassReader {
                 }
             }
             for (Method method : aClass.getDeclaredMethods()) {
-                if (Modifier.isPublic(method.getModifiers()) && method.isSynthetic()) {
+                if (Modifier.isPublic(method.getModifiers())) {
                     desc.addMethod(new MethodDescription(method));
                 }
             }

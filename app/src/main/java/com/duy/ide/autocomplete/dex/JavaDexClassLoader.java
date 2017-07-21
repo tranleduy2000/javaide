@@ -1,14 +1,10 @@
 package com.duy.ide.autocomplete.dex;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.duy.ide.autocomplete.datastructure.Dictionary;
 import com.duy.ide.autocomplete.model.ClassDescription;
-import com.duy.ide.autocomplete.model.Description;
-import com.duy.ide.autocomplete.model.FieldDescription;
-import com.duy.ide.autocomplete.model.MethodDescription;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,28 +32,9 @@ public class JavaDexClassLoader {
     @NonNull
     public ArrayList<ClassDescription> findClass(String namePrefix) {
         Log.d(TAG, "findClass() called with: namePrefix = [" + namePrefix + "]");
-        return mDictionary.find(ClassDescription.class, "class", namePrefix);
+        return mDictionary.find(ClassDescription.class,  namePrefix);
     }
 
-    @Nullable
-    public String findSuperClassName(String className) {
-        ArrayList<ClassDescription> classes = this.findClass(className);
-        ClassDescription currentClass = null;
-        for (Description aClass : classes) {
-            if (aClass instanceof ClassDescription) {
-                if (((ClassDescription) aClass).getClassName().equals(className)) {
-                    currentClass = (ClassDescription) aClass;
-                    break;
-                }
-            }
-        }
-        return currentClass == null ? null : currentClass.getSuperClass();
-    }
-
-    public ArrayList<Description> findClassMember(String className, String namePrefix) {
-        Log.d(TAG, "findClassMember() called with: className = [" + className + "], namePrefix = [" + namePrefix + "]");
-        return mDictionary.find(className, namePrefix);
-    }
 
     public void touchClass(String className) {
         ArrayList<ClassDescription> classDescriptions = findClass(className);
@@ -74,7 +51,7 @@ public class JavaDexClassLoader {
         Log.d(TAG, "loadClass() called with: className = [" + className + "]");
 
         ClassDescription aClass = mClassReader.readClassByName(className);
-        return addClass(aClass, System.currentTimeMillis());
+        return aClass;
     }
 
     public void loadAllClasses(boolean fullRefresh) {
@@ -85,25 +62,5 @@ public class JavaDexClassLoader {
                 loadClass(entry.getKey());
             }
         }
-    }
-
-    private ClassDescription addClass(ClassDescription classDescription, long lastUsed) {
-        String className = classDescription.getClassName();
-        mDictionary.put("class", className, classDescription);
-
-        if (classDescription.getFields().size() > 0) {
-            HashMap<String, Description> value = new HashMap<>();
-            for (FieldDescription member : classDescription.getFields()) {
-                Log.d(TAG, "addClass member = " + member);
-                value.put(className, member);
-            }
-            for (MethodDescription member : classDescription.getMethods()) {
-                Log.d(TAG, "addClass member = " + member);
-                value.put(className, member);
-            }
-            mDictionary.putAll(className, value);
-        }
-
-        return classDescription;
     }
 }

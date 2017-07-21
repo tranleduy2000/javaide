@@ -1,8 +1,6 @@
 package com.duy.ide.autocomplete.datastructure;
 
 
-import android.util.Log;
-
 import com.duy.ide.autocomplete.model.Description;
 
 import java.util.ArrayList;
@@ -16,71 +14,29 @@ import java.util.Set;
 
 public class Dictionary {
     private static final String TAG = "Dictionary";
-    private HashMap<String, HashMap<String, Description>> map;
+    private HashMap<String, Description> map;
 
     public Dictionary() {
         map = new HashMap<>();
     }
 
-    public void put(String category, String name, Description description) {
-        Log.d(TAG, "put() called with: category = [" + category + "], name = [" + name + "], description = [" + description + "]");
 
-        HashMap<String, Description> map = this.map.get(category);
-        if (map == null) map = new HashMap<>();
-        map.put(name, description);
-        this.map.put(category, map);
+    public void put(String category, Description value) {
+        map.put(category, value);
     }
 
-    public void addAdd(String category, String name, Description description) {
-        HashMap<String, Description> map = this.map.get(category);
-        if (map == null) map = new HashMap<>();
-        map.put(name, description);
-        this.map.put(category, map);
+    public Description remove(String category) {
+        return map.remove(category);
     }
 
-    public void putAll(String category, HashMap<String, Description> hashMap) {
-        map.put(category, hashMap);
-    }
-
-    public Description remove(String category, String name) {
-        HashMap<String, Description> map = this.map.get(category);
-        if (map != null) {
-            return map.remove(name);
-        }
-        return null;
-    }
-
-    public HashMap<String, Description> removeCategory(String key) {
-
-        return map.remove(key);
-    }
-
-    public ArrayList<Description> find(String category, String namePrefix) {
-        HashMap<String, Description> map = this.map.get(category);
-        ArrayList<Description> result = new ArrayList<>();
-        if (map != null) {
-            Set<Map.Entry<String, Description>> entries = map.entrySet();
-            for (Map.Entry<String, Description> entry : entries) {
-                if (entry.getKey().startsWith(namePrefix)) {
-                    result.add(entry.getValue());
-                }
-            }
-        }
-        Log.d(TAG, "find() returned: " + result);
-        return result;
-    }
-
-    public <T> ArrayList<T> find(Class<T> t, String category, String namePrefix) {
-        HashMap<String, Description> map = this.map.get(category);
+    public <T> ArrayList<T> find(Class<T> t, String namePrefix) {
         ArrayList<T> result = new ArrayList<>();
-        if (map != null) {
-            Set<Map.Entry<String, Description>> entries = map.entrySet();
-            for (Map.Entry<String, Description> entry : entries) {
-                if (entry.getKey().startsWith(namePrefix)) {
-                    try {
-                        result.add(t.cast(entry.getValue()));
-                    } catch (ClassCastException ignored) {
-                    }
+        Set<Map.Entry<String, Description>> entries = map.entrySet();
+        for (Map.Entry<String, Description> entry : entries) {
+            if (entry.getKey().startsWith(namePrefix)) {
+                try {
+                    result.add(t.cast(entry.getValue()));
+                } catch (ClassCastException ignored) {
                 }
             }
         }

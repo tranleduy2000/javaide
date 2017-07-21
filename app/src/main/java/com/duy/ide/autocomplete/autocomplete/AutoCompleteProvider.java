@@ -49,11 +49,8 @@ public class AutoCompleteProvider {
         // text: 'Cla', prefix: '', suffix: 'Cla'
         // line: 'new Cla', text: 'Cla', prevWord: 'new'
         String line = EditorUtil.getLine(editor, position);
-        Log.d(TAG, "getSuggestions line = " + line);
         String preWord = EditorUtil.getPreWord(editor, position);
-        Log.d(TAG, "getSuggestions preWord = " + preWord);
         String current = EditorUtil.getWord(editor, position).replace("@", "");
-        Log.d(TAG, "getSuggestions text = " + current);
         String prefix = "";
         String suffix = "";
         if (current.contains(".")) {
@@ -62,11 +59,7 @@ public class AutoCompleteProvider {
         } else {
             suffix = current;
         }
-        Log.d(TAG, "getSuggestions prefix = " + prefix + " ; suffix = " + suffix);
-
         boolean couldBeClass = suffix.matches(PatternFactory.IDENTIFIER.toString());
-        Log.d(TAG, "getSuggestions couldBeClass = " + couldBeClass);
-
         boolean instance = false;
 
         ArrayList<Description> result = null;
@@ -98,7 +91,6 @@ public class AutoCompleteProvider {
                 instance = r.second;
 
                 for (String className : classes) {
-                    Log.d(TAG, "getSuggestions className = " + className);
                     JavaClassReader classReader = mClassLoader.getClassReader();
                     ClassDescription classDescription = classReader.readClassByName(className);
                     if (classDescription != null) {

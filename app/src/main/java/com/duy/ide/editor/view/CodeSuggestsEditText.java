@@ -123,18 +123,6 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
         onPopupChangePosition();
     }
 
-    /**
-     * invalidate data for auto suggest
-     */
-    public void setSuggestData(ArrayList<InfoItem> data) {
-        Log.d(TAG, "setSuggestData() called with: data = [" + data + "]");
-
-        mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
-
-        setAdapter(mAdapter);
-        onDropdownChangeSize(getWidth(), getHeight());
-    }
-
     public abstract void onPopupChangePosition();
 
     /**
@@ -240,6 +228,16 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
         this.mAutoCompleteProvider = autoCompleteProvider;
     }
 
+    /**
+     * invalidate data for auto suggest
+     */
+    public void setSuggestData(ArrayList<InfoItem> data) {
+        DLog.d(TAG, "setSuggestData: ");
+        mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
+
+        setAdapter(mAdapter);
+//        onDropdownChangeSize(getWidth(), getHeight());
+    }
     public void addKeywords(String[] allKeyWord) {
         ArrayList<InfoItem> newData = new ArrayList<>();
         for (String s : allKeyWord) {
@@ -273,7 +271,6 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
                 ArrayList<? extends Description> suggestions = provider.getSuggestions(editText, selection);
                 if (suggestions != null) {
                     for (Description suggestion : suggestions) {
-                        Log.d(TAG, "doInBackground suggestion = " + suggestion);
                         items.add(new InfoItem(0, suggestion.getName()));
                     }
                 }
@@ -286,8 +283,12 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText {
         @Override
         protected void onPostExecute(ArrayList<InfoItem> infoItems) {
             super.onPostExecute(infoItems);
-            if (isCancelled() || infoItems == null) return;
+            if (isCancelled() || infoItems == null) {
+                Log.d(TAG, "onPostExecute: canceled");
+                return;
+            }
             setSuggestData(infoItems);
+            Log.d(TAG, "onPostExecute() called with: infoItems = [" + infoItems + "]");
         }
     }
 

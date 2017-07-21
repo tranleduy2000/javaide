@@ -89,22 +89,23 @@ public class AutoCompleteProvider {
             if (r != null) {
                 ArrayList<String> classes = r.first;
                 instance = r.second;
+                if (classes != null) {
+                    for (String className : classes) {
+                        JavaClassReader classReader = mClassLoader.getClassReader();
+                        ClassDescription classDescription = classReader.readClassByName(className);
+                        if (classDescription != null) {
+                            result = new ArrayList<>();
+                            result.addAll(classDescription.getMember(suffix));
 
-                for (String className : classes) {
-                    JavaClassReader classReader = mClassLoader.getClassReader();
-                    ClassDescription classDescription = classReader.readClassByName(className);
-                    if (classDescription != null) {
-                        result = new ArrayList<>();
-                        result.addAll(classDescription.getMember(suffix));
-
-                        String superClassName = classDescription.getSuperClass();
-                        while (superClassName != null) {
-                            ClassDescription superClass = classReader.readClassByName(superClassName);
-                            if (superClass != null) {
-                                result.addAll(superClass.getMember(suffix));
-                                superClassName = superClass.getSuperClass();
-                            } else {
-                                superClassName = null;
+                            String superClassName = classDescription.getSuperClass();
+                            while (superClassName != null) {
+                                ClassDescription superClass = classReader.readClassByName(superClassName);
+                                if (superClass != null) {
+                                    result.addAll(superClass.getMember(suffix));
+                                    superClassName = superClass.getSuperClass();
+                                } else {
+                                    superClassName = null;
+                                }
                             }
                         }
                     }

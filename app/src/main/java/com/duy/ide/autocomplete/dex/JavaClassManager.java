@@ -67,6 +67,7 @@ public class JavaClassManager {
             if (JavaUtil.isValidClassName(className)) {
                 classNames = new ArrayList<>();
                 classNames.addAll(getPossibleClassName(editor, className, prefix));
+                classNames.add(className);
                 if (preReturnType != null) {
                     classNames.add(preReturnType.getName()); // TODO: 20-Jul-17 quickhack
                 }

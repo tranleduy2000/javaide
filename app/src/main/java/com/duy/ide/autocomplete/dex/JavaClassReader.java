@@ -96,32 +96,33 @@ public class JavaClassReader {
 
     @Nullable
     public ClassDescription readClassByName(String className) {
-        ClassDescription classDescription = mCache.get(className);
-        if (classDescription != null) {
-            return classDescription;
+        ClassDescription cache = mCache.get(className);
+        if (cache != null) {
+            return cache;
         }
         Class aClass = mClasses.get(className);
         Log.d(TAG, "readClassByName() called with: className = [" + className + "]");
 
         if (aClass != null) {
             String superclass = aClass.getSuperclass() != null ? aClass.getSuperclass().getName() : "";
-            ClassDescription desc = new ClassDescription(aClass.getSimpleName(), aClass.getName(), superclass, 0);
+            ClassDescription classDesc = new ClassDescription(aClass.getSimpleName(), aClass.getName(), superclass, 0);
             for (Constructor constructor : aClass.getConstructors()) {
                 if (Modifier.isPublic(constructor.getModifiers())) {
-                    desc.addConstructor(new ClassConstructor(constructor));
+                    classDesc.addConstructor(new ClassConstructor(constructor));
                 }
             }
             for (Field field : aClass.getDeclaredFields()) {
                 if (Modifier.isPublic(field.getModifiers())) {
-                    desc.addField(new FieldDescription(field));
+                    classDesc.addField(new FieldDescription(field));
                 }
             }
             for (Method method : aClass.getDeclaredMethods()) {
                 if (Modifier.isPublic(method.getModifiers())) {
-                    desc.addMethod(new MethodDescription(method));
+                    classDesc.addMethod(new MethodDescription(method));
                 }
             }
-            return desc;
+            mCache.put(className, classDesc);
+            return classDesc;
         }
         return null;
     }

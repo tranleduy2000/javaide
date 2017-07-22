@@ -1,13 +1,19 @@
-![ICON](art/icons/mipmap-xxxhdpi/ic_launcher.png)
+# Java N-DE Java compiler on Android.
 
-# Java compiler on Android.
+![Screenshot](art/screenshot/Screenshot_20170722-164603.png)
 
-This project is develop to help the community learn java on android.
-
-You can download in https://play.google.com/store/apps/details?id=com.duy.compiler.javanide
 
 ## Overview
-You can build and run java file with JDK 1.7
+This project is develop to help the community learn java on android.
+You can build and run Java file with JDK 1.7.
+
+Download in Google Play Store
+
+<a href="https://play.google.com/store/apps/details?id=com.duy.compiler.javanide"
+target="_blank">
+<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
+alt="IMAGE ALT TEXT HERE" width="240"/></a>
+
 
 ## Todo
 
@@ -22,15 +28,13 @@ You can build and run java file with JDK 1.7
 9. Decompile class, jar
 
 ## Contribute
-
-All your contributions to the project are welcome. You can create issue, pull request.
+I would absolutely love every possible kind of contributions. If you
+have a questions, ideas, need help or want to propose a change just open
+an issue. Pull request are greatly appreciated.
 
 ## Tutorials
 
 1. Setup system https://www.youtube.com/watch?v=UtEZDSdi9ek&t=1s
-2. Create new project, class
-3. Build and run simple project
-4. Run configurations
 
 ## Licence
 

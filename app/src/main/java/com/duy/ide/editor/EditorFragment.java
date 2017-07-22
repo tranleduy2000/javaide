@@ -40,16 +40,12 @@ import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.view.LockableScrollView;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.googlejavaformat.java.Formatter;
+import com.google.googlejavaformat.java.JavaFormatterOptions;
 
-import net.barenca.jastyle.ASFormatter;
-import net.barenca.jastyle.FormatterHelper;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.Reader;
-import java.io.StringReader;
 
 /**
  * Created by Duy on 15-Mar-17.
@@ -335,6 +331,8 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     }
 
     private class TaskFormatCode extends AsyncTask<String, Void, String> {
+        private Exception error;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -344,15 +342,16 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         @Override
         protected String doInBackground(String... params) {
             try {
-                String source = params[0];
-                if (source == null) return null;
-                source = source.replace("{", "{\n");
-                ASFormatter formatter = new ASFormatter();
-                Reader in = new BufferedReader(new StringReader(source));
-                formatter.setJavaStyle();
-                return FormatterHelper.format(in, formatter);
+                String src = params[0];
+                if (src == null) return null;
+
+                JavaFormatterOptions.Builder builder = JavaFormatterOptions.builder();
+                builder.style(JavaFormatterOptions.Style.AOSP);
+                return new Formatter(builder.build()).formatSource(src);
             } catch (Exception e) {
                 //format unexpected
+                error = e;
+                e.printStackTrace();
             }
             return null;
         }

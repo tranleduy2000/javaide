@@ -1276,11 +1276,12 @@ public final class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
         builder.open(ZERO);
         {
             // TODO: 22-Jul-17 missing method java8
-//            if (!node.getParameters().isEmpty() || node.getReceiverParameter() != null) {
-//                // Break before args.
-//                builder.breakToFill("");
-//                visitFormals(Optional.fromNullable(node.getReceiverParameter()), node.getParameters());
-//            }
+            if (!node.getParameters().isEmpty()/* || node.getReceiverParameter() != null*/) {
+                // Break before args.
+                builder.breakToFill("");
+                visitFormals(/*Optional.fromNullable(*//*node.getReceiverParameter())*/
+                        Optional.<VariableTree>absent(), node.getParameters());
+            }
             token(")");
             if (dims != null) {
                 maybeAddDims(dims);
@@ -2181,15 +2182,15 @@ public final class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
     }
 
     // TODO: 22-Jul-17 missing method java8
-   /* private void visitFormals(
+    private void visitFormals(
             Optional<VariableTree> receiver, List<? extends VariableTree> parameters) {
         if (!receiver.isPresent() && parameters.isEmpty()) {
             return;
         }
         builder.open(ZERO);
         boolean first = true;
-        if (receiver.isPresent()) {
-            // TODO(jdd): Use builders.
+        if (receiver.isPresent() && false) {
+          /*  // TODO(jdd): Use builders.
             declareOne(
                     DeclarationKind.PARAMETER,
                     Direction.HORIZONTAL,
@@ -2204,7 +2205,7 @@ public final class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
                     !parameters.isEmpty() ? Optional.of(",") : Optional.<String>absent(),
                     Optional.of(receiver.get().getNameExpression()),
                     Optional.<TypeWithDims>absent());
-            first = false;
+            first = false;*/
         }
         for (int i = 0; i < parameters.size(); i++) {
             VariableTree parameter = parameters.get(i);
@@ -2221,7 +2222,7 @@ public final class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
             first = false;
         }
         builder.close();
-    }*/
+    }
 
     //  /** Helper method for {@link MethodDeclaration}s. */
     private void visitThrowsClause(List<? extends ExpressionTree> thrownExceptionTypes) {

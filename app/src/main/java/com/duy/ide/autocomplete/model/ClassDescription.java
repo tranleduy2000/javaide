@@ -1,8 +1,6 @@
 package com.duy.ide.autocomplete.model;
 
 
-import android.util.Log;
-
 import com.duy.ide.autocomplete.util.JavaUtil;
 import com.duy.ide.editor.view.CodeSuggestsEditText;
 
@@ -139,8 +137,6 @@ public class ClassDescription implements Description {
     private static final String TAG = "ClassDescription";
 
     public void addConstructor(ConstructorDescription constructorDescription) {
-        Log.d(TAG, "addConstructor() called with: classConstructor = [" + constructorDescription + "]");
-
         this.constructors.add(constructorDescription);
     }
     public void addField(FieldDescription fieldDescription) {

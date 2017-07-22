@@ -78,7 +78,9 @@ public class AutoCompleteProvider {
             } else {
                 result = new ArrayList<>();
                 for (ClassDescription aClass : classes) {
-                    result.add(aClass);
+                    if (!aClass.getSimpleName().equals(current)) {
+                        result.add(aClass);
+                    }
                 }
             }
         }
@@ -90,6 +92,7 @@ public class AutoCompleteProvider {
                 for (String className : classes) {
                     JavaClassReader classReader = mClassLoader.getClassReader();
                     ClassDescription classDescription = classReader.readClassByName(className);
+                    Log.d(TAG, "getSuggestions classDescription = " + classDescription);
                     if (classDescription != null) {
                         result = new ArrayList<>();
                         result.addAll(classDescription.getMember(suffix));

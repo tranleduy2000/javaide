@@ -110,7 +110,6 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d(TAG, "onTextChanged() called with: s = [" + s + "], start = [" + start + "], before = [" + before + "], count = [" + count + "]");
                 this.start = start;
                 this.count = count;
             }

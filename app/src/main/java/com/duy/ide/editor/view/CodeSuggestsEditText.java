@@ -43,9 +43,9 @@ import java.util.ArrayList;
  * Created by Duy on 28-Feb-17.
  */
 
-public abstract class CodeSuggestsEditText extends AutoIndentEditText implements CodeSuggestAdapter.OnSuggestItemClickListener {
+public abstract class CodeSuggestsEditText extends AutoIndentEditText
+        implements CodeSuggestAdapter.OnSuggestItemClickListener {
     protected static final String TAG = CodeSuggestsEditText.class.getSimpleName();
-
     public int mCharHeight = 0;
     public int mCharWidth = 0;
     protected EditorSetting mEditorSetting;
@@ -231,7 +231,6 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText implements
         mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
         mAdapter.setListener(this);
 
-
         setAdapter(mAdapter);
         onDropdownChangeSize();
         if (data.size() > 0) {
@@ -306,7 +305,7 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText implements
 
 
     private class SymbolsTokenizer implements MultiAutoCompleteTextView.Tokenizer {
-        static final String TOKEN = "!@#$%^&*()_+-={}|[]:;'<>/<?. \r\n\t";
+        static final String TOKEN = "!@#$%^&*()_+-={}|[]:;'<>/<? .\r\n\t";
 
         @Override
         public int findTokenStart(CharSequence text, int cursor) {
@@ -336,11 +335,6 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText implements
 
         @Override
         public CharSequence terminateToken(CharSequence text) {
-            int i = text.length();
-
-            while (i > 0 && text.charAt(i - 1) == ' ') {
-                i--;
-            }
             return text;
         }
     }

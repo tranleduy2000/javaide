@@ -11,7 +11,6 @@ import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.model.Member;
 import com.duy.ide.autocomplete.util.EditorUtil;
-import com.duy.ide.autocomplete.util.JavaUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -98,13 +97,13 @@ public class AutoCompleteProvider {
                         result.addAll(classDescription.getMember(suffix));
                     }
                 }
-            } else {
+            }/* else {
                 if (prefix.isEmpty() && !suffix.isEmpty()) {
                     if (JavaUtil.isValidClassName(suffix)) { //could be class
                         ArrayList<ClassDescription> possibleClass = mClassLoader.findClass(suffix);
                     }
                 }
-            }
+            }*/
         }
         return result;
     }

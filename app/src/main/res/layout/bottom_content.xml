@@ -3,47 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/output_view"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="match_parent"
     android:clickable="true"
     android:foreground="?selectableItemBackground"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/container_symbol"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/img_toggle"
-            android:layout_width="@dimen/bottom_editor_height"
-            android:layout_height="@dimen/bottom_editor_height"
-            android:background="#651fff"
-            android:clickable="true"
-            android:contentDescription="@string/tab"
-            android:foreground="?attr/selectableItemBackground"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_more_vert_white_24dp" />
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/img_tab"
-            android:layout_width="@dimen/bottom_editor_height"
-            android:layout_height="@dimen/bottom_editor_height"
-            android:clickable="true"
-            android:contentDescription="@string/tab"
-            android:foreground="?attr/selectableItemBackground"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_keyboard_tab_white_24dp" />
-
-        <com.duy.ide.view.SymbolListView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_editor_height">
-
-        </com.duy.ide.view.SymbolListView>
-
-    </LinearLayout>
-
+    <ImageView
+        android:id="@+id/drag_view_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drag_view_height"
+        android:background="?colorPrimaryDark"
+        android:clickable="true"
+        android:contentDescription="@string/expand_collapse"
+        android:foreground="?selectableItemBackground"
+        android:src="@drawable/ic_more_horiz_white_24dp"
+        android:tint="?colorAccent" />
     <ProgressBar
         android:id="@+id/compile_progress"
         style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
@@ -51,13 +25,11 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-
     <android.support.design.widget.TabLayout
         android:id="@+id/bottom_tab"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="@dimen/toolbar_height"
         app:tabIndicatorColor="@color/dark.color_folder"
-        app:tabIndicatorHeight="1dp"
         app:tabTextAppearance="@style/Base.TextAppearance.AppCompat.Small">
 
     </android.support.design.widget.TabLayout>

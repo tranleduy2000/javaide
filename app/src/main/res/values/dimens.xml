@@ -29,4 +29,5 @@
     <dimen name="bottom_editor_height">40dp</dimen>
     <dimen name="navigation_drawer_width">300dp</dimen>
     <dimen name="drag_handle_size">15dp</dimen>
+    <dimen name="drag_view_height">24dp</dimen>
 </resources>

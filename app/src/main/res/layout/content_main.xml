@@ -13,24 +13,12 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/sliding_layout"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:umanoDragView="@+id/container_symbol"
-    app:umanoFadeColor="@android:color/transparent"
-    app:umanoOverlay="false"
-    app:umanoPanelHeight="@dimen/bottom_editor_height"
-    app:umanoScrollableView="@+id/scrollView"
-    app:umanoShadowHeight="4dp">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -54,15 +42,56 @@
             app:tabPaddingStart="0dp"
             app:tabTextAppearance="@style/TextAppearance.AppCompat.Small" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_above="@+id/container_symbol">
 
         </android.support.v4.view.ViewPager>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/container_symbol"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    <include layout="@layout/bottom_content" />
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_toggle"
+                android:layout_width="@dimen/bottom_editor_height"
+                android:layout_height="@dimen/bottom_editor_height"
+                android:background="#651fff"
+                android:clickable="true"
+                android:contentDescription="@string/tab"
+                android:foreground="?attr/selectableItemBackground"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_more_vert_white_24dp" />
 
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/img_tab"
+                android:layout_width="@dimen/bottom_editor_height"
+                android:layout_height="@dimen/bottom_editor_height"
+                android:clickable="true"
+                android:contentDescription="@string/tab"
+                android:foreground="?attr/selectableItemBackground"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_keyboard_tab_white_24dp" />
+
+            <com.duy.ide.view.SymbolListView
+                android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_editor_height">
+
+            </com.duy.ide.view.SymbolListView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
+

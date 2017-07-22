@@ -18,33 +18,24 @@
     android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:windowBackground"
     android:gravity="bottom"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:umanoDragView="@+id/container_symbol"
-    app:umanoFadeColor="@android:color/transparent"
-    app:umanoPanelHeight="@dimen/bottom_editor_height"
-    app:umanoScrollableView="@+id/scrollView"
+    app:umanoDragView="@+id/drag_view_horizontal"
+    app:umanoOverlay="false"
+    app:umanoPanelHeight="@dimen/drag_view_height"
     app:umanoShadowHeight="4dp">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/container_file"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="10">
+        android:background="?android:windowBackground"
+        android:fitsSystemWindows="true">
 
-        <include
-            layout="@layout/main_left"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:layout_weight="3"
-            android:fitsSystemWindows="true" />
+    </FrameLayout>
 
-        <include
-            layout="@layout/content_main"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="7" />
-    </LinearLayout>
+    <include layout="@layout/bottom_content" />
 
-   <include layout="@layout/bottom_content"/>
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

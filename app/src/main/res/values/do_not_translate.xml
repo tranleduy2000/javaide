@@ -120,4 +120,6 @@ procedure routine();
 begin
 end;
 end.]]></string>
+    <string name="default_classpath">system/classes/android.jar</string>
+    <string name="key_classpath">pref_key_classpath</string>
 </resources>

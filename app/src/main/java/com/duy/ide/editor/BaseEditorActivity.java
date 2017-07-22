@@ -53,11 +53,9 @@ import com.duy.ide.EditorControl;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.ide.adapters.BottomPageAdapter;
-import com.duy.ide.code.CompileManager;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
-import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.view.SymbolListView;
 import com.duy.project_file.ClassFile;
 import com.duy.project_file.ProjectFile;
@@ -74,6 +72,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+import static com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
 /**
  * Created by Duy on 09-Mar-17.
@@ -116,8 +115,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
             @Override
             public void run() {
                 if (mContainerOutput != null) {
-                    if (mContainerOutput.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
-                        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    if (mContainerOutput.getPanelState() == PanelState.EXPANDED) {
+                        mContainerOutput.setPanelState(PanelState.COLLAPSED);
                         mContainerOutput.setTouchEnabled(false);
                         mContainerOutput.setEnabled(false);
                     }
@@ -217,48 +216,19 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         mContainerSymbol = findViewById(R.id.container_symbol);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mContainerOutput = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-    }
 
-    private void invalidateTab() {
-        Log.d(TAG, "invalidateTab() called");
-        mHandler.postDelayed(new Runnable() {
+        View toggle = findViewById(R.id.img_toggle);
+        toggle.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                for (int i = 0; i < mPageAdapter.getCount(); i++) {
-                    final TabLayout.Tab tab = mTabLayout.getTabAt(i);
-                    View view = null;
-                    if (tab != null) {
-                        tab.setCustomView(R.layout.item_tab_file);
-                        view = tab.getCustomView();
-                    }
-
-                    if (view != null) {
-                        View close = view.findViewById(R.id.img_close);
-                        final int position = i;
-                        close.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                removePage(position);
-                            }
-                        });
-                        TextView txtTitle = view.findViewById(R.id.txt_title);
-                        txtTitle.setText(mPageAdapter.getPageTitle(i));
-                        txtTitle.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                mViewPager.setCurrentItem(position);
-                            }
-                        });
-
-                        if (i == mViewPager.getCurrentItem()) {
-                            tab.select();
-                        }
-                    }
+            public void onClick(View v) {
+                if (mContainerOutput.getPanelState() == PanelState.EXPANDED) {
+                    mContainerOutput.setPanelState(PanelState.COLLAPSED);
+                } else if (mContainerOutput.getPanelState() == PanelState.COLLAPSED) {
+                    mContainerOutput.setPanelState(PanelState.EXPANDED);
                 }
             }
-        }, 200);
+        });
     }
-
 
     public void setupToolbar() {
         //setup action bar
@@ -305,42 +275,39 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        JavaPreferences preferences = getPreferences();
-        if (preferences != null) {
-            preferences.put(JavaPreferences.TAB_POSITION_FILE, mTabLayout.getSelectedTabPosition());
-        }
+        mPagePresenter.pause();
         ProjectManager.saveProject(this, mProjectFile);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Intent intent = getIntent();
-        if (intent != null) {
-            if (intent.getStringExtra(CompileManager.FILE_PATH) != null) {
-                String filePath = intent.getStringExtra(CompileManager.FILE_PATH);
-                //No need save last file because it is the frist file
-                addNewPageEditor(new File(filePath), SELECT);
-                //Remove path
-                intent.removeExtra(CompileManager.FILE_PATH);
-            }
-        }
+//        Intent intent = getIntent();
+//        if (intent != null) {
+//            if (intent.getStringExtra(CompileManager.FILE_PATH) != null) {
+//                String filePath = intent.getStringExtra(CompileManager.FILE_PATH);
+//                //No need save last file because it is the frist file
+//                addNewPageEditor(new File(filePath), SELECT);
+//                //Remove path
+//                intent.removeExtra(CompileManager.FILE_PATH);
+//            }
+//        }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent.getStringExtra(CompileManager.FILE_PATH) != null) {
-            String filePath = intent.getStringExtra(CompileManager.FILE_PATH);
-            File file = new File(filePath);
-            if (!file.exists()) {
-                Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            addNewPageEditor(file, SELECT);
-            //remove path
-            intent.removeExtra(CompileManager.FILE_PATH);
-        }
+//        if (intent.getStringExtra(CompileManager.FILE_PATH) != null) {
+//            String filePath = intent.getStringExtra(CompileManager.FILE_PATH);
+//            File file = new File(filePath);
+//            if (!file.exists()) {
+//                Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            addNewPageEditor(file, SELECT);
+//            //remove path
+//            intent.removeExtra(CompileManager.FILE_PATH);
+//        }
     }
 
     protected abstract String getCode();

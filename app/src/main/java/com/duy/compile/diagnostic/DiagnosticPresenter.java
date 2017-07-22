@@ -40,7 +40,10 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                 mPagePresenter.addPage(path, true);
             }
             EditPageContract.View editor = mPagePresenter.getCurrentPage();
-            if (editor == null) return;
+            if (editor == null) {
+                Log.d(TAG, "click: editor null");
+                return;
+            }
             long startPosition = diagnostic.getStartPosition();
             long endPosition = diagnostic.getEndPosition();
             editor.highlightError(startPosition, endPosition);

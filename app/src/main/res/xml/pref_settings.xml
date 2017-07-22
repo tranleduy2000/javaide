@@ -177,4 +177,14 @@
             android:title="@string/hide_status_bar"/>
 
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="System">
+        <EditTextPreference
+            android:defaultValue="@string/default_classpath"
+            android:key="@string/key_classpath"
+            android:summary="@string/classpath_desc"
+            android:title="Classpath">
+
+        </EditTextPreference>
+    </PreferenceCategory>
 </PreferenceScreen>

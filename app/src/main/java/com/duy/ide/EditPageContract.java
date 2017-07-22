@@ -53,5 +53,7 @@ public class EditPageContract {
         View getCurrentPage();
 
         void showError(View view, int line);
+
+        void pause();
     }
 }

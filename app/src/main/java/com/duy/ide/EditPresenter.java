@@ -190,11 +190,18 @@ public class EditPresenter implements EditPageContract.Presenter {
 
     @Override
     public EditPageContract.View getCurrentPage() {
-        return null;
+        return mPageAdapter.getCurrentFragment();
     }
 
     @Override
     public void showError(EditPageContract.View view, int line) {
 
     }
+
+    @Override
+    public void pause() {
+        mPreferences.put(JavaPreferences.TAB_POSITION_FILE, mTabLayout.getSelectedTabPosition());
+    }
+
+
 }

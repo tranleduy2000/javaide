@@ -206,7 +206,6 @@ public class EditPresenter implements EditPageContract.Presenter {
         mPreferences.put(JavaPreferences.TAB_POSITION_FILE, mTabLayout.getSelectedTabPosition());
     }
 
-
     public void setAutoCompleteProvider(@NonNull AutoCompleteProvider autoCompleteProvider) {
         this.autoCompleteProvider = autoCompleteProvider;
         for (int i = 0; i < mPageAdapter.getCount(); i++) {

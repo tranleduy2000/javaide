@@ -132,4 +132,8 @@ public class JavaClassReader {
         }
         return classDescriptions;
     }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
 }

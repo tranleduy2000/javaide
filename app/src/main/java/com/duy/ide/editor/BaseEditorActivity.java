@@ -81,8 +81,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         implements SymbolListView.OnKeyListener, EditorControl,
         ProjectFileContract.FileActionListener,
         DialogNewProject.OnCreateProjectListener, DialogNewClass.OnCreateClassListener, ViewPager.OnPageChangeListener {
+    private static final String TAG = "BaseEditorActivity";
 
-    protected final static String TAG = BaseEditorActivity.class.getSimpleName();
     private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
     protected final boolean SELECT = true;
 

@@ -15,12 +15,12 @@ public class JavaDexClassLoader {
     private static final String TAG = "JavaDexClassLoader";
     private JavaClassReader mClassReader;
 
-    public JavaClassReader getClassReader() {
-        return mClassReader;
-    }
-
     public JavaDexClassLoader(File classpath, File outDir) {
         mClassReader = new JavaClassReader(classpath.getPath(), outDir.getPath());
+    }
+
+    public JavaClassReader getClassReader() {
+        return mClassReader;
     }
 
     @NonNull

@@ -85,10 +85,10 @@ public class MainActivity extends BaseEditorActivity implements
         DrawerLayout.DrawerListener,
         DialogRunConfig.OnConfigChangeListener,
         FileSelectListener {
-
     public static final int ACTION_FILE_SELECT_CODE = 1012;
     public static final int ACTION_PICK_MEDIA_URL = 1013;
     public static final int ACTION_CREATE_SHORTCUT = 1014;
+    private static final String TAG = "MainActivity";
     private CompileManager mCompileManager;
     private MenuEditor mMenuEditor;
     private Dialog mDialog;
@@ -111,20 +111,25 @@ public class MainActivity extends BaseEditorActivity implements
     };
 
     private void populateAutoCompleteService() {
-        AutoCompleteProvider autoCompleteProvider = mAutoCompleteService.getAutoCompleteProvider();
-        if (autoCompleteProvider != null) {
-            mPagePresenter.setAutoCompleteProvider(autoCompleteProvider);
-        }
+        Log.d(TAG, "populateAutoCompleteService() called");
+        mAutoCompleteService.setCallback(new AutoCompleteService.OnAutoCompleteServiceLoadListener() {
+            @Override
+            public void onLoaded(@NonNull AutoCompleteProvider provider) {
+                Log.d(TAG, "onLoaded() called with: provider = [" + provider + "]");
+
+                mPagePresenter.setAutoCompleteProvider(provider);
+            }
+        });
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startAutoCompleteService();
         mCompileManager = new CompileManager(this);
         mMenuEditor = new MenuEditor(this, this);
         initView(savedInstanceState);
 
+        startAutoCompleteService();
     }
 
     private void startAutoCompleteService() {

@@ -38,6 +38,10 @@ public class AutoCompleteProvider {
         mClassLoader.loadAllClasses(true);
     }
 
+    public boolean isLoaded(){
+        return mClassLoader.getClassReader().isLoaded();
+    }
+
 
     public ArrayList<Description> getSuggestions(EditText editor, int position) {
         // text: 'package.Class.me', prefix: 'package.Class', suffix: 'me'

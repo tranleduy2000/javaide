@@ -70,36 +70,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="WAKE-LOCK Options">
 
-        <ListPreference
-            android:defaultValue="1"
-            android:dialogTitle="CPU Lock"
-            android:entries="@array/entries_yesno"
-            android:entryValues="@array/entryvalues_yesno"
-            android:key="cpulock"
-            android:summary="Keep the CPU running at all times"
-            android:title="CPU Lock" />
-
-        <ListPreference
-            android:defaultValue="0"
-            android:dialogTitle="Screen Lock"
-            android:entries="@array/entries_yesno"
-            android:entryValues="@array/entryvalues_yesno"
-            android:key="screenlock"
-            android:summary="Keep the screen on at all times [Though it can dim]"
-            android:title="Screen Lock" />
-
-        <ListPreference
-            android:defaultValue="0"
-            android:dialogTitle="Wifi Lock"
-            android:entries="@array/entries_yesno"
-            android:entryValues="@array/entryvalues_yesno"
-            android:key="wifilock"
-            android:summary="Keep the wifi on at all times"
-            android:title="Wifi Lock" />
-
-    </PreferenceCategory>
 
     <PreferenceCategory android:title="Basic Special Keys">
 
@@ -121,33 +92,9 @@
             android:summary="Choose a hard key for ESC"
             android:title="ESC Key" />
 
-        <!--<ListPreference
-                android:key="ime"
-                android:defaultValue="@string/default_value_ime_preference"
-                android:title="@string/title_ime_preference"
-                android:summary="@string/summary_ime_preference"
-                android:entries="@array/entries_ime_preference"
-                android:entryValues="@array/entryvalues_ime_preference"
-                android:dialogTitle="@string/dialog_title_ime_preference" />-->
-
     </PreferenceCategory>
 
-    <!--<PreferenceCategory
-        android:title="@string/shell_preferences">
 
-    <EditTextPreference
-            android:key="shell"
-            android:defaultValue="@string/default_value_shell_preference"
-            android:title="@string/title_shell_preference"
-            android:summary="@string/summary_shell_preference"
-            android:dialogTitle="@string/dialog_title_shell_preference" />
-    <EditTextPreference
-            android:key="initialcommand"
-            android:defaultValue="@string/default_value_initialcommand_preference"
-            android:title="@string/title_initialcommand_preference"
-            android:summary="@string/summary_initialcommand_preference"
-            android:dialogTitle="@string/dialog_title_initialcommand_preference" />
-    </PreferenceCategory>-->
 
     <PreferenceCategory android:title="Hard Keyboard Mappings">
 

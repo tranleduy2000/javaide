@@ -184,10 +184,6 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
             initSessions(home);
         }
 
-        //Start a webserver for comms..
-//        mServer = new webserver(this);
-//        mServer.start();
-
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         @SuppressLint("WifiManagerLeak") WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
@@ -196,10 +192,6 @@ public class TermService extends Service implements SharedPreferences.OnSharedPr
         mScreenLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, TermDebug.LOG_TAG);
         mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, TermDebug.LOG_TAG);
 
-        //Get the Initial Values
-//        boolean cpulock     = getStringPref("cpulock","1") == 1 ? true : false;
-//        boolean wifilock    = getStringPref("wifilock","0") == 1 ? true : false;
-//        boolean screenlock  = getStringPref("screenlock","0") == 1 ? true : false;
         setupWakeLocks();
 
         Log.d(TermDebug.LOG_TAG, "TermService started");

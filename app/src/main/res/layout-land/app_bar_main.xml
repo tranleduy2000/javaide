@@ -13,18 +13,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:umanoDragView="@+id/container_symbol"
-    app:umanoFadeColor="@android:color/transparent"
-    app:umanoPanelHeight="@dimen/bottom_editor_height"
-    app:umanoScrollableView="@+id/scrollView"
-    app:umanoShadowHeight="4dp">
+    android:orientation="horizontal"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -46,5 +42,4 @@
             android:layout_weight="7" />
     </LinearLayout>
 
-   <include layout="@layout/bottom_content"/>
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+</LinearLayout>

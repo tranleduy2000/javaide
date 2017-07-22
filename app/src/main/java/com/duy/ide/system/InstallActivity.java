@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
+import com.duy.ide.file.FileManager;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.utils.MemoryUtils;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,7 +25,6 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.spartacusrex.spartacuside.startup.FileManager;
 
 import java.io.File;
 import java.io.IOException;

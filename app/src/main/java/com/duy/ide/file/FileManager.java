@@ -163,6 +163,21 @@ public class FileManager {
         return file.canWrite() && file.getName().toLowerCase().endsWith(".java");
     }
 
+    private static void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+    }
+
+    public static void extractAsset(Context zContext, String zAssetFile, File zOuput) throws IOException {
+        InputStream in = zContext.getAssets().open(zAssetFile);
+        OutputStream os = new FileOutputStream(zOuput);
+        copyFile(in, os);
+        in.close();
+        os.close();
+    }
 
     public static ArrayList<String> listClassName(File src) {
         if (!src.exists()) return new ArrayList<>();
@@ -179,6 +194,12 @@ public class FileManager {
             classes.add(javaPath);
         }
         return classes;
+    }
+
+    public static void ensureFileExist(File file) throws FileNotFoundException {
+        if (!file.exists()) {
+            throw new FileNotFoundException(file + "");
+        }
     }
 
     /**
@@ -573,12 +594,6 @@ public class FileManager {
 
     public void destroy() {
         mDatabase.close();
-    }
-
-    public static void ensureFileExist(File file) throws FileNotFoundException {
-        if (!file.exists()) {
-            throw new FileNotFoundException(file + "");
-        }
     }
 
     public static class SAVE_MODE {

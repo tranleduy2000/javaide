@@ -21,15 +21,15 @@
     android:layout_height="40dp"
     android:orientation="horizontal">
 
-    <android.support.v7.widget.AppCompatTextView
+    <TextView
         android:id="@+id/txt_title"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center|start"
-
         android:padding="4dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:text="@string/code_sample" />
 
     <android.support.v7.widget.AppCompatImageView

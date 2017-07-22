@@ -17,13 +17,16 @@
 package com.duy.ide.editor;
 
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -49,9 +52,10 @@ import android.widget.Toast;
 
 import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.compile.external.CommandManager;
-import com.duy.compile.external.dex.JavaDexClassLoader;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
+import com.duy.ide.autocomplete.AutoCompleteService;
+import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.code.CompileManager;
 import com.duy.ide.code_sample.activities.DocumentActivity;
@@ -91,23 +95,45 @@ public class MainActivity extends BaseEditorActivity implements
     private MenuItem mActionRun;
     private ProgressBar mCompileProgress;
 
+    private AutoCompleteService mAutoCompleteService;
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            AutoCompleteService.ACBinder acBinder = (AutoCompleteService.ACBinder) service;
+            mAutoCompleteService = acBinder.getService();
+            populateAutoCompleteService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mAutoCompleteService = null;
+        }
+    };
+
+    private void populateAutoCompleteService() {
+        AutoCompleteProvider autoCompleteProvider = mAutoCompleteService.getAutoCompleteProvider();
+        if (autoCompleteProvider != null) {
+            mPagePresenter.setAutoCompleteProvider(autoCompleteProvider);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startAutoCompleteService();
         mCompileManager = new CompileManager(this);
         mMenuEditor = new MenuEditor(this, this);
         initView(savedInstanceState);
 
-        testLoadClass();
     }
 
-    private void testLoadClass() {
-        JavaDexClassLoader dexClassLoader = new JavaDexClassLoader(this);
-        Class aClass = dexClassLoader.loadClass("java.lang.String");
-        if (aClass != null) {
-            Log.d(TAG, "testLoadClass: " + aClass);
+    private void startAutoCompleteService() {
+        Intent intent = new Intent(this, AutoCompleteService.class);
+        if (!bindService(intent, mServiceConnection, BIND_AUTO_CREATE)) {
+            Log.e(TAG, "startAutoCompleteService: bind service failed");
         }
     }
+
 
     public void initView(Bundle savedInstanceState) {
         mDrawerLayout.addDrawerListener(this);
@@ -627,7 +653,7 @@ public class MainActivity extends BaseEditorActivity implements
             if (mActionRun != null) mActionRun.setEnabled(false);
             if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
             hideKeyboard();
-            mDrawerLayout.openDrawer(GravityCompat.START);
+
             mMessagePresenter.clear();
             mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             mDiagnosticPresenter.clear();
@@ -690,6 +716,7 @@ public class MainActivity extends BaseEditorActivity implements
             }
             if (result == null) {
                 Toast.makeText(mContext, R.string.failed_msg, Toast.LENGTH_SHORT).show();
+                mDrawerLayout.openDrawer(GravityCompat.START);
                 mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
             } else {
                 Toast.makeText(mContext, R.string.compile_success, Toast.LENGTH_SHORT).show();

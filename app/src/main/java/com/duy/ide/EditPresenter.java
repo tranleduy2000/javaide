@@ -12,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.commonsware.cwac.pager.SimplePageDescriptor;
+import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
+import com.duy.ide.editor.EditorFragment;
 import com.duy.ide.editor.EditorPagerAdapter;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.setting.JavaPreferences;
@@ -32,6 +34,7 @@ public class EditPresenter implements EditPageContract.Presenter {
     private FileManager mFileManager;
     private Context mContext;
     private Handler mHandler = new Handler();
+    private AutoCompleteProvider autoCompleteProvider;
 
     public EditPresenter(Context context, ViewPager mViewPager,
                          EditorPagerAdapter mPageAdapter, TabLayout tabLayout,
@@ -99,7 +102,7 @@ public class EditPresenter implements EditPageContract.Presenter {
             //new page
             mPageAdapter.add(new SimplePageDescriptor(file.getPath(), file.getName()));
             invalidateTab();
-
+            setAutoCompleteProvider(autoCompleteProvider);
             if (select) {
                 int indexOfNewPage = mPageAdapter.getCount() - 1;
                 TabLayout.Tab tab = mTabLayout.getTabAt(indexOfNewPage);
@@ -204,4 +207,13 @@ public class EditPresenter implements EditPageContract.Presenter {
     }
 
 
+    public void setAutoCompleteProvider(@NonNull AutoCompleteProvider autoCompleteProvider) {
+        this.autoCompleteProvider = autoCompleteProvider;
+        for (int i = 0; i < mPageAdapter.getCount(); i++) {
+            EditorFragment fm = mPageAdapter.getExistingFragment(i);
+            if (fm != null) {
+                fm.setAutoCompleteProvider(autoCompleteProvider);
+            }
+        }
+    }
 }

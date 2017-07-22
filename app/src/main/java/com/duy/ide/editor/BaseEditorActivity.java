@@ -48,8 +48,8 @@ import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.compile.diagnostic.DiagnosticPresenter;
 import com.duy.compile.message.MessageFragment;
 import com.duy.compile.message.MessagePresenter;
-import com.duy.ide.EditPresenter;
 import com.duy.ide.EditorControl;
+import com.duy.ide.PagePresenter;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.ide.adapters.BottomPageAdapter;
@@ -73,7 +73,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
-import static com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
 /**
  * Created by Duy on 09-Mar-17.
@@ -93,17 +92,20 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected SlidingUpPanelLayout mContainerOutput;
     protected ProjectFile mProjectFile;
     protected ProjectFileContract.Presenter mFilePresenter;
-    protected EditPresenter mPagePresenter;
+
+    protected ViewPager mBottomPage;
+    protected PagePresenter mPagePresenter;
     protected DiagnosticPresenter mDiagnosticPresenter;
     protected MessagePresenter mMessagePresenter;
-    protected ViewPager mBottomPage;
     Toolbar toolbar;
     AppBarLayout appBarLayout;
     DrawerLayout mDrawerLayout;
-    SymbolListView mKeyList;
     NavigationView navigationView;
     TabLayout mTabLayout;
-    View mContainerSymbol;
+    @Nullable
+    View mContainerSymbol; //don't support in landscape mode
+    @Nullable
+    SymbolListView mKeyList;
     ViewPager mViewPager;
     private KeyBoardEventListener keyBoardListener;
     private MessageFragment mMessageFragment;
@@ -113,13 +115,17 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         mTabLayout.setVisibility(View.GONE);
         JavaPreferences preferences = getPreferences();
         if (preferences.isShowListSymbol()) {
-            mContainerSymbol.setVisibility(View.VISIBLE);
+            if (mContainerSymbol != null) {
+                mContainerSymbol.setVisibility(View.VISIBLE);
+            }
         }
     }
 
     protected void onHideKeyboard() {
         mTabLayout.setVisibility(View.VISIBLE);
-        mContainerSymbol.setVisibility(View.GONE);
+        if (mContainerSymbol != null) {
+            mContainerSymbol.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -192,7 +198,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         mTabLayout.setupWithViewPager(mViewPager);
         mViewPager.addOnPageChangeListener(this);
 
-        mPagePresenter = new EditPresenter(this, mViewPager, mPageAdapter, mTabLayout, mFileManager);
+        mPagePresenter = new PagePresenter(this, mViewPager, mPageAdapter, mTabLayout, mFileManager);
         mPagePresenter.invalidateTab();
     }
 
@@ -390,8 +396,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         closeKeyBoard();
-        mDrawerLayout.getViewTreeObserver()
-                .removeGlobalOnLayoutListener(keyBoardListener);
+        mDrawerLayout.getViewTreeObserver().removeGlobalOnLayoutListener(keyBoardListener);
         mFileManager.destroy();
     }
 
@@ -516,6 +521,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     @Override
     public void onPageSelected(int position) {
+        EditorFragment fm = mPageAdapter.getExistingFragment(position);
+        if (fm != null) {
+            setTitle(fm.getTag());
+        }
     }
 
     @Override
@@ -524,7 +533,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     public void closeDrawer(int start) {
-        mDrawerLayout.closeDrawer(start);
+        if (mDrawerLayout.isDrawerOpen(start)) {
+            mDrawerLayout.closeDrawer(start);
+        }
     }
 
 

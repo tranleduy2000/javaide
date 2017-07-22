@@ -24,7 +24,7 @@ import java.io.File;
  * Created by duy on 19/07/2017.
  */
 
-public class EditPresenter implements EditPageContract.Presenter {
+public class PagePresenter implements EditPageContract.Presenter {
 
     private static final String TAG = "EditPresenter";
     private ViewPager mViewPager;
@@ -36,7 +36,7 @@ public class EditPresenter implements EditPageContract.Presenter {
     private Handler mHandler = new Handler();
     private AutoCompleteProvider autoCompleteProvider;
 
-    public EditPresenter(Context context, ViewPager mViewPager,
+    public PagePresenter(Context context, ViewPager mViewPager,
                          EditorPagerAdapter mPageAdapter, TabLayout tabLayout,
                          FileManager fileManager) {
         this.mViewPager = mViewPager;

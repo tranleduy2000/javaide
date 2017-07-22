@@ -1,15 +1,14 @@
 package com.unnamed.b.atv.view;
 
 import android.content.Context;
-import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.unnamed.b.atv.R;
 import com.unnamed.b.atv.holder.SimpleViewHolder;
@@ -104,30 +103,39 @@ public class AndroidTreeView {
     }
 
 
-    private static void expand(final View v) {
-        v.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        final int targetHeight = v.getMeasuredHeight();
+    public View getView(int style) {
+        final ViewGroup view;
+        if (style > 0) {
+            ContextThemeWrapper newContext = new ContextThemeWrapper(mContext, style);
+            view = use2dScroll ? new TwoDScrollView(newContext) : new ScrollView(newContext);
+        } else {
+            view = use2dScroll ? new TwoDScrollView(mContext) : new ScrollView(mContext);
+        }
 
-        v.getLayoutParams().height = 0;
-        v.setVisibility(View.VISIBLE);
-        Animation a = new Animation() {
+        Context containerContext = mContext;
+        if (containerStyle != 0 && applyForRoot) {
+            containerContext = new ContextThemeWrapper(mContext, containerStyle);
+        }
+        final LinearLayout viewTreeItems = new LinearLayout(containerContext, null, containerStyle);
+
+        viewTreeItems.setId(R.id.tree_items);
+        viewTreeItems.setOrientation(LinearLayout.VERTICAL);
+        view.addView(viewTreeItems);
+
+        mRoot.setViewHolder(new TreeNode.BaseNodeViewHolder(mContext) {
             @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = interpolatedTime == 1
-                        ? LayoutParams.WRAP_CONTENT
-                        : (int) (targetHeight * interpolatedTime);
-                v.requestLayout();
+            public View createNodeView(TreeNode node, Object value) {
+                return null;
             }
 
             @Override
-            public boolean willChangeBounds() {
-                return true;
+            public ViewGroup getNodeItemsView() {
+                return viewTreeItems;
             }
-        };
+        });
 
-        // 1dp/ms
-        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(a);
+        expandNode(mRoot, false);
+        return view;
     }
 
     public View getView() {
@@ -226,6 +234,7 @@ public class AndroidTreeView {
         final TreeNode.BaseNodeViewHolder parentViewHolder = getViewHolderForNode(node);
         parentViewHolder.getNodeItemsView().removeAllViews();
 
+
         parentViewHolder.toggle(true);
 
         for (final TreeNode n : node.getChildren()) {
@@ -241,6 +250,7 @@ public class AndroidTreeView {
         } else {
             parentViewHolder.getNodeItemsView().setVisibility(View.VISIBLE);
         }
+
     }
 
     private void addNode(ViewGroup container, final TreeNode n) {
@@ -403,40 +413,30 @@ public class AndroidTreeView {
         return viewHolder;
     }
 
-    public View getView(int style) {
-        final ViewGroup view;
-        if (style > 0) {
-            ContextThemeWrapper newContext = new ContextThemeWrapper(mContext, style);
-            view = use2dScroll ? new TwoDScrollView(newContext) : new NestedScrollView(newContext);
-        } else {
-            view = use2dScroll ? new TwoDScrollView(mContext) : new NestedScrollView(mContext);
-        }
+    private static void expand(final View v) {
+        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = v.getMeasuredHeight();
 
-        Context containerContext = mContext;
-        if (containerStyle != 0 && applyForRoot) {
-            containerContext = new ContextThemeWrapper(mContext, containerStyle);
-        }
-        final LinearLayout viewTreeItems = new LinearLayout(containerContext, null, containerStyle);
-        viewTreeItems.setId(R.id.tree_items);
-        viewTreeItems.setOrientation(LinearLayout.VERTICAL);
-        viewTreeItems.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        view.addView(viewTreeItems);
-
-        mRoot.setViewHolder(new TreeNode.BaseNodeViewHolder(mContext) {
+        v.getLayoutParams().height = 0;
+        v.setVisibility(View.VISIBLE);
+        Animation a = new Animation() {
             @Override
-            public View createNodeView(TreeNode node, Object value) {
-                return null;
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? LinearLayout.LayoutParams.WRAP_CONTENT
+                        : (int) (targetHeight * interpolatedTime);
+                v.requestLayout();
             }
 
             @Override
-            public ViewGroup getNodeItemsView() {
-                return viewTreeItems;
+            public boolean willChangeBounds() {
+                return true;
             }
-        });
+        };
 
-        expandNode(mRoot, false);
-        return view;
+        // 1dp/ms
+        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
     }
 
     private static void collapse(final View v) {

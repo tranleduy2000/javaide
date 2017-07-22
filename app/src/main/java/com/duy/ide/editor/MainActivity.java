@@ -149,12 +149,15 @@ public class MainActivity extends BaseEditorActivity implements
                 return mMenuEditor.onOptionsItemSelected(item);
             }
         });
-        findViewById(R.id.img_tab).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                insertTab(v);
-            }
-        });
+        View tab = findViewById(R.id.img_tab);
+        if (tab != null) {
+            tab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    insertTab(v);
+                }
+            });
+        }
         mCompileProgress = (ProgressBar) findViewById(R.id.compile_progress);
     }
 
@@ -209,12 +212,21 @@ public class MainActivity extends BaseEditorActivity implements
         final CheckBox ckbMatch = (CheckBox) alertDialog.findViewById(R.id.ckb_match_key);
         final EditText editFind = (EditText) alertDialog.findViewById(R.id.txt_find);
         final EditText editReplace = (EditText) alertDialog.findViewById(R.id.edit_replace);
-        editFind.setText(getPreferences().getString(JavaPreferences.LAST_FIND));
-        alertDialog.findViewById(R.id.btn_replace).setOnClickListener(new View.OnClickListener() {
+        if (editFind != null) {
+            editFind.setText(getPreferences().getString(JavaPreferences.LAST_FIND));
+        }
+        View find = alertDialog.findViewById(R.id.btn_replace);
+        assert find != null;
+        assert editFind != null;
+        assert editReplace != null;
+        assert ckbRegex != null;
+        assert ckbMatch != null;
+        find.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
                 if (editorFragment != null) {
+
                     editorFragment.doFindAndReplace(
                             editFind.getText().toString(),
                             editReplace.getText().toString(),
@@ -225,7 +237,9 @@ public class MainActivity extends BaseEditorActivity implements
                 alertDialog.dismiss();
             }
         });
-        alertDialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+        View cancle = alertDialog.findViewById(R.id.btn_cancel);
+        assert cancle != null;
+        cancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
@@ -366,10 +380,14 @@ public class MainActivity extends BaseEditorActivity implements
     protected void onResume() {
         super.onResume();
         if (getPreferences().isShowListSymbol()) {
-            mKeyList.setListener(this);
-            mContainerSymbol.setVisibility(View.VISIBLE);
+            if (mContainerSymbol != null && mKeyList != null) {
+                mKeyList.setListener(this);
+                mContainerSymbol.setVisibility(View.VISIBLE);
+            }
         } else {
-            mContainerSymbol.setVisibility(View.GONE);
+            if (mContainerSymbol != null) {
+                mContainerSymbol.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -383,8 +401,10 @@ public class MainActivity extends BaseEditorActivity implements
                 editorFragment.refreshCodeEditor();
             }
         } else if (s.equals(getString(R.string.key_show_symbol))) {
-            mContainerSymbol.setVisibility(getPreferences().isShowListSymbol()
-                    ? View.VISIBLE : View.GONE);
+            if (mContainerSymbol != null) {
+                mContainerSymbol.setVisibility(getPreferences().isShowListSymbol()
+                        ? View.VISIBLE : View.GONE);
+            }
         } else if (s.equals(getString(R.string.key_show_suggest_popup))) {
             EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
             if (editorFragment != null) {

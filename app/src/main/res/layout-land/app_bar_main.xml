@@ -13,33 +13,25 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
-    android:orientation="horizontal"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:baselineAligned="false"
+    android:weightSum="10">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+    <include
+        layout="@layout/main_left"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:weightSum="10">
+        android:layout_gravity="start"
+        android:layout_weight="3"
+        android:fitsSystemWindows="true" />
 
-        <include
-            layout="@layout/main_left"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:layout_weight="3"
-            android:fitsSystemWindows="true" />
-
-        <include
-            layout="@layout/content_main"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="7" />
-    </LinearLayout>
-
+    <include
+        layout="@layout/content_main"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="7" />
 </LinearLayout>
+

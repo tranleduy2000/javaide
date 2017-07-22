@@ -85,8 +85,7 @@ public class FolderStructureFragment extends Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mProjectFile = (ProjectFile)
-                getArguments().getSerializable(CompileManager.PROJECT_FILE);
+        mProjectFile = (ProjectFile) getArguments().getSerializable(CompileManager.PROJECT_FILE);
         mContainerView = view.findViewById(R.id.container);
         view.findViewById(R.id.img_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,11 +114,9 @@ public class FolderStructureFragment extends Fragment
                     mTreeView.restoreState(state);
                 }
             }
-        } else {
-            if (mTreeView != null) {
-                String state = mPref.getString("tree_state", "");
-                if (!state.isEmpty()) mTreeView.restoreState(state);
-            }
+        } else if (mTreeView != null) {
+            String state = mPref.getString("tree_state", "");
+            if (!state.isEmpty()) mTreeView.restoreState(state);
         }
     }
 

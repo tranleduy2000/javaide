@@ -627,7 +627,7 @@ public class MainActivity extends BaseEditorActivity implements
             if (mActionRun != null) mActionRun.setEnabled(false);
             if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
             hideKeyboard();
-            openDrawer(GravityCompat.START);
+            mDrawerLayout.openDrawer(GravityCompat.START);
             mMessagePresenter.clear();
             mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             mDiagnosticPresenter.clear();

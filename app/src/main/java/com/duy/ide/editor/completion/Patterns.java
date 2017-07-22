@@ -38,32 +38,14 @@ public class Patterns {
                     "package|private|protected|public|short|static|super|switch|synchronized|" +
                     "this|throw|throws|transient|try|void|volatile|while)\\b",
             Pattern.CASE_INSENSITIVE);
-    /**
-     * match builtin pascal function
-     */
-    public static final Pattern BUILTIN_FUNCTIONS = Pattern.compile(
-            "\\b(sin|cos|sqrt|length" +
-                    "|exp|tan|keyPressed|readKey|delay|random|randomize|inc|dec" +
-                    "|ceil|trunc|frac|floor|abs|round|sqr|pred|succ|ln|arctan" +
-                    "|odd|int|halt|odd)\\b", Pattern.CASE_INSENSITIVE);
+
+
+    public static final Pattern FILE_JAVA = Pattern.compile("\\w+\\.java");
+
     /**
      * match some spacial symbol
      */
     public static final Pattern SYMBOLS = Pattern.compile("[+\\-'*=<>/:)(\\]\\[;@\\^,.]");
-
-    public static final Pattern REPLACE_HIGHLIGHT = Pattern.compile("\"(.*?)\"");
-    public static final Pattern REPLACE_CURSOR = Pattern.compile("%\\w");
-    public static final Pattern VAR = Pattern.compile("\\b(var)\\b", Pattern.CASE_INSENSITIVE);
-    public static final Pattern TYPE = Pattern.compile("\\b(type)\\b", Pattern.CASE_INSENSITIVE);
-    public static final Pattern PROGRAM = Pattern.compile("\\b(program)[\\s](.*?);\\b", Pattern.CASE_INSENSITIVE);
-    public static final Pattern USES = Pattern.compile("\\b(uses)[\\s](.*?);\\b", Pattern.CASE_INSENSITIVE);
-    public static final Pattern CONST = Pattern.compile("\\b(const)\\b", Pattern.CASE_INSENSITIVE);
-    public static final Pattern OPEN_PATTERN
-            = Pattern.compile("(begin|then|else|do|repeat|of|" +
-                    "type|var|const|interface|implementation)",
-            Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-    public static final Pattern END_PATTERN
-            = Pattern.compile("\\b(end)\\b", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     /**
      * match number
      */
@@ -73,39 +55,5 @@ public class Patterns {
                     "(%[01]+)|" + //binary
                     "(&[0-7]+)|" +//octal
                     "([Ee][+-]?[\\d]+))\\b");
-
-    public static final Pattern HEX_COLOR = Pattern.compile("(#[0-9a-fA-F]{6})");
-
-    public static final Pattern RGB_FUNCTION = Pattern.compile(
-            "([Rr][Gg][Bb])" + //1
-                    "(\\()" +//2
-                    "(\\s?\\d+\\s?)" +//3
-                    "(,)" +//4
-                    "(\\s?\\d+\\s?)" +//5
-                    "(,)" +//6
-                    "(\\s?\\d+\\s?)" +//7
-                    "(\\))");
-
-    public static final Pattern ARGB_FUNCTION = Pattern.compile(
-            "([Aa][Rr][Gg][Bb])" +
-                    "(\\()" +
-                    "(\\s?\\d+\\s?)" +
-                    "(,)" +
-                    "(\\s?\\d+\\s?)" +
-                    "(,)" +
-                    "(\\s?\\d+\\s?)" +
-                    "(,)" +
-                    "(\\s?\\d+\\s?)" +
-                    "(\\))");
-
-    public static final Pattern TEXT_COLOR_FUNCTION = Pattern.compile("(textColor)" +
-            "(\\()" +
-            "([0-9]+)" +
-            "(\\))");
-
-    public static final Pattern TEXT_BACKGROUND_FUNCTION = Pattern.compile("(textColor)" +
-            "(\\()" +
-            "([0-9]+)" +
-            "(\\))");
 
 }

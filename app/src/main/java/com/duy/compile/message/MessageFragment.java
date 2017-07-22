@@ -3,21 +3,27 @@ package com.duy.compile.message;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.duy.ide.R;
+import com.duy.ide.editor.completion.Patterns;
+
+import java.util.regex.Matcher;
 
 /**
  * Created by duy on 19/07/2017.
  */
 
 public class MessageFragment extends android.support.v4.app.Fragment implements MessageContract.View {
-    private static final String KEY_COMPILE_MSG = "compile_msg";
     public static final String TAG = "MessageFragment";
-
+    private static final String KEY_COMPILE_MSG = "compile_msg";
     private TextView mCompileMsg;
     @Nullable
     private MessageContract.Presenter presenter;
@@ -62,7 +68,15 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
 
     @Override
     public void append(char[] chars, int start, int end) {
-        mCompileMsg.append(new String(chars), start, end);
+        CharSequence charSequence = new String(chars).subSequence(start, end);
+        SpannableString spannableString = new SpannableString(charSequence);
+        Matcher matcher = Patterns.FILE_JAVA.matcher(spannableString);
+        int color = ContextCompat.getColor(getContext(), R.color.dark_color_file_java);
+        while (matcher.find()) {
+            spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        mCompileMsg.append(spannableString);
     }
 
     @Override

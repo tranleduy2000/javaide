@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2008 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2008 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,93 +13,88 @@
      limitations under the License.
 -->
 
-<PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-            android:title="@string/screen_preferences">
+    <PreferenceCategory android:title="@string/screen_preferences">
 
         <ListPreference
-                android:key="statusbar"
-                android:defaultValue="@string/default_value_statusbar_preference"
-                android:title="@string/title_statusbar_preference"
-                android:summary="@string/summary_statusbar_preference"
-                android:entries="@array/entries_statusbar_preference"
-                android:entryValues="@array/entryvalues_statusbar_preference"
-                android:dialogTitle="@string/dialog_title_statusbar_preference" />
+            android:defaultValue="@string/default_value_statusbar_preference"
+            android:dialogTitle="@string/dialog_title_statusbar_preference"
+            android:entries="@array/entries_statusbar_preference"
+            android:entryValues="@array/entryvalues_statusbar_preference"
+            android:key="statusbar"
+            android:summary="@string/summary_statusbar_preference"
+            android:title="@string/title_statusbar_preference" />
 
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-            android:title="@string/text_preferences">
+    <PreferenceCategory android:title="@string/text_preferences">
 
         <ListPreference
-                android:key="fontsize"
-                android:defaultValue="@string/default_value_fontsize_preference"
-                android:title="@string/title_fontsize_preference"
-                android:summary="@string/summary_fontsize_preference"
-                android:entries="@array/entries_fontsize_preference"
-                android:entryValues="@array/entryvalues_fontsize_preference"
-                android:dialogTitle="@string/dialog_title_fontsize_preference" />
+            android:defaultValue="@string/default_value_fontsize_preference"
+            android:dialogTitle="@string/dialog_title_fontsize_preference"
+            android:entries="@array/entries_fontsize_preference"
+            android:entryValues="@array/entryvalues_fontsize_preference"
+            android:key="fontsize"
+            android:summary="@string/summary_fontsize_preference"
+            android:title="@string/title_fontsize_preference" />
 
         <ListPreference
-                android:key="color"
-                android:defaultValue="@string/default_value_color_preference"
-                android:title="@string/title_color_preference"
-                android:summary="@string/summary_color_preference"
-                android:entries="@array/entries_color_preference"
-                android:entryValues="@array/entryvalues_color_preference"
-                android:dialogTitle="@string/dialog_title_color_preference" />
+            android:defaultValue="@string/default_value_color_preference"
+            android:dialogTitle="@string/dialog_title_color_preference"
+            android:entries="@array/entries_color_preference"
+            android:entryValues="@array/entryvalues_color_preference"
+            android:key="color"
+            android:summary="@string/summary_color_preference"
+            android:title="@string/title_color_preference" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-            android:title="@string/keyboard_preferences">
+    <PreferenceCategory android:title="@string/keyboard_preferences">
 
         <ListPreference
-                android:key="controlkey"
-                android:defaultValue="@string/default_value_controlkey_preference"
-                android:title="@string/title_controlkey_preference"
-                android:summary="@string/summary_controlkey_preference"
-                android:entries="@array/entries_controlkey_preference"
-                android:entryValues="@array/entryvalues_controlkey_preference"
-                android:dialogTitle="@string/dialog_title_controlkey_preference" />
+            android:defaultValue="@string/default_value_controlkey_preference"
+            android:dialogTitle="@string/dialog_title_controlkey_preference"
+            android:entries="@array/entries_controlkey_preference"
+            android:entryValues="@array/entryvalues_controlkey_preference"
+            android:key="controlkey"
+            android:summary="@string/summary_controlkey_preference"
+            android:title="@string/title_controlkey_preference" />
 
         <ListPreference
-                android:key="fnkey"
-                android:defaultValue="@string/default_value_fnkey_preference"
-                android:title="@string/title_fnkey_preference"
-                android:summary="@string/summary_fnkey_preference"
-                android:entries="@array/entries_fnkey_preference"
-                android:entryValues="@array/entryvalues_fnkey_preference"
-                android:dialogTitle="@string/dialog_title_fnkey_preference" />
+            android:defaultValue="@string/default_value_fnkey_preference"
+            android:dialogTitle="@string/dialog_title_fnkey_preference"
+            android:entries="@array/entries_fnkey_preference"
+            android:entryValues="@array/entryvalues_fnkey_preference"
+            android:key="fnkey"
+            android:summary="@string/summary_fnkey_preference"
+            android:title="@string/title_fnkey_preference" />
 
         <ListPreference
-                android:key="ime"
-                android:defaultValue="@string/default_value_ime_preference"
-                android:title="@string/title_ime_preference"
-                android:summary="@string/summary_ime_preference"
-                android:entries="@array/entries_ime_preference"
-                android:entryValues="@array/entryvalues_ime_preference"
-                android:dialogTitle="@string/dialog_title_ime_preference" />
+            android:defaultValue="@string/default_value_ime_preference"
+            android:dialogTitle="@string/dialog_title_ime_preference"
+            android:entries="@array/entries_ime_preference"
+            android:entryValues="@array/entryvalues_ime_preference"
+            android:key="ime"
+            android:summary="@string/summary_ime_preference"
+            android:title="@string/title_ime_preference" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/shell_preferences">
+    <PreferenceCategory android:title="@string/shell_preferences">
 
-    <EditTextPreference
-            android:key="shell"
+        <EditTextPreference
             android:defaultValue="@string/default_value_shell_preference"
-            android:title="@string/title_shell_preference"
+            android:dialogTitle="@string/dialog_title_shell_preference"
+            android:key="shell"
             android:summary="@string/summary_shell_preference"
-            android:dialogTitle="@string/dialog_title_shell_preference" />
-    <EditTextPreference
-            android:key="initialcommand"
+            android:title="@string/title_shell_preference" />
+        <EditTextPreference
             android:defaultValue="@string/default_value_initialcommand_preference"
-            android:title="@string/title_initialcommand_preference"
+            android:dialogTitle="@string/dialog_title_initialcommand_preference"
+            android:key="initialcommand"
             android:summary="@string/summary_initialcommand_preference"
-            android:dialogTitle="@string/dialog_title_initialcommand_preference" />
+            android:title="@string/title_initialcommand_preference" />
     </PreferenceCategory>
 </PreferenceScreen>

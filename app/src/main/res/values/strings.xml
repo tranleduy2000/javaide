@@ -450,4 +450,6 @@
     <string name="project">Project</string>
     <string name="classpath_desc">Classpath is a parameter in the Java Virtual Machine or the Java compiler that specifies the location of user-defined classes and packages</string>
     <string name="expand_collapse">expand/collapse</string>
+    <string name="failed_msg">Compile failed, see error msg</string>
+    <string name="compile_success">Compile success</string>
 </resources>

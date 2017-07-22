@@ -95,6 +95,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected EditPresenter mPagePresenter;
     protected DiagnosticPresenter mDiagnosticPresenter;
     protected MessagePresenter mMessagePresenter;
+    protected ViewPager mBottomPage;
     Toolbar toolbar;
     AppBarLayout appBarLayout;
     DrawerLayout mDrawerLayout;
@@ -106,7 +107,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     private KeyBoardEventListener keyBoardListener;
     private MessageFragment mMessageFragment;
     private DiagnosticFragment mDiagnosticFragment;
-    private ViewPager mBottomPage;
 
     protected void onShowKeyboard() {
         mTabLayout.setVisibility(View.GONE);
@@ -151,7 +151,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         mMessagePresenter = new MessagePresenter(mMessageFragment);
 
         mDiagnosticFragment = DiagnosticFragment.newInstance();
-        mDiagnosticPresenter = new DiagnosticPresenter(mDiagnosticFragment, mPagePresenter);
+        mDiagnosticPresenter = new DiagnosticPresenter(this, mDiagnosticFragment, mPagePresenter);
 
         BottomPageAdapter bottomAdapter = new BottomPageAdapter(getSupportFragmentManager(),
                 mDiagnosticFragment, mMessageFragment);
@@ -544,6 +544,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    public void closeDrawer(int start) {
+        mDrawerLayout.closeDrawer(start);
     }
 
 

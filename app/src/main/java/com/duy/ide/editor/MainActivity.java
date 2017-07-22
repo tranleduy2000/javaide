@@ -47,6 +47,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.compile.external.CommandManager;
 import com.duy.compile.external.dex.JavaDexClassLoader;
 import com.duy.ide.MenuEditor;
@@ -75,7 +76,6 @@ import java.util.ArrayList;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
-import javax.tools.JavaFileObject;
 
 public class MainActivity extends BaseEditorActivity implements
         DrawerLayout.DrawerListener,
@@ -627,6 +627,7 @@ public class MainActivity extends BaseEditorActivity implements
             if (mActionRun != null) mActionRun.setEnabled(false);
             if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
             hideKeyboard();
+            openDrawer(GravityCompat.START);
             mMessagePresenter.clear();
             mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             mDiagnosticPresenter.clear();
@@ -654,13 +655,6 @@ public class MainActivity extends BaseEditorActivity implements
             DiagnosticListener listener = new DiagnosticListener() {
                 @Override
                 public void report(Diagnostic diagnostic) {
-                    Object source = diagnostic.getSource();
-                    if (source instanceof JavaFileObject) {
-                        String name = ((JavaFileObject) source).getName();
-                        System.out.println("name = " + name);
-                    }
-                    Log.w(TAG, "report: " + source + " " + diagnostic.getCode());
-                    Log.w(TAG, "report: " + diagnostic);
                     mDiagnostics.add(diagnostic);
                 }
             };
@@ -686,11 +680,19 @@ public class MainActivity extends BaseEditorActivity implements
             mDiagnosticPresenter.display(mDiagnostics);
 
             if (mActionRun != null) mActionRun.setEnabled(true);
-            if (mCompileProgress != null) mCompileProgress.setVisibility(View.GONE);
+            if (mCompileProgress != null) {
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCompileProgress.setVisibility(View.GONE);
+                    }
+                }, 500);
+            }
             if (result == null) {
-                Toast.makeText(mContext, "Compile failed, see error msg", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.failed_msg, Toast.LENGTH_SHORT).show();
+                mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
             } else {
-                Toast.makeText(mContext, "Compile success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.compile_success, Toast.LENGTH_SHORT).show();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

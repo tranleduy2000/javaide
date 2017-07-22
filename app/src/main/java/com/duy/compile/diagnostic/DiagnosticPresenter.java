@@ -1,10 +1,11 @@
 package com.duy.compile.diagnostic;
 
 import android.support.annotation.NonNull;
+import android.support.v4.view.GravityCompat;
 import android.util.Log;
 
 import com.duy.ide.EditPageContract;
-import com.duy.ide.editor.MainActivity;
+import com.duy.ide.editor.BaseEditorActivity;
 
 import java.util.List;
 
@@ -19,11 +20,13 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
     private static final String TAG = "DiagnosticPresenter";
     private DiagnosticContract.View view;
-    private MainActivity mainActivity;
+    private BaseEditorActivity mMainActivity;
     private EditPageContract.Presenter mPagePresenter;
 
-    public DiagnosticPresenter(@NonNull DiagnosticContract.View view,
+    public DiagnosticPresenter(BaseEditorActivity mainActivity,
+                               @NonNull DiagnosticContract.View view,
                                EditPageContract.Presenter pagePresenter) {
+        this.mMainActivity = mainActivity;
         this.view = view;
         this.mPagePresenter = pagePresenter;
         view.setPresenter(this);
@@ -32,6 +35,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     @Override
     public void click(Diagnostic diagnostic) {
         Log.d(TAG, "click() called with: diagnostic = [" + diagnostic + "]");
+        mMainActivity.closeDrawer(GravityCompat.START);
+
         Object source = diagnostic.getSource();
         if (source instanceof JavaFileObject) {
             String path = ((JavaFileObject) source).getName();

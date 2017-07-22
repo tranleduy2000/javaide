@@ -22,6 +22,7 @@ import javax.tools.Diagnostic;
  */
 
 public class DiagnosticFragment extends Fragment implements DiagnosticContract.View {
+    public static final int INDEX = 1;
     private RecyclerView mRecyclerView;
     private DiagnosticAdapter mAdapter;
     @Nullable
@@ -72,7 +73,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     }
 
     @Override
-    public void setPresenter(DiagnosticContract.Presenter presenter) {
+    public void setPresenter(@Nullable DiagnosticContract.Presenter presenter) {
         this.presenter = presenter;
     }
 }

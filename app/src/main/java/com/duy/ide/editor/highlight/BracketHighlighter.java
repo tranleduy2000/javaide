@@ -7,19 +7,12 @@ import android.widget.EditText;
 
 import com.duy.ide.editor.view.spans.BracketSpan;
 import com.duy.ide.themefont.themes.database.CodeTheme;
-import com.spartacusrex.spartacuside.helper.Arrays;
 
 /**
  * Created by Duy on 21-Jul-17.
  */
 
 public class BracketHighlighter {
-    private static final char[] BRACKET;
-
-    static {
-        BRACKET = new char[]{'{', '}', '[', ']', '(', ')'};
-        Arrays.sort(BRACKET);
-    }
 
     private EditText editText;
     private CodeTheme codeTheme;
@@ -41,17 +34,17 @@ public class BracketHighlighter {
             if (selEnd > -1 && selEnd < editText.length()) {
                 Editable text = editText.getText();
                 char chatAtCursor = text.charAt(selEnd);
-                boolean isBracket = Arrays.binarySearch(BRACKET, chatAtCursor) > 0;
-                if (isBracket && isOpen(chatAtCursor)) { //open
+                boolean bracket = isBracket(chatAtCursor);
+                if (bracket && isOpen(chatAtCursor)) { //open
                     findClose(chatAtCursor, selEnd);
-                } else if (isBracket) { //close
+                } else if (bracket) { //close
                     findOpen(chatAtCursor, selEnd);
                 } else {
                     char before = selEnd > 0 ? text.charAt(selEnd - 1) : 0;
-                    isBracket = Arrays.binarySearch(BRACKET, before) > 0;
-                    if (isBracket && isOpen(chatAtCursor)) { //open
+                    bracket = isBracket(before);
+                    if (bracket && isOpen(before)) { //open
                         findClose(before, selEnd - 1);
-                    } else if (isBracket) {
+                    } else if (bracket) {
                         findOpen(before, selEnd - 1);
                     }
                 }
@@ -59,6 +52,20 @@ public class BracketHighlighter {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private boolean isBracket(char chatAtCursor) {
+        switch (chatAtCursor) {
+            case '(':
+            case '{':
+            case '[':
+            case ']':
+            case '}':
+            case ')':
+                return true;
+            default:
+                return false;
         }
     }
 

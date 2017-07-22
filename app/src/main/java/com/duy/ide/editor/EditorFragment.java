@@ -265,6 +265,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     @Override
     public void undo() {
+        if (mCodeEditor == null) return;
         if (mCodeEditor.canUndo()) {
             mCodeEditor.undo();
         } else {
@@ -274,6 +275,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     @Override
     public void redo() {
+        if (mCodeEditor == null) return;
         if (mCodeEditor.canRedo()) {
             mCodeEditor.redo();
         } else {
@@ -283,23 +285,29 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     @Override
     public void paste() {
-        mCodeEditor.paste();
+        if (mCodeEditor != null) {
+            mCodeEditor.paste();
+        }
     }
 
     @Override
     public void copyAll() {
-        mCodeEditor.copyAll();
+        if (mCodeEditor != null) {
+            mCodeEditor.copyAll();
+        }
     }
 
-    @NonNull
+    @Nullable
     @Override
     public String getCode() {
-        return mCodeEditor.getCleanText();
+        return mCodeEditor != null ? mCodeEditor.getCleanText() : null;
     }
 
     @Override
     public void insert(@NonNull CharSequence text) {
-        mCodeEditor.insert(text);
+        if (mCodeEditor != null) {
+            mCodeEditor.insert(text);
+        }
     }
 
     public EditorView getEditor() {
@@ -307,8 +315,10 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     }
 
     public void refreshCodeEditor() {
-        mCodeEditor.updateFromSettings();
-        mCodeEditor.refresh();
+        if (mCodeEditor != null) {
+            mCodeEditor.updateFromSettings();
+            mCodeEditor.refresh();
+        }
     }
 
     public String getFilePath() {
@@ -337,20 +347,22 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         protected String doInBackground(String... params) {
             try {
                 String source = params[0];
+                if (source == null) return null;
                 source = source.replace("{", "{\n");
                 ASFormatter formatter = new ASFormatter();
                 Reader in = new BufferedReader(new StringReader(source));
                 formatter.setJavaStyle();
                 return FormatterHelper.format(in, formatter);
             } catch (Exception e) {
-                return null;
+                //format unexpected
             }
+            return null;
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            if (result != null) {
+            if (result != null && mCodeEditor != null) {
                 mCodeEditor.setTextHighlighted(result);
             }
             dismissDialog();

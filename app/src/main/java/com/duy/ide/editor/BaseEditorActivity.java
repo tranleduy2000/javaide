@@ -56,6 +56,7 @@ import com.duy.ide.adapters.BottomPageAdapter;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
+import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.view.SymbolListView;
 import com.duy.project.ClassFile;
 import com.duy.project.ProjectFile;
@@ -110,27 +111,15 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     protected void onShowKeyboard() {
         mTabLayout.setVisibility(View.GONE);
-        //hide panel
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mContainerOutput != null) {
-                    if (mContainerOutput.getPanelState() == PanelState.EXPANDED) {
-                        mContainerOutput.setPanelState(PanelState.COLLAPSED);
-                        mContainerOutput.setTouchEnabled(false);
-                        mContainerOutput.setEnabled(false);
-                    }
-                }
-            }
-        }, 100);
+        JavaPreferences preferences = getPreferences();
+        if (preferences.isShowListSymbol()) {
+            mContainerSymbol.setVisibility(View.VISIBLE);
+        }
     }
 
     protected void onHideKeyboard() {
         mTabLayout.setVisibility(View.VISIBLE);
-        if (mContainerOutput != null) {
-            mContainerOutput.setEnabled(true);
-            mContainerOutput.setTouchEnabled(true);
-        }
+        mContainerSymbol.setVisibility(View.GONE);
     }
 
     @Override
@@ -216,18 +205,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         mContainerSymbol = findViewById(R.id.container_symbol);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mContainerOutput = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-
-        View toggle = findViewById(R.id.img_toggle);
-        toggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mContainerOutput.getPanelState() == PanelState.EXPANDED) {
-                    mContainerOutput.setPanelState(PanelState.COLLAPSED);
-                } else if (mContainerOutput.getPanelState() == PanelState.COLLAPSED) {
-                    mContainerOutput.setPanelState(PanelState.EXPANDED);
-                }
-            }
-        });
     }
 
     public void setupToolbar() {

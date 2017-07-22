@@ -62,17 +62,6 @@
             android:orientation="horizontal">
 
             <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/img_toggle"
-                android:layout_width="@dimen/bottom_editor_height"
-                android:layout_height="@dimen/bottom_editor_height"
-                android:background="#651fff"
-                android:clickable="true"
-                android:contentDescription="@string/tab"
-                android:foreground="?attr/selectableItemBackground"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_more_vert_white_24dp" />
-
-            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/img_tab"
                 android:layout_width="@dimen/bottom_editor_height"
                 android:layout_height="@dimen/bottom_editor_height"

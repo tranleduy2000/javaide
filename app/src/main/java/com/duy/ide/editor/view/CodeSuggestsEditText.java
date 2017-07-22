@@ -296,11 +296,15 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText
         @Override
         protected void onPostExecute(ArrayList<Description> descriptions) {
             super.onPostExecute(descriptions);
-            if (isCancelled() || descriptions == null) {
+            if (isCancelled()) {
                 Log.d(TAG, "onPostExecute: canceled");
                 return;
             }
-            setSuggestData(descriptions);
+            if (descriptions == null) {
+                setSuggestData(new ArrayList<Description>());
+            } else {
+                setSuggestData(descriptions);
+            }
             Log.d(TAG, "onPostExecute() called with: infoItems = [" + descriptions + "]");
         }
     }

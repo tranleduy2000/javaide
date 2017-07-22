@@ -154,7 +154,7 @@ public class EditPresenter implements EditPageContract.Presenter {
 
     @Override
     public void removePage(String path) {
-
+        removePage(mPageAdapter.getPositionForTag(path));
     }
 
     @Override
@@ -180,12 +180,12 @@ public class EditPresenter implements EditPageContract.Presenter {
 
     @Override
     public boolean hasPage(String path) {
-        return false;
+        return mPageAdapter.getPositionForTag(path) > -1;
     }
 
     @Override
     public int getPagePosition(String path) {
-        return 0;
+        return mPageAdapter.getPositionForTag(path);
     }
 
     @Override

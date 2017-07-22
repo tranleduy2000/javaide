@@ -44,9 +44,10 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                 Log.d(TAG, "click: editor null");
                 return;
             }
-            long startPosition = diagnostic.getStartPosition();
-            long endPosition = diagnostic.getEndPosition();
+            int startPosition = (int) diagnostic.getStartPosition();
+            int endPosition = (int) diagnostic.getEndPosition();
             editor.highlightError(startPosition, endPosition);
+            editor.setCursorPosition(endPosition);
         } else {
             // TODO: 19/07/2017 implement other
         }

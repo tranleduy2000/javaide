@@ -234,7 +234,17 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     @Override
     public void highlightError(long startPosition, long endPosition) {
-        mCodeEditor.highlightError(startPosition, endPosition);
+        if (mCodeEditor != null) {
+            mCodeEditor.highlightError(startPosition, endPosition);
+        }
+    }
+
+    @Override
+    public void setCursorPosition(int endPosition) {
+        if (mCodeEditor != null) {
+            mCodeEditor.requestFocus();
+            mCodeEditor.setSelection(endPosition);
+        }
     }
 
     private void showDialog(String msg) {

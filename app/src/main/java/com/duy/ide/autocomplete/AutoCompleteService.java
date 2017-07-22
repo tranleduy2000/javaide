@@ -15,6 +15,7 @@ import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
 public class AutoCompleteService extends Service {
     private final IBinder mBinder = new ACBinder();
     private AutoCompleteProvider mAutoCompleteProvider;
+    @Nullable
     private OnAutoCompleteServiceLoadListener callback;
 
     @Nullable
@@ -41,12 +42,7 @@ public class AutoCompleteService extends Service {
         }).start();
     }
 
-    @Nullable
-    public AutoCompleteProvider getAutoCompleteProvider() {
-        return mAutoCompleteProvider;
-    }
-
-    public void setCallback(OnAutoCompleteServiceLoadListener callback) {
+    public void setCallback(@Nullable OnAutoCompleteServiceLoadListener callback) {
         this.callback = callback;
         if (mAutoCompleteProvider.isLoaded()) {
             if (callback != null) callback.onLoaded(mAutoCompleteProvider);

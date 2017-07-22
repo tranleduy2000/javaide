@@ -35,7 +35,7 @@
         android:id="@+id/code_editor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:dropDownAnchor="@+id/app_bar"
+        android:dropDownAnchor="@+id/toolbar"
         android:gravity="top|start"
         android:hint="@string/write_code_here"
         android:imeOptions="flagNoExtractUi"

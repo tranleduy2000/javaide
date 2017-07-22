@@ -57,7 +57,6 @@ import java.io.StringReader;
  */
 public class EditorFragment extends Fragment implements EditorListener, EditPageContract.View {
     private static final String TAG = "EditorFragment";
-    @Nullable
     private EditorView mCodeEditor;
     @Nullable
     private LockableScrollView mScrollView;
@@ -94,7 +93,6 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         FileManager fileManager = new FileManager(getContext());
         StringBuilder code = fileManager.fileToString(getArguments().getString(CompileManager.FILE_PATH));
         mCodeEditor.setTextHighlighted(code);
-
         try {
             mCodeEditor.setEditorControl((EditorControl) getActivity());
         } catch (Exception ignored) {
@@ -331,7 +329,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     }
 
     public void setAutoCompleteProvider(AutoCompleteProvider autoCompleteProvider) {
-        if (mCodeEditor != null){
+        if (mCodeEditor != null) {
             mCodeEditor.setAutoCompleteProvider(autoCompleteProvider);
         }
     }

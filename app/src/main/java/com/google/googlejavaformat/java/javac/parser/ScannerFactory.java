@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 1999, 2010, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
  *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
-package com.sun.tools.javac.parser;
+package com.google.googlejavaformat.java.javac.parser;
 
 import com.sun.tools.javac.code.Source;
 import com.sun.tools.javac.util.Context;
@@ -47,11 +47,10 @@ public class ScannerFactory {
      */
     public static final Context.Key<ScannerFactory> scannerFactoryKey =
             new Context.Key<ScannerFactory>();
-    public final Log log;
-    public final Names names;
-
-    public final Source source;
-    public final Keywords keywords;
+    final Log log;
+    final Names names;
+    final Source source;
+    final Tokens tokens;
 
     /**
      * Create a new scanner factory.
@@ -61,7 +60,7 @@ public class ScannerFactory {
         this.log = Log.instance(context);
         this.names = Names.instance(context);
         this.source = Source.instance(context);
-        this.keywords = Keywords.instance(context);
+        this.tokens = Tokens.instance(context);
     }
 
     /**
@@ -78,7 +77,7 @@ public class ScannerFactory {
         if (input instanceof CharBuffer) {
             CharBuffer buf = (CharBuffer) input;
             if (keepDocComments)
-                return new DocCommentScanner(this, buf);
+                return new Scanner(this, new JavadocTokenizer(this, buf));
             else
                 return new Scanner(this, buf);
         } else {
@@ -89,7 +88,7 @@ public class ScannerFactory {
 
     public Scanner newScanner(char[] input, int inputLength, boolean keepDocComments) {
         if (keepDocComments)
-            return new DocCommentScanner(this, input, inputLength);
+            return new Scanner(this, new JavadocTokenizer(this, input, inputLength));
         else
             return new Scanner(this, input, inputLength);
     }

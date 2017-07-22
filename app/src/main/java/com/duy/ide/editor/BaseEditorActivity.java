@@ -259,7 +259,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected void onPause() {
         super.onPause();
         mPagePresenter.pause();
-        ProjectManager.saveProject(this, mProjectFile);
+        if (mProjectFile != null) {
+            ProjectManager.saveProject(this, mProjectFile);
+        }
     }
 
     @Override

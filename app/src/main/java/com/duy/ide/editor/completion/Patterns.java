@@ -37,7 +37,8 @@ public class Patterns {
                     "continue|default|do|double|else|enum|extends|final|finally|float|" +
                     "for|goto|if|implements|import|instanceof|int|interface|long|native|new|" +
                     "package|private|protected|public|short|static|super|switch|synchronized|" +
-                    "this|throw|throws|transient|try|void|volatile|while)\\b",
+                    "this|throw|throws|transient|try|void|volatile|while|" +
+                    "null)\\b",
             Pattern.CASE_INSENSITIVE);
 
 

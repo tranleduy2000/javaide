@@ -23,11 +23,10 @@
  * questions.
  */
 
-package com.sun.tools.javac.parser;
+package com.google.googlejavaformat.java.javac.parser;
 
 import com.sun.tools.javac.api.Formattable;
 import com.sun.tools.javac.api.Messages;
-import com.sun.tools.javac.parser.Tokens.Token.Tag;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Filter;
 import com.sun.tools.javac.util.List;
@@ -116,36 +115,36 @@ public class Tokens {
     public enum TokenKind implements Formattable, Filter<TokenKind> {
         EOF(),
         ERROR(),
-        IDENTIFIER(Tag.NAMED),
+        IDENTIFIER(Token.Tag.NAMED),
         ABSTRACT("abstract"),
-        ASSERT("assert", Tag.NAMED),
-        BOOLEAN("boolean", Tag.NAMED),
+        ASSERT("assert", Token.Tag.NAMED),
+        BOOLEAN("boolean", Token.Tag.NAMED),
         BREAK("break"),
-        BYTE("byte", Tag.NAMED),
+        BYTE("byte", Token.Tag.NAMED),
         CASE("case"),
         CATCH("catch"),
-        CHAR("char", Tag.NAMED),
+        CHAR("char", Token.Tag.NAMED),
         CLASS("class"),
         CONST("const"),
         CONTINUE("continue"),
         DEFAULT("default"),
         DO("do"),
-        DOUBLE("double", Tag.NAMED),
+        DOUBLE("double", Token.Tag.NAMED),
         ELSE("else"),
-        ENUM("enum", Tag.NAMED),
+        ENUM("enum", Token.Tag.NAMED),
         EXTENDS("extends"),
         FINAL("final"),
         FINALLY("finally"),
-        FLOAT("float", Tag.NAMED),
+        FLOAT("float", Token.Tag.NAMED),
         FOR("for"),
         GOTO("goto"),
         IF("if"),
         IMPLEMENTS("implements"),
         IMPORT("import"),
         INSTANCEOF("instanceof"),
-        INT("int", Tag.NAMED),
+        INT("int", Token.Tag.NAMED),
         INTERFACE("interface"),
-        LONG("long", Tag.NAMED),
+        LONG("long", Token.Tag.NAMED),
         NATIVE("native"),
         NEW("new"),
         PACKAGE("package"),
@@ -153,30 +152,30 @@ public class Tokens {
         PROTECTED("protected"),
         PUBLIC("public"),
         RETURN("return"),
-        SHORT("short", Tag.NAMED),
+        SHORT("short", Token.Tag.NAMED),
         STATIC("static"),
         STRICTFP("strictfp"),
-        SUPER("super", Tag.NAMED),
+        SUPER("super", Token.Tag.NAMED),
         SWITCH("switch"),
         SYNCHRONIZED("synchronized"),
-        THIS("this", Tag.NAMED),
+        THIS("this", Token.Tag.NAMED),
         THROW("throw"),
         THROWS("throws"),
         TRANSIENT("transient"),
         TRY("try"),
-        VOID("void", Tag.NAMED),
+        VOID("void", Token.Tag.NAMED),
         VOLATILE("volatile"),
         WHILE("while"),
-        INTLITERAL(Tag.NUMERIC),
-        LONGLITERAL(Tag.NUMERIC),
-        FLOATLITERAL(Tag.NUMERIC),
-        DOUBLELITERAL(Tag.NUMERIC),
-        CHARLITERAL(Tag.NUMERIC),
-        STRINGLITERAL(Tag.STRING),
-        TRUE("true", Tag.NAMED),
-        FALSE("false", Tag.NAMED),
-        NULL("null", Tag.NAMED),
-        UNDERSCORE("_", Tag.NAMED),
+        INTLITERAL(Token.Tag.NUMERIC),
+        LONGLITERAL(Token.Tag.NUMERIC),
+        FLOATLITERAL(Token.Tag.NUMERIC),
+        DOUBLELITERAL(Token.Tag.NUMERIC),
+        CHARLITERAL(Token.Tag.NUMERIC),
+        STRINGLITERAL(Token.Tag.STRING),
+        TRUE("true", Token.Tag.NAMED),
+        FALSE("false", Token.Tag.NAMED),
+        NULL("null", Token.Tag.NAMED),
+        UNDERSCORE("_", Token.Tag.NAMED),
         ARROW("->"),
         COLCOL("::"),
         LPAREN("("),
@@ -230,21 +229,21 @@ public class Tokens {
         CUSTOM;
 
         public final String name;
-        public final Tag tag;
+        public final Token.Tag tag;
 
         TokenKind() {
-            this(null, Tag.DEFAULT);
+            this(null, Token.Tag.DEFAULT);
         }
 
         TokenKind(String name) {
-            this(name, Tag.DEFAULT);
+            this(name, Token.Tag.DEFAULT);
         }
 
-        TokenKind(Tag tag) {
+        TokenKind(Token.Tag tag) {
             this(null, tag);
         }
 
-        TokenKind(String name, Tag tag) {
+        TokenKind(String name, Token.Tag tag) {
             this.name = name;
             this.tag = tag;
         }

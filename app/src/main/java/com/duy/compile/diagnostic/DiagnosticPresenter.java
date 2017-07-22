@@ -38,7 +38,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         mMainActivity.closeDrawer(GravityCompat.START);
 
         Object source = diagnostic.getSource();
-        if (source instanceof JavaFileObject) {
+        if (source instanceof JavaFileObject && diagnostic.getKind() == Diagnostic.Kind.ERROR) {
             String path = ((JavaFileObject) source).getName();
             int i = mPagePresenter.gotoPage(path);
             if (i == -1) {

@@ -22,7 +22,7 @@ import android.content.Intent;
 import com.duy.ide.debug.activities.DebugActivity;
 import com.duy.ide.editor.MainActivity;
 import com.duy.compile.external.CommandManager;
-import com.duy.project_file.ProjectFile;
+import com.duy.project.ProjectFile;
 import com.duy.run.activities.TerminalActivity;
 
 import java.io.File;

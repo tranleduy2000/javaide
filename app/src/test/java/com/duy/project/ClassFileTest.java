@@ -1,4 +1,4 @@
-package com.duy.project_file;
+package com.duy.project;
 
 import junit.framework.TestCase;
 

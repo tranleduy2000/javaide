@@ -32,7 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.duy.project_file.activities.FileManagerActivity" />
+        <activity android:name="com.duy.project.activities.FileManagerActivity" />
 
         <activity
             android:name="com.spartacusrex.spartacuside.Start"

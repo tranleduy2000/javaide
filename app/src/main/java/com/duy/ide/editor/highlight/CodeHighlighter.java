@@ -16,15 +16,16 @@
 
 package com.duy.ide.editor.highlight;
 
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 
 import com.duy.ide.editor.view.HighlightEditor;
-import com.duy.ide.editor.view.spans.CustomUnderlineSpan;
 import com.duy.ide.themefont.themes.database.CodeTheme;
 
 import java.util.ArrayList;
@@ -100,7 +101,7 @@ public class CodeHighlighter implements Highlighter {
 
     private void highlightError(Editable allText) {
         if (startError >= 0 && endError >= startError && endError <= allText.length()) {
-            allText.setSpan(new CustomUnderlineSpan(codeTheme.getErrorColor(), startError, endError),
+            allText.setSpan(new ForegroundColorSpan(codeTheme.getErrorColor()),
                     startError, endError, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
@@ -164,6 +165,10 @@ public class CodeHighlighter implements Highlighter {
                     start + m.start(),
                     start + m.end(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            allText.setSpan(new StyleSpan(Typeface.BOLD),
+                    start + m.start(),
+                    start + m.end(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         for (Matcher m = SYMBOLS.matcher(textToHighlight); m.find(); ) {
@@ -172,8 +177,6 @@ public class CodeHighlighter implements Highlighter {
                     start + m.end(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-
-
     }
 
     public void setErrorRange(long startPosition, long endPosition) {

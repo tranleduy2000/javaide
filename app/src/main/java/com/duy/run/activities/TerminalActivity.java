@@ -47,7 +47,7 @@ import android.widget.Toast;
 import com.duy.ide.R;
 import com.duy.ide.code.CompileManager;
 import com.duy.compile.external.CommandManager;
-import com.duy.project_file.ProjectFile;
+import com.duy.project.ProjectFile;
 import com.duy.run.view.EmulatorView;
 import com.duy.run.view.TermKeyListener;
 import com.google.android.gms.ads.AdRequest;

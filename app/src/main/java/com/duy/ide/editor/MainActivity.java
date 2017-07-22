@@ -60,10 +60,10 @@ import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
-import com.duy.project_file.ProjectFile;
-import com.duy.project_file.ProjectManager;
-import com.duy.project_file.dialog.DialogSelectDirectory;
-import com.duy.project_file.utils.ClassUtil;
+import com.duy.project.ProjectFile;
+import com.duy.project.ProjectManager;
+import com.duy.project.dialog.DialogSelectDirectory;
+import com.duy.project.utils.ClassUtil;
 import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 

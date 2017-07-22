@@ -1,4 +1,4 @@
-package com.duy.project_file.utils;
+package com.duy.project.utils;
 
 import com.duy.ide.file.FileManager;
 

@@ -1,4 +1,4 @@
-package com.duy.project_file.holder;
+package com.duy.project.holder;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.duy.ide.R;
 import com.duy.ide.themefont.fonts.FontManager;
-import com.duy.project_file.ProjectFileContract;
-import com.duy.project_file.utils.ProjectFileUtil;
+import com.duy.project.ProjectFileContract;
+import com.duy.project.utils.ProjectFileUtil;
 import com.unnamed.b.atv.model.TreeNode;
 
 import java.io.File;

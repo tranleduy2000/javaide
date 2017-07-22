@@ -1,4 +1,4 @@
-package com.duy.project_file.fragments;
+package com.duy.project.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,9 +15,9 @@ import android.view.ViewGroup;
 
 import com.duy.ide.R;
 import com.duy.ide.code.CompileManager;
-import com.duy.project_file.ProjectFile;
-import com.duy.project_file.ProjectFileContract;
-import com.duy.project_file.holder.FolderHolder;
+import com.duy.project.ProjectFile;
+import com.duy.project.ProjectFileContract;
+import com.duy.project.holder.FolderHolder;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 

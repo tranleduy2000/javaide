@@ -71,6 +71,7 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Er
                 if (listener != null) listener.onClick(diagnostic);
             }
         });
+        String code = diagnostic.getCode();
     }
 
     @Override

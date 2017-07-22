@@ -111,8 +111,6 @@ public class HighlightEditor extends CodeSuggestsEditText
     private EditTextChangeListener mChangeListener;
     private int numberWidth = 0;
     private CodeHighlighter mCodeHighlighter;
-    private BracketHighlighter mBracketHighlighter;
-
     private final Runnable colorRunnable_duringEditing =
             new Runnable() {
                 @Override
@@ -127,6 +125,7 @@ public class HighlightEditor extends CodeSuggestsEditText
                     highlightText();
                 }
             };
+    private BracketHighlighter mBracketHighlighter;
 
     public HighlightEditor(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -314,7 +313,7 @@ public class HighlightEditor extends CodeSuggestsEditText
             }
             if (showLines && isGoodLineArray[i]) {
                 int realLine = realLines[i];
-                canvas.drawText("" + (realLine) + 1, mDrawingRect.left, baseline, mPaintNumbers);
+                canvas.drawText("" + (realLine + 1), mDrawingRect.left, baseline, mPaintNumbers);
             }
         }
         if (showLines) {
@@ -822,6 +821,14 @@ public class HighlightEditor extends CodeSuggestsEditText
         refresh();
     }
 
+    @Override
+    protected void onSelectionChanged(int selStart, int selEnd) {
+        super.onSelectionChanged(selStart, selEnd);
+        if (mBracketHighlighter != null) {
+            mBracketHighlighter.onSelectChange(selStart, selEnd);
+        }
+    }
+
     /**
      * Class that listens to changes in the text.
      */
@@ -837,6 +844,7 @@ public class HighlightEditor extends CodeSuggestsEditText
                                   int start, int before,
                                   int count) {
             isFinding = false;
+            mCodeHighlighter.setErrorRange(-1, -1);
         }
 
         public void afterTextChanged(Editable s) {
@@ -846,15 +854,6 @@ public class HighlightEditor extends CodeSuggestsEditText
                 lineError = null;
             }
 
-        }
-    }
-
-
-    @Override
-    protected void onSelectionChanged(int selStart, int selEnd) {
-        super.onSelectionChanged(selStart, selEnd);
-        if (mBracketHighlighter != null) {
-            mBracketHighlighter.onSelectChange(selStart, selEnd);
         }
     }
 }

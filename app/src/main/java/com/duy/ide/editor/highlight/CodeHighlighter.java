@@ -35,7 +35,6 @@ import java.util.regex.Matcher;
 
 import static com.duy.ide.editor.completion.Patterns.KEYWORDS;
 import static com.duy.ide.editor.completion.Patterns.NUMBERS;
-import static com.duy.ide.editor.completion.Patterns.SYMBOLS;
 
 /**
  * Created by Duy on 18-Jun-17.
@@ -170,13 +169,13 @@ public class CodeHighlighter implements Highlighter {
                     start + m.end(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-
-        for (Matcher m = SYMBOLS.matcher(textToHighlight); m.find(); ) {
-            allText.setSpan(new ForegroundColorSpan(codeTheme.getOptColor()),
-                    start + m.start(),
-                    start + m.end(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
+//
+//        for (Matcher m = SYMBOLS.matcher(textToHighlight); m.find(); ) {
+//            allText.setSpan(new ForegroundColorSpan(codeTheme.getOptColor()),
+//                    start + m.start(),
+//                    start + m.end(),
+//                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        }
     }
 
     public void setErrorRange(long startPosition, long endPosition) {

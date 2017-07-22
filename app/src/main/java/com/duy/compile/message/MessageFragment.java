@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
         super.onViewCreated(view, savedInstanceState);
         mCompileMsg = view.findViewById(R.id.txt_message);
         mCompileMsg.setTypeface(Typeface.MONOSPACE);
+        mCompileMsg.setAutoLinkMask(Linkify.ALL);
         if (savedInstanceState != null) {
             mCompileMsg.setText(savedInstanceState.getString(KEY_COMPILE_MSG));
         }

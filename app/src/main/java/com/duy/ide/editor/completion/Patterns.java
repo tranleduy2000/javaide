@@ -16,6 +16,8 @@
 
 package com.duy.ide.editor.completion;
 
+import com.duy.ide.autocomplete.autocomplete.PatternFactory;
+
 import java.util.regex.Pattern;
 
 /**
@@ -26,7 +28,6 @@ import java.util.regex.Pattern;
 public class Patterns {
 
     public static final Pattern LINE = Pattern.compile(".*\\n");
-
 
     /**
      * match reserved keyword
@@ -40,7 +41,7 @@ public class Patterns {
             Pattern.CASE_INSENSITIVE);
 
 
-    public static final Pattern FILE_JAVA = Pattern.compile("\\w+\\.java");
+    public static final Pattern FILE_JAVA = Pattern.compile(PatternFactory.IDENTIFIER_STR + "\\.java");
 
     /**
      * match some spacial symbol

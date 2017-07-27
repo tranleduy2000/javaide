@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.duy.ide.R;
-import com.duy.ide.code.CompileManager;
+import com.duy.compile.CompileManager;
 import com.duy.project.ProjectFile;
 import com.duy.project.ProjectFileContract;
 import com.duy.project.holder.FolderHolder;

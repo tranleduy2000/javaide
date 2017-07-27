@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.duy.ide.activities.AbstractAppCompatActivity;
-import com.duy.ide.code.CompileManager;
+import com.duy.compile.CompileManager;
 
 import java.io.File;
 import java.io.FileOutputStream;

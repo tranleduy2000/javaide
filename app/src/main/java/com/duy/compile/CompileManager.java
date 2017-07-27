@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package com.duy.ide.code;
+package com.duy.compile;
 
 import android.app.Activity;
 import android.content.Intent;
 
+import com.duy.compile.external.CommandManager;
+import com.duy.ide.autocomplete.util.JavaUtil;
 import com.duy.ide.debug.activities.DebugActivity;
 import com.duy.ide.editor.MainActivity;
-import com.duy.compile.external.CommandManager;
+import com.duy.project.ClassFile;
 import com.duy.project.ProjectFile;
+import com.duy.project.utils.ClassUtil;
 import com.duy.run.activities.TerminalActivity;
 
 import java.io.File;
@@ -100,5 +103,39 @@ public class CompileManager {
         intent.putExtra(PROJECT_FILE, projectFile);
         intent.putExtra(DEX_FILE, dex);
         mActivity.startActivity(intent);
+    }
+
+    public void runFile(ProjectFile projectFile, String filePath, ProcessCallback callback) {
+        try {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                callback.onFailed("File not found");
+                return;
+            }
+            if (file.isDirectory()) {
+                callback.onFailed("Not a file");
+                return;
+
+            }
+            boolean canRun = ClassUtil.hasMainFunction(file);
+            if (!canRun) {
+                callback.onFailed("Can not find main function");
+                return;
+            }
+            ProjectFile newProject = projectFile.clone();
+            String className = JavaUtil.getClassName(projectFile.getRootDir(), filePath);
+            if (className == null) {
+                callback.onFailed("Class \"" + filePath + "\"" + "invalid");
+                return;
+            }
+            newProject.setMainClass(new ClassFile(className));
+            execute(newProject);
+        } catch (Exception e) {
+            //file exception
+        }
+    }
+
+    public interface ProcessCallback {
+        void onFailed(String s);
     }
 }

@@ -133,6 +133,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         if (savedInstanceState != null) {
             this.mProjectFile = (ProjectFile) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
         } else {

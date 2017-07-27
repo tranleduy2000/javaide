@@ -48,4 +48,6 @@ public interface EditorControl {
     void copyAll();
 
     void selectThemeFont();
+
+    void runFile(String tag);
 }

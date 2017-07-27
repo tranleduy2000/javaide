@@ -29,7 +29,7 @@ import com.commonsware.cwac.pager.SimplePageDescriptor;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.ide.run.ExecuteActivity;
-import com.duy.ide.code.CompileManager;
+import com.duy.compile.CompileManager;
 import com.duy.ide.code_sample.adapters.CodePagerAdapter;
 import com.duy.ide.code_sample.adapters.CodeSampleAdapter;
 import com.duy.ide.code_sample.fragments.FragmentCodeSample;

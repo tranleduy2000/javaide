@@ -25,7 +25,7 @@ import android.support.annotation.NonNull;
 
 import com.duy.ide.R;
 import com.duy.ide.activities.ActivitySplashScreen;
-import com.duy.ide.code.CompileManager;
+import com.duy.compile.CompileManager;
 import com.duy.ide.setting.JavaPreferences;
 
 import org.apache.commons.io.FileUtils;

@@ -45,7 +45,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.code.CompileManager;
+import com.duy.compile.CompileManager;
 import com.duy.compile.external.CommandManager;
 import com.duy.project.ProjectFile;
 import com.duy.run.view.EmulatorView;

@@ -1,6 +1,5 @@
 package com.duy.ide;
 
-import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -13,6 +12,7 @@ import android.widget.Toast;
 
 import com.commonsware.cwac.pager.SimplePageDescriptor;
 import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
+import com.duy.ide.editor.BaseEditorActivity;
 import com.duy.ide.editor.EditorFragment;
 import com.duy.ide.editor.EditorPagerAdapter;
 import com.duy.ide.file.FileManager;
@@ -32,19 +32,19 @@ public class PagePresenter implements EditPageContract.Presenter {
     private TabLayout mTabLayout;
     private JavaPreferences mPreferences;
     private FileManager mFileManager;
-    private Context mContext;
+    private BaseEditorActivity mContext;
     private Handler mHandler = new Handler();
     private AutoCompleteProvider autoCompleteProvider;
 
-    public PagePresenter(Context context, ViewPager mViewPager,
+    public PagePresenter(BaseEditorActivity context, ViewPager mViewPager,
                          EditorPagerAdapter mPageAdapter, TabLayout tabLayout,
                          FileManager fileManager) {
         this.mViewPager = mViewPager;
         this.mPageAdapter = mPageAdapter;
         this.mTabLayout = tabLayout;
-        mPreferences = new JavaPreferences(context);
-        mFileManager = fileManager;
-        mContext = context;
+        this.mPreferences = new JavaPreferences(context);
+        this.mFileManager = fileManager;
+        this.mContext = context;
     }
 
     @Override
@@ -149,11 +149,23 @@ public class PagePresenter implements EditPageContract.Presenter {
                         if (i == mViewPager.getCurrentItem()) {
                             tab.select();
                         }
+                        final EditorFragment fm = mPageAdapter.getExistingFragment(position);
+                        if (fm != null && fm.getTag().endsWith(".java")) {
+                            View run = view.findViewById(R.id.image_run_file);
+                            run.setVisibility(View.VISIBLE);
+                            run.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mContext.runFile(fm.getTag());
+                                }
+                            });
+                        }
                     }
                 }
             }
         }, 200);
     }
+
 
     @Override
     public void removePage(String path) {

@@ -206,4 +206,9 @@ public class ProjectFile implements Serializable, Cloneable {
             return packageName;
         }
     }
+
+    @Override
+    public ProjectFile clone() throws CloneNotSupportedException {
+        return new ProjectFile(mainClass != null ? mainClass.getName() : null, packageName, projectName);
+    }
 }

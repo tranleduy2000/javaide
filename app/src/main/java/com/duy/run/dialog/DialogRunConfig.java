@@ -18,7 +18,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.code.CompileManager;
+import com.duy.compile.CompileManager;
 import com.duy.ide.file.FileManager;
 import com.duy.project.ClassFile;
 import com.duy.project.ProjectFile;

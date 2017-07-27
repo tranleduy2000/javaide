@@ -50,6 +50,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.duy.compile.CompileManager;
 import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.compile.external.CommandManager;
 import com.duy.ide.MenuEditor;
@@ -57,7 +58,7 @@ import com.duy.ide.R;
 import com.duy.ide.autocomplete.AutoCompleteService;
 import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
 import com.duy.ide.autocomplete.model.Description;
-import com.duy.ide.code.CompileManager;
+import com.duy.ide.autocomplete.util.JavaUtil;
 import com.duy.ide.code_sample.activities.DocumentActivity;
 import com.duy.ide.code_sample.activities.SampleActivity;
 import com.duy.ide.editor.view.AutoIndentEditText;
@@ -66,6 +67,7 @@ import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
+import com.duy.project.ClassFile;
 import com.duy.project.ProjectFile;
 import com.duy.project.ProjectManager;
 import com.duy.project.dialog.DialogSelectDirectory;
@@ -599,6 +601,23 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     @Override
+    public void runFile(String filePath) {
+        if (mProjectFile == null) return;
+        boolean canRun = ClassUtil.hasMainFunction(new File(filePath));
+        if (!canRun) {
+            Toast.makeText(this, ("Can not find main function"), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String className = JavaUtil.getClassName(mProjectFile.getRootDir(), filePath);
+        if (className == null) {
+            Toast.makeText(this, ("Class \"" + filePath + "\"" + "invalid"), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mProjectFile.setMainClass(new ClassFile(className));
+        runProject();
+    }
+
+    @Override
     public void onDrawerStateChanged(int newState) {
 
     }
@@ -694,6 +713,7 @@ public class MainActivity extends BaseEditorActivity implements
     private class CompileTask extends AsyncTask<ProjectFile, Object, File> {
         private Context mContext;
         private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
+        private ProjectFile mProjectFile;
 
         CompileTask(Context context) {
             this.mContext = context;
@@ -714,6 +734,7 @@ public class MainActivity extends BaseEditorActivity implements
         @Override
         protected File doInBackground(ProjectFile... params) {
             if (params[0] == null) return null;
+            this.mProjectFile = params[0];
             PrintWriter printWriter = new PrintWriter(new Writer() {
                 @Override
                 public void write(@NonNull char[] chars, int i, int i1) throws IOException {
@@ -869,6 +890,5 @@ public class MainActivity extends BaseEditorActivity implements
             }
         }
     }
-
 
 }

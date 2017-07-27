@@ -3,8 +3,10 @@ package com.duy.ide.autocomplete.util;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.io.File;
+
 /**
- *Created by Duy on 20-Jul-17.
+ * Created by Duy on 20-Jul-17.
  */
 
 public class JavaUtil {
@@ -39,4 +41,15 @@ public class JavaUtil {
         return name != null && name.matches("[A-Za-z_][A-Za-z0-9_]*");
     }
 
+    @Nullable
+    public static String getClassName(String rootDir, String filePath) {
+        if (filePath.startsWith(rootDir)) {
+            //hello/src/main/java
+            //hello ->
+            String filename = filePath.substring(filePath.indexOf(rootDir) + rootDir.length() + 1);
+            return filename.replace(File.separator, ".");
+        } else {
+            return null;
+        }
+    }
 }

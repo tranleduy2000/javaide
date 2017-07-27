@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;/*
+package sample;
+/*
   Simple For loop Example
   This Java Example shows how to use for loop to iterate in Java program.
 */

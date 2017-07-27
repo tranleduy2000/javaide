@@ -25,14 +25,20 @@
             </intent-filter>
         </activity>
         <!--<activity-->
-            <!--android:name=".TestAutoCompleteActivity"-->
-            <!--android:windowSoftInputMode="adjustResize">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+        <!--android:name=".TestAutoCompleteActivity"-->
+        <!--android:windowSoftInputMode="adjustResize">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN" />-->
+        <!--<category android:name="android.intent.category.LAUNCHER" />-->
+        <!--</intent-filter>-->
         <!--</activity>-->
         <activity android:name="com.duy.project.activities.FileManagerActivity" />
+        <activity android:name=".code_sample.activities.SampleActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name="com.duy.ide.editor.MainActivity"

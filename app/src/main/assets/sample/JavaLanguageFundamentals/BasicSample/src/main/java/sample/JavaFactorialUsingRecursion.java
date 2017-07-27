@@ -1,4 +1,5 @@
-package sample.Java/*
+package sample;
+/**
         Java Factorial Using Recursion Example
         This Java example shows how to generate factorial of a given number
         using recursive function.

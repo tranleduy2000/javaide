@@ -1,4 +1,4 @@
-package sample.Java
+package sample;
 
 /*
         Calculate Circle Area using Java Example

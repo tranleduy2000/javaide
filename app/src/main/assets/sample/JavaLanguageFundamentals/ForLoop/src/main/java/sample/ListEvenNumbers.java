@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;/*
+package sample;
+/*
         List Even Numbers Java Example
         This List Even Numbers Java Example shows how to find and list even
         numbers between 1 and any given number.

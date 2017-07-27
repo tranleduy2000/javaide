@@ -1,4 +1,5 @@
-package sample.Java/*
+package sample;
+/**
   Java break statement with label example.
   This example shows how to use java break statement to terminate the labeled loop.
   The following example uses break to terminate the labeled loop while searching two

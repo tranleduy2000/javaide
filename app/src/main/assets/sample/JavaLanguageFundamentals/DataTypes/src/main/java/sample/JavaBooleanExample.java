@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.DataTypes.src.main.java.sample;/*
+package sample;
+/*
         Java boolean Example
         This Java Example shows how to declare and use Java primitive boolean variable
         inside a java class.

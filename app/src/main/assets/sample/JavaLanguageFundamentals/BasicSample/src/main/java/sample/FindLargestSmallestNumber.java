@@ -1,4 +1,4 @@
-package sample.Java
+package sample;
 
 /*
   Find Largest and Smallest Number in an Array Example

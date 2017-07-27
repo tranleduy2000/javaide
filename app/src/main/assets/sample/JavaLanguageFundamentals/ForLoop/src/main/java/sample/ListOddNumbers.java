@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;/*
+package sample;
+/*
         List Odd Numbers Java Example
         This List Odd Numbers Java Example shows how to find and list odd
         numbers between 1 and any given number.

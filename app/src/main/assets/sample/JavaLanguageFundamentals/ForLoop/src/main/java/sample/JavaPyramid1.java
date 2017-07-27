@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;/*
+package sample;
+/*
         Java Pyramid 1 Example
         This Java Pyramid example shows how to generate pyramid or triangle like
         given below using for loop.

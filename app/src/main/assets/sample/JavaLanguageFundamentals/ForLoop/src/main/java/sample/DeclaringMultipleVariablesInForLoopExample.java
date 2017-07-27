@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;/*
+package sample;
+/*
   Declare multiple variables in for loop Example
   This Java Example shows how to declare multiple variables in Java For loop using
   declaration block.

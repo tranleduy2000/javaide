@@ -453,4 +453,6 @@
     <string name="failed_msg">Compile failed, see error msg</string>
     <string name="compile_success">Compile success</string>
     <string name="build_success">Build success</string>
+    <string name="sample_code">Sample code</string>
+    <string name="learn">Learn</string>
 </resources>

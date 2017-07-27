@@ -16,25 +16,33 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item android:title="@string/learn">
+        <menu>
+            <item
+                android:id="@+id/action_sample"
+                android:icon="@drawable/ic_code_white_24dp"
+                android:title="@string/sample_code" />
+        </menu>
+    </item>
 
     <item android:title="@string/setting">
         <menu>
             <item
-                android:visible="false"
                 android:id="@+id/action_select_theme"
                 android:icon="@drawable/ic_color_lens_white_24dp"
-                android:title="@string/theme_font"/>
+                android:title="@string/theme_font"
+                android:visible="false" />
 
             <item
                 android:id="@+id/action_setting"
                 android:enabled="true"
                 android:icon="@drawable/ic_settings_white_24dp"
-                android:title="@string/setting_editor"/>
+                android:title="@string/setting_editor" />
             <item
                 android:id="@+id/action_setting_console"
                 android:enabled="true"
                 android:icon="@drawable/ic_settings_white_24dp"
-                android:title="@string/setting_console"/>
+                android:title="@string/setting_console" />
         </menu>
     </item>
     <item android:title="@string/console">
@@ -55,12 +63,12 @@
                 android:id="@+id/action_donate"
                 android:icon="@drawable/ic_donate_white"
                 android:title="@string/donate"
-                android:visible="false"/>
+                android:visible="false" />
 
             <item
                 android:id="@+id/action_report_bug"
                 android:icon="@drawable/ic_bug_report_white_24dp"
-                android:title="@string/report_bug"/>
+                android:title="@string/report_bug" />
 
             <item
                 android:id="@+id/action_install"

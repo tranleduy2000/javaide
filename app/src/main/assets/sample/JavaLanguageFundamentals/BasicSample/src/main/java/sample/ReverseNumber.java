@@ -1,4 +1,5 @@
-package sample.Java/*
+package sample;
+/**
   Reverse Number using Java
   This Java Reverse Number Example shows how to reverse a given number.
 */

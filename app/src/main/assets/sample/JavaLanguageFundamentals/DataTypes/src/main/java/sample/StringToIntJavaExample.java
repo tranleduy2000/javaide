@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.DataTypes.src.main.java.sample;
+package sample;
+
 
 /*
         int to String Example

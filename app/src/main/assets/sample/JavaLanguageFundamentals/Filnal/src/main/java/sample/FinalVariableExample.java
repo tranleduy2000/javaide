@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.Filnal.src.main.java.sample;/*
+package sample;
+/*
         Java Final variable example
         This Java Example shows how to declare and use final variable in
         a java class.

@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;/*
+package sample;
+/*
         Prime Numbers Java Example
         This Prime Numbers Java example shows how to generate prime numbers
         between 1 and given number using for loop.

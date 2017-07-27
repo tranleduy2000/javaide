@@ -1,4 +1,5 @@
-package sample.Java/*
+package sample;
+/**
   Java continue statement example.
   This example shows how to use java continue statement to skip the iteration of the
   loop.

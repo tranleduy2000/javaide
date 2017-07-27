@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.DoWhileLoop.src.main.java.sample;/*
+package sample;
+/*
   Do While loop Example
   This Java Example shows how to use do while loop to iterate in Java program.
 */

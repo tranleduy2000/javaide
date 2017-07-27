@@ -1,4 +1,5 @@
-package sample.Java/*
+package sample;
+/**
         Calculate Rectangle Area using Java Example
         This Calculate Rectangle Area using Java Example shows how to calculate
         area of Rectangle using it's length and width.

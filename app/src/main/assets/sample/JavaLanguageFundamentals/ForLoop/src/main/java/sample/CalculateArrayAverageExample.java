@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;
+package sample;
+
 
 /*
         Calculate Average value of Array elements using Java Example

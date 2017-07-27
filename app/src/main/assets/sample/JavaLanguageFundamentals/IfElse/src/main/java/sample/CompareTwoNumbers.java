@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.IfElse.src.main.java.sample;/*
+package sample;
+/*
         Compare Two Numbers Java Example
         This Compare Two Numbers Java Example shows how to compare two numbers
         using if else if statements.

@@ -1,4 +1,5 @@
-package sample.Java/*
+package sample;
+/**
 Java Class example.
 This Java class example describes how class is defined and being used
 in Java language.

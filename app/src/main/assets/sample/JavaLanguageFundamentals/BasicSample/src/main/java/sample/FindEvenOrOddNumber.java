@@ -1,4 +1,5 @@
-package sample.Java/*
+package sample;
+/**
   Even Odd Number Example
   This Java Even Odd Number Example shows how to check if the given
   number is even or odd.

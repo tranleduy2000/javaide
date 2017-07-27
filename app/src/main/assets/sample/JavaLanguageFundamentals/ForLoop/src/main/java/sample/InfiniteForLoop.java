@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;/*
+package sample;
+/*
   Infinite For loop Example
   This Java Example shows how to create a for loop that runs infinite times
   in Java program. It happens when the loop condition is always evaluated as true.

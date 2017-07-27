@@ -59,6 +59,7 @@ import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.code.CompileManager;
 import com.duy.ide.code_sample.activities.DocumentActivity;
+import com.duy.ide.code_sample.activities.SampleActivity;
 import com.duy.ide.editor.view.AutoIndentEditText;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.FileManager;
@@ -88,6 +89,8 @@ public class MainActivity extends BaseEditorActivity implements
     public static final int ACTION_FILE_SELECT_CODE = 1012;
     public static final int ACTION_PICK_MEDIA_URL = 1013;
     public static final int ACTION_CREATE_SHORTCUT = 1014;
+    public static final int REQUEST_CODE_SAMPLE = 1015;
+
     private static final String TAG = "MainActivity";
     private CompileManager mCompileManager;
     private MenuEditor mMenuEditor;
@@ -541,6 +544,20 @@ public class MainActivity extends BaseEditorActivity implements
             case ACTION_CREATE_SHORTCUT:
                 data.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
                 getApplicationContext().sendBroadcast(data);
+                break;
+            case REQUEST_CODE_SAMPLE:
+                if (resultCode == RESULT_OK) {
+                    final ProjectFile projectFile = (ProjectFile)
+                            data.getSerializableExtra(SampleActivity.PROJECT_FILE);
+                    if (projectFile != null) {
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                onProjectCreated(projectFile);
+                            }
+                        }, 100);
+                    }
+                }
                 break;
         }
     }

@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;/*
+package sample;
+/*
         Generate Pyramid For a Given Number Example
         This Java example shows how to generate a pyramid of numbers for given
         number using for loop example.

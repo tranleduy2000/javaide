@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;
+package sample;
+
 
 /*
         Java Pyramid 4 Example

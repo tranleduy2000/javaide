@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.DataTypes.src.main.java.sample;/*
+package sample;
+/*
         Java long Example
         This Java Example shows how to declare and use Java primitive long variable
         inside a java class.

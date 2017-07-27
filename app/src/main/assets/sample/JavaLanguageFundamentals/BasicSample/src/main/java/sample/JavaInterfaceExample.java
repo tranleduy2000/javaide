@@ -1,13 +1,15 @@
-package sample.Java/*
-Java Interface example.
-This Java Interface example describes how interface is defined and
-being used in Java language.
- 
-Syntax of defining java interface is,
-<modifier> interface <interface-name>{
-  //members and methods()
-}
-*/
+package sample;
+
+/**
+ * Java Interface example.
+ * This Java Interface example describes how interface is defined and
+ * being used in Java language.
+ * <p>
+ * Syntax of defining java interface is,
+ * <modifier> interface <interface-name>{
+ * //members and methods()
+ * }
+ */
 
 //declare an interface
 interface IntExample {
@@ -20,7 +22,7 @@ interface IntExample {
 
     public void sayHello();
 }
-}
+
 /*
 Classes are extended while interfaces are implemented.
 To implement an interface use implements keyword.

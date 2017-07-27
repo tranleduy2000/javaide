@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.DataTypes.src.main.java.sample;/*
+package sample;
+/*
         Java float Example
         This Java Example shows how to declare and use Java primitive float variable
         inside a java class.

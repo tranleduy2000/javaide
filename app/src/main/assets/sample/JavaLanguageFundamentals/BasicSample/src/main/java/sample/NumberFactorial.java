@@ -1,4 +1,5 @@
-package sample.Java/*
+package sample;
+/**
   Java Factorial Example
   This Java Factorial Example shows how to calculate factorial of
   a given number using Java.

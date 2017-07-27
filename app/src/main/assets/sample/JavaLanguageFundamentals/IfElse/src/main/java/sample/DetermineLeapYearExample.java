@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.IfElse.src.main.java.sample;/*
+package sample;
+/*
         Determine If Year Is Leap Year Java Example
         This Determine If Year Is Leap Year Java Example shows how to
         determine whether the given year is leap year or not.

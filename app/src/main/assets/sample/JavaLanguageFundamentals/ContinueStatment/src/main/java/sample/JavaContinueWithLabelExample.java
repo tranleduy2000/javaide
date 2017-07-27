@@ -1,4 +1,5 @@
-package sample.Java/*
+package sample;
+/**
   Java continue statement with label example.
   This example shows how to use java continue statement to skip to next iteration
   of the labeled loop.

@@ -1,4 +1,4 @@
-package sample.Java
+package sample;
 
 /*
   Java break statement example.

@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;/*
+package sample;
+/*
         Read Number from Console and Check if it is a Palindrome Number
         This Java example shows how to input the number from console and
         check if the number is a palindrome number or not.

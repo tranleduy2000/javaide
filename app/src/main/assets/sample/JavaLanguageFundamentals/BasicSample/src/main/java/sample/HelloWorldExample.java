@@ -1,4 +1,5 @@
-package sample.Java/*
+package sample;
+/**
 Java Hello World example.
 */
 

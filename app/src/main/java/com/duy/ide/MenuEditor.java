@@ -24,6 +24,7 @@ import android.support.v4.view.GravityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.duy.ide.code_sample.activities.SampleActivity;
 import com.duy.ide.editor.MainActivity;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.setting.SettingsActivity;
@@ -188,6 +189,10 @@ public class MenuEditor {
                 break;
             case R.id.action_build_jar:
                 activity.buildJar();
+                break;
+            case R.id.action_sample:
+                activity.startActivityForResult(new Intent(activity, SampleActivity.class),
+                        activity.REQUEST_CODE_SAMPLE);
                 break;
         }
         return true;

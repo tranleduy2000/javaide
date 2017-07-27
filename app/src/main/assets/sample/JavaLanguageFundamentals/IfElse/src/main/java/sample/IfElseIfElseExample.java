@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.IfElse.src.main.java.sample;/*
+package sample;
+/*
   If Else-If statement Example
   This Java Example shows how to use if else-if statement in Java program.
 */

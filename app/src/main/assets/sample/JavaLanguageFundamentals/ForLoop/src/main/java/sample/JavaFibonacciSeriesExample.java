@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;/*
+package sample;
+/*
         Fibonacci Series Java Example
         This Fibonacci Series Java Example shows how to create and print
         Fibonacci Series using Java.

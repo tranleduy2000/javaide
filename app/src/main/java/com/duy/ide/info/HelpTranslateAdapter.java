@@ -56,7 +56,7 @@ public class HelpTranslateAdapter extends RecyclerView.Adapter<HelpTranslateAdap
         holder.bindContent(listData.get(position));
 //        holder.root.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onClick(View v) {
+//            public void onCategoryClick(View v) {
 //                Toast.makeText(context, listData.indexOf(position).toString(), Toast.LENGTH_SHORT).show();
 //            }
 //        });

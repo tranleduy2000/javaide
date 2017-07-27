@@ -1,4 +1,5 @@
-package sample.Java/*
+package sample;
+/**
         Calculate Circle Perimeter using Java Example
         This Calculate Circle Perimeter using Java Example shows how to calculate
         Perimeter of circle using it's radius.

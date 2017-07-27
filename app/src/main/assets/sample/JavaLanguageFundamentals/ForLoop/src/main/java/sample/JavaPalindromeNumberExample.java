@@ -1,4 +1,5 @@
-package sample.JavaLanguageFundamentals.ForLoop.src.main.java.sample;/*
+package sample;
+/*
         Java Palindrome Number Example
         This Java Palindrome Number Example shows how to find if the given
         number is palindrome number or not.

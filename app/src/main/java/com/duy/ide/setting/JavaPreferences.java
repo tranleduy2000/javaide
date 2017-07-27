@@ -350,4 +350,9 @@ public class JavaPreferences {
         String version = getString("system_version");
         return version.isEmpty() ? "Unknown" : version;
     }
+
+
+    public int getFormatType() {
+        return getInt("format_type", 0);
+    }
 }

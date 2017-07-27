@@ -94,7 +94,7 @@ public class FolderStructureFragment extends Fragment
             }
         });
 
-        refresh();
+        display(mProjectFile, true);
         view.findViewById(R.id.img_expand_all).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

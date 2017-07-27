@@ -38,6 +38,7 @@ import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
 import com.duy.compile.CompileManager;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.FileManager;
+import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.view.LockableScrollView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.googlejavaformat.java.Formatter;
@@ -223,7 +224,9 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     @Override
     public void formatCode() {
-        new TaskFormatCode().execute(getCode());
+        JavaPreferences javaPreferences = new JavaPreferences(getContext());
+        int formatType = javaPreferences.getFormatType();
+        new TaskFormatCode(formatType).execute(getCode());
     }
 
     @Override
@@ -332,6 +335,12 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     private class TaskFormatCode extends AsyncTask<String, Void, String> {
         private Exception error;
+        private int formatType;
+
+        public TaskFormatCode(int formatType) {
+
+            this.formatType = formatType;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -346,7 +355,8 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
                 if (src == null) return null;
 
                 JavaFormatterOptions.Builder builder = JavaFormatterOptions.builder();
-                builder.style(JavaFormatterOptions.Style.AOSP);
+                builder.style(formatType == 0 ? JavaFormatterOptions.Style.GOOGLE
+                        : JavaFormatterOptions.Style.AOSP);
                 return new Formatter(builder.build()).formatSource(src);
             } catch (Exception e) {
                 //format unexpected

@@ -1,9 +1,11 @@
 package com.duy.ide.code_sample.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
@@ -49,22 +51,37 @@ public class SampleActivity extends AbstractAppCompatActivity implements
 
 
     @Override
-    public void onProjectClick(String projectName) {
-        File out = new File(FileManager.EXTERNAL_DIR, projectName);
-        int count = 1;
-        while (out.exists()) {
-            out = new File(FileManager.EXTERNAL_DIR, projectName + count);
-            count++;
-        }
-        boolean success = SampleUtil.extractTo(this, out, category, projectName);
-        if (success) {
-            ProjectFile pf = ProjectManager.createProjectIfNeed(out);
-            Intent intent = getIntent();
-            intent.putExtra(PROJECT_FILE, pf);
-            setResult(RESULT_OK, intent);
-            finish();
-        } else {
-            Toast.makeText(this, "Can not copy project!", Toast.LENGTH_SHORT).show();
-        }
+    public void onProjectClick(final String projectName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Warning");
+        builder.setMessage("This action will be create new project");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                File out = new File(FileManager.EXTERNAL_DIR, projectName);
+                int count = 1;
+                while (out.exists()) {
+                    out = new File(FileManager.EXTERNAL_DIR, projectName + count);
+                    count++;
+                }
+                boolean success = SampleUtil.extractTo(SampleActivity.this, out, category, projectName);
+                if (success) {
+                    ProjectFile pf = ProjectManager.createProjectIfNeed(out);
+                    Intent intent = getIntent();
+                    intent.putExtra(PROJECT_FILE, pf);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else {
+                    Toast.makeText(SampleActivity.this, "Can not copy project!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
     }
 }

@@ -135,21 +135,8 @@ public class MainActivity extends BaseEditorActivity implements
         initView(savedInstanceState);
 
         startAutoCompleteService();
-
-        tryToAccessFile();
     }
 
-    private void tryToAccessFile() {
-        Log.d(TAG, "tryToAccessFile() called");
-
-        File file = new File(getFilesDir(), "system/bin/aapt");
-        if (file.exists()) {
-            Log.d(TAG, "tryToAccessFile: " + file.canWrite() + file.canRead() + file.canExecute());
-            file.setExecutable(true, true);
-            file.setReadable(true, true);
-            file.setWritable(true, true);
-        }
-    }
 
 
     private void startAutoCompleteService() {

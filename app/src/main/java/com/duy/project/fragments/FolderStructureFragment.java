@@ -181,9 +181,10 @@ public class FolderStructureFragment extends Fragment
 
 
     @Override
-    public void display(ProjectFile projectFile) {
+    public void display(ProjectFile projectFile, boolean expand) {
         this.mProjectFile = projectFile;
         refresh();
+        if (expand && mTreeView != null) mTreeView.expandAll();
     }
 
     @Override

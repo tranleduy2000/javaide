@@ -13,8 +13,8 @@ public class ProjectFilePresenter implements ProjectFileContract.Presenter {
     }
 
     @Override
-    public void show(ProjectFile projectFile) {
-        view.display(projectFile);
+    public void show(ProjectFile projectFile, boolean expand) {
+        view.display(projectFile, expand);
     }
 
     @Override

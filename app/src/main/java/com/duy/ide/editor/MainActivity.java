@@ -847,6 +847,8 @@ public class MainActivity extends BaseEditorActivity implements
             } else {
                 Toast.makeText(mContext, R.string.build_success + " " + result.getPath(),
                         Toast.LENGTH_SHORT).show();
+                mFilePresenter.refresh(mProjectFile);
+                mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         }
     }

@@ -76,6 +76,7 @@ public class CommandManager {
             File buildDir = new File(projectPath, "build" + File.separator + "classes");
             File jarFolder = new File(buildDir, rootPkg);
             File outJar = new File(projectPath, "bin" + File.separator + projectName + ".jar");
+            outJar.createNewFile();
             String[] args = new String[]{"-v", outJar.getPath() /*out file*/, jarFolder.getPath()};
             //now create normal jar file
             Jar.main(args);
@@ -86,6 +87,7 @@ public class CommandManager {
         } catch (Exception e) {
             e.printStackTrace();
             //compile time error
+            e.printStackTrace(out);
         }
         return null;
     }
@@ -127,6 +129,7 @@ public class CommandManager {
             return null;
         } catch (Throwable e) {
             e.printStackTrace();
+            e.printStackTrace(out);
         }
         return null;
     }

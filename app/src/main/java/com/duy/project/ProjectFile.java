@@ -201,7 +201,7 @@ public class ProjectFile implements Serializable, Cloneable {
 
     public String getRootPackage() {
         if (packageName.contains(".")) {
-            return packageName.substring(0, packageName.indexOf(".") - 1);
+            return packageName.substring(0, packageName.indexOf("."));
         } else {
             return packageName;
         }

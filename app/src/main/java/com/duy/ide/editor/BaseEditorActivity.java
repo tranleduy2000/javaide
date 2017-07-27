@@ -443,7 +443,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         }
 
         //show file structure of project
-        mFilePresenter.show(projectFile);
+        mFilePresenter.show(projectFile, true);
 
 
         ClassFile mainClass = projectFile.getMainClass();
@@ -454,7 +454,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     @Override
     public void onClassCreated(File classF) {
-        mFilePresenter.show(mProjectFile);
+        mFilePresenter.show(mProjectFile, true);
         addNewPageEditor(classF, true);
     }
 

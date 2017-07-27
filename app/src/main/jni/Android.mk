@@ -18,15 +18,37 @@
 # use by our example of how to bundle a shared library with an APK.
 
 LOCAL_PATH:= $(call my-dir)
+
+#include $(CLEAR_VARS)
+#LOCAL_MODULE := android_aapt
+#LOCAL_SRC_FILES := $(LOCAL_PATH)/tools/aapt/AaptAssets.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/AaptConfig.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/AaptUtil.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/AaptXml.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/ApkBuilder.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/Command.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/CrunchCache.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/FileFinder.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/Images.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/Package.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/pseudolocalize.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/Resource.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/ResourceFilter.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/ResourceIdCache.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/ResourceTable.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/SourcePos.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/StringPool.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/WorkQueue.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/XMLNode.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/ZipEntry.cpp \
+#                   $(LOCAL_PATH)/tools/aapt/ZipFile.cpp
+#LOCAL_LDLIBS := -ldl -llog
+#include $(BUILD_SHARED_LIBRARY)
+
+
 include $(CLEAR_VARS)
-
-# This is the target being built.
 LOCAL_MODULE:= libjackpal-androidterm2
-
-# All of the source files that we will compile.
-LOCAL_SRC_FILES:= \
-  termExec.cpp
-
+LOCAL_SRC_FILES:=  termExec.cpp
 LOCAL_LDLIBS := -ldl -llog
-
 include $(BUILD_SHARED_LIBRARY)
+

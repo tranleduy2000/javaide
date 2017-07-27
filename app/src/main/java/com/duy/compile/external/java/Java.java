@@ -14,6 +14,7 @@ public class Java {
     }
 
     public static void main(String[] zArgs) {
+        System.setOut(System.out);
         try {
             String dexfolder;
             String jarfile = "";

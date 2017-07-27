@@ -110,7 +110,7 @@ public final class SdkConstants {
 
     /** aapt executable (with extension for the current OS)  */
     public final static String FN_AAPT = (CURRENT_PLATFORM == PLATFORM_WINDOWS) ?
-            "aapt.exe" : "aapt"; //$NON-NLS-1$ //$NON-NLS-2$
+            "aapt.exe" : "tools/aapt"; //$NON-NLS-1$ //$NON-NLS-2$
 
     /** aidl executable (with extension for the current OS)  */
     public final static String FN_AIDL = (CURRENT_PLATFORM == PLATFORM_WINDOWS) ?

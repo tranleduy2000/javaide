@@ -130,7 +130,22 @@ public class MainActivity extends BaseEditorActivity implements
         initView(savedInstanceState);
 
         startAutoCompleteService();
+
+        tryToAccessFile();
     }
+
+    private void tryToAccessFile() {
+        Log.d(TAG, "tryToAccessFile() called");
+
+        File file = new File(getFilesDir(), "system/bin/aapt");
+        if (file.exists()) {
+            Log.d(TAG, "tryToAccessFile: " + file.canWrite() + file.canRead() + file.canExecute());
+            file.setExecutable(true, true);
+            file.setReadable(true, true);
+            file.setWritable(true, true);
+        }
+    }
+
 
     private void startAutoCompleteService() {
         Intent intent = new Intent(this, AutoCompleteService.class);
@@ -291,12 +306,7 @@ public class MainActivity extends BaseEditorActivity implements
     @Override
     public void buildJar() {
         if (mProjectFile != null) {
-            if (mProjectFile.getMainClass() == null || !mProjectFile.getMainClass().exist(mProjectFile)
-                    || mProjectFile.getPackageName() == null || mProjectFile.getPackageName().isEmpty()) {
-                showDialogRunConfig();
-                return;
-            }
-            mCompileManager.buildJar(mProjectFile);
+            new BuildJarAchieveTask(this).execute(mProjectFile);
         } else {
             Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
         }
@@ -678,7 +688,7 @@ public class MainActivity extends BaseEditorActivity implements
             if (mActionRun != null) mActionRun.setEnabled(false);
             if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
             hideKeyboard();
-
+            openDrawer(GravityCompat.START);
             mMessagePresenter.clear();
             mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             mDiagnosticPresenter.clear();
@@ -751,6 +761,92 @@ public class MainActivity extends BaseEditorActivity implements
                         mCompileManager.executeDex(mProjectFile, result);
                     }
                 }, 200);
+            }
+        }
+    }
+
+    private class BuildJarAchieveTask extends AsyncTask<ProjectFile, Object, File> {
+        private Context mContext;
+        private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
+
+        BuildJarAchieveTask(Context context) {
+            this.mContext = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (mActionRun != null) mActionRun.setEnabled(false);
+            if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
+            hideKeyboard();
+            openDrawer(GravityCompat.START);
+            mMessagePresenter.clear();
+            mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            mDiagnosticPresenter.clear();
+        }
+
+        @Override
+        protected File doInBackground(ProjectFile... params) {
+            if (params[0] == null) return null;
+            PrintWriter printWriter = new PrintWriter(new Writer() {
+                @Override
+                public void write(@NonNull char[] chars, int i, int i1) throws IOException {
+                    publishProgress(chars, i, i1);
+                }
+
+                @Override
+                public void flush() throws IOException {
+
+                }
+
+                @Override
+                public void close() throws IOException {
+
+                }
+            });
+            DiagnosticListener listener = new DiagnosticListener() {
+                @Override
+                public void report(Diagnostic diagnostic) {
+                    mDiagnostics.add(diagnostic);
+                }
+            };
+            return CommandManager.buildJarAchieve(mProjectFile, printWriter, listener);
+        }
+
+        @Override
+        protected void onProgressUpdate(Object... values) {
+            super.onProgressUpdate(values);
+            try {
+                char[] chars = (char[]) values[0];
+                int start = (int) values[1];
+                int end = (int) values[2];
+                mMessagePresenter.append(chars, start, end);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final File result) {
+            super.onPostExecute(result);
+            mDiagnosticPresenter.display(mDiagnostics);
+
+            if (mActionRun != null) mActionRun.setEnabled(true);
+            if (mCompileProgress != null) {
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCompileProgress.setVisibility(View.GONE);
+                    }
+                }, 500);
+            }
+            if (result == null) {
+                Toast.makeText(mContext, R.string.failed_msg, Toast.LENGTH_SHORT).show();
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
+            } else {
+                Toast.makeText(mContext, R.string.build_success + " " + result.getPath(),
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }

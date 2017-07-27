@@ -452,4 +452,5 @@
     <string name="expand_collapse">expand/collapse</string>
     <string name="failed_msg">Compile failed, see error msg</string>
     <string name="compile_success">Compile success</string>
+    <string name="build_success">Build success</string>
 </resources>

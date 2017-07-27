@@ -179,7 +179,6 @@ public class ProjectFile implements Serializable, Cloneable {
     }
 
 
-
     public void restore(@Nullable JSONObject json) throws JSONException {
         if (json == null) return;
         if (json.has("main_class_mame")) {
@@ -198,5 +197,13 @@ public class ProjectFile implements Serializable, Cloneable {
                 ", projectName='" + projectName + '\'' +
                 ", mainClass='" + mainClass + '\'' +
                 '}';
+    }
+
+    public String getRootPackage() {
+        if (packageName.contains(".")) {
+            return packageName.substring(0, packageName.indexOf(".") - 1);
+        } else {
+            return packageName;
+        }
     }
 }

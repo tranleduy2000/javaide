@@ -146,7 +146,7 @@ public class TerminalActivity extends Activity {
                         }
                         break;
                     case CommandManager.Action.BUILD_JAR:
-                        CommandManager.buildJarFile(this, mTermSession, projectFile);
+                        CommandManager.buildJarFileByBash(this, mTermSession, projectFile);
                         break;
                 }
             }

@@ -5,9 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.duy.ide.file.FileManager;
 import com.duy.compile.external.dex.Dex;
+import com.duy.compile.external.java.Jar;
 import com.duy.compile.external.java.Javac;
+import com.duy.ide.file.FileManager;
 import com.duy.project.ClassFile;
 import com.duy.project.ProjectFile;
 import com.google.common.base.Verify;
@@ -32,7 +33,7 @@ public class CommandManager {
     private static final String LIBRARY_BUILDER_FILE = "builder/library_builder.sh";
     private static final String JAVA_BUILDER_FILE = "builder/java_builder.sh";
 
-    public static void buildJarFile(Context context, TermSession termSession, ProjectFile pf) {
+    public static void buildJarFileByBash(Context context, TermSession termSession, ProjectFile pf) {
         Log.d(TAG, "compileAndRun() called with: filePath = [" + pf + "]");
         File home = context.getFilesDir();
         try {
@@ -61,6 +62,35 @@ public class CommandManager {
     }
 
     @Nullable
+    public static File buildJarAchieve(ProjectFile pf, PrintWriter out, DiagnosticListener listener) {
+        try {
+            File compile = compile(pf, out, listener);
+            if (compile == null) {
+                return null; //can not compile
+            }
+            String projectPath = pf.getProjectDir();
+            String projectName = pf.getProjectName();
+            String rootPkg = pf.getMainClass().getRootPackage();
+
+            //classes
+            File buildDir = new File(projectPath, "build" + File.separator + "classes");
+            File jarFolder = new File(buildDir, rootPkg);
+            File outJar = new File(projectPath, "bin" + File.separator + projectName + ".jar");
+            String[] args = new String[]{"-v", outJar.getPath() /*out file*/, jarFolder.getPath()};
+            //now create normal jar file
+            Jar.main(args);
+            //ok, create dex file
+            convertToDexFormat(projectPath, projectName, buildDir, rootPkg);
+
+            return outJar;
+        } catch (Exception e) {
+            e.printStackTrace();
+            //compile time error
+        }
+        return null;
+    }
+
+    @Nullable
     public static File compile(ProjectFile pf, PrintWriter out) {
         return compile(pf, out, null);
     }
@@ -70,7 +100,7 @@ public class CommandManager {
         try {
             String projectPath = pf.getProjectDir();
             String projectName = pf.getProjectName();
-            String rootPkg = pf.getMainClass().getRootPackage();
+            String rootPkg = pf.getRootPackage();
 
 
             //create build director, delete all file if exists

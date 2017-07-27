@@ -19,13 +19,14 @@ alt="IMAGE ALT TEXT HERE" width="240"/></a>
 
 1. Java compiler JDK 1.7 &#10004;
 2. Java editor &#10004;
-3. Auto complete code
+3. Auto complete code &#10004; (But not working perfect)
 4. Java debugger (jdb).
 5. Run java file, class file &#10004;
 6. Build java library &#10004;
 7. Build Android app.
 8. Support VCS
 9. Decompile class, jar
+10. Java code formatter (Google java code formatter) &#10004;
 
 ## Contribute
 I would absolutely love every possible kind of contributions. If you

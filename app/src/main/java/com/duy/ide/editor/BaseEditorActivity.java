@@ -28,6 +28,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -144,21 +145,23 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         setupFileView(savedInstanceState);
         setupEditor();
 
-        mMessageFragment = MessageFragment.newInstance();
-        mMessagePresenter = new MessagePresenter(mMessageFragment);
-
-        mDiagnosticFragment = DiagnosticFragment.newInstance();
+        FragmentManager fm = getSupportFragmentManager();
+        if (savedInstanceState != null) {
+            mMessageFragment = (MessageFragment) fm.findFragmentByTag(MessageFragment.TAG);
+            mDiagnosticFragment = (DiagnosticFragment) fm.findFragmentByTag(DiagnosticFragment.TAG);
+        }
+        if (mMessageFragment == null) mMessageFragment = MessageFragment.newInstance();
+        mMessagePresenter = new MessagePresenter(this, mMessageFragment);
+        if (mDiagnosticFragment == null) mDiagnosticFragment = DiagnosticFragment.newInstance();
         mDiagnosticPresenter = new DiagnosticPresenter(this, mDiagnosticFragment, mPagePresenter);
 
-        BottomPageAdapter bottomAdapter = new BottomPageAdapter(getSupportFragmentManager(),
-                mDiagnosticFragment, mMessageFragment);
+        BottomPageAdapter bottomAdapter = new BottomPageAdapter(fm, mDiagnosticFragment, mMessageFragment);
 
         mBottomPage = (ViewPager) findViewById(R.id.bottom_page);
         mBottomPage.setAdapter(bottomAdapter);
         mBottomPage.setOffscreenPageLimit(BottomPageAdapter.COUNT);
         TabLayout bottomTab = (TabLayout) findViewById(R.id.bottom_tab);
         bottomTab.setupWithViewPager(mBottomPage);
-
 
         //create project if need
         createProjectIfNeed();
@@ -432,7 +435,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
 
     @Override
-    public void onProjectCreated(ProjectFile projectFile) {
+    public void onProjectCreated(@NonNull ProjectFile projectFile) {
         Log.d(TAG, "onProjectCreated() called with: projectFile = [" + projectFile + "]");
 
         //save project
@@ -509,13 +512,21 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     public void showDialogCreateClass(@Nullable File file) {
-        DialogNewClass dialogNewClass;
-        if (file != null) {
-            dialogNewClass = DialogNewClass.newInstance(mProjectFile, null, file);
+        if (mProjectFile != null) {
+            DialogNewClass dialogNewClass;
+            if (file != null) {
+                dialogNewClass = DialogNewClass.newInstance(mProjectFile, null, file);
+            } else {
+                dialogNewClass = DialogNewClass.newInstance(mProjectFile, mProjectFile.getPackageName(), null);
+            }
+            dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
         } else {
-            dialogNewClass = DialogNewClass.newInstance(mProjectFile, mProjectFile.getPackageName(), null);
+            complain("You need create project");
         }
-        dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
+    }
+
+    void complain(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
     @Override

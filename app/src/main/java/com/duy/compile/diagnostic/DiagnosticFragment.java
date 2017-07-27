@@ -22,6 +22,7 @@ import javax.tools.Diagnostic;
  */
 
 public class DiagnosticFragment extends Fragment implements DiagnosticContract.View {
+    public static final String TAG = "DiagnosticFragment";
     public static final int INDEX = 1;
     private RecyclerView mRecyclerView;
     private DiagnosticAdapter mAdapter;

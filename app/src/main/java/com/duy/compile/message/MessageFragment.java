@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.editor.completion.Patterns;
@@ -83,12 +84,15 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
 
     @Override
     public void clear() {
-        mCompileMsg.setText("");
+        if (mCompileMsg != null) {
+            mCompileMsg.setText("");
+        } else {
+            Toast.makeText(getContext(), R.string.system_err_msg, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
-    public void setPresenter(MessageContract.Presenter presenter) {
-
+    public void setPresenter(@Nullable MessageContract.Presenter presenter) {
         this.presenter = presenter;
     }
 }

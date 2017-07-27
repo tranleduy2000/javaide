@@ -21,7 +21,7 @@ public class ProjectManager {
 
     private static final String CURRENT_PROJECT = "file_project.nide";
 
-    public static boolean saveProject(@NonNull Context context, ProjectFile projectFile) {
+    public static boolean saveProject(@NonNull Context context,@NonNull ProjectFile projectFile) {
         JSONObject object = projectFile.exportJson();
         File file = new File(context.getFilesDir(), CURRENT_PROJECT);
         return FileManager.saveFile(file, object.toString());

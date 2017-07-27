@@ -9,8 +9,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion as Integer
         targetSdkVersion rootProject.ext.targetSdkVersion as Integer
         multiDexEnabled true
-        versionCode 10
-        versionName "1.0.8 beta"
+        versionCode 11
+        versionName "1.0.9 beta"
         ndk {
             moduleName "libjackpal-androidterm2"
             abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'

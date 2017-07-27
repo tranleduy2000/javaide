@@ -138,7 +138,6 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
 
-
     private void startAutoCompleteService() {
         Intent intent = new Intent(this, AutoCompleteService.class);
         if (!bindService(intent, mServiceConnection, BIND_AUTO_CREATE)) {
@@ -260,8 +259,10 @@ public class MainActivity extends BaseEditorActivity implements
     public void runProject() {
         if (mProjectFile != null) {
             //check main class exist
-            if (mProjectFile.getMainClass() == null || !mProjectFile.getMainClass().exist(mProjectFile)
-                    || mProjectFile.getPackageName() == null || mProjectFile.getPackageName().isEmpty()) {
+            if (mProjectFile.getMainClass() == null
+                    || mProjectFile.getPackageName() == null
+                    || mProjectFile.getPackageName().isEmpty()
+                    || !mProjectFile.getMainClass().exist(mProjectFile)) {
                 String msg = getString(R.string.main_class_not_define);
                 Snackbar.make(mDrawerLayout, msg, Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.config, new View.OnClickListener() {
@@ -300,7 +301,7 @@ public class MainActivity extends BaseEditorActivity implements
         if (mProjectFile != null) {
             new BuildJarAchieveTask(this).execute(mProjectFile);
         } else {
-            Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
+            complain("You need create project");
         }
     }
 
@@ -361,13 +362,6 @@ public class MainActivity extends BaseEditorActivity implements
             return editorFragment.getCode();
         }
         return "";
-    }
-
-    private void buildSuggestData() {
-
-    }
-
-    private void showErrorDialog(Exception e) {
     }
 
     @Override
@@ -664,7 +658,9 @@ public class MainActivity extends BaseEditorActivity implements
     @Override
     public void onConfigChange(ProjectFile projectFile) {
         this.mProjectFile = projectFile;
-        ProjectManager.saveProject(this, projectFile);
+        if (projectFile != null) {
+            ProjectManager.saveProject(this, projectFile);
+        }
     }
 
     public void showDialogOpenProject() {

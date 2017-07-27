@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.duy.ide.R;
@@ -30,6 +31,10 @@ public class SampleActivity extends AbstractAppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setTitle(R.string.code_sample);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         FragmentTransaction fm = getSupportFragmentManager().beginTransaction();
         fm.replace(R.id.content, SelectCategoryFragment.newInstance()).commit();
     }
@@ -45,15 +50,15 @@ public class SampleActivity extends AbstractAppCompatActivity implements
 
     @Override
     public void onProjectClick(String projectName) {
-        File file = new File(FileManager.EXTERNAL_DIR_SRC, projectName);
+        File out = new File(FileManager.EXTERNAL_DIR, projectName);
         int count = 1;
-        while (file.exists()) {
-            file = new File(FileManager.EXTERNAL_DIR_SRC, projectName + count);
+        while (out.exists()) {
+            out = new File(FileManager.EXTERNAL_DIR, projectName + count);
+            count++;
         }
-        boolean success = SampleUtil.extractTo(this,
-                new File(FileManager.EXTERNAL_DIR_SRC), category, projectName);
+        boolean success = SampleUtil.extractTo(this, out, category, projectName);
         if (success) {
-            ProjectFile pf = ProjectManager.createProjectIfNeed(file);
+            ProjectFile pf = ProjectManager.createProjectIfNeed(out);
             Intent intent = getIntent();
             intent.putExtra(PROJECT_FILE, pf);
             setResult(RESULT_OK, intent);

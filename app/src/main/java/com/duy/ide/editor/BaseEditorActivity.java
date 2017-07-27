@@ -29,6 +29,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -444,7 +445,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
         //show file structure of project
         mFilePresenter.show(projectFile, true);
-
+        mDrawerLayout.openDrawer(GravityCompat.START);
 
         ClassFile mainClass = projectFile.getMainClass();
         if (mainClass != null && mainClass.exist(projectFile)) {

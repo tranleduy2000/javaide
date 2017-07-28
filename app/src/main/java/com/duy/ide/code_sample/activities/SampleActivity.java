@@ -76,12 +76,13 @@ public class SampleActivity extends AbstractAppCompatActivity implements
                 }
             }
         });
-        builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
+        builder.create().show();
 
     }
 }

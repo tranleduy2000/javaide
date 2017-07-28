@@ -6,13 +6,14 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 
 import com.duy.ide.R;
+import com.duy.ide.code_sample.adapters.ProjectCategoryAdapter;
 import com.duy.ide.code_sample.model.SampleUtil;
 
 import java.io.IOException;
@@ -44,17 +45,13 @@ public class SelectProjectFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final android.support.v7.widget.ListViewCompat listViewCompat = view.findViewById(R.id.list_view);
         final String[] names = getCategories();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_1, names);
-        listViewCompat.setAdapter(adapter);
-        listViewCompat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (listener != null) listener.onProjectClick(names[position]);
-            }
-        });
+        final RecyclerView recyclerView = view.findViewById(R.id.list_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        ProjectCategoryAdapter adapter = new ProjectCategoryAdapter(getActivity(), names);
+        adapter.setListener(listener);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -78,7 +75,7 @@ public class SelectProjectFragment extends Fragment {
         return samples;
     }
 
-    public interface ProjectClickListener {
+    public interface ProjectClickListener extends SelectCategoryFragment.CategoryClickListener{
         void onProjectClick(String sampleName);
     }
 }

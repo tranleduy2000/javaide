@@ -73,8 +73,15 @@
             android:defaultValue="2"
             android:inputType="number"
             android:key="key_pref_tab_width"
-            android:title="@string/tab_width" />
+            android:title="@string/tab_width"
+            android:visibility="gone" />
 
+        <ListPreference
+            android:defaultValue="0"
+            android:title="@string/format_type_"
+            android:entries="@array/format_types"
+            android:entryValues="@array/format_type_value"
+            android:key="@string/key_format_type" />
     </PreferenceCategory>
 
     <!--<PreferenceCategory android:title="@string/console_screen">-->

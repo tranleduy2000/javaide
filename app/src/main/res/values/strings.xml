@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  * Copyright (C) 2008 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -456,4 +455,6 @@
     <string name="sample_code">Sample code</string>
     <string name="learn">Learn</string>
     <string name="system_err_msg">An unexpected error has occurred with the system, please restart ide.</string>
+    <string name="format_type_">Format type</string>
+    <string name="key_format_type" translatable="false">key_format_type</string>
 </resources>

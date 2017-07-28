@@ -84,6 +84,8 @@ import java.util.ArrayList;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+
 public class MainActivity extends BaseEditorActivity implements
         DrawerLayout.DrawerListener,
         DialogRunConfig.OnConfigChangeListener,
@@ -863,7 +865,9 @@ public class MainActivity extends BaseEditorActivity implements
             }
             if (result == null) {
                 Toast.makeText(mContext, R.string.failed_msg, Toast.LENGTH_SHORT).show();
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
                 mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
             } else {
                 Toast.makeText(mContext, R.string.build_success + " " + result.getPath(),

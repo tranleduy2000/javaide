@@ -353,6 +353,6 @@ public class JavaPreferences {
 
 
     public int getFormatType() {
-        return getInt("format_type", 0);
+        return getInt(context.getString(R.string.key_format_type), 0);
     }
 }

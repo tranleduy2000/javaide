@@ -5,13 +5,14 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 
 import com.duy.ide.R;
+import com.duy.ide.code_sample.adapters.CategoryAdapter;
 
 import java.io.IOException;
 
@@ -40,17 +41,13 @@ public class SelectCategoryFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final android.support.v7.widget.ListViewCompat listViewCompat = view.findViewById(R.id.list_view);
+        final RecyclerView recyclerView = view.findViewById(R.id.list_view);
         final String[] categories = getCategories();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_1, categories);
-        listViewCompat.setAdapter(adapter);
-        listViewCompat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (listener != null) listener.onCategoryClick(categories[position]);
-            }
-        });
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        CategoryAdapter adapter = new CategoryAdapter(getActivity(), categories);
+        adapter.setListener(listener);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -77,4 +74,5 @@ public class SelectCategoryFragment extends Fragment {
     public interface CategoryClickListener {
         void onCategoryClick(String category);
     }
+
 }

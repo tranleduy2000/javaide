@@ -338,7 +338,6 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         private int formatType;
 
         public TaskFormatCode(int formatType) {
-
             this.formatType = formatType;
         }
 
@@ -370,7 +369,11 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             if (result != null && mCodeEditor != null) {
+                int selectionEnd = mCodeEditor.getSelectionEnd();
                 mCodeEditor.setTextHighlighted(result);
+                if (selectionEnd > 0 && selectionEnd < mCodeEditor.length()) {
+                    mCodeEditor.setSelection(selectionEnd);
+                }
             }
             dismissDialog();
         }

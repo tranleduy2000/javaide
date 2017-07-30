@@ -44,9 +44,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.duy.ide.R;
 import com.duy.compile.CompileManager;
-import com.duy.compile.external.CommandManager;
+import com.duy.ide.R;
 import com.duy.project.ProjectFile;
 import com.duy.run.view.EmulatorView;
 import com.duy.run.view.TermKeyListener;
@@ -57,7 +56,6 @@ import com.spartacusrex.spartacuside.TerminalPreferences;
 import com.spartacusrex.spartacuside.session.TermSession;
 import com.spartacusrex.spartacuside.util.TermSettings;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
@@ -134,21 +132,21 @@ public class TerminalActivity extends Activity {
                 ProjectFile projectFile = (ProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
                 if (projectFile == null) return;
                 int action = intent.getIntExtra(CompileManager.ACTION, -1);
-                switch (action) {
-                    case CommandManager.Action.RUN:
-                        CommandManager.compileAndRun(mTermSession, projectFile);
-                        break;
-                    case CommandManager.Action.RUN_DEX:
-                        File dex = (File) intent.getSerializableExtra(CompileManager.DEX_FILE);
-                        if (dex != null) {
-                            CommandManager.executeDex(mTermSession, dex,
-                                    projectFile.getMainClass().getName());
-                        }
-                        break;
-                    case CommandManager.Action.BUILD_JAR:
-                        CommandManager.buildJarFileByBash(this, mTermSession, projectFile);
-                        break;
-                }
+//                switch (action) {
+//                    case CommandManager.Action.RUN:
+//                        CommandManager.compileAndRun(mTermSession, getDir("dex", MODE_PRIVATE), projectFile);
+//                        break;
+//                    case CommandManager.Action.RUN_DEX:
+//                        File dex = (File) intent.getSerializableExtra(CompileManager.DEX_FILE);
+//                        if (dex != null) {
+//                            CommandManager.executeDex(mTermSession, dex, getDir("dex", MODE_PRIVATE),
+//                                    projectFile.getMainClass().getName());
+//                        }
+//                        break;
+//                    case CommandManager.Action.BUILD_JAR:
+//                        CommandManager.buildJarFileByBash(this, mTermSession, projectFile);
+//                        break;
+//                }
             }
         }
     }

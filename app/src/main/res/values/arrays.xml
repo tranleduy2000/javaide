@@ -267,9 +267,9 @@
         <item>Google</item>
         <item>AOSP</item>
     </string-array>
-    <integer-array name="format_type_value">
+    <string-array name="format_type_value">
         <item>0</item>
         <item>1</item>
-    </integer-array>
+    </string-array>
 
 </resources>

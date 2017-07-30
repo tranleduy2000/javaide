@@ -14,52 +14,50 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_tab"
     android:layout_width="wrap_content"
     android:layout_height="40dp"
+    android:background="@drawable/bg_tab"
     android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image_run_file"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_toStartOf="@+id/img_close"
-        android:orientation="horizontal">
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:src="@drawable/ic_play_arrow_white_24dp"
+        android:tint="?colorAccent"
+        android:visibility="visible" />
 
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/image_run_file"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_play_arrow_white_24dp"
-            android:tint="?colorAccent"
-            android:visibility="gone" />
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:ellipsize="start"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:gravity="center|start"
+        android:maxWidth="200dp"
+        android:padding="4dp"
+        android:singleLine="true"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        tools:text="dasdaasda123213213123123fafsdsfadsf" />
 
-        <TextView
-            android:id="@+id/txt_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:ellipsize="start"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:gravity="center|start"
-            android:padding="4dp"
-            android:singleLine="true"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-            tools:text="dasdasdasdasdádasdasdasdasdasdasdasdasdasdasdfafdsfadsf" />
-
-    </LinearLayout>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/img_close"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_gravity="end"
+        android:layout_toEndOf="@+id/txt_title"
         android:clickable="true"
         android:contentDescription="@string/close"
         android:foreground="?android:attr/selectableItemBackground"
@@ -67,4 +65,4 @@
         android:padding="4dp"
         app:srcCompat="@drawable/ic_close" />
 
-</RelativeLayout>
+</LinearLayout>

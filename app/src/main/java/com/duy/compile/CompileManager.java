@@ -26,6 +26,7 @@ import com.duy.ide.editor.MainActivity;
 import com.duy.project.ClassFile;
 import com.duy.project.ProjectFile;
 import com.duy.project.utils.ClassUtil;
+import com.duy.run.activities.ExecActivity;
 import com.duy.run.activities.TerminalActivity;
 
 import java.io.File;
@@ -98,7 +99,7 @@ public class CompileManager {
     }
 
     public void executeDex(ProjectFile projectFile, File dex) {
-        Intent intent = new Intent(mActivity, TerminalActivity.class);
+        Intent intent = new Intent(mActivity, ExecActivity.class);
         intent.putExtra(ACTION, CommandManager.Action.RUN_DEX);
         intent.putExtra(PROJECT_FILE, projectFile);
         intent.putExtra(DEX_FILE, dex);

@@ -1,7 +1,11 @@
 package com.duy.compile.external.java;
 
+import android.support.annotation.Nullable;
+
 import com.duy.compile.external.dex.DexClassLoader;
 
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 
 /**
@@ -14,9 +18,12 @@ public class Java {
     }
 
     public static void main(String[] zArgs) {
-        System.setOut(System.out);
+        run(zArgs, null, null, null, null);
+    }
+
+    public static void run(String[] zArgs, @Nullable String outDex, @Nullable PrintStream out,
+                           @Nullable InputStream in, @Nullable PrintStream err) {
         try {
-            String dexfolder;
             String jarfile = "";
             String classname = "";
             boolean verbose = false;
@@ -56,21 +63,23 @@ public class Java {
                 throw new InvokeException("No JAR Files specified");
             }
 
-            //Environment Variables..
-            dexfolder = System.getenv("ODEX_FOLDER");
-            if (dexfolder == null || dexfolder.equals("")) {
-                //Try the TEMP Folder
-                //System.out.println("No ODEX_FOLDER environment variable specified. Using TEMP");
-                dexfolder = System.getenv("TEMP");
-                if (dexfolder == null || dexfolder.equals("")) {
-                    System.out.println("No TEMP OR ODEX_FOLDER specified!");
-                    throw new InvokeException("Please specify ODEX_FOLDER or TEMP environment variable");
+            if (outDex == null) {
+                //Environment Variables..
+                outDex = System.getenv("ODEX_FOLDER");
+                if (outDex == null || outDex.equals("")) {
+                    //Try the TEMP Folder
+                    //System.out.println("No ODEX_FOLDER environment variable specified. Using TEMP");
+                    outDex = System.getenv("TEMP");
+                    if (outDex == null || outDex.equals("")) {
+                        System.out.println("No TEMP OR ODEX_FOLDER specified!");
+                        throw new InvokeException("Please specify ODEX_FOLDER or TEMP environment variable");
+                    }
                 }
             }
 
             //Output INFO
             if (verbose) {
-                System.out.println("ODEX_FOLDER  : " + dexfolder);
+                System.out.println("ODEX_FOLDER  : " + outDex);
                 System.out.println("JAR/DEX FILE : " + jarfile);
                 System.out.println("CLASSNAME    : " + classname);
             }
@@ -82,7 +91,7 @@ public class Java {
 
             //Now load this class..
             //DexClassLoader loader = new DexClassLoader(jarfile, dexfolder, null, ClassLoader.getSystemClassLoader());
-            DexClassLoader loader = new DexClassLoader(jarfile, dexfolder, null, ClassLoader.getSystemClassLoader(), verbose);
+            DexClassLoader loader = new DexClassLoader(jarfile, outDex, null, ClassLoader.getSystemClassLoader(), verbose);
             Class loadedclass = loader.loadClass(classname);
 
             //Now sort the command line inputs
@@ -112,6 +121,10 @@ public class Java {
             }
 
 //            main.invoke(null, new Object[]{pargs});
+            if (out != null) System.setOut(out);
+            if (in != null) System.setIn(in);
+            if (err != null) System.setErr(err);
+
             main.invoke(null, new Object[]{mainargs});
 
         } catch (Exception ex) {

@@ -84,8 +84,6 @@ import java.util.ArrayList;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 
-import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
-
 public class MainActivity extends BaseEditorActivity implements
         DrawerLayout.DrawerListener,
         DialogRunConfig.OnConfigChangeListener,
@@ -644,9 +642,6 @@ public class MainActivity extends BaseEditorActivity implements
                 }).create().show();
     }
 
-    public void openDrawer(int gravity) {
-        mDrawerLayout.openDrawer(gravity);
-    }
 
     public void showDialogRunConfig() {
         if (mProjectFile != null) {
@@ -774,7 +769,7 @@ public class MainActivity extends BaseEditorActivity implements
             }
             if (result == null) {
                 Toast.makeText(mContext, R.string.failed_msg, Toast.LENGTH_SHORT).show();
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                openDrawer(GravityCompat.START);
                 mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
             } else {
                 Toast.makeText(mContext, R.string.compile_success, Toast.LENGTH_SHORT).show();
@@ -865,9 +860,7 @@ public class MainActivity extends BaseEditorActivity implements
             }
             if (result == null) {
                 Toast.makeText(mContext, R.string.failed_msg, Toast.LENGTH_SHORT).show();
-                if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {
-                    mDrawerLayout.openDrawer(GravityCompat.START);
-                }
+                openDrawer(GravityCompat.START);
                 mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
             } else {
                 Toast.makeText(mContext, R.string.build_success + " " + result.getPath(),

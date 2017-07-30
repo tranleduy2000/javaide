@@ -40,12 +40,13 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.AppCompatImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:scaleType="centerInside"
-            app:srcCompat="@mipmap/icon" />
+        <com.duy.run.view.ConsoleEditText
+            android:id="@+id/console_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:gravity="top|left" />
+
     </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

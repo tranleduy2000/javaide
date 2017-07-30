@@ -434,6 +434,13 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
 
+    public void openDrawer(int gravity) {
+        try {
+            mDrawerLayout.openDrawer(gravity);
+        } catch (Exception e) {
+            //not found drawer
+        }
+    }
     @Override
     public void onProjectCreated(@NonNull ProjectFile projectFile) {
         Log.d(TAG, "onProjectCreated() called with: projectFile = [" + projectFile + "]");
@@ -449,7 +456,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
         //show file structure of project
         mFilePresenter.show(projectFile, true);
-        mDrawerLayout.openDrawer(GravityCompat.START);
+        openDrawer(GravityCompat.START);
 
         ClassFile mainClass = projectFile.getMainClass();
         if (mainClass != null && mainClass.exist(projectFile)) {

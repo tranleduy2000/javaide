@@ -141,6 +141,10 @@ public class TermSession {
         }
     }
 
+    public FileInputStream getTermIn() {
+        return mTermIn;
+    }
+
     public void write(String data) {
         try {
             mTermOut.write(data.getBytes());

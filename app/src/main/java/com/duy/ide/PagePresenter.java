@@ -163,7 +163,7 @@ public class PagePresenter implements EditPageContract.Presenter {
                     }
                 }
             }
-        }, 200);
+        }, 50);
     }
 
 

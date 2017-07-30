@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.duy.compile.external.dex.Dex;
 import com.duy.compile.external.java.Jar;
+import com.duy.compile.external.java.Java;
 import com.duy.compile.external.java.Javac;
 import com.duy.ide.file.FileManager;
 import com.duy.project.ClassFile;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import javax.tools.DiagnosticListener;
@@ -134,12 +136,13 @@ public class CommandManager {
         return null;
     }
 
-    public static void compileAndRun(TermSession termSession, ProjectFile pf) {
+    public static void compileAndRun(PrintStream out, InputStream in, PrintStream err,
+                                     File tempDir, ProjectFile pf) {
         try {
             String mainClass = pf.getMainClass().getName();
             //now compile
             File dex = compile(pf, null);
-            if (dex != null) executeDex(termSession, dex, mainClass);
+            if (dex != null) executeDex(out, in, err, dex, tempDir, mainClass);
         } catch (Exception e) {
             e.printStackTrace();
         } catch (Error e) {
@@ -176,17 +179,21 @@ public class CommandManager {
         return outDex;
     }
 
-    public static void executeDex(@NonNull TermSession termSession, @NonNull File outDex,
+    public static void executeDex(@NonNull PrintStream out, InputStream in, PrintStream err,
+                                  @NonNull File outDex, @NonNull File tempDir,
                                   @NonNull String mainClass) {
-        Verify.verifyNotNull(termSession);
+//        Verify.verifyNotNull(termSession);
         Verify.verifyNotNull(outDex);
         Verify.verifyNotNull(mainClass);
+//
+//        //run via terminal
+//        FileOutputStream termOut = termSession.getTermOut();
+//        PrintWriter pw = new PrintWriter(termOut);
+//        pw.println("java -jar " + outDex.getPath() + " " + mainClass);
+//        pw.flush();
 
-        //run via terminal
-        FileOutputStream termOut = termSession.getTermOut();
-        PrintWriter pw = new PrintWriter(termOut);
-        pw.println("java -jar " + outDex.getPath() + " " + mainClass);
-        pw.flush();
+        String[] args = new String[]{"-jar", outDex.getPath(), mainClass};
+        Java.run(args, tempDir.getPath(), out, in, err);
     }
 
 

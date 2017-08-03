@@ -34,12 +34,15 @@ public class FragmentSetting extends PreferenceFragment {
         // to their values. When their values change, their summaries are
         // updated to reflect the new value, per the Android Design
         // guidelines.
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.key_pref_font_size)));
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.key_code_theme)));
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.key_pref_lang)));
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.key_max_page)));
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.key_format_type)));
-
+        try {
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_pref_font_size)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_code_theme)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_pref_lang)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_max_page)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_format_type)));
+        } catch (Exception e) {
+            //not found pref
+        }
 
     }
 }

@@ -77,7 +77,7 @@
             android:visibility="gone" />
 
         <ListPreference
-            android:defaultValue="0"
+            android:defaultValue="@string/zero"
             android:title="@string/format_type_"
             android:entries="@array/format_types"
             android:entryValues="@array/format_type_value"

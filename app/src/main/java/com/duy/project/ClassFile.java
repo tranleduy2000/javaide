@@ -25,6 +25,10 @@ public class ClassFile implements Serializable, Cloneable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getSimpleName() {
         return name.substring(name.lastIndexOf(".") + 1, name.length());
     }
@@ -44,12 +48,8 @@ public class ClassFile implements Serializable, Cloneable {
 
     public boolean exist(ProjectFile parent) {
         String path = getPath(parent);
+        if (path == null) return false;
         return !path.isEmpty() && new File(path).exists();
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @NonNull

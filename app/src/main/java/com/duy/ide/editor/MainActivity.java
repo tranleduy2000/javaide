@@ -82,6 +82,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
 import javax.tools.DiagnosticListener;
 
 public class MainActivity extends BaseEditorActivity implements
@@ -786,7 +787,7 @@ public class MainActivity extends BaseEditorActivity implements
 
     private class BuildJarAchieveTask extends AsyncTask<ProjectFile, Object, File> {
         private Context mContext;
-        private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
+        private DiagnosticCollector mDiagnosticCollector;
 
         BuildJarAchieveTask(Context context) {
             this.mContext = context;
@@ -802,6 +803,7 @@ public class MainActivity extends BaseEditorActivity implements
             mMessagePresenter.clear();
             mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             mDiagnosticPresenter.clear();
+            mDiagnosticCollector = new DiagnosticCollector();
         }
 
         @Override
@@ -823,13 +825,7 @@ public class MainActivity extends BaseEditorActivity implements
 
                 }
             });
-            DiagnosticListener listener = new DiagnosticListener() {
-                @Override
-                public void report(Diagnostic diagnostic) {
-                    mDiagnostics.add(diagnostic);
-                }
-            };
-            return CommandManager.buildJarAchieve(mProjectFile, printWriter, listener);
+            return CommandManager.buildJarAchieve(mProjectFile, printWriter, mDiagnosticCollector);
         }
 
         @Override
@@ -848,7 +844,7 @@ public class MainActivity extends BaseEditorActivity implements
         @Override
         protected void onPostExecute(final File result) {
             super.onPostExecute(result);
-            mDiagnosticPresenter.display(mDiagnostics);
+            mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
 
             if (mActionRun != null) mActionRun.setEnabled(true);
             if (mCompileProgress != null) {

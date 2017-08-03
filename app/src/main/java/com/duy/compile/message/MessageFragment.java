@@ -11,6 +11,7 @@ import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
     public static final String TAG = "MessageFragment";
     private static final String KEY_COMPILE_MSG = "compile_msg";
     private TextView mCompileMsg;
+    private ScrollView mScrollView;
     @Nullable
     private MessageContract.Presenter presenter;
 
@@ -51,6 +53,7 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
         mCompileMsg = view.findViewById(R.id.txt_message);
         mCompileMsg.setTypeface(Typeface.MONOSPACE);
         mCompileMsg.setAutoLinkMask(Linkify.ALL);
+        mScrollView = view.findViewById(R.id.scrollView);
         if (savedInstanceState != null) {
             mCompileMsg.setText(savedInstanceState.getString(KEY_COMPILE_MSG));
         }
@@ -80,6 +83,7 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         mCompileMsg.append(spannableString);
+        mScrollView.fullScroll(View.FOCUS_DOWN);
     }
 
     @Override

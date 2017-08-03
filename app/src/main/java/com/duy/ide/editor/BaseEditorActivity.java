@@ -144,18 +144,26 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         setupToolbar();
         setupFileView(savedInstanceState);
         setupEditor();
-
         FragmentManager fm = getSupportFragmentManager();
+//        if (savedInstanceState != null) {
+//            mMessageFragment = (MessageFragment) fm.findFragmentByTag(MessageFragment.TAG);
+//            mDiagnosticFragment = (DiagnosticFragment) fm.findFragmentByTag(DiagnosticFragment.TAG);
+//        }
+//        if (mMessageFragment == null)
         mMessageFragment = MessageFragment.newInstance();
         mMessagePresenter = new MessagePresenter(this, mMessageFragment);
+//        if (mDiagnosticFragment == null)
         mDiagnosticFragment = DiagnosticFragment.newInstance();
         mDiagnosticPresenter = new DiagnosticPresenter(this, mDiagnosticFragment, mPagePresenter);
+
 
         BottomPageAdapter bottomAdapter = new BottomPageAdapter(fm, mDiagnosticFragment, mMessageFragment);
 
         mBottomPage = (ViewPager) findViewById(R.id.bottom_page);
+        mBottomPage.setAdapter(null);
         mBottomPage.setAdapter(bottomAdapter);
         mBottomPage.setOffscreenPageLimit(BottomPageAdapter.COUNT);
+
         TabLayout bottomTab = (TabLayout) findViewById(R.id.bottom_tab);
         bottomTab.setupWithViewPager(mBottomPage);
 

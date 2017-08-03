@@ -15,14 +15,12 @@ public class BottomPageAdapter extends FragmentPagerAdapter {
 
 
     public static final int COUNT = 2;
-    private final FragmentManager fm;
-    private final DiagnosticFragment mDiagnosticFragment;
-    private final MessageFragment mMessageFragment;
+    private DiagnosticFragment mDiagnosticFragment;
+    private MessageFragment mMessageFragment;
 
     public BottomPageAdapter(FragmentManager fm,
                              DiagnosticFragment mDiagnosticFragment, MessageFragment mMessageFragment) {
         super(fm);
-        this.fm = fm;
         this.mDiagnosticFragment = mDiagnosticFragment;
         this.mMessageFragment = mMessageFragment;
     }
@@ -40,7 +38,7 @@ public class BottomPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position){
+        switch (position) {
             case 0:
                 return "Message";
             case 1:

@@ -18,11 +18,13 @@
         android:foreground="?selectableItemBackground"
         android:src="@drawable/ic_more_horiz_white_24dp"
         android:tint="?colorAccent" />
+
     <ProgressBar
         android:id="@+id/compile_progress"
         style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:indeterminate="true"
         android:visibility="gone" />
 
     <android.support.design.widget.TabLayout

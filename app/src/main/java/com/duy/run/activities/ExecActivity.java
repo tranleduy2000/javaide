@@ -2,6 +2,7 @@ package com.duy.run.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 
 import com.duy.compile.CompileManager;
@@ -21,13 +22,21 @@ import java.io.PrintStream;
 
 public class ExecActivity extends AbstractAppCompatActivity {
     private ConsoleEditText mConsoleEditText;
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exec);
         bindView();
-        runProgram();
+
+        Thread runThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runProgram();
+            }
+        });
+        runThread.start();
     }
 
     private void runProgram() {

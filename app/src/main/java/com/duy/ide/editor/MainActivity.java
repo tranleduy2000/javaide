@@ -367,6 +367,7 @@ public class MainActivity extends BaseEditorActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unbindService(mServiceConnection);
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
         }

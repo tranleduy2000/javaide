@@ -6,6 +6,7 @@ import com.duy.compile.external.dex.DexClassLoader;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -127,6 +128,12 @@ public class Java {
 
             main.invoke(null, new Object[]{mainargs});
 
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            Throwable targetException = e.getTargetException();
+            if (targetException != null) {
+                targetException.printStackTrace();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             usage();

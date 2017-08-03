@@ -111,6 +111,7 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
+        Log.d(TAG, "onTextChanged() called with: start = [" + start + "], lengthBefore = [" + lengthBefore + "], lengthAfter = [" + lengthAfter + "]");
 
         if (mAutoCompleteProvider != null) {
             if (mGenerateSuggestDataTask != null) {
@@ -271,6 +272,8 @@ public abstract class CodeSuggestsEditText extends AutoIndentEditText
         private int selection;
 
         GenerateSuggestDataTask(@NonNull EditText editText, @NonNull AutoCompleteProvider provider) {
+            Log.d(TAG, "GenerateSuggestDataTask() called with: editText = [" + editText + "], provider = [" + provider + "]");
+
             this.editText = editText;
             this.provider = provider;
             provider.getClass();

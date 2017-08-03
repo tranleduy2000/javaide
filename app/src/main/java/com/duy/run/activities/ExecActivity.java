@@ -75,6 +75,12 @@ public class ExecActivity extends AbstractAppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        mConsoleEditText.destroy();
+        super.onDestroy();
+    }
+
     private void bindView() {
         mConsoleEditText = (ConsoleEditText) findViewById(R.id.console_view);
     }

@@ -198,10 +198,10 @@ public class ConsoleEditText extends AppCompatEditText {
         });
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+
+    public void destroy() {
         mInputBuffer.write(-1);
+        isRunning.set(false);
     }
 
     private class EnterListener implements TextWatcher {
@@ -235,10 +235,6 @@ public class ConsoleEditText extends AppCompatEditText {
                 }
                 mInputBuffer.write(-1); //flush
                 mLength = s.length(); //append to console
-//                ForegroundColorSpan[] spans = s.getSpans(0, mLength, ForegroundColorSpan.class);
-//                for (ForegroundColorSpan span : spans) {
-//                    s.removeSpan(span);
-//                }
             }
         }
     }

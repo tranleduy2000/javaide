@@ -146,13 +146,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         setupEditor();
 
         FragmentManager fm = getSupportFragmentManager();
-        if (savedInstanceState != null) {
-            mMessageFragment = (MessageFragment) fm.findFragmentByTag(MessageFragment.TAG);
-            mDiagnosticFragment = (DiagnosticFragment) fm.findFragmentByTag(DiagnosticFragment.TAG);
-        }
-        if (mMessageFragment == null) mMessageFragment = MessageFragment.newInstance();
+        mMessageFragment = MessageFragment.newInstance();
         mMessagePresenter = new MessagePresenter(this, mMessageFragment);
-        if (mDiagnosticFragment == null) mDiagnosticFragment = DiagnosticFragment.newInstance();
+        mDiagnosticFragment = DiagnosticFragment.newInstance();
         mDiagnosticPresenter = new DiagnosticPresenter(this, mDiagnosticFragment, mPagePresenter);
 
         BottomPageAdapter bottomAdapter = new BottomPageAdapter(fm, mDiagnosticFragment, mMessageFragment);
@@ -441,6 +437,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
             //not found drawer
         }
     }
+
     @Override
     public void onProjectCreated(@NonNull ProjectFile projectFile) {
         Log.d(TAG, "onProjectCreated() called with: projectFile = [" + projectFile + "]");

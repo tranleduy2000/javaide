@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
@@ -18,7 +20,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import com.duy.ide.setting.JavaPreferences;
-import com.duy.run.utils.ByteQueue;
+import com.duy.run.utils.IntegerQueue;
+import com.spartacusrex.spartacuside.util.ByteQueue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,10 +34,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ConsoleEditText extends AppCompatEditText {
     private static final String TAG = "ConsoleEditText";
+    private static final int NEW_OUTPUT = 1;
+    private static final int NEW_ERR = 2;
 
-
-    //output from program
-    private AtomicBoolean fromConsole = new AtomicBoolean(false);
 
     //length of text
     private int mLength = 0;
@@ -47,19 +49,37 @@ public class ConsoleEditText extends AppCompatEditText {
     /**
      * uses for input
      */
-    private ByteQueue mInputBuffer = new ByteQueue(ByteQueue.QUEUE_SIZE);
+    private IntegerQueue mInputBuffer = new IntegerQueue(IntegerQueue.QUEUE_SIZE);
 
     /**
      * buffer for output
      */
-    private ByteQueue mOutputBuffer = new ByteQueue(ByteQueue.QUEUE_SIZE);
+    private ByteQueue mStdoutBuffer = new ByteQueue(IntegerQueue.QUEUE_SIZE);
 
+    /**
+     * buffer for output
+     */
+    private ByteQueue mStderrBuffer = new ByteQueue(IntegerQueue.QUEUE_SIZE);
+    private AtomicBoolean isRunning = new AtomicBoolean(true);
 
     //filter input text, block a part of text
     private TextListener mTextListener = new TextListener();
     private EnterListener mEnterListener = new EnterListener();
-    private Handler mHandler = new Handler();
-    private Thread mOutputThread;
+    private Thread mReadStdoutThread, mReadStderrThread;
+    private byte[] mReceiveBuffer;
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (!isRunning.get()) {
+                return;
+            }
+            if (msg.what == NEW_OUTPUT) {
+                writeStdoutToScreen();
+            } else if (msg.what == NEW_ERR) {
+                writeStderrToScreen();
+            }
+        }
+    };
 
     public ConsoleEditText(Context context) {
         super(context);
@@ -77,6 +97,7 @@ public class ConsoleEditText extends AppCompatEditText {
         init(context);
     }
 
+
     private void init(Context context) {
         if (!isInEditMode()) {
             JavaPreferences pref = new JavaPreferences(context);
@@ -86,6 +107,7 @@ public class ConsoleEditText extends AppCompatEditText {
         setFilters(new InputFilter[]{mTextListener});
         setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         addTextChangedListener(mEnterListener);
+        setMaxLines(2000);
 
         createIOStream();
     }
@@ -94,23 +116,45 @@ public class ConsoleEditText extends AppCompatEditText {
         inputStream = new ConsoleInputStream();
         outputStream = new ConsoleOutputStream();
         errorStream = new ConsoleErrorStream();
+        mReceiveBuffer = new byte[4 * 1024];
+        mStdoutBuffer = new ByteQueue(4 * 1024);
+        mStderrBuffer = new ByteQueue(4 * 1024);
+    }
 
-        mOutputThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    int read = mOutputBuffer.read();
-                    if (read == -1) {
-                        return;
-                    }
-                    String out = new String(Character.toChars(read));
-                    mLength = mLength + out.length();
-                    appendStr(out);
-                }
-            }
-        });
-        mOutputThread.setName("Output reader thread");
-        mOutputThread.start();
+    private void writeStdoutToScreen() {
+
+        int bytesAvailable = mStdoutBuffer.getBytesAvailable();
+        int bytesToRead = Math.min(bytesAvailable, mReceiveBuffer.length);
+        try {
+            int bytesRead = mStdoutBuffer.read(mReceiveBuffer, 0, bytesToRead);
+//                        mEmulator.append(mReceiveBuffer, 0, bytesRead);
+            String out = new String(mReceiveBuffer, 0, bytesRead);
+            mLength = mLength + out.length();
+            appendStdout(out);
+        } catch (InterruptedException e) {
+        }
+//
+//        String out = new String(Character.toChars(read));
+//        mLength = mLength + out.length();
+//        appendStdout(out);
+    }
+
+    private void writeStderrToScreen() {
+
+        int bytesAvailable = mStderrBuffer.getBytesAvailable();
+        int bytesToRead = Math.min(bytesAvailable, mReceiveBuffer.length);
+        try {
+            int bytesRead = mStderrBuffer.read(mReceiveBuffer, 0, bytesToRead);
+//                        mEmulator.append(mReceiveBuffer, 0, bytesRead);
+            String out = new String(mReceiveBuffer, 0, bytesRead);
+            mLength = mLength + out.length();
+            appendStderr(out);
+        } catch (InterruptedException e) {
+        }
+//
+//        String out = new String(Character.toChars(read));
+//        mLength = mLength + out.length();
+//        appendStdout(out);
     }
 
     public ConsoleOutputStream getOutputStream() {
@@ -132,13 +176,32 @@ public class ConsoleEditText extends AppCompatEditText {
     }
 
     @UiThread
-    private void appendStr(final CharSequence spannableString) {
+    private void appendStdout(final CharSequence spannableString) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 append(spannableString);
             }
         });
+    }
+
+    @UiThread
+    private void appendStderr(final CharSequence str) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                SpannableString spannableString = new SpannableString(str);
+                spannableString.setSpan(new ForegroundColorSpan(Color.RED), 0, str.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                append(spannableString);
+            }
+        });
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mInputBuffer.write(-1);
     }
 
     private class EnterListener implements TextWatcher {
@@ -156,7 +219,6 @@ public class ConsoleEditText extends AppCompatEditText {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             Log.d(TAG, "onTextChanged() called with: s = [" + s + "], start = [" + start + "], before = [" + before + "], count = [" + count + "]");
-
             this.s = s;
             this.start = start;
             this.before = before;
@@ -165,40 +227,54 @@ public class ConsoleEditText extends AppCompatEditText {
 
         @Override
         public void afterTextChanged(Editable s) {
-//            if (count == 1 && s.charAt(start) == '\n') {
-//                String data = s.toString().substring(mLength);
-//                Log.d(TAG, "afterTextChanged data = " + data);
-//                for (char c : data.toCharArray()) {
-//                    mByteQueue.write(c);
+            if (count == 1 && s.charAt(start) == '\n' && start >= mLength) {
+                String data = s.toString().substring(mLength);
+                Log.d(TAG, "afterTextChanged data = " + data);
+                for (char c : data.toCharArray()) {
+                    mInputBuffer.write(c);
+                }
+                mInputBuffer.write(-1); //flush
+                mLength = s.length(); //append to console
+//                ForegroundColorSpan[] spans = s.getSpans(0, mLength, ForegroundColorSpan.class);
+//                for (ForegroundColorSpan span : spans) {
+//                    s.removeSpan(span);
 //                }
-////                mByteQueue.flush();
-//                mByteQueue.write(-1); //flush
-//                mLength = s.length();
-//            }
+            }
         }
     }
 
     private class ConsoleOutputStream extends OutputStream {
+        @Override
+        public void write(@NonNull byte[] b, int off, int len) throws IOException {
+//            super.write(b, off, len);
+            try {
+                mStdoutBuffer.write(b, off, len);
+                mHandler.sendMessage(mHandler.obtainMessage(NEW_OUTPUT));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         @Override
         public void write(int b) throws IOException {
-            mOutputBuffer.write(b);
+//            mStdoutBuffer.write(b);
         }
     }
 
     private class ConsoleErrorStream extends OutputStream {
+        @Override
+        public void write(@NonNull byte[] b, int off, int len) throws IOException {
+            try {
+                mStderrBuffer.write(b, off, len);
+                mHandler.sendMessage(mHandler.obtainMessage(NEW_ERR));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         @Override
         public void write(int b) throws IOException {
-            mOutputBuffer.write(b);
-//            String text = new String(Character.toChars(b));
-//            SpannableString spannableString = new SpannableString(text);
-//            spannableString.setSpan(new ForegroundColorSpan(Color.RED), 0, spannableString.length(),
-//                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            mLength = length() + spannableString.length();
-//            fromConsole.set(true);
-//            appendStr(spannableString);
-//            fromConsole.set(false);
+//            mStderrBuffer.write(b);
         }
     }
 
@@ -217,9 +293,9 @@ public class ConsoleEditText extends AppCompatEditText {
         public CharSequence removeStr(CharSequence removeChars, int startPos) {
             Log.d(TAG, "removeStr() called with: removeChars = [" + removeChars + "], startPos = [" + startPos + "]");
             if (startPos < mLength) { //this mean output from console
-                return ""; //can not remove console output
+                return removeChars; //can not remove console output
             } else {
-                return removeChars;
+                return "";
             }
         }
 
@@ -240,14 +316,13 @@ public class ConsoleEditText extends AppCompatEditText {
         public CharSequence updateStr(CharSequence oldChars, int startPos, CharSequence newChars) {
             Log.d(TAG, "updateStr() called with: oldChars = [" + oldChars + "], startPos = [" + startPos + "], newChars = [" + newChars + "]");
             if (startPos < mLength) {
-                return newChars;
-            } else if (startPos >= mLength) {
+                return oldChars; //don't edit
+
+            } else {//if (startPos >= mLength)
                 SpannableString spannableString = new SpannableString(newChars);
                 spannableString.setSpan(new ForegroundColorSpan(Color.GREEN), 0,
                         spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 return spannableString;
-            } else {
-                return "";
             }
         }
 

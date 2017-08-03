@@ -21,7 +21,7 @@ import android.util.Log;
 /**
  * Created by Duy on 10-Feb-17.
  */
-public class ByteQueue {
+public class IntegerQueue {
     public static final int QUEUE_SIZE = 2 * 1024; //2MB ram
     private static final String TAG = "ByteQueue";
     public int text[];
@@ -29,7 +29,7 @@ public class ByteQueue {
     public int rear;
     private int size;
 
-    public ByteQueue(int size) {
+    public IntegerQueue(int size) {
         this.size = size;
         text = new int[size];
         front = 0;

@@ -16,10 +16,13 @@
 
 package com.android.sdklib.internal.repository;
 
+import com.android.annotations.VisibleForTesting;
+import com.android.annotations.VisibleForTesting.Visibility;
 import com.android.sdklib.SdkConstants;
 import com.android.sdklib.SdkManager;
 import com.android.sdklib.internal.repository.Archive.Arch;
 import com.android.sdklib.internal.repository.Archive.Os;
+import com.android.sdklib.repository.SdkRepoConstants;
 
 import org.w3c.dom.Node;
 
@@ -29,19 +32,67 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Represents a tool XML node in an SDK repository.
  */
-public class ToolPackage extends Package {
+public class ToolPackage extends Package implements IMinPlatformToolsDependency {
+
+    /** The value returned by {@link ToolPackage#installId()}. */
+    public static final String INSTALL_ID = "tools";                             //$NON-NLS-1$
+
+    protected static final String PROP_MIN_PLATFORM_TOOLS_REV =
+                                                "Platform.MinPlatformToolsRev";  //$NON-NLS-1$
+
+    /**
+     * The minimal revision of the platform-tools package required by this package
+     * or {@link #MIN_PLATFORM_TOOLS_REV_INVALID} if the value was missing.
+     */
+    private final int mMinPlatformToolsRevision;
 
     /**
      * Creates a new tool package from the attributes and elements of the given XML node.
-     * <p/>
      * This constructor should throw an exception if the package cannot be created.
+     *
+     * @param source The {@link SdkSource} where this is loaded from.
+     * @param packageNode The XML element being parsed.
+     * @param nsUri The namespace URI of the originating XML document, to be able to deal with
+     *          parameters that vary according to the originating XML schema.
+     * @param licenses The licenses loaded from the XML originating document.
      */
-    ToolPackage(RepoSource source, Node packageNode, Map<String,String> licenses) {
-        super(source, packageNode, licenses);
+    ToolPackage(SdkSource source, Node packageNode, String nsUri, Map<String,String> licenses) {
+        super(source, packageNode, nsUri, licenses);
+
+        mMinPlatformToolsRevision = XmlParserUtils.getXmlInt(
+                packageNode,
+                SdkRepoConstants.NODE_MIN_PLATFORM_TOOLS_REV,
+                MIN_PLATFORM_TOOLS_REV_INVALID);
+        if (mMinPlatformToolsRevision == MIN_PLATFORM_TOOLS_REV_INVALID) {
+            // This revision number is mandatory starting with sdk-repository-3.xsd
+            // and did not exist before. Complain if the URI has level >= 3.
+
+            boolean needRevision = false;
+
+            Pattern nsPattern = Pattern.compile(SdkRepoConstants.NS_PATTERN);
+            Matcher m = nsPattern.matcher(nsUri);
+            if (m.matches()) {
+                String version = m.group(1);
+                try {
+                    needRevision = Integer.parseInt(version) >= 3;
+                } catch (NumberFormatException e) {
+                    // ignore. needRevision defaults to false
+                }
+            }
+
+            if (needRevision) {
+                throw new IllegalArgumentException(
+                        String.format("Missing %1$s element in %2$s package",
+                                SdkRepoConstants.NODE_MIN_PLATFORM_TOOLS_REV,
+                                SdkRepoConstants.NODE_PLATFORM_TOOL));
+            }
+        }
     }
 
     /**
@@ -51,8 +102,8 @@ public class ToolPackage extends Package {
      * <p/>
      * By design, this creates a package with one and only one archive.
      */
-    ToolPackage(
-            RepoSource source,
+    static Package create(
+            SdkSource source,
             Properties props,
             int revision,
             String license,
@@ -61,6 +112,21 @@ public class ToolPackage extends Package {
             Os archiveOs,
             Arch archiveArch,
             String archiveOsPath) {
+        return new ToolPackage(source, props, revision, license, description,
+                descUrl, archiveOs, archiveArch, archiveOsPath);
+    }
+
+    @VisibleForTesting(visibility=Visibility.PRIVATE)
+    protected ToolPackage(
+                SdkSource source,
+                Properties props,
+                int revision,
+                String license,
+                String description,
+                String descUrl,
+                Os archiveOs,
+                Arch archiveArch,
+                String archiveOsPath) {
         super(source,
                 props,
                 revision,
@@ -70,9 +136,49 @@ public class ToolPackage extends Package {
                 archiveOs,
                 archiveArch,
                 archiveOsPath);
+
+        mMinPlatformToolsRevision = Integer.parseInt(
+                getProperty(
+                        props,
+                        PROP_MIN_PLATFORM_TOOLS_REV,
+                        Integer.toString(MIN_PLATFORM_TOOLS_REV_INVALID)));
     }
 
-    /** Returns a short description for an {@link IDescription}. */
+    /**
+    * The minimal revision of the tools package required by this package if > 0,
+    * or {@link #MIN_PLATFORM_TOOLS_REV_INVALID} if the value was missing.
+    * <p/>
+    * This attribute is mandatory and should not be normally missing.
+     */
+    public int getMinPlatformToolsRevision() {
+        return mMinPlatformToolsRevision;
+    }
+
+    /**
+     * Returns a string identifier to install this package from the command line.
+     * For tools, we use "tools" since this package is unique.
+     * <p/>
+     * {@inheritDoc}
+     */
+    @Override
+    public String installId() {
+        return INSTALL_ID;
+    }
+
+    /**
+     * Returns a description of this package that is suitable for a list display.
+     * <p/>
+     * {@inheritDoc}
+     */
+    @Override
+    public String getListDescription() {
+        return String.format("Android SDK Tools%1$s",
+                isObsolete() ? " (Obsolete)" : "");
+    }
+
+    /**
+     * Returns a short description for an {@link IDescription}.
+     */
     @Override
     public String getShortDescription() {
         return String.format("Android SDK Tools, revision %1$d%2$s",
@@ -104,13 +210,11 @@ public class ToolPackage extends Package {
      * A "tool" package should always be located in SDK/tools.
      *
      * @param osSdkRoot The OS path of the SDK root folder.
-     * @param suggestedDir A suggestion for the installation folder name, based on the root
-     *                     folder used in the zip archive.
      * @param sdkManager An existing SDK manager to list current platforms and addons.
      * @return A new {@link File} corresponding to the directory to use to install this package.
      */
     @Override
-    public File getInstallFolder(String osSdkRoot, String suggestedDir, SdkManager sdkManager) {
+    public File getInstallFolder(String osSdkRoot, SdkManager sdkManager) {
         return new File(osSdkRoot, SdkConstants.FD_TOOLS);
     }
 
@@ -118,6 +222,16 @@ public class ToolPackage extends Package {
     public boolean sameItemAs(Package pkg) {
         // only one tool package so any tool package is the same item.
         return pkg instanceof ToolPackage;
+    }
+
+    @Override
+    void saveProperties(Properties props) {
+        super.saveProperties(props);
+
+        if (getMinPlatformToolsRevision() != MIN_PLATFORM_TOOLS_REV_INVALID) {
+            props.setProperty(PROP_MIN_PLATFORM_TOOLS_REV,
+                              Integer.toString(getMinPlatformToolsRevision()));
+        }
     }
 
     /**
@@ -138,9 +252,9 @@ public class ToolPackage extends Package {
         }
 
         String scriptName = "post_tools_install";   //$NON-NLS-1$
-        String shell = "";
+        String shell = "";                          //$NON-NLS-1$
         if (SdkConstants.currentPlatform() == SdkConstants.PLATFORM_WINDOWS) {
-            shell = "cmd.exe /c ";
+            shell = "cmd.exe /c ";                  //$NON-NLS-1$
             scriptName += ".bat";                   //$NON-NLS-1$
         } else {
             scriptName += ".sh";                    //$NON-NLS-1$
@@ -163,17 +277,17 @@ public class ToolPackage extends Package {
             status = grabProcessOutput(proc, monitor, scriptName);
 
         } catch (Exception e) {
-            monitor.setResult("Exception: %s", e.toString());
+            monitor.logError("Exception: %s", e.toString());
         }
 
         if (status != 0) {
-            monitor.setResult("Failed to execute %s", scriptName);
+            monitor.logError("Failed to execute %s", scriptName);
             return;
         }
     }
 
     /**
-     * Get the stderr/stdout outputs of a process and return when the process is done.
+     * Gets the stderr/stdout outputs of a process and returns when the process is done.
      * Both <b>must</b> be read or the process will block on windows.
      * @param process The process to get the ouput from.
      * @param monitor The monitor where to output errors.
@@ -198,7 +312,7 @@ public class ToolPackage extends Package {
                     while (true) {
                         String line = errReader.readLine();
                         if (line != null) {
-                            monitor.setResult("[%1$s] Error: %2$s", scriptName, line);
+                            monitor.logError("[%1$s] Error: %2$s", scriptName, line);
                         } else {
                             break;
                         }
@@ -219,7 +333,7 @@ public class ToolPackage extends Package {
                     while (true) {
                         String line = outReader.readLine();
                         if (line != null) {
-                            monitor.setResult("[%1$s] %2$s", scriptName, line);
+                            monitor.log("[%1$s] %2$s", scriptName, line);
                         } else {
                             break;
                         }
@@ -251,5 +365,31 @@ public class ToolPackage extends Package {
 
         // get the return code from the process
         return process.waitFor();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + mMinPlatformToolsRevision;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof ToolPackage)) {
+            return false;
+        }
+        ToolPackage other = (ToolPackage) obj;
+        if (mMinPlatformToolsRevision != other.mMinPlatformToolsRevision) {
+            return false;
+        }
+        return true;
     }
 }

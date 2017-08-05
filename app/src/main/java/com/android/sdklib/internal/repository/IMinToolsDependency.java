@@ -16,7 +16,7 @@
 
 package com.android.sdklib.internal.repository;
 
-import com.android.sdklib.repository.SdkRepository;
+import com.android.sdklib.repository.SdkRepoConstants;
 
 /**
  * Interface used to decorate a {@link Package} that has a dependency
@@ -28,8 +28,8 @@ import com.android.sdklib.repository.SdkRepository;
 public interface IMinToolsDependency {
 
     /**
-     * The value of {@link #getMinToolsRevision()} when the {@link SdkRepository#NODE_MIN_TOOLS_REV}
-     * was not specified in the XML source.
+     * The value of {@link #getMinToolsRevision()} when the
+     * {@link SdkRepoConstants#NODE_MIN_TOOLS_REV} was not specified in the XML source.
      */
     public static final int MIN_TOOLS_REV_NOT_SPECIFIED = 0;
 

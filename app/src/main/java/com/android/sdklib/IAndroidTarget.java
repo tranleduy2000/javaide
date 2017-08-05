@@ -29,8 +29,6 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
     public final static int ANDROID_JAR         = 1;
     /** OS Path to the "framework.aidl" file. */
     public final static int ANDROID_AIDL        = 2;
-    /** OS Path to "images" folder which contains the emulator system images. */
-    public final static int IMAGES              = 3;
     /** OS Path to the "samples" folder which contains sample projects. */
     public final static int SAMPLES             = 4;
     /** OS Path to the "skins" folder which contains the emulator skins. */
@@ -63,16 +61,28 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
     public final static int SOURCES             = 18;
     /** OS Path to the target specific docs */
     public final static int DOCS                = 19;
-    /** OS Path to the target's version of the aapt tool. */
+    /** OS Path to the target's version of the aapt tool.
+      * This is deprecated as aapt is now in the platform tools and not in the platform. */
+    @Deprecated
     public final static int AAPT                = 20;
-    /** OS Path to the target's version of the aidl tool. */
+    /** OS Path to the target's version of the aidl tool.
+      * This is deprecated as aidl is now in the platform tools and not in the platform. */
+    @Deprecated
     public final static int AIDL                = 21;
-    /** OS Path to the target's version of the dx too. */
+    /** OS Path to the target's version of the dx too.<br>
+     * This is deprecated as dx is now in the platform tools and not in the platform. */
+    @Deprecated
     public final static int DX                  = 22;
-    /** OS Path to the target's version of the dx.jar file. */
+    /** OS Path to the target's version of the dx.jar file.<br>
+     * This is deprecated as dx.jar is now in the platform tools and not in the platform.. */
+    @Deprecated
     public final static int DX_JAR              = 23;
     /** OS Path to the "ant" folder which contains the ant build rules (ver 2 and above) */
     public final static int ANT                 = 24;
+    /** OS Path to the Renderscript include folder. */
+    public final static int ANDROID_RS          = 25;
+    /** OS Path to the Renderscript(clang) include folder. */
+    public final static int ANDROID_RS_CLANG    = 26;
 
     /**
      * Return value for {@link #getUsbVendorId()} meaning no USB vendor IDs are defined by the
@@ -118,6 +128,11 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
     String getClasspathName();
 
     /**
+     * Returns the name to be displayed when representing all the libraries this target contains.
+     */
+    String getShortClasspathName();
+
+    /**
      * Returns the description of the target.
      */
     String getDescription();
@@ -152,6 +167,11 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
      * {@link IAndroidTarget} interface can be used.
      */
     String getPath(int pathId);
+
+    /**
+     * Returns whether the target is able to render layouts.
+     */
+    boolean hasRenderingLibrary();
 
     /**
      * Returns the available skins for this target.
@@ -217,6 +237,21 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
      * <p/>If the target defines no USB Vendor ID, then the method return 0.
      */
     int getUsbVendorId();
+
+    /**
+     * Returns an array of system images for this target.
+     * The array can be empty but not null.
+     */
+    public ISystemImage[] getSystemImages();
+
+    /**
+     * Returns the system image information for the given {@code abiType}.
+     *
+     * @param abiType An ABI type string.
+     * @return An existing {@link ISystemImage} for the requested {@code abiType}
+     *         or null if none exists for this type.
+     */
+    public ISystemImage getSystemImage(String abiType);
 
     /**
      * Returns whether the given target is compatible with the receiver.

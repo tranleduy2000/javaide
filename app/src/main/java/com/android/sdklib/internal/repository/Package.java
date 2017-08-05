@@ -16,16 +16,20 @@
 
 package com.android.sdklib.internal.repository;
 
+import com.android.annotations.VisibleForTesting;
+import com.android.annotations.VisibleForTesting.Visibility;
 import com.android.sdklib.AndroidVersion;
 import com.android.sdklib.SdkManager;
 import com.android.sdklib.internal.repository.Archive.Arch;
 import com.android.sdklib.internal.repository.Archive.Os;
-import com.android.sdklib.repository.SdkRepository;
+import com.android.sdklib.repository.PkgProps;
+import com.android.sdklib.repository.SdkRepoConstants;
 
 import org.w3c.dom.Node;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 
@@ -36,21 +40,11 @@ import java.util.Properties;
  * A package has some attributes (revision, description) and a list of archives
  * which represent the downloadable bits.
  * <p/>
- * Packages are contained by a {@link RepoSource} (a download site).
+ * Packages are contained by a {@link SdkSource} (a download site).
  * <p/>
  * Derived classes must implement the {@link IDescription} methods.
  */
 public abstract class Package implements IDescription, Comparable<Package> {
-
-    public static final String PROP_REVISION     = "Pkg.Revision";     //$NON-NLS-1$
-    public static final String PROP_LICENSE      = "Pkg.License";      //$NON-NLS-1$
-    public static final String PROP_DESC         = "Pkg.Desc";         //$NON-NLS-1$
-    public static final String PROP_DESC_URL     = "Pkg.DescUrl";      //$NON-NLS-1$
-    public static final String PROP_RELEASE_NOTE = "Pkg.RelNote";      //$NON-NLS-1$
-    public static final String PROP_RELEASE_URL  = "Pkg.RelNoteUrl";   //$NON-NLS-1$
-    public static final String PROP_SOURCE_URL   = "Pkg.SourceUrl";    //$NON-NLS-1$
-    public static final String PROP_USER_SOURCE  = "Pkg.UserSrc";      //$NON-NLS-1$
-    public static final String PROP_OBSOLETE     = "Pkg.Obsolete";     //$NON-NLS-1$
 
     private final int mRevision;
     private final String mObsolete;
@@ -60,7 +54,7 @@ public abstract class Package implements IDescription, Comparable<Package> {
     private final String mReleaseNote;
     private final String mReleaseUrl;
     private final Archive[] mArchives;
-    private final RepoSource mSource;
+    private final SdkSource mSource;
 
     /**
      * Enum for the result of {@link Package#canBeUpdatedBy(Package)}. This used so that we can
@@ -71,7 +65,9 @@ public abstract class Package implements IDescription, Comparable<Package> {
     public static enum UpdateInfo {
         /** Means that the 2 packages are not the same thing */
         INCOMPATIBLE,
-        /** Means that the 2 packages are the same thing but one does not upgrade the other */
+        /** Means that the 2 packages are the same thing but one does not upgrade the other.
+         *  </p>
+         *  TODO: this name is confusing. We need to dig deeper. */
         NOT_UPDATE,
         /** Means that the 2 packages are the same thing, and one is the upgrade of the other */
         UPDATE;
@@ -79,22 +75,27 @@ public abstract class Package implements IDescription, Comparable<Package> {
 
     /**
      * Creates a new package from the attributes and elements of the given XML node.
-     * <p/>
      * This constructor should throw an exception if the package cannot be created.
+     *
+     * @param source The {@link SdkSource} where this is loaded from.
+     * @param packageNode The XML element being parsed.
+     * @param nsUri The namespace URI of the originating XML document, to be able to deal with
+     *          parameters that vary according to the originating XML schema.
+     * @param licenses The licenses loaded from the XML originating document.
      */
-    Package(RepoSource source, Node packageNode, Map<String,String> licenses) {
+    Package(SdkSource source, Node packageNode, String nsUri, Map<String,String> licenses) {
         mSource = source;
-        mRevision    = XmlParserUtils.getXmlInt   (packageNode, SdkRepository.NODE_REVISION, 0);
-        mDescription = XmlParserUtils.getXmlString(packageNode, SdkRepository.NODE_DESCRIPTION);
-        mDescUrl     = XmlParserUtils.getXmlString(packageNode, SdkRepository.NODE_DESC_URL);
-        mReleaseNote = XmlParserUtils.getXmlString(packageNode, SdkRepository.NODE_RELEASE_NOTE);
-        mReleaseUrl  = XmlParserUtils.getXmlString(packageNode, SdkRepository.NODE_RELEASE_URL);
+        mRevision    = XmlParserUtils.getXmlInt   (packageNode, SdkRepoConstants.NODE_REVISION, 0);
+        mDescription = XmlParserUtils.getXmlString(packageNode, SdkRepoConstants.NODE_DESCRIPTION);
+        mDescUrl     = XmlParserUtils.getXmlString(packageNode, SdkRepoConstants.NODE_DESC_URL);
+        mReleaseNote = XmlParserUtils.getXmlString(packageNode, SdkRepoConstants.NODE_RELEASE_NOTE);
+        mReleaseUrl  = XmlParserUtils.getXmlString(packageNode, SdkRepoConstants.NODE_RELEASE_URL);
         mObsolete    = XmlParserUtils.getOptionalXmlString(
-                                                   packageNode, SdkRepository.NODE_OBSOLETE);
+                                                   packageNode, SdkRepoConstants.NODE_OBSOLETE);
 
         mLicense  = parseLicense(packageNode, licenses);
         mArchives = parseArchives(XmlParserUtils.getFirstChild(
-                                  packageNode, SdkRepository.NODE_ARCHIVES));
+                                  packageNode, SdkRepoConstants.NODE_ARCHIVES));
     }
 
     /**
@@ -107,7 +108,7 @@ public abstract class Package implements IDescription, Comparable<Package> {
      * By design, this creates a package with one and only one archive.
      */
     public Package(
-            RepoSource source,
+            SdkSource source,
             Properties props,
             int revision,
             String license,
@@ -124,38 +125,69 @@ public abstract class Package implements IDescription, Comparable<Package> {
             descUrl = "";
         }
 
-        mRevision = Integer.parseInt(getProperty(props, PROP_REVISION, Integer.toString(revision)));
-        mLicense     = getProperty(props, PROP_LICENSE,      license);
-        mDescription = getProperty(props, PROP_DESC,         description);
-        mDescUrl     = getProperty(props, PROP_DESC_URL,     descUrl);
-        mReleaseNote = getProperty(props, PROP_RELEASE_NOTE, "");
-        mReleaseUrl  = getProperty(props, PROP_RELEASE_URL,  "");
-        mObsolete    = getProperty(props, PROP_OBSOLETE,     null);
+        mRevision = Integer.parseInt(
+                       getProperty(props, PkgProps.PKG_REVISION, Integer.toString(revision)));
+        mLicense     = getProperty(props, PkgProps.PKG_LICENSE,      license);
+        mDescription = getProperty(props, PkgProps.PKG_DESC,         description);
+        mDescUrl     = getProperty(props, PkgProps.PKG_DESC_URL,     descUrl);
+        mReleaseNote = getProperty(props, PkgProps.PKG_RELEASE_NOTE, "");
+        mReleaseUrl  = getProperty(props, PkgProps.PKG_RELEASE_URL,  "");
+        mObsolete    = getProperty(props, PkgProps.PKG_OBSOLETE,     null);
 
         // If source is null and we can find a source URL in the properties, generate
         // a dummy source just to store the URL. This allows us to easily remember where
         // a package comes from.
-        String srcUrl = getProperty(props, PROP_SOURCE_URL, null);
+        String srcUrl = getProperty(props, PkgProps.PKG_SOURCE_URL, null);
         if (props != null && source == null && srcUrl != null) {
-            boolean isUser = Boolean.parseBoolean(props.getProperty(PROP_USER_SOURCE,
-                                                                    Boolean.TRUE.toString()));
-            source = new RepoSource(srcUrl, isUser);
+            if (this instanceof AddonPackage) {
+                source = new SdkAddonSource(srcUrl, null /*uiName*/);
+            } else {
+                source = new SdkRepoSource(srcUrl, null /*uiName*/);
+            }
         }
         mSource = source;
 
-        mArchives = new Archive[1];
-        mArchives[0] = new Archive(this,
-                props,
-                archiveOs,
-                archiveArch,
-                archiveOsPath);
+        assert archiveOsPath != null;
+        mArchives = initializeArchives(props, archiveOs, archiveArch, archiveOsPath);
+    }
+
+    /**
+     * Called by the constructor to get the initial {@link #mArchives} array.
+     * <p/>
+     * This is invoked by the local-package constructor and allows mock testing
+     * classes to override the archives created.
+     * This is an <em>implementation</em> details and clients must <em>not</em>
+     * rely on this.
+     *
+     * @return Always return a non-null array. The array may be empty.
+     */
+    @VisibleForTesting(visibility=Visibility.PRIVATE)
+    protected Archive[] initializeArchives(
+            Properties props,
+            Os archiveOs,
+            Arch archiveArch,
+            String archiveOsPath) {
+        return new Archive[] {
+                new Archive(this,
+                    props,
+                    archiveOs,
+                    archiveArch,
+                    archiveOsPath) };
     }
 
     /**
      * Utility method that returns a property from a {@link Properties} object.
      * Returns the default value if props is null or if the property is not defined.
+     *
+     * @param props The {@link Properties} to search into.
+     *   If null, the default value is returned.
+     * @param propKey The name of the property. Must not be null.
+     * @param defaultValue The default value to return if {@code props} is null or if the
+     *   key is not found. Can be null.
+     * @return The string value of the given key in the properties, or null if the key
+     *   isn't found or if {@code props} is null.
      */
-    protected String getProperty(Properties props, String propKey, String defaultValue) {
+    static String getProperty(Properties props, String propKey, String defaultValue) {
         if (props == null) {
             return defaultValue;
         }
@@ -167,31 +199,30 @@ public abstract class Package implements IDescription, Comparable<Package> {
      * These properties will later be give the constructor that takes a {@link Properties} object.
      */
     void saveProperties(Properties props) {
-        props.setProperty(PROP_REVISION, Integer.toString(mRevision));
+        props.setProperty(PkgProps.PKG_REVISION, Integer.toString(mRevision));
         if (mLicense != null && mLicense.length() > 0) {
-            props.setProperty(PROP_LICENSE, mLicense);
+            props.setProperty(PkgProps.PKG_LICENSE, mLicense);
         }
 
         if (mDescription != null && mDescription.length() > 0) {
-            props.setProperty(PROP_DESC, mDescription);
+            props.setProperty(PkgProps.PKG_DESC, mDescription);
         }
         if (mDescUrl != null && mDescUrl.length() > 0) {
-            props.setProperty(PROP_DESC_URL, mDescUrl);
+            props.setProperty(PkgProps.PKG_DESC_URL, mDescUrl);
         }
 
         if (mReleaseNote != null && mReleaseNote.length() > 0) {
-            props.setProperty(PROP_RELEASE_NOTE, mReleaseNote);
+            props.setProperty(PkgProps.PKG_RELEASE_NOTE, mReleaseNote);
         }
         if (mReleaseUrl != null && mReleaseUrl.length() > 0) {
-            props.setProperty(PROP_RELEASE_URL, mReleaseUrl);
+            props.setProperty(PkgProps.PKG_RELEASE_URL, mReleaseUrl);
         }
         if (mObsolete != null) {
-            props.setProperty(PROP_OBSOLETE, mObsolete);
+            props.setProperty(PkgProps.PKG_OBSOLETE, mObsolete);
         }
 
         if (mSource != null) {
-            props.setProperty(PROP_SOURCE_URL,  mSource.getUrl());
-            props.setProperty(PROP_USER_SOURCE, Boolean.toString(mSource.isUserSource()));
+            props.setProperty(PkgProps.PKG_SOURCE_URL,  mSource.getUrl());
         }
     }
 
@@ -202,9 +233,9 @@ public abstract class Package implements IDescription, Comparable<Package> {
      */
     private String parseLicense(Node packageNode, Map<String, String> licenses) {
         Node usesLicense = XmlParserUtils.getFirstChild(
-                                            packageNode, SdkRepository.NODE_USES_LICENSE);
+                                            packageNode, SdkRepoConstants.NODE_USES_LICENSE);
         if (usesLicense != null) {
-            Node ref = usesLicense.getAttributes().getNamedItem(SdkRepository.ATTR_REF);
+            Node ref = usesLicense.getAttributes().getNamedItem(SdkRepoConstants.ATTR_REF);
             if (ref != null) {
                 String licenseRef = ref.getNodeValue();
                 return licenses.get(licenseRef);
@@ -215,6 +246,7 @@ public abstract class Package implements IDescription, Comparable<Package> {
 
     /**
      * Parses an XML node to process the <archives> element.
+     * Always return a non-null array. The array may be empty.
      */
     private Archive[] parseArchives(Node archivesNode) {
         ArrayList<Archive> archives = new ArrayList<Archive>();
@@ -222,12 +254,12 @@ public abstract class Package implements IDescription, Comparable<Package> {
         if (archivesNode != null) {
             String nsUri = archivesNode.getNamespaceURI();
             for(Node child = archivesNode.getFirstChild();
-                child != null;
-                child = child.getNextSibling()) {
+                     child != null;
+                     child = child.getNextSibling()) {
 
                 if (child.getNodeType() == Node.ELEMENT_NODE &&
                         nsUri.equals(child.getNamespaceURI()) &&
-                        SdkRepository.NODE_ARCHIVE.equals(child.getLocalName())) {
+                        SdkRepoConstants.NODE_ARCHIVE.equals(child.getLocalName())) {
                     archives.add(parseArchive(child));
                 }
             }
@@ -242,13 +274,13 @@ public abstract class Package implements IDescription, Comparable<Package> {
     private Archive parseArchive(Node archiveNode) {
         Archive a = new Archive(
                     this,
-                    (Os)   XmlParserUtils.getEnumAttribute(archiveNode, SdkRepository.ATTR_OS,
+                    (Os)   XmlParserUtils.getEnumAttribute(archiveNode, SdkRepoConstants.ATTR_OS,
                             Os.values(), null),
-                    (Arch) XmlParserUtils.getEnumAttribute(archiveNode, SdkRepository.ATTR_ARCH,
+                    (Arch) XmlParserUtils.getEnumAttribute(archiveNode, SdkRepoConstants.ATTR_ARCH,
                             Arch.values(), Arch.ANY),
-                    XmlParserUtils.getXmlString(archiveNode, SdkRepository.NODE_URL),
-                    XmlParserUtils.getXmlLong  (archiveNode, SdkRepository.NODE_SIZE, 0),
-                    XmlParserUtils.getXmlString(archiveNode, SdkRepository.NODE_CHECKSUM)
+                    XmlParserUtils.getXmlString(archiveNode, SdkRepoConstants.NODE_URL),
+                    XmlParserUtils.getXmlLong  (archiveNode, SdkRepoConstants.NODE_SIZE, 0),
+                    XmlParserUtils.getXmlString(archiveNode, SdkRepoConstants.NODE_CHECKSUM)
                 );
 
         return a;
@@ -257,7 +289,7 @@ public abstract class Package implements IDescription, Comparable<Package> {
     /**
      * Returns the source that created (and owns) this package. Can be null.
      */
-    public RepoSource getParentSource() {
+    public SdkSource getParentSource() {
         return mSource;
     }
 
@@ -326,6 +358,19 @@ public abstract class Package implements IDescription, Comparable<Package> {
     }
 
     /**
+     * Returns true if this package contains the exact given archive.
+     * Important: This compares object references, not object equality.
+     */
+    public boolean hasArchive(Archive archive) {
+        for (Archive a : mArchives) {
+            if (a == archive) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns whether the {@link Package} has at least one {@link Archive} compatible with
      * the host platform.
      */
@@ -338,6 +383,60 @@ public abstract class Package implements IDescription, Comparable<Package> {
 
         return false;
     }
+
+    /**
+     * Returns a short, reasonably unique string identifier that can be used
+     * to identify this package when installing from the command-line interface.
+     * {@code 'android list sdk'} will show these IDs and then in turn they can
+     * be provided to {@code 'android update sdk --no-ui --filter'} to select
+     * some specific packages.
+     * <p/>
+     * The identifiers must have the following properties: <br/>
+     * - They must contain only simple alphanumeric characters. <br/>
+     * - Commas, whitespace and any special character that could be obviously problematic
+     *   to a shell interface should be avoided (so dash/underscore are OK, but things
+     *   like colon, pipe or dollar should be avoided.) <br/>
+     * - The name must be consistent across calls and reasonably unique for the package
+     *   type. Collisions can occur but should be rare. <br/>
+     * - Different package types should have a clearly different name pattern. <br/>
+     * - The revision number should not be included, as this would prevent updates
+     *   from being automated (which is the whole point.) <br/>
+     * - It must remain reasonably human readable. <br/>
+     * - If no such id can exist (for example for a local package that cannot be installed)
+     *   then an empty string should be returned. Don't return null.
+     * <p/>
+     * Important: This is <em>not</em> a strong unique identifier for the package.
+     * If you need a strong unique identifier, you should use {@link #comparisonKey()}
+     * and the {@link Comparable} interface.
+     */
+    public abstract String installId();
+
+    /**
+     * Returns the short description of the source, if not null.
+     * Otherwise returns the default Object toString result.
+     * <p/>
+     * This is mostly helpful for debugging.
+     * For UI display, use the {@link IDescription} interface.
+     */
+    @Override
+    public String toString() {
+        String s = getShortDescription();
+        if (s != null) {
+            return s;
+        }
+        return super.toString();
+    }
+
+    /**
+     * Returns a description of this package that is suitable for a list display.
+     * Should not be empty. Must never be null.
+     * <p/>
+     * Note that this is the "base" name for the package
+     * with no specific revision nor API mentionned.
+     * In contrast, {@link #getShortDescription()} should be used if you want more details
+     * such as the package revision number or the API, if applicable.
+     */
+    public abstract String getListDescription();
 
     /**
      * Returns a short description for an {@link IDescription}.
@@ -383,24 +482,33 @@ public abstract class Package implements IDescription, Comparable<Package> {
     }
 
     /**
+     * A package is local (that is 'installed locally') if it contains a single
+     * archive that is local. If not local, it's a remote package, only available
+     * on a remote source for download and installation.
+     */
+    public boolean isLocal() {
+        return mArchives.length == 1 && mArchives[0].isLocal();
+    }
+
+    /**
      * Computes a potential installation folder if an archive of this package were
      * to be installed right away in the given SDK root.
      * <p/>
      * Some types of packages install in a fix location, for example docs and tools.
      * In this case the returned folder may already exist with a different archive installed
-     * at the desired location.
+     * at the desired location. <br/>
      * For other packages types, such as add-on or platform, the folder name is only partially
      * relevant to determine the content and thus a real check will be done to provide an
      * existing or new folder depending on the current content of the SDK.
+     * <p/>
+     * Note that the installer *will* create all directories returned here just before
+     * installation so this method must not attempt to create them.
      *
      * @param osSdkRoot The OS path of the SDK root folder.
-     * @param suggestedDir A suggestion for the installation folder name, based on the root
-     *                     folder used in the zip archive.
      * @param sdkManager An existing SDK manager to list current platforms and addons.
      * @return A new {@link File} corresponding to the directory to use to install this package.
      */
-    public abstract File getInstallFolder(
-            String osSdkRoot, String suggestedDir, SdkManager sdkManager);
+    public abstract File getInstallFolder(String osSdkRoot, SdkManager sdkManager);
 
     /**
      * Hook called right before an archive is installed. The archive has already
@@ -411,6 +519,11 @@ public abstract class Package implements IDescription, Comparable<Package> {
      * be continue. The installer will still install the remaining packages if possible.
      * <p/>
      * The base implementation always return true.
+     * <p/>
+     * Note that the installer *will* create all directories specified by
+     * {@link #getInstallFolder} just before installation, so they must not be
+     * created here. This is also called before the previous install dir is removed
+     * so the previous content is still there during upgrade.
      *
      * @param archive The archive that will be installed
      * @param monitor The {@link ITaskMonitor} to display errors.
@@ -433,7 +546,8 @@ public abstract class Package implements IDescription, Comparable<Package> {
      * @param archive The archive that has been installed.
      * @param monitor The {@link ITaskMonitor} to display errors.
      * @param installFolder The folder where the archive was successfully installed.
-     *                      Null if the installation failed.
+     *                      Null if the installation failed, in case the archive needs to
+     *                      do some cleanup after <code>preInstallHook</code>.
      */
     public void postInstallHook(Archive archive, ITaskMonitor monitor, File installFolder) {
         // Nothing to do in base class.
@@ -480,57 +594,149 @@ public abstract class Package implements IDescription, Comparable<Package> {
         return UpdateInfo.NOT_UPDATE;
     }
 
-
     /**
-     * Returns an ordering like this:
-     * - Tools.
-     * - Docs.
-     * - Platform n preview
-     * - Platform n
-     * - Platform n-1
-     * - Samples packages.
-     * - Add-on based on n preview
-     * - Add-on based on n
-     * - Add-on based on n-1
-     * - Extra packages.
+     * Returns an ordering like this: <br/>
+     * - Tools <br/>
+     * - Platform-Tools <br/>
+     * - Docs. <br/>
+     * - Platform n preview <br/>
+     * - Platform n <br/>
+     * - Platform n-1 <br/>
+     * - Samples packages <br/>
+     * - Add-on based on n preview <br/>
+     * - Add-on based on n <br/>
+     * - Add-on based on n-1 <br/>
+     * - Extra packages <br/>
+     * <p/>
+     * Important: this must NOT be used to compare if two packages are the same thing.
+     * This is achieved by {@link #sameItemAs(Package)} or {@link #canBeUpdatedBy(Package)}.
+     * <p/>
+     * This {@link #compareTo(Package)} method is purely an implementation detail to
+     * perform the right ordering of the packages in the list of available or installed packages.
+     * <p/>
+     * <em>Important</em>: Derived classes should consider overriding {@link #comparisonKey()}
+     * instead of this method.
      */
     public int compareTo(Package other) {
-        int s1 = this.sortingScore();
-        int s2 = other.sortingScore();
-        return s1 - s2;
+        String s1 = this.comparisonKey();
+        String s2 = other.comparisonKey();
+
+        return s1.compareTo(s2);
     }
 
     /**
-     * Computes the score for each package used by {@link #compareTo(Package)}.
+     * Computes a comparison key for each package used by {@link #compareTo(Package)}.
+     * The key is a string.
+     * The base package class return a string that encodes the package type,
+     * the revision number and the platform version, if applicable, in the form:
+     * <pre>
+     *      t:N|v:NNNN.P|r:NNNN|
+     * </pre>
+     * All fields must start by a "letter colon" prefix and end with a vertical pipe (|, ASCII 124).
+     * <p/>
+     * The string format <em>may</em> change between releases and clients should not
+     * store them outside of the session or expect them to be consistent between
+     * different releases. They are purely an internal implementation details of the
+     * {@link #compareTo(Package)} method.
+     * <p/>
+     * Derived classes should get the string from the super class and then append
+     * or <em>insert</em> their own |-separated content.
+     * For example an extra vendor name & path can be inserted before the revision
+     * number, since it has more sorting weight.
      */
-    private int sortingScore() {
-        // up to 31 bits (for signed stuff)
-        int type = 0;             // max type=5 => 3 bits
-        int rev = getRevision();  // 12 bits... 4095
-        int offset = 0;           // 16 bits...
+    protected String comparisonKey() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("t:");                                                        //$NON-NLS-1$
         if (this instanceof ToolPackage) {
-            type = 5;
+            sb.append(0);
+        } else if (this instanceof PlatformToolPackage) {
+            sb.append(1);
         } else if (this instanceof DocPackage) {
-            type = 4;
+            sb.append(2);
         } else if (this instanceof PlatformPackage) {
-            type = 3;
+            sb.append(3);
         } else if (this instanceof SamplePackage) {
-            type = 2;
+            sb.append(4);
+        } else if (this instanceof SystemImagePackage) {
+            sb.append(5);
         } else if (this instanceof AddonPackage) {
-            type = 1;
+            sb.append(6);
         } else {
             // extras and everything else
-            type = 0;
+            sb.append(9);
         }
+        sb.append("|v:");                                                       //$NON-NLS-1$
+
+
+        // We insert the package version here because it is more important
+        // than the revision number. We want package version to be sorted
+        // top-down, so we'll use 10k-api as the sorting key. The day we
+        // get reach 10k APIs, we'll need to revisit this.
 
         if (this instanceof IPackageVersion) {
             AndroidVersion v = ((IPackageVersion) this).getVersion();
-            offset = v.getApiLevel();
-            offset = offset * 2 + (v.isPreview() ? 1 : 0);
-        }
 
-        int n = (type << 28) + (offset << 12) + rev;
-        return 0 - n;
+            sb.append(String.format("%1$04d.%2$d",                              //$NON-NLS-1$
+                    10000 - v.getApiLevel(),
+                    v.isPreview() ? 1 : 0
+                    ));
+        }
+        sb.append("|r:");                                                       //$NON-NLS-1$
+
+
+        // Append revision number
+
+        sb.append(String.format("%1$04d", getRevision()));                      //$NON-NLS-1$
+        sb.append('|');
+
+        return sb.toString();
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(mArchives);
+        result = prime * result + ((mObsolete == null) ? 0 : mObsolete.hashCode());
+        result = prime * result + mRevision;
+        result = prime * result + ((mSource == null) ? 0 : mSource.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Package)) {
+            return false;
+        }
+        Package other = (Package) obj;
+        if (!Arrays.equals(mArchives, other.mArchives)) {
+            return false;
+        }
+        if (mObsolete == null) {
+            if (other.mObsolete != null) {
+                return false;
+            }
+        } else if (!mObsolete.equals(other.mObsolete)) {
+            return false;
+        }
+        if (mRevision != other.mRevision) {
+            return false;
+        }
+        if (mSource == null) {
+            if (other.mSource != null) {
+                return false;
+            }
+        } else if (!mSource.equals(other.mSource)) {
+            return false;
+        }
+        return true;
+    }
 }

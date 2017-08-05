@@ -16,10 +16,10 @@
 
 package com.android.sdklib.xml;
 
+import com.android.io.IAbstractFile;
+import com.android.io.IAbstractFolder;
+import com.android.io.StreamException;
 import com.android.sdklib.SdkConstants;
-import com.android.sdklib.io.IAbstractFile;
-import com.android.sdklib.io.IAbstractFolder;
-import com.android.sdklib.io.StreamException;
 
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -37,6 +37,7 @@ public final class AndroidManifest {
     public final static String NODE_MANIFEST = "manifest";
     public final static String NODE_APPLICATION = "application";
     public final static String NODE_ACTIVITY = "activity";
+    public final static String NODE_ACTIVITY_ALIAS = "activity-alias";
     public final static String NODE_SERVICE = "service";
     public final static String NODE_RECEIVER = "receiver";
     public final static String NODE_PROVIDER = "provider";
@@ -57,9 +58,13 @@ public final class AndroidManifest {
     public final static String ATTRIBUTE_GLESVERSION = "glEsVersion";
     public final static String ATTRIBUTE_PROCESS = "process";
     public final static String ATTRIBUTE_DEBUGGABLE = "debuggable";
+    public final static String ATTRIBUTE_LABEL = "label";
+    public final static String ATTRIBUTE_ICON = "icon";
     public final static String ATTRIBUTE_MIN_SDK_VERSION = "minSdkVersion";
     public final static String ATTRIBUTE_TARGET_SDK_VERSION = "targetSdkVersion";
     public final static String ATTRIBUTE_TARGET_PACKAGE = "targetPackage";
+    public final static String ATTRIBUTE_TARGET_ACTIVITY = "targetActivity";
+    public final static String ATTRIBUTE_MANAGE_SPACE_ACTIVITY = "manageSpaceActivity";
     public final static String ATTRIBUTE_EXPORTED = "exported";
     public final static String ATTRIBUTE_RESIZEABLE = "resizeable";
     public final static String ATTRIBUTE_ANYDENSITY = "anyDensity";
@@ -71,6 +76,23 @@ public final class AndroidManifest {
     public final static String ATTRIBUTE_REQ_HARDKEYBOARD = "reqHardKeyboard";
     public final static String ATTRIBUTE_REQ_KEYBOARDTYPE = "reqKeyboardType";
     public final static String ATTRIBUTE_REQ_TOUCHSCREEN = "reqTouchScreen";
+    public static final String ATTRIBUTE_THEME = "theme";
+
+    /**
+     * Returns an {@link IAbstractFile} object representing the manifest for the given project.
+     *
+     * @param projectFolder The project containing the manifest file.
+     * @return An IAbstractFile object pointing to the manifest or null if the manifest
+     *         is missing.
+     */
+    public static IAbstractFile getManifest(IAbstractFolder projectFolder) {
+        IAbstractFile file = projectFolder.getFile(SdkConstants.FN_ANDROID_MANIFEST_XML);
+        if (file.exists()) {
+            return file;
+        }
+
+        return null;
+    }
 
     /**
      * Returns the package for a given project.
@@ -81,8 +103,12 @@ public final class AndroidManifest {
      */
     public static String getPackage(IAbstractFolder projectFolder)
             throws XPathExpressionException, StreamException {
-        IAbstractFile file = projectFolder.getFile(SdkConstants.FN_ANDROID_MANIFEST_XML);
-        return getPackage(file);
+        IAbstractFile file = getManifest(projectFolder);
+        if (file != null) {
+            return getPackage(file);
+        }
+
+        return null;
     }
 
     /**
@@ -100,6 +126,32 @@ public final class AndroidManifest {
                 "/"  + NODE_MANIFEST +
                 "/@" + ATTRIBUTE_PACKAGE,
                 new InputSource(manifestFile.getContents()));
+    }
+
+    /**
+     * Returns whether the manifest is set to make the application debuggable.
+     *
+     * If the give manifest does not contain the debuggable attribute then the application
+     * is considered to not be debuggable.
+     *
+     * @param manifestFile the manifest to parse.
+     * @return true if the application is debuggable.
+     * @throws XPathExpressionException
+     * @throws StreamException If any error happens when reading the manifest.
+     */
+    public static boolean getDebuggable(IAbstractFile manifestFile)
+            throws XPathExpressionException, StreamException {
+        XPath xPath = AndroidXPathFactory.newXPath();
+
+        String value = xPath.evaluate(
+                "/"  + NODE_MANIFEST +
+                "/"  + NODE_APPLICATION +
+                "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
+                ":"  + ATTRIBUTE_DEBUGGABLE,
+                new InputSource(manifestFile.getContents()));
+
+        // default is not debuggable, which is the same behavior as parseBoolean
+        return Boolean.parseBoolean(value);
     }
 
     /**
@@ -155,14 +207,20 @@ public final class AndroidManifest {
     }
 
     /**
-     * Returns the value of the minSdkVersion attribute (defaults to 1 if the attribute is not set),
-     * or -1 if the value is a codename.
+     * Returns the value of the minSdkVersion attribute.
+     * <p/>
+     * If the attribute is set with an int value, the method returns an Integer object.
+     * <p/>
+     * If the attribute is set with a codename, it returns the codename as a String object.
+     * <p/>
+     * If the attribute is not set, it returns null.
+     *
      * @param manifestFile the manifest file to read the attribute from.
-     * @return the integer value or -1 if not set.
+     * @return the attribute value.
      * @throws XPathExpressionException
      * @throws StreamException If any error happens when reading the manifest.
      */
-    public static int getMinSdkVersion(IAbstractFile manifestFile)
+    public static Object getMinSdkVersion(IAbstractFile manifestFile)
             throws XPathExpressionException, StreamException {
         XPath xPath = AndroidXPathFactory.newXPath();
 
@@ -174,12 +232,75 @@ public final class AndroidManifest {
                 new InputSource(manifestFile.getContents()));
 
         try {
-            return Integer.parseInt(result);
+            return Integer.valueOf(result);
         } catch (NumberFormatException e) {
-            return result.length() > 0 ? -1 : 1;
+            return result.length() > 0 ? result : null;
         }
     }
 
+    /**
+     * Returns the value of the targetSdkVersion attribute (defaults to 1 if the attribute is
+     * not set), or -1 if the value is a codename.
+     * @param manifestFile the manifest file to read the attribute from.
+     * @return the integer value or -1 if not set.
+     * @throws XPathExpressionException
+     * @throws StreamException If any error happens when reading the manifest.
+     */
+    public static Integer getTargetSdkVersion(IAbstractFile manifestFile)
+            throws XPathExpressionException, StreamException {
+        XPath xPath = AndroidXPathFactory.newXPath();
+
+        String result = xPath.evaluate(
+                "/"  + NODE_MANIFEST +
+                "/"  + NODE_USES_SDK +
+                "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
+                ":"  + ATTRIBUTE_TARGET_SDK_VERSION,
+                new InputSource(manifestFile.getContents()));
+
+        try {
+            return Integer.valueOf(result);
+        } catch (NumberFormatException e) {
+            return result.length() > 0 ? -1 : null;
+        }
+    }
+
+    /**
+     * Returns the application icon  for a given manifest.
+     * @param manifestFile the manifest to parse.
+     * @return the icon or null (or empty) if not found.
+     * @throws XPathExpressionException
+     * @throws StreamException If any error happens when reading the manifest.
+     */
+    public static String getApplicationIcon(IAbstractFile manifestFile)
+            throws XPathExpressionException, StreamException {
+        XPath xPath = AndroidXPathFactory.newXPath();
+
+        return xPath.evaluate(
+                "/"  + NODE_MANIFEST +
+                "/"  + NODE_APPLICATION +
+                "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
+                ":"  + ATTRIBUTE_ICON,
+                new InputSource(manifestFile.getContents()));
+    }
+
+    /**
+     * Returns the application label  for a given manifest.
+     * @param manifestFile the manifest to parse.
+     * @return the label or null (or empty) if not found.
+     * @throws XPathExpressionException
+     * @throws StreamException If any error happens when reading the manifest.
+     */
+    public static String getApplicationLabel(IAbstractFile manifestFile)
+            throws XPathExpressionException, StreamException {
+        XPath xPath = AndroidXPathFactory.newXPath();
+
+        return xPath.evaluate(
+                "/"  + NODE_MANIFEST +
+                "/"  + NODE_APPLICATION +
+                "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
+                ":"  + ATTRIBUTE_LABEL,
+                new InputSource(manifestFile.getContents()));
+    }
 
     /**
      * Combines a java package, with a class value from the manifest to make a fully qualified

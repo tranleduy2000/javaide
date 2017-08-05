@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion as Integer
     buildToolsVersion rootProject.ext.buildToolsVersion as String
+    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.duy.compiler.javanide"
@@ -46,7 +47,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    androidTestCompile 'com.android.support:support-annotations:26.+'
+    androidTestCompile 'com.android.support:support-annotations:26.0.0-alpha1'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
     // Optional -- Hamcrest library

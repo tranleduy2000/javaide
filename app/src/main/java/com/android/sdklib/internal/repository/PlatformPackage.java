@@ -16,13 +16,17 @@
 
 package com.android.sdklib.internal.repository;
 
+import com.android.annotations.VisibleForTesting;
+import com.android.annotations.VisibleForTesting.Visibility;
 import com.android.sdklib.AndroidVersion;
 import com.android.sdklib.IAndroidTarget;
 import com.android.sdklib.SdkConstants;
 import com.android.sdklib.SdkManager;
 import com.android.sdklib.internal.repository.Archive.Arch;
 import com.android.sdklib.internal.repository.Archive.Os;
-import com.android.sdklib.repository.SdkRepository;
+import com.android.sdklib.repository.PkgProps;
+import com.android.sdklib.repository.SdkRepoConstants;
+import com.android.util.Pair;
 
 import org.w3c.dom.Node;
 
@@ -33,9 +37,7 @@ import java.util.Properties;
 /**
  * Represents a platform XML node in an SDK repository.
  */
-public class PlatformPackage extends MinToolsPackage implements IPackageVersion {
-
-    public static final String PROP_VERSION       = "Platform.Version";      //$NON-NLS-1$
+public class PlatformPackage extends MinToolsPackage implements IPackageVersion, ILayoutlibVersion {
 
     /** The package version, for platform, add-on and doc packages. */
     private final AndroidVersion mVersion;
@@ -43,21 +45,38 @@ public class PlatformPackage extends MinToolsPackage implements IPackageVersion 
     /** The version, a string, for platform packages. */
     private final String mVersionName;
 
+    /** The ABI of the system-image included in this platform. Can be null but not empty. */
+    private final String mIncludedAbi;
+
+    /** The helper handling the layoutlib version. */
+    private final LayoutlibVersionMixin mLayoutlibVersion;
+
     /**
      * Creates a new platform package from the attributes and elements of the given XML node.
-     * <p/>
      * This constructor should throw an exception if the package cannot be created.
+     *
+     * @param source The {@link SdkSource} where this is loaded from.
+     * @param packageNode The XML element being parsed.
+     * @param nsUri The namespace URI of the originating XML document, to be able to deal with
+     *          parameters that vary according to the originating XML schema.
+     * @param licenses The licenses loaded from the XML originating document.
      */
-    PlatformPackage(RepoSource source, Node packageNode, Map<String,String> licenses) {
-        super(source, packageNode, licenses);
+    PlatformPackage(SdkSource source, Node packageNode, String nsUri, Map<String,String> licenses) {
+        super(source, packageNode, nsUri, licenses);
 
-        mVersionName = XmlParserUtils.getXmlString(packageNode, SdkRepository.NODE_VERSION);
-        int apiLevel = XmlParserUtils.getXmlInt   (packageNode, SdkRepository.NODE_API_LEVEL, 0);
-        String codeName = XmlParserUtils.getXmlString(packageNode, SdkRepository.NODE_CODENAME);
+        mVersionName = XmlParserUtils.getXmlString(packageNode, SdkRepoConstants.NODE_VERSION);
+
+        int apiLevel = XmlParserUtils.getXmlInt   (packageNode, SdkRepoConstants.NODE_API_LEVEL, 0);
+        String codeName = XmlParserUtils.getXmlString(packageNode, SdkRepoConstants.NODE_CODENAME);
         if (codeName.length() == 0) {
             codeName = null;
         }
         mVersion = new AndroidVersion(apiLevel, codeName);
+
+        mIncludedAbi = XmlParserUtils.getOptionalXmlString(
+                packageNode, SdkRepoConstants.NODE_ABI_INCLUDED);
+
+        mLayoutlibVersion = new LayoutlibVersionMixin(packageNode);
     }
 
     /**
@@ -68,8 +87,18 @@ public class PlatformPackage extends MinToolsPackage implements IPackageVersion 
      * <p/>
      * By design, this creates a package with one and only one archive.
      */
-    PlatformPackage(IAndroidTarget target, Properties props) {
-        super(  null,                       //source
+    static Package create(IAndroidTarget target, Properties props) {
+        return new PlatformPackage(target, props);
+    }
+
+    @VisibleForTesting(visibility=Visibility.PRIVATE)
+    protected PlatformPackage(IAndroidTarget target, Properties props) {
+        this(null /*source*/, target, props);
+    }
+
+    @VisibleForTesting(visibility=Visibility.PRIVATE)
+    protected PlatformPackage(SdkSource source, IAndroidTarget target, Properties props) {
+        super(  source,                     //source
                 props,                      //properties
                 target.getRevision(),       //revision
                 null,                       //license
@@ -82,6 +111,8 @@ public class PlatformPackage extends MinToolsPackage implements IPackageVersion 
 
         mVersion = target.getVersion();
         mVersionName  = target.getVersionName();
+        mLayoutlibVersion = new LayoutlibVersionMixin(props);
+        mIncludedAbi = props == null ? null : props.getProperty(PkgProps.PLATFORM_INCLUDED_ABI);
     }
 
     /**
@@ -93,10 +124,16 @@ public class PlatformPackage extends MinToolsPackage implements IPackageVersion 
         super.saveProperties(props);
 
         mVersion.saveProperties(props);
+        mLayoutlibVersion.saveProperties(props);
 
         if (mVersionName != null) {
-            props.setProperty(PROP_VERSION, mVersionName);
+            props.setProperty(PkgProps.PLATFORM_VERSION, mVersionName);
         }
+
+        if (mIncludedAbi != null) {
+            props.setProperty(PkgProps.PLATFORM_INCLUDED_ABI, mIncludedAbi);
+        }
+
     }
 
     /** Returns the version, a string, for platform packages. */
@@ -109,7 +146,68 @@ public class PlatformPackage extends MinToolsPackage implements IPackageVersion 
         return mVersion;
     }
 
-    /** Returns a short description for an {@link IDescription}. */
+    /**
+     * Returns the ABI of the system-image included in this platform.
+     *
+     * @return Null if the platform does not include any system-image.
+     *  Otherwise should be a valid non-empty ABI string (e.g. "x86" or "armeabi-v7a").
+     */
+    public String getIncludedAbi() {
+        return mIncludedAbi;
+    }
+
+    /**
+     * Returns the layoutlib version. Mandatory starting with repository XSD rev 4.
+     * <p/>
+     * The first integer is the API of layoublib, which should be > 0.
+     * It will be equal to {@link ILayoutlibVersion#LAYOUTLIB_API_NOT_SPECIFIED} (0)
+     * if the layoutlib version isn't specified.
+     * <p/>
+     * The second integer is the revision for that given API. It is >= 0
+     * and works as a minor revision number, incremented for the same API level.
+     *
+     * @since sdk-repository-4.xsd
+     */
+    public Pair<Integer, Integer> getLayoutlibVersion() {
+        return mLayoutlibVersion.getLayoutlibVersion();
+    }
+
+    /**
+     * Returns a string identifier to install this package from the command line.
+     * For platforms, we use "android-N" where N is the API or the preview codename.
+     * <p/>
+     * {@inheritDoc}
+     */
+    @Override
+    public String installId() {
+        return "android-" + mVersion.getApiString();    //$NON-NLS-1$
+    }
+
+    /**
+     * Returns a description of this package that is suitable for a list display.
+     * <p/>
+     * {@inheritDoc}
+     */
+    @Override
+    public String getListDescription() {
+        String s;
+
+        if (mVersion.isPreview()) {
+            s = String.format("SDK Platform Android %1$s Preview%2$s",
+                    getVersionName(),
+                    isObsolete() ? " (Obsolete)" : "");  //$NON-NLS-2$
+        } else {
+            s = String.format("SDK Platform Android %1$s%2$s",
+                getVersionName(),
+                isObsolete() ? " (Obsolete)" : "");      //$NON-NLS-2$
+        }
+
+        return s;
+    }
+
+    /**
+     * Returns a short description for an {@link IDescription}.
+     */
     @Override
     public String getShortDescription() {
         String s;
@@ -118,13 +216,13 @@ public class PlatformPackage extends MinToolsPackage implements IPackageVersion 
             s = String.format("SDK Platform Android %1$s Preview, revision %2$s%3$s",
                     getVersionName(),
                     getRevision(),
-                    isObsolete() ? " (Obsolete)" : "");
+                    isObsolete() ? " (Obsolete)" : "");  //$NON-NLS-2$
         } else {
             s = String.format("SDK Platform Android %1$s, API %2$d, revision %3$s%4$s",
                 getVersionName(),
                 mVersion.getApiLevel(),
                 getRevision(),
-                isObsolete() ? " (Obsolete)" : "");
+                isObsolete() ? " (Obsolete)" : "");      //$NON-NLS-2$
         }
 
         return s;
@@ -161,13 +259,11 @@ public class PlatformPackage extends MinToolsPackage implements IPackageVersion 
      * has this platform version installed, we'll use that one.
      *
      * @param osSdkRoot The OS path of the SDK root folder.
-     * @param suggestedDir A suggestion for the installation folder name, based on the root
-     *                     folder used in the zip archive.
      * @param sdkManager An existing SDK manager to list current platforms and addons.
      * @return A new {@link File} corresponding to the directory to use to install this package.
      */
     @Override
-    public File getInstallFolder(String osSdkRoot, String suggestedDir, SdkManager sdkManager) {
+    public File getInstallFolder(String osSdkRoot, SdkManager sdkManager) {
 
         // First find if this platform is already installed. If so, reuse the same directory.
         for (IAndroidTarget target : sdkManager.getTargets()) {
@@ -183,31 +279,62 @@ public class PlatformPackage extends MinToolsPackage implements IPackageVersion 
         return folder;
     }
 
-    /**
-     * Makes sure the base /platforms folder exists before installing.
-     */
-    @Override
-    public boolean preInstallHook(Archive archive,
-            ITaskMonitor monitor,
-            String osSdkRoot,
-            File installFolder) {
-        File platformsRoot = new File(osSdkRoot, SdkConstants.FD_PLATFORMS);
-        if (!platformsRoot.isDirectory()) {
-            platformsRoot.mkdir();
-        }
-
-        return super.preInstallHook(archive, monitor, osSdkRoot, installFolder);
-    }
-
     @Override
     public boolean sameItemAs(Package pkg) {
         if (pkg instanceof PlatformPackage) {
             PlatformPackage newPkg = (PlatformPackage)pkg;
 
-            // check they are the same platform.
+            // check they are the same version.
             return newPkg.getVersion().equals(this.getVersion());
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result +
+                    ((mLayoutlibVersion == null) ? 0 : mLayoutlibVersion.hashCode());
+        result = prime * result + ((mVersion == null) ? 0 : mVersion.hashCode());
+        result = prime * result + ((mVersionName == null) ? 0 : mVersionName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof PlatformPackage)) {
+            return false;
+        }
+        PlatformPackage other = (PlatformPackage) obj;
+        if (mLayoutlibVersion == null) {
+            if (other.mLayoutlibVersion != null) {
+                return false;
+            }
+        } else if (!mLayoutlibVersion.equals(other.mLayoutlibVersion)) {
+            return false;
+        }
+        if (mVersion == null) {
+            if (other.mVersion != null) {
+                return false;
+            }
+        } else if (!mVersion.equals(other.mVersion)) {
+            return false;
+        }
+        if (mVersionName == null) {
+            if (other.mVersionName != null) {
+                return false;
+            }
+        } else if (!mVersionName.equals(other.mVersionName)) {
+            return false;
+        }
+        return true;
     }
 }

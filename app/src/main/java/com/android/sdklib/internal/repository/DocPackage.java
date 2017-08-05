@@ -21,7 +21,7 @@ import com.android.sdklib.SdkConstants;
 import com.android.sdklib.SdkManager;
 import com.android.sdklib.internal.repository.Archive.Arch;
 import com.android.sdklib.internal.repository.Archive.Os;
-import com.android.sdklib.repository.SdkRepository;
+import com.android.sdklib.repository.SdkRepoConstants;
 
 import org.w3c.dom.Node;
 
@@ -42,14 +42,19 @@ public class DocPackage extends Package implements IPackageVersion {
 
     /**
      * Creates a new doc package from the attributes and elements of the given XML node.
-     * <p/>
      * This constructor should throw an exception if the package cannot be created.
+     *
+     * @param source The {@link SdkSource} where this is loaded from.
+     * @param packageNode The XML element being parsed.
+     * @param nsUri The namespace URI of the originating XML document, to be able to deal with
+     *          parameters that vary according to the originating XML schema.
+     * @param licenses The licenses loaded from the XML originating document.
      */
-    DocPackage(RepoSource source, Node packageNode, Map<String,String> licenses) {
-        super(source, packageNode, licenses);
+    DocPackage(SdkSource source, Node packageNode, String nsUri, Map<String,String> licenses) {
+        super(source, packageNode, nsUri, licenses);
 
-        int apiLevel = XmlParserUtils.getXmlInt   (packageNode, SdkRepository.NODE_API_LEVEL, 0);
-        String codeName = XmlParserUtils.getXmlString(packageNode, SdkRepository.NODE_CODENAME);
+        int apiLevel = XmlParserUtils.getXmlInt   (packageNode, SdkRepoConstants.NODE_API_LEVEL, 0);
+        String codeName = XmlParserUtils.getXmlString(packageNode, SdkRepoConstants.NODE_CODENAME);
         if (codeName.length() == 0) {
             codeName = null;
         }
@@ -63,7 +68,22 @@ public class DocPackage extends Package implements IPackageVersion {
      * <p/>
      * By design, this creates a package with one and only one archive.
      */
-    DocPackage(RepoSource source,
+    static Package create(SdkSource source,
+            Properties props,
+            int apiLevel,
+            String codename,
+            int revision,
+            String license,
+            String description,
+            String descUrl,
+            Os archiveOs,
+            Arch archiveArch,
+            String archiveOsPath) {
+        return new DocPackage(source, props, apiLevel, codename, revision, license, description,
+                descUrl, archiveOs, archiveArch, archiveOsPath);
+    }
+
+    private DocPackage(SdkSource source,
             Properties props,
             int apiLevel,
             String codename,
@@ -97,13 +117,46 @@ public class DocPackage extends Package implements IPackageVersion {
         mVersion.saveProperties(props);
     }
 
-    /** Returns the version, for platform, add-on and doc packages.
-     *  Can be 0 if this is a local package of unknown api-level. */
+    /**
+     * Returns the version, for platform, add-on and doc packages.
+     * Can be 0 if this is a local package of unknown api-level.
+     */
     public AndroidVersion getVersion() {
         return mVersion;
     }
 
-    /** Returns a short description for an {@link IDescription}. */
+    /**
+     * Returns a string identifier to install this package from the command line.
+     * For docs, we use "doc-N" where N is the API or the preview codename.
+     * <p/>
+     * {@inheritDoc}
+     */
+    @Override
+    public String installId() {
+        return "doc-" + mVersion.getApiString();    //$NON-NLS-1$
+    }
+
+    /**
+     * Returns a description of this package that is suitable for a list display.
+     * <p/>
+     * {@inheritDoc}
+     */
+    @Override
+    public String getListDescription() {
+        if (mVersion.isPreview()) {
+            return String.format("Documentation for Android '%1$s' Preview SDK%2$s",
+                    mVersion.getCodename(),
+                    isObsolete() ? " (Obsolete)" : "");
+        } else {
+            return String.format("Documentation for Android SDK%2$s",
+                    mVersion.getApiLevel(),
+                    isObsolete() ? " (Obsolete)" : "");
+        }
+    }
+
+    /**
+     * Returns a short description for an {@link IDescription}.
+     */
     @Override
     public String getShortDescription() {
         if (mVersion.isPreview()) {
@@ -148,19 +201,18 @@ public class DocPackage extends Package implements IPackageVersion {
      * A "doc" package should always be located in SDK/docs.
      *
      * @param osSdkRoot The OS path of the SDK root folder.
-     * @param suggestedDir A suggestion for the installation folder name, based on the root
-     *                     folder used in the zip archive.
      * @param sdkManager An existing SDK manager to list current platforms and addons.
      * @return A new {@link File} corresponding to the directory to use to install this package.
      */
     @Override
-    public File getInstallFolder(String osSdkRoot, String suggestedDir, SdkManager sdkManager) {
+    public File getInstallFolder(String osSdkRoot, SdkManager sdkManager) {
         return new File(osSdkRoot, SdkConstants.FD_DOCS);
     }
 
     @Override
     public boolean sameItemAs(Package pkg) {
-        // only one doc package so any doc package is the same item.
+        // only one doc package so any doc package is the same item
+        // and we explicitly don't check whether the version is the same.
         return pkg instanceof DocPackage;
     }
 
@@ -212,5 +264,35 @@ public class DocPackage extends Package implements IPackageVersion {
 
         // not an upgrade but not incompatible either.
         return UpdateInfo.NOT_UPDATE;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((mVersion == null) ? 0 : mVersion.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof DocPackage)) {
+            return false;
+        }
+        DocPackage other = (DocPackage) obj;
+        if (mVersion == null) {
+            if (other.mVersion != null) {
+                return false;
+            }
+        } else if (!mVersion.equals(other.mVersion)) {
+            return false;
+        }
+        return true;
     }
 }

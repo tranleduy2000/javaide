@@ -67,9 +67,13 @@ final class AddOnTarget implements IAndroidTarget {
     private final String mLocation;
     private final PlatformTarget mBasePlatform;
     private final String mName;
+    private final ISystemImage[] mSystemImages;
     private final String mVendor;
     private final int mRevision;
     private final String mDescription;
+    private final boolean mHasRenderingLibrary;
+    private final boolean mHasRenderingResources;
+
     private String[] mSkins;
     private String mDefaultSkin;
     private IOptionalLibrary[] mLibraries;
@@ -82,12 +86,24 @@ final class AddOnTarget implements IAndroidTarget {
      * @param vendor the vendor name of the add-on
      * @param revision the revision of the add-on
      * @param description the add-on description
+     * @param systemImages list of supported system images. Can be null or empty.
      * @param libMap A map containing the optional libraries. The map key is the fully-qualified
      * library name. The value is a 2 string array with the .jar filename, and the description.
+     * @param hasRenderingLibrary whether the addon has a custom layoutlib.jar
+     * @param hasRenderingResources whether the add has custom framework resources.
      * @param basePlatform the platform the add-on is extending.
      */
-    AddOnTarget(String location, String name, String vendor, int revision, String description,
-            Map<String, String[]> libMap, PlatformTarget basePlatform) {
+    AddOnTarget(
+            String location,
+            String name,
+            String vendor,
+            int revision,
+            String description,
+            ISystemImage[] systemImages,
+            Map<String, String[]> libMap,
+            boolean hasRenderingLibrary,
+            boolean hasRenderingResources,
+            PlatformTarget basePlatform) {
         if (location.endsWith(File.separator) == false) {
             location = location + File.separator;
         }
@@ -97,7 +113,14 @@ final class AddOnTarget implements IAndroidTarget {
         mVendor = vendor;
         mRevision = revision;
         mDescription = description;
+        mHasRenderingLibrary = hasRenderingLibrary;
+        mHasRenderingResources = hasRenderingResources;
         mBasePlatform = basePlatform;
+
+        // If the add-on does not have any system-image of its own, the list here
+        // is empty and it's up to the callers to query the parent platform.
+        mSystemImages = systemImages == null ? new ISystemImage[0] : systemImages;
+        Arrays.sort(mSystemImages);
 
         // handle the optional libraries.
         if (libMap != null) {
@@ -121,6 +144,19 @@ final class AddOnTarget implements IAndroidTarget {
         return mName;
     }
 
+    public ISystemImage getSystemImage(String abiType) {
+        for (ISystemImage sysImg : mSystemImages) {
+            if (sysImg.getAbiType().equals(abiType)) {
+                return sysImg;
+            }
+        }
+        return null;
+    }
+
+    public ISystemImage[] getSystemImages() {
+        return mSystemImages;
+    }
+
     public String getVendor() {
         return mVendor;
     }
@@ -130,7 +166,11 @@ final class AddOnTarget implements IAndroidTarget {
     }
 
     public String getClasspathName() {
-        return String.format("%1$s [%2$s]", mName, mBasePlatform.getName());
+        return String.format("%1$s [%2$s]", mName, mBasePlatform.getClasspathName());
+    }
+
+    public String getShortClasspathName() {
+        return String.format("%1$s [%2$s]", mName, mBasePlatform.getVersionName());
     }
 
     public String getDescription() {
@@ -160,13 +200,33 @@ final class AddOnTarget implements IAndroidTarget {
 
     public String getPath(int pathId) {
         switch (pathId) {
-            case IMAGES:
-                return mLocation + SdkConstants.OS_IMAGES_FOLDER;
             case SKINS:
                 return mLocation + SdkConstants.OS_SKINS_FOLDER;
             case DOCS:
                 return mLocation + SdkConstants.FD_DOCS + File.separator
                         + SdkConstants.FD_DOCS_REFERENCE;
+
+            case LAYOUT_LIB:
+                if (mHasRenderingLibrary) {
+                    return mLocation + SdkConstants.FD_DATA + File.separator
+                            + SdkConstants.FN_LAYOUTLIB_JAR;
+                }
+                return mBasePlatform.getPath(pathId);
+
+            case RESOURCES:
+                if (mHasRenderingResources) {
+                    return mLocation + SdkConstants.FD_DATA + File.separator
+                            + SdkConstants.FD_RES;
+                }
+                return mBasePlatform.getPath(pathId);
+
+            case FONTS:
+                if (mHasRenderingResources) {
+                    return mLocation + SdkConstants.FD_DATA + File.separator
+                            + SdkConstants.FD_FONTS;
+                }
+                return mBasePlatform.getPath(pathId);
+
             case SAMPLES:
                 // only return the add-on samples folder if there is actually a sample (or more)
                 File sampleLoc = new File(mLocation, SdkConstants.FD_SAMPLES);
@@ -181,10 +241,14 @@ final class AddOnTarget implements IAndroidTarget {
                         return sampleLoc.getAbsolutePath();
                     }
                 }
-                // INTENDED FALL-THROUGH
+                //$FALL-THROUGH$
             default :
                 return mBasePlatform.getPath(pathId);
         }
+    }
+
+    public boolean hasRenderingLibrary() {
+        return mHasRenderingLibrary || mHasRenderingResources;
     }
 
     public String[] getSkins() {
@@ -318,6 +382,23 @@ final class AddOnTarget implements IAndroidTarget {
         }
 
         return versionDiff;
+    }
+
+    /**
+     * Returns a string representation suitable for debugging.
+     * The representation is not intended for display to the user.
+     *
+     * The representation is also purposely compact. It does not describe _all_ the properties
+     * of the target, only a few key ones.
+     *
+     * @see #getDescription()
+     */
+    @Override
+    public String toString() {
+        return String.format("AddonTarget %1$s rev %2$d (based on %3$s)",     //$NON-NLS-1$
+                getVersion(),
+                getRevision(),
+                getParent().toString());
     }
 
     // ---- local methods.

@@ -16,11 +16,10 @@
 
 package com.android.sdklib.internal.project;
 
+import com.android.io.IAbstractFile;
+import com.android.io.IAbstractFolder;
+import com.android.io.StreamException;
 import com.android.sdklib.SdkConstants;
-import com.android.sdklib.internal.project.ProjectProperties.PropertyType;
-import com.android.sdklib.io.IAbstractFile;
-import com.android.sdklib.io.IAbstractFolder;
-import com.android.sdklib.io.StreamException;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -42,7 +41,6 @@ import java.util.regex.Matcher;
  * To get access to an instance, use {@link ProjectProperties#makeWorkingCopy()} or
  * {@link ProjectProperties#create(IAbstractFolder, PropertyType)}.
  */
-@SuppressWarnings("deprecation")
 public class ProjectPropertiesWorkingCopy extends ProjectProperties {
 
     private final static Map<String, String> COMMENT_MAP = new HashMap<String, String>();
@@ -56,9 +54,6 @@ public class ProjectPropertiesWorkingCopy extends ProjectProperties {
                 "# location of the SDK. This is only used by Ant\n" +
                 "# For customization when using a Version Control System, please read the\n" +
                 "# header note.\n");
-        COMMENT_MAP.put(PROPERTY_APP_PACKAGE,
-                "# The name of your application package as defined in the manifest.\n" +
-                "# Used by the 'uninstall' rule.\n");
         COMMENT_MAP.put(PROPERTY_PACKAGE,
                 "# Package of the application being exported\n");
         COMMENT_MAP.put(PROPERTY_VERSIONCODE,
@@ -95,15 +90,18 @@ public class ProjectPropertiesWorkingCopy extends ProjectProperties {
      * <p/>
      * Typical usage:
      * <ul>
-     * <li>Create a ProjectProperties with {@link PropertyType#BUILD}
-     * <li>Merge in values using {@link PropertyType#DEFAULT}
+     * <li>Create a ProjectProperties with {@code PropertyType#BUILD}
+     * <li>Merge in values using {@code PropertyType#DEFAULT}
      * <li>The result is that this contains all the properties from default plus those
      *     overridden by the build.properties file.
      * </ul>
      *
      * @param type One the possible {@link PropertyType}s.
      * @return this object, for chaining.
+     *
+     * @deprecated FIXME this method is not referenced anywhere.
      */
+    @Deprecated
     public synchronized ProjectPropertiesWorkingCopy merge(PropertyType type) {
         if (mProjectFolder.exists() && mType != type) {
             IAbstractFile propFile = mProjectFolder.getFile(type.getFilename());
@@ -159,8 +157,10 @@ public class ProjectPropertiesWorkingCopy extends ProjectProperties {
                         // record the prop
                         visitedProps.add(key);
 
-                        // check if the property still exists.
-                        if (mProperties.containsKey(key)) {
+                        // check if this property must be removed.
+                        if (mType.isRemovedProperty(key)) {
+                            value = null;
+                        } else if (mProperties.containsKey(key)) { // if the property still exists.
                             // put the new value.
                             value = mProperties.get(key);
                         } else {
@@ -197,8 +197,11 @@ public class ProjectPropertiesWorkingCopy extends ProjectProperties {
 
         } else {
             // new file, just write it all
-            // write the header
-            writer.write(mType.getHeader());
+
+            // write the header (can be null, for example for PropertyType.LEGACY_BUILD)
+            if (mType.getHeader() != null) {
+                writer.write(mType.getHeader());
+            }
 
             // write the properties.
             for (Entry<String, String> entry : mProperties.entrySet()) {

@@ -16,36 +16,34 @@
 
 package com.android.prefs;
 
+import com.android.annotations.NonNull;
+
 import java.io.File;
 
 /**
  * Manages the location of the android files (including emulator files, ddms config, debug keystore)
  */
 public final class AndroidLocation {
+
+    /**
+     * The name of the .android folder returned by {@link #getFolder()}.
+     */
+    public static final String FOLDER_DOT_ANDROID = ".android";
+
     /**
      * Virtual Device folder inside the path returned by {@link #getFolder()}
      */
     public static final String FOLDER_AVD = "avd";
-
-    /**
-     * Throw when the location of the android folder couldn't be found.
-     */
-    public static final class AndroidLocationException extends Exception {
-        private static final long serialVersionUID = 1L;
-
-        public AndroidLocationException(String string) {
-            super(string);
-        }
-    }
-
     private static String sPrefsLocation = null;
 
     /**
      * Returns the folder used to store android related files.
+     *
      * @return an OS specific path, terminated by a separator.
      * @throws AndroidLocationException
      */
-    public final static String getFolder() throws AndroidLocationException {
+    @NonNull
+    public static final String getFolder() throws AndroidLocationException {
         if (sPrefsLocation == null) {
             String home = findValidPath("ANDROID_SDK_HOME", "user.home", "HOME");
 
@@ -53,9 +51,13 @@ public final class AndroidLocation {
             if (home == null) {
                 throw new AndroidLocationException(
                         "Unable to get the Android SDK home directory.\n" +
-                        "Make sure the environment variable ANDROID_SDK_HOME is set up.");
+                                "Make sure the environment variable ANDROID_SDK_HOME is set up.");
             } else {
-                sPrefsLocation = home + File.separator + ".android" + File.separator;
+                sPrefsLocation = home;
+                if (!sPrefsLocation.endsWith(File.separator)) {
+                    sPrefsLocation += File.separator;
+                }
+                sPrefsLocation += FOLDER_DOT_ANDROID + File.separator;
             }
         }
 
@@ -67,7 +69,7 @@ public final class AndroidLocation {
             } catch (SecurityException e) {
                 AndroidLocationException e2 = new AndroidLocationException(String.format(
                         "Unable to create folder '%1$s'. " +
-                        "This is the path of preference folder expected by the Android tools.",
+                                "This is the path of preference folder expected by the Android tools.",
                         sPrefsLocation));
                 e2.initCause(e);
                 throw e2;
@@ -82,8 +84,16 @@ public final class AndroidLocation {
     }
 
     /**
+     * Resets the folder used to store android related files. For testing.
+     */
+    public static final void resetFolder() {
+        sPrefsLocation = null;
+    }
+
+    /**
      * Checks a list of system properties and/or system environment variables for validity, and
      * existing director, and returns the first one.
+     *
      * @param names
      * @return the content of the first property/variable.
      */
@@ -105,5 +115,16 @@ public final class AndroidLocation {
         }
 
         return null;
+    }
+
+    /**
+     * Throw when the location of the android folder couldn't be found.
+     */
+    public static final class AndroidLocationException extends Exception {
+        private static final long serialVersionUID = 1L;
+
+        public AndroidLocationException(String string) {
+            super(string);
+        }
     }
 }

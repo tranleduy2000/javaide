@@ -75,13 +75,13 @@ libcutils_SRC_FILES := \
 	libcutils/jni/sched_policy.c \
 	libcutils/jni/iosched_policy.c \
 	libcutils/jni/str_parms.c \
-    libcutils/jni/abort_socket.c \
-    libcutils/jni/selector.c \
-    libcutils/jni/tztime.c \
-    libcutils/jni/zygote.c \
-    libcutils/jni/ashmem-dev.c \
-    libcutils/jni/mq.c \
-    libcutils/jni/uevent.c
+  libcutils/jni/abort_socket.c \
+  libcutils/jni/selector.c \
+  libcutils/jni/tztime.c \
+  libcutils/jni/zygote.c \
+  libcutils/jni/ashmem-dev.c \
+  libcutils/jni/mq.c \
+  libcutils/jni/uevent.c
   
 ifeq ($(TARGET_ARCH),arm)
 libcutils_SRC_FILES += libcutils/jni/arch-arm/memset32.S
@@ -222,4 +222,3 @@ LOCAL_LDLIBS += -lz -llog
 
 # Building a shared library for Android
 include $(BUILD_SHARED_LIBRARY)
-

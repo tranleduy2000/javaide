@@ -23,7 +23,8 @@ import com.android.sdklib.SdkManager;
 import com.android.sdklib.AndroidVersion.AndroidVersionException;
 import com.android.sdklib.internal.repository.Archive.Arch;
 import com.android.sdklib.internal.repository.Archive.Os;
-import com.android.sdklib.repository.SdkRepository;
+import com.android.sdklib.repository.PkgProps;
+import com.android.sdklib.repository.SdkRepoConstants;
 
 import org.w3c.dom.Node;
 
@@ -41,9 +42,7 @@ import java.util.Properties;
  * Represents a sample XML node in an SDK repository.
  */
 public class SamplePackage extends MinToolsPackage
-    implements IPackageVersion, IMinApiLevelDependency, IMinToolsDependency {
-
-    private static final String PROP_MIN_API_LEVEL = "Sample.MinApiLevel";  //$NON-NLS-1$
+    implements IPackageVersion, IMinApiLevelDependency {
 
     /** The matching platform version. */
     private final AndroidVersion mVersion;
@@ -56,20 +55,25 @@ public class SamplePackage extends MinToolsPackage
 
     /**
      * Creates a new sample package from the attributes and elements of the given XML node.
-     * <p/>
      * This constructor should throw an exception if the package cannot be created.
+     *
+     * @param source The {@link SdkSource} where this is loaded from.
+     * @param packageNode The XML element being parsed.
+     * @param nsUri The namespace URI of the originating XML document, to be able to deal with
+     *          parameters that vary according to the originating XML schema.
+     * @param licenses The licenses loaded from the XML originating document.
      */
-    SamplePackage(RepoSource source, Node packageNode, Map<String,String> licenses) {
-        super(source, packageNode, licenses);
+    SamplePackage(SdkSource source, Node packageNode, String nsUri, Map<String,String> licenses) {
+        super(source, packageNode, nsUri, licenses);
 
-        int apiLevel = XmlParserUtils.getXmlInt   (packageNode, SdkRepository.NODE_API_LEVEL, 0);
-        String codeName = XmlParserUtils.getXmlString(packageNode, SdkRepository.NODE_CODENAME);
+        int apiLevel = XmlParserUtils.getXmlInt   (packageNode, SdkRepoConstants.NODE_API_LEVEL, 0);
+        String codeName = XmlParserUtils.getXmlString(packageNode, SdkRepoConstants.NODE_CODENAME);
         if (codeName.length() == 0) {
             codeName = null;
         }
         mVersion = new AndroidVersion(apiLevel, codeName);
 
-        mMinApiLevel = XmlParserUtils.getXmlInt(packageNode, SdkRepository.NODE_MIN_API_LEVEL,
+        mMinApiLevel = XmlParserUtils.getXmlInt(packageNode, SdkRepoConstants.NODE_MIN_API_LEVEL,
                 MIN_API_LEVEL_NOT_SPECIFIED);
     }
 
@@ -86,7 +90,11 @@ public class SamplePackage extends MinToolsPackage
      * <p/>
      * By design, this creates a package with one and only one archive.
      */
-    SamplePackage(IAndroidTarget target, Properties props) {
+    static Package create(IAndroidTarget target, Properties props) {
+        return new SamplePackage(target, props);
+    }
+
+    private SamplePackage(IAndroidTarget target, Properties props) {
         super(  null,                                   //source
                 props,                                  //properties
                 0,                                      //revision will be taken from props
@@ -101,7 +109,9 @@ public class SamplePackage extends MinToolsPackage
         mVersion = target.getVersion();
 
         mMinApiLevel = Integer.parseInt(
-            getProperty(props, PROP_MIN_API_LEVEL, Integer.toString(MIN_API_LEVEL_NOT_SPECIFIED)));
+            getProperty(props,
+                    PkgProps.SAMPLE_MIN_API_LEVEL,
+                    Integer.toString(MIN_API_LEVEL_NOT_SPECIFIED)));
     }
 
     /**
@@ -116,7 +126,11 @@ public class SamplePackage extends MinToolsPackage
      * @throws AndroidVersionException if the {@link AndroidVersion} can't be restored
      *                                 from properties.
      */
-    SamplePackage(String archiveOsPath, Properties props) throws AndroidVersionException {
+    static Package create(String archiveOsPath, Properties props) throws AndroidVersionException {
+        return new SamplePackage(archiveOsPath, props);
+    }
+
+    private SamplePackage(String archiveOsPath, Properties props) throws AndroidVersionException {
         super(null,                                   //source
               props,                                  //properties
               0,                                      //revision will be taken from props
@@ -131,7 +145,9 @@ public class SamplePackage extends MinToolsPackage
         mVersion = new AndroidVersion(props);
 
         mMinApiLevel = Integer.parseInt(
-            getProperty(props, PROP_MIN_API_LEVEL, Integer.toString(MIN_API_LEVEL_NOT_SPECIFIED)));
+            getProperty(props,
+                    PkgProps.SAMPLE_MIN_API_LEVEL,
+                    Integer.toString(MIN_API_LEVEL_NOT_SPECIFIED)));
     }
 
     /**
@@ -145,7 +161,7 @@ public class SamplePackage extends MinToolsPackage
         mVersion.saveProperties(props);
 
         if (getMinApiLevel() != MIN_API_LEVEL_NOT_SPECIFIED) {
-            props.setProperty(PROP_MIN_API_LEVEL, Integer.toString(getMinApiLevel()));
+            props.setProperty(PkgProps.SAMPLE_MIN_API_LEVEL, Integer.toString(getMinApiLevel()));
         }
     }
 
@@ -162,7 +178,34 @@ public class SamplePackage extends MinToolsPackage
         return mVersion;
     }
 
-    /** Returns a short description for an {@link IDescription}. */
+    /**
+     * Returns a string identifier to install this package from the command line.
+     * For samples, we use "sample-N" where N is the API or the preview codename.
+     * <p/>
+     * {@inheritDoc}
+     */
+    @Override
+    public String installId() {
+        return "sample-" + mVersion.getApiString();    //$NON-NLS-1$
+    }
+
+    /**
+     * Returns a description of this package that is suitable for a list display.
+     * <p/>
+     * {@inheritDoc}
+     */
+    @Override
+    public String getListDescription() {
+        String s = String.format("Samples for SDK API %1$s%2$s%3$s",
+                mVersion.getApiString(),
+                mVersion.isPreview() ? " Preview" : "",
+                isObsolete() ? " (Obsolete)" : "");
+        return s;
+    }
+
+    /**
+     * Returns a short description for an {@link IDescription}.
+     */
     @Override
     public String getShortDescription() {
         String s = String.format("Samples for SDK API %1$s%2$s, revision %3$d%4$s",
@@ -204,18 +247,16 @@ public class SamplePackage extends MinToolsPackage
      * version installed, we'll use that one.
      *
      * @param osSdkRoot The OS path of the SDK root folder.
-     * @param suggestedDir A suggestion for the installation folder name, based on the root
-     *                     folder used in the zip archive.
      * @param sdkManager An existing SDK manager to list current platforms and addons.
      * @return A new {@link File} corresponding to the directory to use to install this package.
      */
     @Override
-    public File getInstallFolder(String osSdkRoot, String suggestedDir, SdkManager sdkManager) {
+    public File getInstallFolder(String osSdkRoot, SdkManager sdkManager) {
 
         // The /samples dir at the root of the SDK
         File samplesRoot = new File(osSdkRoot, SdkConstants.FD_SAMPLES);
 
-        // First find if this platform is already installed. If so, reuse the same directory.
+        // First find if this sample is already installed. If so, reuse the same directory.
         for (IAndroidTarget target : sdkManager.getTargets()) {
             if (target.isPlatform() &&
                     target.getVersion().equals(mVersion)) {
@@ -250,7 +291,7 @@ public class SamplePackage extends MinToolsPackage
         if (pkg instanceof SamplePackage) {
             SamplePackage newPkg = (SamplePackage)pkg;
 
-            // check they are the same platform.
+            // check they are the same version.
             return newPkg.getVersion().equals(this.getVersion());
         }
 
@@ -267,10 +308,6 @@ public class SamplePackage extends MinToolsPackage
             ITaskMonitor monitor,
             String osSdkRoot,
             File installFolder) {
-        File samplesRoot = new File(osSdkRoot, SdkConstants.FD_SAMPLES);
-        if (!samplesRoot.isDirectory()) {
-            samplesRoot.mkdir();
-        }
 
         if (installFolder != null && installFolder.isDirectory()) {
             // Get the hash computed during the last installation
@@ -321,12 +358,10 @@ public class SamplePackage extends MinToolsPackage
     public void postInstallHook(Archive archive, ITaskMonitor monitor, File installFolder) {
         super.postInstallHook(archive, monitor, installFolder);
 
-        if (installFolder == null) {
-            return;
+        if (installFolder != null) {
+            String h = computeContentHash(installFolder);
+            saveContentHash(installFolder, h);
         }
-
-        String h = computeContentHash(installFolder);
-        saveContentHash(installFolder, h);
     }
 
     /**

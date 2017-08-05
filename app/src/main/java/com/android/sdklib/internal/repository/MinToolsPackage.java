@@ -18,7 +18,8 @@ package com.android.sdklib.internal.repository;
 
 import com.android.sdklib.internal.repository.Archive.Arch;
 import com.android.sdklib.internal.repository.Archive.Os;
-import com.android.sdklib.repository.SdkRepository;
+import com.android.sdklib.repository.PkgProps;
+import com.android.sdklib.repository.SdkRepoConstants;
 
 import org.w3c.dom.Node;
 
@@ -28,10 +29,7 @@ import java.util.Properties;
 /**
  * Represents an XML node in an SDK repository that has a min-tools-rev requirement.
  */
-public abstract class MinToolsPackage extends Package
-    implements IMinToolsDependency {
-
-    protected static final String PROP_MIN_TOOLS_REV = "Platform.MinToolsRev";  //$NON-NLS-1$
+public abstract class MinToolsPackage extends Package implements IMinToolsDependency {
 
     /**
      * The minimal revision of the tools package required by this extra package, if > 0,
@@ -41,13 +39,19 @@ public abstract class MinToolsPackage extends Package
 
     /**
      * Creates a new package from the attributes and elements of the given XML node.
-     * <p/>
      * This constructor should throw an exception if the package cannot be created.
+     *
+     * @param source The {@link SdkSource} where this is loaded from.
+     * @param packageNode The XML element being parsed.
+     * @param nsUri The namespace URI of the originating XML document, to be able to deal with
+     *          parameters that vary according to the originating XML schema.
+     * @param licenses The licenses loaded from the XML originating document.
      */
-    MinToolsPackage(RepoSource source, Node packageNode, Map<String,String> licenses) {
-        super(source, packageNode, licenses);
+    MinToolsPackage(SdkSource source, Node packageNode, String nsUri, Map<String,String> licenses) {
+        super(source, packageNode, nsUri, licenses);
 
-        mMinToolsRevision = XmlParserUtils.getXmlInt(packageNode, SdkRepository.NODE_MIN_TOOLS_REV,
+        mMinToolsRevision = XmlParserUtils.getXmlInt(packageNode,
+                SdkRepoConstants.NODE_MIN_TOOLS_REV,
                 MIN_TOOLS_REV_NOT_SPECIFIED);
     }
 
@@ -61,7 +65,7 @@ public abstract class MinToolsPackage extends Package
      * By design, this creates a package with one and only one archive.
      */
     public MinToolsPackage(
-            RepoSource source,
+            SdkSource source,
             Properties props,
             int revision,
             String license,
@@ -74,7 +78,9 @@ public abstract class MinToolsPackage extends Package
                 archiveOs, archiveArch, archiveOsPath);
 
         mMinToolsRevision = Integer.parseInt(
-            getProperty(props, PROP_MIN_TOOLS_REV, Integer.toString(MIN_TOOLS_REV_NOT_SPECIFIED)));
+            getProperty(props,
+                    PkgProps.MIN_TOOLS_REV,
+                    Integer.toString(MIN_TOOLS_REV_NOT_SPECIFIED)));
     }
 
     /**
@@ -90,7 +96,34 @@ public abstract class MinToolsPackage extends Package
         super.saveProperties(props);
 
         if (getMinToolsRevision() != MIN_TOOLS_REV_NOT_SPECIFIED) {
-            props.setProperty(PROP_MIN_TOOLS_REV, Integer.toString(getMinToolsRevision()));
+            props.setProperty(PkgProps.MIN_TOOLS_REV,
+                    Integer.toString(getMinToolsRevision()));
         }
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + mMinToolsRevision;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof MinToolsPackage)) {
+            return false;
+        }
+        MinToolsPackage other = (MinToolsPackage) obj;
+        if (mMinToolsRevision != other.mMinToolsRevision) {
+            return false;
+        }
+        return true;
     }
 }

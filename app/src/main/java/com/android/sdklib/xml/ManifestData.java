@@ -16,9 +16,9 @@
 
 package com.android.sdklib.xml;
 
-import com.android.sdklib.resources.Keyboard;
-import com.android.sdklib.resources.Navigation;
-import com.android.sdklib.resources.TouchScreen;
+import com.android.resources.Keyboard;
+import com.android.resources.Navigation;
+import com.android.resources.TouchScreen;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -294,18 +294,33 @@ public final class ManifestData {
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof SupportsScreens) {
-                SupportsScreens support = (SupportsScreens)obj;
+                SupportsScreens support = (SupportsScreens) obj;
                 // since all the fields are guaranteed to be either Boolean.TRUE or Boolean.FALSE
                 // (or null), we can simply check they are identical and not bother with
                 // calling equals (which would require to check != null.
                 // see #getConstanntBoolean(Boolean)
-                return mResizeable == support.mResizeable && mAnyDensity == support.mAnyDensity &&
-                        mSmallScreens == support.mSmallScreens &&
-                        mNormalScreens == support.mNormalScreens &&
-                        mLargeScreens == support.mLargeScreens;
+                return mResizeable    == support.mResizeable &&
+                       mAnyDensity    == support.mAnyDensity &&
+                       mSmallScreens  == support.mSmallScreens &&
+                       mNormalScreens == support.mNormalScreens &&
+                       mLargeScreens  == support.mLargeScreens;
             }
 
             return false;
+        }
+
+        /* Override hashCode, mostly to make Eclipse happy and not warn about it.
+         * And if you ever put this in a Map or Set, it will avoid surprises. */
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((mAnyDensity    == null) ? 0 : mAnyDensity.hashCode());
+            result = prime * result + ((mLargeScreens  == null) ? 0 : mLargeScreens.hashCode());
+            result = prime * result + ((mNormalScreens == null) ? 0 : mNormalScreens.hashCode());
+            result = prime * result + ((mResizeable    == null) ? 0 : mResizeable.hashCode());
+            result = prime * result + ((mSmallScreens  == null) ? 0 : mSmallScreens.hashCode());
+            return result;
         }
 
         /**
@@ -722,7 +737,11 @@ public final class ManifestData {
             mProcesses = new TreeSet<String>();
         }
 
-        mProcesses.add(processName);
+        if (processName.startsWith(":")) {
+            mProcesses.add(mPackage + processName);
+        } else {
+            mProcesses.add(processName);
+        }
     }
 
 }

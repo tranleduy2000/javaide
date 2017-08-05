@@ -16,6 +16,8 @@
 
 package com.android.sdklib.internal.repository;
 
+import com.android.annotations.VisibleForTesting;
+import com.android.annotations.VisibleForTesting.Visibility;
 import com.android.sdklib.AndroidVersion;
 import com.android.sdklib.IAndroidTarget;
 import com.android.sdklib.SdkConstants;
@@ -23,12 +25,15 @@ import com.android.sdklib.SdkManager;
 import com.android.sdklib.IAndroidTarget.IOptionalLibrary;
 import com.android.sdklib.internal.repository.Archive.Arch;
 import com.android.sdklib.internal.repository.Archive.Os;
-import com.android.sdklib.repository.SdkRepository;
+import com.android.sdklib.repository.PkgProps;
+import com.android.sdklib.repository.SdkRepoConstants;
+import com.android.util.Pair;
 
 import org.w3c.dom.Node;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 
@@ -36,14 +41,16 @@ import java.util.Properties;
  * Represents an add-on XML node in an SDK repository.
  */
 public class AddonPackage extends Package
-    implements IPackageVersion, IPlatformDependency {
-
-    private static final String PROP_NAME      = "Addon.Name";      //$NON-NLS-1$
-    private static final String PROP_VENDOR    = "Addon.Vendor";    //$NON-NLS-1$
+    implements IPackageVersion, IPlatformDependency, IExactApiLevelDependency, ILayoutlibVersion {
 
     private final String mVendor;
     private final String mName;
     private final AndroidVersion mVersion;
+
+    /**
+     * The helper handling the layoutlib version.
+     */
+    private final LayoutlibVersionMixin mLayoutlibVersion;
 
     /** An add-on library. */
     public static class Lib {
@@ -62,27 +69,68 @@ public class AddonPackage extends Package
         public String getDescription() {
             return mDescription;
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((mDescription == null) ? 0 : mDescription.hashCode());
+            result = prime * result + ((mName == null) ? 0 : mName.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (!(obj instanceof Lib)) {
+                return false;
+            }
+            Lib other = (Lib) obj;
+            if (mDescription == null) {
+                if (other.mDescription != null) {
+                    return false;
+                }
+            } else if (!mDescription.equals(other.mDescription)) {
+                return false;
+            }
+            if (mName == null) {
+                if (other.mName != null) {
+                    return false;
+                }
+            } else if (!mName.equals(other.mName)) {
+                return false;
+            }
+            return true;
+        }
     }
 
     private final Lib[] mLibs;
 
     /**
      * Creates a new add-on package from the attributes and elements of the given XML node.
-     * <p/>
      * This constructor should throw an exception if the package cannot be created.
+     *
+     * @param source The {@link SdkSource} where this is loaded from.
+     * @param packageNode The XML element being parsed.
+     * @param nsUri The namespace URI of the originating XML document, to be able to deal with
+     *          parameters that vary according to the originating XML schema.
+     * @param licenses The licenses loaded from the XML originating document.
      */
-    AddonPackage(RepoSource source, Node packageNode, Map<String,String> licenses) {
-        super(source, packageNode, licenses);
-        mVendor   = XmlParserUtils.getXmlString(packageNode, SdkRepository.NODE_VENDOR);
-        mName     = XmlParserUtils.getXmlString(packageNode, SdkRepository.NODE_NAME);
-        int apiLevel = XmlParserUtils.getXmlInt   (packageNode, SdkRepository.NODE_API_LEVEL, 0);
-        String codeName = XmlParserUtils.getXmlString(packageNode, SdkRepository.NODE_CODENAME);
-        if (codeName.length() == 0) {
-            codeName = null;
-        }
-        mVersion = new AndroidVersion(apiLevel, codeName);
+    AddonPackage(SdkSource source, Node packageNode, String nsUri, Map<String,String> licenses) {
+        super(source, packageNode, nsUri, licenses);
+        mVendor   = XmlParserUtils.getXmlString(packageNode, SdkRepoConstants.NODE_VENDOR);
+        mName     = XmlParserUtils.getXmlString(packageNode, SdkRepoConstants.NODE_NAME);
+        int apiLevel = XmlParserUtils.getXmlInt   (packageNode, SdkRepoConstants.NODE_API_LEVEL, 0);
+        mVersion = new AndroidVersion(apiLevel, null /*codeName*/);
 
-        mLibs = parseLibs(XmlParserUtils.getFirstChild(packageNode, SdkRepository.NODE_LIBS));
+        mLibs = parseLibs(XmlParserUtils.getFirstChild(packageNode, SdkRepoConstants.NODE_LIBS));
+
+        mLayoutlibVersion = new LayoutlibVersionMixin(packageNode);
     }
 
     /**
@@ -93,8 +141,18 @@ public class AddonPackage extends Package
      * <p/>
      * By design, this creates a package with one and only one archive.
      */
-    AddonPackage(IAndroidTarget target, Properties props) {
-        super(  null,                       //source
+    static Package create(IAndroidTarget target, Properties props) {
+        return new AddonPackage(target, props);
+    }
+
+    @VisibleForTesting(visibility=Visibility.PRIVATE)
+    protected AddonPackage(IAndroidTarget target, Properties props) {
+        this(null /*source*/, target, props);
+    }
+
+    @VisibleForTesting(visibility=Visibility.PRIVATE)
+    protected AddonPackage(SdkSource source, IAndroidTarget target, Properties props) {
+        super(  source,                     //source
                 props,                      //properties
                 target.getRevision(),       //revision
                 null,                       //license
@@ -108,6 +166,7 @@ public class AddonPackage extends Package
         mVersion = target.getVersion();
         mName     = target.getName();
         mVendor   = target.getVendor();
+        mLayoutlibVersion = new LayoutlibVersionMixin(props);
 
         IOptionalLibrary[] optLibs = target.getOptionalLibraries();
         if (optLibs == null || optLibs.length == 0) {
@@ -121,6 +180,49 @@ public class AddonPackage extends Package
     }
 
     /**
+     * Creates a broken addon which we know failed to load properly.
+     *
+     * @param archiveOsPath The absolute OS path of the addon folder.
+     * @param props The properties parsed from the addon manifest (not the source.properties).
+     * @param error The error indicating why this addon failed to be loaded.
+     */
+    static Package createBroken(String archiveOsPath, Map<String, String> props, String error) {
+        String name     = props.get(SdkManager.ADDON_NAME);
+        String vendor   = props.get(SdkManager.ADDON_VENDOR);
+        String api      = props.get(SdkManager.ADDON_API);
+        String revision = props.get(SdkManager.ADDON_REVISION);
+
+        String shortDesc = String.format("%1$s by %2$s, Android API %3$s, revision %4$s [*]",
+                name,
+                vendor,
+                api,
+                revision);
+
+        String longDesc = String.format(
+                "%1$s\n" +
+                "[*] Addon failed to load: %2$s",
+                shortDesc,
+                error);
+
+        int apiLevel = IExactApiLevelDependency.API_LEVEL_INVALID;
+
+        try {
+            apiLevel = Integer.parseInt(api);
+        } catch(NumberFormatException e) {
+            // ignore
+        }
+
+        return new BrokenPackage(null/*props*/, shortDesc, longDesc,
+                IMinApiLevelDependency.MIN_API_LEVEL_NOT_SPECIFIED,
+                apiLevel,
+                archiveOsPath);
+    }
+
+    public int getExactApiLevel() {
+        return mVersion.getApiLevel();
+    }
+
+    /**
      * Save the properties of the current packages in the given {@link Properties} object.
      * These properties will later be given to a constructor that takes a {@link Properties} object.
      */
@@ -129,11 +231,13 @@ public class AddonPackage extends Package
         super.saveProperties(props);
 
         mVersion.saveProperties(props);
+        mLayoutlibVersion.saveProperties(props);
+
         if (mName != null) {
-            props.setProperty(PROP_NAME, mName);
+            props.setProperty(PkgProps.ADDON_NAME, mName);
         }
         if (mVendor != null) {
-            props.setProperty(PROP_VENDOR, mVendor);
+            props.setProperty(PkgProps.ADDON_VENDOR, mVendor);
         }
     }
 
@@ -151,7 +255,7 @@ public class AddonPackage extends Package
 
                 if (child.getNodeType() == Node.ELEMENT_NODE &&
                         nsUri.equals(child.getNamespaceURI()) &&
-                        SdkRepository.NODE_LIB.equals(child.getLocalName())) {
+                        SdkRepoConstants.NODE_LIB.equals(child.getLocalName())) {
                     libs.add(parseLib(child));
                 }
             }
@@ -164,8 +268,8 @@ public class AddonPackage extends Package
      * Parses a <lib> element from a <libs> container.
      */
     private Lib parseLib(Node libNode) {
-        return new Lib(XmlParserUtils.getXmlString(libNode, SdkRepository.NODE_NAME),
-                       XmlParserUtils.getXmlString(libNode, SdkRepository.NODE_DESCRIPTION));
+        return new Lib(XmlParserUtils.getXmlString(libNode, SdkRepoConstants.NODE_NAME),
+                       XmlParserUtils.getXmlString(libNode, SdkRepoConstants.NODE_DESCRIPTION));
     }
 
     /** Returns the vendor, a string, for add-on packages. */
@@ -192,7 +296,49 @@ public class AddonPackage extends Package
         return mLibs;
     }
 
-    /** Returns a short description for an {@link IDescription}. */
+    /**
+     * Returns the layoutlib version.
+     * <p/>
+     * The first integer is the API of layoublib, which should be > 0.
+     * It will be equal to {@link ILayoutlibVersion#LAYOUTLIB_API_NOT_SPECIFIED} (0)
+     * if the layoutlib version isn't specified.
+     * <p/>
+     * The second integer is the revision for that given API. It is >= 0
+     * and works as a minor revision number, incremented for the same API level.
+     *
+     * @since sdk-addon-2.xsd
+     */
+    public Pair<Integer, Integer> getLayoutlibVersion() {
+        return mLayoutlibVersion.getLayoutlibVersion();
+    }
+
+    /**
+     * Returns a string identifier to install this package from the command line.
+     * For add-ons, we use "addon-vendor-name-N" where N is the base platform API.
+     * <p/>
+     * {@inheritDoc}
+     */
+    @Override
+    public String installId() {
+        return encodeAddonName();
+    }
+
+    /**
+     * Returns a description of this package that is suitable for a list display.
+     * <p/>
+     * {@inheritDoc}
+     */
+    @Override
+    public String getListDescription() {
+        return String.format("%1$s by %2$s%3$s",
+                getName(),
+                getVendor(),
+                isObsolete() ? " (Obsolete)" : "");
+    }
+
+    /**
+     * Returns a short description for an {@link IDescription}.
+     */
     @Override
     public String getShortDescription() {
         return String.format("%1$s by %2$s, Android API %3$s, revision %4$s%5$s",
@@ -237,13 +383,11 @@ public class AddonPackage extends Package
      * has this add-ons installed, we'll use that one.
      *
      * @param osSdkRoot The OS path of the SDK root folder.
-     * @param suggestedDir A suggestion for the installation folder name, based on the root
-     *                     folder used in the zip archive.
      * @param sdkManager An existing SDK manager to list current platforms and addons.
      * @return A new {@link File} corresponding to the directory to use to install this package.
      */
     @Override
-    public File getInstallFolder(String osSdkRoot, String suggestedDir, SdkManager sdkManager) {
+    public File getInstallFolder(String osSdkRoot, SdkManager sdkManager) {
         File addons = new File(osSdkRoot, SdkConstants.FD_ADDONS);
 
         // First find if this add-on is already installed. If so, reuse the same directory.
@@ -257,12 +401,7 @@ public class AddonPackage extends Package
         }
 
         // Compute a folder directory using the addon declared name and vendor strings.
-        // This purposely ignores the suggestedDir.
-        String name = String.format("addon_%s_%s_%s",     //$NON-NLS-1$
-                                    getName(), getVendor(), mVersion.getApiString());
-        name = name.toLowerCase();
-        name = name.replaceAll("[^a-z0-9_-]+", "_");      //$NON-NLS-1$ //$NON-NLS-2$
-        name = name.replaceAll("_+", "_");                //$NON-NLS-1$ //$NON-NLS-2$
+        String name = encodeAddonName();
 
         for (int i = 0; i < 100; i++) {
             String name2 = i == 0 ? name : String.format("%s-%d", name, i); //$NON-NLS-1$
@@ -276,20 +415,13 @@ public class AddonPackage extends Package
         return null;
     }
 
-    /**
-     * Makes sure the base /add-ons folder exists before installing.
-     */
-    @Override
-    public boolean preInstallHook(Archive archive,
-            ITaskMonitor monitor,
-            String osSdkRoot,
-            File installFolder) {
-        File addonsRoot = new File(osSdkRoot, SdkConstants.FD_ADDONS);
-        if (!addonsRoot.isDirectory()) {
-            addonsRoot.mkdir();
-        }
-
-        return super.preInstallHook(archive, monitor, osSdkRoot, installFolder);
+    private String encodeAddonName() {
+        String name = String.format("addon-%s-%s-%s",     //$NON-NLS-1$
+                                    getName(), getVendor(), mVersion.getApiString());
+        name = name.toLowerCase();
+        name = name.replaceAll("[^a-z0-9_-]+", "_");      //$NON-NLS-1$ //$NON-NLS-2$
+        name = name.replaceAll("_+", "_");                //$NON-NLS-1$ //$NON-NLS-2$
+        return name;
     }
 
     @Override
@@ -304,5 +436,63 @@ public class AddonPackage extends Package
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((mLayoutlibVersion == null) ? 0 : mLayoutlibVersion.hashCode());
+        result = prime * result + Arrays.hashCode(mLibs);
+        result = prime * result + ((mName == null) ? 0 : mName.hashCode());
+        result = prime * result + ((mVendor == null) ? 0 : mVendor.hashCode());
+        result = prime * result + ((mVersion == null) ? 0 : mVersion.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof AddonPackage)) {
+            return false;
+        }
+        AddonPackage other = (AddonPackage) obj;
+        if (mLayoutlibVersion == null) {
+            if (other.mLayoutlibVersion != null) {
+                return false;
+            }
+        } else if (!mLayoutlibVersion.equals(other.mLayoutlibVersion)) {
+            return false;
+        }
+        if (!Arrays.equals(mLibs, other.mLibs)) {
+            return false;
+        }
+        if (mName == null) {
+            if (other.mName != null) {
+                return false;
+            }
+        } else if (!mName.equals(other.mName)) {
+            return false;
+        }
+        if (mVendor == null) {
+            if (other.mVendor != null) {
+                return false;
+            }
+        } else if (!mVendor.equals(other.mVendor)) {
+            return false;
+        }
+        if (mVersion == null) {
+            if (other.mVersion != null) {
+                return false;
+            }
+        } else if (!mVersion.equals(other.mVersion)) {
+            return false;
+        }
+        return true;
     }
 }

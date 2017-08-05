@@ -16,6 +16,9 @@
 
 package com.android.sdklib.internal.project;
 
+import com.android.AndroidConstants;
+import com.android.io.FileWrapper;
+import com.android.io.FolderWrapper;
 import com.android.sdklib.IAndroidTarget;
 import com.android.sdklib.ISdkLog;
 import com.android.sdklib.SdkConstants;
@@ -38,6 +41,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPath;
@@ -51,6 +55,9 @@ import javax.xml.xpath.XPathFactory;
  * @hide
  */
 public class ProjectCreator {
+
+    /** Version of the build.xml. Stored in version-tag */
+    private final static int MIN_BUILD_VERSION_TAG = 1;
 
     /** Package path substitution string used in template files, i.e. "PACKAGE_PATH" */
     private final static String PH_JAVA_FOLDER = "PACKAGE_PATH";
@@ -74,6 +81,11 @@ public class ProjectCreator {
     private final static String PH_PROJECT_NAME = "PROJECT_NAME";
     /** Application icon substitution string used in the manifest template */
     private final static String PH_ICON = "ICON";
+    /** Version tag name substitution string used in template files, i.e. "VERSION_TAG". */
+    private final static String PH_VERSION_TAG = "VERSION_TAG";
+
+    /** The xpath to find a project name in an Ant build file. */
+    private static final String XPATH_PROJECT_NAME = "/project/@name";
 
     /** Pattern for characters accepted in a project name. Since this will be used as a
      * directory name, we're being a bit conservative on purpose: dot and space cannot be used. */
@@ -193,7 +205,7 @@ public class ProjectCreator {
 
             // target goes in default properties
             ProjectPropertiesWorkingCopy defaultProperties = ProjectProperties.create(folderPath,
-                    PropertyType.DEFAULT);
+                    PropertyType.PROJECT);
             defaultProperties.setProperty(ProjectProperties.PROPERTY_TARGET, target.hashString());
             if (library) {
                 defaultProperties.setProperty(ProjectProperties.PROPERTY_LIBRARY, "true");
@@ -202,13 +214,7 @@ public class ProjectCreator {
 
             // create a build.properties file with just the application package
             ProjectPropertiesWorkingCopy buildProperties = ProjectProperties.create(folderPath,
-                    PropertyType.BUILD);
-
-            // only put application.package for older target where the rules file didn't.
-            // grab it through xpath
-            if (target.getVersion().getApiLevel() < 4) {
-                buildProperties.setProperty(ProjectProperties.PROPERTY_APP_PACKAGE, packageName);
-            }
+                    PropertyType.ANT);
 
             if (isTestProject) {
                 buildProperties.setProperty(ProjectProperties.PROPERTY_TESTED_PROJECT,
@@ -230,6 +236,7 @@ public class ProjectCreator {
             // files manually.
             keywords.put(PH_JAVA_FOLDER, packagePath);
             keywords.put(PH_PACKAGE, packageName);
+            keywords.put(PH_VERSION_TAG, Integer.toString(MIN_BUILD_VERSION_TAG));
 
 
             // compute some activity related information
@@ -317,7 +324,7 @@ public class ProjectCreator {
                         : "java_file.template";
                 String activityFileName = activityClassName + ".java";
 
-                installTemplate(javaTemplate, new File(sourceFolder, activityFileName),
+                installTargetTemplate(javaTemplate, new File(sourceFolder, activityFileName),
                         keywords, target);
             } else {
                 // we should at least create 'src'
@@ -331,17 +338,17 @@ public class ProjectCreator {
 
             if (isTestProject == false) {
                 /* Make res files only for non test projects */
-                File valueFolder = createDirs(resourceFolder, SdkConstants.FD_VALUES);
-                installTemplate("strings.template", new File(valueFolder, "strings.xml"),
+                File valueFolder = createDirs(resourceFolder, AndroidConstants.FD_RES_VALUES);
+                installTargetTemplate("strings.template", new File(valueFolder, "strings.xml"),
                         keywords, target);
 
-                File layoutFolder = createDirs(resourceFolder, SdkConstants.FD_LAYOUT);
-                installTemplate("layout.template", new File(layoutFolder, "main.xml"),
+                File layoutFolder = createDirs(resourceFolder, AndroidConstants.FD_RES_LAYOUT);
+                installTargetTemplate("layout.template", new File(layoutFolder, "main.xml"),
                         keywords, target);
 
                 // create the icons
                 if (installIcons(resourceFolder, target)) {
-                    keywords.put(PH_ICON, "android:icon=\"@drawable/icon\"");
+                    keywords.put(PH_ICON, "android:icon=\"@drawable/ic_launcher\"");
                 } else {
                     keywords.put(PH_ICON, "");
                 }
@@ -353,56 +360,18 @@ public class ProjectCreator {
                 manifestTemplate = "AndroidManifest.tests.template";
             }
 
-            installTemplate(manifestTemplate,
+            installTargetTemplate(manifestTemplate,
                     new File(projectFolder, SdkConstants.FN_ANDROID_MANIFEST_XML),
                     keywords, target);
 
             installTemplate("build.template",
                     new File(projectFolder, SdkConstants.FN_BUILD_XML),
                     keywords);
-        } catch (Exception e) {
-            mLog.error(e, null);
-        }
-    }
 
-    public void createExportProject(String folderPath, String projectName, String packageName) {
-        // create project folder if it does not exist
-        File projectFolder = checkNewProjectLocation(folderPath);
-        if (projectFolder == null) {
-            return;
-        }
-
-        try {
-            // location of the SDK goes in localProperty
-            ProjectPropertiesWorkingCopy localProperties = ProjectProperties.create(folderPath,
-                    PropertyType.LOCAL);
-            localProperties.setProperty(ProjectProperties.PROPERTY_SDK, mSdkFolder);
-            localProperties.save();
-
-            // package name goes in export properties
-            ProjectPropertiesWorkingCopy exportProperties = ProjectProperties.create(folderPath,
-                    PropertyType.EXPORT);
-            exportProperties.setProperty(ProjectProperties.PROPERTY_PACKAGE, packageName);
-            exportProperties.setProperty(ProjectProperties.PROPERTY_VERSIONCODE, "1");
-            exportProperties.setProperty(ProjectProperties.PROPERTY_PROJECTS, "../some/path/here");
-            exportProperties.save();
-
-            // create the map for place-holders of values to replace in the build file template
-            final HashMap<String, String> keywords = new HashMap<String, String>();
-
-            // Take the project name from the command line if there's one
-            if (projectName != null) {
-                keywords.put(PH_PROJECT_NAME, projectName);
-            } else {
-                // We need a project name. Just pick up the basename of the project
-                // directory.
-                projectName = projectFolder.getName();
-                keywords.put(PH_PROJECT_NAME, projectName);
-            }
-
-            installTemplate("build.export.template",
-                    new File(projectFolder, SdkConstants.FN_BUILD_XML),
-                    keywords);
+            // install the proguard config file.
+            installTemplate(SdkConstants.FN_PROGUARD_CFG,
+                    new File(projectFolder, SdkConstants.FN_PROGUARD_CFG),
+                    null /*keywords*/);
         } catch (Exception e) {
             mLog.error(e, null);
         }
@@ -453,10 +422,13 @@ public class ProjectCreator {
      * Workflow:
      * <ul>
      * <li> Check AndroidManifest.xml is present (required)
-     * <li> Check there's a default.properties with a target *or* --target was specified
+     * <li> Check if there's a legacy properties file and convert it
+     * <li> Check there's a project.properties with a target *or* --target was specified
      * <li> Update default.prop if --target was specified
      * <li> Refresh/create "sdk" in local.properties
-     * <li> Build.xml: create if not present or no <androidinit(\w|/>) in it
+     * <li> Build.xml: create if not present or if version-tag is found or not. version-tag:custom
+     * prevent any overwrite. version-tag:[integer] will override. missing version-tag will query
+     * the dev.
      * </ul>
      *
      * @param folderPath the folder of the project to update. This folder must exist.
@@ -465,23 +437,38 @@ public class ProjectCreator {
      * @param libraryPath the path to a library to add to the references. Can be null.
      * @return true if the project was successfully updated.
      */
+    @SuppressWarnings("deprecation")
     public boolean updateProject(String folderPath, IAndroidTarget target, String projectName,
             String libraryPath) {
         // since this is an update, check the folder does point to a project
-        File androidManifest = checkProjectFolder(folderPath, SdkConstants.FN_ANDROID_MANIFEST_XML);
+        FileWrapper androidManifest = checkProjectFolder(folderPath,
+                SdkConstants.FN_ANDROID_MANIFEST_XML);
         if (androidManifest == null) {
             return false;
         }
 
-        // get the parent File.
-        File projectFolder = androidManifest.getParentFile();
+        // get the parent folder.
+        FolderWrapper projectFolder = (FolderWrapper) androidManifest.getParentFolder();
 
-        // Check there's a default.properties with a target *or* --target was specified
+        boolean hasProguard = false;
+
+        // Check there's a project.properties with a target *or* --target was specified
         IAndroidTarget originalTarget = null;
-        ProjectProperties props = ProjectProperties.load(folderPath, PropertyType.DEFAULT);
+        boolean writeProjectProp = false;
+        ProjectProperties props = ProjectProperties.load(projectFolder, PropertyType.PROJECT);
+
+        if (props == null) {
+            // no project.properties, try to load default.properties
+            props = ProjectProperties.load(projectFolder, PropertyType.LEGACY_DEFAULT);
+            writeProjectProp = true;
+        }
+
         if (props != null) {
             String targetHash = props.getProperty(ProjectProperties.PROPERTY_TARGET);
             originalTarget = mSdkManager.getTargetFromHashString(targetHash);
+
+            // if the project is already setup with proguard, we won't copy the proguard config.
+            hasProguard = props.getProperty(ProjectProperties.PROPERTY_PROGUARD_CONFIG) != null;
         }
 
         if (originalTarget == null && target == null) {
@@ -492,39 +479,31 @@ public class ProjectCreator {
             return false;
         }
 
-        // before doing anything, make sure library (if present) can be applied.
-        if (libraryPath != null) {
-            IAndroidTarget finalTarget = target != null ? target : originalTarget;
-            if (finalTarget.getProperty(SdkConstants.PROP_SDK_SUPPORT_LIBRARY, false) == false) {
-                mLog.error(null,
-                        "The build system for this project target (%1$s) does not support libraries",
-                        finalTarget.getFullName());
-                return false;
-            }
-        }
-
-        boolean saveDefaultProps = false;
+        boolean saveProjectProps = false;
 
         ProjectPropertiesWorkingCopy propsWC = null;
 
         // Update default.prop if --target was specified
-        if (target != null) {
+        if (target != null || writeProjectProp) {
             // we already attempted to load the file earlier, if that failed, create it.
             if (props == null) {
-                propsWC = ProjectProperties.create(folderPath, PropertyType.DEFAULT);
+                propsWC = ProjectProperties.create(projectFolder, PropertyType.PROJECT);
             } else {
-                propsWC = props.makeWorkingCopy();
+                propsWC = props.makeWorkingCopy(PropertyType.PROJECT);
             }
 
             // set or replace the target
-            propsWC.setProperty(ProjectProperties.PROPERTY_TARGET, target.hashString());
-            saveDefaultProps = true;
+            if (target != null) {
+                propsWC.setProperty(ProjectProperties.PROPERTY_TARGET, target.hashString());
+            }
+            saveProjectProps = true;
         }
 
         if (libraryPath != null) {
-            // at this point, the default properties already exists, either because they were
+            // At this point, the default properties already exists, either because they were
             // already there or because they were created with a new target
             if (propsWC == null) {
+                assert props != null;
                 propsWC = props.makeWorkingCopy();
             }
 
@@ -532,7 +511,7 @@ public class ProjectCreator {
             File libProject = new File(libraryPath);
             String resolvedPath;
             if (libProject.isAbsolute() == false) {
-                libProject = new File(folderPath, libraryPath);
+                libProject = new File(projectFolder, libraryPath);
                 try {
                     resolvedPath = libProject.getCanonicalPath();
                 } catch (IOException e) {
@@ -555,6 +534,7 @@ public class ProjectCreator {
             int index = 1;
             while (true) {
                 String propName = ProjectProperties.PROPERTY_LIB_REF + Integer.toString(index);
+                assert props != null;
                 String ref = props.getProperty(propName);
                 if (ref == null) {
                     break;
@@ -565,28 +545,40 @@ public class ProjectCreator {
 
             String propName = ProjectProperties.PROPERTY_LIB_REF + Integer.toString(index);
             propsWC.setProperty(propName, libraryPath);
-            saveDefaultProps = true;
+            saveProjectProps = true;
         }
 
         // save the default props if needed.
-        if (saveDefaultProps) {
+        if (saveProjectProps) {
             try {
+                assert propsWC != null;
                 propsWC.save();
-                println("Updated %1$s", PropertyType.DEFAULT.getFilename());
+                if (writeProjectProp) {
+                    println("Updated and renamed %1$s to %2$s",
+                            PropertyType.LEGACY_DEFAULT.getFilename(),
+                            PropertyType.PROJECT.getFilename());
+                } else {
+                    println("Updated %1$s", PropertyType.PROJECT.getFilename());
+                }
             } catch (Exception e) {
                 mLog.error(e, "Failed to write %1$s file in '%2$s'",
-                        PropertyType.DEFAULT.getFilename(),
+                        PropertyType.PROJECT.getFilename(),
                         folderPath);
                 return false;
+            }
+
+            if (writeProjectProp) {
+                // need to delete the default prop file.
+                ProjectProperties.delete(projectFolder, PropertyType.LEGACY_DEFAULT);
             }
         }
 
         // Refresh/create "sdk" in local.properties
         // because the file may already exists and contain other values (like apk config),
         // we first try to load it.
-        props = ProjectProperties.load(folderPath, PropertyType.LOCAL);
+        props = ProjectProperties.load(projectFolder, PropertyType.LOCAL);
         if (props == null) {
-            propsWC = ProjectProperties.create(folderPath, PropertyType.LOCAL);
+            propsWC = ProjectProperties.create(projectFolder, PropertyType.LOCAL);
         } else {
             propsWC = props.makeWorkingCopy();
         }
@@ -603,23 +595,73 @@ public class ProjectCreator {
             return false;
         }
 
+        // legacy: check if build.properties must be renamed to ant.properties.
+        props = ProjectProperties.load(projectFolder, PropertyType.ANT);
+        if (props == null) {
+            props = ProjectProperties.load(projectFolder, PropertyType.LEGACY_BUILD);
+            if (props != null) {
+                try {
+                    // get a working copy with the new property type
+                    propsWC = props.makeWorkingCopy(PropertyType.ANT);
+                    propsWC.save();
+
+                    // delete the old file
+                    ProjectProperties.delete(projectFolder, PropertyType.LEGACY_BUILD);
+
+                    println("Renamed %1$s to %2$s",
+                            PropertyType.LEGACY_BUILD.getFilename(),
+                            PropertyType.ANT.getFilename());
+                } catch (Exception e) {
+                    mLog.error(e, "Failed to write %1$s file in '%2$s'",
+                            PropertyType.ANT.getFilename(),
+                            folderPath);
+                    return false;
+                }
+            }
+        }
+
         // Build.xml: create if not present or no <androidinit/> in it
         File buildXml = new File(projectFolder, SdkConstants.FN_BUILD_XML);
         boolean needsBuildXml = projectName != null || !buildXml.exists();
+
+        // if it seems there's no need for a new build.xml, look for inside the file
+        // to try to detect old ones that may need updating.
         if (!needsBuildXml) {
-            // Look for for a classname="com.android.ant.SetupTask" attribute
-            needsBuildXml = !checkFileContainsRegexp(buildXml,
-                    "classname=\"com.android.ant.SetupTask\"");  //$NON-NLS-1$
-        }
-        if (!needsBuildXml) {
-            // Note that "<setup" must be followed by either a whitespace, a "/" (for the
-            // XML /> closing tag) or an end-of-line. This way we know the XML tag is really this
-            // one and later we will be able to use an "androidinit2" tag or such as necessary.
-            needsBuildXml = !checkFileContainsRegexp(buildXml, "<setup(?:\\s|/|$)");  //$NON-NLS-1$
-        }
-        if (needsBuildXml) {
-            if (buildXml.exists()) {
-                println("File %1$s is too old and needs to be updated.", SdkConstants.FN_BUILD_XML);
+            // we are looking for version-tag: followed by either an integer or "custom".
+            if (checkFileContainsRegexp(buildXml, "version-tag:\\s*custom") != null) { //$NON-NLS-1$
+                println("%1$s: Found version-tag: custom. File will not be updated.",
+                        SdkConstants.FN_BUILD_XML);
+            } else {
+                Matcher m = checkFileContainsRegexp(buildXml, "version-tag:\\s*(\\d+)"); //$NON-NLS-1$
+                if (m == null) {
+                    println("----------\n" +
+                            "%1$s: Failed to find version-tag string. File must be updated.\n" +
+                            "In order to not erase potential customizations, the file will not be automatically regenerated.\n" +
+                            "If no changes have been made to the file, delete it manually and run the command again.\n" +
+                            "If you have made customizations to the build process, the file must be manually updated.\n" +
+                            "It is recommended to:\n" +
+                            "\t* Copy current file to a safe location.\n" +
+                            "\t* Delete original file.\n" +
+                            "\t* Run command again to generate a new file.\n" +
+                            "\t* Port customizations to the new file, by looking at the new rules file\n" +
+                            "\t  located at <SDK>/tools/ant/build.xml\n" +
+                            "\t* Update file to contain\n" +
+                            "\t      version-tag: custom\n" +
+                            "\t  to prevent file from being rewritten automatically by the SDK tools.\n" +
+                            "----------\n",
+                            SdkConstants.FN_BUILD_XML);
+                } else {
+                    String versionStr = m.group(1);
+                    if (versionStr != null) {
+                        // can't fail due to regexp above.
+                        int version = Integer.parseInt(versionStr);
+                        if (version < MIN_BUILD_VERSION_TAG) {
+                            println("%1$s: Found version-tag: %2$d. Expected version-tag: %3$d: file must be updated.",
+                                    SdkConstants.FN_BUILD_XML, version, MIN_BUILD_VERSION_TAG);
+                            needsBuildXml = true;
+                        }
+                    }
+                }
             }
         }
 
@@ -627,28 +669,67 @@ public class ProjectCreator {
             // create the map for place-holders of values to replace in the templates
             final HashMap<String, String> keywords = new HashMap<String, String>();
 
-            // Take the project name from the command line if there's one
-            if (projectName != null) {
-                keywords.put(PH_PROJECT_NAME, projectName);
-            } else {
-                extractPackageFromManifest(androidManifest, keywords);
-                if (keywords.containsKey(PH_ACTIVITY_ENTRY_NAME)) {
-                    String activity = keywords.get(PH_ACTIVITY_ENTRY_NAME);
-                    // keep only the last segment if applicable
-                    int pos = activity.lastIndexOf('.');
-                    if (pos != -1) {
-                        activity = activity.substring(pos + 1);
-                    }
+            // put the current version-tag value
+            keywords.put(PH_VERSION_TAG, Integer.toString(MIN_BUILD_VERSION_TAG));
 
-                    // Use the activity as project name
-                    keywords.put(PH_PROJECT_NAME, activity);
-                } else {
-                    // We need a project name. Just pick up the basename of the project
-                    // directory.
-                    projectName = projectFolder.getName();
-                    keywords.put(PH_PROJECT_NAME, projectName);
+            // if there was no project name on the command line, figure one out.
+            if (projectName == null) {
+                // otherwise, take it from the existing build.xml if it exists already.
+                if (buildXml.exists()) {
+                    try {
+                        XPathFactory factory = XPathFactory.newInstance();
+                        XPath xpath = factory.newXPath();
+
+                        projectName = xpath.evaluate(XPATH_PROJECT_NAME,
+                                new InputSource(new FileInputStream(buildXml)));
+                    } catch (XPathExpressionException e) {
+                        // this is ok since we're going to recreate the file.
+                        mLog.error(e, "Unable to find existing project name from %1$s",
+                                SdkConstants.FN_BUILD_XML);
+                    } catch (FileNotFoundException e) {
+                        // can't happen since we check above.
+                    }
+                }
+
+                // if the project is still null, then we find another way.
+                if (projectName == null) {
+                    extractPackageFromManifest(androidManifest, keywords);
+                    if (keywords.containsKey(PH_ACTIVITY_ENTRY_NAME)) {
+                        String activity = keywords.get(PH_ACTIVITY_ENTRY_NAME);
+                        // keep only the last segment if applicable
+                        int pos = activity.lastIndexOf('.');
+                        if (pos != -1) {
+                            activity = activity.substring(pos + 1);
+                        }
+
+                        // Use the activity as project name
+                        projectName = activity;
+
+                        println("No project name specified, using Activity name '%1$s'.\n" +
+                                "If you wish to change it, edit the first line of %2$s.",
+                                activity, SdkConstants.FN_BUILD_XML);
+                    } else {
+                        // We need a project name. Just pick up the basename of the project
+                        // directory.
+                        File projectCanonicalFolder = projectFolder;
+                        try {
+                            projectCanonicalFolder = projectCanonicalFolder.getCanonicalFile();
+                        } catch (IOException e) {
+                            // ignore, keep going
+                        }
+
+                        // Use the folder name as project name
+                        projectName = projectCanonicalFolder.getName();
+
+                        println("No project name specified, using project folder name '%1$s'.\n" +
+                                "If you wish to change it, edit the first line of %2$s.",
+                                projectName, SdkConstants.FN_BUILD_XML);
+                    }
                 }
             }
+
+            // put the project name in the map for replacement during the template installation.
+            keywords.put(PH_PROJECT_NAME, projectName);
 
             if (mLevel == OutputLevel.VERBOSE) {
                 println("Regenerating %1$s with project name %2$s",
@@ -657,9 +738,18 @@ public class ProjectCreator {
             }
 
             try {
-                installTemplate("build.template",
-                        new File(projectFolder, SdkConstants.FN_BUILD_XML),
-                        keywords);
+                installTemplate("build.template", buildXml, keywords);
+            } catch (ProjectCreateException e) {
+                mLog.error(e, null);
+                return false;
+            }
+        }
+
+        if (hasProguard == false) {
+            try {
+                installTemplate(SdkConstants.FN_PROGUARD_CFG,
+                        new File(projectFolder, SdkConstants.FN_PROGUARD_CFG),
+                        null /*placeholderMap*/);
             } catch (ProjectCreateException e) {
                 mLog.error(e, null);
                 return false;
@@ -674,6 +764,7 @@ public class ProjectCreator {
      * @param folderPath the path of the test project.
      * @param pathToMainProject the path to the main project, relative to the test project.
      */
+    @SuppressWarnings("deprecation")
     public void updateTestProject(final String folderPath, final String pathToMainProject,
             final SdkManager sdkManager) {
         // since this is an update, check the folder does point to a project
@@ -705,16 +796,21 @@ public class ProjectCreator {
         }
 
         // now get the target from the main project
-        ProjectProperties defaultProp = ProjectProperties.load(resolvedPath, PropertyType.DEFAULT);
-        if (defaultProp == null) {
-            mLog.error(null, "No %1$s at: %2$s", PropertyType.DEFAULT.getFilename(), resolvedPath);
-            return;
+        ProjectProperties projectProp = ProjectProperties.load(resolvedPath, PropertyType.PROJECT);
+        if (projectProp == null) {
+            // legacy support for older file name.
+            projectProp = ProjectProperties.load(resolvedPath, PropertyType.LEGACY_DEFAULT);
+            if (projectProp == null) {
+                mLog.error(null, "No %1$s at: %2$s", PropertyType.PROJECT.getFilename(),
+                        resolvedPath);
+                return;
+            }
         }
 
-        String targetHash = defaultProp.getProperty(ProjectProperties.PROPERTY_TARGET);
+        String targetHash = projectProp.getProperty(ProjectProperties.PROPERTY_TARGET);
         if (targetHash == null) {
             mLog.error(null, "%1$s in the main project has no target property.",
-                    PropertyType.DEFAULT.getFilename());
+                    PropertyType.PROJECT.getFilename());
             return;
         }
 
@@ -724,38 +820,35 @@ public class ProjectCreator {
             return;
         }
 
-        // look for the name of the project. If build.xml does not exist,
-        // query the main project build.xml for its name
+        // update test-project does not support the --name parameter, therefore the project
+        // name should generally not be passed to updateProject().
+        // However if build.xml does not exist then updateProject() will recreate it. In this
+        // case we will need the project name.
+        // To do this, we look for the parent project name and add "test" to it.
+        // If the main project does not have a project name (yet), then the default behavior
+        // will be used (look for activity and then folder name)
         String projectName = null;
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
 
-        File testBuildXml = new File(folderPath, "build.xml");
-        if (testBuildXml.isFile()) {
-            try {
-                projectName = xpath.evaluate("/project/@name",
-                        new InputSource(new FileInputStream(testBuildXml)));
-            } catch (XPathExpressionException e) {
-                // looks like the build.xml is wrong, we'll create a new one, and get its name
-                // from the parent.
-            } catch (FileNotFoundException e) {
-                // looks like the build.xml is wrong, we'll create a new one, and get its name
-                // from the parent.
-            }
-        }
-
-        // if the project name is still unknown, get it from the parent.
-        if (projectName == null) {
-            try {
-                String mainProjectName = xpath.evaluate("/project/@name",
-                        new InputSource(new FileInputStream(new File(resolvedPath, "build.xml"))));
-                projectName = mainProjectName + "Test";
-            } catch (XPathExpressionException e) {
-                mLog.error(e, "Unable to query main project name.");
-                return;
-            } catch (FileNotFoundException e) {
-                mLog.error(e, "Unable to query main project name.");
-                return;
+        File testBuildXml = new File(folderPath, SdkConstants.FN_BUILD_XML);
+        if (testBuildXml.isFile() == false) {
+            File mainBuildXml = new File(resolvedPath, SdkConstants.FN_BUILD_XML);
+            if (mainBuildXml.isFile()) {
+                try {
+                    // get the name of the main project and add Test to it.
+                    String mainProjectName = xpath.evaluate(XPATH_PROJECT_NAME,
+                            new InputSource(new FileInputStream(mainBuildXml)));
+                    projectName = mainProjectName + "Test";
+                } catch (XPathExpressionException e) {
+                    // it's ok, updateProject() will figure out a name automatically.
+                    // We do log the error though as the build.xml file may be broken.
+                    mLog.warning("Failed to parse %1$s.\n" +
+                            "File may not be valid. Consider running 'android update project' on the main project.",
+                            mainBuildXml.getPath());
+                } catch (FileNotFoundException e) {
+                    // should not happen since we check first.
+                }
             }
         }
 
@@ -766,125 +859,40 @@ public class ProjectCreator {
         }
 
         // add the test project specific properties.
-        ProjectProperties buildProps = ProjectProperties.load(folderPath, PropertyType.BUILD);
-        ProjectPropertiesWorkingCopy buildWorkingCopy;
-        if (buildProps == null) {
-            buildWorkingCopy = ProjectProperties.create(folderPath, PropertyType.BUILD);
+        // At this point, we know build.prop has been renamed ant.prop
+        ProjectProperties antProps = ProjectProperties.load(folderPath, PropertyType.ANT);
+        ProjectPropertiesWorkingCopy antWorkingCopy;
+        if (antProps == null) {
+            antWorkingCopy = ProjectProperties.create(folderPath, PropertyType.ANT);
         } else {
-            buildWorkingCopy = buildProps.makeWorkingCopy();
+            antWorkingCopy = antProps.makeWorkingCopy();
         }
 
         // set or replace the path to the main project
-        buildWorkingCopy.setProperty(ProjectProperties.PROPERTY_TESTED_PROJECT, pathToMainProject);
+        antWorkingCopy.setProperty(ProjectProperties.PROPERTY_TESTED_PROJECT, pathToMainProject);
         try {
-            buildWorkingCopy.save();
-            println("Updated %1$s", PropertyType.BUILD.getFilename());
+            antWorkingCopy.save();
+            println("Updated %1$s", PropertyType.ANT.getFilename());
         } catch (Exception e) {
             mLog.error(e, "Failed to write %1$s file in '%2$s'",
-                    PropertyType.BUILD.getFilename(),
+                    PropertyType.ANT.getFilename(),
                     folderPath);
             return;
         }
-
-    }
-
-    /**
-     * Updates an existing project.
-     * <p/>
-     * Workflow:
-     * <ul>
-     * <li> Check export.properties is present (required)
-     * <li> Refresh/create "sdk" in local.properties
-     * <li> Build.xml: create if not present or no <androidinit(\w|/>) in it
-     * </ul>
-     *
-     * @param folderPath the folder of the project to update. This folder must exist.
-     * @param projectName The project name from --name. Can be null.
-     * @param force whether to force a new build.xml file.
-     * @return true if the project was successfully updated.
-     */
-    public boolean updateExportProject(String folderPath, String projectName, boolean force) {
-        // since this is an update, check the folder does point to a project
-        File androidManifest = checkProjectFolder(folderPath, SdkConstants.FN_EXPORT_PROPERTIES);
-        if (androidManifest == null) {
-            return false;
-        }
-
-        // get the parent File.
-        File projectFolder = androidManifest.getParentFile();
-
-        // Refresh/create "sdk" in local.properties
-        // because the file may already exist and contain other values (like apk config),
-        // we first try to load it.
-        ProjectProperties props = ProjectProperties.load(folderPath, PropertyType.LOCAL);
-        ProjectPropertiesWorkingCopy localPropsWorkingCopy;
-        if (props == null) {
-            localPropsWorkingCopy = ProjectProperties.create(folderPath, PropertyType.LOCAL);
-        } else {
-            localPropsWorkingCopy = props.makeWorkingCopy();
-        }
-
-        // set or replace the sdk location.
-        localPropsWorkingCopy.setProperty(ProjectProperties.PROPERTY_SDK, mSdkFolder);
-        try {
-            localPropsWorkingCopy.save();
-            println("Updated %1$s", PropertyType.LOCAL.getFilename());
-        } catch (Exception e) {
-            mLog.error(e, "Failed to write %1$s file in '%2$s'",
-                    PropertyType.LOCAL.getFilename(),
-                    folderPath);
-            return false;
-        }
-
-        // Build.xml: create if not present
-        File buildXml = new File(projectFolder, SdkConstants.FN_BUILD_XML);
-        boolean needsBuildXml = force || projectName != null || !buildXml.exists();
-
-        if (needsBuildXml) {
-            // create the map for place-holders of values to replace in the templates
-            final HashMap<String, String> keywords = new HashMap<String, String>();
-
-            // Take the project name from the command line if there's one
-            if (projectName != null) {
-                keywords.put(PH_PROJECT_NAME, projectName);
-            } else {
-                // We need a project name. Just pick up the basename of the project
-                // directory.
-                projectName = projectFolder.getName();
-                keywords.put(PH_PROJECT_NAME, projectName);
-            }
-
-            if (mLevel == OutputLevel.VERBOSE) {
-                println("Regenerating %1$s with project name %2$s",
-                        SdkConstants.FN_BUILD_XML,
-                        keywords.get(PH_PROJECT_NAME));
-            }
-
-            try {
-                installTemplate("build.export.template",
-                        new File(projectFolder, SdkConstants.FN_BUILD_XML),
-                        keywords);
-            } catch (ProjectCreateException e) {
-                mLog.error(e, null);
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**
      * Checks whether the give <var>folderPath</var> is a valid project folder, and returns
-     * a {@link File} to the required file.
+     * a {@link FileWrapper} to the required file.
      * <p/>This checks that the folder exists and contains an AndroidManifest.xml file in it.
      * <p/>Any error are output using {@link #mLog}.
      * @param folderPath the folder to check
      * @param requiredFilename the file name of the file that's required.
-     * @return a {@link File} to the AndroidManifest.xml file, or null otherwise.
+     * @return a {@link FileWrapper} to the AndroidManifest.xml file, or null otherwise.
      */
-    private File checkProjectFolder(String folderPath, String requiredFilename) {
+    private FileWrapper checkProjectFolder(String folderPath, String requiredFilename) {
         // project folder must exist and be a directory, since this is an update
-        File projectFolder = new File(folderPath);
+        FolderWrapper projectFolder = new FolderWrapper(folderPath);
         if (!projectFolder.isDirectory()) {
             mLog.error(null, "Project folder '%1$s' is not a valid directory.",
                     projectFolder);
@@ -892,7 +900,7 @@ public class ProjectCreator {
         }
 
         // Check AndroidManifest.xml is present
-        File requireFile = new File(projectFolder, requiredFilename);
+        FileWrapper requireFile = new FileWrapper(projectFolder, requiredFilename);
         if (!requireFile.isFile()) {
             mLog.error(null,
                     "%1$s is not a valid project (%2$s not found).",
@@ -904,9 +912,15 @@ public class ProjectCreator {
     }
 
     /**
-     * Returns true if any line of the input file contains the requested regexp.
+     * Looks for a given regex in a file and returns the matcher if any line of the input file
+     * contains the requested regexp.
+     *
+     * @param file the file to search.
+     * @param regexp the regexp to search for.
+     *
+     * @return a Matcher or null if the regexp is not found.
      */
-    private boolean checkFileContainsRegexp(File file, String regexp) {
+    private Matcher checkFileContainsRegexp(File file, String regexp) {
         Pattern p = Pattern.compile(regexp);
 
         try {
@@ -914,8 +928,9 @@ public class ProjectCreator {
             String line;
 
             while ((line = in.readLine()) != null) {
-                if (p.matcher(line).find()) {
-                    return true;
+                Matcher m = p.matcher(line);
+                if (m.find()) {
+                    return m;
                 }
             }
 
@@ -924,7 +939,7 @@ public class ProjectCreator {
             // ignore
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -1046,7 +1061,7 @@ public class ProjectCreator {
      * @param target the Target of the project that will be providing the template.
      * @throws ProjectCreateException
      */
-    private void installTemplate(String templateName, File destFile,
+    private void installTargetTemplate(String templateName, File destFile,
             Map<String, String> placeholderMap, IAndroidTarget target)
             throws ProjectCreateException {
         // query the target for its template directory
@@ -1098,8 +1113,8 @@ public class ProjectCreator {
 
             while ((line = in.readLine()) != null) {
                 if (placeholderMap != null) {
-                    for (String key : placeholderMap.keySet()) {
-                        line = line.replace(key, placeholderMap.get(key));
+                    for (Map.Entry<String, String> entry : placeholderMap.entrySet()) {
+                        line = line.replace(entry.getKey(), entry.getValue());
                     }
                 }
 
@@ -1132,9 +1147,12 @@ public class ProjectCreator {
 
         boolean installedIcon = false;
 
-        installedIcon |= installIcon(templateFolder, "icon_hdpi.png", resourceFolder, "drawable-hdpi");
-        installedIcon |= installIcon(templateFolder, "icon_mdpi.png", resourceFolder, "drawable-mdpi");
-        installedIcon |= installIcon(templateFolder, "icon_ldpi.png", resourceFolder, "drawable-ldpi");
+        installedIcon |= installIcon(templateFolder, "ic_launcher_hdpi.png", resourceFolder,
+                "drawable-hdpi");
+        installedIcon |= installIcon(templateFolder, "ic_launcher_mdpi.png", resourceFolder,
+                "drawable-mdpi");
+        installedIcon |= installIcon(templateFolder, "ic_launcher_ldpi.png", resourceFolder,
+                "drawable-ldpi");
 
         return installedIcon;
     }
@@ -1148,7 +1166,7 @@ public class ProjectCreator {
         File icon = new File(templateFolder, iconName);
         if (icon.exists()) {
             File drawable = createDirs(resourceFolder, folderName);
-            installBinaryFile(icon, new File(drawable, "icon.png"));
+            installBinaryFile(icon, new File(drawable, "ic_launcher.png"));
             return true;
         }
 
@@ -1159,8 +1177,9 @@ public class ProjectCreator {
      * Installs a binary file
      * @param source the source file to copy
      * @param destination the destination file to write
+     * @throws ProjectCreateException
      */
-    private void installBinaryFile(File source, File destination) {
+    private void installBinaryFile(File source, File destination) throws ProjectCreateException {
         byte[] buffer = new byte[8192];
 
         FileInputStream fis = null;
@@ -1177,7 +1196,7 @@ public class ProjectCreator {
         } catch (FileNotFoundException e) {
             // shouldn't happen since we check before.
         } catch (IOException e) {
-            new ProjectCreateException(e, "Failed to read binary file: %1$s",
+            throw new ProjectCreateException(e, "Failed to read binary file: %1$s",
                     source.getAbsolutePath());
         } finally {
             if (fis != null) {

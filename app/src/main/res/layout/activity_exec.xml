@@ -42,8 +42,8 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:fillViewport="true"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -58,6 +58,7 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:gravity="top|left"
+                    android:imeOptions="flagNoExtractUi|flagNoEnterAction"
                     android:inputType="textMultiLine|textNoSuggestions"
                     android:singleLine="false" />
             </HorizontalScrollView>

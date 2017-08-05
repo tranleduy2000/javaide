@@ -35,12 +35,9 @@ public class JavaProjectFile implements Serializable, Cloneable {
     public final File dirBuildClasses;
     public File dirDexedLibs;
     public File dirDexedClass;
-
     public File dexedClassesFile;
     public File dexedLibsFile;
-
     public File classpathFile;
-
     /*Main class*/
     private ClassFile mainClass;
     private String projectName;
@@ -74,7 +71,12 @@ public class JavaProjectFile implements Serializable, Cloneable {
 
         classpathFile = new File(classpath);
 
-        mkdirs();
+        if (!dirRoot.exists()) dirRoot.mkdirs();
+        if (!dirProject.exists()) dirProject.mkdirs();
+        if (!dirLibs.exists()) dirLibs.mkdirs();
+        if (!dirSrcMain.exists()) dirSrcMain.mkdirs();
+        if (!dirJava.exists()) dirJava.mkdirs();
+        if (!dirBuildClasses.exists()) dirBuildClasses.mkdirs();
     }
 
     public static File createClass(JavaProjectFile projectFile,
@@ -108,6 +110,25 @@ public class JavaProjectFile implements Serializable, Cloneable {
             return null;
         }
         return new JavaProjectFile(dirRoot, mainClass.getName(), packageName, projectName, classpath);
+    }
+
+    public File getDirDexedLibs() {
+        if (!dirDexedLibs.exists()) dirDexedLibs.mkdirs();
+        return dirDexedLibs;
+    }
+
+    public File getDirDexedClass() {
+        return dirDexedClass;
+    }
+
+    public File getDirOutputJar() {
+        if (!dirOutputJar.exists()) dirOutputJar.mkdirs();
+        return dirOutputJar;
+    }
+
+    public File getDirBuildClasses() {
+        if (!dirBuildClasses.exists()) dirBuildClasses.mkdirs();
+        return dirBuildClasses;
     }
 
     public void createBuildDir() {
@@ -254,5 +275,10 @@ public class JavaProjectFile implements Serializable, Cloneable {
         classpath += (classpath.isEmpty() ? "" : File.pathSeparator) + classpathFile.getPath();
         Log.d(TAG, "getClassPath() returned: " + classpath);
         return classpath;
+    }
+
+    public File getDirJava() {
+        if (!dirJava.exists()) dirJava.mkdirs();
+        return dirJava;
     }
 }

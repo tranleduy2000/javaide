@@ -68,13 +68,13 @@ import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
 import com.duy.project.dialog.DialogSelectDirectory;
+import com.duy.project.file.android.AndroidProjectFile;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFile;
 import com.duy.project.file.java.ProjectManager;
 import com.duy.project.utils.ClassUtil;
 import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.sun.tools.javac.main.Main;
 
 import java.io.File;
 import java.io.IOException;
@@ -260,6 +260,7 @@ public class MainActivity extends BaseEditorActivity implements
 
     @Override
     public void runProject() {
+        saveAllFile();
         if (mProjectFile != null) {
             //check main class exist
             if (mProjectFile.getMainClass() == null
@@ -292,7 +293,6 @@ public class MainActivity extends BaseEditorActivity implements
                         }).show();
                 return;
             }
-            saveAllFile();
             new CompileTask(this).execute(mProjectFile);
         } else {
             Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
@@ -764,17 +764,28 @@ public class MainActivity extends BaseEditorActivity implements
             mProjectFile.clean();
             mProjectFile.createBuildDir();
 
-            int status = CommandManager.compileJava(mProjectFile, printWriter, listener);
-            if (status != Main.EXIT_ERROR) {
-                try {
-                    CommandManager.convertToDexFormat(mProjectFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    publishProgress(e.getMessage().toCharArray(), 0, e.getMessage().length());
-                    status = Main.EXIT_ERROR;
-                }
+//            int status = CommandManager.compileJava(mProjectFile, printWriter, listener);
+//            if (status != Main.EXIT_ERROR) {
+//                try {
+//                    CommandManager.convertToDexFormat(mProjectFile);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    publishProgress(e.getMessage().toCharArray(), 0, e.getMessage().length());
+//                    status = Main.EXIT_ERROR;
+//                }
+//            }
+//            return status;
+            try {
+                AndroidProjectFile androidProjectFile = new AndroidProjectFile(
+                        mProjectFile.dirRoot,
+                        mProjectFile.getMainClass().getName(),
+                        mProjectFile.getPackageName(),
+                        mProjectFile.getProjectName(), new File(getFilesDir(), "system/classes/android.jar").getPath());
+                CommandManager.buildApk(androidProjectFile);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            return status;
+            return -1;
         }
 
         @Override

@@ -4,25 +4,32 @@ import android.util.Log;
 
 import com.duy.Aapt;
 import com.duy.project.file.android.AndroidProjectFile;
-
-import java.io.File;
+import com.spartacusrex.spartacuside.external.apkbuilder;
 
 
 public class ApkBuilder {
     private static final String TAG = "BuildTask";
-    private AndroidProjectFile projectFile;
+
+    private static void buildApk(AndroidProjectFile projectFile) throws Exception {
+//        String args = "./dist/demo_android.apk -v -u -z ./build/resources.res -f ./build/demo_android.dex";
+        String[] args = {
+                projectFile.getApkUnsigned().getPath(),
+                projectFile.ap_Resources.getPath(),
+                projectFile.dexedClassesFile.getPath()
+        };
+        apkbuilder.main(args);
+    }
 
     public void build(AndroidProjectFile projectFile) {
-        this.projectFile = projectFile;
         projectFile.clean();
         try {
-            runAidl();
-            runAapt();
-            compileJava();
-            dexLibs();
-            dexClasses();
-            dexMerge();
-            buildApk();
+            runAidl(projectFile);
+            runAapt(projectFile);
+            CommandManager.compileJava(projectFile, null);
+            CommandManager.dexLibs(projectFile, true);
+            CommandManager.dexBuildClasses(projectFile);
+            CommandManager.dexMerge(projectFile);
+            buildApk(projectFile);
 
 //            zipSign();
 //            zipAlign();
@@ -33,13 +40,13 @@ public class ApkBuilder {
         }
     }
 
-    private void runAidl() throws Exception {
+    private void runAidl(AndroidProjectFile projectFile) throws Exception {
         Log.d(TAG, "runAidl() called");
 
         // TODO make aidl.so
     }
 
-    private void runAapt() throws Exception {
+    private void runAapt(AndroidProjectFile projectFile) throws Exception {
         Log.d(TAG, "runAapt() called");
 
         Aapt aapt = new Aapt();
@@ -47,9 +54,9 @@ public class ApkBuilder {
                 " -M " + projectFile.xmlManifest.getPath() + //manifest file
                 " -F " + projectFile.ap_Resources.getPath() + //
                 " -I " + projectFile.classpathFile.getPath() + //include
-                " -A " + projectFile.dirAssets.getPath() + //assets dir
-                " -S " + projectFile.dirRes.getPath() + //resource dir
-                " -J " + projectFile.dirBuildClasses.getPath()); //out R.java dir
+                " -A " + projectFile.getDirAssets().getPath() + //assets dir
+                " -S " + projectFile.getDirRes().getPath() + //resource dir
+                " -J " + projectFile.getClassR().getParent()); //out R.java dir
 
         if (exitCode != 0) {
             throw new Exception("AAPT exit(" + exitCode + ")");
@@ -71,9 +78,6 @@ public class ApkBuilder {
 		 */
     }
 
-    private void compileJava() throws Exception {
-        Log.d(TAG, "compileJava() called");
-    }
 
     private void dexLibs() throws Exception {
 //        Log.d(TAG, "dexLibs() called");
@@ -100,34 +104,6 @@ public class ApkBuilder {
 //        }
     }
 
-    private boolean setProgress(int percent) {
-        return false;
-    }
-
-    private void dexClasses() throws Exception {
-        Log.d(TAG, "dexClasses() called");
-
-        com.android.dx.command.dexer.Main
-                .main(new String[]{"--verbose", "--output=" + projectFile.dexedClassesFile.getPath(), projectFile.dirBuildClasses.getPath()});
-    }
-
-    private void dexMerge() throws Exception {
-        Log.d(TAG, "dexMerge() called");
-
-        int percent = 40;
-
-        for (File dexLib : projectFile.dirDexedLibs.listFiles()) {
-//            Dex merged = new DexMerger(new Dex(projectFile.dexedClassesFile), new Dex(dexLib), CollisionPolicy.FAIL).merge();
-//            merged.writeTo(projectFile.dexedClassesFile);
-//
-//            if (setProgress(++percent)) {
-//                return;
-//            }
-        }
-    }
-
-    private void buildApk() throws Exception {
-    }
 
     private void zipSign() throws Exception {
 //        if (!appContext.getString(R.string.keystore).contentEquals(projectFile.jksEmbedded.getName())) {

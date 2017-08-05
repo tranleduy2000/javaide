@@ -14,7 +14,7 @@ android {
         versionName "1.0.12 beta"
         ndk {
             moduleName "native-code"
-            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            abiFilters 'armeabi', 'armeabi-v7a',/* 'arm64-v8a',*/ 'x86', 'x86_64'
         }
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

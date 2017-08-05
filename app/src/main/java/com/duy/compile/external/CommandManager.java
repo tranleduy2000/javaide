@@ -44,8 +44,8 @@ public class CommandManager {
             String projectName = projectFile.getProjectName();
             String rootPkg = projectFile.getMainClass().getRootPackage();
 
-            File jarFolder = new File(projectFile.dirBuildClasses, rootPkg);
-            File outJar = new File(projectFile.dirOutputJar, projectName + ".jar");
+            File jarFolder = new File(projectFile.getDirBuildClasses(), rootPkg);
+            File outJar = new File(projectFile.getDirOutputJar(), projectName + ".jar");
             if (outJar.exists()) outJar.delete();
             outJar.createNewFile();
             String[] args = new String[]{"-v", outJar.getPath(), jarFolder.getPath()};
@@ -74,8 +74,8 @@ public class CommandManager {
             String[] args = new String[]{
                     "-verbose",
                     "-classpath", projectFile.getClassPath(),
-                    "-sourcepath", projectFile.dirJava.getPath(), //sourcepath
-                    "-d", projectFile.dirBuildClasses.getPath(), //output dir
+                    "-sourcepath", projectFile.getDirJava().getPath(), //sourcepath
+                    "-d", projectFile.getDirBuildClasses().getPath(), //output dir
                     projectFile.getMainClass().getPath(projectFile) //main class
             };
             int compileStatus;
@@ -105,15 +105,15 @@ public class CommandManager {
         if (dirLibs.exists()) {
             File[] files = dirLibs.listFiles();
             if (files != null && files.length > 0) {
-                for (File file : files) {
-                    File outLib = new File(projectFile.dirDexedLibs, file.getName().replace(".jar", ".dex"));
-                    Log.d(TAG, "dexLibs outLib = " + outLib);
-                    if (outLib.exists() && !ignoreExist) {
+                for (File lib : files) {
+                    File outLib = new File(projectFile.getDirDexedLibs(), lib.getName().replace(".jar", ".dex"));
+                    Log.d(TAG, "dexLibs outLib = " + lib);
+                    if (lib.exists() && !ignoreExist) {
                         continue;
                     }
                     if (!outLib.exists()) outLib.createNewFile();
                     String[] args = new String[]{"--dex", "--verbose", "--no-strict",
-                            "--output=" + outLib.getPath(), file.getPath()};
+                            "--output=" + outLib.getPath(), lib.getPath()};
                     Dex.main(args);
                 }
             }

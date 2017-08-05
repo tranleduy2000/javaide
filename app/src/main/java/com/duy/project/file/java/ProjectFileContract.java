@@ -1,4 +1,4 @@
-package com.duy.project;
+package com.duy.project.file.java;
 
 import android.support.annotation.Nullable;
 
@@ -10,7 +10,7 @@ import java.io.File;
 
 public class ProjectFileContract {
     public interface View {
-        void display(ProjectFile projectFile, boolean expand);
+        void display(JavaProjectFile projectFile, boolean expand);
 
         void refresh();
 
@@ -18,9 +18,9 @@ public class ProjectFileContract {
     }
 
     public interface Presenter {
-        void show(ProjectFile projectFile, boolean expand);
+        void show(JavaProjectFile projectFile, boolean expand);
 
-        void refresh(ProjectFile projectFile);
+        void refresh(JavaProjectFile projectFile);
     }
 
     public interface ActionCallback {

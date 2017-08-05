@@ -60,11 +60,11 @@ import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.view.SymbolListView;
-import com.duy.project.ClassFile;
-import com.duy.project.ProjectFile;
-import com.duy.project.ProjectFileContract;
-import com.duy.project.ProjectFilePresenter;
-import com.duy.project.ProjectManager;
+import com.duy.project.file.java.ClassFile;
+import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.ProjectFileContract;
+import com.duy.project.file.java.ProjectFilePresenter;
+import com.duy.project.file.java.ProjectManager;
 import com.duy.project.dialog.DialogNewClass;
 import com.duy.project.dialog.DialogNewProject;
 import com.duy.project.fragments.FolderStructureFragment;
@@ -92,7 +92,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected FileManager mFileManager;
     protected EditorPagerAdapter mPageAdapter;
     protected SlidingUpPanelLayout mContainerOutput;
-    protected ProjectFile mProjectFile;
+    protected JavaProjectFile mProjectFile;
     protected ProjectFileContract.Presenter mFilePresenter;
 
     protected ViewPager mBottomPage;
@@ -136,7 +136,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState != null) {
-            this.mProjectFile = (ProjectFile) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
+            this.mProjectFile = (JavaProjectFile) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
         } else {
             this.mProjectFile = ProjectManager.getLastProject(this);
         }
@@ -447,7 +447,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     @Override
-    public void onProjectCreated(@NonNull ProjectFile projectFile) {
+    public void onProjectCreated(@NonNull JavaProjectFile projectFile) {
         Log.d(TAG, "onProjectCreated() called with: projectFile = [" + projectFile + "]");
 
         //save project

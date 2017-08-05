@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.duy.ide.R;
 import com.duy.ide.themefont.fonts.FontManager;
-import com.duy.project.ProjectFileContract;
+import com.duy.project.file.java.ProjectFileContract;
 import com.duy.project.utils.ProjectFileUtil;
 import com.unnamed.b.atv.model.TreeNode;
 

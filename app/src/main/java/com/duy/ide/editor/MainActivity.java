@@ -67,13 +67,14 @@ import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
-import com.duy.project.ClassFile;
-import com.duy.project.ProjectFile;
-import com.duy.project.ProjectManager;
 import com.duy.project.dialog.DialogSelectDirectory;
+import com.duy.project.file.java.ClassFile;
+import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.ProjectManager;
 import com.duy.project.utils.ClassUtil;
 import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.sun.tools.javac.main.Main;
 
 import java.io.File;
 import java.io.IOException;
@@ -532,7 +533,7 @@ public class MainActivity extends BaseEditorActivity implements
                 break;
             case REQUEST_CODE_SAMPLE:
                 if (resultCode == RESULT_OK) {
-                    final ProjectFile projectFile = (ProjectFile)
+                    final JavaProjectFile projectFile = (JavaProjectFile)
                             data.getSerializableExtra(SampleActivity.PROJECT_FILE);
                     if (projectFile != null) {
                         mHandler.postDelayed(new Runnable() {
@@ -591,7 +592,7 @@ public class MainActivity extends BaseEditorActivity implements
             Toast.makeText(this, ("Can not find main function"), Toast.LENGTH_SHORT).show();
             return;
         }
-        String className = JavaUtil.getClassName(mProjectFile.getRootDir(), filePath);
+        String className = JavaUtil.getClassName(mProjectFile.dirJava, filePath);
         if (className == null) {
             Toast.makeText(this, ("Class \"" + filePath + "\"" + "invalid"), Toast.LENGTH_SHORT).show();
             return;
@@ -655,7 +656,7 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     @Override
-    public void onConfigChange(ProjectFile projectFile) {
+    public void onConfigChange(JavaProjectFile projectFile) {
         this.mProjectFile = projectFile;
         if (projectFile != null) {
             ProjectManager.saveProject(this, projectFile);
@@ -674,7 +675,7 @@ public class MainActivity extends BaseEditorActivity implements
         switch (request) {
             case 2: //import new project
                 saveCurrentFile();
-                ProjectFile pf = ProjectManager.createProjectIfNeed(file);
+                JavaProjectFile pf = ProjectManager.createProjectIfNeed(file);
                 Log.d(TAG, "onFileSelected pf = " + pf);
                 if (pf != null) {
                     super.onProjectCreated(pf);
@@ -692,10 +693,10 @@ public class MainActivity extends BaseEditorActivity implements
         }
     }
 
-    private class CompileTask extends AsyncTask<ProjectFile, Object, File> {
+    private class CompileTask extends AsyncTask<JavaProjectFile, Object, Integer> {
         private Context mContext;
         private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
-        private ProjectFile mProjectFile;
+        private JavaProjectFile mProjectFile;
 
         CompileTask(Context context) {
             this.mContext = context;
@@ -714,7 +715,7 @@ public class MainActivity extends BaseEditorActivity implements
         }
 
         @Override
-        protected File doInBackground(ProjectFile... params) {
+        protected Integer doInBackground(JavaProjectFile... params) {
             if (params[0] == null) return null;
             this.mProjectFile = params[0];
             PrintWriter printWriter = new PrintWriter(new Writer() {
@@ -739,7 +740,17 @@ public class MainActivity extends BaseEditorActivity implements
                     mDiagnostics.add(diagnostic);
                 }
             };
-            return CommandManager.compile(mProjectFile, printWriter, listener);
+            int status = CommandManager.compileJava(mProjectFile, printWriter, listener);
+            if (status != Main.EXIT_ERROR) {
+                try {
+                    CommandManager.convertToDexFormat(mProjectFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    publishProgress(e.getMessage().toCharArray(), 0, e.getMessage().length());
+                    status = Main.EXIT_ERROR;
+                }
+            }
+            return status;
         }
 
         @Override
@@ -756,7 +767,7 @@ public class MainActivity extends BaseEditorActivity implements
         }
 
         @Override
-        protected void onPostExecute(final File result) {
+        protected void onPostExecute(final Integer result) {
             super.onPostExecute(result);
             mDiagnosticPresenter.display(mDiagnostics);
 
@@ -778,14 +789,14 @@ public class MainActivity extends BaseEditorActivity implements
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mCompileManager.executeDex(mProjectFile, result);
+                        mCompileManager.executeDex(mProjectFile, mProjectFile.dexedClassesFile);
                     }
                 }, 200);
             }
         }
     }
 
-    private class BuildJarAchieveTask extends AsyncTask<ProjectFile, Object, File> {
+    private class BuildJarAchieveTask extends AsyncTask<JavaProjectFile, Object, File> {
         private Context mContext;
         private DiagnosticCollector mDiagnosticCollector;
 
@@ -807,7 +818,7 @@ public class MainActivity extends BaseEditorActivity implements
         }
 
         @Override
-        protected File doInBackground(ProjectFile... params) {
+        protected File doInBackground(JavaProjectFile... params) {
             if (params[0] == null) return null;
             PrintWriter printWriter = new PrintWriter(new Writer() {
                 @Override

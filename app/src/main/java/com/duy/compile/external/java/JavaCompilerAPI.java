@@ -1,7 +1,7 @@
 package com.duy.compile.external.java;
 
 import com.duy.ide.file.FileManager;
-import com.duy.project.ProjectFile;
+import com.duy.project.file.java.JavaProjectFile;
 import com.spartacusrex.spartacuside.helper.Arrays;
 
 import org.apache.commons.io.FileUtils;
@@ -24,7 +24,7 @@ import javax.tools.ToolProvider;
 
 public class JavaCompilerAPI {
 
-    public static void process(ProjectFile pf) throws IOException {
+    public static void process(JavaProjectFile pf) throws IOException {
         String projectPath = pf.getProjectDir();
         String projectName = pf.getProjectName();
         String rootPkg = pf.getMainClass().getRootPackage();

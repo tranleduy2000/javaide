@@ -46,7 +46,7 @@ import android.widget.Toast;
 
 import com.duy.compile.CompileManager;
 import com.duy.ide.R;
-import com.duy.project.ProjectFile;
+import com.duy.project.file.java.JavaProjectFile;
 import com.duy.run.view.EmulatorView;
 import com.duy.run.view.TermKeyListener;
 import com.google.android.gms.ads.AdRequest;
@@ -129,7 +129,7 @@ public class TerminalActivity extends Activity {
 
             Intent intent = getIntent();
             if (intent != null) {
-                ProjectFile projectFile = (ProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
+                JavaProjectFile projectFile = (JavaProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
                 if (projectFile == null) return;
                 int action = intent.getIntExtra(CompileManager.ACTION, -1);
 //                switch (action) {

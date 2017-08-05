@@ -1,5 +1,7 @@
 package com.duy.project;
 
+import com.duy.project.file.java.ClassFile;
+
 import junit.framework.TestCase;
 
 /**

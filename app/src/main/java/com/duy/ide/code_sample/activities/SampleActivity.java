@@ -15,8 +15,8 @@ import com.duy.ide.code_sample.fragments.SelectCategoryFragment;
 import com.duy.ide.code_sample.fragments.SelectProjectFragment;
 import com.duy.ide.code_sample.model.SampleUtil;
 import com.duy.ide.file.FileManager;
-import com.duy.project.ProjectFile;
-import com.duy.project.ProjectManager;
+import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.ProjectManager;
 
 import java.io.File;
 
@@ -66,7 +66,7 @@ public class SampleActivity extends AbstractAppCompatActivity implements
                 }
                 boolean success = SampleUtil.extractTo(SampleActivity.this, out, category, projectName);
                 if (success) {
-                    ProjectFile pf = ProjectManager.createProjectIfNeed(out);
+                    JavaProjectFile pf = ProjectManager.createProjectIfNeed(out);
                     Intent intent = getIntent();
                     intent.putExtra(PROJECT_FILE, pf);
                     setResult(RESULT_OK, intent);

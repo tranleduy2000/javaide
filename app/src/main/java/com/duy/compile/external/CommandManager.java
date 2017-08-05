@@ -1,24 +1,20 @@
 package com.duy.compile.external;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
+import com.android.dx.merge.CollisionPolicy;
+import com.android.dx.merge.DexMerger;
 import com.duy.compile.external.dex.Dex;
 import com.duy.compile.external.java.Jar;
 import com.duy.compile.external.java.Java;
 import com.duy.compile.external.java.Javac;
-import com.duy.ide.file.FileManager;
-import com.duy.project.ClassFile;
-import com.duy.project.ProjectFile;
-import com.google.common.base.Verify;
-import com.spartacusrex.spartacuside.session.TermSession;
+import com.duy.project.file.java.JavaProjectFile;
 import com.sun.tools.javac.main.Main;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -29,62 +25,30 @@ import javax.tools.DiagnosticListener;
  * Created by duy on 18/07/2017.
  */
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class CommandManager {
     private static final String TAG = "CommandManager";
     private static final String LIBRARY_BUILDER_FILE = "builder/library_builder.sh";
     private static final String JAVA_BUILDER_FILE = "builder/java_builder.sh";
 
-    public static void buildJarFileByBash(Context context, TermSession termSession, ProjectFile pf) {
-        Log.d(TAG, "compileAndRun() called with: filePath = [" + pf + "]");
-        File home = context.getFilesDir();
-        try {
-            FileOutputStream fos = termSession.getTermOut();
-            PrintWriter pw = new PrintWriter(fos);
-
-            //set value for variable
-            pw.println("PROJECT_PATH=" + pf.getProjectDir());
-            pw.println("PROJECT_NAME=" + pf.getProjectName());
-            ClassFile mainClass = pf.getMainClass();
-            pw.println("MAIN_CLASS=" + mainClass.getName());
-            pw.println("PATH_MAIN_CLASS=" + mainClass.getName().replace(".", "/"));
-            pw.println("ROOT_PACKAGE=" + mainClass.getRootPackage());
-
-
-            InputStream stream = context.getAssets().open(LIBRARY_BUILDER_FILE);
-            String builder = FileManager.streamToString(stream).toString();
-            pw.print(builder);
-            pw.flush();
-
-            File temp = new File(home, "tmp");
-            if (!temp.exists()) temp.mkdirs();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Nullable
-    public static File buildJarAchieve(ProjectFile pf, PrintWriter out, DiagnosticListener listener) {
+    public static File buildJarAchieve(JavaProjectFile projectFile, PrintWriter out, DiagnosticListener listener) {
         try {
-            File compile = compile(pf, out, listener);
-            if (compile == null) {
+            int status = compileJava(projectFile, out, listener);
+            if (status == Main.EXIT_ERROR) {
                 return null; //can not compile
             }
-            String projectPath = pf.getProjectDir();
-            String projectName = pf.getProjectName();
-            String rootPkg = pf.getMainClass().getRootPackage();
+            String projectName = projectFile.getProjectName();
+            String rootPkg = projectFile.getMainClass().getRootPackage();
 
-            //classes
-            File buildDir = new File(projectPath, "build" + File.separator + "classes");
-            File jarFolder = new File(buildDir, rootPkg);
-            File outJar = new File(projectPath, "bin" + File.separator + projectName + ".jar");
+            File jarFolder = new File(projectFile.dirBuildClasses, rootPkg);
+            File outJar = new File(projectFile.dirOutputJar, projectName + ".jar");
+            if (outJar.exists()) outJar.delete();
             outJar.createNewFile();
-            String[] args = new String[]{"-v", outJar.getPath() /*out file*/, jarFolder.getPath()};
+            String[] args = new String[]{"-v", outJar.getPath(), jarFolder.getPath()};
             //now create normal jar file
             Jar.main(args);
             //ok, create dex file
-            convertToDexFormat(projectPath, projectName, buildDir, rootPkg);
-
+            dexBuildClasses(projectFile);
             return outJar;
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,55 +58,36 @@ public class CommandManager {
         return null;
     }
 
-    @Nullable
-    public static File compile(ProjectFile pf, PrintWriter out) {
-        return compile(pf, out, null);
+    public static int compileJava(JavaProjectFile pf, PrintWriter out) {
+        return compileJava(pf, out, null);
     }
 
-    public static File compile(ProjectFile pf, @Nullable PrintWriter out,
-                               @Nullable DiagnosticListener listener) {
+    public static int compileJava(JavaProjectFile projectFile, @Nullable PrintWriter out,
+                                  @Nullable DiagnosticListener listener) {
         try {
-            String projectPath = pf.getProjectDir();
-            String projectName = pf.getProjectName();
-            String rootPkg = pf.getRootPackage();
-
-
-            //create build director, delete all file if exists
-            File buildDir = new File(projectPath, "build/classes");
-            FileManager.deleteFolder(buildDir);
-            if (!buildDir.exists()) buildDir.mkdirs();
-
-            File sourcepath = new File(projectPath, "src/main/java");
-            if (!sourcepath.exists()) sourcepath.mkdirs();
-
             String[] args = new String[]{
                     "-verbose",
-                    "-sourcepath", sourcepath.getPath(), //classpath
-                    "-d", buildDir.getPath(), //output dir
-                    pf.getMainClass().getPath(pf) //main class
+                    "-classpath", projectFile.getClassPath(),
+                    "-sourcepath", projectFile.dirJava.getPath(), //sourcepath
+                    "-d", projectFile.dirBuildClasses.getPath(), //output dir
+                    projectFile.getMainClass().getPath(projectFile) //main class
             };
             int compileStatus;
             compileStatus = out != null ? Javac.compile(args, out, listener) : Javac.compile(args);
-            switch (compileStatus) {
-                case Main.EXIT_OK: {
-                    return convertToDexFormat(projectPath, projectName, buildDir, rootPkg);
-                }
-            }
-            return null;
+            return compileStatus;
         } catch (Throwable e) {
             e.printStackTrace();
             e.printStackTrace(out);
         }
-        return null;
+        return Main.EXIT_ERROR;
     }
 
     public static void compileAndRun(PrintStream out, InputStream in, PrintStream err,
-                                     File tempDir, ProjectFile pf) {
+                                     File tempDir, JavaProjectFile projectFile) {
         try {
-            String mainClass = pf.getMainClass().getName();
-            //now compile
-            File dex = compile(pf, null);
-            if (dex != null) executeDex(out, in, err, dex, tempDir, mainClass);
+            compileJava(projectFile, new PrintWriter(out));
+            convertToDexFormat(projectFile);
+            executeDex(out, in, err, projectFile.dexedClassesFile, tempDir, projectFile.getMainClass().getName());
         } catch (Exception e) {
             e.printStackTrace();
         } catch (Error e) {
@@ -152,48 +97,57 @@ public class CommandManager {
         }
     }
 
-    private static File convertToDexFormat(@NonNull String projectPath,
-                                           @NonNull String projectName,
-                                           @NonNull File buildDir,
-                                           @NonNull String rootPkg) throws FileNotFoundException {
-        Verify.verifyNotNull(projectPath);
-        Verify.verifyNotNull(projectName);
-        Verify.verifyNotNull(buildDir);
-        Verify.verifyNotNull(rootPkg);
+    public static void dexLibs(@NonNull JavaProjectFile projectFile, boolean ignoreExist) {
+        File dirLibs = projectFile.dirLibs;
+        File[] files = dirLibs.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                File outLib = new File(projectFile.dirDexedLibs, file.getName().replace(".jar", ".dex"));
+                if (outLib.exists() && !ignoreExist) {
+                    continue;
+                } else {
+                    if (outLib.exists()) outLib.delete();
+                }
+                String[] args = new String[]{"--dex", "--verbose", "--no-strict",
+                        "--output=" + outLib.getPath(), file.getPath()};
+                Dex.main(args);
+            }
+        }
+    }
 
-        //convert to dex format
-        File binDir = new File(projectPath, "bin");
-        FileManager.deleteFolder(binDir);
-        if (!binDir.exists()) binDir.mkdirs();
-
-        File outDex = new File(binDir, projectName + ".dex.jar");
-        System.out.println("outDex = " + outDex);
-
-        File toDex = new File(buildDir, rootPkg);
-        FileManager.ensureFileExist(toDex);
-
+    public static File dexBuildClasses(@NonNull JavaProjectFile projectFile) throws FileNotFoundException {
         String[] args = new String[]{"--dex", "--verbose", "--no-strict",
-                "--output=" + outDex.getPath(), //output dir
-                toDex.getPath()}; //input file
+                "--output=" + projectFile.dexedClassesFile.getPath(), //output dex file
+                projectFile.dirBuildClasses.getPath()}; //input file
         Dex.main(args);
-        return outDex;
+        return projectFile.dexedClassesFile;
+    }
+
+    public static File dexMerge(@NonNull JavaProjectFile projectFile) throws IOException {
+        File[] files = projectFile.dirDexedLibs.listFiles();
+        if (files != null) {
+            for (File dexLib : files) {
+                com.android.dex.Dex merged = new DexMerger(
+                        new com.android.dex.Dex(projectFile.dexedClassesFile),
+                        new com.android.dex.Dex(dexLib),
+                        CollisionPolicy.FAIL).merge();
+                merged.writeTo(projectFile.dexedClassesFile);
+            }
+        }
+        return projectFile.dexedClassesFile;
     }
 
     public static void executeDex(@NonNull PrintStream out, InputStream in, PrintStream err,
-                                  @NonNull File outDex, @NonNull File tempDir,
-                                  @NonNull String mainClass) {
-//        Verify.verifyNotNull(termSession);
-        Verify.verifyNotNull(outDex);
-        Verify.verifyNotNull(mainClass);
-//
-//        //run via terminal
-//        FileOutputStream termOut = termSession.getTermOut();
-//        PrintWriter pw = new PrintWriter(termOut);
-//        pw.println("java -jar " + outDex.getPath() + " " + mainClass);
-//        pw.flush();
+                                  @NonNull File outDex, @NonNull File tempDir, String mainClass) {
 
-        String[] args = new String[]{"-jar", outDex.getPath(), mainClass};
+        String[] args = new String[]{"-jar", outDex.getPath(),};
         Java.run(args, tempDir.getPath(), out, in, err);
+    }
+
+    public static void convertToDexFormat(@NonNull JavaProjectFile projectFile) throws IOException {
+        dexBuildClasses(projectFile);
+        dexLibs(projectFile, true);
+        dexMerge(projectFile);
     }
 
 

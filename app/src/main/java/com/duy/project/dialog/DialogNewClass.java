@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.editor.completion.Template;
-import com.duy.project.ProjectFile;
+import com.duy.project.file.java.JavaProjectFile;
 import com.duy.project.utils.ProjectFileUtil;
 
 import java.io.File;
@@ -67,7 +67,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         }
     }
 
-    public static DialogNewClass newInstance(@NonNull ProjectFile p,
+    public static DialogNewClass newInstance(@NonNull JavaProjectFile p,
                                              @Nullable String currentPackage,
                                              @Nullable File currentFolder) {
         Bundle args = new Bundle();
@@ -111,7 +111,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         String packageName = getArguments().getString(KEY_PACKAGE);
         if (packageName == null || packageName.isEmpty()) {
             File currentFolder = (File) getArguments().getSerializable(KEY_PARENT_FILE);
-            ProjectFile projectFile = (ProjectFile) getArguments().getSerializable(KEY_PROJECT_FILE);
+            JavaProjectFile projectFile = (JavaProjectFile) getArguments().getSerializable(KEY_PROJECT_FILE);
             if (currentFolder != null && projectFile != null) {
                 packageName = ProjectFileUtil.findPackage(projectFile.getRootDir(), currentFolder);
             }
@@ -145,10 +145,10 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
 
 
         Bundle arguments = getArguments();
-        ProjectFile projectFile = (ProjectFile) arguments.getSerializable(KEY_PROJECT_FILE);
+        JavaProjectFile projectFile = (JavaProjectFile) arguments.getSerializable(KEY_PROJECT_FILE);
 
         if (projectFile != null) {
-            File classf = ProjectFile.createClass(projectFile, currentPackage, className, content);
+            File classf = JavaProjectFile.createClass(projectFile, currentPackage, className, content);
             if (listener != null) {
                 listener.onClassCreated(classf);
                 Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();

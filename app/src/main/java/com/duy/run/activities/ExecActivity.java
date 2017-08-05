@@ -10,7 +10,7 @@ import com.duy.compile.CompileManager;
 import com.duy.compile.external.CommandManager;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
-import com.duy.project.ProjectFile;
+import com.duy.project.file.java.JavaProjectFile;
 import com.duy.run.view.ConsoleEditText;
 
 import java.io.File;
@@ -44,7 +44,7 @@ public class ExecActivity extends AbstractAppCompatActivity {
     private void runProgram() {
         Intent intent = getIntent();
         if (intent != null) {
-            final ProjectFile projectFile = (ProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
+            final JavaProjectFile projectFile = (JavaProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
             if (projectFile == null) return;
             mHandler.post(new Runnable() {
                 @Override

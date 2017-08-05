@@ -87,6 +87,7 @@ dependencies {
     compile project(':colorpicker')
     compile project(':splitview')
     compile project(':treeview')
+    compile project(':aapt')
 
     compile 'com.google.guava:guava:22.0-android'
 }

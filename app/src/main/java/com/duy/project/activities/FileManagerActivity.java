@@ -5,11 +5,9 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
-import com.duy.ide.file.FileManager;
-import com.duy.project.ProjectFile;
+import com.duy.project.file.java.JavaProjectFile;
 import com.duy.project.fragments.FolderStructureFragment;
 
-import java.io.File;
 import java.io.IOException;
 
 
@@ -22,8 +20,8 @@ public class FileManagerActivity extends AbstractAppCompatActivity {
         setContentView(R.layout.activity_file);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         try {
-            ProjectFile projectFile = new ProjectFile("Main", "com.duy.example", "Demo100");
-             projectFile.create(new File(FileManager.EXTERNAL_DIR));
+            JavaProjectFile projectFile = new JavaProjectFile("Main", "com.duy.example", "Demo100");
+             projectFile.createMainClass();
             fragmentTransaction.replace(R.id.container, FolderStructureFragment.newInstance(projectFile)).commit();
         } catch (IOException e) {
             e.printStackTrace();

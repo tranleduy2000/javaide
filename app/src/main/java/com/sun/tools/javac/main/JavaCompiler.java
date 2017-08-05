@@ -1007,7 +1007,7 @@ public class JavaCompiler implements ClassReader.SourceCompleter {
                     break;
 
                 default:
-                    Assert.error("unknown compile policy");
+                    Assert.error("unknown compileJava policy");
             }
         } catch (Abort ex) {
             if (devVerbose)

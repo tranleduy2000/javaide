@@ -1,4 +1,4 @@
-package com.duy.project;
+package com.duy.project.file.java;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -21,18 +21,18 @@ public class ProjectManager {
 
     private static final String CURRENT_PROJECT = "file_project.nide";
 
-    public static boolean saveProject(@NonNull Context context,@NonNull ProjectFile projectFile) {
+    public static boolean saveProject(@NonNull Context context,@NonNull JavaProjectFile projectFile) {
         JSONObject object = projectFile.exportJson();
         File file = new File(context.getFilesDir(), CURRENT_PROJECT);
         return FileManager.saveFile(file, object.toString());
     }
 
     @Nullable
-    public static ProjectFile getLastProject(@NonNull Context context) {
+    public static JavaProjectFile getLastProject(@NonNull Context context) {
         File file = new File(context.getFilesDir(), CURRENT_PROJECT);
         try {
             String s = FileManager.streamToString(new FileInputStream(file)).toString();
-            ProjectFile projectFile = new ProjectFile();
+            JavaProjectFile projectFile = new JavaProjectFile();
             projectFile.restore(new JSONObject(s));
             return projectFile;
         } catch (FileNotFoundException | JSONException e) {
@@ -42,14 +42,14 @@ public class ProjectManager {
     }
 
     @Nullable
-    public static ProjectFile createProjectIfNeed(File file) {
+    public static JavaProjectFile createProjectIfNeed(File file) {
         if (file.isFile() || !file.canWrite() || !file.canRead()) {
             return null;
         }
-        ProjectFile projectFile = new ProjectFile();
+        JavaProjectFile projectFile = new JavaProjectFile();
         projectFile.setProjectName(file.getName());
         try {
-            projectFile.create(file.getParentFile());
+            projectFile.createMainClass();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

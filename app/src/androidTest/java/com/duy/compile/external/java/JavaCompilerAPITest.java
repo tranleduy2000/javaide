@@ -4,7 +4,7 @@ package com.duy.compile.external.java;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.duy.project.ProjectFile;
+import com.duy.project.file.java.JavaProjectFile;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class JavaCompilerAPITest {
     @Test
     public void testCompile() throws IOException {
         String rootDir = "/home/duy/StudioProjects/javaide/sample";
-        ProjectFile projectFile = new ProjectFile("com.duy.Main", "com.duy", "sample");
+        JavaProjectFile projectFile = new JavaProjectFile("com.duy.Main", "com.duy", "sample");
         projectFile.setRootDir(rootDir);
         JavaCompilerAPI.process(projectFile);
     }

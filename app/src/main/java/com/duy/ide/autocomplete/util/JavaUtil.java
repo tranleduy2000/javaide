@@ -42,12 +42,11 @@ public class JavaUtil {
     }
 
     @Nullable
-    public static String getClassName(String rootDir, String filePath) {
-        rootDir += "/src/main/java";
-        if (filePath.startsWith(rootDir)) {
+    public static String getClassName(File javaSrc, String filePath) {
+        if (filePath.startsWith(javaSrc.getPath())) {
             //hello/src/main/java
             //hello ->
-            String filename = filePath.substring(filePath.indexOf(rootDir) + rootDir.length() + 1);
+            String filename = filePath.substring(filePath.indexOf(javaSrc.getPath()) + javaSrc.getPath().length() + 1);
             filename = filename.replace(File.separator, ".");
             if (filename.endsWith(".java")) {
                 filename = filename.substring(0, filename.lastIndexOf(".java"));

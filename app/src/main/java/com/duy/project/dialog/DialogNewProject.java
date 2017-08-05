@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.file.FileManager;
-import com.duy.project.ProjectFile;
+import com.duy.project.file.java.JavaProjectFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,11 +91,13 @@ public class DialogNewProject extends AppCompatDialogFragment implements View.On
 
     private void doCreateProject() {
         if (isOk()) {
-            ProjectFile projectFile = new ProjectFile(
+            JavaProjectFile projectFile = new JavaProjectFile(
+                    new File(FileManager.EXTERNAL_DIR),
                     editPackage.getText().toString() + "." + editMainClass.getText().toString(),
-                    editPackage.getText().toString(), editProjectName.getText().toString());
+                    editPackage.getText().toString(), editProjectName.getText().toString(),
+                    new File(getContext().getFilesDir(), "system/classes/android.jar").getPath());
             try {
-                projectFile.create(new File(FileManager.EXTERNAL_DIR));
+                projectFile.createMainClass();
                 if (listener != null) {
                     listener.onProjectCreated(projectFile);
                 }
@@ -131,6 +133,6 @@ public class DialogNewProject extends AppCompatDialogFragment implements View.On
 
 
     public interface OnCreateProjectListener {
-        void onProjectCreated(ProjectFile projectFile);
+        void onProjectCreated(JavaProjectFile projectFile);
     }
 }

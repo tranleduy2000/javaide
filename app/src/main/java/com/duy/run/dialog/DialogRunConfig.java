@@ -20,8 +20,8 @@ import android.widget.Toast;
 import com.duy.ide.R;
 import com.duy.compile.CompileManager;
 import com.duy.ide.file.FileManager;
-import com.duy.project.ClassFile;
-import com.duy.project.ProjectFile;
+import com.duy.project.file.java.ClassFile;
+import com.duy.project.file.java.JavaProjectFile;
 import com.duy.project.utils.ClassUtil;
 
 import java.io.File;
@@ -39,11 +39,11 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     private EditText mArgs;
     private EditText mPackage;
     private SharedPreferences mPref;
-    private ProjectFile projectFile;
+    private JavaProjectFile projectFile;
     @Nullable
     private OnConfigChangeListener listener;
 
-    public static DialogRunConfig newInstance(ProjectFile project) {
+    public static DialogRunConfig newInstance(JavaProjectFile project) {
 
         Bundle args = new Bundle();
         args.putSerializable(CompileManager.PROJECT_FILE, project);
@@ -85,7 +85,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        projectFile = (ProjectFile) getArguments().getSerializable(CompileManager.PROJECT_FILE);
+        projectFile = (JavaProjectFile) getArguments().getSerializable(CompileManager.PROJECT_FILE);
         mPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         if (projectFile == null) {
             return;
@@ -131,7 +131,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
         }
     }
 
-    private void setupSpinnerMainClass(View view, ProjectFile projectFile) {
+    private void setupSpinnerMainClass(View view, JavaProjectFile projectFile) {
         String projectDir = projectFile.getProjectDir();
         File root = new File(projectDir);
         File src = new File(root, "src/main/java");
@@ -155,6 +155,6 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     }
 
     public interface OnConfigChangeListener {
-        void onConfigChange(ProjectFile projectFile);
+        void onConfigChange(JavaProjectFile projectFile);
     }
 }

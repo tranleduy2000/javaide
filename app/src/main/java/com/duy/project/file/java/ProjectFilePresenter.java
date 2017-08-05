@@ -1,4 +1,4 @@
-package com.duy.project;
+package com.duy.project.file.java;
 
 /**
  * Created by Duy on 17-Jul-17.
@@ -13,12 +13,12 @@ public class ProjectFilePresenter implements ProjectFileContract.Presenter {
     }
 
     @Override
-    public void show(ProjectFile projectFile, boolean expand) {
+    public void show(JavaProjectFile projectFile, boolean expand) {
         view.display(projectFile, expand);
     }
 
     @Override
-    public void refresh(ProjectFile projectFile) {
+    public void refresh(JavaProjectFile projectFile) {
         view.refresh();
     }
 }

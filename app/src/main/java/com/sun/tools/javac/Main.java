@@ -116,8 +116,7 @@ public class Main {
      * javac, see the man page for details.
      */
     public static int compile(String[] args, PrintWriter out, DiagnosticListener listener) {
-        com.sun.tools.javac.main.Main compiler =
-                new com.sun.tools.javac.main.Main("javac", out);
+        com.sun.tools.javac.main.Main compiler = new com.sun.tools.javac.main.Main("javac", out);
         compiler.setDiagnosticListener(listener);
         return compiler.compile(args);
     }

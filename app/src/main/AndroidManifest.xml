@@ -40,7 +40,7 @@
             <!--</intent-filter>-->
         </activity>
         <activity
-            android:name="com.duy.run.activities.ExecActivity"
+            android:name="com.duy.run.activities.ExecuteActivity"
             android:windowSoftInputMode="stateAlwaysVisible"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>
 

@@ -120,7 +120,7 @@ public class Main {
         } catch (RuntimeException ex) {
             System.err.println("\nUNEXPECTED TOP-LEVEL EXCEPTION:");
             ex.printStackTrace();
-            System.exit(2);
+//            System.exit(2);
         } catch (Throwable ex) {
             System.err.println("\nUNEXPECTED TOP-LEVEL ERROR:");
             ex.printStackTrace();
@@ -132,7 +132,7 @@ public class Main {
                                 "(This program is known to be incompatible " +
                                 "with recent releases of GCJ.)");
             }
-            System.exit(3);
+//            System.exit(3);
         }
 
         if (!gotCmd) {
@@ -142,7 +142,7 @@ public class Main {
 
         if (showUsage) {
             usage();
-            System.exit(1);
+//            System.exit(1);
         }
     }
 
@@ -151,7 +151,7 @@ public class Main {
      */
     private static void version() {
         System.err.println("dx version " + Version.VERSION);
-        System.exit(0);
+//        System.exit(0);
     }
 
     /**

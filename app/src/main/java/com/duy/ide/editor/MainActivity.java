@@ -693,6 +693,29 @@ public class MainActivity extends BaseEditorActivity implements
         }
     }
 
+    private void updateUIFinish() {
+
+        if (mActionRun != null) mActionRun.setEnabled(true);
+        if (mCompileProgress != null) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mCompileProgress.setVisibility(View.GONE);
+                }
+            }, 500);
+        }
+    }
+
+    private void updateUiStartCompile() {
+        if (mActionRun != null) mActionRun.setEnabled(false);
+        if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
+        hideKeyboard();
+        openDrawer(GravityCompat.START);
+        mMessagePresenter.clear();
+        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        mDiagnosticPresenter.clear();
+    }
+
     private class CompileTask extends AsyncTask<JavaProjectFile, Object, Integer> {
         private Context mContext;
         private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
@@ -705,13 +728,7 @@ public class MainActivity extends BaseEditorActivity implements
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mActionRun != null) mActionRun.setEnabled(false);
-            if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
-            hideKeyboard();
-            openDrawer(GravityCompat.START);
-            mMessagePresenter.clear();
-            mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-            mDiagnosticPresenter.clear();
+            updateUiStartCompile();
         }
 
         @Override
@@ -775,15 +792,8 @@ public class MainActivity extends BaseEditorActivity implements
             super.onPostExecute(result);
             mDiagnosticPresenter.display(mDiagnostics);
 
-            if (mActionRun != null) mActionRun.setEnabled(true);
-            if (mCompileProgress != null) {
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCompileProgress.setVisibility(View.GONE);
-                    }
-                }, 500);
-            }
+            updateUIFinish();
+
             if (result == null) {
                 Toast.makeText(mContext, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                 openDrawer(GravityCompat.START);
@@ -811,13 +821,7 @@ public class MainActivity extends BaseEditorActivity implements
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mActionRun != null) mActionRun.setEnabled(false);
-            if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
-            hideKeyboard();
-            openDrawer(GravityCompat.START);
-            mMessagePresenter.clear();
-            mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-            mDiagnosticPresenter.clear();
+            updateUiStartCompile();
             mDiagnosticCollector = new DiagnosticCollector();
         }
 
@@ -864,16 +868,7 @@ public class MainActivity extends BaseEditorActivity implements
         protected void onPostExecute(final File result) {
             super.onPostExecute(result);
             mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
-
-            if (mActionRun != null) mActionRun.setEnabled(true);
-            if (mCompileProgress != null) {
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCompileProgress.setVisibility(View.GONE);
-                    }
-                }, 500);
-            }
+            updateUIFinish();
             if (result == null) {
                 Toast.makeText(mContext, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                 openDrawer(GravityCompat.START);

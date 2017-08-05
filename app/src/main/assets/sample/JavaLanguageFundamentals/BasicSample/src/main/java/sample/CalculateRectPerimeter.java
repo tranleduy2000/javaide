@@ -32,10 +32,10 @@ public class CalculateRectPerimeter {
         //if invalid value was entered
         catch (NumberFormatException ne) {
             System.out.println("Invalid value" + ne);
-            System.exit(0);
+//            System.exit(0);
         } catch (IOException ioe) {
             System.out.println("IO Error :" + ioe);
-            System.exit(0);
+//            System.exit(0);
         }
                
                 /*

@@ -3,6 +3,7 @@ package com.duy.ide.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
 
 import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.compile.message.MessageFragment;
@@ -45,6 +46,11 @@ public class BottomPageAdapter extends FragmentPagerAdapter {
                 return "Diagnostics";
         }
         return super.getPageTitle(position);
+    }
+
+    @Override
+    public int getItemPosition(Object object){
+        return PagerAdapter.POSITION_NONE;
     }
 
     @Override

@@ -40,6 +40,7 @@ import com.android.dx.rop.annotation.AnnotationsList;
 import com.android.dx.rop.cst.CstNat;
 import com.android.dx.rop.cst.CstString;
 import com.android.dx.util.FileUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -70,37 +71,37 @@ public class Main {
      * people from defining core classes in applications
      */
     private static final String IN_RE_CORE_CLASSES =
-        "Ill-advised or mistaken usage of a core class (java.* or javax.*)\n" +
-        "when not building a core library.\n\n" +
-        "This is often due to inadvertently including a core library file\n" +
-        "in your application's project, when using an IDE (such as\n" +
-        "Eclipse). If you are sure you're not intentionally defining a\n" +
-        "core class, then this is the most likely explanation of what's\n" +
-        "going on.\n\n" +
-        "However, you might actually be trying to define a class in a core\n" +
-        "namespace, the source of which you may have taken, for example,\n" +
-        "from a non-Android virtual machine project. This will most\n" +
-        "assuredly not work. At a minimum, it jeopardizes the\n" +
-        "compatibility of your app with future versions of the platform.\n" +
-        "It is also often of questionable legality.\n\n" +
-        "If you really intend to build a core library -- which is only\n" +
-        "appropriate as part of creating a full virtual machine\n" +
-        "distribution, as opposed to compiling an application -- then use\n" +
-        "the \"--core-library\" option to suppress this error message.\n\n" +
-        "If you go ahead and use \"--core-library\" but are in fact\n" +
-        "building an application, then be forewarned that your application\n" +
-        "will still fail to build or run, at some point. Please be\n" +
-        "prepared for angry customers who find, for example, that your\n" +
-        "application ceases to function once they upgrade their operating\n" +
-        "system. You will be to blame for this problem.\n\n" +
-        "If you are legitimately using some code that happens to be in a\n" +
-        "core package, then the easiest safe alternative you have is to\n" +
-        "repackage that code. That is, move the classes in question into\n" +
-        "your own package namespace. This means that they will never be in\n" +
-        "conflict with core system classes. JarJar is a tool that may help\n" +
-        "you in this endeavor. If you find that you cannot do this, then\n" +
-        "that is an indication that the path you are on will ultimately\n" +
-        "lead to pain, suffering, grief, and lamentation.\n";
+            "Ill-advised or mistaken usage of a core class (java.* or javax.*)\n" +
+                    "when not building a core library.\n\n" +
+                    "This is often due to inadvertently including a core library file\n" +
+                    "in your application's project, when using an IDE (such as\n" +
+                    "Eclipse). If you are sure you're not intentionally defining a\n" +
+                    "core class, then this is the most likely explanation of what's\n" +
+                    "going on.\n\n" +
+                    "However, you might actually be trying to define a class in a core\n" +
+                    "namespace, the source of which you may have taken, for example,\n" +
+                    "from a non-Android virtual machine project. This will most\n" +
+                    "assuredly not work. At a minimum, it jeopardizes the\n" +
+                    "compatibility of your app with future versions of the platform.\n" +
+                    "It is also often of questionable legality.\n\n" +
+                    "If you really intend to build a core library -- which is only\n" +
+                    "appropriate as part of creating a full virtual machine\n" +
+                    "distribution, as opposed to compiling an application -- then use\n" +
+                    "the \"--core-library\" option to suppress this error message.\n\n" +
+                    "If you go ahead and use \"--core-library\" but are in fact\n" +
+                    "building an application, then be forewarned that your application\n" +
+                    "will still fail to build or run, at some point. Please be\n" +
+                    "prepared for angry customers who find, for example, that your\n" +
+                    "application ceases to function once they upgrade their operating\n" +
+                    "system. You will be to blame for this problem.\n\n" +
+                    "If you are legitimately using some code that happens to be in a\n" +
+                    "core package, then the easiest safe alternative you have is to\n" +
+                    "repackage that code. That is, move the classes in question into\n" +
+                    "your own package namespace. This means that they will never be in\n" +
+                    "conflict with core system classes. JarJar is a tool that may help\n" +
+                    "you in this endeavor. If you find that you cannot do this, then\n" +
+                    "that is an indication that the path you are on will ultimately\n" +
+                    "lead to pain, suffering, grief, and lamentation.\n";
 
     /**
      * {@code non-null;} name of the standard manifest file in {@code .jar}
@@ -113,7 +114,7 @@ public class Main {
      * {@code Created-By} attribute
      */
     private static final Attributes.Name CREATED_BY =
-        new Attributes.Name("Created-By");
+            new Attributes.Name("Created-By");
 
     /**
      * {@code non-null;} list of {@code javax} subpackages that are considered
@@ -121,39 +122,48 @@ public class Main {
      * is binary-searched.
      */
     private static final String[] JAVAX_CORE = {
-        "accessibility", "crypto", "imageio", "management", "naming", "net",
-        "print", "rmi", "security", "sip", "sound", "sql", "swing",
-        "transaction", "xml"
+            "accessibility", "crypto", "imageio", "management", "naming", "net",
+            "print", "rmi", "security", "sip", "sound", "sql", "swing",
+            "transaction", "xml"
     };
-
-    /** number of warnings during processing */
+    /**
+     * Library .dex files to merge into the output .dex.
+     */
+    private static final List<byte[]> libraryDexBuffers = new ArrayList<byte[]>();
+    /**
+     * number of warnings during processing
+     */
     private static int warnings = 0;
-
-    /** number of errors during processing */
+    /**
+     * number of errors during processing
+     */
     private static int errors = 0;
-
-    /** {@code non-null;} parsed command-line arguments */
+    /**
+     * {@code non-null;} parsed command-line arguments
+     */
     private static Arguments args;
-
-    /** {@code non-null;} output file in-progress */
+    /**
+     * {@code non-null;} output file in-progress
+     */
     private static DexFile outputDex;
-
     /**
      * {@code null-ok;} map of resources to include in the output, or
      * {@code null} if resources are being ignored
      */
     private static TreeMap<String, byte[]> outputResources;
-
-    /** Library .dex files to merge into the output .dex. */
-    private static final List<byte[]> libraryDexBuffers = new ArrayList<byte[]>();
-
-    /** thread pool object used for multi-threaded file processing */
+    /**
+     * thread pool object used for multi-threaded file processing
+     */
     private static ExecutorService threadPool;
 
-    /** true if any files are successfully processed */
+    /**
+     * true if any files are successfully processed
+     */
     private static boolean anyFilesProcessed;
 
-    /** class files older than this must be defined in the target dex file. */
+    /**
+     * class files older than this must be defined in the target dex file.
+     */
     private static long minimumFileAge = 0;
 
     /**
@@ -165,6 +175,7 @@ public class Main {
 
     /**
      * Run and exit if something unexpected happened.
+     *
      * @param argArray the command line arguments
      */
     public static void main(String[] argArray) throws IOException {
@@ -173,12 +184,14 @@ public class Main {
 
         int result = run(arguments);
         if (result != 0) {
-            System.exit(result);
+            // TODO: 05-Aug-17 bad
+//            System.exit(result);
         }
     }
 
     /**
      * Run and return a result code.
+     *
      * @param arguments the data + parameters for the conversion
      * @return 0 if success > 0 otherwise.
      */
@@ -249,9 +262,9 @@ public class Main {
      * {@code update}'s definition for types defined in both dex files.
      *
      * @param base a file to find the previous dex file. May be a .dex file, a
-     *     jar file possibly containing a .dex file, or null.
+     *             jar file possibly containing a .dex file, or null.
      * @return the bytes of the merged dex file, or null if both the update
-     *     and the base dex do not exist.
+     * and the base dex do not exist.
      */
     private static byte[] mergeIncremental(byte[] update, File base) throws IOException {
         DexBuffer dexA = null;
@@ -348,7 +361,7 @@ public class Main {
 
         if (warnings != 0) {
             DxConsole.err.println(warnings + " warning" +
-                               ((warnings == 1) ? "" : "s"));
+                    ((warnings == 1) ? "" : "s"));
         }
 
         if (errors != 0) {
@@ -377,8 +390,8 @@ public class Main {
      * Processes one pathname element.
      *
      * @param pathname {@code non-null;} the pathname to process. May
-     * be the path of a class file, a jar file, or a directory
-     * containing class files.
+     *                 be the path of a class file, a jar file, or a directory
+     *                 containing class files.
      * @return whether any processing actually happened
      */
     private static boolean processOne(String pathname) {
@@ -386,34 +399,36 @@ public class Main {
 
         opener = new ClassPathOpener(pathname, false,
                 new ClassPathOpener.Consumer() {
-            public boolean processFileBytes(String name, long lastModified, byte[] bytes) {
-                if (args.numThreads > 1) {
-                    threadPool.execute(new ParallelProcessor(name, lastModified, bytes));
-                    return false;
-                } else {
-                    return Main.processFileBytes(name, lastModified, bytes);
-                }
-            }
-            public void onException(Exception ex) {
-                if (ex instanceof StopProcessing) {
-                    throw (StopProcessing) ex;
-                } else if (ex instanceof SimException) {
-                    DxConsole.err.println("\nEXCEPTION FROM SIMULATION:");
-                    DxConsole.err.println(ex.getMessage() + "\n");
-                    DxConsole.err.println(((SimException) ex).getContext());
-                } else {
-                    DxConsole.err.println("\nUNEXPECTED TOP-LEVEL EXCEPTION:");
-                    ex.printStackTrace(DxConsole.err);
-                }
-                errors++;
-            }
-            public void onProcessArchiveStart(File file) {
-                if (args.verbose) {
-                    DxConsole.out.println("processing archive " + file +
-                            "...");
-                }
-            }
-        });
+                    public boolean processFileBytes(String name, long lastModified, byte[] bytes) {
+                        if (args.numThreads > 1) {
+                            threadPool.execute(new ParallelProcessor(name, lastModified, bytes));
+                            return false;
+                        } else {
+                            return Main.processFileBytes(name, lastModified, bytes);
+                        }
+                    }
+
+                    public void onException(Exception ex) {
+                        if (ex instanceof StopProcessing) {
+                            throw (StopProcessing) ex;
+                        } else if (ex instanceof SimException) {
+                            DxConsole.err.println("\nEXCEPTION FROM SIMULATION:");
+                            DxConsole.err.println(ex.getMessage() + "\n");
+                            DxConsole.err.println(((SimException) ex).getContext());
+                        } else {
+                            DxConsole.err.println("\nUNEXPECTED TOP-LEVEL EXCEPTION:");
+                            ex.printStackTrace(DxConsole.err);
+                        }
+                        errors++;
+                    }
+
+                    public void onProcessArchiveStart(File file) {
+                        if (args.verbose) {
+                            DxConsole.out.println("processing archive " + file +
+                                    "...");
+                        }
+                    }
+                });
 
         return opener.process();
     }
@@ -421,7 +436,7 @@ public class Main {
     /**
      * Processes one file, which may be either a class or a resource.
      *
-     * @param name {@code non-null;} name of the file
+     * @param name  {@code non-null;} name of the file
      * @param bytes {@code non-null;} contents of the file
      * @return whether processing was successful
      */
@@ -469,19 +484,19 @@ public class Main {
     /**
      * Processes one classfile.
      *
-     * @param name {@code non-null;} name of the file, clipped such that it
-     * <i>should</i> correspond to the name of the class it contains
+     * @param name  {@code non-null;} name of the file, clipped such that it
+     *              <i>should</i> correspond to the name of the class it contains
      * @param bytes {@code non-null;} contents of the file
      * @return whether processing was successful
      */
     private static boolean processClass(String name, byte[] bytes) {
-        if (! args.coreLibrary) {
+        if (!args.coreLibrary) {
             checkClassName(name);
         }
 
         try {
             ClassDefItem clazz =
-                CfTranslator.translate(name, bytes, args.cfOptions, args.dexOptions);
+                    CfTranslator.translate(name, bytes, args.cfOptions, args.dexOptions);
             synchronized (outputDex) {
                 outputDex.add(clazz);
             }
@@ -505,7 +520,7 @@ public class Main {
      * throws an exception to stop processing.
      *
      * @param name {@code non-null;} the fully-qualified internal-form
-     * class name
+     *             class name
      */
     private static void checkClassName(String name) {
         boolean bogus = false;
@@ -523,7 +538,7 @@ public class Main {
             }
         }
 
-        if (! bogus) {
+        if (!bogus) {
             return;
         }
 
@@ -589,7 +604,7 @@ public class Main {
                 ex.printStackTrace(DxConsole.err);
             } else {
                 DxConsole.err.println("\ntrouble writing output: " +
-                                   ex.getMessage());
+                        ex.getMessage());
             }
             return null;
         }
@@ -602,7 +617,7 @@ public class Main {
      *
      * @param fileName {@code non-null;} name of the file
      * @param dexArray array containing the dex file to include, or null if the
-     *     output contains no class defs.
+     *                 output contains no class defs.
      * @return whether the creation was successful
      */
     private static boolean createJar(String fileName, byte[] dexArray) {
@@ -623,14 +638,14 @@ public class Main {
 
             try {
                 for (Map.Entry<String, byte[]> e :
-                         outputResources.entrySet()) {
+                        outputResources.entrySet()) {
                     String name = e.getKey();
                     byte[] contents = e.getValue();
                     JarEntry entry = new JarEntry(name);
 
                     if (args.verbose) {
                         DxConsole.out.println("writing " + name + "; size " +
-                                           contents.length + "...");
+                                contents.length + "...");
                     }
 
                     entry.setSize(contents.length);
@@ -649,7 +664,7 @@ public class Main {
                 ex.printStackTrace(DxConsole.err);
             } else {
                 DxConsole.err.println("\ntrouble writing output: " +
-                                   ex.getMessage());
+                        ex.getMessage());
             }
             return false;
         }
@@ -768,19 +783,19 @@ public class Main {
     /**
      * Dumps any method with the given name in the given file.
      *
-     * @param dex {@code non-null;} the dex file
+     * @param dex    {@code non-null;} the dex file
      * @param fqName {@code non-null;} the fully-qualified name of the
-     * method(s)
-     * @param out {@code non-null;} where to dump to
+     *               method(s)
+     * @param out    {@code non-null;} where to dump to
      */
     private static void dumpMethod(DexFile dex, String fqName,
-            OutputStreamWriter out) {
+                                   OutputStreamWriter out) {
         boolean wildcard = fqName.endsWith("*");
         int lastDot = fqName.lastIndexOf('.');
 
         if ((lastDot <= 0) || (lastDot == (fqName.length() - 1))) {
             DxConsole.err.println("bogus fully-qualified method name: " +
-                               fqName);
+                    fqName);
             return;
         }
 
@@ -799,7 +814,7 @@ public class Main {
 
         ArrayList<EncodedMethod> allMeths = clazz.getMethods();
         TreeMap<CstNat, EncodedMethod> meths =
-            new TreeMap<CstNat, EncodedMethod>();
+                new TreeMap<CstNat, EncodedMethod>();
 
         /*
          * Figure out which methods to include in the output, and get them
@@ -809,7 +824,7 @@ public class Main {
         for (EncodedMethod meth : allMeths) {
             String methName = meth.getName().getString();
             if ((wildcard && methName.startsWith(methodName)) ||
-                (!wildcard && methName.equals(methodName))) {
+                    (!wildcard && methName.equals(methodName))) {
                 meths.put(meth.getRef().getNat(), meth);
             }
         }
@@ -835,9 +850,9 @@ public class Main {
             }
 
             Annotations methodAnnotations =
-                clazz.getMethodAnnotations(meth.getRef());
+                    clazz.getMethodAnnotations(meth.getRef());
             AnnotationsList parameterAnnotations =
-                clazz.getParameterAnnotations(meth.getRef());
+                    clazz.getParameterAnnotations(meth.getRef());
 
             if (methodAnnotations != null) {
                 pw.println("  method annotations:");
@@ -873,31 +888,49 @@ public class Main {
      * Command-line argument parser and access.
      */
     public static class Arguments {
-        /** whether to run in debug mode */
+        /**
+         * whether to run in debug mode
+         */
         public boolean debug = false;
 
-        /** whether to emit high-level verbose human-oriented output */
+        /**
+         * whether to emit high-level verbose human-oriented output
+         */
         public boolean verbose = false;
 
-        /** whether to emit verbose human-oriented output in the dump file */
+        /**
+         * whether to emit verbose human-oriented output in the dump file
+         */
         public boolean verboseDump = false;
 
-        /** whether we are constructing a core library */
+        /**
+         * whether we are constructing a core library
+         */
         public boolean coreLibrary = false;
 
-        /** {@code null-ok;} particular method to dump */
+        /**
+         * {@code null-ok;} particular method to dump
+         */
         public String methodToDump = null;
 
-        /** max width for columnar output */
+        /**
+         * max width for columnar output
+         */
         public int dumpWidth = 0;
 
-        /** {@code null-ok;} output file name for binary file */
+        /**
+         * {@code null-ok;} output file name for binary file
+         */
         public String outName = null;
 
-        /** {@code null-ok;} output file name for human-oriented dump */
+        /**
+         * {@code null-ok;} output file name for human-oriented dump
+         */
         public String humanOutName = null;
 
-        /** whether strict file-name-vs-class-name checking should be done */
+        /**
+         * whether strict file-name-vs-class-name checking should be done
+         */
         public boolean strictNameCheck = true;
 
         /**
@@ -918,51 +951,206 @@ public class Main {
          */
         public boolean keepClassesInJar = false;
 
-        /** what API level to target */
+        /**
+         * what API level to target
+         */
         public int targetApiLevel = DexFormat.API_NO_EXTENDED_OPCODES;
 
-        /** how much source position info to preserve */
+        /**
+         * how much source position info to preserve
+         */
         public int positionInfo = PositionList.LINES;
 
-        /** whether to keep local variable information */
+        /**
+         * whether to keep local variable information
+         */
         public boolean localInfo = true;
 
-        /** whether to merge with the output dex file if it exists. */
+        /**
+         * whether to merge with the output dex file if it exists.
+         */
         public boolean incremental = false;
 
-        /** {@code non-null} after {@link #parse}; file name arguments */
+        /**
+         * {@code non-null} after {@link #parse}; file name arguments
+         */
         public String[] fileNames;
 
-        /** whether to do SSA/register optimization */
+        /**
+         * whether to do SSA/register optimization
+         */
         public boolean optimize = true;
 
-        /** Filename containg list of methods to optimize */
+        /**
+         * Filename containg list of methods to optimize
+         */
         public String optimizeListFile = null;
 
-        /** Filename containing list of methods to NOT optimize */
+        /**
+         * Filename containing list of methods to NOT optimize
+         */
         public String dontOptimizeListFile = null;
 
-        /** Whether to print statistics to stdout at end of compile cycle */
+        /**
+         * Whether to print statistics to stdout at end of compile cycle
+         */
         public boolean statistics;
 
-        /** Options for class file transformation */
+        /**
+         * Options for class file transformation
+         */
         public CfOptions cfOptions;
 
-        /** Options for dex file output */
+        /**
+         * Options for dex file output
+         */
         public DexOptions dexOptions;
 
-        /** number of threads to run with */
+        /**
+         * number of threads to run with
+         */
         public int numThreads = 1;
+
+        /**
+         * Parses the given command-line arguments.
+         *
+         * @param args {@code non-null;} the arguments
+         */
+        public void parse(String[] args) {
+            ArgumentsParser parser = new ArgumentsParser(args);
+
+            while (parser.getNext()) {
+                if (parser.isArg("--debug")) {
+                    debug = true;
+                } else if (parser.isArg("--verbose")) {
+                    verbose = true;
+                } else if (parser.isArg("--verbose-dump")) {
+                    verboseDump = true;
+                } else if (parser.isArg("--no-files")) {
+                    emptyOk = true;
+                } else if (parser.isArg("--no-optimize")) {
+                    optimize = false;
+                } else if (parser.isArg("--no-strict")) {
+                    strictNameCheck = false;
+                } else if (parser.isArg("--core-library")) {
+                    coreLibrary = true;
+                } else if (parser.isArg("--statistics")) {
+                    statistics = true;
+                } else if (parser.isArg("--optimize-list=")) {
+                    if (dontOptimizeListFile != null) {
+                        System.err.println("--optimize-list and "
+                                + "--no-optimize-list are incompatible.");
+                        throw new UsageException();
+                    }
+                    optimize = true;
+                    optimizeListFile = parser.getLastValue();
+                } else if (parser.isArg("--no-optimize-list=")) {
+                    if (dontOptimizeListFile != null) {
+                        System.err.println("--optimize-list and "
+                                + "--no-optimize-list are incompatible.");
+                        throw new UsageException();
+                    }
+                    optimize = true;
+                    dontOptimizeListFile = parser.getLastValue();
+                } else if (parser.isArg("--keep-classes")) {
+                    keepClassesInJar = true;
+                } else if (parser.isArg("--output=")) {
+                    outName = parser.getLastValue();
+                    if (FileUtils.hasArchiveSuffix(outName)) {
+                        jarOutput = true;
+                    } else if (outName.endsWith(".dex") ||
+                            outName.equals("-")) {
+                        jarOutput = false;
+                    } else {
+                        System.err.println("unknown output extension: " +
+                                outName);
+                        throw new UsageException();
+                    }
+                } else if (parser.isArg("--dump-to=")) {
+                    humanOutName = parser.getLastValue();
+                } else if (parser.isArg("--dump-width=")) {
+                    dumpWidth = Integer.parseInt(parser.getLastValue());
+                } else if (parser.isArg("--dump-method=")) {
+                    methodToDump = parser.getLastValue();
+                    jarOutput = false;
+                } else if (parser.isArg("--positions=")) {
+                    String pstr = parser.getLastValue().intern();
+                    if (pstr == "none") {
+                        positionInfo = PositionList.NONE;
+                    } else if (pstr == "important") {
+                        positionInfo = PositionList.IMPORTANT;
+                    } else if (pstr == "lines") {
+                        positionInfo = PositionList.LINES;
+                    } else {
+                        System.err.println("unknown positions option: " +
+                                pstr);
+                        throw new UsageException();
+                    }
+                } else if (parser.isArg("--no-locals")) {
+                    localInfo = false;
+                } else if (parser.isArg("--num-threads=")) {
+                    numThreads = Integer.parseInt(parser.getLastValue());
+                } else if (parser.isArg("--incremental")) {
+                    incremental = true;
+                } else {
+                    System.err.println("unknown option: " + parser.getCurrent());
+                    throw new UsageException();
+                }
+            }
+
+            fileNames = parser.getRemaining();
+            if (fileNames.length == 0) {
+                if (!emptyOk) {
+                    System.err.println("no input files specified");
+                    throw new UsageException();
+                }
+            } else if (emptyOk) {
+                System.out.println("ignoring input files");
+            }
+
+            if ((humanOutName == null) && (methodToDump != null)) {
+                humanOutName = "-";
+            }
+
+            makeOptionsObjects();
+        }
+
+        /**
+         * Copies relevent arguments over into CfOptions and
+         * DexOptions instances.
+         */
+        private void makeOptionsObjects() {
+            cfOptions = new CfOptions();
+            cfOptions.positionInfo = positionInfo;
+            cfOptions.localInfo = localInfo;
+            cfOptions.strictNameCheck = strictNameCheck;
+            cfOptions.optimize = optimize;
+            cfOptions.optimizeListFile = optimizeListFile;
+            cfOptions.dontOptimizeListFile = dontOptimizeListFile;
+            cfOptions.statistics = statistics;
+            cfOptions.warn = DxConsole.err;
+
+            dexOptions = new DexOptions();
+            dexOptions.targetApiLevel = targetApiLevel;
+        }
 
         private static class ArgumentsParser {
 
-            /** The arguments to process. */
+            /**
+             * The arguments to process.
+             */
             private final String[] arguments;
-            /** The index of the next argument to process. */
+            /**
+             * The index of the next argument to process.
+             */
             private int index;
-            /** The current argument being processed after a {@link #getNext()} call. */
+            /**
+             * The current argument being processed after a {@link #getNext()} call.
+             */
             private String current;
-            /** The last value of an argument processed by {@link #isArg(String)}. */
+            /**
+             * The last value of an argument processed by {@link #isArg(String)}.
+             */
             private String lastValue;
 
             public ArgumentsParser(String[] arguments) {
@@ -1028,7 +1216,7 @@ public class Main {
              */
             public boolean isArg(String prefix) {
                 int n = prefix.length();
-                if (n > 0 && prefix.charAt(n-1) == '=') {
+                if (n > 0 && prefix.charAt(n - 1) == '=') {
                     // Argument accepts a value. Capture it.
                     if (current.startsWith(prefix)) {
                         // Argument is in the form --name=value, split the value out
@@ -1036,7 +1224,7 @@ public class Main {
                         return true;
                     } else {
                         // Check whether we have "--name value" as 2 arguments
-                        prefix = prefix.substring(0, n-1);
+                        prefix = prefix.substring(0, n - 1);
                         if (current.equals(prefix)) {
                             if (getNextValue()) {
                                 lastValue = current;
@@ -1054,132 +1242,11 @@ public class Main {
                 }
             }
         }
-
-        /**
-         * Parses the given command-line arguments.
-         *
-         * @param args {@code non-null;} the arguments
-         */
-        public void parse(String[] args) {
-            ArgumentsParser parser = new ArgumentsParser(args);
-
-            while(parser.getNext()) {
-                if (parser.isArg("--debug")) {
-                    debug = true;
-                } else if (parser.isArg("--verbose")) {
-                    verbose = true;
-                } else if (parser.isArg("--verbose-dump")) {
-                    verboseDump = true;
-                } else if (parser.isArg("--no-files")) {
-                    emptyOk = true;
-                } else if (parser.isArg("--no-optimize")) {
-                    optimize = false;
-                } else if (parser.isArg("--no-strict")) {
-                    strictNameCheck = false;
-                } else if (parser.isArg("--core-library")) {
-                    coreLibrary = true;
-                } else if (parser.isArg("--statistics")) {
-                    statistics = true;
-                } else if (parser.isArg("--optimize-list=")) {
-                    if (dontOptimizeListFile != null) {
-                        System.err.println("--optimize-list and "
-                                + "--no-optimize-list are incompatible.");
-                        throw new UsageException();
-                    }
-                    optimize = true;
-                    optimizeListFile = parser.getLastValue();
-                } else if (parser.isArg("--no-optimize-list=")) {
-                    if (dontOptimizeListFile != null) {
-                        System.err.println("--optimize-list and "
-                                + "--no-optimize-list are incompatible.");
-                        throw new UsageException();
-                    }
-                    optimize = true;
-                    dontOptimizeListFile = parser.getLastValue();
-                } else if (parser.isArg("--keep-classes")) {
-                    keepClassesInJar = true;
-                } else if (parser.isArg("--output=")) {
-                    outName = parser.getLastValue();
-                    if (FileUtils.hasArchiveSuffix(outName)) {
-                        jarOutput = true;
-                    } else if (outName.endsWith(".dex") ||
-                               outName.equals("-")) {
-                        jarOutput = false;
-                    } else {
-                        System.err.println("unknown output extension: " +
-                                           outName);
-                        throw new UsageException();
-                    }
-                } else if (parser.isArg("--dump-to=")) {
-                    humanOutName = parser.getLastValue();
-                } else if (parser.isArg("--dump-width=")) {
-                    dumpWidth = Integer.parseInt(parser.getLastValue());
-                } else if (parser.isArg("--dump-method=")) {
-                    methodToDump = parser.getLastValue();
-                    jarOutput = false;
-                } else if (parser.isArg("--positions=")) {
-                    String pstr = parser.getLastValue().intern();
-                    if (pstr == "none") {
-                        positionInfo = PositionList.NONE;
-                    } else if (pstr == "important") {
-                        positionInfo = PositionList.IMPORTANT;
-                    } else if (pstr == "lines") {
-                        positionInfo = PositionList.LINES;
-                    } else {
-                        System.err.println("unknown positions option: " +
-                                           pstr);
-                        throw new UsageException();
-                    }
-                } else if (parser.isArg("--no-locals")) {
-                    localInfo = false;
-                } else if (parser.isArg("--num-threads=")) {
-                    numThreads = Integer.parseInt(parser.getLastValue());
-                } else if (parser.isArg("--incremental")) {
-                    incremental = true;
-                } else {
-                    System.err.println("unknown option: " + parser.getCurrent());
-                    throw new UsageException();
-                }
-            }
-
-            fileNames = parser.getRemaining();
-            if (fileNames.length == 0) {
-                if (!emptyOk) {
-                    System.err.println("no input files specified");
-                    throw new UsageException();
-                }
-            } else if (emptyOk) {
-                System.out.println("ignoring input files");
-            }
-
-            if ((humanOutName == null) && (methodToDump != null)) {
-                humanOutName = "-";
-            }
-
-            makeOptionsObjects();
-        }
-
-        /**
-         * Copies relevent arguments over into CfOptions and
-         * DexOptions instances.
-         */
-        private void makeOptionsObjects() {
-            cfOptions = new CfOptions();
-            cfOptions.positionInfo = positionInfo;
-            cfOptions.localInfo = localInfo;
-            cfOptions.strictNameCheck = strictNameCheck;
-            cfOptions.optimize = optimize;
-            cfOptions.optimizeListFile = optimizeListFile;
-            cfOptions.dontOptimizeListFile = dontOptimizeListFile;
-            cfOptions.statistics = statistics;
-            cfOptions.warn = DxConsole.err;
-
-            dexOptions = new DexOptions();
-            dexOptions.targetApiLevel = targetApiLevel;
-        }
     }
 
-    /** Runnable helper class to process files in multiple threads */
+    /**
+     * Runnable helper class to process files in multiple threads
+     */
     private static class ParallelProcessor implements Runnable {
 
         String path;
@@ -1189,8 +1256,8 @@ public class Main {
         /**
          * Constructs an instance.
          *
-         * @param path {@code non-null;} filename of element. May not be a valid
-         * filesystem path.
+         * @param path  {@code non-null;} filename of element. May not be a valid
+         *              filesystem path.
          * @param bytes {@code non-null;} file data
          */
         private ParallelProcessor(String path, long lastModified, byte bytes[]) {

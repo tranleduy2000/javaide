@@ -338,7 +338,7 @@ public class Log extends AbstractLog {
                     switch (System.in.read()) {
                         case 'a':
                         case 'A':
-                            System.exit(-1);
+//                            System.exit(-1);
                             return;
                         case 'r':
                         case 'R':

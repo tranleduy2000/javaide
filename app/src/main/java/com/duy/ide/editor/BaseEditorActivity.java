@@ -162,8 +162,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         BottomPageAdapter bottomAdapter = new BottomPageAdapter(fm, mDiagnosticFragment, mMessageFragment);
 
         mBottomPage = (ViewPager) findViewById(R.id.bottom_page);
-        mBottomPage.setAdapter(null);
         mBottomPage.setAdapter(bottomAdapter);
+        mBottomPage.getAdapter().notifyDataSetChanged();
         mBottomPage.setOffscreenPageLimit(BottomPageAdapter.COUNT);
 
         TabLayout bottomTab = (TabLayout) findViewById(R.id.bottom_tab);

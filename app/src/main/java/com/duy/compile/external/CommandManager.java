@@ -158,6 +158,9 @@ public class CommandManager {
     public static void executeDex(@NonNull PrintStream out, InputStream in, PrintStream err,
                                   @NonNull File outDex, @NonNull File tempDir, String mainClass)
             throws FileNotFoundException {
+        Log.d(TAG, "executeDex() called with: out = [" + out + "], in = [" + in + "], err " +
+                "= [" + err + "], outDex = [" + outDex + "], tempDir = [" + tempDir + "], mainClass = [" + mainClass + "]");
+
         FileManager.ensureFileExist(outDex);
 
         String[] args = new String[]{"-jar", outDex.getPath(), mainClass};
@@ -165,6 +168,8 @@ public class CommandManager {
     }
 
     public static void convertToDexFormat(@NonNull JavaProjectFile projectFile) throws IOException {
+        Log.d(TAG, "convertToDexFormat() called with: projectFile = [" + projectFile + "]");
+
         dexBuildClasses(projectFile);
         dexLibs(projectFile, true);
         dexMerge(projectFile);

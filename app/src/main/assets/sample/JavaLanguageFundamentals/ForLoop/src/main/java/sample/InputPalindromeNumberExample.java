@@ -24,10 +24,10 @@ public class InputPalindromeNumberExample {
 
         } catch (NumberFormatException ne) {
             System.out.println("Invalid input: " + ne);
-            System.exit(0);
+//            System.exit(0);
         } catch (IOException ioe) {
             System.out.println("I/O Error: " + ioe);
-            System.exit(0);
+//            System.exit(0);
         }
 
         System.out.println("Number is " + number);

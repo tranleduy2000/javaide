@@ -146,7 +146,7 @@ public class Cleaner
                         if (System.err != null)
                             new Error("Cleaner terminated abnormally", x)
                                 .printStackTrace();
-                        System.exit(1);
+//                        System.exit(1);
                         return null;
                     }});
         }

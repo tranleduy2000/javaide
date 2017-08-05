@@ -474,7 +474,7 @@ public class ProGuard
         {
             System.out.println(VERSION);
             System.out.println("Usage: proguard [options ...]");
-            System.exit(1);
+//            System.exit(1);
         }
 
         // Create the default options
@@ -510,9 +510,9 @@ public class ProGuard
                 System.err.println("Error: "+ex.getMessage());
             }
 
-            System.exit(1);
+//            System.exit(1);
         }
 
-        System.exit(0);
+//        System.exit(0);
     }
 }

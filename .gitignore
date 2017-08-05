@@ -52,3 +52,4 @@ freeline.py
 freeline/
 freeline_project_description.json
 /temp/
+!/app/src/main/java/com/android/sdklib/build/

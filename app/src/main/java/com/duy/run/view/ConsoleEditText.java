@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -157,14 +158,17 @@ public class ConsoleEditText extends AppCompatEditText {
 //        appendStdout(out);
     }
 
+    @WorkerThread
     public ConsoleOutputStream getOutputStream() {
         return outputStream;
     }
 
+    @WorkerThread
     public InputStream getInputStream() {
         return inputStream;
     }
 
+    @WorkerThread
     public ConsoleErrorStream getErrorStream() {
         return errorStream;
     }
@@ -206,9 +210,7 @@ public class ConsoleEditText extends AppCompatEditText {
 
     private class EnterListener implements TextWatcher {
 
-        private CharSequence s;
         private int start;
-        private int before;
         private int count;
 
         @Override
@@ -219,9 +221,7 @@ public class ConsoleEditText extends AppCompatEditText {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             Log.d(TAG, "onTextChanged() called with: s = [" + s + "], start = [" + start + "], before = [" + before + "], count = [" + count + "]");
-            this.s = s;
             this.start = start;
-            this.before = before;
             this.count = count;
         }
 
@@ -242,7 +242,6 @@ public class ConsoleEditText extends AppCompatEditText {
     private class ConsoleOutputStream extends OutputStream {
         @Override
         public void write(@NonNull byte[] b, int off, int len) throws IOException {
-//            super.write(b, off, len);
             try {
                 mStdoutBuffer.write(b, off, len);
                 mHandler.sendMessage(mHandler.obtainMessage(NEW_OUTPUT));
@@ -253,7 +252,7 @@ public class ConsoleEditText extends AppCompatEditText {
 
         @Override
         public void write(int b) throws IOException {
-//            mStdoutBuffer.write(b);
+            write(new byte[]{(byte) b}, 0, 1);
         }
     }
 
@@ -270,7 +269,7 @@ public class ConsoleEditText extends AppCompatEditText {
 
         @Override
         public void write(int b) throws IOException {
-//            mStderrBuffer.write(b);
+            write(new byte[]{(byte) b}, 0, 1);
         }
     }
 

@@ -76,7 +76,7 @@ public final class Main {
             err.flush();
             out.flush();
         }
-        System.exit(result);
+//        System.exit(result);
     }
 
     /**

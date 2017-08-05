@@ -17,7 +17,8 @@ public class apkinstall {
     public static void main(String[] zArgs) {
         if (zArgs.length < 1) {
             System.out.println("Must specify the APK file..!");
-            System.exit(1);
+//            System.exit(1);
+            return;
         }
 
         File apkFile = new File(zArgs[0]);

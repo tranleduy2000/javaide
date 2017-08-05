@@ -24,10 +24,10 @@ public class CalculateCirclePerimeterExample {
         //if invalid value was entered
         catch (NumberFormatException ne) {
             System.out.println("Invalid radius value" + ne);
-            System.exit(0);
+//            System.exit(0);
         } catch (IOException ioe) {
             System.out.println("IO Error :" + ioe);
-            System.exit(0);
+//            System.exit(0);
         }
                
                 /*

@@ -29,6 +29,6 @@ public final class Main {
 
         DexBuffer dex = new DexBuffer(new File(dexFile));
         int count = new Grep(dex, Pattern.compile(pattern), new PrintWriter(System.out)).grep();
-        System.exit((count > 0) ? 0 : 1);
+//        System.exit((count > 0) ? 0 : 1);
     }
 }

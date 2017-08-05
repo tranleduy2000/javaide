@@ -698,7 +698,7 @@ implements   MappingProcessor
         if (args.length < 1)
         {
             System.err.println("Usage: java proguard.ReTrace [-verbose] <mapping_file> [<stacktrace_file>]");
-            System.exit(-1);
+//            System.exit(-1);
         }
 
         String  regularExpresssion = STACK_TRACE_EXPRESSION;
@@ -727,7 +727,7 @@ implements   MappingProcessor
         if (argumentIndex >= args.length)
         {
             System.err.println("Usage: java proguard.ReTrace [-regex <regex>] [-verbose] <mapping_file> [<stacktrace_file>]");
-            System.exit(-1);
+//            System.exit(-1);
         }
 
         File mappingFile    = new File(args[argumentIndex++]);
@@ -755,9 +755,9 @@ implements   MappingProcessor
                 System.err.println("Error: "+ex.getMessage());
             }
 
-            System.exit(1);
+//            System.exit(1);
         }
 
-        System.exit(0);
+//        System.exit(0);
     }
 }

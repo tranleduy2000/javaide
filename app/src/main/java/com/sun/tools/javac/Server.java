@@ -128,7 +128,7 @@ class Server implements Runnable {
                 line = in.readLine();
             } catch (IOException e) {
                 System.err.println(e.getLocalizedMessage());
-                System.exit(0);
+//                System.exit(0);
                 line = null;
             }
             // fm.cwd=null;
@@ -145,7 +145,7 @@ class Server implements Runnable {
                     line = in.readLine();
                 } catch (IOException e) {
                     System.err.println(e.getLocalizedMessage());
-                    System.exit(0);
+//                    System.exit(0);
                     line = null;
                 }
             }

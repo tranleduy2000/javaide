@@ -195,7 +195,7 @@ public class ConsoleEditText extends AppCompatEditText {
             @Override
             public void run() {
                 SpannableString spannableString = new SpannableString(str);
-                spannableString.setSpan(new ForegroundColorSpan(Color.RED), 0, str.length(),
+                spannableString.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, str.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 append(spannableString);
             }

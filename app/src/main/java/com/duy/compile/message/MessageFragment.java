@@ -90,7 +90,7 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
     public void clear() {
         if (mCompileMsg != null) {
             mCompileMsg.setText("");
-        } else if (getContext() != null) {
+        } else  {
             Toast.makeText(getContext(), R.string.system_err_msg, Toast.LENGTH_SHORT).show();
         }
     }

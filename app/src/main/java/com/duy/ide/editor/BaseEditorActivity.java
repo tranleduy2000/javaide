@@ -145,15 +145,17 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         setupFileView(savedInstanceState);
         setupEditor();
         FragmentManager fm = getSupportFragmentManager();
-//        if (savedInstanceState != null) {
-//            mMessageFragment = (MessageFragment) fm.findFragmentByTag(MessageFragment.TAG);
-//            mDiagnosticFragment = (DiagnosticFragment) fm.findFragmentByTag(DiagnosticFragment.TAG);
-//        }
-//        if (mMessageFragment == null)
-        mMessageFragment = MessageFragment.newInstance();
+        if (savedInstanceState != null) {
+            mMessageFragment = (MessageFragment) fm.findFragmentByTag(MessageFragment.TAG);
+            mDiagnosticFragment = (DiagnosticFragment) fm.findFragmentByTag(DiagnosticFragment.TAG);
+        }
+        if (mMessageFragment == null) {
+            mMessageFragment = MessageFragment.newInstance();
+        }
         mMessagePresenter = new MessagePresenter(this, mMessageFragment);
-//        if (mDiagnosticFragment == null)
-        mDiagnosticFragment = DiagnosticFragment.newInstance();
+        if (mDiagnosticFragment == null) {
+            mDiagnosticFragment = DiagnosticFragment.newInstance();
+        }
         mDiagnosticPresenter = new DiagnosticPresenter(this, mDiagnosticFragment, mPagePresenter);
 
 

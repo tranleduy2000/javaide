@@ -34,6 +34,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
     public final File dirOutputJar;
     public final File dirBuildClasses;
     public File dirDexedLibs;
+    public File dirDexedClass;
 
     public File dexedClassesFile;
     public File dexedLibsFile;
@@ -64,10 +65,11 @@ public class JavaProjectFile implements Serializable, Cloneable {
         dirBuild = new File(dirProject, "build");
         dirBuildClasses = new File(dirBuild, "classes");
         dirOutput = new File(dirBuild, "output");
-        dirOutputJar = new File(dirBuild, "jar");
+        dirOutputJar = new File(dirOutput, "jar");
         dirDexedLibs = new File(dirBuild, "dexedLibs");
+        dirDexedClass = new File(dirBuild, "dexedClasses");
 
-        dexedClassesFile = new File(dirDexedLibs, projectName + ".dex");
+        dexedClassesFile = new File(dirDexedClass, projectName + ".dex");
         dexedLibsFile = new File(dirDexedLibs, "libs.dex");
 
         classpathFile = new File(classpath);

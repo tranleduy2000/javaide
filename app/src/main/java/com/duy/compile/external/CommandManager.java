@@ -177,7 +177,8 @@ public class CommandManager {
     }
 
     public static void buildApk(AndroidProjectFile androidProjectFile) {
-
+        ApkBuilder apkBuilder = new ApkBuilder();
+        apkBuilder.build(androidProjectFile);
     }
 
     public class Action {

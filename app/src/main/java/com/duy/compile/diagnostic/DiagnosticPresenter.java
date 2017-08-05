@@ -33,7 +33,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         this.mMainActivity = mainActivity;
         this.adapter = adapter;
         this.mPagePresenter = pagePresenter;
-        this.view = (DiagnosticFragment) adapter.getExistingFragment(0);
+        this.view = (DiagnosticFragment) adapter.getExistingFragment(1);
         if (view != null) {
             view.setPresenter(this);
         }
@@ -67,7 +67,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
     @Override
     public void clear() {
-        this.view = (DiagnosticContract.View) adapter.getExistingFragment(0);
+        this.view = (DiagnosticContract.View) adapter.getExistingFragment(1);
         if (view != null) {
             view.clear();
         }

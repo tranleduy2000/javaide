@@ -18,7 +18,8 @@ public class MessagePresenter implements MessageContract.Presenter {
 
     public MessagePresenter(BaseEditorActivity activity, BottomPageAdapter adapter) {
         this.activity = activity;
-        this.view = (MessageContract.View) adapter.getExistingFragment(1);
+        this.adapter = adapter;
+        this.view = (MessageContract.View) adapter.getExistingFragment(0);
         if (view != null) {
             view.setPresenter(this);
         }
@@ -26,7 +27,7 @@ public class MessagePresenter implements MessageContract.Presenter {
 
     @Override
     public void clear() {
-        this.view = (MessageContract.View) adapter.getExistingFragment(1);
+        this.view = (MessageContract.View) adapter.getExistingFragment(0);
         if (view == null) {
             Toast.makeText(activity, "An unexpected error has occurred with the system, please restart ide.",
                     Toast.LENGTH_LONG).show();
@@ -37,7 +38,7 @@ public class MessagePresenter implements MessageContract.Presenter {
 
     @Override
     public void append(char[] chars, int start, int end) {
-        this.view = (MessageContract.View) adapter.getExistingFragment(1);
+        this.view = (MessageContract.View) adapter.getExistingFragment(0);
         if (view != null) {
             view.append(chars, start, end);
         }

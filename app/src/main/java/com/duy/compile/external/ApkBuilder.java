@@ -1,17 +1,19 @@
-package com.duy.project.file.android;
+package com.duy.compile.external;
 
 import android.util.Log;
 
 import com.duy.Aapt;
+import com.duy.project.file.android.AndroidProjectFile;
 
 import java.io.File;
 
 
-public class BuildTask {
+public class ApkBuilder {
     private static final String TAG = "BuildTask";
     private AndroidProjectFile projectFile;
 
-    public void build() {
+    public void build(AndroidProjectFile projectFile) {
+        this.projectFile = projectFile;
         projectFile.clean();
         try {
             runAidl();

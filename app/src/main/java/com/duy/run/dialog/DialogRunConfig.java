@@ -132,10 +132,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     }
 
     private void setupSpinnerMainClass(View view, JavaProjectFile projectFile) {
-        String projectDir = projectFile.getProjectDir();
-        File root = new File(projectDir);
-        File src = new File(root, "src/main/java");
-        ArrayList<String> names = FileManager.listClassName(src);
+        ArrayList<String> names = FileManager.listClassName(projectFile.dirJava);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, names);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);

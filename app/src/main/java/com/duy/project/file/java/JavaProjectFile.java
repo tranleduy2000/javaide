@@ -22,23 +22,23 @@ public class JavaProjectFile implements Serializable, Cloneable {
     private static final String TAG = "ProjectFile";
 
     /* Project */
-    public File dirRoot;
-    public File dirProject;
-    public File dirLibs;
-    public File dirSrcMain;
-    public File dirJava;
+    public final File dirRoot;
+    public final File dirProject;
+    public final File dirLibs;
+    public final File dirSrcMain;
+    public final File dirJava;
 
     /* Build */
-    public File dirBuild;
-    public File dirOutput;
-    public  File dirOutputJar;
-    public File dirBuildClasses;
+    public final File dirBuild;
+    public final File dirOutput;
+    public final File dirOutputJar;
+    public final File dirBuildClasses;
     public File dirDexedLibs;
 
     public File dexedClassesFile;
     public File dexedLibsFile;
 
-    public File jarAndroid;
+    public File classpathFile;
 
     /*Main class*/
     private ClassFile mainClass;
@@ -47,6 +47,10 @@ public class JavaProjectFile implements Serializable, Cloneable {
 
     public JavaProjectFile(File root, String mainClassName, String packageName, String projectName,
                            String classpath) {
+        Log.d(TAG, "JavaProjectFile() called with: root = [" + root + "], mainClassName = ["
+                + mainClassName + "], packageName = [" + packageName + "], projectName = ["
+                + projectName + "], classpath = [" + classpath + "]");
+
         this.mainClass = new ClassFile(mainClassName);
         this.projectName = projectName;
         this.packageName = packageName;
@@ -61,21 +65,20 @@ public class JavaProjectFile implements Serializable, Cloneable {
         dirBuildClasses = new File(dirBuild, "classes");
         dirOutput = new File(dirBuild, "output");
         dirOutputJar = new File(dirBuild, "jar");
-        dirDexedLibs = new File(dirBuild, "dexlibs");
+        dirDexedLibs = new File(dirBuild, "dexedLibs");
 
         dexedClassesFile = new File(dirDexedLibs, projectName + ".dex");
         dexedLibsFile = new File(dirDexedLibs, "libs.dex");
 
-        jarAndroid = new File(classpath);
-    }
+        classpathFile = new File(classpath);
 
-    public JavaProjectFile() {
+        mkdirs();
     }
 
     public static File createClass(JavaProjectFile projectFile,
                                    String currentPackage, String className,
                                    String content) {
-        File file = new File(projectFile.getRootDir(), "src/main/java/" + currentPackage.replace(".", File.separator));
+        File file = new File(projectFile.dirJava, currentPackage.replace(".", File.separator));
         if (!file.exists()) file.mkdirs();
         File classf = new File(file, className + ".java");
         FileManager.saveFile(classf, content);
@@ -84,17 +87,41 @@ public class JavaProjectFile implements Serializable, Cloneable {
         return classf;
     }
 
+    @Nullable
+    public static JavaProjectFile restore(@Nullable JSONObject json) throws JSONException {
+        if (json == null) return null;
+        ClassFile mainClass = new ClassFile("");
+        if (json.has("main_class_mame")) {
+            mainClass = new ClassFile(json.getString("main_class_mame"));
+        }
+        File dirRoot = null;
+        String packageName = null;
+        String projectName = null;
+        String classpath = null;
+        if (json.has("root_dir")) dirRoot = new File(json.getString("root_dir"));
+        if (json.has("package_name")) packageName = json.getString("package_name");
+        if (json.has("project_name")) projectName = json.getString("project_name");
+        if (json.has("classpath")) classpath = json.getString("classpath");
+        if (dirRoot == null || packageName == null || projectName == null || classpath == null) {
+            return null;
+        }
+        return new JavaProjectFile(dirRoot, mainClass.getName(), packageName, projectName, classpath);
+    }
+
     public void createBuildDir() {
         if (!dirBuild.exists()) dirBuild.mkdirs();
+        if (!dirBuildClasses.exists()) dirBuildClasses.mkdirs();
+        if (!dirOutput.exists()) dirOutput.mkdirs();
+        if (!dirOutputJar.exists()) dirOutputJar.mkdirs();
     }
 
     public void mkdirs() {
         if (!dirRoot.exists()) dirRoot.mkdirs();
         if (!dirProject.exists()) dirProject.mkdirs();
         if (!dirLibs.exists()) dirLibs.mkdirs();
-
         if (!dirSrcMain.exists()) dirSrcMain.mkdirs();
         if (!dirJava.exists()) dirJava.mkdirs();
+        if (!dirBuildClasses.exists()) dirBuildClasses.mkdirs();
     }
 
     @CallSuper
@@ -107,10 +134,6 @@ public class JavaProjectFile implements Serializable, Cloneable {
 
     public File getRootDir() {
         return dirRoot;
-    }
-
-    public void setRootDir(File dirRoot) {
-        this.dirRoot = dirRoot;
     }
 
     public ClassFile getMainClass() {
@@ -137,7 +160,6 @@ public class JavaProjectFile implements Serializable, Cloneable {
         this.projectName = projectName;
     }
 
-
     public JavaProjectFile createMainClass() throws IOException {
         this.mkdirs();
         if (packageName != null) {
@@ -158,7 +180,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
             File[] files = dirJava.listFiles();
             packageName = "";
             if (files == null) {
-            } else {
+            } else if (files.length > 0) {
                 File f = files[0];
                 while (f != null && f.isDirectory()) {
                     packageName += f.getName() + ".";
@@ -177,7 +199,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
     }
 
     public File getProjectDir() {
-        return dirRoot;
+        return dirProject;
     }
 
     public JSONObject exportJson() {
@@ -187,21 +209,11 @@ public class JavaProjectFile implements Serializable, Cloneable {
             json.put("root_dir", dirRoot);
             json.put("package_name", packageName);
             json.put("project_name", projectName);
+            json.put("classpath", classpathFile.getPath());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return json;
-    }
-
-
-    public void restore(@Nullable JSONObject json) throws JSONException {
-        if (json == null) return;
-        if (json.has("main_class_mame")) {
-            mainClass = new ClassFile(json.getString("main_class_mame"));
-        }
-        if (json.has("root_dir")) this.dirRoot = new File(json.getString("root_dir"));
-        if (json.has("package_name")) this.packageName = json.getString("package_name");
-        if (json.has("project_name")) this.projectName = json.getString("project_name");
     }
 
     @Override
@@ -237,7 +249,8 @@ public class JavaProjectFile implements Serializable, Cloneable {
                 }
             }
         }
-        classpath += (classpath.isEmpty() ? "" : File.pathSeparator) + jarAndroid.getPath();
+        classpath += (classpath.isEmpty() ? "" : File.pathSeparator) + classpathFile.getPath();
+        Log.d(TAG, "getClassPath() returned: " + classpath);
         return classpath;
     }
 }

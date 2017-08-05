@@ -589,7 +589,7 @@ public class MainActivity extends BaseEditorActivity implements
         if (mProjectFile == null) return;
         boolean canRun = ClassUtil.hasMainFunction(new File(filePath));
         if (!canRun) {
-            Toast.makeText(this, ("Can not find main function"), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, (getString(R.string.main_not_found)), Toast.LENGTH_SHORT).show();
             return;
         }
         String className = JavaUtil.getClassName(mProjectFile.dirJava, filePath);
@@ -675,7 +675,7 @@ public class MainActivity extends BaseEditorActivity implements
         switch (request) {
             case 2: //import new project
                 saveCurrentFile();
-                JavaProjectFile pf = ProjectManager.createProjectIfNeed(file);
+                JavaProjectFile pf = ProjectManager.createProjectIfNeed(getApplicationContext(), file);
                 Log.d(TAG, "onFileSelected pf = " + pf);
                 if (pf != null) {
                     super.onProjectCreated(pf);
@@ -740,6 +740,10 @@ public class MainActivity extends BaseEditorActivity implements
                     mDiagnostics.add(diagnostic);
                 }
             };
+            //clean task
+            mProjectFile.clean();
+            mProjectFile.createBuildDir();
+
             int status = CommandManager.compileJava(mProjectFile, printWriter, listener);
             if (status != Main.EXIT_ERROR) {
                 try {
@@ -836,6 +840,10 @@ public class MainActivity extends BaseEditorActivity implements
 
                 }
             });
+            //clean
+            mProjectFile.clean();
+            mProjectFile.createBuildDir();
+
             return CommandManager.buildJarAchieve(mProjectFile, printWriter, mDiagnosticCollector);
         }
 

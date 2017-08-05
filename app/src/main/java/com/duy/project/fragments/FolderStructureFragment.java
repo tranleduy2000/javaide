@@ -122,7 +122,7 @@ public class FolderStructureFragment extends Fragment
 
     @Nullable
     private TreeNode createFileStructure(JavaProjectFile projectFile) {
-        File rootDir = new File(projectFile.getRootDir());
+        File rootDir = projectFile.getProjectDir();
         TreeNode root = new TreeNode(new FolderHolder.TreeItem(rootDir, rootDir, listener));
         try {
             root.addChildren(getNode(rootDir, rootDir));

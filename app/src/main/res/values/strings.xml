@@ -457,4 +457,5 @@
     <string name="system_err_msg">An unexpected error has occurred with the system, please restart ide.</string>
     <string name="format_type_">Format type</string>
     <string name="zero">0</string>
+    <string name="main_not_found">Can not find main function</string>
 </resources>

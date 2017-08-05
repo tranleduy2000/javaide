@@ -22,7 +22,7 @@ public class Java {
         run(zArgs, null, null, null, null);
     }
 
-    public static void run(String[] zArgs, @Nullable String outDex, @Nullable PrintStream out,
+    public static void run(String[] zArgs, @Nullable String tempDir, @Nullable PrintStream out,
                            @Nullable InputStream in, @Nullable PrintStream err) {
         try {
             String jarfile = "";
@@ -64,14 +64,14 @@ public class Java {
                 throw new InvokeException("No JAR Files specified");
             }
 
-            if (outDex == null) {
+            if (tempDir == null) {
                 //Environment Variables..
-                outDex = System.getenv("ODEX_FOLDER");
-                if (outDex == null || outDex.equals("")) {
+                tempDir = System.getenv("ODEX_FOLDER");
+                if (tempDir == null || tempDir.equals("")) {
                     //Try the TEMP Folder
                     //System.out.println("No ODEX_FOLDER environment variable specified. Using TEMP");
-                    outDex = System.getenv("TEMP");
-                    if (outDex == null || outDex.equals("")) {
+                    tempDir = System.getenv("TEMP");
+                    if (tempDir == null || tempDir.equals("")) {
                         System.out.println("No TEMP OR ODEX_FOLDER specified!");
                         throw new InvokeException("Please specify ODEX_FOLDER or TEMP environment variable");
                     }
@@ -80,7 +80,7 @@ public class Java {
 
             //Output INFO
             if (verbose) {
-                System.out.println("ODEX_FOLDER  : " + outDex);
+                System.out.println("ODEX_FOLDER  : " + tempDir);
                 System.out.println("JAR/DEX FILE : " + jarfile);
                 System.out.println("CLASSNAME    : " + classname);
             }
@@ -92,7 +92,7 @@ public class Java {
 
             //Now load this class..
             //DexClassLoader loader = new DexClassLoader(jarfile, dexfolder, null, ClassLoader.getSystemClassLoader());
-            DexClassLoader loader = new DexClassLoader(jarfile, outDex, null, ClassLoader.getSystemClassLoader(), verbose);
+            DexClassLoader loader = new DexClassLoader(jarfile, tempDir, null, ClassLoader.getSystemClassLoader(), verbose);
             Class loadedclass = loader.loadClass(classname);
 
             //Now sort the command line inputs

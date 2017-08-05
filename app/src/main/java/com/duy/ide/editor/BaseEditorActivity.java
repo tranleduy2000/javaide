@@ -60,13 +60,13 @@ import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.view.SymbolListView;
+import com.duy.project.dialog.DialogNewClass;
+import com.duy.project.dialog.DialogNewProject;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFile;
 import com.duy.project.file.java.ProjectFileContract;
 import com.duy.project.file.java.ProjectFilePresenter;
 import com.duy.project.file.java.ProjectManager;
-import com.duy.project.dialog.DialogNewClass;
-import com.duy.project.dialog.DialogNewProject;
 import com.duy.project.fragments.FolderStructureFragment;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 

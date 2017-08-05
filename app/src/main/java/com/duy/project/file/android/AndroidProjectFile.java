@@ -38,7 +38,6 @@ public class AndroidProjectFile extends JavaProjectFile {
         apkUnaligned = new File(dirOutput, "app-unaligned-debug.apk");
         classR = new File(dirBuildClasses, "R.java");
 
-        dirDexedLibs = new File(dirBuild, "dexedLibs");
         ap_Resources = new File(dirBuild, "resources.ap_");
         dexedClassesFile = new File(dirBuild, "classes.dex");
 

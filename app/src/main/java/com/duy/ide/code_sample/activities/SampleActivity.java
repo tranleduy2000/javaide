@@ -66,7 +66,7 @@ public class SampleActivity extends AbstractAppCompatActivity implements
                 }
                 boolean success = SampleUtil.extractTo(SampleActivity.this, out, category, projectName);
                 if (success) {
-                    JavaProjectFile pf = ProjectManager.createProjectIfNeed(out);
+                    JavaProjectFile pf = ProjectManager.createProjectIfNeed(getApplicationContext(), out);
                     Intent intent = getIntent();
                     intent.putExtra(PROJECT_FILE, pf);
                     setResult(RESULT_OK, intent);

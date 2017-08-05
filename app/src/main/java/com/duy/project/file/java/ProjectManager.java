@@ -21,7 +21,7 @@ public class ProjectManager {
 
     private static final String CURRENT_PROJECT = "file_project.nide";
 
-    public static boolean saveProject(@NonNull Context context,@NonNull JavaProjectFile projectFile) {
+    public static boolean saveProject(@NonNull Context context, @NonNull JavaProjectFile projectFile) {
         JSONObject object = projectFile.exportJson();
         File file = new File(context.getFilesDir(), CURRENT_PROJECT);
         return FileManager.saveFile(file, object.toString());
@@ -32,9 +32,7 @@ public class ProjectManager {
         File file = new File(context.getFilesDir(), CURRENT_PROJECT);
         try {
             String s = FileManager.streamToString(new FileInputStream(file)).toString();
-            JavaProjectFile projectFile = new JavaProjectFile();
-            projectFile.restore(new JSONObject(s));
-            return projectFile;
+            return JavaProjectFile.restore(new JSONObject(s));
         } catch (FileNotFoundException | JSONException e) {
             e.printStackTrace();
         }
@@ -42,11 +40,13 @@ public class ProjectManager {
     }
 
     @Nullable
-    public static JavaProjectFile createProjectIfNeed(File file) {
+    public static JavaProjectFile createProjectIfNeed(Context context, File file) {
         if (file.isFile() || !file.canWrite() || !file.canRead()) {
             return null;
         }
-        JavaProjectFile projectFile = new JavaProjectFile();
+        // TODO: 05-Aug-17 dynamic change classpath
+        JavaProjectFile projectFile = new JavaProjectFile(file.getParentFile(), null, null, file.getName(),
+                new File(context.getFilesDir(), "system/classes/android.jar").getPath());
         projectFile.setProjectName(file.getName());
         try {
             projectFile.createMainClass();

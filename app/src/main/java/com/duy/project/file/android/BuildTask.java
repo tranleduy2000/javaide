@@ -2,9 +2,6 @@ package com.duy.project.file.android;
 
 import android.util.Log;
 
-import com.android.dex.Dex;
-import com.android.dx.merge.CollisionPolicy;
-import com.android.dx.merge.DexMerger;
 import com.duy.Aapt;
 
 import java.io.File;
@@ -47,7 +44,7 @@ public class BuildTask {
         int exitCode = aapt.fnExecute("aapt p -f -v" +
                 " -M " + projectFile.xmlManifest.getPath() + //manifest file
                 " -F " + projectFile.ap_Resources.getPath() + //
-                " -I " + projectFile.jarAndroid.getPath() + //include
+                " -I " + projectFile.classpathFile.getPath() + //include
                 " -A " + projectFile.dirAssets.getPath() + //assets dir
                 " -S " + projectFile.dirRes.getPath() + //resource dir
                 " -J " + projectFile.dirBuildClasses.getPath()); //out R.java dir
@@ -118,12 +115,12 @@ public class BuildTask {
         int percent = 40;
 
         for (File dexLib : projectFile.dirDexedLibs.listFiles()) {
-            Dex merged = new DexMerger(new Dex(projectFile.dexedClassesFile), new Dex(dexLib), CollisionPolicy.FAIL).merge();
-            merged.writeTo(projectFile.dexedClassesFile);
-
-            if (setProgress(++percent)) {
-                return;
-            }
+//            Dex merged = new DexMerger(new Dex(projectFile.dexedClassesFile), new Dex(dexLib), CollisionPolicy.FAIL).merge();
+//            merged.writeTo(projectFile.dexedClassesFile);
+//
+//            if (setProgress(++percent)) {
+//                return;
+//            }
         }
     }
 

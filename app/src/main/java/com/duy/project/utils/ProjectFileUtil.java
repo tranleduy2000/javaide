@@ -29,12 +29,11 @@ public class ProjectFileUtil {
     }
 
     @NonNull
-    public static String findPackage(String rootDir, File currentFolder) {
+    public static String findPackage(File javaDir, File currentFolder) {
         try {
-            rootDir = rootDir + "/src/main/java";
             String path = currentFolder.getPath();
-            if (path.startsWith(rootDir)) {
-                String pkg = path.substring(rootDir.length() + 1);
+            if (path.startsWith(javaDir.getPath())) {
+                String pkg = path.substring(javaDir.getPath().length() + 1);
                 pkg = pkg.replace(File.separator, ".");
                 return pkg;
             } else {

@@ -14,6 +14,7 @@ import com.duy.project.file.java.JavaProjectFile;
 import com.duy.run.view.ConsoleEditText;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
@@ -22,6 +23,7 @@ import java.io.PrintStream;
  */
 
 public class ExecActivity extends AbstractAppCompatActivity {
+    private static final int RUN_TIME_ERR = 1;
     private ConsoleEditText mConsoleEditText;
     private Handler mHandler = new Handler();
 
@@ -35,13 +37,18 @@ public class ExecActivity extends AbstractAppCompatActivity {
         Thread runThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                runProgram();
+                try {
+                    runProgram();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    mHandler.sendMessage(mHandler.obtainMessage(RUN_TIME_ERR, e));
+                }
             }
         });
         runThread.start();
     }
 
-    private void runProgram() {
+    private void runProgram() throws IOException {
         Intent intent = getIntent();
         if (intent != null) {
             final JavaProjectFile projectFile = (JavaProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);

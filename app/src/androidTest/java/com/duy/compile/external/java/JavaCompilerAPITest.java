@@ -26,9 +26,6 @@ public class JavaCompilerAPITest {
 
     @Test
     public void testCompile() throws IOException {
-        String rootDir = "/home/duy/StudioProjects/javaide/sample";
-        JavaProjectFile projectFile = new JavaProjectFile("com.duy.Main", "com.duy", "sample");
-        projectFile.setRootDir(rootDir);
-        JavaCompilerAPI.process(projectFile);
+
     }
 }

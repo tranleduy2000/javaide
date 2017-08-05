@@ -142,9 +142,10 @@ public class MainActivity extends BaseEditorActivity implements
 
     private void startAutoCompleteService() {
         Intent intent = new Intent(this, AutoCompleteService.class);
-        if (!bindService(intent, mServiceConnection, BIND_AUTO_CREATE)) {
-            Log.e(TAG, "startAutoCompleteService: bind service failed");
-        }
+        startService(intent);
+//        if (!bindService(intent, mServiceConnection, BIND_AUTO_CREATE)) {
+//            Log.e(TAG, "startAutoCompleteService: bind service failed");
+//        }
     }
 
 
@@ -369,10 +370,12 @@ public class MainActivity extends BaseEditorActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
-        if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
-        }
+//        unbindService(mServiceConnection);
+//        if (mDialog != null && mDialog.isShowing()) {
+//            mDialog.dismiss();
+//        }
+        Intent intent = new Intent(this, AutoCompleteService.class);
+        stopService(intent);
     }
 
     @Override

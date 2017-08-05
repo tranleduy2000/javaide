@@ -2,6 +2,7 @@ package com.duy.compile.message;
 
 import android.widget.Toast;
 
+import com.duy.ide.adapters.BottomPageAdapter;
 import com.duy.ide.editor.BaseEditorActivity;
 
 /**
@@ -11,17 +12,21 @@ import com.duy.ide.editor.BaseEditorActivity;
 public class MessagePresenter implements MessageContract.Presenter {
 
     private BaseEditorActivity activity;
+    private BottomPageAdapter adapter;
     private MessageContract.View view;
 
 
-    public MessagePresenter(BaseEditorActivity activity, MessageContract.View view) {
+    public MessagePresenter(BaseEditorActivity activity, BottomPageAdapter adapter) {
         this.activity = activity;
-        this.view = view;
-        view.setPresenter(this);
+        this.view = (MessageContract.View) adapter.getExistingFragment(1);
+        if (view != null) {
+            view.setPresenter(this);
+        }
     }
 
     @Override
     public void clear() {
+        this.view = (MessageContract.View) adapter.getExistingFragment(1);
         if (view == null) {
             Toast.makeText(activity, "An unexpected error has occurred with the system, please restart ide.",
                     Toast.LENGTH_LONG).show();
@@ -32,6 +37,9 @@ public class MessagePresenter implements MessageContract.Presenter {
 
     @Override
     public void append(char[] chars, int start, int end) {
-        view.append(chars, start, end);
+        this.view = (MessageContract.View) adapter.getExistingFragment(1);
+        if (view != null) {
+            view.append(chars, start, end);
+        }
     }
 }

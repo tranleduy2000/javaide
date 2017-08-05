@@ -12,6 +12,7 @@ import com.duy.compile.external.java.Jar;
 import com.duy.compile.external.java.Java;
 import com.duy.compile.external.java.Javac;
 import com.duy.ide.file.FileManager;
+import com.duy.project.file.android.AndroidProjectFile;
 import com.duy.project.file.java.JavaProjectFile;
 import com.sun.tools.javac.main.Main;
 
@@ -175,6 +176,9 @@ public class CommandManager {
         dexMerge(projectFile);
     }
 
+    public static void buildApk(AndroidProjectFile androidProjectFile) {
+
+    }
 
     public class Action {
         public static final int RUN = 0;

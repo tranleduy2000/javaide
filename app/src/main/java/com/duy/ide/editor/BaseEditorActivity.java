@@ -73,6 +73,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 
@@ -145,26 +146,18 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         setupFileView(savedInstanceState);
         setupEditor();
         FragmentManager fm = getSupportFragmentManager();
-        if (savedInstanceState != null) {
-            mMessageFragment = (MessageFragment) fm.findFragmentByTag(MessageFragment.TAG);
-            mDiagnosticFragment = (DiagnosticFragment) fm.findFragmentByTag(DiagnosticFragment.TAG);
-        }
-        if (mMessageFragment == null) {
-            mMessageFragment = MessageFragment.newInstance();
-        }
-        mMessagePresenter = new MessagePresenter(this, mMessageFragment);
-        if (mDiagnosticFragment == null) {
-            mDiagnosticFragment = DiagnosticFragment.newInstance();
-        }
-        mDiagnosticPresenter = new DiagnosticPresenter(this, mDiagnosticFragment, mPagePresenter);
 
+        List<PageDescriptor> pageDescriptors = new ArrayList<>();
+        pageDescriptors.add(new SimplePageDescriptor(MessageFragment.TAG, "Message"));
+        pageDescriptors.add(new SimplePageDescriptor(DiagnosticFragment.TAG, "Diagnostic"));
+        BottomPageAdapter bottomAdapter = new BottomPageAdapter(fm, pageDescriptors);
 
-        BottomPageAdapter bottomAdapter = new BottomPageAdapter(fm, mDiagnosticFragment, mMessageFragment);
+        mMessagePresenter = new MessagePresenter(this, bottomAdapter);
+        mDiagnosticPresenter = new DiagnosticPresenter(this, bottomAdapter, mPagePresenter);
 
         mBottomPage = (ViewPager) findViewById(R.id.bottom_page);
         mBottomPage.setAdapter(bottomAdapter);
-        mBottomPage.getAdapter().notifyDataSetChanged();
-        mBottomPage.setOffscreenPageLimit(BottomPageAdapter.COUNT);
+        mBottomPage.setOffscreenPageLimit(bottomAdapter.getCount());
 
         TabLayout bottomTab = (TabLayout) findViewById(R.id.bottom_tab);
         bottomTab.setupWithViewPager(mBottomPage);

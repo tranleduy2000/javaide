@@ -14,24 +14,24 @@ public class ApkBuilder {
 //        String args = "./dist/demo_android.apk -v -u -z ./build/resources.res -f ./build/demo_android.dex";
         String[] args = {
                 projectFile.getApkUnsigned().getPath(),
-                projectFile.ap_Resources.getPath(),
-                projectFile.dexedClassesFile.getPath()
+                "-v", "-u", "-z", projectFile.getResourceFile().getPath(),
+                "-f", projectFile.dexedClassesFile.getPath()
         };
         apkbuilder.main(args);
     }
 
-    public void build(AndroidProjectFile projectFile) {
+    public static void build(AndroidProjectFile projectFile) {
         projectFile.clean();
         try {
-            runAidl(projectFile);
-            runAapt(projectFile);
+            ApkBuilder.runAidl(projectFile);
+            ApkBuilder.runAapt(projectFile);
             CommandManager.compileJava(projectFile, null);
+            System.gc();
             CommandManager.dexLibs(projectFile, true);
             CommandManager.dexBuildClasses(projectFile);
             CommandManager.dexMerge(projectFile);
-            buildApk(projectFile);
-
-//            zipSign();
+            ApkBuilder.buildApk(projectFile);
+            ApkBuilder.zipSign(projectFile);
 //            zipAlign();
 //            publishApk();
 
@@ -40,19 +40,19 @@ public class ApkBuilder {
         }
     }
 
-    private void runAidl(AndroidProjectFile projectFile) throws Exception {
+    private static void runAidl(AndroidProjectFile projectFile) throws Exception {
         Log.d(TAG, "runAidl() called");
 
         // TODO make aidl.so
     }
 
-    private void runAapt(AndroidProjectFile projectFile) throws Exception {
+    private static void runAapt(AndroidProjectFile projectFile) throws Exception {
         Log.d(TAG, "runAapt() called");
 
         Aapt aapt = new Aapt();
         int exitCode = aapt.fnExecute("aapt p -f -v" +
                 " -M " + projectFile.xmlManifest.getPath() + //manifest file
-                " -F " + projectFile.ap_Resources.getPath() + //
+                " -F " + projectFile.getResourceFile().getPath() + //
                 " -I " + projectFile.classpathFile.getPath() + //include
                 " -A " + projectFile.getDirAssets().getPath() + //assets dir
                 " -S " + projectFile.getDirRes().getPath() + //resource dir
@@ -78,6 +78,28 @@ public class ApkBuilder {
 		 */
     }
 
+    private static void zipSign(AndroidProjectFile projectFile) throws Exception {
+//        if (!appContext.getString(R.string.keystore).contentEquals(projectFile.jksEmbedded.getName())) {
+//             TODO use user defined certificate
+//        }
+
+        // use embedded private key
+        String keystorePath = projectFile.getKeyStore().getPath();
+        char[] keystorePw = "1234567".toCharArray();
+        String certAlias = "android";
+        char[] certPw = "1234567".toCharArray();
+        String signatureAlgorithm = "SHA1withRSA";
+
+        boolean useKeyStore = false;
+        if (useKeyStore) {
+            kellinwood.security.zipsigner.ZipSigner zipsigner = new kellinwood.security.zipsigner.ZipSigner();
+            zipsigner.addProgressListener(new SignProgress());
+            kellinwood.security.zipsigner.optional.CustomKeySigner.signZip(zipsigner, keystorePath, keystorePw, certAlias,
+                    certPw, signatureAlgorithm,
+                    projectFile.getApkUnsigned().getPath(),
+                    projectFile.getApkUnaligned().getPath());
+        }
+    }
 
     private void dexLibs() throws Exception {
 //        Log.d(TAG, "dexLibs() called");
@@ -104,28 +126,6 @@ public class ApkBuilder {
 //        }
     }
 
-
-    private void zipSign() throws Exception {
-//        if (!appContext.getString(R.string.keystore).contentEquals(projectFile.jksEmbedded.getName())) {
-//            // TODO use user defined certificate
-//        }
-//
-//        // use embedded private key
-//        String keystorePath = projectFile.jksEmbedded.getPath();
-//        char[] keystorePw = appContext.getString(R.string.keystorePw).toCharArray();
-//        String certAlias = appContext.getString(R.string.certAlias);
-//        char[] certPw = appContext.getString(R.string.certPw).toCharArray();
-//        String signatureAlgorithm = appContext.getString(R.string.signatureAlgorithm);
-//
-//        boolean useKeyStore = false;
-//        if (useKeyStore) {
-//            kellinwood.security.zipsigner.ZipSigner zipsigner = new kellinwood.security.zipsigner.ZipSigner();
-//            zipsigner.addProgressListener(new SignProgress());
-//            kellinwood.security.zipsigner.optional.CustomKeySigner.signZip(zipsigner, keystorePath, keystorePw, certAlias,
-//                    certPw, signatureAlgorithm, projectFile.apkUnsigned.getPath(), projectFile.apkUnaligned.getPath());
-//        }
-    }
-
     private void zipAlign() throws Exception {
 //         TODO make zipalign.so
     }
@@ -145,6 +145,13 @@ public class ApkBuilder {
 
     public void run() {
 
+
+    }
+
+    static class SignProgress implements kellinwood.security.zipsigner.ProgressListener {
+
+        public void onProgress(kellinwood.security.zipsigner.ProgressEvent event) {
+        }
 
     }
 
@@ -169,13 +176,6 @@ public class ApkBuilder {
 
         @Override
         public void worked(int workIncrement, int remainingWork) {
-        }
-
-    }
-
-    class SignProgress implements kellinwood.security.zipsigner.ProgressListener {
-
-        public void onProgress(kellinwood.security.zipsigner.ProgressEvent event) {
         }
 
     }

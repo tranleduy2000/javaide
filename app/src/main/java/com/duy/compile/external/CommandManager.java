@@ -108,7 +108,7 @@ public class CommandManager {
                 for (File lib : files) {
                     File outLib = new File(projectFile.getDirDexedLibs(), lib.getName().replace(".jar", ".dex"));
                     Log.d(TAG, "dexLibs outLib = " + lib);
-                    if (lib.exists() && !ignoreExist) {
+                    if (lib.exists() && ignoreExist) {
                         continue;
                     }
                     if (!outLib.exists()) outLib.createNewFile();

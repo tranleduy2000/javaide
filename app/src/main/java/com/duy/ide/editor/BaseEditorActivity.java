@@ -16,10 +16,12 @@
 
 package com.duy.ide.editor;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -41,6 +43,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -477,8 +480,20 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
             addNewPageEditor(file, SELECT);
             //close drawer
             mDrawerLayout.closeDrawers();
+        } else {
+            MimeTypeMap myMime = MimeTypeMap.getSingleton();
+            Intent newIntent = new Intent(Intent.ACTION_VIEW);
+            String mimeType = myMime.getMimeTypeFromExtension(FileUtils.fileExt(file.getPath()).substring(1));
+            newIntent.setDataAndType(Uri.fromFile(file), mimeType);
+            newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            try {
+                startActivity(newIntent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(this, "No handler for this type of file.", Toast.LENGTH_LONG).show();
+            }
         }
     }
+
 
     @Override
     public void onFileLongClick(File file, ProjectFileContract.ActionCallback callBack) {

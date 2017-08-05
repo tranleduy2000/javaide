@@ -13,18 +13,22 @@ import java.io.IOException;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class AndroidProjectFile extends JavaProjectFile {
     /* ASSETS */
-    private final File jksEmbedded;
+    private  File keystore;
+
+    public File getKeyStore() {
+        return keystore;
+    }
+
     /* Output */
     private final File apkUnsigned;
     private final File apkUnaligned;
     public File xmlManifest;
-    public File ap_Resources;
+    public File resourceFile;
     /* PROJECT */
     private File dirRes;
     private File dirAssets;
     private File classR;
     private File dirOutApk;
-
     public AndroidProjectFile(File dirRoot,
                               @Nullable String mainClassName,
                               @Nullable String packageName,
@@ -45,9 +49,25 @@ public class AndroidProjectFile extends JavaProjectFile {
                     packageName.replace(".", File.separator) + File.separator + "R.java");
         }
 
-        ap_Resources = new File(dirBuild, "resources.ap_");
+        resourceFile = new File(dirBuild, "resources.res");
         dexedClassesFile = new File(dirBuild, "classes.dex");
-        jksEmbedded = new File(dirAssets, "Embedded.jks");
+        keystore = new File(dirProject, "keystore.jks");
+    }
+
+    public File getApkUnaligned() throws IOException {
+        if (!apkUnaligned.exists()) {
+            apkUnaligned.getParentFile().mkdirs();
+            apkUnaligned.createNewFile();
+        }
+        return apkUnaligned;
+    }
+
+    public File getResourceFile() throws IOException {
+        if (!resourceFile.exists()) {
+            resourceFile.getParentFile().mkdirs();
+            resourceFile.createNewFile();
+        }
+        return resourceFile;
     }
 
     public void clean() {

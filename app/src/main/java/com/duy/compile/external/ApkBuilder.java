@@ -90,7 +90,7 @@ public class ApkBuilder {
         char[] certPw = "1234567".toCharArray();
         String signatureAlgorithm = "SHA1withRSA";
 
-        boolean useKeyStore = false;
+        boolean useKeyStore = true;
         if (useKeyStore) {
             kellinwood.security.zipsigner.ZipSigner zipsigner = new kellinwood.security.zipsigner.ZipSigner();
             zipsigner.addProgressListener(new SignProgress());

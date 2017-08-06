@@ -111,6 +111,8 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
             view.setImageResource(R.drawable.ic_jar_file_white);
         } else if (fileName.endsWith(".class")) {
             view.setImageResource(R.drawable.ic_class_file_white);
+        } else if (fileName.endsWith(".xml")) {
+            view.setImageResource(R.drawable.ic_xml_file_white);
         } else {
             view.setImageResource(R.drawable.ic_insert_drive_file_white_24dp);
         }

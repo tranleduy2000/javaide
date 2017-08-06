@@ -112,6 +112,7 @@ public class HighlightEditor extends CodeSuggestsEditText
      */
     private EditTextChangeListener mChangeListener;
     private int numberWidth = 0;
+    @Nullable
     private Highlighter mHighlighter;
     private final Runnable colorRunnable_duringEditing =
             new Runnable() {
@@ -150,9 +151,10 @@ public class HighlightEditor extends CodeSuggestsEditText
 
     public void setCodeTheme(CodeTheme codeTheme) {
         this.codeTheme = codeTheme;
-        this.mHighlighter.setCodeTheme(codeTheme);
+        if (mHighlighter != null) {
+            mHighlighter.setCodeTheme(codeTheme);
+        }
         this.mBracketHighlighter.setCodeTheme(codeTheme);
-
         setTextColor(codeTheme.getTextColor());
         setBackgroundColor(codeTheme.getBackground());
         mPaintNumbers.setColor(codeTheme.getNumberColor());
@@ -192,7 +194,6 @@ public class HighlightEditor extends CodeSuggestsEditText
         mLineBounds = new Rect();
         mGestureDetector = new GestureDetector(getContext(), HighlightEditor.this);
         mChangeListener = new EditTextChangeListener();
-        mHighlighter = new JavaHighlighter(this);
         mBracketHighlighter = new BracketHighlighter(this, codeTheme);
         updateFromSettings();
         enableTextChangedListener();
@@ -720,6 +721,7 @@ public class HighlightEditor extends CodeSuggestsEditText
     }
 
     public void highlight(boolean newText) {
+        if (mHighlighter == null) return;
         Editable editable = getText();
         if (editable.length() == 0) return;
 
@@ -783,6 +785,7 @@ public class HighlightEditor extends CodeSuggestsEditText
     }
 
     public void highlightError(long startPosition, long endPosition) {
+        if (mHighlighter == null) return;
         mHighlighter.setErrorRange(startPosition, endPosition);
         refresh();
     }
@@ -810,7 +813,9 @@ public class HighlightEditor extends CodeSuggestsEditText
                                   int start, int before,
                                   int count) {
             isFinding = false;
-            mHighlighter.setErrorRange(-1, -1);
+            if (mHighlighter != null) {
+                mHighlighter.setErrorRange(-1, -1);
+            }
         }
 
         public void afterTextChanged(Editable s) {

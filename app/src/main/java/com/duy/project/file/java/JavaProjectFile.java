@@ -20,23 +20,22 @@ import java.io.Serializable;
 
 public class JavaProjectFile implements Serializable, Cloneable {
     private static final String TAG = "ProjectFile";
-
-    /* Project */
-    public final File dirRoot;
-    public final File dirProject;
     public final File dirLibs;
     public final File dirSrcMain;
     public final File dirJava;
-    /* Build */
-    public final File dirBuild;
-    public final File dirOutput;
-    public final File dirOutputJar;
     public final File dirBuildClasses;
+    /* Project */
+    protected final File dirRoot;
+    protected final File dirProject;
+    /* Build */
+    protected final File dirBuild;
+    protected final File dirOutput;
+    protected final File dirOutputJar;
     public File dirDexedLibs;
-    public File dirDexedClass;
-    public File dexedClassesFile;
-    public File dexedLibsFile;
     public File classpathFile;
+    protected File dirDexedClass;
+    protected File dexedClassesFile;
+    protected File dexedLibsFile;
     /*Main class*/
     private ClassFile mainClass;
     private String projectName;
@@ -108,6 +107,10 @@ public class JavaProjectFile implements Serializable, Cloneable {
             return null;
         }
         return new JavaProjectFile(dirRoot, mainClass.getName(), packageName, projectName, classpath);
+    }
+
+    public File getDexedClassesFile() {
+        return dexedClassesFile;
     }
 
     public File getDirLibs() {

@@ -20,9 +20,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+import javax.tools.DiagnosticCollector;
 import javax.tools.DiagnosticListener;
 
 /**
@@ -95,7 +97,7 @@ public class CommandManager {
 
         compileJava(projectFile, new PrintWriter(out));
         convertToDexFormat(projectFile);
-        executeDex(out, in, err, projectFile.dexedClassesFile, tempDir, projectFile.getMainClass().getName());
+        executeDex(out, in, err, projectFile.getDexedClassesFile(), tempDir, projectFile.getMainClass().getName());
     }
 
     public static void dexLibs(@NonNull JavaProjectFile projectFile, boolean ignoreExist) throws IOException {
@@ -124,36 +126,36 @@ public class CommandManager {
         Log.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
         String input = projectFile.dirBuildClasses.getPath();
         FileManager.ensureFileExist(new File(input));
-        if (!projectFile.dexedClassesFile.exists()) try {
-            projectFile.dexedClassesFile.getParentFile().mkdirs();
-            projectFile.dexedClassesFile.createNewFile();
+        if (!projectFile.getDexedClassesFile().exists()) try {
+            projectFile.getDexedClassesFile().getParentFile().mkdirs();
+            projectFile.getDexedClassesFile().createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
         String[] args = new String[]{"--dex", "--verbose", "--no-strict",
-                "--output=" + projectFile.dexedClassesFile.getPath(), //output dex file
+                "--output=" + projectFile.getDexedClassesFile().getPath(), //output dex file
                 input}; //input file
         Dex.main(args);
-        return projectFile.dexedClassesFile;
+        return projectFile.getDexedClassesFile();
     }
 
     public static File dexMerge(@NonNull JavaProjectFile projectFile) throws IOException {
         Log.d(TAG, "dexMerge() called with: projectFile = [" + projectFile + "]");
-        FileManager.ensureFileExist(projectFile.dexedClassesFile);
+        FileManager.ensureFileExist(projectFile.getDexedClassesFile());
 
-        if (projectFile.dirDexedLibs.exists()) {
-            File[] files = projectFile.dirDexedLibs.listFiles();
+        if (projectFile.getDirDexedLibs().exists()) {
+            File[] files = projectFile.getDirDexedLibs().listFiles();
             if (files != null && files.length > 0) {
                 for (File dexLib : files) {
                     DexBuffer merged = new DexMerger(
-                            new DexBuffer(projectFile.dexedClassesFile),
+                            new DexBuffer(projectFile.getDexedClassesFile()),
                             new DexBuffer(dexLib),
                             CollisionPolicy.FAIL).merge();
-                    merged.writeTo(projectFile.dexedClassesFile);
+                    merged.writeTo(projectFile.getDexedClassesFile());
                 }
             }
         }
-        return projectFile.dexedClassesFile;
+        return projectFile.getDexedClassesFile();
     }
 
     public static void executeDex(@NonNull PrintStream out, InputStream in, PrintStream err,
@@ -176,9 +178,11 @@ public class CommandManager {
         dexMerge(projectFile);
     }
 
-    public static void buildApk(AndroidProjectFile androidProjectFile) {
-        ApkBuilder apkBuilder = new ApkBuilder();
-        apkBuilder.build(androidProjectFile);
+    public static File buildApk(AndroidProjectFile projectFile,
+                                OutputStream out,
+                                DiagnosticCollector diagnosticCollector) {
+        ApkBuilder.build(projectFile, out, diagnosticCollector);
+        return null;
     }
 
     public class Action {

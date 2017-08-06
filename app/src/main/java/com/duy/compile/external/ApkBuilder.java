@@ -2,9 +2,16 @@ package com.duy.compile.external;
 
 import android.util.Log;
 
+import com.android.annotations.NonNull;
 import com.duy.Aapt;
 import com.duy.project.file.android.AndroidProjectFile;
 import com.spartacusrex.spartacuside.external.apkbuilder;
+
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+
+import javax.tools.DiagnosticCollector;
 
 
 public class ApkBuilder {
@@ -20,24 +27,39 @@ public class ApkBuilder {
         apkbuilder.main(args);
     }
 
-    public static void build(AndroidProjectFile projectFile) {
+    public static void build(AndroidProjectFile projectFile, @NonNull OutputStream out,
+                             @NonNull DiagnosticCollector diagnosticCollector) {
         projectFile.clean();
+        PrintStream systemOut = System.out;
+        PrintStream systemErr = System.err;
         try {
+
+            System.setOut(new PrintStream(out));
+            System.setErr(new PrintStream(out));
+
+            //create R.java
             ApkBuilder.runAidl(projectFile);
             ApkBuilder.runAapt(projectFile);
-            CommandManager.compileJava(projectFile, null);
+
+            //compile java
+            CommandManager.compileJava(projectFile, new PrintWriter(out), diagnosticCollector);
             System.gc();
+
+            //classes to dex
             CommandManager.dexLibs(projectFile, true);
             CommandManager.dexBuildClasses(projectFile);
             CommandManager.dexMerge(projectFile);
+
+            //zip apk
             ApkBuilder.buildApk(projectFile);
             ApkBuilder.zipSign(projectFile);
-//            zipAlign();
-//            publishApk();
-
+            ApkBuilder.zipAlign();
+            ApkBuilder.publishApk();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        System.setErr(systemErr);
+        System.setOut(systemOut);
     }
 
     private static void runAidl(AndroidProjectFile projectFile) throws Exception {
@@ -62,20 +84,19 @@ public class ApkBuilder {
             throw new Exception("AAPT exit(" + exitCode + ")");
         }
 
-		/*
-         * strStatus = "INDEXING RESOURCES"; exitCode = aapt.fnExecute(
-		 * "aapt p -m -v -J " + dirGen.getPath() + " -M " + xmlMan.getPath() +
-		 * " -S " + dirRes.getPath() + " -I " + jarAndroid.getPath());
-		 *
-		 * strStatus = "CRUNCH RESOURCES"; exitCode = aapt.fnExecute(
-		 * "aapt c -v -S " + dirRes.getPath() + " -C " + dirCrunch.getPath());
-		 *
-		 * strStatus = "PACKAGE RESOURCES"; exitCode = aapt .fnExecute(
-		 * "aapt p -v -S " + dirCrunch.getPath() + " -S " + dirRes.getPath() +
-		 * " -f --no-crunch --auto-add-overlay --debug-mode -0 apk -M " +
-		 * xmlBinMan.getPath() + " -A " + dirAssets.getPath() + " -I " +
-		 * jarAndroid.getPath() + " -F " + ap_Resources.getPath());
-		 */
+//        strStatus = "INDEXING RESOURCES"; exitCode = aapt.fnExecute(
+//		"aapt p -m -v -J " + dirGen.getPath() + " -M " + xmlMan.getPath() +
+//		" -S " + dirRes.getPath() + " -I " + jarAndroid.getPath());
+//
+//		strStatus = "CRUNCH RESOURCES"; exitCode = aapt.fnExecute(
+//		"aapt c -v -S " + dirRes.getPath() + " -C " + dirCrunch.getPath());
+//
+//		strStatus = "PACKAGE RESOURCES"; exitCode = aapt .fnExecute(
+//		"aapt p -v -S " + dirCrunch.getPath() + " -S " + dirRes.getPath() +
+//		" -f --no-crunch --auto-add-overlay --debug-mode -0 apk -M " +
+//		xmlBinMan.getPath() + " -A " + dirAssets.getPath() + " -I " +
+//		jarAndroid.getPath() + " -F " + ap_Resources.getPath());
+
     }
 
     private static void zipSign(AndroidProjectFile projectFile) throws Exception {
@@ -101,36 +122,12 @@ public class ApkBuilder {
         }
     }
 
-    private void dexLibs() throws Exception {
-//        Log.d(TAG, "dexLibs() called");
-//
-//        int percent = 20;
-//
-//        for (File jarLib : projectFile.dirLibs.listFiles()) {
-//
-//            // skip native libs in sub directories
-//            if (!jarLib.isFile() || !jarLib.getName().endsWith(".jar")) {
-//                continue;
-//            }
-//
-//            // compare hash of jar contents to name of dexed version
-//            String md5 = Util.getMD5Checksum(jarLib);
-//
-//            // check if jar is pre-dexed
-//            File dexLib = new File(projectFile.dirDexedLibs, jarLib.getName().replace(".jar", "-" + md5 + ".jar"));
-//            System.out.println(dexLib.getName());
-//            if (!dexLib.exists()) {
-//                com.android.dx.command.dexer.Main
-//                        .main(new String[]{"--verbose", "--output=" + dexLib.getPath(), jarLib.getPath()});
-//            }
-//        }
-    }
 
-    private void zipAlign() throws Exception {
+    private static void zipAlign() throws Exception {
 //         TODO make zipalign.so
     }
 
-    private void publishApk() throws Exception {
+    private static void publishApk() throws Exception {
 //        if (projectFile.apkRedistributable.exists()) {
 //            projectFile.apkRedistributable.delete();
 //        }
@@ -138,9 +135,6 @@ public class ApkBuilder {
 //
 //        projectFile.apkRedistributable.setReadable(true, false);
 //
-//        if (setProgress(100)) {
-//            return;
-//        }
     }
 
     public void run() {
@@ -155,28 +149,4 @@ public class ApkBuilder {
 
     }
 
-    class CompileProgress extends org.eclipse.jdt.core.compiler.CompilationProgress {
-
-        @Override
-        public void begin(int remainingWork) {
-        }
-
-        @Override
-        public void done() {
-        }
-
-        @Override
-        public boolean isCanceled() {
-            return false;
-        }
-
-        @Override
-        public void setTaskName(String name) {
-        }
-
-        @Override
-        public void worked(int workIncrement, int remainingWork) {
-        }
-
-    }
 }

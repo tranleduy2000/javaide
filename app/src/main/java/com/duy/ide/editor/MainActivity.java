@@ -49,11 +49,11 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.duy.compile.BuildApkTask;
 import com.duy.compile.BuildJarAchieveTask;
 import com.duy.compile.CompileJavaTask;
 import com.duy.compile.CompileManager;
 import com.duy.compile.diagnostic.DiagnosticFragment;
-import com.duy.compile.external.CommandManager;
 import com.duy.ide.Builder;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
@@ -314,7 +314,7 @@ public class MainActivity extends BaseEditorActivity implements
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mCompileManager.executeDex(projectFile, mProjectFile.dexedClassesFile);
+                            mCompileManager.executeDex(projectFile, mProjectFile.getDexedClassesFile());
                         }
                     }, 200);
                 }
@@ -366,6 +366,49 @@ public class MainActivity extends BaseEditorActivity implements
             complain("You need create project");
         }
     }
+
+    public void buildApk() {
+        Log.d(TAG, "buildApk() called");
+
+        if (mProjectFile instanceof AndroidProjectFile) {
+            new BuildApkTask(new BuildApkTask.CompileListener() {
+                @Override
+                public void onStart() {
+                    updateUiStartCompile();
+                }
+
+                @Override
+                public void onError(Exception e, List<Diagnostic> diagnostics) {
+                    Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
+                    openDrawer(GravityCompat.START);
+                    mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
+                    mDiagnosticPresenter.display(diagnostics);
+                    updateUIFinish();
+                }
+
+                @Override
+                public void onComplete(File jarfile, List<Diagnostic> diagnostics) {
+                    Toast.makeText(MainActivity.this, R.string.build_success + " " + jarfile.getPath(),
+                            Toast.LENGTH_SHORT).show();
+                    mFilePresenter.refresh(mProjectFile);
+                    mDiagnosticPresenter.display(diagnostics);
+                    mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                }
+
+                @Override
+                public void onNewMessage(char[] chars, int start, int end) {
+                    mMessagePresenter.append(chars, start, end);
+                }
+            }).execute((AndroidProjectFile) mProjectFile);
+        } else {
+            if (mProjectFile != null) {
+                complain("This is java project, please create new Android project");
+            } else {
+                complain("You need create project");
+            }
+        }
+    }
+
 
     /**
      * replace dialog find
@@ -773,20 +816,6 @@ public class MainActivity extends BaseEditorActivity implements
                     mCompileProgress.setVisibility(View.GONE);
                 }
             }, 500);
-        }
-    }
-
-
-    public void buildApk() {
-        try {
-            AndroidProjectFile androidProjectFile = new AndroidProjectFile(
-                    mProjectFile.dirRoot,
-                    mProjectFile.getMainClass().getName(),
-                    mProjectFile.getPackageName(),
-                    mProjectFile.getProjectName(), new File(getFilesDir(), "system/classes/android.jar").getPath());
-            CommandManager.buildApk(androidProjectFile);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

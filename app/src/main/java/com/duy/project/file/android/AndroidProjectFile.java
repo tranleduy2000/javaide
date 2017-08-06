@@ -12,18 +12,13 @@ import java.io.IOException;
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class AndroidProjectFile extends JavaProjectFile {
-    /* ASSETS */
-    private  File keystore;
-
-    public File getKeyStore() {
-        return keystore;
-    }
-
     /* Output */
     private final File apkUnsigned;
     private final File apkUnaligned;
     public File xmlManifest;
     public File resourceFile;
+    /* ASSETS */
+    private File keystore;
     /* PROJECT */
     private File dirRes;
     private File dirAssets;
@@ -52,6 +47,18 @@ public class AndroidProjectFile extends JavaProjectFile {
         resourceFile = new File(dirBuild, "resources.res");
         dexedClassesFile = new File(dirBuild, "classes.dex");
         keystore = new File(dirProject, "keystore.jks");
+    }
+
+    public File getKeyStore() {
+        return keystore;
+    }
+
+    public File getXmlManifest() throws IOException {
+        if (!xmlManifest.exists()) {
+            xmlManifest.getParentFile().mkdirs();
+            xmlManifest.createNewFile();
+        }
+        return xmlManifest;
     }
 
     public File getApkUnaligned() throws IOException {

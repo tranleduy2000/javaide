@@ -719,6 +719,7 @@ public class MainActivity extends BaseEditorActivity implements
         mDiagnosticPresenter.clear();
     }
 
+
     private class CompileTask extends AsyncTask<JavaProjectFile, Object, Integer> {
         private Context mContext;
         private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();

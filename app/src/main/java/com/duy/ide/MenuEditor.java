@@ -166,8 +166,11 @@ public class MenuEditor {
                 activity.startActivity(new Intent(activity, TerminalPreferences.class));
                 break;
 
-            case R.id.action_new_project:
-                activity.showDialogCreateProject();
+            case R.id.action_new_java_project:
+                activity.showDialogCreateJavaProject();
+                break;
+            case R.id.action_new_android_project:
+                activity.showDialogCreateAndroidProject();
                 break;
             case R.id.action_new_file:
                 if (listener != null) listener.createNewFile(null);

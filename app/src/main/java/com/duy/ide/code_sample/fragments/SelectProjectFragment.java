@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.duy.ide.R;
 import com.duy.ide.code_sample.adapters.ProjectCategoryAdapter;
-import com.duy.ide.code_sample.model.SampleUtil;
+import com.duy.ide.code_sample.model.AssetUtil;
 
 import java.io.IOException;
 
@@ -68,7 +68,7 @@ public class SelectProjectFragment extends Fragment {
         AssetManager assets = getContext().getAssets();
         String[] samples = new String[0];
         try {
-            samples = assets.list(SampleUtil.ASSET_SAMPLE_PATH + "/" + getArguments().getString("category"));
+            samples = assets.list(AssetUtil.ASSET_SAMPLE_PATH + "/" + getArguments().getString("category"));
         } catch (IOException e) {
             e.printStackTrace();
         }

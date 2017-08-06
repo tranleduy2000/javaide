@@ -27,7 +27,6 @@ public class JavaProjectFile implements Serializable, Cloneable {
     public final File dirLibs;
     public final File dirSrcMain;
     public final File dirJava;
-
     /* Build */
     public final File dirBuild;
     public final File dirOutput;
@@ -42,7 +41,6 @@ public class JavaProjectFile implements Serializable, Cloneable {
     private ClassFile mainClass;
     private String projectName;
     private String packageName;
-
     public JavaProjectFile(File root, String mainClassName, String packageName, String projectName,
                            String classpath) {
         Log.d(TAG, "JavaProjectFile() called with: root = [" + root + "], mainClassName = ["
@@ -110,6 +108,11 @@ public class JavaProjectFile implements Serializable, Cloneable {
             return null;
         }
         return new JavaProjectFile(dirRoot, mainClass.getName(), packageName, projectName, classpath);
+    }
+
+    public File getDirLibs() {
+        if (!dirLibs.exists()) dirLibs.mkdirs();
+        return dirLibs;
     }
 
     public File getDirDexedLibs() {

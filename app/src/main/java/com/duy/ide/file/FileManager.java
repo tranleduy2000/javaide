@@ -202,6 +202,14 @@ public class FileManager {
         }
     }
 
+    public static File createFileIfNeed(File file) throws IOException {
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+        }
+        file.createNewFile();
+        return file;
+    }
+
     /**
      * get path from uri
      *

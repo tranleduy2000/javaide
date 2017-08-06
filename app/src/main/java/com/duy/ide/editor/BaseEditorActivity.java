@@ -63,8 +63,9 @@ import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.view.SymbolListView;
+import com.duy.project.dialog.DialogNewAndroidProject;
 import com.duy.project.dialog.DialogNewClass;
-import com.duy.project.dialog.DialogNewProject;
+import com.duy.project.dialog.DialogNewJavaProject;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFile;
 import com.duy.project.file.java.ProjectFileContract;
@@ -86,7 +87,7 @@ import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         implements SymbolListView.OnKeyListener, EditorControl,
         ProjectFileContract.FileActionListener,
-        DialogNewProject.OnCreateProjectListener, DialogNewClass.OnCreateClassListener, ViewPager.OnPageChangeListener {
+        DialogNewJavaProject.OnCreateProjectListener, DialogNewClass.OnCreateClassListener, ViewPager.OnPageChangeListener {
     private static final String TAG = "BaseEditorActivity";
 
     private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
@@ -174,7 +175,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    showDialogCreateProject();
+                    showDialogCreateJavaProject();
                 }
             }, 100);
         }
@@ -537,10 +538,16 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         }
     }
 
-    public void showDialogCreateProject() {
-        DialogNewProject dialogNewProject = DialogNewProject.newInstance();
-        dialogNewProject.show(getSupportFragmentManager(), DialogNewProject.TAG);
+    public void showDialogCreateJavaProject() {
+        DialogNewJavaProject dialogNewProject = DialogNewJavaProject.newInstance();
+        dialogNewProject.show(getSupportFragmentManager(), DialogNewJavaProject.TAG);
     }
+
+    public void showDialogCreateAndroidProject() {
+        DialogNewAndroidProject dialogNewProject = DialogNewAndroidProject.newInstance();
+        dialogNewProject.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
+    }
+
 
     public void showDialogCreateClass(@Nullable File file) {
         if (mProjectFile != null) {

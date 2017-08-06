@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">{APP_NAME}</string>
+    <string name="title_activity_main">{MAIN_ACTIVITY_NAME}</string>
+</resources>

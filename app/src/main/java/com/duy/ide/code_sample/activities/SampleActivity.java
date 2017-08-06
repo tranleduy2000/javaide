@@ -13,7 +13,7 @@ import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.ide.code_sample.fragments.SelectCategoryFragment;
 import com.duy.ide.code_sample.fragments.SelectProjectFragment;
-import com.duy.ide.code_sample.model.SampleUtil;
+import com.duy.ide.code_sample.model.AssetUtil;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.JavaProjectFile;
 import com.duy.project.file.java.ProjectManager;
@@ -64,7 +64,7 @@ public class SampleActivity extends AbstractAppCompatActivity implements
                     out = new File(FileManager.EXTERNAL_DIR, projectName + count);
                     count++;
                 }
-                boolean success = SampleUtil.extractTo(SampleActivity.this, out, category, projectName);
+                boolean success = AssetUtil.extractTo(SampleActivity.this, out, category, projectName);
                 if (success) {
                     JavaProjectFile pf = ProjectManager.createProjectIfNeed(getApplicationContext(), out);
                     Intent intent = getIntent();

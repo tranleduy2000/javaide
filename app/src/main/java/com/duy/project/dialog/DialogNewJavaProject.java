@@ -24,18 +24,18 @@ import java.io.IOException;
  * Created by Duy on 16-Jul-17.
  */
 
-public class DialogNewProject extends AppCompatDialogFragment implements View.OnClickListener {
+public class DialogNewJavaProject extends AppCompatDialogFragment implements View.OnClickListener {
     public static final String TAG = "DialogNewProject";
     private EditText editProjectName, editMainClass, editPackage;
     private Button btnCreate, btnCancel;
     @Nullable
     private OnCreateProjectListener listener;
 
-    public static DialogNewProject newInstance() {
+    public static DialogNewJavaProject newInstance() {
 
         Bundle args = new Bundle();
 
-        DialogNewProject fragment = new DialogNewProject();
+        DialogNewJavaProject fragment = new DialogNewJavaProject();
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,7 +62,7 @@ public class DialogNewProject extends AppCompatDialogFragment implements View.On
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_new_project, container, false);
+        return inflater.inflate(R.layout.dialog_new_java_project, container, false);
     }
 
     @Override

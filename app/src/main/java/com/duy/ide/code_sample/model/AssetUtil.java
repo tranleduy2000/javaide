@@ -13,7 +13,7 @@ import java.io.OutputStream;
  * Created by Duy on 27-Jul-17.
  */
 
-public class SampleUtil {
+public class AssetUtil {
     public static final String ASSET_SAMPLE_PATH = "sample";
 
     public static boolean extractTo(Context context, File out, String category, String name) {
@@ -29,14 +29,15 @@ public class SampleUtil {
             new File(toPath).mkdirs();
             boolean res = true;
             for (String file : files)
-                if (file.contains("."))
+                if (file.contains(".")) {
                     res &= copyAsset(assetManager,
                             fromAssetPath + "/" + file,
                             toPath + "/" + file);
-                else
+                } else {
                     res &= copyAssetFolder(assetManager,
                             fromAssetPath + "/" + file,
                             toPath + "/" + file);
+                }
             return res;
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,4 +73,6 @@ public class SampleUtil {
             out.write(buffer, 0, read);
         }
     }
+
+
 }

@@ -403,7 +403,8 @@
     <string name="interface_" translatable="false">Interface</string>
     <string name="enum_" translatable="false">Enum</string>
     <string name="setting_console" translatable="false">Console setting</string>
-    <string name="new_project" translatable="false">New project</string>
+    <string name="new_java_project" translatable="false">New Java console project</string>
+    <string name="new_android_project" translatable="false">New Android project</string>
     <string name="enter_project_name" translatable="false">Enter project name</string>
     <string name="enter_name" translatable="false">Enter name</string>
     <string name="new_class" translatable="false">Create new class</string>
@@ -458,4 +459,6 @@
     <string name="format_type_">Format type</string>
     <string name="zero">0</string>
     <string name="main_not_found">Can not find main function</string>
+    <string name="application_name">Application name</string>
+    <string name="build_apk">Build apk</string>
 </resources>

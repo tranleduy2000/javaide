@@ -592,6 +592,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
 
+
     /**
      * Listener keyboard hide/show
      * if the keyboard is showing, we will hide the toolbar for more space

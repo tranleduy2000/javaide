@@ -45,9 +45,12 @@ public class MenuEditor {
     private EditorControl listener;
     private Menu menu;
     private JavaPreferences pascalPreferences;
+    private Builder builder;
 
-    public MenuEditor(@NonNull MainActivity activity, @Nullable EditorControl listener) {
+    public MenuEditor(@NonNull MainActivity activity,
+                      @Nullable EditorControl listener) {
         this.activity = activity;
+        this.builder = activity;
         this.listener = listener;
         pascalPreferences = new JavaPreferences(this.activity);
     }
@@ -83,9 +86,7 @@ public class MenuEditor {
                 }
                 break;
             case R.id.action_run:
-                if (listener != null) {
-                    listener.runProject();
-                }
+                builder.runProject();
                 break;
             case R.id.action_save:
                 if (listener != null) {
@@ -192,6 +193,9 @@ public class MenuEditor {
                 break;
             case R.id.action_build_jar:
                 activity.buildJar();
+                break;
+            case R.id.action_build_apk:
+                activity.buildApk();
                 break;
             case R.id.action_sample:
                 activity.startActivityForResult(new Intent(activity, SampleActivity.class),

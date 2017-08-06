@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -50,9 +49,12 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.duy.compile.BuildJarAchieveTask;
+import com.duy.compile.CompileJavaTask;
 import com.duy.compile.CompileManager;
 import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.compile.external.CommandManager;
+import com.duy.ide.Builder;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.AutoCompleteService;
@@ -77,19 +79,15 @@ import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.DiagnosticListener;
 
 public class MainActivity extends BaseEditorActivity implements
         DrawerLayout.DrawerListener,
         DialogRunConfig.OnConfigChangeListener,
-        FileSelectListener {
+        FileSelectListener, Builder {
     public static final int ACTION_FILE_SELECT_CODE = 1012;
     public static final int ACTION_PICK_MEDIA_URL = 1013;
     public static final int ACTION_CREATE_SHORTCUT = 1014;
@@ -142,10 +140,9 @@ public class MainActivity extends BaseEditorActivity implements
 
     private void startAutoCompleteService() {
         Intent intent = new Intent(this, AutoCompleteService.class);
-        startService(intent);
-//        if (!bindService(intent, mServiceConnection, BIND_AUTO_CREATE)) {
-//            Log.e(TAG, "startAutoCompleteService: bind service failed");
-//        }
+        if (!bindService(intent, mServiceConnection, BIND_AUTO_CREATE)) {
+            Log.e(TAG, "startAutoCompleteService: bind service failed");
+        }
     }
 
 
@@ -293,7 +290,41 @@ public class MainActivity extends BaseEditorActivity implements
                         }).show();
                 return;
             }
-            new CompileTask(this).execute(mProjectFile);
+            CompileJavaTask.CompileListener compileListener = new CompileJavaTask.CompileListener() {
+                @Override
+                public void onStart() {
+                    updateUiStartCompile();
+                }
+
+                @Override
+                public void onError(Exception e, ArrayList<Diagnostic> diagnostics) {
+                    Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
+                    openDrawer(GravityCompat.START);
+                    mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
+                    mDiagnosticPresenter.display(diagnostics);
+                    updateUIFinish();
+                }
+
+                @Override
+                public void onComplete(final JavaProjectFile projectFile,
+                                       final List<Diagnostic> diagnostics) {
+                    updateUIFinish();
+                    Toast.makeText(MainActivity.this, R.string.compile_success, Toast.LENGTH_SHORT).show();
+                    mDiagnosticPresenter.display(diagnostics);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mCompileManager.executeDex(projectFile, mProjectFile.dexedClassesFile);
+                        }
+                    }, 200);
+                }
+
+                @Override
+                public void onNewMessage(char[] chars, int start, int end) {
+                    mMessagePresenter.append(chars, start, end);
+                }
+            };
+            new CompileJavaTask(compileListener).execute(mProjectFile);
         } else {
             Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
         }
@@ -302,7 +333,35 @@ public class MainActivity extends BaseEditorActivity implements
     @Override
     public void buildJar() {
         if (mProjectFile != null) {
-            new BuildJarAchieveTask(this).execute(mProjectFile);
+            new BuildJarAchieveTask(new BuildJarAchieveTask.CompileListener() {
+                @Override
+                public void onStart() {
+                    updateUiStartCompile();
+                }
+
+                @Override
+                public void onError(Exception e, List<Diagnostic> diagnostics) {
+                    Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
+                    openDrawer(GravityCompat.START);
+                    mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
+                    mDiagnosticPresenter.display(diagnostics);
+                    updateUIFinish();
+                }
+
+                @Override
+                public void onComplete(File jarfile, List<Diagnostic> diagnostics) {
+                    Toast.makeText(MainActivity.this, R.string.build_success + " " + jarfile.getPath(),
+                            Toast.LENGTH_SHORT).show();
+                    mFilePresenter.refresh(mProjectFile);
+                    mDiagnosticPresenter.display(diagnostics);
+                    mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                }
+
+                @Override
+                public void onNewMessage(char[] chars, int start, int end) {
+                    mMessagePresenter.append(chars, start, end);
+                }
+            }).execute(mProjectFile);
         } else {
             complain("You need create project");
         }
@@ -370,12 +429,10 @@ public class MainActivity extends BaseEditorActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        unbindService(mServiceConnection);
-//        if (mDialog != null && mDialog.isShowing()) {
-//            mDialog.dismiss();
-//        }
-        Intent intent = new Intent(this, AutoCompleteService.class);
-        stopService(intent);
+        unbindService(mServiceConnection);
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
     }
 
     @Override
@@ -696,6 +753,16 @@ public class MainActivity extends BaseEditorActivity implements
         }
     }
 
+    private void updateUiStartCompile() {
+        if (mActionRun != null) mActionRun.setEnabled(false);
+        if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
+        hideKeyboard();
+        openDrawer(GravityCompat.START);
+        mMessagePresenter.clear();
+        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        mDiagnosticPresenter.clear();
+    }
+
     private void updateUIFinish() {
 
         if (mActionRun != null) mActionRun.setEnabled(true);
@@ -709,192 +776,19 @@ public class MainActivity extends BaseEditorActivity implements
         }
     }
 
-    private void updateUiStartCompile() {
-        if (mActionRun != null) mActionRun.setEnabled(false);
-        if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
-        hideKeyboard();
-        openDrawer(GravityCompat.START);
-        mMessagePresenter.clear();
-        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-        mDiagnosticPresenter.clear();
-    }
 
-
-    private class CompileTask extends AsyncTask<JavaProjectFile, Object, Integer> {
-        private Context mContext;
-        private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
-        private JavaProjectFile mProjectFile;
-
-        CompileTask(Context context) {
-            this.mContext = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            updateUiStartCompile();
-        }
-
-        @Override
-        protected Integer doInBackground(JavaProjectFile... params) {
-            if (params[0] == null) return null;
-            this.mProjectFile = params[0];
-            PrintWriter printWriter = new PrintWriter(new Writer() {
-                @Override
-                public void write(@NonNull char[] chars, int i, int i1) throws IOException {
-                    publishProgress(chars, i, i1);
-                }
-
-                @Override
-                public void flush() throws IOException {
-
-                }
-
-                @Override
-                public void close() throws IOException {
-
-                }
-            });
-            DiagnosticListener listener = new DiagnosticListener() {
-                @Override
-                public void report(Diagnostic diagnostic) {
-                    mDiagnostics.add(diagnostic);
-                }
-            };
-            //clean task
-            mProjectFile.clean();
-            mProjectFile.createBuildDir();
-
-//            int status = CommandManager.compileJava(mProjectFile, printWriter, listener);
-//            if (status != Main.EXIT_ERROR) {
-//                try {
-//                    CommandManager.convertToDexFormat(mProjectFile);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    publishProgress(e.getMessage().toCharArray(), 0, e.getMessage().length());
-//                    status = Main.EXIT_ERROR;
-//                }
-//            }
-//            return status;
-            try {
-                AndroidProjectFile androidProjectFile = new AndroidProjectFile(
-                        mProjectFile.dirRoot,
-                        mProjectFile.getMainClass().getName(),
-                        mProjectFile.getPackageName(),
-                        mProjectFile.getProjectName(), new File(getFilesDir(), "system/classes/android.jar").getPath());
-                CommandManager.buildApk(androidProjectFile);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return -1;
-        }
-
-        @Override
-        protected void onProgressUpdate(Object... values) {
-            super.onProgressUpdate(values);
-            try {
-                char[] chars = (char[]) values[0];
-                int start = (int) values[1];
-                int end = (int) values[2];
-                mMessagePresenter.append(chars, start, end);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final Integer result) {
-            super.onPostExecute(result);
-            mDiagnosticPresenter.display(mDiagnostics);
-
-            updateUIFinish();
-
-            if (result == null) {
-                Toast.makeText(mContext, R.string.failed_msg, Toast.LENGTH_SHORT).show();
-                openDrawer(GravityCompat.START);
-                mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
-            } else {
-                Toast.makeText(mContext, R.string.compile_success, Toast.LENGTH_SHORT).show();
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCompileManager.executeDex(mProjectFile, mProjectFile.dexedClassesFile);
-                    }
-                }, 200);
-            }
+    public void buildApk() {
+        try {
+            AndroidProjectFile androidProjectFile = new AndroidProjectFile(
+                    mProjectFile.dirRoot,
+                    mProjectFile.getMainClass().getName(),
+                    mProjectFile.getPackageName(),
+                    mProjectFile.getProjectName(), new File(getFilesDir(), "system/classes/android.jar").getPath());
+            CommandManager.buildApk(androidProjectFile);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    private class BuildJarAchieveTask extends AsyncTask<JavaProjectFile, Object, File> {
-        private Context mContext;
-        private DiagnosticCollector mDiagnosticCollector;
-
-        BuildJarAchieveTask(Context context) {
-            this.mContext = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            updateUiStartCompile();
-            mDiagnosticCollector = new DiagnosticCollector();
-        }
-
-        @Override
-        protected File doInBackground(JavaProjectFile... params) {
-            if (params[0] == null) return null;
-            PrintWriter printWriter = new PrintWriter(new Writer() {
-                @Override
-                public void write(@NonNull char[] chars, int i, int i1) throws IOException {
-                    publishProgress(chars, i, i1);
-                }
-
-                @Override
-                public void flush() throws IOException {
-
-                }
-
-                @Override
-                public void close() throws IOException {
-
-                }
-            });
-            //clean
-            mProjectFile.clean();
-            mProjectFile.createBuildDir();
-
-            return CommandManager.buildJarAchieve(mProjectFile, printWriter, mDiagnosticCollector);
-        }
-
-        @Override
-        protected void onProgressUpdate(Object... values) {
-            super.onProgressUpdate(values);
-            try {
-                char[] chars = (char[]) values[0];
-                int start = (int) values[1];
-                int end = (int) values[2];
-                mMessagePresenter.append(chars, start, end);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final File result) {
-            super.onPostExecute(result);
-            mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
-            updateUIFinish();
-            if (result == null) {
-                Toast.makeText(mContext, R.string.failed_msg, Toast.LENGTH_SHORT).show();
-                openDrawer(GravityCompat.START);
-                mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
-            } else {
-                Toast.makeText(mContext, R.string.build_success + " " + result.getPath(),
-                        Toast.LENGTH_SHORT).show();
-                mFilePresenter.refresh(mProjectFile);
-                mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            }
-        }
-    }
 
 }

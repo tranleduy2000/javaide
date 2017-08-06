@@ -16,34 +16,13 @@
 
 package com.duy.ide;
 
-import android.view.View;
+public interface Builder {
 
-public interface EditorControl {
-    void saveAs();
+    void runProject();
 
-    void findAndReplace();
+    void buildJar();
 
-    void saveCurrentFile();
-
-    void saveAllFile();
-
-    void showDocumentActivity();
-
-    void createNewFile(View view);
-
-    void goToLine();
-
-    void formatCode();
-
-    void undo();
-
-    void redo();
-
-    void paste();
-
-    void copyAll();
-
-    void selectThemeFont();
+    void buildApk();
 
     void runFile(String tag);
 }

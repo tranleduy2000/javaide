@@ -19,7 +19,6 @@ import com.duy.ide.R;
 import com.duy.ide.code_sample.model.AssetUtil;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProjectFile;
-import com.duy.project.file.java.JavaProjectFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +33,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
     private EditText editProjectName, editPackage;
     private Button btnCreate, btnCancel;
     @Nullable
-    private OnCreateProjectListener listener;
+    private DialogNewJavaProject.OnCreateProjectListener listener;
     private EditText activityName, layoutName;
 
     public static DialogNewAndroidProject newInstance() {
@@ -50,7 +49,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (OnCreateProjectListener) getActivity();
+            listener = (DialogNewJavaProject.OnCreateProjectListener) getActivity();
         } catch (Exception e) {
         }
     }
@@ -117,7 +116,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
                         "templates/src/main/res", projectFile.getDirRes().getPath());
 
                 //modified strings.xml
-                File stringxml = new File(projectFile.getDirRes(), "value/strings.xml");
+                File stringxml = new File(projectFile.getDirRes(), "values/strings.xml");
                 String strings = FileManager.streamToString(new FileInputStream(
                         stringxml)).toString();
                 strings = strings.replace("{APP_NAME}", appName);
@@ -129,7 +128,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
                 InputStream manifestTemplate = assets.open("templates/src/main/AndroidManifest.xml");
                 String contentManifest = FileManager.streamToString(manifestTemplate).toString();
                 contentManifest = contentManifest.replace("{PACKAGE}", packageName);
-                contentManifest = contentManifest.replace("{APP_NAME}", appName);
+//                contentManifest = contentManifest.replace("{APP_NAME}", appName);
                 contentManifest = contentManifest.replace("{MAIN_ACTIVITY}", activityClass);
                 Log.d(TAG, "doCreateProject contentManifest = " + contentManifest);
                 FileManager.saveFile(manifest, contentManifest);
@@ -185,8 +184,4 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
         return true;
     }
 
-
-    public interface OnCreateProjectListener {
-        void onProjectCreated(JavaProjectFile projectFile);
-    }
 }

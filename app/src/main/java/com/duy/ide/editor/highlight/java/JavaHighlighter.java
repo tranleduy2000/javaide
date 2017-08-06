@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.editor.highlight;
+package com.duy.ide.editor.highlight.java;
 
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -25,6 +25,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 
+import com.duy.ide.editor.highlight.HighlightImpl;
 import com.duy.ide.editor.view.HighlightEditor;
 import com.duy.ide.themefont.themes.database.CodeTheme;
 
@@ -33,22 +34,21 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 
-import static com.duy.ide.editor.completion.Patterns.KEYWORDS;
-import static com.duy.ide.editor.completion.Patterns.NUMBERS;
+import static com.duy.ide.editor.completion.Patterns.DECIMAL_NUMBERS;
+import static com.duy.ide.editor.completion.Patterns.JAVA_KEYWORDS;
 
 /**
  * Created by Duy on 18-Jun-17.
  */
-public class CodeHighlighter implements Highlighter {
+public class JavaHighlighter extends HighlightImpl {
     private static final String TAG = "CodeHighlighter";
-    private CodeTheme codeTheme;
     private StringHighlighter stringHighlighter;
-    private CommentHighlighter commentHighlighter;
+    private JavaCommentHighlighter commentHighlighter;
     private int startError, endError;
 
-    public CodeHighlighter(HighlightEditor highlightEditor) {
+    public JavaHighlighter(HighlightEditor highlightEditor) {
         this.codeTheme = highlightEditor.getCodeTheme();
-        this.commentHighlighter = new CommentHighlighter(codeTheme);
+        this.commentHighlighter = new JavaCommentHighlighter(codeTheme);
         this.stringHighlighter = new StringHighlighter(codeTheme);
     }
 
@@ -98,6 +98,7 @@ public class CodeHighlighter implements Highlighter {
 
     }
 
+
     private void highlightError(Editable allText) {
         if (startError >= 0 && endError >= startError && endError <= allText.length()) {
             allText.setSpan(new ForegroundColorSpan(codeTheme.getErrorColor()),
@@ -107,7 +108,7 @@ public class CodeHighlighter implements Highlighter {
 
     @Override
     public void setCodeTheme(CodeTheme codeTheme) {
-        this.codeTheme = codeTheme;
+        super.setCodeTheme(codeTheme);
         commentHighlighter.setCodeTheme(codeTheme);
         stringHighlighter.setCodeTheme(codeTheme);
     }
@@ -153,13 +154,13 @@ public class CodeHighlighter implements Highlighter {
     private void highlightOther(@NonNull Editable allText,
                                 @NonNull CharSequence textToHighlight, int start) {
         //high light number
-        for (Matcher m = NUMBERS.matcher(textToHighlight); m.find(); ) {
+        for (Matcher m = DECIMAL_NUMBERS.matcher(textToHighlight); m.find(); ) {
             allText.setSpan(new ForegroundColorSpan(codeTheme.getNumberColor()),
                     start + m.start(),
                     start + m.end(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        for (Matcher m = KEYWORDS.matcher(textToHighlight); m.find(); ) {
+        for (Matcher m = JAVA_KEYWORDS.matcher(textToHighlight); m.find(); ) {
             allText.setSpan(new ForegroundColorSpan(codeTheme.getKeywordColor()),
                     start + m.start(),
                     start + m.end(),

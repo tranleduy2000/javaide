@@ -23,9 +23,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
+import com.duy.compile.CompileManager;
 import com.duy.ide.R;
 import com.duy.ide.activities.ActivitySplashScreen;
-import com.duy.compile.CompileManager;
 import com.duy.ide.setting.JavaPreferences;
 
 import org.apache.commons.io.FileUtils;
@@ -160,7 +160,7 @@ public class FileManager {
     }
 
     public static boolean canEdit(File file) {
-        return file.canWrite() && file.getName().toLowerCase().endsWith(".java");
+        return file.canWrite() && com.duy.ide.file.FileUtils.hasExtension(file, ".java", ".xml");
     }
 
     public static void copyFile(InputStream in, OutputStream out) throws IOException {

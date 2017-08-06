@@ -47,8 +47,10 @@ import android.widget.ScrollView;
 import android.widget.Scroller;
 
 import com.duy.ide.R;
-import com.duy.ide.editor.highlight.BracketHighlighter;
-import com.duy.ide.editor.highlight.CodeHighlighter;
+import com.duy.ide.editor.highlight.Highlighter;
+import com.duy.ide.editor.highlight.java.BracketHighlighter;
+import com.duy.ide.editor.highlight.java.JavaHighlighter;
+import com.duy.ide.editor.highlight.xml.XmlHighlighter;
 import com.duy.ide.themefont.themes.ThemeManager;
 import com.duy.ide.themefont.themes.database.CodeTheme;
 import com.duy.ide.themefont.themes.database.CodeThemeUtils;
@@ -110,7 +112,7 @@ public class HighlightEditor extends CodeSuggestsEditText
      */
     private EditTextChangeListener mChangeListener;
     private int numberWidth = 0;
-    private CodeHighlighter mCodeHighlighter;
+    private Highlighter mHighlighter;
     private final Runnable colorRunnable_duringEditing =
             new Runnable() {
                 @Override
@@ -148,7 +150,7 @@ public class HighlightEditor extends CodeSuggestsEditText
 
     public void setCodeTheme(CodeTheme codeTheme) {
         this.codeTheme = codeTheme;
-        this.mCodeHighlighter.setCodeTheme(codeTheme);
+        this.mHighlighter.setCodeTheme(codeTheme);
         this.mBracketHighlighter.setCodeTheme(codeTheme);
 
         setTextColor(codeTheme.getTextColor());
@@ -156,7 +158,6 @@ public class HighlightEditor extends CodeSuggestsEditText
         mPaintNumbers.setColor(codeTheme.getNumberColor());
         refresh();
     }
-
 
     public boolean isAutoCompile() {
         return autoCompile;
@@ -191,15 +192,19 @@ public class HighlightEditor extends CodeSuggestsEditText
         mLineBounds = new Rect();
         mGestureDetector = new GestureDetector(getContext(), HighlightEditor.this);
         mChangeListener = new EditTextChangeListener();
-        mCodeHighlighter = new CodeHighlighter(this);
+        mHighlighter = new JavaHighlighter(this);
         mBracketHighlighter = new BracketHighlighter(this, codeTheme);
-
         updateFromSettings();
-
-
         enableTextChangedListener();
     }
 
+    public void setFileExt(String fileExt) {
+        if (fileExt.equalsIgnoreCase("java")) {
+            this.mHighlighter = new JavaHighlighter(this);
+        } else if (fileExt.equalsIgnoreCase("xml")) {
+            this.mHighlighter = new XmlHighlighter(this);
+        }
+    }
 
     public void setLineError(@NonNull LineInfo lineError) {
         this.lineError = lineError;
@@ -475,41 +480,7 @@ public class HighlightEditor extends CodeSuggestsEditText
 
     private void highlightLineError(Editable e) {
         try {
-//            //high light error lineInfo
-//            if (lineError != null) {
-//                Layout layout = getLayout();
-//                int line = lineError.getLine();
-//                int temp = line;
-//                while (realLines[temp] < line) temp++;
-//                line = temp;
-//                if (layout != null && line < getLineCount()) {
-//                    int lineStart = getLayout().getLineStart(line);
-//                    int lineEnd = getLayout().getLineEnd(line);
-//                    lineStart += lineError.getColumn();
 //
-//                    //check if it contains offset from start index error to
-//                    //(start + offset) index
-//                    if (lineError.getLength() > -1) {
-//                        lineEnd = lineStart + lineError.getLength();
-//                        Log.d(TAG, "highlightLineError: " + lineError.getLength());
-//                    }
-//
-//                    //normalize
-//                    lineStart = Math.max(0, lineStart);
-//                    lineEnd = Math.min(lineEnd, getText().length());
-//
-//                    if (lineStart < lineEnd) {
-//                        e.setSpan(new BackgroundColorSpan(codeTheme.getErrorColor()),
-//                                lineStart,
-//                                lineEnd,
-//                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                        if (!isAutoCompile()) {
-//                            setSelection(lineEnd);
-//                        }
-//                    }
-//
-//                }
-//            }
         } catch (Exception ignored) {
         }
     }
@@ -715,7 +686,6 @@ public class HighlightEditor extends CodeSuggestsEditText
 
         disableTextChangedListener();
         highlight(false);
-        highlightLineError(getText());
         enableTextChangedListener();
     }
 
@@ -759,12 +729,12 @@ public class HighlightEditor extends CodeSuggestsEditText
         int lastVisibleIndex;
         if (!newText && editorHeight > 0) {
             if (verticalScroll != null && getLayout() != null) {
-                firstVisibleIndex = getLayout().getLineStart(Math.max(0, getFirstLineIndex() - 5));
+                firstVisibleIndex = getLayout().getLineStart(Math.max(0, getFirstLineIndex() - 3));
             } else {
                 firstVisibleIndex = 0;
             }
             if (verticalScroll != null && getLayout() != null) {
-                lastVisibleIndex = getLayout().getLineStart(Math.min(getLayout().getLineCount() - 1, getLastLineIndex() + 5));
+                lastVisibleIndex = getLayout().getLineStart(Math.min(getLayout().getLineCount() - 1, getLastLineIndex() + 3));
             } else {
                 lastVisibleIndex = getText().length();
             }
@@ -781,7 +751,7 @@ public class HighlightEditor extends CodeSuggestsEditText
         clearSpans(editable, firstVisibleIndex, lastVisibleIndex);
 
         CharSequence textToHighlight = editable.subSequence(firstVisibleIndex, lastVisibleIndex);
-        mCodeHighlighter.highlight(editable, textToHighlight, firstVisibleIndex);
+        mHighlighter.highlight(editable, textToHighlight, firstVisibleIndex);
         applyTabWidth(editable, firstVisibleIndex, lastVisibleIndex);
     }
 
@@ -812,12 +782,8 @@ public class HighlightEditor extends CodeSuggestsEditText
         inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
     }
 
-    public void highlightAll() {
-        mCodeHighlighter.highlight(getText(), getText(), 0);
-    }
-
     public void highlightError(long startPosition, long endPosition) {
-        mCodeHighlighter.setErrorRange(startPosition, endPosition);
+        mHighlighter.setErrorRange(startPosition, endPosition);
         refresh();
     }
 
@@ -844,7 +810,7 @@ public class HighlightEditor extends CodeSuggestsEditText
                                   int start, int before,
                                   int count) {
             isFinding = false;
-            mCodeHighlighter.setErrorRange(-1, -1);
+            mHighlighter.setErrorRange(-1, -1);
         }
 
         public void afterTextChanged(Editable s) {

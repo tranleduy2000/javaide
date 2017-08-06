@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.editor.highlight;
+package com.duy.ide.editor.highlight.java;
 
 /**
  * Created by Duy on 18-Jun-17.

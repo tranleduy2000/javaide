@@ -481,16 +481,23 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
             //close drawer
             mDrawerLayout.closeDrawers();
         } else {
-            MimeTypeMap myMime = MimeTypeMap.getSingleton();
-            Intent newIntent = new Intent(Intent.ACTION_VIEW);
-            String mimeType = myMime.getMimeTypeFromExtension(FileUtils.fileExt(file.getPath()).substring(1));
-            newIntent.setDataAndType(Uri.fromFile(file), mimeType);
-            newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            try {
-                startActivity(newIntent);
-            } catch (ActivityNotFoundException e) {
-                Toast.makeText(this, "No handler for this type of file.", Toast.LENGTH_LONG).show();
-            }
+            openFileByAnotherApp(file);
+        }
+    }
+
+    private void openFileByAnotherApp(File file) {
+        //create intent open filek
+        MimeTypeMap myMime = MimeTypeMap.getSingleton();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        String ext = FileUtils.fileExt(file.getPath());
+        String mimeType = myMime.getMimeTypeFromExtension(ext != null ? ext : "");
+        intent.setDataAndType(Uri.fromFile(file), mimeType);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "No handler for this type of file.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -499,6 +506,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     public void onFileLongClick(File file, ProjectFileContract.ActionCallback callBack) {
         if (FileUtils.canRead(file)) {
             showFileInfo(file);
+        } else {
+            openFileByAnotherApp(file);
         }
     }
 

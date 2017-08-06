@@ -1,4 +1,4 @@
-package com.duy.ide.editor.highlight;
+package com.duy.ide.editor.highlight.java;
 
 import android.text.Editable;
 import android.text.Spanned;

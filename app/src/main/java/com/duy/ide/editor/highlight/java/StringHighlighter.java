@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.editor.highlight;
+package com.duy.ide.editor.highlight.java;
 
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
@@ -22,6 +22,7 @@ import android.text.Editable;
 import android.text.Spannable;
 import android.text.style.ForegroundColorSpan;
 
+import com.duy.ide.editor.highlight.Highlighter;
 import com.duy.ide.themefont.themes.database.CodeTheme;
 
 import java.util.ArrayList;
@@ -69,6 +70,11 @@ public class StringHighlighter implements Highlighter {
     @Override
     public void setCodeTheme(CodeTheme codeTheme) {
         this.codeTheme = codeTheme;
+    }
+
+    @Override
+    public void setErrorRange(long startPosition, long endPosition) {
+
     }
 
     public ArrayList<Pair<Integer, Integer>> getStringRegion() {

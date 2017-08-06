@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.editor.highlight;
+package com.duy.ide.editor.highlight.java;
 
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
@@ -22,48 +22,30 @@ import android.text.Editable;
 import android.text.Spannable;
 import android.text.style.ForegroundColorSpan;
 
+import com.duy.ide.editor.highlight.Highlighter;
 import com.duy.ide.themefont.themes.database.CodeTheme;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static com.duy.ide.editor.completion.Patterns.JAVA_COMMENTS;
 
 /**
  * Created by Duy on 18-Jun-17.
  */
 
-public class CommentHighlighter implements Highlighter {
-    /**
-     * match comment, include // { } (* *) comment
-     */
-    public static final Pattern COMMENTS = Pattern.compile(
-            "(//.*)|(/\\*(?:.|[\\n\\r])*?\\*/)"  //splash splash comment
-//                   + "|(\\{(?:.|[\\n\\r])*?\\})"  //{ } comment
-//                  +  "|((\\(\\*)(?:.|[\\n\\r])*?(\\*\\)))"// (* *) comment
-    );
+public class JavaCommentHighlighter implements Highlighter {
     private ArrayList<Pair<Integer, Integer>> mCommentRegion = new ArrayList<>();
     private CodeTheme codeTheme;
 
-    public CommentHighlighter(CodeTheme codeTheme) {
+    public JavaCommentHighlighter(CodeTheme codeTheme) {
         this.codeTheme = codeTheme;
-    }
-
-    public boolean inComment(int start, int end) {
-        //-----------[1 -------------- 3]------
-        //--'------------'
-        for (Pair<Integer, Integer> pair : mCommentRegion) {
-            if (start < pair.first && end > pair.first
-                    || start < pair.second && end > pair.second) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
     public void highlight(@NonNull Editable allText, @NonNull CharSequence textToHighlight, int start) {
         mCommentRegion.clear();
-        for (Matcher m = COMMENTS.matcher(textToHighlight); m.find(); ) {
+        for (Matcher m = JAVA_COMMENTS.matcher(textToHighlight); m.find(); ) {
             allText.setSpan(new ForegroundColorSpan(codeTheme.getCommentColor()),
                     start + m.start(),
                     start + m.end(),
@@ -75,6 +57,11 @@ public class CommentHighlighter implements Highlighter {
     @Override
     public void setCodeTheme(CodeTheme codeTheme) {
         this.codeTheme = codeTheme;
+    }
+
+    @Override
+    public void setErrorRange(long startPosition, long endPosition) {
+
     }
 
 

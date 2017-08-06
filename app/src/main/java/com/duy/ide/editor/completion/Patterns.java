@@ -32,7 +32,7 @@ public class Patterns {
     /**
      * match reserved keyword
      */
-    public static final Pattern KEYWORDS = Pattern.compile(
+    public static final Pattern JAVA_KEYWORDS = Pattern.compile(
             "\\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|" +
                     "continue|default|do|double|else|enum|extends|final|finally|float|" +
                     "for|goto|if|implements|import|instanceof|int|interface|long|native|new|" +
@@ -40,22 +40,24 @@ public class Patterns {
                     "this|throw|throws|transient|try|void|volatile|while|" +
                     "null)\\b",
             Pattern.CASE_INSENSITIVE);
-
+    public static final Pattern JAVA_COMMENTS = Pattern.compile("(//.*)|(/\\*(?:.|[\\n\\r])*?\\*/)");
 
     public static final Pattern FILE_JAVA = Pattern.compile(PatternFactory.IDENTIFIER_STR + "\\.java");
 
     /**
-     * match some spacial symbol
-     */
-    public static final Pattern SYMBOLS = Pattern.compile("[+\\-'*=<>/:)(\\]\\[;@\\^,.]");
-    /**
      * match number
      */
-    public static final Pattern NUMBERS = Pattern.compile(
+    public static final Pattern DECIMAL_NUMBERS = Pattern.compile(
             "\\b((\\d*[.]?\\d+([Ee][+-]?[\\d]+)?)|" + //simple decimal
                     "(\\$[0-9a-fA-F]+)|" + //hex
                     "(%[01]+)|" + //binary
                     "(&[0-7]+)|" +//octal
                     "([Ee][+-]?[\\d]+))\\b");
 
+    /*XML patterns*/
+    public static final Pattern XML_TAGS = Pattern.compile(
+            "<([A-Za-z][A-Za-z0-9]*)\\b[^>]*>|</([A-Za-z][A-Za-z0-9]*)\\b[^>]*>");
+    public static final Pattern XML_ATTRS = Pattern.compile(
+            "(\\S+)=[\"']?((?:.(?![\"']?\\s+(?:\\S+)=|[>\"']))+.)[\"']?");
+    public static final Pattern XML_COMMENTS = Pattern.compile("(?s)<!--.*?-->");
 }

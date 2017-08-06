@@ -15,7 +15,8 @@ public class FileUtils {
         }
         return false;
     }
-    public  static String fileExt(String url) {
+
+    public static String fileExt(String url) {
         if (url.indexOf("?") > -1) {
             url = url.substring(0, url.indexOf("?"));
         }
@@ -30,12 +31,21 @@ public class FileUtils {
                 ext = ext.substring(0, ext.indexOf("/"));
             }
             return ext.toLowerCase();
-
         }
     }
 
     public static boolean canRead(File file) {
-        String[] exts = new String[]{".java", ".txt"};
+        String[] exts = new String[]{".java", ".txt", ".xml"};
         return file.canRead() && hasExtension(file, exts);
     }
+
+    public static String ext(String path) {
+        if (path.contains(".")) {
+            return path.substring(path.lastIndexOf(".") + 1);
+        } else {
+            return "";
+        }
+    }
+
+
 }

@@ -30,4 +30,6 @@ public interface Highlighter {
                    @NonNull CharSequence textToHighlight, int start);
 
     void setCodeTheme(CodeTheme codeTheme);
+
+    void setErrorRange(long startPosition, long endPosition);
 }

@@ -31,13 +31,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.duy.compile.CompileManager;
 import com.duy.ide.EditPageContract;
 import com.duy.ide.EditorControl;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
-import com.duy.compile.CompileManager;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.FileManager;
+import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.view.LockableScrollView;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -88,7 +89,9 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 //        mHorizontalScrollView = (LockableHorizontalScrollView) view.findViewById(R.id.horizontal_scroll);
 
         FileManager fileManager = new FileManager(getContext());
-        StringBuilder code = fileManager.fileToString(getArguments().getString(CompileManager.FILE_PATH));
+        String path = getArguments().getString(CompileManager.FILE_PATH);
+        StringBuilder code = fileManager.fileToString(path);
+        mCodeEditor.setFileExt(FileUtils.ext(path));
         mCodeEditor.setTextHighlighted(code);
         try {
             mCodeEditor.setEditorControl((EditorControl) getActivity());

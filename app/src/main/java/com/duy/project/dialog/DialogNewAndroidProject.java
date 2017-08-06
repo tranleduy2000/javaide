@@ -81,7 +81,6 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
         btnCancel.setOnClickListener(this);
         activityName = view.findViewById(R.id.edit_activity_name);
         layoutName = view.findViewById(R.id.edit_layout_name);
-
     }
 
     @Override
@@ -134,7 +133,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
                 FileManager.saveFile(manifest, contentManifest);
 
                 //main activity
-                File activityFile = FileManager.createFileIfNeed(new File(projectFile.dirSrcMain,
+                File activityFile = FileManager.createFileIfNeed(new File(projectFile.dirJava,
                         activityClass.replace(".", File.separator) + ".java"));
                 InputStream activityTemplate = assets.open("templates/src/main/MainActivity.java");
                 String contentClass = FileManager.streamToString(activityTemplate).toString();

@@ -65,7 +65,7 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
     protected void onProgressUpdate(Object... values) {
         super.onProgressUpdate(values);
         try {
-            char[] chars = (char[]) values[0];
+            byte[] chars = (byte[]) values[0];
             int start = (int) values[1];
             int end = (int) values[2];
             listener.onNewMessage(chars, start, end);
@@ -92,6 +92,6 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
 
         void onComplete(File apk, List<Diagnostic> diagnostics);
 
-        void onNewMessage(char[] chars, int start, int end);
+        void onNewMessage(byte[] chars, int start, int end);
     }
 }

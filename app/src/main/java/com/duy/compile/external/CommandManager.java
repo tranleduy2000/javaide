@@ -122,16 +122,10 @@ public class CommandManager {
         }
     }
 
-    public static File dexBuildClasses(@NonNull JavaProjectFile projectFile) throws FileNotFoundException {
+    public static File dexBuildClasses(@NonNull JavaProjectFile projectFile) throws IOException {
         Log.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
         String input = projectFile.dirBuildClasses.getPath();
         FileManager.ensureFileExist(new File(input));
-        if (!projectFile.getDexedClassesFile().exists()) try {
-            projectFile.getDexedClassesFile().getParentFile().mkdirs();
-            projectFile.getDexedClassesFile().createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         String[] args = new String[]{"--dex", "--verbose", "--no-strict",
                 "--output=" + projectFile.getDexedClassesFile().getPath(), //output dex file
                 input}; //input file

@@ -20,5 +20,7 @@ public class MessageContract {
         void clear();
 
         void append(char[] chars, int start, int end);
+
+        void append(String s);
     }
 }

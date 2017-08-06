@@ -79,6 +79,7 @@ import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -314,7 +315,11 @@ public class MainActivity extends BaseEditorActivity implements
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mCompileManager.executeDex(projectFile, mProjectFile.getDexedClassesFile());
+                            try {
+                                mCompileManager.executeDex(projectFile, mProjectFile.getDexedClassesFile());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }, 200);
                 }
@@ -396,8 +401,8 @@ public class MainActivity extends BaseEditorActivity implements
                 }
 
                 @Override
-                public void onNewMessage(char[] chars, int start, int end) {
-                    mMessagePresenter.append(chars, start, end);
+                public void onNewMessage(byte[] chars, int start, int end) {
+                    mMessagePresenter.append(new String(chars, start, end));
                 }
             }).execute((AndroidProjectFile) mProjectFile);
         } else {

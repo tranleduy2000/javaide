@@ -35,11 +35,11 @@ public class JavaProjectFile implements Serializable, Cloneable {
     public File classpathFile;
     protected File dirDexedClass;
     protected File dexedClassesFile;
-    protected File dexedLibsFile;
     /*Main class*/
     private ClassFile mainClass;
     private String projectName;
     private String packageName;
+
     public JavaProjectFile(File root, String mainClassName, String packageName, String projectName,
                            String classpath) {
         Log.d(TAG, "JavaProjectFile() called with: root = [" + root + "], mainClassName = ["
@@ -64,16 +64,32 @@ public class JavaProjectFile implements Serializable, Cloneable {
         dirDexedClass = new File(dirBuild, "dexedClasses");
 
         dexedClassesFile = new File(dirDexedClass, projectName + ".dex");
-        dexedLibsFile = new File(dirDexedLibs, "libs.dex");
-
         classpathFile = new File(classpath);
 
-        if (!dirRoot.exists()) dirRoot.mkdirs();
-        if (!dirProject.exists()) dirProject.mkdirs();
-        if (!dirLibs.exists()) dirLibs.mkdirs();
-        if (!dirSrcMain.exists()) dirSrcMain.mkdirs();
-        if (!dirJava.exists()) dirJava.mkdirs();
-        if (!dirBuildClasses.exists()) dirBuildClasses.mkdirs();
+        if (!dirRoot.exists()) {
+            dirRoot.mkdirs();
+            dirRoot.setReadable(true, true);
+        }
+        if (!dirProject.exists()) {
+            dirProject.mkdirs();
+            dirProject.setReadable(true, true);
+        }
+        if (!dirLibs.exists()) {
+            dirLibs.mkdirs();
+            dirLibs.setReadable(true, true);
+        }
+        if (!dirSrcMain.exists()) {
+            dirSrcMain.mkdirs();
+            dirSrcMain.setReadable(true, true);
+        }
+        if (!dirJava.exists()) {
+            dirJava.mkdirs();
+            dirJava.setReadable(true, true);
+        }
+        if (!dirBuildClasses.exists()) {
+            dirBuildClasses.mkdirs();
+            dirBuildClasses.setReadable(true, true);
+        }
     }
 
     public static File createClass(JavaProjectFile projectFile,
@@ -109,7 +125,11 @@ public class JavaProjectFile implements Serializable, Cloneable {
         return new JavaProjectFile(dirRoot, mainClass.getName(), packageName, projectName, classpath);
     }
 
-    public File getDexedClassesFile() {
+    public File getDexedClassesFile() throws IOException {
+        if (!dexedClassesFile.exists()) {
+            dexedClassesFile.getParentFile().mkdirs();
+            dexedClassesFile.createNewFile();
+        }
         return dexedClassesFile;
     }
 
@@ -157,8 +177,6 @@ public class JavaProjectFile implements Serializable, Cloneable {
     public void clean() {
         FileManager.deleteFolder(dirBuildClasses);
         FileManager.deleteFolder(dirDexedLibs);
-        FileManager.deleteFolder(dexedClassesFile);
-        FileManager.deleteFolder(dexedLibsFile);
     }
 
     public File getRootDir() {
@@ -265,7 +283,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
 
     public String getClassPath() {
         String classpath = "";
-        File[] files = dirLibs.listFiles();
+        File[] files = getDirLibs().listFiles();
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 File jarLib = files[i];

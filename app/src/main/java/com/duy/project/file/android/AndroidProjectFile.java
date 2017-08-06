@@ -24,6 +24,7 @@ public class AndroidProjectFile extends JavaProjectFile {
     private File dirAssets;
     private File classR;
     private File dirOutApk;
+
     public AndroidProjectFile(File dirRoot,
                               @Nullable String mainClassName,
                               @Nullable String packageName,
@@ -87,6 +88,9 @@ public class AndroidProjectFile extends JavaProjectFile {
         if (!dirRes.exists()) dirRes.mkdirs();
         if (!dirAssets.exists()) dirAssets.mkdirs();
         if (!dirDexedLibs.exists()) dirDexedLibs.mkdirs();
+        dirRes.setReadable(true, true);
+        dirAssets.setReadable(true, true);
+        dirDexedLibs.setReadable(true, true);
     }
 
 
@@ -105,19 +109,25 @@ public class AndroidProjectFile extends JavaProjectFile {
     }
 
     public File getDirRes() {
-        if (!dirRes.exists()) dirRes.mkdirs();
+        if (!dirRes.exists()) {
+            dirRes.mkdirs();
+            dirRes.setReadable(true, true);
+        }
         return dirRes;
     }
 
     public File getDirAssets() {
-        if (!dirAssets.exists()) dirAssets.mkdirs();
+        if (!dirAssets.exists()) {
+            dirAssets.mkdirs();
+            dirAssets.setReadable(true, true);
+        }
         return dirAssets;
     }
 
     public File getClassR() throws IOException {
         if (!classR.exists()) {
             classR.getParentFile().mkdirs();
-            classR.createNewFile();
+            classR.createNewFile(); classR.setReadable(true, true);
         }
         return classR;
     }

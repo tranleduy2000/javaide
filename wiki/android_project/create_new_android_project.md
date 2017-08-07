@@ -21,33 +21,33 @@
 ## Create new android project with Java N-IDE
 1. Select menu "Create new Android project"
 
-![img1](Screenshot_20170808-011334.png)
+![img1](img/Screenshot_20170808-011334.png)
 
 2. Enter name of project, package name, main activity, layout main
 
-![img1](Screenshot_20170808-011416.png)
+![img1](img/Screenshot_20170808-011416.png)
 
 3. Press OK, you can see Android project structure
 
-![img1](Screenshot_20170808-011422.png)
+![img1](img/Screenshot_20170808-011422.png)
 
 ## Build apk
 1. Select menu Build
 
-![img1](Screenshot_20170808-011436.png)
+![img1](img/Screenshot_20170808-011436.png)
 
 2. Select Build apk
 
-![](Screenshot_20170808-011439.png)
+![](img/Screenshot_20170808-011439.png)
 
 3. See compile message
 
-![](Screenshot_20170808-011443.png)
+![](img/Screenshot_20170808-011443.png)
 
 4. Install your apk. find apk in build/output
 
-![](Screenshot_20170808-011521.png)
+![](img/Screenshot_20170808-011521.png)
 
 5. Select and install
 
-![](Screenshot_20170808-011525.png)
+![](img/Screenshot_20170808-011525.png)

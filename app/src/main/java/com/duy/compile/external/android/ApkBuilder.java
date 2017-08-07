@@ -1,9 +1,10 @@
-package com.duy.compile.external;
+package com.duy.compile.external.android;
 
 import android.util.Log;
 
 import com.android.annotations.NonNull;
 import com.duy.Aapt;
+import com.duy.compile.external.CommandManager;
 import com.duy.project.file.android.AndroidProjectFile;
 import com.spartacusrex.spartacuside.external.apkbuilder;
 

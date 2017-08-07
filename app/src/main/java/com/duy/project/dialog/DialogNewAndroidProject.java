@@ -101,6 +101,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             String packageName = editPackage.getText().toString();
             String activityName = this.activityName.getText().toString();
             String activityClass = packageName + "." + activityName;
+            String mainLayoutName = layoutName.getText().toString();
             String appName = editProjectName.getText().toString();
             String classpath = new File(getContext().getFilesDir(), "system/classes/android.jar").getPath();
 
@@ -142,6 +143,13 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
                 contentClass = contentClass.replace("{ACTIVITY_NAME}", activityName);
                 Log.d(TAG, "doCreateProject contentManifest = " + contentClass);
                 FileManager.saveFile(activityFile, contentClass);
+
+                if (!mainLayoutName.contains(".")) mainLayoutName += ".xml";
+                File layoutMain = new File(projectFile.getDirRes(), mainLayoutName);
+                layoutMain.createNewFile();
+                InputStream layoutTemplate = assets.open("templates/src/main/activity_main.xml");
+                String contentLayout = FileManager.streamToString(layoutTemplate).toString();
+                FileManager.saveFile(layoutMain, contentLayout);
 
                 //copy android support library
                 AssetUtil.copyAssetFolder(assets, "templates/libs", projectFile.dirLibs.getPath());

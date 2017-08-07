@@ -91,6 +91,21 @@ public class AndroidProjectFile extends JavaProjectFile {
         dirRes.setReadable(true, true);
         dirAssets.setReadable(true, true);
         dirDexedLibs.setReadable(true, true);
+
+        File menu = new File(dirRes, "menu");
+        if (!menu.exists()) menu.mkdirs();
+        File layout = new File(dirRes, "layout");
+        if (!layout.exists()) layout.mkdirs();
+        File drawable = new File(dirRes, "drawable");
+        if (!drawable.exists()) drawable.mkdirs();
+        drawable = new File(dirRes, "drawable-hdpi");
+        if (!drawable.exists()) drawable.mkdirs();
+        drawable = new File(dirRes, "drawable-mdpi");
+        if (!drawable.exists()) drawable.mkdirs();
+        drawable = new File(dirRes, "drawable-xhdpi");
+        if (!drawable.exists()) drawable.mkdirs();
+        File value = new File(dirRes, "values");
+        if (!value.exists()) value.mkdirs();
     }
 
 
@@ -127,7 +142,8 @@ public class AndroidProjectFile extends JavaProjectFile {
     public File getClassR() throws IOException {
         if (!classR.exists()) {
             classR.getParentFile().mkdirs();
-            classR.createNewFile(); classR.setReadable(true, true);
+            classR.createNewFile();
+            classR.setReadable(true, true);
         }
         return classR;
     }

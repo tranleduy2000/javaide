@@ -7,6 +7,7 @@ import android.util.Log;
 import com.android.dx.io.DexBuffer;
 import com.android.dx.merge.CollisionPolicy;
 import com.android.dx.merge.DexMerger;
+import com.duy.compile.external.android.ApkBuilder;
 import com.duy.compile.external.dex.Dex;
 import com.duy.compile.external.java.Jar;
 import com.duy.compile.external.java.Java;

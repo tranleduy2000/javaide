@@ -57,6 +57,8 @@ public class ApkBuilder {
             ApkBuilder.zipSign(projectFile);
             ApkBuilder.zipAlign();
             ApkBuilder.publishApk();
+
+            projectFile.getApkUnsigned().delete();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

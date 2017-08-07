@@ -13,7 +13,7 @@ public class {ACTIVITY_NAME} extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView textView = findViewById(R.id.txt_hello);
+        TextView textView = (TextView) findViewById(R.id.txt_hello);
         
     }
 

@@ -390,12 +390,13 @@ public class MainActivity extends BaseEditorActivity implements
                 }
 
                 @Override
-                public void onComplete(File jarfile, List<Diagnostic> diagnostics) {
-                    Toast.makeText(MainActivity.this, R.string.build_success + " " + jarfile.getPath(),
+                public void onComplete(File apk, List<Diagnostic> diagnostics) {
+                    Toast.makeText(MainActivity.this, R.string.build_success + " " + apk.getPath(),
                             Toast.LENGTH_SHORT).show();
                     mFilePresenter.refresh(mProjectFile);
                     mDiagnosticPresenter.display(diagnostics);
                     mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    onFileClick(apk, null);
                 }
 
                 @Override

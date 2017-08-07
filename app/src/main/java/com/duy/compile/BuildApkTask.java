@@ -77,7 +77,6 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
     @Override
     protected void onPostExecute(final File result) {
         super.onPostExecute(result);
-
         if (result == null) {
             listener.onError(error, mDiagnosticCollector.getDiagnostics());
         } else {

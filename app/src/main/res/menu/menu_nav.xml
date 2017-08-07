@@ -48,11 +48,16 @@
             <item
                 android:id="@+id/action_donate"
                 android:icon="@drawable/ic_donate_white"
-                android:title="@string/donate" />
+                android:title="@string/donate"
+                android:visible="false" />
             <item
                 android:id="@+id/action_report_bug"
                 android:icon="@drawable/ic_bug_report_white_24dp"
                 android:title="@string/report_bug" />
+            <item
+                android:id="@+id/action_github"
+                android:icon="@drawable/ic_bug_report_white_24dp"
+                android:title="@string/github_repo" />
 
             <item
                 android:id="@+id/action_install"

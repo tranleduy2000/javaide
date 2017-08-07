@@ -461,4 +461,5 @@
     <string name="main_not_found">Can not find main function</string>
     <string name="application_name">Application name</string>
     <string name="build_apk">Build apk</string>
+    <string name="github_repo">Git repo</string>
 </resources>

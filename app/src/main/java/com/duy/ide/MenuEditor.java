@@ -104,12 +104,18 @@ public class MenuEditor {
                     listener.formatCode();
                 }
                 break;
-            case R.id.action_report_bug:
+            case R.id.action_report_bug: {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("https://github.com/tranleduy2000/javaide/issues"));
                 activity.startActivity(intent);
                 break;
-
+            }
+            case R.id.action_github: {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://github.com/tranleduy2000/javaide"));
+                activity.startActivity(intent);
+                break;
+            }
             case R.id.action_undo:
                 if (listener != null) {
                     listener.undo();
@@ -174,6 +180,7 @@ public class MenuEditor {
             case R.id.action_install:
                 activity.startActivity(new Intent(activity, InstallActivity.class));
                 break;
+
             case R.id.action_edit_run:
                 activity.showDialogRunConfig();
                 break;
@@ -188,7 +195,7 @@ public class MenuEditor {
                 break;
             case R.id.action_sample:
                 activity.startActivityForResult(new Intent(activity, SampleActivity.class),
-                        activity.REQUEST_CODE_SAMPLE);
+                        MainActivity.REQUEST_CODE_SAMPLE);
                 break;
         }
         return true;

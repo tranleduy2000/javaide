@@ -22,6 +22,7 @@ import com.duy.project.file.android.AndroidProjectFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 
 /**
@@ -150,6 +151,11 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
                 InputStream layoutTemplate = assets.open("templates/src/main/activity_main.xml");
                 String contentLayout = FileManager.streamToString(layoutTemplate).toString();
                 FileManager.saveFile(layoutMain, contentLayout);
+
+                //copy keystore
+                File file = projectFile.getKeyStore().getFile();
+                FileManager.copyFile(assets.open("templates/src/main/keystore.jks"),
+                        new FileOutputStream(file));
 
                 //copy android support library
                 AssetUtil.copyAssetFolder(assets, "templates/libs", projectFile.dirLibs.getPath());

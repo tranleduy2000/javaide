@@ -17,8 +17,7 @@ public class AndroidProjectFile extends JavaProjectFile {
     private final File apkUnaligned;
     public File xmlManifest;
     public File resourceFile;
-    /* ASSETS */
-    private File keystore;
+    private KeyStore keystore;
     /* PROJECT */
     private File dirRes;
     private File dirAssets;
@@ -47,10 +46,10 @@ public class AndroidProjectFile extends JavaProjectFile {
 
         resourceFile = new File(dirBuild, "resources.res");
         dexedClassesFile = new File(dirBuild, "classes.dex");
-        keystore = new File(dirProject, "keystore.jks");
+        keystore = new KeyStore(new File(dirProject, "keystore.jsk"), "1234567".toCharArray(), "android", "1234567".toCharArray());
     }
 
-    public File getKeyStore() {
+    public KeyStore getKeyStore() {
         return keystore;
     }
 

@@ -30,8 +30,9 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.editor.MainActivity;
-import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.system.InstallActivity;
+
+import java.io.File;
 
 
 public class ActivitySplashScreen extends AppCompatActivity {
@@ -68,9 +69,12 @@ public class ActivitySplashScreen extends AppCompatActivity {
     }
 
     private boolean systemInstalled() {
-        JavaPreferences preferences = new JavaPreferences(this);
-        return preferences.hasSystemInstalled()
-                && preferences.getSystemVersion().equalsIgnoreCase(InstallActivity.SYSTEM_VERSION);
+//        JavaPreferences preferences = new JavaPreferences(this);
+//        return preferences.hasSystemInstalled()
+//                && preferences.getSystemVersion().equalsIgnoreCase(InstallActivity.SYSTEM_VERSION);
+        File file = new File(getFilesDir(), "system" + File.separator + "classes"
+                + File.separator + "android.jar");
+        return file.exists() && file.isFile();
     }
 
     @Override

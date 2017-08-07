@@ -26,6 +26,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
@@ -40,8 +42,9 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
     private ProgressBar mProgressBar;
     private TextView mInfo;
     private Button mInstallButton;
-    private TextView mTxtVersion;
-
+//    private TextView mTxtVersion;
+    private ProgressDialog progressDialog;
+    private boolean installing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +58,11 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         mInfo = (TextView) findViewById(R.id.txt_info);
         mInstallButton = (Button) findViewById(R.id.btn_install);
 
-        mTxtVersion = (TextView) findViewById(R.id.txt_version);
-        String version = getString(R.string.system_version) + mPreferences.getSystemVersion();
-        mTxtVersion.setText(version);
+//        mTxtVersion = (TextView) findViewById(R.id.txt_version);
+//        String version = getString(R.string.system_version) + mPreferences.getSystemVersion();
+//        mTxtVersion.setText(version);
         findViewById(R.id.btn_install).setOnClickListener(this);
     }
-
-    private ProgressDialog progressDialog;
 
     @Override
     public void onClick(View v) {
@@ -83,10 +84,10 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         progressDialog.show();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        String systemURL = "gs://calculator-a283d.appspot.com/java_nide/system/system3.tar.gz.mp3";
+        String systemURL = "gs://calculator-a283d.appspot.com/java_nide/system/android.jar";
         StorageReference systemFile = storage.getReferenceFromUrl(systemURL);
 
-        final File file = new File(getFilesDir(), "system3.tar.gz.mp3");
+        final File file = new File(getFilesDir(), "temp");
         systemFile.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -163,8 +164,6 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         builder.create().show();
     }
 
-    private boolean installing = false;
-
     @Override
     public void onBackPressed() {
         if (!installing) {
@@ -197,77 +196,81 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
 
         @Override
         protected Boolean doInBackground(File... params) {
-            File home = getFilesDir();
             try {
-                File tmp = new File(home, "tmp");
-                if (!tmp.exists()) tmp.mkdirs();
+                File classpathFile = FileManager.getClasspathFile(context);
+                File download = params[0];
+                FileUtils.copyFile(download, classpathFile);
+                download.delete();
+//                File tmp = new File(home, "tmp");
+//                if (!tmp.exists()) tmp.mkdirs();
+//
+//                File worker = new File(tmp, "WORK_" + System.currentTimeMillis());
+//                if (!worker.exists()) worker.mkdirs();
+//
+//                File busytar = new File(worker, "busybox");
+//                if (busytar.exists()) busytar.delete();
+//
+//                publishProgress("Extract busybox");
+//                FileManager.extractAsset(context, "busybox.mp3", busytar);
+//
+//                String[] env = new String[2];
+//                env[0] = "PATH=/sbin" + ":/vendor/bin" + ":/system/sbin" + ":/system/bin" +
+//                        ":/system/xbin";
+//
+//                env[1] = "LD_LIBRARY_PATH=" + "/vendor/lib" + ":/vendor/lib64" + ":/system/lib" +
+//                        ":/system/lib64";
+//
+//                busytar.setReadable(true, true);
+//                busytar.setWritable(true, true);
+//                busytar.setExecutable(true, false);
+//
+//                publishProgress("Extract system file");
+//                File systar = new File(worker, "system.tar.gz");
+//                org.apache.commons.io.FileUtils.copyFile(params[0], systar);
+//                publishProgress("Extracted system");
+//
+//                Process pp;
+//                publishProgress("Removing Old System");
+//
+//                File systemFolder = new File(home, "system");
+//                FileManager.deleteFolder(systemFolder);
+//
+//                publishProgress("Config system file");
+//                String busyboxCmd_ = busytar.getPath() + " ";
+//                pp = Runtime.getRuntime().exec(busyboxCmd_ + "tar -C " + home.getPath() + " -xzf " + systar.getPath(), env, home);
+//                pp.waitFor();
+//
+//                File bindir = new File(systemFolder, "bin");
+//                File bbindir = new File(bindir, "bbdir");
+//                if (!bbindir.exists()) bbindir.mkdirs();
+//
+//                File busybox = new File(bindir, "busybox");
+//                String command = busybox.getPath() + " --install -s " + bbindir.getPath();
+//                pp = Runtime.getRuntime().exec(command, env, home);
+//                pp.waitFor();
+//
+//                //Now delete the SU link.. too much confusion..
+//                File su = new File(bbindir, "su");
+//                su.delete();
+//
+//                publishProgress("Copy config file");
+//                copyFileConfig(home, systemFolder, busyboxCmd_, env);
+//
+//                publishProgress("Create local file");
+//                createLocalFile(home);
+//
+//                publishProgress("Cleaning up...");
+//                FileManager.deleteFolder(worker);
+//                FileManager.deleteFolder(params[0]);
+//
+//                mPreferences.put("system_installed", true);
+//                mPreferences.put("system_version", SYSTEM_VERSION);
 
-                File worker = new File(tmp, "WORK_" + System.currentTimeMillis());
-                if (!worker.exists()) worker.mkdirs();
-
-                File busytar = new File(worker, "busybox");
-                if (busytar.exists()) busytar.delete();
-
-                publishProgress("Extract busybox");
-                FileManager.extractAsset(context, "busybox.mp3", busytar);
-
-                String[] env = new String[2];
-                env[0] = "PATH=/sbin" + ":/vendor/bin" + ":/system/sbin" + ":/system/bin" +
-                        ":/system/xbin";
-
-                env[1] = "LD_LIBRARY_PATH=" + "/vendor/lib" + ":/vendor/lib64" + ":/system/lib" +
-                        ":/system/lib64";
-
-                busytar.setReadable(true, true);
-                busytar.setWritable(true, true);
-                busytar.setExecutable(true, false);
-
-                publishProgress("Extract system file");
-                File systar = new File(worker, "system.tar.gz");
-                org.apache.commons.io.FileUtils.copyFile(params[0], systar);
-                publishProgress("Extracted system");
-
-                Process pp;
-                publishProgress("Removing Old System");
-
-                File systemFolder = new File(home, "system");
-                FileManager.deleteFolder(systemFolder);
-
-                publishProgress("Config system file");
-                String busyboxCmd_ = busytar.getPath() + " ";
-                pp = Runtime.getRuntime().exec(busyboxCmd_ + "tar -C " + home.getPath() + " -xzf " + systar.getPath(), env, home);
-                pp.waitFor();
-
-                File bindir = new File(systemFolder, "bin");
-                File bbindir = new File(bindir, "bbdir");
-                if (!bbindir.exists()) bbindir.mkdirs();
-
-                File busybox = new File(bindir, "busybox");
-                String command = busybox.getPath() + " --install -s " + bbindir.getPath();
-                pp = Runtime.getRuntime().exec(command, env, home);
-                pp.waitFor();
-
-                //Now delete the SU link.. too much confusion..
-                File su = new File(bbindir, "su");
-                su.delete();
-
-                publishProgress("Copy config file");
-                copyFileConfig(home, systemFolder, busyboxCmd_, env);
-
-                publishProgress("Create local file");
-                createLocalFile(home);
-
-                publishProgress("Cleaning up...");
-                FileManager.deleteFolder(worker);
-                FileManager.deleteFolder(params[0]);
-
-                mPreferences.put("system_installed", true);
-                mPreferences.put("system_version", SYSTEM_VERSION);
             } catch (Exception e) {
                 publishProgress("Error when install system");
 
-                mPreferences.put("system_installed", false);
-                mPreferences.put("system_version", "");
+//                mPreferences.put("system_installed", false);
+//                mPreferences.put("system_version", "");
 
                 e.printStackTrace();
                 error = e;
@@ -381,8 +384,8 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             }
             mInstallButton.setEnabled(true);
             mProgressBar.setIndeterminate(false);
-            String version = getString(R.string.system_version) + mPreferences.getSystemVersion();
-            mTxtVersion.setText(version);
+//            String version = getString(R.string.system_version) + mPreferences.getSystemVersion();
+//            mTxtVersion.setText(version);
             installing = false;
         }
     }

@@ -95,7 +95,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFile, Object, Integer>
     @Override
     protected void onPostExecute(final Integer result) {
         super.onPostExecute(result);
-        if (result == null) {
+        if (result == Main.EXIT_ERROR) {
             if (compileListener != null) compileListener.onError(error, mDiagnostics);
         } else {
             if (compileListener != null) compileListener.onComplete(projectFile, mDiagnostics);

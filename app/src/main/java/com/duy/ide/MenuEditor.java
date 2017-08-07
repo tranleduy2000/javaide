@@ -155,9 +155,7 @@ public class MenuEditor {
                 break;
             case R.id.action_edit_word_wrap:
                 pascalPreferences.setWordWrap(menuItem.isChecked());
-
                 break;
-
             case R.id.action_donate:
                 DonateUtils.showDialogDonate(activity);
                 break;
@@ -182,7 +180,6 @@ public class MenuEditor {
             case R.id.action_open_project:
                 activity.showDialogOpenProject();
                 break;
-
             case R.id.action_build_jar:
                 activity.buildJar();
                 break;

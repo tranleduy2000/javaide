@@ -604,6 +604,12 @@ public class FileManager {
         mDatabase.close();
     }
 
+    public static File getClasspathFile(Context context) {
+        File file = new File(context.getFilesDir(), "system" + File.separator + "classes"
+                + File.separator + "android.jar");
+        return file;
+    }
+
     public static class SAVE_MODE {
         static final int INTERNAL = 1;
         static final int EXTERNAL = 2;

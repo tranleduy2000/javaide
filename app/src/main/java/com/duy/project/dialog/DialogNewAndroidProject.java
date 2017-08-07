@@ -103,7 +103,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             String activityClass = packageName + "." + activityName;
             String mainLayoutName = layoutName.getText().toString();
             String appName = editProjectName.getText().toString();
-            String classpath = new File(getContext().getFilesDir(), "system/classes/android.jar").getPath();
+            String classpath = FileManager.getClasspathFile(getContext()).getPath();
 
             AndroidProjectFile projectFile = new AndroidProjectFile(
                     new File(FileManager.EXTERNAL_DIR), activityClass, packageName, appName, classpath);

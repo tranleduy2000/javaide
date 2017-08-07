@@ -372,8 +372,7 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     public void buildApk() {
-        Log.d(TAG, "buildApk() called");
-
+        saveAllFile();
         if (mProjectFile instanceof AndroidProjectFile) {
             new BuildApkTask(new BuildApkTask.CompileListener() {
                 @Override
@@ -717,23 +716,22 @@ public class MainActivity extends BaseEditorActivity implements
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)
                 || mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
-            mDrawerLayout.closeDrawers();
-            return;
+            if (mContainerOutput.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                return;
+            } else {
+                mDrawerLayout.closeDrawers();
+                return;
+            }
         }
 
-        if (mContainerOutput.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
-            mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            return;
-        }
-
-        /*
-          check can undo
-         */
-        if (getPreferences().getBoolean(getString(R.string.key_back_undo))) {
-            undo();
-            return;
-        }
-
+//        /*
+//          check can undo
+//         */
+//        if (getPreferences().getBoolean(getString(R.string.key_back_undo))) {
+//            undo();
+//            return;
+//        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.exit)

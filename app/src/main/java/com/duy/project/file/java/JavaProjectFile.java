@@ -282,7 +282,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
     }
 
     public String getClassPath() {
-        String classpath = "";
+        String classpath = ".";
         File[] files = getDirLibs().listFiles();
         if (files != null) {
             for (int i = 0; i < files.length; i++) {

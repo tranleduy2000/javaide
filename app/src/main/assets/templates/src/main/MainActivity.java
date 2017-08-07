@@ -1,6 +1,7 @@
 package {PACKAGE};
 
 import android.view.TextView;
+import android.os.Bundle;
 
 import {PACKAGE}.R;
 

@@ -69,11 +69,16 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     public void clear() {
         this.view = (DiagnosticContract.View) adapter.getExistingFragment(1);
         if (view != null) {
+            view.setPresenter(this);
             view.clear();
         }
     }
 
     public void display(List<Diagnostic> diagnostics) {
-        view.display(diagnostics);
+        this.view = (DiagnosticContract.View) adapter.getExistingFragment(1);
+        if (view != null) {
+            view.setPresenter(this);
+            view.display(diagnostics);
+        }
     }
 }

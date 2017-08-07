@@ -156,12 +156,12 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         pageDescriptors.add(new SimplePageDescriptor(DiagnosticFragment.TAG, "Diagnostic"));
         BottomPageAdapter bottomAdapter = new BottomPageAdapter(fm, pageDescriptors);
 
-        mMessagePresenter = new MessagePresenter(this, bottomAdapter);
-        mDiagnosticPresenter = new DiagnosticPresenter(this, bottomAdapter, mPagePresenter);
-
         mBottomPage = (ViewPager) findViewById(R.id.bottom_page);
         mBottomPage.setAdapter(bottomAdapter);
         mBottomPage.setOffscreenPageLimit(bottomAdapter.getCount());
+
+        mMessagePresenter = new MessagePresenter(this, bottomAdapter);
+        mDiagnosticPresenter = new DiagnosticPresenter(this, bottomAdapter, mPagePresenter);
 
         TabLayout bottomTab = (TabLayout) findViewById(R.id.bottom_tab);
         bottomTab.setupWithViewPager(mBottomPage);

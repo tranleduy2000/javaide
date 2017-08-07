@@ -60,8 +60,6 @@
 
         <service android:name=".autocomplete.AutoCompleteService" />
 
-        <service android:name="com.spartacusrex.spartacuside.TermService" />
-
         <service
             android:name="com.spartacusrex.spartacuside.keyboard.TerminalKeyboard"
             android:permission="android.permission.BIND_INPUT_METHOD">

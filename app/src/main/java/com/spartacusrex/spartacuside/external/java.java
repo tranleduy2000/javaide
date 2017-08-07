@@ -6,7 +6,6 @@
 package com.spartacusrex.spartacuside.external;
 
 import com.spartacusrex.spartacuside.external.dexloader.dexclassloader;
-import com.spartacusrex.spartacuside.session.TermSession;
 
 import java.lang.reflect.Method;
 
@@ -122,7 +121,6 @@ public class java {
         } catch (Exception ex) {
             ex.printStackTrace();
             usage();
-            TermSession s;
             //Logger.getLogger(java.class.getName()).log(Level.SEVERE, null, ex);
         } /*catch (IllegalAccessException ex) {     s//Err..
             Logger.getLogger(java.class.getName()).log(Level.SEVERE, null, ex);

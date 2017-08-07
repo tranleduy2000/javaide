@@ -122,7 +122,6 @@ public class MainActivity extends BaseEditorActivity implements
             @Override
             public void onLoaded(@NonNull AutoCompleteProvider provider) {
                 Log.d(TAG, "onLoaded() called with: provider = [" + provider + "]");
-
                 mPagePresenter.setAutoCompleteProvider(provider);
             }
         });

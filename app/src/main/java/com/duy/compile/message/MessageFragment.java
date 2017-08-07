@@ -62,6 +62,7 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
     @Override
     public void append(String text) {
         mCompileMsg.append(text);
+        mScrollView.fullScroll(View.FOCUS_DOWN);
     }
 
     @Override
@@ -90,7 +91,7 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
     public void clear() {
         if (mCompileMsg != null) {
             mCompileMsg.setText("");
-        } else  {
+        } else {
             Toast.makeText(getContext(), R.string.system_err_msg, Toast.LENGTH_SHORT).show();
         }
     }

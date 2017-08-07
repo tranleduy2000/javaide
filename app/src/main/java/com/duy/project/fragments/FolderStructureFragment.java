@@ -13,8 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.duy.ide.R;
 import com.duy.compile.CompileManager;
+import com.duy.ide.R;
 import com.duy.project.file.java.JavaProjectFile;
 import com.duy.project.file.java.ProjectFileContract;
 import com.duy.project.holder.FolderHolder;
@@ -138,8 +138,22 @@ public class FolderStructureFragment extends Fragment
         try {
             if (parent.isDirectory()) {
                 File[] child = parent.listFiles();
+
                 if (child != null) {
+                    ArrayList<File> dirs = new ArrayList<>();
+                    ArrayList<File> files = new ArrayList<>();
                     for (File file : child) {
+                        if (file.isFile()) files.add(file);
+                        if (file.isDirectory()) dirs.add(file);
+                    }
+                    for (File file : dirs) {
+                        TreeNode node = new TreeNode(new FolderHolder.TreeItem(projectFile, file, listener));
+                        if (file.isDirectory()) {
+                            node.addChildren(getNode(projectFile, file));
+                        }
+                        nodes.add(node);
+                    }
+                    for (File file : files) {
                         TreeNode node = new TreeNode(new FolderHolder.TreeItem(projectFile, file, listener));
                         if (file.isDirectory()) {
                             node.addChildren(getNode(projectFile, file));

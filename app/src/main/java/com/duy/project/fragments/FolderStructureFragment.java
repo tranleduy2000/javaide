@@ -23,6 +23,8 @@ import com.unnamed.b.atv.view.AndroidTreeView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static android.widget.FrameLayout.LayoutParams;
 
@@ -146,6 +148,18 @@ public class FolderStructureFragment extends Fragment
                         if (file.isFile()) files.add(file);
                         if (file.isDirectory()) dirs.add(file);
                     }
+                    Collections.sort(dirs, new Comparator<File>() {
+                        @Override
+                        public int compare(File o1, File o2) {
+                            return o1.getName().compareTo(o2.getName());
+                        }
+                    });
+                    Collections.sort(files, new Comparator<File>() {
+                        @Override
+                        public int compare(File o1, File o2) {
+                            return o1.getName().compareTo(o2.getName());
+                        }
+                    });
                     for (File file : dirs) {
                         TreeNode node = new TreeNode(new FolderHolder.TreeItem(projectFile, file, listener));
                         if (file.isDirectory()) {

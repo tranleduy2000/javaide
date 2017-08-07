@@ -30,8 +30,6 @@ import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.setting.SettingsActivity;
 import com.duy.ide.system.InstallActivity;
 import com.duy.ide.utils.DonateUtils;
-import com.duy.run.activities.TerminalActivity;
-import com.spartacusrex.spartacuside.TerminalPreferences;
 
 /**
  * Handler for menu click
@@ -163,10 +161,6 @@ public class MenuEditor {
             case R.id.action_donate:
                 DonateUtils.showDialogDonate(activity);
                 break;
-            case R.id.action_setting_console:
-                activity.startActivity(new Intent(activity, TerminalPreferences.class));
-                break;
-
             case R.id.action_new_java_project:
                 activity.showDialogCreateJavaProject();
                 break;
@@ -188,9 +182,7 @@ public class MenuEditor {
             case R.id.action_open_project:
                 activity.showDialogOpenProject();
                 break;
-            case R.id.action_open_terminal:
-                activity.startActivity(new Intent(activity, TerminalActivity.class));
-                break;
+
             case R.id.action_build_jar:
                 activity.buildJar();
                 break;

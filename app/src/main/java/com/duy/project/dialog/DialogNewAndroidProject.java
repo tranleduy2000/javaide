@@ -145,7 +145,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
                 FileManager.saveFile(activityFile, contentClass);
 
                 if (!mainLayoutName.contains(".")) mainLayoutName += ".xml";
-                File layoutMain = new File(projectFile.getDirRes(), mainLayoutName);
+                File layoutMain = new File(projectFile.getDirLayout(), mainLayoutName);
                 layoutMain.createNewFile();
                 InputStream layoutTemplate = assets.open("templates/src/main/activity_main.xml");
                 String contentLayout = FileManager.streamToString(layoutTemplate).toString();

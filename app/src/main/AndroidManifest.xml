@@ -55,14 +55,7 @@
             android:name="com.duy.ide.system.InstallActivity"
             android:configChanges="keyboardHidden|screenSize|orientation|keyboard" />
 
-        <activity
-            android:name="com.duy.run.activities.TerminalActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateVisible" />
 
-
-        <activity android:name="com.spartacusrex.spartacuside.TerminalPreferences" />
-        <activity android:name="com.spartacusrex.spartacuside.startup.TerminalIDEPrefs" />
         <activity android:name="com.spartacusrex.spartacuside.keyboard.KeyboardPrefs" />
 
         <service android:name=".autocomplete.AutoCompleteService" />

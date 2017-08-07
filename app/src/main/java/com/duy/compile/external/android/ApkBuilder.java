@@ -94,9 +94,7 @@ public class ApkBuilder {
             }
         }
         Log.d(TAG, "runAapt command = " + command);
-        command += " -S " + new File(projectFile.getDirLibs(), "res").getPath();
         int exitCode = aapt.fnExecute(command);
-
         if (exitCode != 0) {
             throw new Exception("AAPT exit(" + exitCode + ")");
         }

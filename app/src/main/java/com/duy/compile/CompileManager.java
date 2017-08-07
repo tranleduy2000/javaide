@@ -24,7 +24,6 @@ import com.duy.ide.debug.activities.DebugActivity;
 import com.duy.ide.editor.MainActivity;
 import com.duy.project.file.java.JavaProjectFile;
 import com.duy.run.activities.ExecuteActivity;
-import com.duy.run.activities.TerminalActivity;
 
 import java.io.File;
 
@@ -52,19 +51,6 @@ public class CompileManager {
     }
 
 
-    public static void debug(Activity mActivity, String name) {
-        Intent intent = new Intent(mActivity, DebugActivity.class);
-        intent.putExtra(FILE_PATH, name);
-        mActivity.startActivity(intent);
-    }
-
-    public static void execute(Activity activity, String name) {
-        Intent intent = new Intent(activity, TerminalActivity.class);
-        intent.putExtra(FILE_PATH, name);
-        activity.finish();
-        activity.startActivity(intent);
-    }
-
 
     public void debug(String name) {
         Intent intent = new Intent(mActivity, DebugActivity.class);
@@ -80,20 +66,6 @@ public class CompileManager {
         mActivity.startActivityForResult(intent, ACTIVITY_EDITOR);
     }
 
-    // Execute compiled file
-    public void execute(JavaProjectFile projectFile) {
-        Intent intent = new Intent(mActivity, TerminalActivity.class);
-        intent.putExtra(ACTION, CommandManager.Action.RUN);
-        intent.putExtra(PROJECT_FILE, projectFile);
-        mActivity.startActivity(intent);
-    }
-
-    public void buildJar(JavaProjectFile projectFile) {
-        Intent intent = new Intent(mActivity, TerminalActivity.class);
-        intent.putExtra(ACTION, CommandManager.Action.BUILD_JAR);
-        intent.putExtra(PROJECT_FILE, projectFile);
-        mActivity.startActivity(intent);
-    }
 
     public void executeDex(JavaProjectFile projectFile, File dex) {
         Intent intent = new Intent(mActivity, ExecuteActivity.class);

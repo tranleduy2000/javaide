@@ -21,7 +21,7 @@
             <item
                 android:id="@+id/action_sample"
                 android:icon="@drawable/ic_code_white_24dp"
-                android:title="@string/sample_code" />
+                android:title="@string/sample_code_java" />
         </menu>
     </item>
 
@@ -38,20 +38,7 @@
                 android:enabled="true"
                 android:icon="@drawable/ic_settings_white_24dp"
                 android:title="@string/setting_editor" />
-            <item
-                android:id="@+id/action_setting_console"
-                android:enabled="true"
-                android:icon="@drawable/ic_settings_white_24dp"
-                android:title="@string/setting_console" />
-        </menu>
-    </item>
-    <item android:title="@string/console">
-        <menu>
-            <item
-                android:id="@+id/action_open_terminal"
-                android:enabled="true"
-                android:icon="@drawable/ic_dashboard_white_24dp"
-                android:title="@string/open_terminal" />
+            <
         </menu>
     </item>
 

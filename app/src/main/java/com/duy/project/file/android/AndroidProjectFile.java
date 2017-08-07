@@ -147,4 +147,12 @@ public class AndroidProjectFile extends JavaProjectFile {
         }
         return classR;
     }
+
+    public File getDirLayout() {
+        File file = new File(getDirRes(), "layout");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return file;
+    }
 }

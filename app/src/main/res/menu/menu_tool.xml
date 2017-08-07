@@ -52,7 +52,7 @@
             <item
                 android:id="@+id/action_open_project"
                 android:icon="@drawable/ic_folder_open_white_24dp"
-                android:title="@string/open_project" />
+                android:title="@string/open_java_project" />
             <item
                 android:id="@+id/action_save"
                 android:icon="@drawable/ic_save_white_24dp"

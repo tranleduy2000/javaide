@@ -191,13 +191,7 @@ androidfw_SRC_FILES := \
 
 androidfw_C_INCLUDES := $(LOCAL_PATH)/androidfw/jni/include
 
-#############################################################################
-# libbacktrace definitions
-#############################################################################
-libbacktrace_SRC_FILES := \
-    libbacktrace/thread_utils.c
 
-libbacktrace_C_INCLUDES := $(LOCAL_PATH)/libbacktrace/include
 
 #############################################################################
 # libziparchive definitions
@@ -264,7 +258,6 @@ LOCAL_SRC_FILES += $(libcutils_SRC_FILES)
 LOCAL_SRC_FILES += $(libhost_SRC_FILES)
 LOCAL_SRC_FILES += $(libutils_SRC_FILES)
 LOCAL_SRC_FILES += $(androidfw_SRC_FILES)
-LOCAL_SRC_FILES += $(libbacktrace_SRC_FILES)
 LOCAL_SRC_FILES += $(libziparchive_SRC_FILES)
 LOCAL_SRC_FILES += $(aapt_SRC_FILES)
 LOCAL_SRC_FILES += $(base_SRC_FILES)
@@ -276,7 +269,6 @@ LOCAL_C_INCLUDES += $(libcutils_C_INCLUDES)
 LOCAL_C_INCLUDES += $(libhost_C_INCLUDES)
 LOCAL_C_INCLUDES += $(libutils_C_INCLUDES)
 LOCAL_C_INCLUDES += $(androidfw_C_INCLUDES)
-LOCAL_C_INCLUDES += $(libbacktrace_C_INCLUDES)
 LOCAL_C_INCLUDES += $(libsystem_C_INCLUDES)
 LOCAL_C_INCLUDES += $(libziparchive_C_INCLUDES)
 LOCAL_C_INCLUDES += $(base_C_INCLUDES)

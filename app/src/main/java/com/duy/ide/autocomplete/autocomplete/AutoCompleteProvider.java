@@ -38,7 +38,7 @@ public class AutoCompleteProvider {
         mClassLoader.loadAllClasses(true);
     }
 
-    public boolean isLoaded(){
+    public boolean isLoaded() {
         return mClassLoader.getClassReader().isLoaded();
     }
 
@@ -139,6 +139,8 @@ public class AutoCompleteProvider {
 //            if (!suggestion.getSnippet().contains(".")) {
             Import.importClass(editText, ((ClassDescription) suggestion).getClassName());
 //            }/
+        } else if (suggestion instanceof ConstructorDescription) {
+            Import.importClass(editText, suggestion.getName());
         } else if (suggestion instanceof Member) {
             this.preReturnType = suggestion.getType();
         }

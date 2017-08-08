@@ -52,7 +52,7 @@
         <activity android:name="com.duy.ide.setting.SettingsActivity" />
         <activity android:name="com.duy.ide.themefont.activities.ThemeFontActivity" />
         <activity
-            android:name="com.duy.ide.system.InstallActivity"
+            android:name="com.duy.ide.activities.InstallActivity"
             android:configChanges="keyboardHidden|screenSize|orientation|keyboard" />
 
 

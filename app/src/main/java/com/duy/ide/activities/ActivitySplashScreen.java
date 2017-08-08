@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.editor.MainActivity;
-import com.duy.ide.system.InstallActivity;
 
 import java.io.File;
 

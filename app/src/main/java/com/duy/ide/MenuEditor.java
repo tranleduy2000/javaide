@@ -28,7 +28,7 @@ import com.duy.ide.code_sample.activities.SampleActivity;
 import com.duy.ide.editor.MainActivity;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.setting.SettingsActivity;
-import com.duy.ide.system.InstallActivity;
+import com.duy.ide.activities.InstallActivity;
 import com.duy.ide.utils.DonateUtils;
 
 /**

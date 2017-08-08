@@ -391,6 +391,7 @@ public class MainActivity extends BaseEditorActivity implements
 
                 @Override
                 public void onComplete(File apk, List<Diagnostic> diagnostics) {
+                    updateUIFinish();
                     Toast.makeText(MainActivity.this, R.string.build_success + " " + apk.getPath(),
                             Toast.LENGTH_SHORT).show();
                     mFilePresenter.refresh(mProjectFile);

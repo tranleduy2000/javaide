@@ -136,86 +136,58 @@ libhost_C_INCLUDES := $(LOCAL_PATH)/libhost/jni/include
 # libutils definitions
 #############################################################################
 libutils_SRC_FILES := \
-	libutils/jni/BlobCache.cpp \
+	libutils/jni/Asset.cpp \
+	libutils/jni/AssetDir.cpp \
+	libutils/jni/AssetManager.cpp \
+	libutils/jni/BufferedTextOutput.cpp \
 	libutils/jni/CallStack.cpp \
+	libutils/jni/Debug.cpp \
 	libutils/jni/FileMap.cpp \
-	libutils/jni/JenkinsHash.cpp \
-	libutils/jni/LinearTransform.cpp \
-	libutils/jni/Looper.cpp \
-	libutils/jni/misc.cpp \
-	libutils/jni/NativeHandle.cpp \
-	libutils/jni/Printer.cpp \
-	libutils/jni/ProcessCallStack.cpp \
-	libutils/jni/PropertyMap.cpp \
+	libutils/jni/Flattenable.cpp \
+	libutils/jni/ObbFile.cpp \
+	libutils/jni/Pool.cpp \
 	libutils/jni/RefBase.cpp \
+	libutils/jni/ResourceTypes.cpp \
 	libutils/jni/SharedBuffer.cpp \
-	libutils/jni/SharedBufferTest.cpp \
 	libutils/jni/Static.cpp \
 	libutils/jni/StopWatch.cpp \
+	libutils/jni/StreamingZipInflater.cpp \
 	libutils/jni/String8.cpp \
 	libutils/jni/String16.cpp \
-	libutils/jni/StrongPointer.cpp \
+	libutils/jni/StringArray.cpp \
 	libutils/jni/SystemClock.cpp \
+	libutils/jni/TextOutput.cpp \
 	libutils/jni/Threads.cpp \
 	libutils/jni/Timers.cpp \
-	libutils/jni/Tokenizer.cpp \
-    libutils/jni/Trace.cpp \
-	libutils/jni/Unicode.cpp \
-	libutils/jni/VectorImpl.cpp
+	libutils/jni/VectorImpl.cpp \
+	libutils/jni/ZipFileCRO.cpp \
+	libutils/jni/ZipFileRO.cpp \
+	libutils/jni/ZipUtils.cpp \
+	libutils/jni/misc.cpp \
+     libutils/jni/BackupData.cpp \
+	libutils/jni/BackupHelpers.cpp \
+	libutils/jni/Looper.cpp
 
 libutils_CFLAGS += -DHAVE_ENDIAN_H -DHAVE_ANDROID_OS -DHAVE_PTHREADS -DHAVE_SYS_UIO_H -DHAVE_POSIX_FILEMAP
 libutils_C_INCLUDES += $(LOCAL_PATH)/libutils/jni/include
-
-
-#############################################################################
-# androidfw definitions
-#############################################################################
-
-androidfw_SRC_FILES := \
-    androidfw/jni/Asset.cpp \
-    androidfw/jni/AssetDir.cpp \
-    androidfw/jni/AssetManager.cpp \
-    androidfw/jni/LocaleData.cpp \
-    androidfw/jni/misc.cpp \
-    androidfw/jni/ObbFile.cpp \
-    androidfw/jni/ResourceTypes.cpp" \
-    androidfw/jni/StreamingZipInflater.cpp \
-    androidfw/jni/TypeWrappers.cpp \
-    androidfw/jni/ZipFileRO.cpp \
-    androidfw/jni/ZipUtils.cpp \
-    androidfw/jni/BackupData.cpp \
-    androidfw/jni/BackupHelpers.cpp \
-    androidfw/jni/CursorWindow.cpp \
-    androidfw/jni/DisplayEventDispatcher.cpp \
-
-libutils_C_INCLUDES := $(LOCAL_PATH)/androidfw/jni/include
 
 #############################################################################
 # aapt definitions
 #############################################################################
 aapt_SRC_FILES := \
   JNImain.c 	\
-	aapt/jni/AaptAssets.cpp \
-    aapt/jni/AaptConfig.cpp \
-    aapt/jni/AaptUtil.cpp \
-	aapt/jni/AaptXml.cpp \
-    aapt/jni/ApkBuilder.cpp \
-	aapt/jni/Command.cpp \
-	aapt/jni/CrunchCache.cpp \
-	aapt/jni/FileFinder.cpp \
-	aapt/jni/Images.cpp \
-	aapt/jni/Package.cpp \
-	aapt/jni/pseudolocalize.cpp \
-	aapt/jni/Resource.cpp \
-	aapt/jni/ResourceFilter.cpp \
-	aapt/jni/ResourceIdCache.cpp \
-	aapt/jni/ResourceTable.cpp \
-	aapt/jni/SourcePos.cpp \
 	aapt/jni/StringPool.cpp \
-	aapt/jni/WorkQueue.cpp \
-	aapt/jni/XMLNode.cpp \
-	aapt/jni/ZipEntry.cpp \
-	aapt/jni/ZipFile.cpp
+  aapt/jni/ZipFile.cpp \
+  aapt/jni/ZipEntry.cpp \
+	aapt/jni/Images.cpp \
+  aapt/jni/SourcePos.cpp \
+	aapt/jni/ResourceTable.cpp \
+	aapt/jni/Resource.cpp \
+	aapt/jni/AaptAssets.cpp \
+	aapt/jni/Main.cpp \
+	aapt/jni/Package.cpp \
+	aapt/jni/Command.cpp \
+	aapt/jni/XMLNode.cpp
 
 aapt_CFLAGS += -Wno-format-y2k
 
@@ -231,7 +203,6 @@ LOCAL_SRC_FILES += $(liblog_SRC_FILES)
 LOCAL_SRC_FILES += $(libcutils_SRC_FILES)
 LOCAL_SRC_FILES += $(libhost_SRC_FILES)
 LOCAL_SRC_FILES += $(libutils_SRC_FILES)
-LOCAL_SRC_FILES += $(androidfw_SRC_FILES)
 LOCAL_SRC_FILES += $(aapt_SRC_FILES)
 
 LOCAL_C_INCLUDES += $(libpng_C_INCLUDES)
@@ -239,7 +210,6 @@ LOCAL_C_INCLUDES += $(expat_C_INCLUDES)
 LOCAL_C_INCLUDES += $(libcutils_C_INCLUDES)
 LOCAL_C_INCLUDES += $(libhost_C_INCLUDES)
 LOCAL_C_INCLUDES += $(libutils_C_INCLUDES)
-LOCAL_C_INCLUDES += $(androidfw_SRC_FILES)
 
 LOCAL_CFLAGS += $(expat_CFLAGS)
 LOCAL_CFLAGS += $(libcutils_CFLAGS)

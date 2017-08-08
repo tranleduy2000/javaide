@@ -32,8 +32,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:src="@drawable/ic_play_arrow_white_24dp"
         android:tint="?colorAccent"
-        android:visibility="visible" />
-
+        android:visibility="gone" />
     <TextView
         android:id="@+id/txt_title"
         android:layout_width="wrap_content"

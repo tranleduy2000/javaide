@@ -165,7 +165,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
         TabLayout bottomTab = (TabLayout) findViewById(R.id.bottom_tab);
         bottomTab.setupWithViewPager(mBottomPage);
-
         //create project if need
         createProjectIfNeed();
     }

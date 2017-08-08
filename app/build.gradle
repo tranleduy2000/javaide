@@ -10,8 +10,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion as Integer
         targetSdkVersion rootProject.ext.targetSdkVersion as Integer
         multiDexEnabled true
-        versionCode 17
-        versionName "1.0.13 beta"
+        versionCode 19
+        versionName "1.0.14 beta"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -80,7 +80,7 @@ dependencies {
     compile project(':colorpicker')
     compile project(':splitview')
     compile project(':treeview')
-    compile project(':aapt')
+    compile project(':aapt2')
 
     compile 'com.google.guava:guava:22.0-android'
 }

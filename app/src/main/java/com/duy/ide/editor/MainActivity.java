@@ -806,8 +806,11 @@ public class MainActivity extends BaseEditorActivity implements
         hideKeyboard();
         openDrawer(GravityCompat.START);
         mMessagePresenter.clear();
+        mMessagePresenter.append("Compiling...\n");
+
         mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         mDiagnosticPresenter.clear();
+
     }
 
     private void updateUIFinish() {

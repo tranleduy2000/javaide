@@ -121,6 +121,10 @@ public class ConsoleEditText extends AppCompatEditText {
         mReceiveBuffer = new byte[4 * 1024];
         mStdoutBuffer = new ByteQueue(4 * 1024);
         mStderrBuffer = new ByteQueue(4 * 1024);
+
+        systemIn = System.in;
+        systemOut = System.out;
+        systemErr = System.err;
     }
 
     private void writeStdoutToScreen() {
@@ -135,10 +139,6 @@ public class ConsoleEditText extends AppCompatEditText {
             appendStdout(out);
         } catch (InterruptedException e) {
         }
-
-        systemIn = System.in;
-        systemOut = System.out;
-        systemErr = System.err;
     }
 
     private void writeStderrToScreen() {
@@ -160,8 +160,8 @@ public class ConsoleEditText extends AppCompatEditText {
     }
 
     @WorkerThread
-    public ConsoleOutputStream getOutputStream() {
-        return outputStream;
+    public PrintStream getOutputStream() {
+        return new PrintStream(outputStream);
     }
 
     @WorkerThread
@@ -170,8 +170,8 @@ public class ConsoleEditText extends AppCompatEditText {
     }
 
     @WorkerThread
-    public ConsoleErrorStream getErrorStream() {
-        return errorStream;
+    public PrintStream getErrorStream() {
+        return new PrintStream(errorStream);
     }
 
 

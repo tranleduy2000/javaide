@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.duy.compile.CompileManager;
 import com.duy.compile.external.CommandManager;
@@ -28,6 +29,7 @@ import java.io.PrintStream;
 
 public class ExecuteActivity extends AbstractAppCompatActivity {
     private static final int RUN_TIME_ERR = 1;
+    private static final String TAG = "ExecuteActivity";
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -76,7 +78,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
                     try {
                         runProgram(projectFile, action, intent);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        e.printStackTrace(mConsoleEditText.getErrorStream());
                         mHandler.sendMessage(mHandler.obtainMessage(RUN_TIME_ERR, e));
                     }
                 }
@@ -89,9 +91,9 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
 
     @WorkerThread
     private void runProgram(JavaProjectFile projectFile, int action, Intent intent) throws IOException {
-        PrintStream out = new PrintStream(mConsoleEditText.getOutputStream());
+        PrintStream out = mConsoleEditText.getOutputStream();
         InputStream in = mConsoleEditText.getInputStream();
-        PrintStream err = new PrintStream(mConsoleEditText.getErrorStream());
+        PrintStream err = mConsoleEditText.getErrorStream();
 
         switch (action) {
             case CommandManager.Action.RUN: {
@@ -111,6 +113,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy() called");
         mConsoleEditText.destroy();
         super.onDestroy();
     }

@@ -18,7 +18,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.run.utils.IntegerQueue;
@@ -27,6 +26,7 @@ import com.spartacusrex.spartacuside.util.ByteQueue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -66,8 +66,9 @@ public class ConsoleEditText extends AppCompatEditText {
     //filter input text, block a part of text
     private TextListener mTextListener = new TextListener();
     private EnterListener mEnterListener = new EnterListener();
-    private Thread mReadStdoutThread, mReadStderrThread;
     private byte[] mReceiveBuffer;
+    private PrintStream systemOut, systemErr;
+    private InputStream systemIn;
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -134,10 +135,10 @@ public class ConsoleEditText extends AppCompatEditText {
             appendStdout(out);
         } catch (InterruptedException e) {
         }
-//
-//        String out = new String(Character.toChars(read));
-//        mLength = mLength + out.length();
-//        appendStdout(out);
+
+        systemIn = System.in;
+        systemOut = System.out;
+        systemErr = System.err;
     }
 
     private void writeStderrToScreen() {
@@ -206,6 +207,11 @@ public class ConsoleEditText extends AppCompatEditText {
     public void destroy() {
         mInputBuffer.write(-1);
         isRunning.set(false);
+
+        //restore
+        System.setOut(systemOut);
+        System.setErr(systemErr);
+        System.setIn(systemIn);
     }
 
     private class EnterListener implements TextWatcher {
@@ -220,7 +226,6 @@ public class ConsoleEditText extends AppCompatEditText {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            Log.d(TAG, "onTextChanged() called with: s = [" + s + "], start = [" + start + "], before = [" + before + "], count = [" + count + "]");
             this.start = start;
             this.count = count;
         }
@@ -229,7 +234,6 @@ public class ConsoleEditText extends AppCompatEditText {
         public void afterTextChanged(Editable s) {
             if (count == 1 && s.charAt(start) == '\n' && start >= mLength) {
                 String data = s.toString().substring(mLength);
-                Log.d(TAG, "afterTextChanged data = " + data);
                 for (char c : data.toCharArray()) {
                     mInputBuffer.write(c);
                 }
@@ -286,7 +290,6 @@ public class ConsoleEditText extends AppCompatEditText {
 
     private class TextListener implements InputFilter {
         public CharSequence removeStr(CharSequence removeChars, int startPos) {
-            Log.d(TAG, "removeStr() called with: removeChars = [" + removeChars + "], startPos = [" + startPos + "]");
             if (startPos < mLength) { //this mean output from console
                 return removeChars; //can not remove console output
             } else {
@@ -295,7 +298,6 @@ public class ConsoleEditText extends AppCompatEditText {
         }
 
         public CharSequence insertStr(CharSequence newChars, int startPos) {
-            Log.d(TAG, "insertStr() called with: newChars = [" + newChars + "], startPos = [" + startPos + "]");
             if (startPos < mLength) { //it mean output from console
                 return newChars;
 
@@ -309,7 +311,6 @@ public class ConsoleEditText extends AppCompatEditText {
         }
 
         public CharSequence updateStr(CharSequence oldChars, int startPos, CharSequence newChars) {
-            Log.d(TAG, "updateStr() called with: oldChars = [" + oldChars + "], startPos = [" + startPos + "], newChars = [" + newChars + "]");
             if (startPos < mLength) {
                 return oldChars; //don't edit
 

@@ -3,13 +3,11 @@ package com.duy.compile.external.android;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
-import com.duy.Aapt;
 import com.duy.compile.external.CommandManager;
 import com.duy.project.file.android.AndroidProjectFile;
 import com.duy.project.file.android.KeyStore;
 import com.spartacusrex.spartacuside.external.apkbuilder;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -73,7 +71,7 @@ public class ApkBuilder {
     }
 
     private static void runAapt(AndroidProjectFile projectFile) throws Exception {
-        Log.d(TAG, "runAapt() called");
+       /* Log.d(TAG, "runAapt() called");
 
         Aapt aapt = new Aapt();
         String command = "aapt p -f -v" +
@@ -101,7 +99,7 @@ public class ApkBuilder {
         if (exitCode != 0) {
             throw new Exception("AAPT exit(" + exitCode + ")");
         }
-
+*/
 //        strStatus = "INDEXING RESOURCES"; exitCode = aapt.fnExecute(
 //		"aapt p -m -v -J " + dirGen.getPath() + " -M " + xmlMan.getPath() +
 //		" -S " + dirRes.getPath() + " -I " + jarAndroid.getPath());

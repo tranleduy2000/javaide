@@ -426,11 +426,15 @@
     <string name="system_info">System info</string>
     <string name="project_file">Project file</string>
     <string name="download_system_file">Download system file</string>
-    <string name="install_msg">You need to download files for your system, make sure you have turned
-        on your internet connection and at least 100MB of free internal memory.\n
-        1. Press download button\n
-        2. Wait for download finish\n
-        3. Wait for install system file.</string>
+    <string name="install_msg">
+        "You need to download files for your system, make sure you have turned on your internet connection and at least 100MB of free internal memory.
+        1. Press download button
+        2. Wait for download finish
+        3. Wait for install system file.
+
+        Note: If you can't download by click button "Download file system", just go to github page and download this file, then press select file and select file has been downloaded.
+        https://github.com/tranleduy2000/javaide/blob/master/system/classes/classes.zip"
+    </string>
     <string name="run_configuration">Run configuration</string>
     <string name="main_class">Main class</string>
     <string name="program_arg">Program arguments</string>
@@ -462,4 +466,5 @@
     <string name="application_name">Application name</string>
     <string name="build_apk">Build apk</string>
     <string name="github_repo">Git repo</string>
+    <string name="select_file">Select file</string>
 </resources>

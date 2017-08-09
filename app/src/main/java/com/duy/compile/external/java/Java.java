@@ -26,6 +26,9 @@ public class Java {
                            @Nullable PrintStream out,
                            @Nullable InputStream in,
                            @Nullable PrintStream err) {
+        PrintStream outOrigin = System.out;
+        InputStream inOrigin = System.in;
+        PrintStream errOrigin = System.err;
         try {
             String jarfile = "";
             String classname = "";
@@ -130,6 +133,7 @@ public class Java {
 
             main.invoke(null, new Object[]{mainargs});
 
+            //restore std
         } catch (InvocationTargetException e) {
             e.printStackTrace();
             Throwable targetException = e.getTargetException();

@@ -5,7 +5,6 @@ import android.util.Log;
 import com.android.annotations.NonNull;
 import com.duy.compile.external.CommandManager;
 import com.duy.project.file.android.AndroidProjectFile;
-import com.duy.project.file.android.KeyStore;
 import com.spartacusrex.spartacuside.external.apkbuilder;
 
 import java.io.OutputStream;
@@ -71,9 +70,9 @@ public class ApkBuilder {
     }
 
     private static void runAapt(AndroidProjectFile projectFile) throws Exception {
-       /* Log.d(TAG, "runAapt() called");
+        Log.d(TAG, "runAapt() called");
 
-        Aapt aapt = new Aapt();
+      /*  Aapt aapt = new Aapt();
         String command = "aapt p -f -v" +
                 " -M " + projectFile.xmlManifest.getPath() + //manifest file
                 " -F " + projectFile.getResourceFile().getPath() + //
@@ -98,20 +97,7 @@ public class ApkBuilder {
         int exitCode = aapt.fnExecute(command);
         if (exitCode != 0) {
             throw new Exception("AAPT exit(" + exitCode + ")");
-        }
-*/
-//        strStatus = "INDEXING RESOURCES"; exitCode = aapt.fnExecute(
-//		"aapt p -m -v -J " + dirGen.getPath() + " -M " + xmlMan.getPath() +
-//		" -S " + dirRes.getPath() + " -I " + jarAndroid.getPath());
-//
-//		strStatus = "CRUNCH RESOURCES"; exitCode = aapt.fnExecute(
-//		"aapt c -v -S " + dirRes.getPath() + " -C " + dirCrunch.getPath());
-//
-//		strStatus = "PACKAGE RESOURCES"; exitCode = aapt .fnExecute(
-//		"aapt p -v -S " + dirCrunch.getPath() + " -S " + dirRes.getPath() +
-//		" -f --no-crunch --auto-add-overlay --debug-mode -0 apk -M " +
-//		xmlBinMan.getPath() + " -A " + dirAssets.getPath() + " -I " +
-//		jarAndroid.getPath() + " -F " + ap_Resources.getPath());
+        }*/
 
     }
 
@@ -120,20 +106,20 @@ public class ApkBuilder {
 //             TODO use user defined certificate
 //        }
 
-        // use embedded private key
-        KeyStore keyStore = projectFile.getKeyStore();
-        String keystorePath = keyStore.getFile().getPath();
-        char[] keystorePw = keyStore.getPassword();
-        String certAlias = keyStore.getCertAlias();
-        char[] certPw = keyStore.getCertPassword();
-        String signatureAlgorithm = "SHA1withRSA";
-
-        kellinwood.security.zipsigner.ZipSigner zipsigner = new kellinwood.security.zipsigner.ZipSigner();
-        zipsigner.addProgressListener(new SignProgress());
-        kellinwood.security.zipsigner.optional.CustomKeySigner.signZip(zipsigner, keystorePath, keystorePw, certAlias,
-                certPw, signatureAlgorithm,
-                projectFile.getApkUnsigned().getPath(),
-                projectFile.getApkUnaligned().getPath());
+//        // use embedded private key
+//        KeyStore keyStore = projectFile.getKeyStore();
+//        String keystorePath = keyStore.getFile().getPath();
+//        char[] keystorePw = keyStore.getPassword();
+//        String certAlias = keyStore.getCertAlias();
+//        char[] certPw = keyStore.getCertPassword();
+//        String signatureAlgorithm = "SHA1withRSA";
+//
+//        kellinwood.security.zipsigner.ZipSigner zipsigner = new kellinwood.security.zipsigner.ZipSigner();
+//        zipsigner.addProgressListener(new SignProgress());
+//        kellinwood.security.zipsigner.optional.CustomKeySigner.signZip(zipsigner, keystorePath, keystorePw, certAlias,
+//                certPw, signatureAlgorithm,
+//                projectFile.getApkUnsigned().getPath(),
+//                projectFile.getApkUnaligned().getPath());
     }
 
 
@@ -156,11 +142,11 @@ public class ApkBuilder {
 
     }
 
-    static class SignProgress implements kellinwood.security.zipsigner.ProgressListener {
+   /* static class SignProgress implements kellinwood.security.zipsigner.ProgressListener {
 
         public void onProgress(kellinwood.security.zipsigner.ProgressEvent event) {
         }
 
-    }
+    }*/
 
 }

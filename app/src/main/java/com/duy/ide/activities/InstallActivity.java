@@ -3,7 +3,9 @@ package com.duy.ide.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -42,6 +44,7 @@ import java.util.zip.ZipFile;
 
 public class InstallActivity extends AbstractAppCompatActivity implements View.OnClickListener {
     public static final String SYSTEM_VERSION = "System v3.0";
+    private static final int REQUEST_CODE_SELECT_FILE = 1101;
     private JavaPreferences mPreferences;
     private ProgressBar mProgressBar;
     private TextView mInfo;
@@ -66,6 +69,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
 //        String version = getString(R.string.system_version) + mPreferences.getSystemVersion();
 //        mTxtVersion.setText(version);
         findViewById(R.id.btn_install).setOnClickListener(this);
+        findViewById(R.id.btn_select_file).setOnClickListener(this);
     }
 
     @Override
@@ -76,6 +80,32 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             } else {
                 showDialogNotConnect();
             }
+        } else if (v.getId() == R.id.btn_select_file) {
+            selectFile();
+        }
+    }
+
+    private void selectFile() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_SELECT_FILE:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        Uri uri = data.getData();
+                        new InstallTask(this).execute(new File(uri.getPath()));
+                    } catch (Exception e) {
+                        //file not found
+                        e.printStackTrace();
+                    }
+                }
+                break;
         }
     }
 

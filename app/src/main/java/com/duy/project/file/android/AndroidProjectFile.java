@@ -46,7 +46,7 @@ public class AndroidProjectFile extends JavaProjectFile {
 
         resourceFile = new File(dirBuild, "resources.res");
         dexedClassesFile = new File(dirBuild, "classes.dex");
-        keystore = new KeyStore(new File(dirProject, "keystore.jsk"), "1234567".toCharArray(), "android", "1234567".toCharArray());
+        keystore = new KeyStore(new File(dirProject, "keystore.jks"), "1234567".toCharArray(), "android", "1234567".toCharArray());
     }
 
     public KeyStore getKeyStore() {

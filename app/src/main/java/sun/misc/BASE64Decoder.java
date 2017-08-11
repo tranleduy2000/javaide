@@ -26,7 +26,6 @@ package sun.misc;
 
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
-import java.io.PrintStream;
 
 /**
  * This class implements a BASE64 Character decoder as specified in RFC1521.

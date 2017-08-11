@@ -80,8 +80,6 @@ import java.nio.ByteBuffer;
  * @author      Chuck McManis
  * @see         CEFormatException
  * @see         CharacterEncoder
- * @see         UCDecoder
- * @see         UUDecoder
  * @see         BASE64Decoder
  */
 
@@ -131,7 +129,7 @@ public abstract class CharacterDecoder {
      * read method.
      */
     protected int readFully(InputStream in, byte buffer[], int offset, int len)
-        throws java.io.IOException {
+        throws IOException {
         for (int i = 0; i < len; i++) {
             int q = in.read();
             if (q == -1)

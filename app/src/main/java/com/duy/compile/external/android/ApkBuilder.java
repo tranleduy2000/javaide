@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 import javax.tools.DiagnosticCollector;
 
@@ -28,6 +29,7 @@ public class ApkBuilder {
                 "-v", "-u", "-z", projectFile.getResourceFile().getPath(),
                 "-f", projectFile.getDexedClassesFile().getPath()
         };
+        Log.d(TAG, "buildApk args = " + Arrays.toString(args));
         apkbuilder.main(args);
     }
 
@@ -107,6 +109,8 @@ public class ApkBuilder {
     }
 
     private static void zipSign(AndroidProjectFile projectFile, SignProgress signProgress) throws Exception {
+        Log.d(TAG, "zipSign() called with: projectFile = [" + projectFile + "], signProgress = [" + signProgress + "]");
+
 //        if (!appContext.getString(R.string.keystore).contentEquals(projectFile.jksEmbedded.getName())) {
 //             TODO use user defined certificate
 //        }

@@ -42,7 +42,7 @@ public class AutoCompleteService extends Service {
 
     public void setCallback(@Nullable OnAutoCompleteServiceLoadListener callback) {
         this.callback = callback;
-        if (mAutoCompleteProvider.isLoaded()) {
+        if (mAutoCompleteProvider != null && mAutoCompleteProvider.isLoaded()) {
             if (callback != null) callback.onLoaded(mAutoCompleteProvider);
         }
     }

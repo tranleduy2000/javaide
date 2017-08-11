@@ -332,6 +332,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     }
 
     public void setAutoCompleteProvider(AutoCompleteProvider autoCompleteProvider) {
+        this.autoCompleteProvider = autoCompleteProvider;
         if (mCodeEditor != null) {
             mCodeEditor.setAutoCompleteProvider(autoCompleteProvider);
         }

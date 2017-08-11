@@ -64,17 +64,18 @@ static bool isSourceNewer(const struct stat* pSrcStat, const struct stat* pDstSt
 
 /*
  * Returns true if the source file has high resolution modification
- * date.  Cygwin doesn't support st_mtim in normal build, so always
- * return false.
+ * date. Cygwin/Mingw doesn't support st_mtim and always returns false.
  */
 static bool isHiresMtime(const struct stat* pSrcStat)
 {
-#if defined(WIN32) || defined(USE_MINGW)
-    return 0;
-#elif defined(MACOSX_RSRC)
+#if HAVE_STAT_ST_MTIM
+#if defined(MACOSX_RSRC)
     return pSrcStat->st_mtimespec.tv_nsec > 0;
 #else
     return pSrcStat->st_mtim.tv_nsec > 0;
+#endif
+#else
+    return 0;
 #endif
 }
 
@@ -136,7 +137,7 @@ static int copyFileContents(const char* dst, int dstFd, const char* src, int src
                 return -1;
             }
             if (writeCount != readCount) {
-                fprintf(stderr, "acp: partial write to '%s' (%d of %d)\n",
+                fprintf(stderr, "acp: partial write to '%s' (%zd of %zd)\n",
                     dst, writeCount, readCount);
                 return -1;
             }

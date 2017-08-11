@@ -100,7 +100,7 @@ namespace android {
             k = key;
         }
         if (kIsDebug) {
-            ALOGD("Writing header: prefix='%s' key='%s' dataSize=%zu", m_keyPrefix.string(),
+            LOGD("Writing header: prefix='%s' key='%s' dataSize=%zu", m_keyPrefix.string(),
                   key.string(), dataSize);
         }
 
@@ -138,11 +138,11 @@ namespace android {
 
     status_t
     BackupDataWriter::WriteEntityData(const void *data, size_t size) {
-        if (kIsDebug) ALOGD("Writing data: size=%lu", (unsigned long) size);
+        if (kIsDebug) LOGD("Writing data: size=%lu", (unsigned long) size);
 
         if (m_status != NO_ERROR) {
             if (kIsDebug) {
-                ALOGD("Not writing data - stream in error state %d (%s)", m_status,
+                LOGD("Not writing data - stream in error state %d (%s)", m_status,
                       strerror(m_status));
             }
             return m_status;
@@ -154,7 +154,7 @@ namespace android {
         ssize_t amt = write(m_fd, data, size);
         if (amt != (ssize_t) size) {
             m_status = errno;
-            if (kIsDebug) ALOGD("write returned error %d (%s)", m_status, strerror(m_status));
+            if (kIsDebug) LOGD("write returned error %d (%s)", m_status, strerror(m_status));
             return m_status;
         }
         m_pos += amt;
@@ -193,7 +193,7 @@ namespace android {
                 m_done = true; \
             } else { \
                 m_status = errno; \
-                ALOGD("CHECK_SIZE(a=%ld e=%ld) failed at line %d m_status='%s'", \
+                LOGD("CHECK_SIZE(a=%ld e=%ld) failed at line %d m_status='%s'", \
                     long(actual), long(expected), __LINE__, strerror(m_status)); \
             } \
             return m_status; \
@@ -203,7 +203,7 @@ namespace android {
     do { \
         status_t err = skip_padding(); \
         if (err != NO_ERROR) { \
-            ALOGD("SKIP_PADDING FAILED at line %d", __LINE__); \
+            LOGD("SKIP_PADDING FAILED at line %d", __LINE__); \
             m_status = err; \
             return err; \
         } \
@@ -242,7 +242,7 @@ namespace android {
             case BACKUP_HEADER_ENTITY_V1: {
                 m_header.entity.keyLen = fromlel(m_header.entity.keyLen);
                 if (m_header.entity.keyLen <= 0) {
-                    ALOGD("Entity header at %d has keyLen<=0: 0x%08x\n", (int) m_pos,
+                    LOGD("Entity header at %d has keyLen<=0: 0x%08x\n", (int) m_pos,
                           (int) m_header.entity.keyLen);
                     m_status = EINVAL;
                 }
@@ -266,7 +266,7 @@ namespace android {
                 break;
             }
             default:
-                ALOGD("Chunk header at %d has invalid type: 0x%08x",
+                LOGD("Chunk header at %d has invalid type: 0x%08x",
                       (int) (m_pos - sizeof(m_header)), (int) m_header.type);
                 m_status = EINVAL;
         }
@@ -318,7 +318,7 @@ namespace android {
         }
         int remaining = m_dataEndPos - m_pos;
         if (kIsDebug) {
-            ALOGD("ReadEntityData size=%zu m_pos=0x%zx m_dataEndPos=0x%zx remaining=%d\n",
+            LOGD("ReadEntityData size=%zu m_pos=0x%zx m_dataEndPos=0x%zx remaining=%d\n",
                   size, m_pos, m_dataEndPos, remaining);
         }
         if (remaining <= 0) {
@@ -328,7 +328,7 @@ namespace android {
             size = remaining;
         }
         if (kIsDebug) {
-            ALOGD("   reading %zu bytes", size);
+            LOGD("   reading %zu bytes", size);
         }
         int amt = read(m_fd, data, size);
         if (amt < 0) {

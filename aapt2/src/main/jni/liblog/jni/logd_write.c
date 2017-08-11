@@ -23,9 +23,7 @@
 #endif
 
 #include <unistd.h>
-#include <errno.h>
 #include <fcntl.h>
-#include <stdarg.h>
 
 #include <cutils/logger.h>
 #include <cutils/logd.h>
@@ -222,27 +220,27 @@ int __android_log_buf_print(int bufID, int prio, const char *tag, const char *fm
 
 void __android_log_assert(const char *cond, const char *tag,
                           const char *fmt, ...) {
-    char buf[LOG_BUF_SIZE];
-
-    if (fmt) {
-        va_list ap;
-        va_start(ap, fmt);
-        vsnprintf(buf, LOG_BUF_SIZE, fmt, ap);
-        va_end(ap);
-    } else {
-        /* Msg not provided, log condition.  N.B. Do not use cond directly as
-         * format string as it could contain spurious '%' syntax (e.g.
-         * "%d" in "blocks%devs == 0").
-         */
-        if (cond)
-            snprintf(buf, LOG_BUF_SIZE, "Assertion failed: %s", cond);
-        else
-            strcpy(buf, "Unspecified assertion failed");
-    }
-
-    __android_log_write(ANDROID_LOG_FATAL, tag, buf);
-
-    __builtin_trap(); /* trap so we have a chance to debug the situation */
+//    char buf[LOG_BUF_SIZE];
+//
+//    if (fmt) {
+//        va_list ap;
+//        va_start(ap, fmt);
+//        vsnprintf(buf, LOG_BUF_SIZE, fmt, ap);
+//        va_end(ap);
+//    } else {
+//        /* Msg not provided, log condition.  N.B. Do not use cond directly as
+//         * format string as it could contain spurious '%' syntax (e.g.
+//         * "%d" in "blocks%devs == 0").
+//         */
+//        if (cond)
+//            snprintf(buf, LOG_BUF_SIZE, "Assertion failed: %s", cond);
+//        else
+//            strcpy(buf, "Unspecified assertion failed");
+//    }
+//
+//    __android_log_write(ANDROID_LOG_FATAL, tag, buf);
+//
+//    __builtin_trap(); /* trap so we have a chance to debug the situation */
 }
 
 int __android_log_bwrite(int32_t tag, const void *payload, size_t len) {

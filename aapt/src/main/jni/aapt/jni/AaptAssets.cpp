@@ -5,18 +5,14 @@
 #include "AaptAssets.h"
 #include "Main.h"
 
-#include <utils/misc.h>
-#include <utils/SortedVector.h>
-
 #include <ctype.h>
 #include <dirent.h>
-#include <errno.h>
 
-static const char* kDefaultLocale = "default";
-static const char* kWildcardName = "any";
-static const char* kAssetDir = "assets";
-static const char* kResourceDir = "res";
-static const char* kInvalidChars = "/\\:";
+static const char *kDefaultLocale = "default";
+static const char *kWildcardName = "any";
+static const char *kAssetDir = "assets";
+static const char *kResourceDir = "res";
+static const char *kInvalidChars = "/\\:";
 static const size_t kMaxAssetFileName = 100;
 
 static const String8 kResString(kResourceDir);
@@ -31,9 +27,8 @@ static const String8 kResString(kResourceDir);
  *
  * Pass in just the filename, not the full path.
  */
-static bool validateFileName(const char* fileName)
-{
-    const char* cp = fileName;
+static bool validateFileName(const char *fileName) {
+    const char *cp = fileName;
     size_t len = 0;
 
     while (*cp != '\0') {
@@ -53,9 +48,8 @@ static bool validateFileName(const char* fileName)
     return true;
 }
 
-static bool isHidden(const char *root, const char *path)
-{
-    const char *ext  = NULL;
+static bool isHidden(const char *root, const char *path) {
+    const char *ext = NULL;
     const char *type = NULL;
 
     // Skip all hidden files.
@@ -81,7 +75,7 @@ static bool isHidden(const char *root, const char *path)
                || strcasecmp(path, "picasa.ini") == 0) {
         // Skip suspected image indexes files.
         type = "index";
-    } else if (path[strlen(path)-1] == '~') {
+    } else if (path[strlen(path) - 1] == '~') {
         // Skip suspected emacs backup files.
         type = "backup";
     } else if ((ext = strrchr(path, '.')) != NULL && strcmp(ext, ".scc") == 0) {
@@ -98,7 +92,7 @@ static bool isHidden(const char *root, const char *path)
     String8 subdirName(root);
     subdirName.appendPath(path);
     fprintf(stderr, "    (skipping %s %s '%s')\n", type,
-            getFileType(subdirName.string())==kFileTypeDirectory ? "dir":"file",
+            getFileType(subdirName.string()) == kFileTypeDirectory ? "dir" : "file",
             subdirName.string());
 
     return true;
@@ -109,8 +103,7 @@ static bool isHidden(const char *root, const char *path)
 // =========================================================================
 
 status_t
-AaptGroupEntry::parseNamePart(const String8& part, int* axis, uint32_t* value)
-{
+AaptGroupEntry::parseNamePart(const String8 &part, int *axis, uint32_t *value) {
     ResTable_config config;
 
     // IMSI - MCC
@@ -136,7 +129,7 @@ AaptGroupEntry::parseNamePart(const String8& part, int* axis, uint32_t* value)
 
     // locale - language_REGION
     if (part.length() == 5 && isalpha(part[0]) && isalpha(part[1])
-            && part[2] == '_' && isalpha(part[3]) && isalpha(part[4])) {
+        && part[2] == '_' && isalpha(part[3]) && isalpha(part[4])) {
         *axis = AXIS_LANGUAGE;
         *value = (part[4] << 24) | (part[3] << 16) | (part[1] << 8) | (part[0]);
         return 0;
@@ -145,14 +138,14 @@ AaptGroupEntry::parseNamePart(const String8& part, int* axis, uint32_t* value)
     // screen layout size
     if (getScreenLayoutSizeName(part.string(), &config)) {
         *axis = AXIS_SCREENLAYOUTSIZE;
-        *value = (config.screenLayout&ResTable_config::MASK_SCREENSIZE);
+        *value = (config.screenLayout & ResTable_config::MASK_SCREENSIZE);
         return 0;
     }
 
     // screen layout long
     if (getScreenLayoutLongName(part.string(), &config)) {
         *axis = AXIS_SCREENLAYOUTLONG;
-        *value = (config.screenLayout&ResTable_config::MASK_SCREENLONG);
+        *value = (config.screenLayout & ResTable_config::MASK_SCREENLONG);
         return 0;
     }
 
@@ -166,14 +159,14 @@ AaptGroupEntry::parseNamePart(const String8& part, int* axis, uint32_t* value)
     // ui mode type
     if (getUiModeTypeName(part.string(), &config)) {
         *axis = AXIS_UIMODETYPE;
-        *value = (config.uiMode&ResTable_config::MASK_UI_MODE_TYPE);
+        *value = (config.uiMode & ResTable_config::MASK_UI_MODE_TYPE);
         return 0;
     }
 
     // ui mode night
     if (getUiModeNightName(part.string(), &config)) {
         *axis = AXIS_UIMODENIGHT;
-        *value = (config.uiMode&ResTable_config::MASK_UI_MODE_NIGHT);
+        *value = (config.uiMode & ResTable_config::MASK_UI_MODE_NIGHT);
         return 0;
     }
 
@@ -237,8 +230,7 @@ AaptGroupEntry::parseNamePart(const String8& part, int* axis, uint32_t* value)
 }
 
 bool
-AaptGroupEntry::initFromDirName(const char* dir, String8* resType)
-{
+AaptGroupEntry::initFromDirName(const char *dir, String8 *resType) {
     Vector<String8> parts;
 
     String8 mcc, mnc, loc, layoutsize, layoutlong, orient, den;
@@ -248,11 +240,11 @@ AaptGroupEntry::initFromDirName(const char* dir, String8* resType)
     const char *p = dir;
     const char *q;
     while (NULL != (q = strchr(p, '-'))) {
-        String8 val(p, q-p);
+        String8 val(p, q - p);
         val.toLower();
         parts.add(val);
         //printf("part: %s\n", parts[parts.size()-1].string());
-        p = q+1;
+        p = q + 1;
     }
     String8 val(p);
     val.toLower();
@@ -316,7 +308,7 @@ AaptGroupEntry::initFromDirName(const char* dir, String8* resType)
 
     // locale - region
     if (loc.length() > 0
-            && part.length() == 3 && part[0] == 'r' && part[0] && part[1]) {
+        && part.length() == 3 && part[0] == 'r' && part[0] && part[1]) {
         loc += "-";
         part.toUpper();
         loc += part.string() + 1;
@@ -497,7 +489,7 @@ AaptGroupEntry::initFromDirName(const char* dir, String8* resType)
     // if there are extra parts, it doesn't match
     return false;
 
-success:
+    success:
     this->mcc = mcc;
     this->mnc = mnc;
     this->locale = loc;
@@ -522,8 +514,7 @@ success:
 }
 
 String8
-AaptGroupEntry::toString() const
-{
+AaptGroupEntry::toString() const {
     String8 s = this->mcc;
     s += ",";
     s += this->mnc;
@@ -559,8 +550,7 @@ AaptGroupEntry::toString() const
 }
 
 String8
-AaptGroupEntry::toDirName(const String8& resType) const
-{
+AaptGroupEntry::toDirName(const String8 &resType) const {
     String8 s = resType;
     if (this->mcc != "") {
         s += "-";
@@ -630,14 +620,13 @@ AaptGroupEntry::toDirName(const String8& resType) const
     return s;
 }
 
-bool AaptGroupEntry::getMccName(const char* name,
-                                    ResTable_config* out)
-{
+bool AaptGroupEntry::getMccName(const char *name,
+                                ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
         if (out) out->mcc = 0;
         return true;
     }
-    const char* c = name;
+    const char *c = name;
     if (tolower(*c) != 'm') return false;
     c++;
     if (tolower(*c) != 'c') return false;
@@ -645,13 +634,13 @@ bool AaptGroupEntry::getMccName(const char* name,
     if (tolower(*c) != 'c') return false;
     c++;
 
-    const char* val = c;
+    const char *val = c;
 
     while (*c >= '0' && *c <= '9') {
         c++;
     }
     if (*c != 0) return false;
-    if (c-val != 3) return false;
+    if (c - val != 3) return false;
 
     int d = atoi(val);
     if (d != 0) {
@@ -662,14 +651,13 @@ bool AaptGroupEntry::getMccName(const char* name,
     return false;
 }
 
-bool AaptGroupEntry::getMncName(const char* name,
-                                    ResTable_config* out)
-{
+bool AaptGroupEntry::getMncName(const char *name,
+                                ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
         if (out) out->mcc = 0;
         return true;
     }
-    const char* c = name;
+    const char *c = name;
     if (tolower(*c) != 'm') return false;
     c++;
     if (tolower(*c) != 'n') return false;
@@ -677,13 +665,13 @@ bool AaptGroupEntry::getMncName(const char* name,
     if (tolower(*c) != 'c') return false;
     c++;
 
-    const char* val = c;
+    const char *val = c;
 
     while (*c >= '0' && *c <= '9') {
         c++;
     }
     if (*c != 0) return false;
-    if (c-val == 0 || c-val > 3) return false;
+    if (c - val == 0 || c - val > 3) return false;
 
     if (out) {
         out->mnc = atoi(val);
@@ -699,11 +687,10 @@ bool AaptGroupEntry::getMncName(const char* name,
  * TODO: Should insist that the first two letters are lower case, and the
  * second two are upper.
  */
-bool AaptGroupEntry::getLocaleName(const char* fileName,
-                                   ResTable_config* out)
-{
+bool AaptGroupEntry::getLocaleName(const char *fileName,
+                                   ResTable_config *out) {
     if (strcmp(fileName, kWildcardName) == 0
-            || strcmp(fileName, kDefaultLocale) == 0) {
+        || strcmp(fileName, kDefaultLocale) == 0) {
         if (out) {
             out->language[0] = 0;
             out->language[1] = 0;
@@ -741,65 +728,70 @@ bool AaptGroupEntry::getLocaleName(const char* fileName,
     return false;
 }
 
-bool AaptGroupEntry::getScreenLayoutSizeName(const char* name,
-                                     ResTable_config* out)
-{
+bool AaptGroupEntry::getScreenLayoutSizeName(const char *name,
+                                             ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
-        if (out) out->screenLayout =
-                (out->screenLayout&~ResTable_config::MASK_SCREENSIZE)
-                | ResTable_config::SCREENSIZE_ANY;
+        if (out)
+            out->screenLayout =
+                    (out->screenLayout & ~ResTable_config::MASK_SCREENSIZE)
+                    | ResTable_config::SCREENSIZE_ANY;
         return true;
     } else if (strcmp(name, "small") == 0) {
-        if (out) out->screenLayout =
-                (out->screenLayout&~ResTable_config::MASK_SCREENSIZE)
-                | ResTable_config::SCREENSIZE_SMALL;
+        if (out)
+            out->screenLayout =
+                    (out->screenLayout & ~ResTable_config::MASK_SCREENSIZE)
+                    | ResTable_config::SCREENSIZE_SMALL;
         return true;
     } else if (strcmp(name, "normal") == 0) {
-        if (out) out->screenLayout =
-                (out->screenLayout&~ResTable_config::MASK_SCREENSIZE)
-                | ResTable_config::SCREENSIZE_NORMAL;
+        if (out)
+            out->screenLayout =
+                    (out->screenLayout & ~ResTable_config::MASK_SCREENSIZE)
+                    | ResTable_config::SCREENSIZE_NORMAL;
         return true;
     } else if (strcmp(name, "large") == 0) {
-        if (out) out->screenLayout =
-                (out->screenLayout&~ResTable_config::MASK_SCREENSIZE)
-                | ResTable_config::SCREENSIZE_LARGE;
+        if (out)
+            out->screenLayout =
+                    (out->screenLayout & ~ResTable_config::MASK_SCREENSIZE)
+                    | ResTable_config::SCREENSIZE_LARGE;
         return true;
     } else if (strcmp(name, "xlarge") == 0) {
-        if (out) out->screenLayout =
-                (out->screenLayout&~ResTable_config::MASK_SCREENSIZE)
-                | ResTable_config::SCREENSIZE_XLARGE;
+        if (out)
+            out->screenLayout =
+                    (out->screenLayout & ~ResTable_config::MASK_SCREENSIZE)
+                    | ResTable_config::SCREENSIZE_XLARGE;
         return true;
     }
 
     return false;
 }
 
-bool AaptGroupEntry::getScreenLayoutLongName(const char* name,
-                                     ResTable_config* out)
-{
+bool AaptGroupEntry::getScreenLayoutLongName(const char *name,
+                                             ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
-        if (out) out->screenLayout =
-                (out->screenLayout&~ResTable_config::MASK_SCREENLONG)
-                | ResTable_config::SCREENLONG_ANY;
+        if (out)
+            out->screenLayout =
+                    (out->screenLayout & ~ResTable_config::MASK_SCREENLONG)
+                    | ResTable_config::SCREENLONG_ANY;
         return true;
     } else if (strcmp(name, "long") == 0) {
-        if (out) out->screenLayout =
-                (out->screenLayout&~ResTable_config::MASK_SCREENLONG)
-                | ResTable_config::SCREENLONG_YES;
+        if (out)
+            out->screenLayout =
+                    (out->screenLayout & ~ResTable_config::MASK_SCREENLONG)
+                    | ResTable_config::SCREENLONG_YES;
         return true;
     } else if (strcmp(name, "notlong") == 0) {
-        if (out) out->screenLayout =
-                (out->screenLayout&~ResTable_config::MASK_SCREENLONG)
-                | ResTable_config::SCREENLONG_NO;
+        if (out)
+            out->screenLayout =
+                    (out->screenLayout & ~ResTable_config::MASK_SCREENLONG)
+                    | ResTable_config::SCREENLONG_NO;
         return true;
     }
 
     return false;
 }
 
-bool AaptGroupEntry::getOrientationName(const char* name,
-                                        ResTable_config* out)
-{
+bool AaptGroupEntry::getOrientationName(const char *name,
+                                        ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
         if (out) out->orientation = out->ORIENTATION_ANY;
         return true;
@@ -817,95 +809,98 @@ bool AaptGroupEntry::getOrientationName(const char* name,
     return false;
 }
 
-bool AaptGroupEntry::getUiModeTypeName(const char* name,
-                                       ResTable_config* out)
-{
+bool AaptGroupEntry::getUiModeTypeName(const char *name,
+                                       ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
-        if (out) out->uiMode =
-                (out->uiMode&~ResTable_config::MASK_UI_MODE_TYPE)
-                | ResTable_config::UI_MODE_TYPE_ANY;
+        if (out)
+            out->uiMode =
+                    (out->uiMode & ~ResTable_config::MASK_UI_MODE_TYPE)
+                    | ResTable_config::UI_MODE_TYPE_ANY;
         return true;
     } else if (strcmp(name, "desk") == 0) {
-      if (out) out->uiMode =
-              (out->uiMode&~ResTable_config::MASK_UI_MODE_TYPE)
-              | ResTable_config::UI_MODE_TYPE_DESK;
+        if (out)
+            out->uiMode =
+                    (out->uiMode & ~ResTable_config::MASK_UI_MODE_TYPE)
+                    | ResTable_config::UI_MODE_TYPE_DESK;
         return true;
     } else if (strcmp(name, "car") == 0) {
-      if (out) out->uiMode =
-              (out->uiMode&~ResTable_config::MASK_UI_MODE_TYPE)
-              | ResTable_config::UI_MODE_TYPE_CAR;
+        if (out)
+            out->uiMode =
+                    (out->uiMode & ~ResTable_config::MASK_UI_MODE_TYPE)
+                    | ResTable_config::UI_MODE_TYPE_CAR;
         return true;
     }
 
     return false;
 }
 
-bool AaptGroupEntry::getUiModeNightName(const char* name,
-                                          ResTable_config* out)
-{
+bool AaptGroupEntry::getUiModeNightName(const char *name,
+                                        ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
-        if (out) out->uiMode =
-                (out->uiMode&~ResTable_config::MASK_UI_MODE_NIGHT)
-                | ResTable_config::UI_MODE_NIGHT_ANY;
+        if (out)
+            out->uiMode =
+                    (out->uiMode & ~ResTable_config::MASK_UI_MODE_NIGHT)
+                    | ResTable_config::UI_MODE_NIGHT_ANY;
         return true;
     } else if (strcmp(name, "night") == 0) {
-        if (out) out->uiMode =
-                (out->uiMode&~ResTable_config::MASK_UI_MODE_NIGHT)
-                | ResTable_config::UI_MODE_NIGHT_YES;
+        if (out)
+            out->uiMode =
+                    (out->uiMode & ~ResTable_config::MASK_UI_MODE_NIGHT)
+                    | ResTable_config::UI_MODE_NIGHT_YES;
         return true;
     } else if (strcmp(name, "notnight") == 0) {
-      if (out) out->uiMode =
-              (out->uiMode&~ResTable_config::MASK_UI_MODE_NIGHT)
-              | ResTable_config::UI_MODE_NIGHT_NO;
+        if (out)
+            out->uiMode =
+                    (out->uiMode & ~ResTable_config::MASK_UI_MODE_NIGHT)
+                    | ResTable_config::UI_MODE_NIGHT_NO;
         return true;
     }
 
     return false;
 }
 
-bool AaptGroupEntry::getDensityName(const char* name,
-                                    ResTable_config* out)
-{
+bool AaptGroupEntry::getDensityName(const char *name,
+                                    ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
         if (out) out->density = ResTable_config::DENSITY_DEFAULT;
         return true;
     }
-    
+
     if (strcmp(name, "nodpi") == 0) {
         if (out) out->density = ResTable_config::DENSITY_NONE;
         return true;
     }
-    
+
     if (strcmp(name, "ldpi") == 0) {
         if (out) out->density = ResTable_config::DENSITY_LOW;
         return true;
     }
-    
+
     if (strcmp(name, "mdpi") == 0) {
         if (out) out->density = ResTable_config::DENSITY_MEDIUM;
         return true;
     }
-    
+
     if (strcmp(name, "hdpi") == 0) {
         if (out) out->density = ResTable_config::DENSITY_HIGH;
         return true;
     }
-    
+
     if (strcmp(name, "xhdpi") == 0) {
-        if (out) out->density = ResTable_config::DENSITY_MEDIUM*2;
+        if (out) out->density = ResTable_config::DENSITY_MEDIUM * 2;
         return true;
     }
-    
-    char* c = (char*)name;
+
+    char *c = (char *) name;
     while (*c >= '0' && *c <= '9') {
         c++;
     }
 
     // check that we have 'dpi' after the last digit.
     if (toupper(c[0]) != 'D' ||
-            toupper(c[1]) != 'P' ||
-            toupper(c[2]) != 'I' ||
-            c[3] != 0) {
+        toupper(c[1]) != 'P' ||
+        toupper(c[2]) != 'I' ||
+        c[3] != 0) {
         return false;
     }
 
@@ -925,9 +920,8 @@ bool AaptGroupEntry::getDensityName(const char* name,
     return false;
 }
 
-bool AaptGroupEntry::getTouchscreenName(const char* name,
-                                        ResTable_config* out)
-{
+bool AaptGroupEntry::getTouchscreenName(const char *name,
+                                        ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
         if (out) out->touchscreen = out->TOUCHSCREEN_ANY;
         return true;
@@ -945,9 +939,8 @@ bool AaptGroupEntry::getTouchscreenName(const char* name,
     return false;
 }
 
-bool AaptGroupEntry::getKeysHiddenName(const char* name,
-                                       ResTable_config* out)
-{
+bool AaptGroupEntry::getKeysHiddenName(const char *name,
+                                       ResTable_config *out) {
     uint8_t mask = 0;
     uint8_t value = 0;
     if (strcmp(name, kWildcardName) == 0) {
@@ -965,16 +958,15 @@ bool AaptGroupEntry::getKeysHiddenName(const char* name,
     }
 
     if (mask != 0) {
-        if (out) out->inputFlags = (out->inputFlags&~mask) | value;
+        if (out) out->inputFlags = (out->inputFlags & ~mask) | value;
         return true;
     }
 
     return false;
 }
 
-bool AaptGroupEntry::getKeyboardName(const char* name,
-                                        ResTable_config* out)
-{
+bool AaptGroupEntry::getKeyboardName(const char *name,
+                                     ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
         if (out) out->keyboard = out->KEYBOARD_ANY;
         return true;
@@ -992,9 +984,8 @@ bool AaptGroupEntry::getKeyboardName(const char* name,
     return false;
 }
 
-bool AaptGroupEntry::getNavHiddenName(const char* name,
-                                       ResTable_config* out)
-{
+bool AaptGroupEntry::getNavHiddenName(const char *name,
+                                      ResTable_config *out) {
     uint8_t mask = 0;
     uint8_t value = 0;
     if (strcmp(name, kWildcardName) == 0) {
@@ -1009,16 +1000,15 @@ bool AaptGroupEntry::getNavHiddenName(const char* name,
     }
 
     if (mask != 0) {
-        if (out) out->inputFlags = (out->inputFlags&~mask) | value;
+        if (out) out->inputFlags = (out->inputFlags & ~mask) | value;
         return true;
     }
 
     return false;
 }
 
-bool AaptGroupEntry::getNavigationName(const char* name,
-                                     ResTable_config* out)
-{
+bool AaptGroupEntry::getNavigationName(const char *name,
+                                       ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
         if (out) out->navigation = out->NAVIGATION_ANY;
         return true;
@@ -1039,9 +1029,8 @@ bool AaptGroupEntry::getNavigationName(const char* name,
     return false;
 }
 
-bool AaptGroupEntry::getScreenSizeName(const char* name,
-                                       ResTable_config* out)
-{
+bool AaptGroupEntry::getScreenSizeName(const char *name,
+                                       ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
         if (out) {
             out->screenWidth = out->SCREENWIDTH_ANY;
@@ -1050,19 +1039,19 @@ bool AaptGroupEntry::getScreenSizeName(const char* name,
         return true;
     }
 
-    const char* x = name;
+    const char *x = name;
     while (*x >= '0' && *x <= '9') x++;
     if (x == name || *x != 'x') return false;
-    String8 xName(name, x-name);
+    String8 xName(name, x - name);
     x++;
 
-    const char* y = x;
+    const char *y = x;
     while (*y >= '0' && *y <= '9') y++;
     if (y == name || *y != 0) return false;
-    String8 yName(x, y-x);
+    String8 yName(x, y - x);
 
-    uint16_t w = (uint16_t)atoi(xName.string());
-    uint16_t h = (uint16_t)atoi(yName.string());
+    uint16_t w = (uint16_t) atoi(xName.string());
+    uint16_t h = (uint16_t) atoi(yName.string());
     if (w < h) {
         return false;
     }
@@ -1075,9 +1064,8 @@ bool AaptGroupEntry::getScreenSizeName(const char* name,
     return true;
 }
 
-bool AaptGroupEntry::getVersionName(const char* name,
-                                    ResTable_config* out)
-{
+bool AaptGroupEntry::getVersionName(const char *name,
+                                    ResTable_config *out) {
     if (strcmp(name, kWildcardName) == 0) {
         if (out) {
             out->sdkVersion = out->SDKVERSION_ANY;
@@ -1091,21 +1079,20 @@ bool AaptGroupEntry::getVersionName(const char* name,
     }
 
     name++;
-    const char* s = name;
+    const char *s = name;
     while (*s >= '0' && *s <= '9') s++;
     if (s == name || *s != 0) return false;
-    String8 sdkName(name, s-name);
+    String8 sdkName(name, s - name);
 
     if (out) {
-        out->sdkVersion = (uint16_t)atoi(sdkName.string());
+        out->sdkVersion = (uint16_t) atoi(sdkName.string());
         out->minorVersion = 0;
     }
 
     return true;
 }
 
-int AaptGroupEntry::compare(const AaptGroupEntry& o) const
-{
+int AaptGroupEntry::compare(const AaptGroupEntry &o) const {
     int v = mcc.compare(o.mcc);
     if (v == 0) v = mnc.compare(o.mnc);
     if (v == 0) v = locale.compare(o.locale);
@@ -1126,8 +1113,7 @@ int AaptGroupEntry::compare(const AaptGroupEntry& o) const
     return v;
 }
 
-ResTable_config AaptGroupEntry::toParams() const
-{
+ResTable_config AaptGroupEntry::toParams() const {
     ResTable_config params;
     memset(&params, 0, sizeof(params));
     getMccName(mcc.string(), &params);
@@ -1146,26 +1132,26 @@ ResTable_config AaptGroupEntry::toParams() const
     getNavigationName(navigation.string(), &params);
     getScreenSizeName(screenSize.string(), &params);
     getVersionName(version.string(), &params);
-    
+
     // Fix up version number based on specified parameters.
     int minSdk = 0;
-    if ((params.uiMode&ResTable_config::MASK_UI_MODE_TYPE)
-                != ResTable_config::UI_MODE_TYPE_ANY
-            ||  (params.uiMode&ResTable_config::MASK_UI_MODE_NIGHT)
-                != ResTable_config::UI_MODE_NIGHT_ANY) {
+    if ((params.uiMode & ResTable_config::MASK_UI_MODE_TYPE)
+        != ResTable_config::UI_MODE_TYPE_ANY
+        || (params.uiMode & ResTable_config::MASK_UI_MODE_NIGHT)
+           != ResTable_config::UI_MODE_NIGHT_ANY) {
         minSdk = SDK_FROYO;
-    } else if ((params.screenLayout&ResTable_config::MASK_SCREENSIZE)
-                != ResTable_config::SCREENSIZE_ANY
-            ||  (params.screenLayout&ResTable_config::MASK_SCREENLONG)
-                != ResTable_config::SCREENLONG_ANY
-            || params.density != ResTable_config::DENSITY_DEFAULT) {
+    } else if ((params.screenLayout & ResTable_config::MASK_SCREENSIZE)
+               != ResTable_config::SCREENSIZE_ANY
+               || (params.screenLayout & ResTable_config::MASK_SCREENLONG)
+                  != ResTable_config::SCREENLONG_ANY
+               || params.density != ResTable_config::DENSITY_DEFAULT) {
         minSdk = SDK_DONUT;
     }
-    
+
     if (minSdk > params.sdkVersion) {
         params.sdkVersion = minSdk;
     }
-    
+
     return params;
 }
 
@@ -1173,14 +1159,13 @@ ResTable_config AaptGroupEntry::toParams() const
 // =========================================================================
 // =========================================================================
 
-void* AaptFile::editData(size_t size)
-{
+void *AaptFile::editData(size_t size) {
     if (size <= mBufferSize) {
         mDataSize = size;
         return mData;
     }
-    size_t allocSize = (size*3)/2;
-    void* buf = realloc(mData, allocSize);
+    size_t allocSize = (size * 3) / 2;
+    void *buf = realloc(mData, allocSize);
     if (buf == NULL) {
         return NULL;
     }
@@ -1190,51 +1175,46 @@ void* AaptFile::editData(size_t size)
     return buf;
 }
 
-void* AaptFile::editData(size_t* outSize)
-{
+void *AaptFile::editData(size_t *outSize) {
     if (outSize) {
         *outSize = mDataSize;
     }
     return mData;
 }
 
-void* AaptFile::padData(size_t wordSize)
-{
-    const size_t extra = mDataSize%wordSize;
+void *AaptFile::padData(size_t wordSize) {
+    const size_t extra = mDataSize % wordSize;
     if (extra == 0) {
         return mData;
     }
 
     size_t initial = mDataSize;
-    void* data = editData(initial+(wordSize-extra));
+    void *data = editData(initial + (wordSize - extra));
     if (data != NULL) {
-        memset(((uint8_t*)data) + initial, 0, wordSize-extra);
+        memset(((uint8_t *) data) + initial, 0, wordSize - extra);
     }
     return data;
 }
 
-status_t AaptFile::writeData(const void* data, size_t size)
-{
+status_t AaptFile::writeData(const void *data, size_t size) {
     size_t end = mDataSize;
     size_t total = size + end;
-    void* buf = editData(total);
+    void *buf = editData(total);
     if (buf == NULL) {
         return UNKNOWN_ERROR;
     }
-    memcpy(((char*)buf)+end, data, size);
+    memcpy(((char *) buf) + end, data, size);
     return NO_ERROR;
 }
 
-void AaptFile::clearData()
-{
+void AaptFile::clearData() {
     if (mData != NULL) free(mData);
     mData = NULL;
     mDataSize = 0;
     mBufferSize = 0;
 }
 
-String8 AaptFile::getPrintableSource() const
-{
+String8 AaptFile::getPrintableSource() const {
     if (hasData()) {
         String8 name(mGroupEntry.locale.string());
         name.appendPath(mGroupEntry.vendor.string());
@@ -1249,8 +1229,7 @@ String8 AaptFile::getPrintableSource() const
 // =========================================================================
 // =========================================================================
 
-status_t AaptGroup::addFile(const sp<AaptFile>& file)
-{
+status_t AaptGroup::addFile(const sp<AaptFile> &file) {
     if (mFiles.indexOfKey(file->getGroupEntry()) < 0) {
         file->mPath = mPath;
         mFiles.add(file->getGroupEntry(), file);
@@ -1262,30 +1241,27 @@ status_t AaptGroup::addFile(const sp<AaptFile>& file)
     return UNKNOWN_ERROR;
 }
 
-void AaptGroup::removeFile(size_t index)
-{
-	mFiles.removeItemsAt(index);
+void AaptGroup::removeFile(size_t index) {
+    mFiles.removeItemsAt(index);
 }
 
-void AaptGroup::print() const
-{
+void AaptGroup::print() const {
     printf("  %s\n", getPath().string());
-    const size_t N=mFiles.size();
+    const size_t N = mFiles.size();
     size_t i;
-    for (i=0; i<N; i++) {
+    for (i = 0; i < N; i++) {
         sp<AaptFile> file = mFiles.valueAt(i);
-        const AaptGroupEntry& e = file->getGroupEntry();
+        const AaptGroupEntry &e = file->getGroupEntry();
         if (file->hasData()) {
             printf("      Gen: (%s) %d bytes\n", e.toString().string(),
-                    (int)file->getSize());
+                   (int) file->getSize());
         } else {
             printf("      Src: %s\n", file->getPrintableSource().string());
         }
     }
 }
 
-String8 AaptGroup::getPrintableSource() const
-{
+String8 AaptGroup::getPrintableSource() const {
     if (mFiles.size() > 0) {
         // Arbitrarily pull the first source file out of the list.
         return mFiles.valueAt(0)->getPrintableSource();
@@ -1300,8 +1276,7 @@ String8 AaptGroup::getPrintableSource() const
 // =========================================================================
 // =========================================================================
 
-status_t AaptDir::addFile(const String8& name, const sp<AaptGroup>& file)
-{
+status_t AaptDir::addFile(const String8 &name, const sp<AaptGroup> &file) {
     if (mFiles.indexOfKey(name) >= 0) {
         return ALREADY_EXISTS;
     }
@@ -1309,8 +1284,7 @@ status_t AaptDir::addFile(const String8& name, const sp<AaptGroup>& file)
     return NO_ERROR;
 }
 
-status_t AaptDir::addDir(const String8& name, const sp<AaptDir>& dir)
-{
+status_t AaptDir::addDir(const String8 &name, const sp<AaptDir> &dir) {
     if (mDirs.indexOfKey(name) >= 0) {
         return ALREADY_EXISTS;
     }
@@ -1318,8 +1292,7 @@ status_t AaptDir::addDir(const String8& name, const sp<AaptDir>& dir)
     return NO_ERROR;
 }
 
-sp<AaptDir> AaptDir::makeDir(const String8& path)
-{
+sp<AaptDir> AaptDir::makeDir(const String8 &path) {
     String8 name;
     String8 remain = path;
 
@@ -1337,50 +1310,46 @@ sp<AaptDir> AaptDir::makeDir(const String8& path)
     return dir;
 }
 
-void AaptDir::removeFile(const String8& name)
-{
+void AaptDir::removeFile(const String8 &name) {
     mFiles.removeItem(name);
 }
 
-void AaptDir::removeDir(const String8& name)
-{
+void AaptDir::removeDir(const String8 &name) {
     mDirs.removeItem(name);
 }
 
-status_t AaptDir::renameFile(const sp<AaptFile>& file, const String8& newName)
-{
-	sp<AaptGroup> origGroup;
+status_t AaptDir::renameFile(const sp<AaptFile> &file, const String8 &newName) {
+    sp<AaptGroup> origGroup;
 
-	// Find and remove the given file with shear, brute force!
-	const size_t NG = mFiles.size();
-	size_t i;
-	for (i=0; origGroup == NULL && i<NG; i++) {
-		sp<AaptGroup> g = mFiles.valueAt(i);
-		const size_t NF = g->getFiles().size();
-		for (size_t j=0; j<NF; j++) {
-			if (g->getFiles().valueAt(j) == file) {
-				origGroup = g;
-				g->removeFile(j);
-				if (NF == 1) {
-					mFiles.removeItemsAt(i);
-				}
-				break;
-			}
-		}
-	}
+    // Find and remove the given file with shear, brute force!
+    const size_t NG = mFiles.size();
+    size_t i;
+    for (i = 0; origGroup == NULL && i < NG; i++) {
+        sp<AaptGroup> g = mFiles.valueAt(i);
+        const size_t NF = g->getFiles().size();
+        for (size_t j = 0; j < NF; j++) {
+            if (g->getFiles().valueAt(j) == file) {
+                origGroup = g;
+                g->removeFile(j);
+                if (NF == 1) {
+                    mFiles.removeItemsAt(i);
+                }
+                break;
+            }
+        }
+    }
 
-	//printf("Renaming %s to %s\n", file->getPath().getPathName(), newName.string());
+    //printf("Renaming %s to %s\n", file->getPath().getPathName(), newName.string());
 
-	// Place the file under its new name.
-	if (origGroup != NULL) {
-		return addLeafFile(newName, file);
-	}
+    // Place the file under its new name.
+    if (origGroup != NULL) {
+        return addLeafFile(newName, file);
+    }
 
-	return NO_ERROR;
+    return NO_ERROR;
 }
 
-status_t AaptDir::addLeafFile(const String8& leafName, const sp<AaptFile>& file)
-{
+status_t AaptDir::addLeafFile(const String8 &leafName, const sp<AaptFile> &file) {
     sp<AaptGroup> group;
     if (mFiles.indexOfKey(leafName) >= 0) {
         group = mFiles.valueFor(leafName);
@@ -1392,13 +1361,12 @@ status_t AaptDir::addLeafFile(const String8& leafName, const sp<AaptFile>& file)
     return group->addFile(file);
 }
 
-ssize_t AaptDir::slurpFullTree(Bundle* bundle, const String8& srcDir,
-                            const AaptGroupEntry& kind, const String8& resType)
-{
+ssize_t AaptDir::slurpFullTree(Bundle *bundle, const String8 &srcDir,
+                               const AaptGroupEntry &kind, const String8 &resType) {
     Vector<String8> fileNames;
 
     {
-        DIR* dir = NULL;
+        DIR *dir = NULL;
 
         dir = opendir(srcDir.string());
         if (dir == NULL) {
@@ -1410,7 +1378,7 @@ ssize_t AaptDir::slurpFullTree(Bundle* bundle, const String8& srcDir,
          * Slurp the filenames out of the directory.
          */
         while (1) {
-            struct dirent* entry;
+            struct dirent *entry;
 
             entry = readdir(dir);
             if (entry == NULL)
@@ -1474,8 +1442,7 @@ ssize_t AaptDir::slurpFullTree(Bundle* bundle, const String8& srcDir,
     return count;
 }
 
-status_t AaptDir::validate() const
-{
+status_t AaptDir::validate() const {
     const size_t NF = mFiles.size();
     const size_t ND = mDirs.size();
     size_t i;
@@ -1487,7 +1454,7 @@ status_t AaptDir::validate() const
         }
 
         size_t j;
-        for (j = i+1; j < NF; j++) {
+        for (j = i + 1; j < NF; j++) {
             if (strcasecmp(mFiles.valueAt(i)->getLeaf().string(),
                            mFiles.valueAt(j)->getLeaf().string()) == 0) {
                 SourcePos(mFiles.valueAt(i)->getPrintableSource(), -1).error(
@@ -1519,7 +1486,7 @@ status_t AaptDir::validate() const
         }
 
         size_t j;
-        for (j = i+1; j < ND; j++) {
+        for (j = i + 1; j < ND; j++) {
             if (strcasecmp(mDirs.valueAt(i)->getLeaf().string(),
                            mDirs.valueAt(j)->getLeaf().string()) == 0) {
                 SourcePos(mDirs.valueAt(i)->getPrintableSource(), -1).error(
@@ -1538,22 +1505,20 @@ status_t AaptDir::validate() const
     return NO_ERROR;
 }
 
-void AaptDir::print() const
-{
-    const size_t ND=getDirs().size();
+void AaptDir::print() const {
+    const size_t ND = getDirs().size();
     size_t i;
-    for (i=0; i<ND; i++) {
+    for (i = 0; i < ND; i++) {
         getDirs().valueAt(i)->print();
     }
 
-    const size_t NF=getFiles().size();
-    for (i=0; i<NF; i++) {
+    const size_t NF = getFiles().size();
+    for (i = 0; i < NF; i++) {
         getFiles().valueAt(i)->print();
     }
 }
 
-String8 AaptDir::getPrintableSource() const
-{
+String8 AaptDir::getPrintableSource() const {
     if (mFiles.size() > 0) {
         // Arbitrarily pull the first file out of the list as the source dir.
         return mFiles.valueAt(0)->getPrintableSource().getPathDir();
@@ -1573,10 +1538,9 @@ String8 AaptDir::getPrintableSource() const
 // =========================================================================
 
 sp<AaptFile> AaptAssets::addFile(
-        const String8& filePath, const AaptGroupEntry& entry,
-        const String8& srcDir, sp<AaptGroup>* outGroup,
-        const String8& resType)
-{
+        const String8 &filePath, const AaptGroupEntry &entry,
+        const String8 &srcDir, sp<AaptGroup> *outGroup,
+        const String8 &resType) {
     sp<AaptDir> dir = this;
     sp<AaptGroup> group;
     sp<AaptFile> file;
@@ -1625,9 +1589,8 @@ sp<AaptFile> AaptAssets::addFile(
     return file;
 }
 
-void AaptAssets::addResource(const String8& leafName, const String8& path,
-                const sp<AaptFile>& file, const String8& resType)
-{
+void AaptAssets::addResource(const String8 &leafName, const String8 &path,
+                             const sp<AaptFile> &file, const String8 &resType) {
     sp<AaptDir> res = AaptDir::makeDir(kResString);
     String8 dirname = file->getGroupEntry().toDirName(resType);
     sp<AaptDir> subdir = res->makeDir(dirname);
@@ -1638,13 +1601,12 @@ void AaptAssets::addResource(const String8& leafName, const String8& path,
 }
 
 
-ssize_t AaptAssets::slurpFromArgs(Bundle* bundle)
-{
+ssize_t AaptAssets::slurpFromArgs(Bundle *bundle) {
     int count;
     int totalCount = 0;
     FileType type;
-    const Vector<const char *>& resDirs = bundle->getResourceSourceDirs();
-    const size_t dirCount =resDirs.size();
+    const Vector<const char *> &resDirs = bundle->getResourceSourceDirs();
+    const size_t dirCount = resDirs.size();
     sp<AaptAssets> current = this;
 
     const int N = bundle->getFileSpecCount();
@@ -1664,7 +1626,7 @@ ssize_t AaptAssets::slurpFromArgs(Bundle* bundle)
      * If a directory of custom assets was supplied, slurp 'em up.
      */
     if (bundle->getAssetSourceDir()) {
-        const char* assetDir = bundle->getAssetSourceDir();
+        const char *assetDir = bundle->getAssetSourceDir();
 
         FileType type = getFileType(assetDir);
         if (type == kFileTypeNonexistent) {
@@ -1692,13 +1654,13 @@ ssize_t AaptAssets::slurpFromArgs(Bundle* bundle)
 
         if (bundle->getVerbose())
             printf("Found %d custom asset file%s in %s\n",
-                   count, (count==1) ? "" : "s", assetDir);
+                   count, (count == 1) ? "" : "s", assetDir);
     }
 
     /*
      * If a directory of resource-specific assets was supplied, slurp 'em up.
      */
-    for (size_t i=0; i<dirCount; i++) {
+    for (size_t i = 0; i < dirCount; i++) {
         const char *res = resDirs[i];
         if (res) {
             type = getFileType(res);
@@ -1707,7 +1669,7 @@ ssize_t AaptAssets::slurpFromArgs(Bundle* bundle)
                 return UNKNOWN_ERROR;
             }
             if (type == kFileTypeDirectory) {
-                if (i>0) {
+                if (i > 0) {
                     sp<AaptAssets> nextOverlay = new AaptAssets();
                     current->setOverlay(nextOverlay);
                     current = nextOverlay;
@@ -1719,19 +1681,18 @@ ssize_t AaptAssets::slurpFromArgs(Bundle* bundle)
                     goto bail;
                 }
                 totalCount += count;
-            }
-            else {
+            } else {
                 fprintf(stderr, "ERROR: '%s' is not a directory\n", res);
                 return UNKNOWN_ERROR;
             }
         }
-        
+
     }
     /*
      * Now do any additional raw files.
      */
-    for (int arg=0; arg<N; arg++) {
-        const char* assetDir = bundle->getFileSpecEntry(arg);
+    for (int arg = 0; arg < N; arg++) {
+        const char *assetDir = bundle->getFileSpecEntry(arg);
 
         FileType type = getFileType(assetDir);
         if (type == kFileTypeNonexistent) {
@@ -1746,7 +1707,7 @@ ssize_t AaptAssets::slurpFromArgs(Bundle* bundle)
         String8 assetRoot(assetDir);
 
         if (bundle->getVerbose())
-            printf("Processing raw dir '%s'\n", (const char*) assetDir);
+            printf("Processing raw dir '%s'\n", (const char *) assetDir);
 
         /*
          * Do a recursive traversal of subdir tree.  We don't make any
@@ -1763,7 +1724,7 @@ ssize_t AaptAssets::slurpFromArgs(Bundle* bundle)
 
         if (bundle->getVerbose())
             printf("Found %d asset file%s in %s\n",
-                   count, (count==1) ? "" : "s", assetDir);
+                   count, (count == 1) ? "" : "s", assetDir);
     }
 
     count = validate();
@@ -1773,14 +1734,13 @@ ssize_t AaptAssets::slurpFromArgs(Bundle* bundle)
     }
 
 
-bail:
+    bail:
     return totalCount;
 }
 
-ssize_t AaptAssets::slurpFullTree(Bundle* bundle, const String8& srcDir,
-                                    const AaptGroupEntry& kind,
-                                    const String8& resType)
-{
+ssize_t AaptAssets::slurpFullTree(Bundle *bundle, const String8 &srcDir,
+                                  const AaptGroupEntry &kind,
+                                  const String8 &resType) {
     ssize_t res = AaptDir::slurpFullTree(bundle, srcDir, kind, resType);
     if (res > 0) {
         mGroupEntries.add(kind);
@@ -1789,11 +1749,10 @@ ssize_t AaptAssets::slurpFullTree(Bundle* bundle, const String8& srcDir,
     return res;
 }
 
-ssize_t AaptAssets::slurpResourceTree(Bundle* bundle, const String8& srcDir)
-{
+ssize_t AaptAssets::slurpResourceTree(Bundle *bundle, const String8 &srcDir) {
     ssize_t err = 0;
 
-    DIR* dir = opendir(srcDir.string());
+    DIR *dir = opendir(srcDir.string());
     if (dir == NULL) {
         fprintf(stderr, "ERROR: opendir(%s): %s\n", srcDir.string(), strerror(errno));
         return UNKNOWN_ERROR;
@@ -1806,7 +1765,7 @@ ssize_t AaptAssets::slurpResourceTree(Bundle* bundle, const String8& srcDir)
      * expected pattern.
      */
     while (1) {
-        struct dirent* entry = readdir(dir);
+        struct dirent *entry = readdir(dir);
         if (entry == NULL) {
             break;
         }
@@ -1833,8 +1792,8 @@ ssize_t AaptAssets::slurpResourceTree(Bundle* bundle, const String8& srcDir)
             const char *verString = group.version.string();
             int dirVersionInt = atoi(verString + 1); // skip 'v' in version name
             if (dirVersionInt > maxResInt) {
-              fprintf(stderr, "max res %d, skipping %s\n", maxResInt, entry->d_name);
-              continue;
+                fprintf(stderr, "max res %d, skipping %s\n", maxResInt, entry->d_name);
+                continue;
             }
         }
 
@@ -1843,7 +1802,7 @@ ssize_t AaptAssets::slurpResourceTree(Bundle* bundle, const String8& srcDir)
         if (type == kFileTypeDirectory) {
             sp<AaptDir> dir = makeDir(String8(entry->d_name));
             ssize_t res = dir->slurpFullTree(bundle, subdirName, group,
-                                                resType);
+                                             resType);
             if (res < 0) {
                 count = res;
                 goto bail;
@@ -1861,7 +1820,7 @@ ssize_t AaptAssets::slurpResourceTree(Bundle* bundle, const String8& srcDir)
         }
     }
 
-bail:
+    bail:
     closedir(dir);
     dir = NULL;
 
@@ -1872,12 +1831,11 @@ bail:
 }
 
 ssize_t
-AaptAssets::slurpResourceZip(Bundle* bundle, const char* filename)
-{
+AaptAssets::slurpResourceZip(Bundle *bundle, const char *filename) {
     int count = 0;
     SortedVector<AaptGroupEntry> entries;
 
-    ZipFile* zip = new ZipFile;
+    ZipFile *zip = new ZipFile;
     status_t err = zip->open(filename, ZipFile::kOpenReadOnly);
     if (err != NO_ERROR) {
         fprintf(stderr, "error opening zip file %s\n", filename);
@@ -1887,8 +1845,8 @@ AaptAssets::slurpResourceZip(Bundle* bundle, const char* filename)
     }
 
     const int N = zip->getNumEntries();
-    for (int i=0; i<N; i++) {
-        ZipEntry* entry = zip->getEntryByIndex(i);
+    for (int i = 0; i < N; i++) {
+        ZipEntry *entry = zip->getEntryByIndex(i);
         if (entry->getDeleted()) {
             continue;
         }
@@ -1933,8 +1891,8 @@ AaptAssets::slurpResourceZip(Bundle* bundle, const char* filename)
 #endif
 
         size_t len = entry->getUncompressedLen();
-        void* data = zip->uncompress(entry);
-        void* buf = file->editData(len);
+        void *data = zip->uncompress(entry);
+        void *buf = file->editData(len);
         memcpy(buf, data, len);
 
 #if 0
@@ -1957,13 +1915,12 @@ AaptAssets::slurpResourceZip(Bundle* bundle, const char* filename)
         count++;
     }
 
-bail:
+    bail:
     delete zip;
     return count;
 }
 
-sp<AaptSymbols> AaptAssets::getSymbolsFor(const String8& name)
-{
+sp<AaptSymbols> AaptAssets::getSymbolsFor(const String8 &name) {
     sp<AaptSymbols> sym = mSymbols.valueFor(name);
     if (sym == NULL) {
         sym = new AaptSymbols();
@@ -1972,13 +1929,12 @@ sp<AaptSymbols> AaptAssets::getSymbolsFor(const String8& name)
     return sym;
 }
 
-status_t AaptAssets::buildIncludedResources(Bundle* bundle)
-{
+status_t AaptAssets::buildIncludedResources(Bundle *bundle) {
     if (!mHaveIncludedAssets) {
         // Add in all includes.
-        const Vector<const char*>& incl = bundle->getPackageIncludes();
-        const size_t N=incl.size();
-        for (size_t i=0; i<N; i++) {
+        const Vector<const char *> &incl = bundle->getPackageIncludes();
+        const size_t N = incl.size();
+        for (size_t i = 0; i < N; i++) {
             if (bundle->getVerbose())
                 printf("Including resources from package: %s\n", incl[i]);
             if (!mIncludedAssets.addAssetPath(String8(incl[i]), NULL)) {
@@ -1993,23 +1949,20 @@ status_t AaptAssets::buildIncludedResources(Bundle* bundle)
     return NO_ERROR;
 }
 
-status_t AaptAssets::addIncludedResources(const sp<AaptFile>& file)
-{
-    const ResTable& res = getIncludedResources();
+status_t AaptAssets::addIncludedResources(const sp<AaptFile> &file) {
+    const ResTable &res = getIncludedResources();
     // XXX dirty!
-    return const_cast<ResTable&>(res).add(file->getData(), file->getSize(), NULL);
+    return const_cast<ResTable &>(res).add(file->getData(), file->getSize(), NULL);
 }
 
-const ResTable& AaptAssets::getIncludedResources() const
-{
+const ResTable &AaptAssets::getIncludedResources() const {
     return mIncludedAssets.getResources(false);
 }
 
-void AaptAssets::print() const
-{
+void AaptAssets::print() const {
     printf("Locale/Vendor pairs:\n");
-    const size_t N=mGroupEntries.size();
-    for (size_t i=0; i<N; i++) {
+    const size_t N = mGroupEntries.size();
+    for (size_t i = 0; i < N; i++) {
         printf("   %s/%s\n",
                mGroupEntries.itemAt(i).locale.string(),
                mGroupEntries.itemAt(i).vendor.string());
@@ -2019,12 +1972,11 @@ void AaptAssets::print() const
     AaptDir::print();
 }
 
-sp<AaptDir> AaptAssets::resDir(const String8& name)
-{
-    const Vector<sp<AaptDir> >& dirs = mDirs;
+sp<AaptDir> AaptAssets::resDir(const String8 &name) {
+    const Vector<sp<AaptDir> > &dirs = mDirs;
     const size_t N = dirs.size();
-    for (size_t i=0; i<N; i++) {
-        const sp<AaptDir>& d = dirs.itemAt(i);
+    for (size_t i = 0; i < N; i++) {
+        const sp<AaptDir> &d = dirs.itemAt(i);
         if (d->getLeaf() == name) {
             return d;
         }
@@ -2033,22 +1985,21 @@ sp<AaptDir> AaptAssets::resDir(const String8& name)
 }
 
 bool
-valid_symbol_name(const String8& symbol)
-{
-    static char const * const KEYWORDS[] = {
-        "abstract", "assert", "boolean", "break",
-        "byte", "case", "catch", "char", "class", "const", "continue",
-        "default", "do", "double", "else", "enum", "extends", "final",
-        "finally", "float", "for", "goto", "if", "implements", "import",
-        "instanceof", "int", "interface", "long", "native", "new", "package",
-        "private", "protected", "public", "return", "short", "static",
-        "strictfp", "super", "switch", "synchronized", "this", "throw",
-        "throws", "transient", "try", "void", "volatile", "while",
-        "true", "false", "null",
-        NULL
+valid_symbol_name(const String8 &symbol) {
+    static char const *const KEYWORDS[] = {
+            "abstract", "assert", "boolean", "break",
+            "byte", "case", "catch", "char", "class", "const", "continue",
+            "default", "do", "double", "else", "enum", "extends", "final",
+            "finally", "float", "for", "goto", "if", "implements", "import",
+            "instanceof", "int", "interface", "long", "native", "new", "package",
+            "private", "protected", "public", "return", "short", "static",
+            "strictfp", "super", "switch", "synchronized", "this", "throw",
+            "throws", "transient", "try", "void", "volatile", "while",
+            "true", "false", "null",
+            NULL
     };
-    const char*const* k = KEYWORDS;
-    const char*const s = symbol.string();
+    const char *const *k = KEYWORDS;
+    const char *const s = symbol.string();
     while (*k) {
         if (0 == strcmp(s, *k)) {
             return false;

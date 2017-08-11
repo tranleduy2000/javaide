@@ -182,11 +182,11 @@ namespace android {
             bool dumpStack = false;
             if (!mRetain && mStrongRefs != NULL) {
                 dumpStack = true;
-                ALOGE("Strong references remain:");
+                LOGE("Strong references remain:");
                 ref_entry* refs = mStrongRefs;
                 while (refs) {
                     char inc = refs->ref >= 0 ? '+' : '-';
-                    ALOGD("\t%c ID %p (ref %d):", inc, refs->id, refs->ref);
+                    LOGD("\t%c ID %p (ref %d):", inc, refs->id, refs->ref);
 #if DEBUG_REFS_CALLSTACK_ENABLED
                     refs->stack.log(LOG_TAG);
 #endif
@@ -196,11 +196,11 @@ namespace android {
 
             if (!mRetain && mWeakRefs != NULL) {
                 dumpStack = true;
-                ALOGE("Weak references remain!");
+                LOGE("Weak references remain!");
                 ref_entry* refs = mWeakRefs;
                 while (refs) {
                     char inc = refs->ref >= 0 ? '+' : '-';
-                    ALOGD("\t%c ID %p (ref %d):", inc, refs->id, refs->ref);
+                    LOGD("\t%c ID %p (ref %d):", inc, refs->id, refs->ref);
 #if DEBUG_REFS_CALLSTACK_ENABLED
                     refs->stack.log(LOG_TAG);
 #endif
@@ -208,19 +208,19 @@ namespace android {
                 }
             }
             if (dumpStack) {
-                ALOGE("above errors at:");
+                LOGE("above errors at:");
                 CallStack stack(LOG_TAG);
             }
         }
 
         void addStrongRef(const void* id) {
-            //ALOGD_IF(mTrackEnabled,
+            //LOGD_IF(mTrackEnabled,
             //        "addStrongRef: RefBase=%p, id=%p", mBase, id);
             addRef(&mStrongRefs, id, mStrong.load(std::memory_order_relaxed));
         }
 
         void removeStrongRef(const void* id) {
-            //ALOGD_IF(mTrackEnabled,
+            //LOGD_IF(mTrackEnabled,
             //        "removeStrongRef: RefBase=%p, id=%p", mBase, id);
             if (!mRetain) {
                 removeRef(&mStrongRefs, id);
@@ -230,7 +230,7 @@ namespace android {
         }
 
         void renameStrongRefId(const void* old_id, const void* new_id) {
-            //ALOGD_IF(mTrackEnabled,
+            //LOGD_IF(mTrackEnabled,
             //        "renameStrongRefId: RefBase=%p, oid=%p, nid=%p",
             //        mBase, old_id, new_id);
             renameRefsId(mStrongRefs, old_id, new_id);
@@ -285,9 +285,9 @@ namespace android {
                 if (rc >= 0) {
                     write(rc, text.string(), text.length());
                     close(rc);
-                    ALOGD("STACK TRACE for %p saved in %s", this, name);
+                    LOGD("STACK TRACE for %p saved in %s", this, name);
                 }
-                else ALOGE("FAILED TO PRINT STACK TRACE for %p in %s: %s", this,
+                else LOGE("FAILED TO PRINT STACK TRACE for %p in %s: %s", this,
                           name, strerror(errno));
             }
         }
@@ -339,14 +339,14 @@ namespace android {
                     ref = *refs;
                 }
 
-                ALOGE("RefBase: removing id %p on RefBase %p"
+                LOGE("RefBase: removing id %p on RefBase %p"
                         "(weakref_type %p) that doesn't exist!",
                         id, mBase, this);
 
                 ref = head;
                 while (ref) {
                     char inc = ref->ref >= 0 ? '+' : '-';
-                    ALOGD("\t%c ID %p (ref %d):", inc, ref->id, ref->ref);
+                    LOGD("\t%c ID %p (ref %d):", inc, ref->id, ref->ref);
                     ref = ref->next;
                 }
 
@@ -407,7 +407,7 @@ namespace android {
         const int32_t c = refs->mStrong.fetch_add(1, std::memory_order_relaxed);
         LOG_ASSERT(c > 0, "incStrong() called on %p after last strong ref", refs);
 #if PRINT_REFS
-        ALOGD("incStrong of %p from %p: cnt=%d\n", this, id, c);
+        LOGD("incStrong of %p from %p: cnt=%d\n", this, id, c);
 #endif
         if (c != INITIAL_STRONG_VALUE) {
             return;
@@ -425,7 +425,7 @@ namespace android {
         refs->removeStrongRef(id);
         const int32_t c = refs->mStrong.fetch_sub(1, std::memory_order_release);
 #if PRINT_REFS
-        ALOGD("decStrong of %p from %p: cnt=%d\n", this, id, c);
+        LOGD("decStrong of %p from %p: cnt=%d\n", this, id, c);
 #endif
         LOG_ALWAYS_FATAL_IF(BAD_STRONG(c), "decStrong() called on %p too many times",
                             refs);
@@ -458,7 +458,7 @@ namespace android {
         LOG_ASSERT(c >= 0, "forceIncStrong called on %p after ref count underflow",
                    refs);
 #if PRINT_REFS
-        ALOGD("forceIncStrong of %p from %p: cnt=%d\n", this, id, c);
+        LOGD("forceIncStrong of %p from %p: cnt=%d\n", this, id, c);
 #endif
 
         switch (c) {
@@ -513,10 +513,10 @@ namespace android {
                 // Thus we no longer do anything here.  We log this case, since it
                 // seems to be extremely rare, and should not normally occur. We
                 // used to deallocate mBase here, so this may now indicate a leak.
-                ALOGW("RefBase: Object at %p lost last weak reference "
+                LOGW("RefBase: Object at %p lost last weak reference "
                               "before it had a strong reference", impl->mBase);
             } else {
-                // ALOGV("Freeing refs %p of old RefBase %p\n", this, impl->mBase);
+                // LOGV("Freeing refs %p of old RefBase %p\n", this, impl->mBase);
                 delete impl;
             }
         } else {
@@ -607,7 +607,7 @@ namespace android {
         impl->addStrongRef(id);
 
 #if PRINT_REFS
-        ALOGD("attemptIncStrong of %p from %p: cnt=%d\n", this, id, curCount);
+        LOGD("attemptIncStrong of %p from %p: cnt=%d\n", this, id, curCount);
 #endif
 
         // curCount is the value of mStrong before we incremented it.

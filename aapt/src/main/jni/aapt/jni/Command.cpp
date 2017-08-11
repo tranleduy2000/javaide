@@ -7,31 +7,21 @@
 // modified by Tom Arn, www.t-arn.com <ta>
 
 #include "Main.h"
-#include "Bundle.h"
 #include "ResourceTable.h"
 #include "XMLNode.h"
-
-#include <utils/Log.h>
-#include <utils/threads.h>
-#include <utils/List.h>
-#include <utils/Errors.h>
-
-#include <fcntl.h>
-#include <errno.h>
 
 using namespace android;
 
 /*
  * Show version info.  All the cool kids do it.
  */
-int doVersion(Bundle* bundle)
-{
+int doVersion(Bundle *bundle) {
     if (bundle->getFileSpecCount() != 0)
         printf("(ignoring extra arguments)\n");
 /* <ta>
         printf("Android Asset Packaging Tool, v0.2\n");
 */
-        printf("Android Asset Packaging Tool, v0.2 (ta 1.0.0)\n");
+    printf("Android Asset Packaging Tool, v0.2 (ta 1.0.0)\n");
 // </ta>
     return 0;
 }
@@ -42,9 +32,8 @@ int doVersion(Bundle* bundle)
  *
  * Returns NULL on failure.
  */
-ZipFile* openReadOnly(const char* fileName)
-{
-    ZipFile* zip;
+ZipFile *openReadOnly(const char *fileName) {
+    ZipFile *zip;
     status_t result;
 
     zip = new ZipFile;
@@ -56,7 +45,7 @@ ZipFile* openReadOnly(const char* fileName)
             fprintf(stderr, "ERROR: '%s' access denied\n", fileName);
         else
             fprintf(stderr, "ERROR: failed opening '%s' as Zip file\n",
-                fileName);
+                    fileName);
         delete zip;
         return NULL;
     }
@@ -70,9 +59,8 @@ ZipFile* openReadOnly(const char* fileName)
  *
  * Returns NULL on failure.
  */
-ZipFile* openReadWrite(const char* fileName, bool okayToCreate)
-{
-    ZipFile* zip = NULL;
+ZipFile *openReadWrite(const char *fileName, bool okayToCreate) {
+    ZipFile *zip = NULL;
     status_t result;
     int flags;
 
@@ -88,7 +76,7 @@ ZipFile* openReadWrite(const char* fileName, bool okayToCreate)
         goto bail;
     }
 
-bail:
+    bail:
     return zip;
 }
 
@@ -96,8 +84,7 @@ bail:
 /*
  * Return a short string describing the compression method.
  */
-const char* compressionName(int method)
-{
+const char *compressionName(int method) {
     if (method == ZipEntry::kCompressStored)
         return "Stored";
     else if (method == ZipEntry::kCompressDeflated)
@@ -109,8 +96,7 @@ const char* compressionName(int method)
 /*
  * Return the percent reduction in size (0% == no compression).
  */
-int calcPercent(long uncompressedLen, long compressedLen)
-{
+int calcPercent(long uncompressedLen, long compressedLen) {
     if (!uncompressedLen)
         return 0;
     else
@@ -124,13 +110,12 @@ int calcPercent(long uncompressedLen, long compressedLen)
  * The verbose listing closely matches the output of the Info-ZIP "unzip"
  * command.
  */
-int doList(Bundle* bundle)
-{
+int doList(Bundle *bundle) {
     int result = 1;
-    ZipFile* zip = NULL;
-    const ZipEntry* entry;
+    ZipFile *zip = NULL;
+    const ZipEntry *entry;
     long totalUncLen, totalCompLen;
-    const char* zipFileName;
+    const char *zipFileName;
 
     if (bundle->getFileSpecCount() != 1) {
         fprintf(stderr, "ERROR: specify zip file name (only)\n");
@@ -147,9 +132,9 @@ int doList(Bundle* bundle)
     if (bundle->getVerbose()) {
         printf("Archive:  %s\n", zipFileName);
         printf(
-            " Length   Method    Size  Ratio   Offset      Date  Time  CRC-32    Name\n");
+                " Length   Method    Size  Ratio   Offset      Date  Time  CRC-32    Name\n");
         printf(
-            "--------  ------  ------- -----  -------      ----  ----  ------    ----\n");
+                "--------  ------  ------- -----  -------      ----  ----  ------    ----\n");
     }
 
     totalUncLen = totalCompLen = 0;
@@ -163,18 +148,18 @@ int doList(Bundle* bundle)
 
             when = entry->getModWhen();
             strftime(dateBuf, sizeof(dateBuf), "%m-%d-%y %H:%M",
-                localtime(&when));
+                     localtime(&when));
 
             printf("%8ld  %-7.7s %7ld %3d%%  %8zd  %s  %08lx  %s\n",
-                (long) entry->getUncompressedLen(),
-                compressionName(entry->getCompressionMethod()),
-                (long) entry->getCompressedLen(),
-                calcPercent(entry->getUncompressedLen(),
-                            entry->getCompressedLen()),
-                (size_t) entry->getLFHOffset(),
-                dateBuf,
-                entry->getCRC32(),
-                entry->getFileName());
+                   (long) entry->getUncompressedLen(),
+                   compressionName(entry->getCompressionMethod()),
+                   (long) entry->getCompressedLen(),
+                   calcPercent(entry->getUncompressedLen(),
+                               entry->getCompressedLen()),
+                   (size_t) entry->getLFHOffset(),
+                   dateBuf,
+                   entry->getCRC32(),
+                   entry->getFileName());
         } else {
             printf("%s\n", entry->getFileName());
         }
@@ -185,12 +170,12 @@ int doList(Bundle* bundle)
 
     if (bundle->getVerbose()) {
         printf(
-        "--------          -------  ---                            -------\n");
+                "--------          -------  ---                            -------\n");
         printf("%8ld          %7ld  %2d%%                            %d files\n",
-            totalUncLen,
-            totalCompLen,
-            calcPercent(totalUncLen, totalCompLen),
-            zip->getNumEntries());
+               totalUncLen,
+               totalCompLen,
+               calcPercent(totalUncLen, totalCompLen),
+               zip->getNumEntries());
     }
 
     if (bundle->getAndroidList()) {
@@ -200,7 +185,7 @@ int doList(Bundle* bundle)
             goto bail;
         }
 
-        const ResTable& res = assets.getResources(false);
+        const ResTable &res = assets.getResources(false);
         if (&res == NULL) {
             printf("\nNo resource table found.\n");
         } else {
@@ -208,7 +193,7 @@ int doList(Bundle* bundle)
             res.print(false);
         }
 
-        Asset* manifestAsset = assets.openNonAsset("AndroidManifest.xml",
+        Asset *manifestAsset = assets.openNonAsset("AndroidManifest.xml",
                                                    Asset::ACCESS_BUFFER);
         if (manifestAsset == NULL) {
             printf("\nNo AndroidManifest.xml found.\n");
@@ -224,25 +209,23 @@ int doList(Bundle* bundle)
 
     result = 0;
 
-bail:
+    bail:
     delete zip;
     return result;
 }
 
-static ssize_t indexOfAttribute(const ResXMLTree& tree, uint32_t attrRes)
-{
+static ssize_t indexOfAttribute(const ResXMLTree &tree, uint32_t attrRes) {
     size_t N = tree.getAttributeCount();
-    for (size_t i=0; i<N; i++) {
+    for (size_t i = 0; i < N; i++) {
         if (tree.getAttributeNameResID(i) == attrRes) {
-            return (ssize_t)i;
+            return (ssize_t) i;
         }
     }
     return -1;
 }
 
-String8 getAttribute(const ResXMLTree& tree, const char* ns,
-                            const char* attr, String8* outError)
-{
+String8 getAttribute(const ResXMLTree &tree, const char *ns,
+                     const char *attr, String8 *outError) {
     ssize_t idx = tree.indexOfAttribute(ns, attr);
     if (idx < 0) {
         return String8();
@@ -255,12 +238,11 @@ String8 getAttribute(const ResXMLTree& tree, const char* ns,
         }
     }
     size_t len;
-    const uint16_t* str = tree.getAttributeStringValue(idx, &len);
+    const uint16_t *str = tree.getAttributeStringValue(idx, &len);
     return str ? String8(str, len) : String8();
 }
 
-static String8 getAttribute(const ResXMLTree& tree, uint32_t attrRes, String8* outError)
-{
+static String8 getAttribute(const ResXMLTree &tree, uint32_t attrRes, String8 *outError) {
     ssize_t idx = indexOfAttribute(tree, attrRes);
     if (idx < 0) {
         return String8();
@@ -273,13 +255,12 @@ static String8 getAttribute(const ResXMLTree& tree, uint32_t attrRes, String8* o
         }
     }
     size_t len;
-    const uint16_t* str = tree.getAttributeStringValue(idx, &len);
+    const uint16_t *str = tree.getAttributeStringValue(idx, &len);
     return str ? String8(str, len) : String8();
 }
 
-static int32_t getIntegerAttribute(const ResXMLTree& tree, uint32_t attrRes,
-        String8* outError, int32_t defValue = -1)
-{
+static int32_t getIntegerAttribute(const ResXMLTree &tree, uint32_t attrRes,
+                                   String8 *outError, int32_t defValue = -1) {
     ssize_t idx = indexOfAttribute(tree, attrRes);
     if (idx < 0) {
         return defValue;
@@ -287,7 +268,7 @@ static int32_t getIntegerAttribute(const ResXMLTree& tree, uint32_t attrRes,
     Res_value value;
     if (tree.getAttributeValue(idx, &value) != NO_ERROR) {
         if (value.dataType < Res_value::TYPE_FIRST_INT
-                || value.dataType > Res_value::TYPE_LAST_INT) {
+            || value.dataType > Res_value::TYPE_LAST_INT) {
             if (outError != NULL) *outError = "attribute is not an integer value";
             return defValue;
         }
@@ -295,9 +276,8 @@ static int32_t getIntegerAttribute(const ResXMLTree& tree, uint32_t attrRes,
     return value.data;
 }
 
-static String8 getResolvedAttribute(const ResTable* resTable, const ResXMLTree& tree,
-        uint32_t attrRes, String8* outError)
-{
+static String8 getResolvedAttribute(const ResTable *resTable, const ResXMLTree &tree,
+                                    uint32_t attrRes, String8 *outError) {
     ssize_t idx = indexOfAttribute(tree, attrRes);
     if (idx < 0) {
         return String8();
@@ -306,7 +286,7 @@ static String8 getResolvedAttribute(const ResTable* resTable, const ResXMLTree& 
     if (tree.getAttributeValue(idx, &value) != NO_ERROR) {
         if (value.dataType == Res_value::TYPE_STRING) {
             size_t len;
-            const uint16_t* str = tree.getAttributeStringValue(idx, &len);
+            const uint16_t *str = tree.getAttributeStringValue(idx, &len);
             return str ? String8(str, len) : String8();
         }
         resTable->resolveReference(&value, 0);
@@ -316,8 +296,8 @@ static String8 getResolvedAttribute(const ResTable* resTable, const ResXMLTree& 
         }
     }
     size_t len;
-    const Res_value* value2 = &value;
-    const char16_t* str = const_cast<ResTable*>(resTable)->valueToString(value2, 0, NULL, &len);
+    const Res_value *value2 = &value;
+    const char16_t *str = const_cast<ResTable *>(resTable)->valueToString(value2, 0, NULL, &len);
     return str ? String8(str, len) : String8();
 }
 
@@ -363,13 +343,13 @@ const char *getComponentName(String8 &pkgName, String8 &componentName) {
     return retStr.string();
 }
 
-static void printCompatibleScreens(ResXMLTree& tree) {
+static void printCompatibleScreens(ResXMLTree &tree) {
     size_t len;
     ResXMLTree::event_code_t code;
     int depth = 0;
     bool first = true;
     printf("compatible-screens:");
-    while ((code=tree.next()) != ResXMLTree::END_DOCUMENT && code != ResXMLTree::BAD_DOCUMENT) {
+    while ((code = tree.next()) != ResXMLTree::END_DOCUMENT && code != ResXMLTree::BAD_DOCUMENT) {
         if (code == ResXMLTree::END_TAG) {
             depth--;
             if (depth < 0) {
@@ -384,9 +364,9 @@ static void printCompatibleScreens(ResXMLTree& tree) {
         String8 tag(tree.getElementName(&len));
         if (tag == "screen") {
             int32_t screenSize = getIntegerAttribute(tree,
-                    SCREEN_SIZE_ATTR, NULL, -1);
+                                                     SCREEN_SIZE_ATTR, NULL, -1);
             int32_t screenDensity = getIntegerAttribute(tree,
-                    SCREEN_DENSITY_ATTR, NULL, -1);
+                                                        SCREEN_DENSITY_ATTR, NULL, -1);
             if (screenSize > 0 && screenDensity > 0) {
                 if (!first) {
                     printf(",");
@@ -402,10 +382,9 @@ static void printCompatibleScreens(ResXMLTree& tree) {
 /*
  * Handle the "dump" command, to extract select data from an archive.
  */
-int doDump(Bundle* bundle)
-{
+int doDump(Bundle *bundle) {
     status_t result = UNKNOWN_ERROR;
-    Asset* asset = NULL;
+    Asset *asset = NULL;
 
     if (bundle->getFileSpecCount() < 1) {
         fprintf(stderr, "ERROR: no dump option specified\n");
@@ -417,17 +396,17 @@ int doDump(Bundle* bundle)
         return 1;
     }
 
-    const char* option = bundle->getFileSpecEntry(0);
-    const char* filename = bundle->getFileSpecEntry(1);
+    const char *option = bundle->getFileSpecEntry(0);
+    const char *filename = bundle->getFileSpecEntry(1);
 
     AssetManager assets;
-    void* assetsCookie;
+    void *assetsCookie;
     if (!assets.addAssetPath(String8(filename), &assetsCookie)) {
         fprintf(stderr, "ERROR: dump failed because assets could not be loaded\n");
         return 1;
     }
 
-    const ResTable& res = assets.getResources(false);
+    const ResTable &res = assets.getResources(false);
     if (&res == NULL) {
         fprintf(stderr, "ERROR: dump failed because no resource table was found\n");
         goto bail;
@@ -442,8 +421,8 @@ int doDump(Bundle* bundle)
             goto bail;
         }
 
-        for (int i=2; i<bundle->getFileSpecCount(); i++) {
-            const char* resname = bundle->getFileSpecEntry(i);
+        for (int i = 2; i < bundle->getFileSpecCount(); i++) {
+            const char *resname = bundle->getFileSpecEntry(i);
             ResXMLTree tree;
             asset = assets.openNonAsset(resname, Asset::ACCESS_BUFFER);
             if (asset == NULL) {
@@ -469,8 +448,8 @@ int doDump(Bundle* bundle)
             goto bail;
         }
 
-        for (int i=2; i<bundle->getFileSpecCount(); i++) {
-            const char* resname = bundle->getFileSpecEntry(i);
+        for (int i = 2; i < bundle->getFileSpecCount(); i++) {
+            const char *resname = bundle->getFileSpecEntry(i);
             ResXMLTree tree;
             asset = assets.openNonAsset(resname, Asset::ACCESS_BUFFER);
             if (asset == NULL) {
@@ -491,7 +470,7 @@ int doDump(Bundle* bundle)
     } else {
         ResXMLTree tree;
         asset = assets.openNonAsset("AndroidManifest.xml",
-                                            Asset::ACCESS_BUFFER);
+                                    Asset::ACCESS_BUFFER);
         if (asset == NULL) {
             fprintf(stderr, "ERROR: dump failed because no AndroidManifest.xml found\n");
             goto bail;
@@ -508,7 +487,8 @@ int doDump(Bundle* bundle)
             size_t len;
             ResXMLTree::event_code_t code;
             int depth = 0;
-            while ((code=tree.next()) != ResXMLTree::END_DOCUMENT && code != ResXMLTree::BAD_DOCUMENT) {
+            while ((code = tree.next()) != ResXMLTree::END_DOCUMENT &&
+                   code != ResXMLTree::BAD_DOCUMENT) {
                 if (code == ResXMLTree::END_TAG) {
                     depth--;
                     continue;
@@ -623,7 +603,8 @@ int doDump(Bundle* bundle)
             String8 activityIcon;
             String8 receiverName;
             String8 serviceName;
-            while ((code=tree.next()) != ResXMLTree::END_DOCUMENT && code != ResXMLTree::BAD_DOCUMENT) {
+            while ((code = tree.next()) != ResXMLTree::END_DOCUMENT &&
+                   code != ResXMLTree::BAD_DOCUMENT) {
                 if (code == ResXMLTree::END_TAG) {
                     depth--;
                     if (depth < 2) {
@@ -635,8 +616,8 @@ int doDump(Bundle* bundle)
                                 printf("launchable activity name='%s'", aName);
                             }
                             printf("label='%s' icon='%s'\n",
-                                    activityLabel.string(),
-                                    activityIcon.string());
+                                   activityLabel.string(),
+                                   activityIcon.string());
                         }
                         if (!hasIntentFilter) {
                             hasOtherActivities |= withinActivity;
@@ -681,7 +662,8 @@ int doDump(Bundle* bundle)
                     printf("package: name='%s' ", pkg.string());
                     int32_t versionCode = getIntegerAttribute(tree, VERSION_CODE_ATTR, &error);
                     if (error != "") {
-                        fprintf(stderr, "ERROR getting 'android:versionCode' attribute: %s\n", error.string());
+                        fprintf(stderr, "ERROR getting 'android:versionCode' attribute: %s\n",
+                                error.string());
                         goto bail;
                     }
                     if (versionCode > 0) {
@@ -689,9 +671,11 @@ int doDump(Bundle* bundle)
                     } else {
                         printf("versionCode='' ");
                     }
-                    String8 versionName = getResolvedAttribute(&res, tree, VERSION_NAME_ATTR, &error);
+                    String8 versionName = getResolvedAttribute(&res, tree, VERSION_NAME_ATTR,
+                                                               &error);
                     if (error != "") {
-                        fprintf(stderr, "ERROR getting 'android:versionName' attribute: %s\n", error.string());
+                        fprintf(stderr, "ERROR getting 'android:versionName' attribute: %s\n",
+                                error.string());
                         goto bail;
                     }
                     printf("versionName='%s'\n", versionName.string());
@@ -700,20 +684,23 @@ int doDump(Bundle* bundle)
                     if (tag == "application") {
                         withinApplication = true;
                         String8 label = getResolvedAttribute(&res, tree, LABEL_ATTR, &error);
-                         if (error != "") {
-                             fprintf(stderr, "ERROR getting 'android:label' attribute: %s\n", error.string());
-                             goto bail;
+                        if (error != "") {
+                            fprintf(stderr, "ERROR getting 'android:label' attribute: %s\n",
+                                    error.string());
+                            goto bail;
                         }
                         printf("application: label='%s' ", label.string());
                         String8 icon = getResolvedAttribute(&res, tree, ICON_ATTR, &error);
                         if (error != "") {
-                            fprintf(stderr, "ERROR getting 'android:icon' attribute: %s\n", error.string());
+                            fprintf(stderr, "ERROR getting 'android:icon' attribute: %s\n",
+                                    error.string());
                             goto bail;
                         }
                         printf("icon='%s'\n", icon.string());
                         int32_t testOnly = getIntegerAttribute(tree, TEST_ONLY_ATTR, &error, 0);
                         if (error != "") {
-                            fprintf(stderr, "ERROR getting 'android:testOnly' attribute: %s\n", error.string());
+                            fprintf(stderr, "ERROR getting 'android:testOnly' attribute: %s\n",
+                                    error.string());
                             goto bail;
                         }
                         if (testOnly != 0) {
@@ -723,9 +710,11 @@ int doDump(Bundle* bundle)
                         int32_t code = getIntegerAttribute(tree, MIN_SDK_VERSION_ATTR, &error);
                         if (error != "") {
                             error = "";
-                            String8 name = getResolvedAttribute(&res, tree, MIN_SDK_VERSION_ATTR, &error);
+                            String8 name = getResolvedAttribute(&res, tree, MIN_SDK_VERSION_ATTR,
+                                                                &error);
                             if (error != "") {
-                                fprintf(stderr, "ERROR getting 'android:minSdkVersion' attribute: %s\n",
+                                fprintf(stderr,
+                                        "ERROR getting 'android:minSdkVersion' attribute: %s\n",
                                         error.string());
                                 goto bail;
                             }
@@ -742,9 +731,11 @@ int doDump(Bundle* bundle)
                         code = getIntegerAttribute(tree, TARGET_SDK_VERSION_ATTR, &error);
                         if (error != "") {
                             error = "";
-                            String8 name = getResolvedAttribute(&res, tree, TARGET_SDK_VERSION_ATTR, &error);
+                            String8 name = getResolvedAttribute(&res, tree, TARGET_SDK_VERSION_ATTR,
+                                                                &error);
                             if (error != "") {
-                                fprintf(stderr, "ERROR getting 'android:targetSdkVersion' attribute: %s\n",
+                                fprintf(stderr,
+                                        "ERROR getting 'android:targetSdkVersion' attribute: %s\n",
                                         error.string());
                                 goto bail;
                             }
@@ -758,15 +749,18 @@ int doDump(Bundle* bundle)
                         }
                     } else if (tag == "uses-configuration") {
                         int32_t reqTouchScreen = getIntegerAttribute(tree,
-                                REQ_TOUCH_SCREEN_ATTR, NULL, 0);
+                                                                     REQ_TOUCH_SCREEN_ATTR, NULL,
+                                                                     0);
                         int32_t reqKeyboardType = getIntegerAttribute(tree,
-                                REQ_KEYBOARD_TYPE_ATTR, NULL, 0);
+                                                                      REQ_KEYBOARD_TYPE_ATTR, NULL,
+                                                                      0);
                         int32_t reqHardKeyboard = getIntegerAttribute(tree,
-                                REQ_HARD_KEYBOARD_ATTR, NULL, 0);
+                                                                      REQ_HARD_KEYBOARD_ATTR, NULL,
+                                                                      0);
                         int32_t reqNavigation = getIntegerAttribute(tree,
-                                REQ_NAVIGATION_ATTR, NULL, 0);
+                                                                    REQ_NAVIGATION_ATTR, NULL, 0);
                         int32_t reqFiveWayNav = getIntegerAttribute(tree,
-                                REQ_FIVE_WAY_NAV_ATTR, NULL, 0);
+                                                                    REQ_FIVE_WAY_NAV_ATTR, NULL, 0);
                         printf("uses-configuration:");
                         if (reqTouchScreen != 0) {
                             printf(" reqTouchScreen='%d'", reqTouchScreen);
@@ -786,21 +780,21 @@ int doDump(Bundle* bundle)
                         printf("\n");
                     } else if (tag == "supports-screens") {
                         smallScreen = getIntegerAttribute(tree,
-                                SMALL_SCREEN_ATTR, NULL, 1);
+                                                          SMALL_SCREEN_ATTR, NULL, 1);
                         normalScreen = getIntegerAttribute(tree,
-                                NORMAL_SCREEN_ATTR, NULL, 1);
+                                                           NORMAL_SCREEN_ATTR, NULL, 1);
                         largeScreen = getIntegerAttribute(tree,
-                                LARGE_SCREEN_ATTR, NULL, 1);
+                                                          LARGE_SCREEN_ATTR, NULL, 1);
                         xlargeScreen = getIntegerAttribute(tree,
-                                XLARGE_SCREEN_ATTR, NULL, 1);
+                                                           XLARGE_SCREEN_ATTR, NULL, 1);
                         anyDensity = getIntegerAttribute(tree,
-                                ANY_DENSITY_ATTR, NULL, 1);
+                                                         ANY_DENSITY_ATTR, NULL, 1);
                     } else if (tag == "uses-feature") {
                         String8 name = getAttribute(tree, NAME_ATTR, &error);
 
                         if (name != "" && error == "") {
                             int req = getIntegerAttribute(tree,
-                                    REQUIRED_ATTR, NULL, 1);
+                                                          REQUIRED_ATTR, NULL, 1);
 
                             if (name == "android.hardware.camera") {
                                 specCameraFeature = true;
@@ -842,10 +836,10 @@ int doDump(Bundle* bundle)
                                 reqTelephonySubFeature = true;
                             }
                             printf("uses-feature%s:'%s'\n",
-                                    req ? "" : "-not-required", name.string());
+                                   req ? "" : "-not-required", name.string());
                         } else {
                             int vers = getIntegerAttribute(tree,
-                                    GL_ES_VERSION_ATTR, &error);
+                                                           GL_ES_VERSION_ATTR, &error);
                             if (error == "") {
                                 printf("uses-gl-es:'0x%x'\n", vers);
                             }
@@ -861,8 +855,9 @@ int doDump(Bundle* bundle)
                                 hasMockLocPermission = true;
                             } else if (name == "android.permission.ACCESS_COARSE_LOCATION") {
                                 hasCoarseLocPermission = true;
-                            } else if (name == "android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" ||
-                                       name == "android.permission.INSTALL_LOCATION_PROVIDER") {
+                            } else if (
+                                    name == "android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" ||
+                                    name == "android.permission.INSTALL_LOCATION_PROVIDER") {
                                 hasGeneralLocPermission = true;
                             } else if (name == "android.permission.BLUETOOTH" ||
                                        name == "android.permission.BLUETOOTH_ADMIN") {
@@ -899,7 +894,7 @@ int doDump(Bundle* bundle)
                         } else {
                             fprintf(stderr, "ERROR getting 'android:name' attribute: %s\n",
                                     error.string());
-                                goto bail;
+                            goto bail;
                         }
                     } else if (tag == "original-package") {
                         String8 name = getAttribute(tree, NAME_ATTR, &error);
@@ -908,7 +903,7 @@ int doDump(Bundle* bundle)
                         } else {
                             fprintf(stderr, "ERROR getting 'android:name' attribute: %s\n",
                                     error.string());
-                                goto bail;
+                            goto bail;
                         }
                     } else if (tag == "supports-gl-texture") {
                         String8 name = getAttribute(tree, NAME_ATTR, &error);
@@ -917,7 +912,7 @@ int doDump(Bundle* bundle)
                         } else {
                             fprintf(stderr, "ERROR getting 'android:name' attribute: %s\n",
                                     error.string());
-                                goto bail;
+                            goto bail;
                         }
                     } else if (tag == "compatible-screens") {
                         printCompatibleScreens(tree);
@@ -928,41 +923,48 @@ int doDump(Bundle* bundle)
                     withinReceiver = false;
                     withinService = false;
                     hasIntentFilter = false;
-                    if(tag == "activity") {
+                    if (tag == "activity") {
                         withinActivity = true;
                         activityName = getAttribute(tree, NAME_ATTR, &error);
                         if (error != "") {
-                            fprintf(stderr, "ERROR getting 'android:name' attribute: %s\n", error.string());
+                            fprintf(stderr, "ERROR getting 'android:name' attribute: %s\n",
+                                    error.string());
                             goto bail;
                         }
 
                         activityLabel = getResolvedAttribute(&res, tree, LABEL_ATTR, &error);
                         if (error != "") {
-                            fprintf(stderr, "ERROR getting 'android:label' attribute: %s\n", error.string());
+                            fprintf(stderr, "ERROR getting 'android:label' attribute: %s\n",
+                                    error.string());
                             goto bail;
                         }
 
                         activityIcon = getResolvedAttribute(&res, tree, ICON_ATTR, &error);
                         if (error != "") {
-                            fprintf(stderr, "ERROR getting 'android:icon' attribute: %s\n", error.string());
+                            fprintf(stderr, "ERROR getting 'android:icon' attribute: %s\n",
+                                    error.string());
                             goto bail;
                         }
                     } else if (tag == "uses-library") {
                         String8 libraryName = getAttribute(tree, NAME_ATTR, &error);
                         if (error != "") {
-                            fprintf(stderr, "ERROR getting 'android:name' attribute for uses-library: %s\n", error.string());
+                            fprintf(stderr,
+                                    "ERROR getting 'android:name' attribute for uses-library: %s\n",
+                                    error.string());
                             goto bail;
                         }
                         int req = getIntegerAttribute(tree,
-                                REQUIRED_ATTR, NULL, 1);
+                                                      REQUIRED_ATTR, NULL, 1);
                         printf("uses-library%s:'%s'\n",
-                                req ? "" : "-not-required", libraryName.string());
+                               req ? "" : "-not-required", libraryName.string());
                     } else if (tag == "receiver") {
                         withinReceiver = true;
                         receiverName = getAttribute(tree, NAME_ATTR, &error);
 
                         if (error != "") {
-                            fprintf(stderr, "ERROR getting 'android:name' attribute for receiver: %s\n", error.string());
+                            fprintf(stderr,
+                                    "ERROR getting 'android:name' attribute for receiver: %s\n",
+                                    error.string());
                             goto bail;
                         }
                     } else if (tag == "service") {
@@ -970,7 +972,9 @@ int doDump(Bundle* bundle)
                         serviceName = getAttribute(tree, NAME_ATTR, &error);
 
                         if (error != "") {
-                            fprintf(stderr, "ERROR getting 'android:name' attribute for service: %s\n", error.string());
+                            fprintf(stderr,
+                                    "ERROR getting 'android:name' attribute for service: %s\n",
+                                    error.string());
                             goto bail;
                         }
                     }
@@ -978,12 +982,13 @@ int doDump(Bundle* bundle)
                     hasIntentFilter = true;
                     withinIntentFilter = true;
                     actMainActivity = actWidgetReceivers = actImeService = actWallpaperService = false;
-                } else if ((depth == 5) && withinIntentFilter){
+                } else if ((depth == 5) && withinIntentFilter) {
                     String8 action;
                     if (tag == "action") {
                         action = getAttribute(tree, NAME_ATTR, &error);
                         if (error != "") {
-                            fprintf(stderr, "ERROR getting 'android:name' attribute: %s\n", error.string());
+                            fprintf(stderr, "ERROR getting 'android:name' attribute: %s\n",
+                                    error.string());
                             goto bail;
                         }
                         if (withinActivity) {
@@ -1164,8 +1169,8 @@ int doDump(Bundle* bundle)
             Vector<String8> locales;
             res.getLocales(&locales);
             const size_t NL = locales.size();
-            for (size_t i=0; i<NL; i++) {
-                const char* localeStr =  locales[i].string();
+            for (size_t i = 0; i < NL; i++) {
+                const char *localeStr = locales[i].string();
                 if (localeStr == NULL || strlen(localeStr) == 0) {
                     localeStr = "--_--";
                 }
@@ -1177,7 +1182,7 @@ int doDump(Bundle* bundle)
             res.getConfigurations(&configs);
             SortedVector<int> densities;
             const size_t NC = configs.size();
-            for (size_t i=0; i<NC; i++) {
+            for (size_t i = 0; i < NC; i++) {
                 int dens = configs[i].density;
                 if (dens == 0) dens = 160;
                 densities.add(dens);
@@ -1185,16 +1190,16 @@ int doDump(Bundle* bundle)
 
             printf("densities:");
             const size_t ND = densities.size();
-            for (size_t i=0; i<ND; i++) {
+            for (size_t i = 0; i < ND; i++) {
                 printf(" '%d'", densities[i]);
             }
             printf("\n");
 
-            AssetDir* dir = assets.openNonAssetDir(assetsCookie, "lib");
+            AssetDir *dir = assets.openNonAssetDir(assetsCookie, "lib");
             if (dir != NULL) {
                 if (dir->getFileCount() > 0) {
                     printf("native-code:");
-                    for (size_t i=0; i<dir->getFileCount(); i++) {
+                    for (size_t i = 0; i < dir->getFileCount(); i++) {
                         printf(" '%s'", dir->getFileName(i).string());
                     }
                     printf("\n");
@@ -1205,7 +1210,7 @@ int doDump(Bundle* bundle)
             Vector<ResTable_config> configs;
             res.getConfigurations(&configs);
             const size_t N = configs.size();
-            for (size_t i=0; i<N; i++) {
+            for (size_t i = 0; i < N; i++) {
                 printf("%s\n", configs[i].toString().string());
             }
         } else {
@@ -1216,7 +1221,7 @@ int doDump(Bundle* bundle)
 
     result = NO_ERROR;
 
-bail:
+    bail:
     if (asset) {
         delete asset;
     }
@@ -1228,11 +1233,10 @@ bail:
  * Handle the "add" command, which wants to add files to a new or
  * pre-existing archive.
  */
-int doAdd(Bundle* bundle)
-{
-    ZipFile* zip = NULL;
+int doAdd(Bundle *bundle) {
+    ZipFile *zip = NULL;
     status_t result = UNKNOWN_ERROR;
-    const char* zipFileName;
+    const char *zipFileName;
 
     if (bundle->getUpdate()) {
         /* avoid confusion */
@@ -1258,7 +1262,7 @@ int doAdd(Bundle* bundle)
     }
 
     for (int i = 1; i < bundle->getFileSpecCount(); i++) {
-        const char* fileName = bundle->getFileSpecEntry(i);
+        const char *fileName = bundle->getFileSpecEntry(i);
 
         if (strcasecmp(String8(fileName).getPathExtension().string(), ".gz") == 0) {
             printf(" '%s'... (from gzip)\n", fileName);
@@ -1288,7 +1292,7 @@ int doAdd(Bundle* bundle)
 
     result = NO_ERROR;
 
-bail:
+    bail:
     delete zip;
     return (result != NO_ERROR);
 }
@@ -1297,11 +1301,10 @@ bail:
 /*
  * Delete files from an existing archive.
  */
-int doRemove(Bundle* bundle)
-{
-    ZipFile* zip = NULL;
+int doRemove(Bundle *bundle) {
+    ZipFile *zip = NULL;
     status_t result = UNKNOWN_ERROR;
-    const char* zipFileName;
+    const char *zipFileName;
 
     if (bundle->getFileSpecCount() < 1) {
         fprintf(stderr, "ERROR: must specify zip file name\n");
@@ -1317,13 +1320,13 @@ int doRemove(Bundle* bundle)
     zip = openReadWrite(zipFileName, false);
     if (zip == NULL) {
         fprintf(stderr, "ERROR: failed opening Zip archive '%s'\n",
-            zipFileName);
+                zipFileName);
         goto bail;
     }
 
     for (int i = 1; i < bundle->getFileSpecCount(); i++) {
-        const char* fileName = bundle->getFileSpecEntry(i);
-        ZipEntry* entry;
+        const char *fileName = bundle->getFileSpecEntry(i);
+        ZipEntry *entry;
 
         entry = zip->getEntryByName(fileName);
         if (entry == NULL) {
@@ -1335,7 +1338,7 @@ int doRemove(Bundle* bundle)
 
         if (result != NO_ERROR) {
             fprintf(stderr, "Unable to delete '%s' from '%s'\n",
-                bundle->getFileSpecEntry(i), zipFileName);
+                    bundle->getFileSpecEntry(i), zipFileName);
             goto bail;
         }
     }
@@ -1343,7 +1346,7 @@ int doRemove(Bundle* bundle)
     /* update the archive */
     zip->flush();
 
-bail:
+    bail:
     delete zip;
     return (result != NO_ERROR);
 }
@@ -1352,9 +1355,8 @@ bail:
 /*
  * Package up an asset directory and associated application files.
  */
-int doPackage(Bundle* bundle)
-{
-    const char* outputAPKFile;
+int doPackage(Bundle *bundle) {
+    const char *outputAPKFile;
     int retVal = 1;
     status_t err;
     sp<AaptAssets> assets;
@@ -1364,7 +1366,7 @@ int doPackage(Bundle* bundle)
     // clear old error messages 
     SourcePos::clear();
     // </ta>
-    
+
     // -c zz_ZZ means do pseudolocalization
     ResourceFilter filter;
     err = filter.parse(bundle->getConfigurations());
@@ -1377,7 +1379,7 @@ int doPackage(Bundle* bundle)
 
     N = bundle->getFileSpecCount();
     if (N < 1 && bundle->getResourceSourceDirs().size() == 0 && bundle->getJarFiles().size() == 0
-            && bundle->getAndroidManifestFile() == NULL && bundle->getAssetSourceDir() == NULL) {
+        && bundle->getAndroidManifestFile() == NULL && bundle->getAssetSourceDir() == NULL) {
         fprintf(stderr, "ERROR: no input files\n");
         goto bail;
     }
@@ -1390,8 +1392,8 @@ int doPackage(Bundle* bundle)
         type = getFileType(outputAPKFile);
         if (type != kFileTypeNonexistent && type != kFileTypeRegular) {
             fprintf(stderr,
-                "ERROR: output file '%s' exists but is not regular file\n",
-                outputAPKFile);
+                    "ERROR: output file '%s' exists but is not regular file\n",
+                    outputAPKFile);
             goto bail;
         }
     }
@@ -1459,7 +1461,7 @@ int doPackage(Bundle* bundle)
     }
 
     retVal = 0;
-bail:
+    bail:
     if (SourcePos::hasErrors()) {
         SourcePos::printErrors(stderr);
     }

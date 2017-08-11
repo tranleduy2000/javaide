@@ -6,12 +6,9 @@
 
 #include "StringPool.h"
 
-#include <utils/ByteOrder.h>
-
 #define NOISY(x) //x
 
-void strcpy16_htod(uint16_t* dst, const uint16_t* src)
-{
+void strcpy16_htod(uint16_t *dst, const uint16_t *src) {
     while (*src) {
         char16_t s = htods(*src);
         *dst++ = s;
@@ -20,12 +17,11 @@ void strcpy16_htod(uint16_t* dst, const uint16_t* src)
     *dst = 0;
 }
 
-void printStringPool(const ResStringPool* pool)
-{
+void printStringPool(const ResStringPool *pool) {
     const size_t NS = pool->size();
-    for (size_t s=0; s<NS; s++) {
+    for (size_t s = 0; s < NS; s++) {
         size_t len;
-        const char *str = (const char*)pool->string8At(s, &len);
+        const char *str = (const char *) pool->string8At(s, &len);
         if (str == NULL) {
             str = String8(pool->stringAt(s, &len)).string();
         }
@@ -35,17 +31,14 @@ void printStringPool(const ResStringPool* pool)
 }
 
 StringPool::StringPool(bool sorted, bool utf8)
-    : mSorted(sorted), mUTF8(utf8), mValues(-1), mIdents(-1)
-{
+        : mSorted(sorted), mUTF8(utf8), mValues(-1), mIdents(-1) {
 }
 
-ssize_t StringPool::add(const String16& value, bool mergeDuplicates)
-{
+ssize_t StringPool::add(const String16 &value, bool mergeDuplicates) {
     return add(String16(), value, mergeDuplicates);
 }
 
-ssize_t StringPool::add(const String16& value, const Vector<entry_style_span>& spans)
-{
+ssize_t StringPool::add(const String16 &value, const Vector<entry_style_span> &spans) {
     ssize_t res = add(String16(), value, false);
     if (res >= 0) {
         addStyleSpans(res, spans);
@@ -53,9 +46,8 @@ ssize_t StringPool::add(const String16& value, const Vector<entry_style_span>& s
     return res;
 }
 
-ssize_t StringPool::add(const String16& ident, const String16& value,
-                        bool mergeDuplicates)
-{
+ssize_t StringPool::add(const String16 &ident, const String16 &value,
+                        bool mergeDuplicates) {
     if (ident.size() > 0) {
         ssize_t idx = mIdents.valueFor(ident);
         if (idx >= 0) {
@@ -82,16 +74,16 @@ ssize_t StringPool::add(const String16& ident, const String16& value,
         if (first) {
             vidx = mValues.add(value, pos);
             const size_t N = mEntryArrayToValues.size();
-            for (size_t i=0; i<N; i++) {
-                size_t& e = mEntryArrayToValues.editItemAt(i);
-                if ((ssize_t)e >= vidx) {
+            for (size_t i = 0; i < N; i++) {
+                size_t &e = mEntryArrayToValues.editItemAt(i);
+                if ((ssize_t) e >= vidx) {
                     e++;
                 }
             }
         }
         mEntryArrayToValues.add(vidx);
         if (!mSorted) {
-            entry& ent = mEntries.editItemAt(eidx);
+            entry &ent = mEntries.editItemAt(eidx);
             ent.indices.add(pos);
         }
     }
@@ -101,14 +93,13 @@ ssize_t StringPool::add(const String16& ident, const String16& value,
     }
 
     NOISY(printf("Adding string %s to pool: pos=%d eidx=%d vidx=%d\n",
-            String8(value).string(), pos, eidx, vidx));
-    
+                 String8(value).string(), pos, eidx, vidx));
+
     return pos;
 }
 
-status_t StringPool::addStyleSpan(size_t idx, const String16& name,
-                                  uint32_t start, uint32_t end)
-{
+status_t StringPool::addStyleSpan(size_t idx, const String16 &name,
+                                  uint32_t start, uint32_t end) {
     entry_style_span span;
     span.name = name;
     span.span.firstChar = start;
@@ -116,10 +107,9 @@ status_t StringPool::addStyleSpan(size_t idx, const String16& name,
     return addStyleSpan(idx, span);
 }
 
-status_t StringPool::addStyleSpans(size_t idx, const Vector<entry_style_span>& spans)
-{
-    const size_t N=spans.size();
-    for (size_t i=0; i<N; i++) {
+status_t StringPool::addStyleSpans(size_t idx, const Vector<entry_style_span> &spans) {
+    const size_t N = spans.size();
+    for (size_t i = 0; i < N; i++) {
         status_t err = addStyleSpan(idx, spans[i]);
         if (err != NO_ERROR) {
             return err;
@@ -128,8 +118,7 @@ status_t StringPool::addStyleSpans(size_t idx, const Vector<entry_style_span>& s
     return NO_ERROR;
 }
 
-status_t StringPool::addStyleSpan(size_t idx, const entry_style_span& span)
-{
+status_t StringPool::addStyleSpan(size_t idx, const entry_style_span &span) {
     LOG_ALWAYS_FATAL_IF(mSorted, "Can't use styles with sorted string pools.");
 
     // Place blank entries in the span array up to this index.
@@ -137,18 +126,16 @@ status_t StringPool::addStyleSpan(size_t idx, const entry_style_span& span)
         mEntryStyleArray.add();
     }
 
-    entry_style& style = mEntryStyleArray.editItemAt(idx);
+    entry_style &style = mEntryStyleArray.editItemAt(idx);
     style.spans.add(span);
     return NO_ERROR;
 }
 
-size_t StringPool::size() const
-{
+size_t StringPool::size() const {
     return mSorted ? mValues.size() : mEntryArray.size();
 }
 
-const StringPool::entry& StringPool::entryAt(size_t idx) const
-{
+const StringPool::entry &StringPool::entryAt(size_t idx) const {
     if (!mSorted) {
         return mEntries[mEntryArray[idx]];
     } else {
@@ -156,13 +143,11 @@ const StringPool::entry& StringPool::entryAt(size_t idx) const
     }
 }
 
-size_t StringPool::countIdentifiers() const
-{
+size_t StringPool::countIdentifiers() const {
     return mIdents.size();
 }
 
-sp<AaptFile> StringPool::createStringBlock()
-{
+sp<AaptFile> StringPool::createStringBlock() {
     sp<AaptFile> pool = new AaptFile(String8(), AaptGroupEntry(),
                                      String8());
     status_t err = writeStringBlock(pool);
@@ -179,8 +164,7 @@ sp<AaptFile> StringPool::createStringBlock()
     *str++ = strSize; \
 }
 
-status_t StringPool::writeStringBlock(const sp<AaptFile>& pool)
-{
+status_t StringPool::writeStringBlock(const sp<AaptFile> &pool) {
     // Allow appending.  Sorry this is a little wacky.
     if (pool->getSize() > 0) {
         sp<AaptFile> block = createStringBlock();
@@ -188,29 +172,29 @@ status_t StringPool::writeStringBlock(const sp<AaptFile>& pool)
             return UNKNOWN_ERROR;
         }
         ssize_t res = pool->writeData(block->getData(), block->getSize());
-        return (res >= 0) ? (status_t)NO_ERROR : res;
+        return (res >= 0) ? (status_t) NO_ERROR : res;
     }
 
     // First we need to add all style span names to the string pool.
     // We do this now (instead of when the span is added) so that these
     // will appear at the end of the pool, not disrupting the order
     // our client placed their own strings in it.
-    
+
     const size_t STYLES = mEntryStyleArray.size();
     size_t i;
 
-    for (i=0; i<STYLES; i++) {
-        entry_style& style = mEntryStyleArray.editItemAt(i);
+    for (i = 0; i < STYLES; i++) {
+        entry_style &style = mEntryStyleArray.editItemAt(i);
         const size_t N = style.spans.size();
-        for (size_t i=0; i<N; i++) {
-            entry_style_span& span = style.spans.editItemAt(i);
+        for (size_t i = 0; i < N; i++) {
+            entry_style_span &span = style.spans.editItemAt(i);
             ssize_t idx = add(span.name, true);
             if (idx < 0) {
                 fprintf(stderr, "Error adding span for style tag '%s'\n",
                         String8(span.name).string());
                 return idx;
             }
-            span.span.name.index = (uint32_t)idx;
+            span.span.name.index = (uint32_t) idx;
         }
     }
 
@@ -220,8 +204,8 @@ status_t StringPool::writeStringBlock(const sp<AaptFile>& pool)
 
     const size_t STRINGS = mEntries.size();
     const size_t preSize = sizeof(ResStringPool_header)
-                         + (sizeof(uint32_t)*ENTRIES)
-                         + (sizeof(uint32_t)*STYLES);
+                           + (sizeof(uint32_t) * ENTRIES)
+                           + (sizeof(uint32_t) * STYLES);
     if (pool->editData(preSize) == NULL) {
         fprintf(stderr, "ERROR: Out of memory for string pool\n");
         return NO_MEMORY;
@@ -230,11 +214,11 @@ status_t StringPool::writeStringBlock(const sp<AaptFile>& pool)
     const size_t charSize = mUTF8 ? sizeof(uint8_t) : sizeof(char16_t);
 
     size_t strPos = 0;
-    for (i=0; i<STRINGS; i++) {
-        entry& ent = mEntries.editItemAt(i);
+    for (i = 0; i < STRINGS; i++) {
+        entry &ent = mEntries.editItemAt(i);
         const size_t strSize = (ent.value.size());
-        const size_t lenSize = strSize > (size_t)(1<<((charSize*8)-1))-1 ?
-            charSize*2 : charSize;
+        const size_t lenSize = strSize > (size_t) (1 << ((charSize * 8) - 1)) - 1 ?
+                               charSize * 2 : charSize;
 
         String8 encStr;
         if (mUTF8) {
@@ -243,30 +227,30 @@ status_t StringPool::writeStringBlock(const sp<AaptFile>& pool)
 
         const size_t encSize = mUTF8 ? encStr.size() : 0;
         const size_t encLenSize = mUTF8 ?
-            (encSize > (size_t)(1<<((charSize*8)-1))-1 ?
-                charSize*2 : charSize) : 0;
+                                  (encSize > (size_t) (1 << ((charSize * 8) - 1)) - 1 ?
+                                   charSize * 2 : charSize) : 0;
 
         ent.offset = strPos;
 
         const size_t totalSize = lenSize + encLenSize +
-            ((mUTF8 ? encSize : strSize)+1)*charSize;
+                                 ((mUTF8 ? encSize : strSize) + 1) * charSize;
 
-        void* dat = (void*)pool->editData(preSize + strPos + totalSize);
+        void *dat = (void *) pool->editData(preSize + strPos + totalSize);
         if (dat == NULL) {
             fprintf(stderr, "ERROR: Out of memory for string pool\n");
             return NO_MEMORY;
         }
-        dat = (uint8_t*)dat + preSize + strPos;
+        dat = (uint8_t *) dat + preSize + strPos;
         if (mUTF8) {
-            uint8_t* strings = (uint8_t*)dat;
+            uint8_t *strings = (uint8_t *) dat;
 
             ENCODE_LENGTH(strings, sizeof(uint8_t), strSize)
 
             ENCODE_LENGTH(strings, sizeof(uint8_t), encSize)
 
-            strncpy((char*)strings, encStr, encSize+1);
+            strncpy((char *) strings, encStr, encSize + 1);
         } else {
-            uint16_t* strings = (uint16_t*)dat;
+            uint16_t *strings = (uint16_t *) dat;
 
             ENCODE_LENGTH(strings, sizeof(uint16_t), strSize)
 
@@ -278,34 +262,34 @@ status_t StringPool::writeStringBlock(const sp<AaptFile>& pool)
 
     // Pad ending string position up to a uint32_t boundary.
 
-    if (strPos&0x3) {
-        size_t padPos = ((strPos+3)&~0x3);
-        uint8_t* dat = (uint8_t*)pool->editData(preSize + padPos);
+    if (strPos & 0x3) {
+        size_t padPos = ((strPos + 3) & ~0x3);
+        uint8_t *dat = (uint8_t *) pool->editData(preSize + padPos);
         if (dat == NULL) {
             fprintf(stderr, "ERROR: Out of memory padding string pool\n");
             return NO_MEMORY;
         }
-        memset(dat+preSize+strPos, 0, padPos-strPos);
+        memset(dat + preSize + strPos, 0, padPos - strPos);
         strPos = padPos;
     }
 
     // Build the pool of style spans.
 
     size_t styPos = strPos;
-    for (i=0; i<STYLES; i++) {
-        entry_style& ent = mEntryStyleArray.editItemAt(i);
+    for (i = 0; i < STYLES; i++) {
+        entry_style &ent = mEntryStyleArray.editItemAt(i);
         const size_t N = ent.spans.size();
-        const size_t totalSize = (N*sizeof(ResStringPool_span))
-                               + sizeof(ResStringPool_ref);
+        const size_t totalSize = (N * sizeof(ResStringPool_span))
+                                 + sizeof(ResStringPool_ref);
 
-        ent.offset = styPos-strPos;
-        uint8_t* dat = (uint8_t*)pool->editData(preSize + styPos + totalSize);
+        ent.offset = styPos - strPos;
+        uint8_t *dat = (uint8_t *) pool->editData(preSize + styPos + totalSize);
         if (dat == NULL) {
             fprintf(stderr, "ERROR: Out of memory for string styles\n");
             return NO_MEMORY;
         }
-        ResStringPool_span* span = (ResStringPool_span*)(dat+preSize+styPos);
-        for (size_t i=0; i<N; i++) {
+        ResStringPool_span *span = (ResStringPool_span *) (dat + preSize + styPos);
+        for (size_t i = 0; i < N; i++) {
             span->name.index = htodl(ent.spans[i].span.name.index);
             span->firstChar = htodl(ent.spans[i].span.firstChar);
             span->lastChar = htodl(ent.spans[i].span.lastChar);
@@ -320,13 +304,13 @@ status_t StringPool::writeStringBlock(const sp<AaptFile>& pool)
         // Add full terminator at the end (when reading we validate that
         // the end of the pool is fully terminated to simplify error
         // checking).
-        size_t extra = sizeof(ResStringPool_span)-sizeof(ResStringPool_ref);
-        uint8_t* dat = (uint8_t*)pool->editData(preSize + styPos + extra);
+        size_t extra = sizeof(ResStringPool_span) - sizeof(ResStringPool_ref);
+        uint8_t *dat = (uint8_t *) pool->editData(preSize + styPos + extra);
         if (dat == NULL) {
             fprintf(stderr, "ERROR: Out of memory for string styles\n");
             return NO_MEMORY;
         }
-        uint32_t* p = (uint32_t*)(dat+preSize+styPos);
+        uint32_t *p = (uint32_t *) (dat + preSize + styPos);
         while (extra > 0) {
             *p++ = htodl(ResStringPool_span::END);
             extra -= sizeof(uint32_t);
@@ -336,8 +320,8 @@ status_t StringPool::writeStringBlock(const sp<AaptFile>& pool)
 
     // Write header.
 
-    ResStringPool_header* header =
-        (ResStringPool_header*)pool->padData(sizeof(uint32_t));
+    ResStringPool_header *header =
+            (ResStringPool_header *) pool->padData(sizeof(uint32_t));
     if (header == NULL) {
         fprintf(stderr, "ERROR: Out of memory for string pool\n");
         return NO_MEMORY;
@@ -355,36 +339,36 @@ status_t StringPool::writeStringBlock(const sp<AaptFile>& pool)
         header->flags |= htodl(ResStringPool_header::UTF8_FLAG);
     }
     header->stringsStart = htodl(preSize);
-    header->stylesStart = htodl(STYLES > 0 ? (preSize+strPos) : 0);
+    header->stylesStart = htodl(STYLES > 0 ? (preSize + strPos) : 0);
 
     // Write string index array.
 
-    uint32_t* index = (uint32_t*)(header+1);
+    uint32_t *index = (uint32_t *) (header + 1);
     if (mSorted) {
-        for (i=0; i<ENTRIES; i++) {
-            entry& ent = const_cast<entry&>(entryAt(i));
+        for (i = 0; i < ENTRIES; i++) {
+            entry &ent = const_cast<entry &>(entryAt(i));
             ent.indices.clear();
             ent.indices.add(i);
             *index++ = htodl(ent.offset);
         }
     } else {
-        for (i=0; i<ENTRIES; i++) {
-            entry& ent = mEntries.editItemAt(mEntryArray[i]);
+        for (i = 0; i < ENTRIES; i++) {
+            entry &ent = mEntries.editItemAt(mEntryArray[i]);
             *index++ = htodl(ent.offset);
             NOISY(printf("Writing entry #%d: \"%s\" ent=%d off=%d\n", i,
-                    String8(ent.value).string(),
-                    mEntryArray[i], ent.offset));
+                         String8(ent.value).string(),
+                         mEntryArray[i], ent.offset));
         }
     }
 
     // Write style index array.
 
     if (mSorted) {
-        for (i=0; i<STYLES; i++) {
+        for (i = 0; i < STYLES; i++) {
             LOG_ALWAYS_FATAL("Shouldn't be here!");
         }
     } else {
-        for (i=0; i<STYLES; i++) {
+        for (i = 0; i < STYLES; i++) {
             *index++ = htodl(mEntryStyleArray[i].offset);
         }
     }
@@ -392,17 +376,15 @@ status_t StringPool::writeStringBlock(const sp<AaptFile>& pool)
     return NO_ERROR;
 }
 
-ssize_t StringPool::offsetForString(const String16& val) const
-{
-    const Vector<size_t>* indices = offsetsForString(val);
+ssize_t StringPool::offsetForString(const String16 &val) const {
+    const Vector<size_t> *indices = offsetsForString(val);
     ssize_t res = indices != NULL && indices->size() > 0 ? indices->itemAt(0) : -1;
     NOISY(printf("Offset for string %s: %d (%s)\n", String8(val).string(), res,
-            res >= 0 ? String8(mEntries[mEntryArray[res]].value).string() : String8()));
+                 res >= 0 ? String8(mEntries[mEntryArray[res]].value).string() : String8()));
     return res;
 }
 
-const Vector<size_t>* StringPool::offsetsForString(const String16& val) const
-{
+const Vector<size_t> *StringPool::offsetsForString(const String16 &val) const {
     ssize_t pos = mValues.valueFor(val);
     if (pos < 0) {
         return NULL;

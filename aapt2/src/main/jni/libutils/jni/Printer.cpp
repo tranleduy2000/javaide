@@ -43,7 +43,7 @@ namespace android {
 
 #ifndef _WIN32
         if (vasprintf(&formattedString, format, arglist) < 0) { // returns -1 on error
-//            ALOGE("%s: Failed to format string", __FUNCTION__);
+//            LOGE("%s: Failed to format string", __FUNCTION__);
             va_end(arglist);
             return;
         }
@@ -73,7 +73,7 @@ namespace android {
 
     void LogPrinter::printLine(const char *string) {
         if (string == NULL) {
-//            ALOGW("%s: NULL string passed in", __FUNCTION__);
+//            LOGW("%s: NULL string passed in", __FUNCTION__);
             return;
         }
 
@@ -98,7 +98,7 @@ namespace android {
             mFd(fd), mIndent(indent), mPrefix(prefix ?: "") {
 
         if (fd < 0) {
-//            ALOGW("%s: File descriptor out of range (%d)", __FUNCTION__, fd);
+//            LOGW("%s: File descriptor out of range (%d)", __FUNCTION__, fd);
         }
 
         // <indent><prefix><line> -- e.g. '%-4s%s\n' for indent=4
@@ -107,10 +107,10 @@ namespace android {
 
     void FdPrinter::printLine(const char *string) {
         if (string == NULL) {
-//            ALOGW("%s: NULL string passed in", __FUNCTION__);
+//            LOGW("%s: NULL string passed in", __FUNCTION__);
             return;
         } else if (mFd < 0) {
-//            ALOGW("%s: File descriptor out of range (%d)", __FUNCTION__, mFd);
+//            LOGW("%s: File descriptor out of range (%d)", __FUNCTION__, mFd);
             return;
         }
 
@@ -127,16 +127,16 @@ namespace android {
             mPrefix(prefix ?: "") {
 
         if (target == NULL) {
-//            ALOGW("%s: Target string was NULL", __FUNCTION__);
+//            LOGW("%s: Target string was NULL", __FUNCTION__);
         }
     }
 
     void String8Printer::printLine(const char *string) {
         if (string == NULL) {
-//            ALOGW("%s: NULL string passed in", __FUNCTION__);
+//            LOGW("%s: NULL string passed in", __FUNCTION__);
             return;
         } else if (mTarget == NULL) {
-//            ALOGW("%s: Target string was NULL", __FUNCTION__);
+//            LOGW("%s: Target string was NULL", __FUNCTION__);
             return;
         }
 

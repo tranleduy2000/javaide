@@ -88,7 +88,7 @@ namespace android {
                 return NULL;
             }
             SharedBuffer *buf = SharedBuffer::alloc(len + 1);
-            ALOG_ASSERT(buf, "Unable to allocate shared buffer");
+            LOG_ASSERT(buf, "Unable to allocate shared buffer");
             if (buf) {
                 char *str = (char *) buf->data();
                 memcpy(str, in, len);
@@ -111,7 +111,7 @@ namespace android {
         }
 
         SharedBuffer *buf = SharedBuffer::alloc(resultStrLen);
-        ALOG_ASSERT(buf, "Unable to allocate shared buffer");
+        LOG_ASSERT(buf, "Unable to allocate shared buffer");
         if (!buf) {
             return getEmptyString();
         }
@@ -132,7 +132,7 @@ namespace android {
         }
 
         SharedBuffer *buf = SharedBuffer::alloc(resultStrLen);
-        ALOG_ASSERT(buf, "Unable to allocate shared buffer");
+        LOG_ASSERT(buf, "Unable to allocate shared buffer");
         if (!buf) {
             return getEmptyString();
         }

@@ -85,17 +85,6 @@ extern "C" {
 #endif
 #endif
 
-/*
- * Simplified macro to send a verbose log message using the current LOG_TAG.
- */
-#ifndef ALOGV
-#if LOG_NDEBUG
-#define ALOGV(...)   ((void)0)
-#else
-#define ALOGV(...) ((void)LOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
-#endif
-#endif
-
 #define CONDITION(cond)     (__builtin_expect((cond)!=0, 0))
 
 #ifndef LOGV_IF
@@ -140,13 +129,6 @@ extern "C" {
 /*
  * Simplified macro to send a warning log message using the current LOG_TAG.
  */
-#ifndef ALOGW
-#define ALOGW(...) ((void)LOG(LOG_WARN, LOG_TAG, __VA_ARGS__))
-#endif
-
-/*
- * Simplified macro to send a warning log message using the current LOG_TAG.
- */
 #ifndef LOGW
 #define LOGW(...) ((void)LOG(LOG_WARN, LOG_TAG, __VA_ARGS__))
 #endif
@@ -164,30 +146,6 @@ extern "C" {
 #ifndef LOGE
 #define LOGE(...) ((void)LOG(LOG_ERROR, LOG_TAG, __VA_ARGS__))
 #endif
-
-/*
- * Simplified macro to send an error log message using the current LOG_TAG.
- */
-#ifndef ALOGE
-#define ALOGE(...) ((void)LOG(LOG_ERROR, LOG_TAG, __VA_ARGS__))
-#endif
-
-
-/*
- * Simplified macro to send a debug log message using the current LOG_TAG.
- */
-#ifndef ALOGD
-#define ALOGD(...) ((void)ALOG(LOG_DEBUG, LOG_TAG, __VA_ARGS__))
-#endif
-
-/*
- * Assertion that generates a log message when the assertion fails.
- * Stripped out of release builds.  Uses the current LOG_TAG.
- */
-#ifndef ALOG_ASSERT
-#define ALOG_ASSERT(cond, ...) LOG_FATAL_IF(!(cond), ##__VA_ARGS__)
-#endif
-
 
 #ifndef LOGE_IF
 #define LOGE_IF(cond, ...) \
@@ -335,17 +293,13 @@ extern "C" {
  * It is NOT stripped from release builds.  Note that the condition test
  * is -inverted- from the normal assert() semantics.
  */
-#ifndef LOG_ALWAYS_FATAL_IF
-#define LOG_ALWAYS_FATAL_IF(cond, ...)                              \
-  ((__predict_false(cond))                                          \
-       ? ((void)android_printAssert(#cond, LOG_TAG, ##__VA_ARGS__)) \
-       : (void)0)
-#endif
+#define LOG_ALWAYS_FATAL_IF(cond, ...) \
+    ( (CONDITION(cond)) \
+    ? ((void)android_printAssert(#cond, LOG_TAG, ## __VA_ARGS__)) \
+    : (void)0 )
 
-#ifndef LOG_ALWAYS_FATAL
 #define LOG_ALWAYS_FATAL(...) \
-  (((void)android_printAssert(NULL, LOG_TAG, ##__VA_ARGS__)))
-#endif
+    ( ((void)android_printAssert(NULL, LOG_TAG, ## __VA_ARGS__)) )
 
 /*
  * Versions of LOG_ALWAYS_FATAL_IF and LOG_ALWAYS_FATAL that
@@ -383,18 +337,6 @@ extern "C" {
 #ifndef LOG
 #define LOG(priority, tag, ...) \
     LOG_PRI(ANDROID_##priority, tag, __VA_ARGS__)
-#endif
-
-/*
- * Basic log message macro.
- *
- * Example:
- *  ALOG(LOG_WARN, NULL, "Failed with error %d", errno);
- *
- * The second argument may be NULL or "" to indicate the "global" tag.
- */
-#ifndef ALOG
-#define ALOG(priority, tag, ...) LOG_PRI(ANDROID_##priority, tag, __VA_ARGS__)
 #endif
 
 /*

@@ -8,23 +8,27 @@
 
 using namespace android;
 
-class SourcePos
-{
+class SourcePos {
 public:
     String8 file;
     int line;
 
-    SourcePos(const String8& f, int l);
-    SourcePos(const SourcePos& that);
+    SourcePos(const String8 &f, int l);
+
+    SourcePos(const SourcePos &that);
+
     SourcePos();
+
     ~SourcePos();
 
-    int error(const char* fmt, ...) const;
-    int warning(const char* fmt, ...) const;
+    int error(const char *fmt, ...) const;
+
+    int warning(const char *fmt, ...) const;
 
     static bool hasErrors();
-    static void printErrors(FILE* to);
-    
+
+    static void printErrors(FILE *to);
+
     //ta
     static void clear();
     // </ta>

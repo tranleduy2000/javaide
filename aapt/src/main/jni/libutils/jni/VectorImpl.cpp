@@ -18,7 +18,6 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 #include <utils/Log.h>
 #include <utils/Errors.h>

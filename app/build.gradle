@@ -23,15 +23,16 @@ android {
     buildTypes {
         release {
             ndk {
-                abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+                abiFilters 'armeabi', 'armeabi-v7a', 'x86', 'x86_64'//, 'arm64-v8a'
             }
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
-        debug {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        } debug {
             ndk {
                 abiFilters 'armeabi-v7a'
             }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -92,7 +93,7 @@ dependencies {
     compile project(':colorpicker')
     compile project(':splitview')
     compile project(':treeview')
-    compile project(':aapt2')
+    compile project(':aapt')
     compile 'com.google.guava:guava:22.0-android'
     compile files('libs/commons-compress-1.5.jar')
     compile files('libs/commons-codec-1.10.jar')

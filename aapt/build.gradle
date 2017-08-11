@@ -11,12 +11,21 @@ android {
         versionName "1.0"
         ndk {
             moduleName "libaaptcomplete"
-            abiFilters 'armeabi', 'armeabi-v7a', 'x86', 'x86_64'//, 'arm64-v8a'
         }
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
+            ndk {
+                abiFilters 'armeabi', 'armeabi-v7a', 'x86', 'x86_64'//, 'arm64-v8a'
+            }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            ndk {
+                abiFilters 'armeabi-v7a'
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

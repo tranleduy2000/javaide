@@ -1,8 +1,8 @@
 
 /* pngrtran.c - transforms the data in a row for PNG readers
  *
- * Last changed in libpng 1.2.43 [February 25, 2010]
- * Copyright (c) 1998-2010 Glenn Randers-Pehrson
+ * Last changed in libpng 1.2.53 [February 26, 2015]
+ * Copyright (c) 1998-2002,2004,2006-2015 Glenn Randers-Pehrson
  * (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
  * (Version 0.88 Copyright (c) 1995, 1996 Guy Eric Schalnat, Group 42, Inc.)
  *
@@ -676,10 +676,21 @@ void PNGAPI
 png_set_rgb_to_gray(png_structp png_ptr, int error_action, double red,
    double green)
 {
-   int red_fixed = (int)((float)red*100000.0 + 0.5);
-   int green_fixed = (int)((float)green*100000.0 + 0.5);
+   int red_fixed, green_fixed;
    if (png_ptr == NULL)
       return;
+   if (red > 21474.83647 || red < -21474.83648 ||
+       green > 21474.83647 || green < -21474.83648)
+   {
+      png_warning(png_ptr, "ignoring out of range rgb_to_gray coefficients");
+      red_fixed = -1;
+      green_fixed = -1;
+   }
+   else
+   {
+      red_fixed = (int)((float)red*100000.0 + 0.5);
+      green_fixed = (int)((float)green*100000.0 + 0.5);
+   }
    png_set_rgb_to_gray_fixed(png_ptr, error_action, red_fixed, green_fixed);
 }
 #endif
@@ -906,7 +917,10 @@ png_init_read_transformations(png_structp png_ptr)
     for (i=0; i<png_ptr->num_trans; i++)
     {
       if (png_ptr->trans[i] != 0 && png_ptr->trans[i] != 0xff)
+      {
         k=1; /* Partial transparency is present */
+        break;
+      }
     }
     if (k == 0)
       png_ptr->transformations &= ~PNG_GAMMA;
@@ -1152,6 +1166,7 @@ png_init_read_transformations(png_structp png_ptr)
 
 #ifdef PNG_READ_SHIFT_SUPPORTED
    if ((png_ptr->transformations & PNG_SHIFT) &&
+      !(png_ptr->transformations & PNG_EXPAND) &&
       (color_type == PNG_COLOR_TYPE_PALETTE))
    {
       png_uint_16 i;
@@ -1172,6 +1187,8 @@ png_init_read_transformations(png_structp png_ptr)
          png_ptr->palette[i].green >>= sg;
          png_ptr->palette[i].blue >>= sb;
       }
+
+      png_ptr->transformations &= ~PNG_SHIFT;
    }
 #endif  /* PNG_READ_SHIFT_SUPPORTED */
  }
@@ -1196,8 +1213,7 @@ png_read_transform_info(png_structp png_ptr, png_infop info_ptr)
    {
       if (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE)
       {
-         if (png_ptr->num_trans &&
-              (png_ptr->transformations & PNG_EXPAND_tRNS))
+         if (png_ptr->num_trans)
             info_ptr->color_type = PNG_COLOR_TYPE_RGB_ALPHA;
          else
             info_ptr->color_type = PNG_COLOR_TYPE_RGB;
@@ -1363,6 +1379,9 @@ png_do_read_transformations(png_structp png_ptr)
    {
       if (png_ptr->row_info.color_type == PNG_COLOR_TYPE_PALETTE)
       {
+         if (png_ptr->palette == NULL)
+            png_error (png_ptr, "Palette is NULL in indexed image");
+
          png_do_expand_palette(&(png_ptr->row_info), png_ptr->row_buf + 1,
             png_ptr->palette, png_ptr->trans, png_ptr->num_trans);
       }
@@ -2391,10 +2410,14 @@ png_do_rgb_to_gray(png_structp png_ptr, png_row_infop row_info, png_bytep row)
                for (i = 0; i < row_width; i++)
                {
                   png_uint_16 red, green, blue, w;
+                  png_byte hi,lo;
 
-                  red   = (png_uint_16)(((*(sp))<<8) | *(sp+1)); sp+=2;
-                  green = (png_uint_16)(((*(sp))<<8) | *(sp+1)); sp+=2;
-                  blue  = (png_uint_16)(((*(sp))<<8) | *(sp+1)); sp+=2;
+                  hi=*(sp)++; lo=*(sp)++;
+                  red   = (png_uint_16)((hi << 8) | (lo));
+                  hi=*(sp)++; lo=*(sp)++;
+                  green = (png_uint_16)((hi << 8) | (lo));
+                  hi=*(sp)++; lo=*(sp)++;
+                  blue  = (png_uint_16)((hi << 8) | (lo));
 
                   if (red == green && red == blue)
                      w = red;
@@ -2426,10 +2449,14 @@ png_do_rgb_to_gray(png_structp png_ptr, png_row_infop row_info, png_bytep row)
                for (i = 0; i < row_width; i++)
                {
                   png_uint_16 red, green, blue, gray16;
+                  png_byte hi,lo;
 
-                  red   = (png_uint_16)(((*(sp))<<8) | *(sp+1)); sp+=2;
-                  green = (png_uint_16)(((*(sp))<<8) | *(sp+1)); sp+=2;
-                  blue  = (png_uint_16)(((*(sp))<<8) | *(sp+1)); sp+=2;
+                  hi=*(sp)++; lo=*(sp)++;
+                  red   = (png_uint_16)((hi << 8) | (lo));
+                  hi=*(sp)++; lo=*(sp)++;
+                  green = (png_uint_16)((hi << 8) | (lo));
+                  hi=*(sp)++; lo=*(sp)++;
+                  blue  = (png_uint_16)((hi << 8) | (lo));
 
                   if (red != green || red != blue)
                      rgb_error |= 1;
@@ -2489,10 +2516,14 @@ png_do_rgb_to_gray(png_structp png_ptr, png_row_infop row_info, png_bytep row)
                for (i = 0; i < row_width; i++)
                {
                   png_uint_16 red, green, blue, w;
+                  png_byte hi,lo;
 
-                  red   = (png_uint_16)(((*(sp))<<8) | *(sp+1)); sp+=2;
-                  green = (png_uint_16)(((*(sp))<<8) | *(sp+1)); sp+=2;
-                  blue  = (png_uint_16)(((*(sp))<<8) | *(sp+1)); sp+=2;
+                  hi=*(sp)++; lo=*(sp)++;
+                  red   = (png_uint_16)((hi << 8) | (lo));
+                  hi=*(sp)++; lo=*(sp)++;
+                  green = (png_uint_16)((hi << 8) | (lo));
+                  hi=*(sp)++; lo=*(sp)++;
+                  blue  = (png_uint_16)((hi << 8) | (lo));
 
                   if (red == green && red == blue)
                      w = red;

@@ -9,10 +9,10 @@
 
 #include "ResourceTable.h"
 
-status_t preProcessImage(Bundle* bundle, const sp<AaptAssets>& assets,
-                         const sp<AaptFile>& file, String8* outNewLeafName);
+status_t preProcessImage(Bundle *bundle, const sp<AaptAssets> &assets,
+                         const sp<AaptFile> &file, String8 *outNewLeafName);
 
-status_t postProcessImage(const sp<AaptAssets>& assets,
-						  ResourceTable* table, const sp<AaptFile>& file);
+status_t postProcessImage(const sp<AaptAssets> &assets,
+                          ResourceTable *table, const sp<AaptFile> &file);
 
 #endif

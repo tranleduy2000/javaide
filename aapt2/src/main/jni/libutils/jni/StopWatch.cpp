@@ -41,13 +41,13 @@ namespace android {
     StopWatch::~StopWatch() {
         nsecs_t elapsed = elapsedTime();
         const int n = mNumLaps;
-        ALOGD("StopWatch %s (us): %"
+        LOGD("StopWatch %s (us): %"
                       PRId64
                       " ", mName, ns2us(elapsed));
         for (int i = 0; i < n; i++) {
             const nsecs_t soFar = mLaps[i].soFar;
             const nsecs_t thisLap = mLaps[i].thisLap;
-            ALOGD(" [%d: %"
+            LOGD(" [%d: %"
                           PRId64
                           ", %"
                           PRId64, i, ns2us(soFar), ns2us(thisLap));

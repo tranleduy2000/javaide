@@ -70,7 +70,7 @@ namespace android {
 #if TEST_BACKUP_HELPERS
 #define LOGP(f, x...) if (kIsDebug) printf(f "\n", x)
 #else
-#define LOGP(x...) if (kIsDebug) ALOGD(x)
+#define LOGP(x...) if (kIsDebug) LOGD(x)
 #endif
 
     const static int ROUND_UP[4] = {0, 3, 2, 1};
@@ -93,7 +93,7 @@ namespace android {
         bytesRead += amt;
 
         if (header.magic0 != MAGIC0 || header.magic1 != MAGIC1) {
-            ALOGW("read_snapshot_file header.magic0=0x%08x magic1=0x%08x", header.magic0,
+            LOGW("read_snapshot_file header.magic0=0x%08x magic1=0x%08x", header.magic0,
                   header.magic1);
             return 1;
         }
@@ -104,7 +104,7 @@ namespace android {
 
             amt = read(fd, &file, sizeof(FileState));
             if (amt != sizeof(FileState)) {
-                ALOGW("read_snapshot_file FileState truncated/error with read at %d bytes\n",
+                LOGW("read_snapshot_file FileState truncated/error with read at %d bytes\n",
                       bytesRead);
                 return 1;
             }
@@ -124,14 +124,14 @@ namespace android {
                 free(filename);
             }
             if (amt != nameBufSize) {
-                ALOGW("read_snapshot_file filename truncated/error with read at %d bytes\n",
+                LOGW("read_snapshot_file filename truncated/error with read at %d bytes\n",
                       bytesRead);
                 return 1;
             }
         }
 
         if (header.totalSize != bytesRead) {
-            ALOGW("read_snapshot_file length mismatch: header.totalSize=%d bytesRead=%d\n",
+            LOGW("read_snapshot_file length mismatch: header.totalSize=%d bytesRead=%d\n",
                   header.totalSize, bytesRead);
             return 1;
         }
@@ -161,7 +161,7 @@ namespace android {
 
         amt = write(fd, &header, sizeof(header));
         if (amt != sizeof(header)) {
-            ALOGW("write_snapshot_file error writing header %s", strerror(errno));
+            LOGW("write_snapshot_file error writing header %s", strerror(errno));
             return errno;
         }
 
@@ -173,14 +173,14 @@ namespace android {
 
                 amt = write(fd, &r.s, sizeof(FileState));
                 if (amt != sizeof(FileState)) {
-                    ALOGW("write_snapshot_file error writing header %s", strerror(errno));
+                    LOGW("write_snapshot_file error writing header %s", strerror(errno));
                     return 1;
                 }
 
                 // filename is not NULL terminated, but it is padded
                 amt = write(fd, name.string(), nameLen);
                 if (amt != nameLen) {
-                    ALOGW("write_snapshot_file error writing filename %s", strerror(errno));
+                    LOGW("write_snapshot_file error writing filename %s", strerror(errno));
                     return 1;
                 }
                 int paddingLen = ROUND_UP[nameLen % 4];
@@ -188,7 +188,7 @@ namespace android {
                     int padding = 0xabababab;
                     amt = write(fd, &padding, paddingLen);
                     if (amt != paddingLen) {
-                        ALOGW("write_snapshot_file error writing %d bytes of filename padding %s",
+                        LOGW("write_snapshot_file error writing %d bytes of filename padding %s",
                               paddingLen, strerror(errno));
                         return 1;
                     }
@@ -223,7 +223,7 @@ namespace android {
         lseek(fd, 0, SEEK_SET);
 
         if (sizeof(metadata) != 16) {
-            ALOGE("ERROR: metadata block is the wrong size!");
+            LOGE("ERROR: metadata block is the wrong size!");
         }
 
         bytesLeft = fileSize + sizeof(metadata);
@@ -271,7 +271,7 @@ namespace android {
                     }
                 }
             }
-            ALOGE("write_update_file size mismatch for %s. expected=%d actual=%d."
+            LOGE("write_update_file size mismatch for %s. expected=%d actual=%d."
                           " You aren't doing proper locking!", realFilename, fileSize,
                   fileSize - bytesLeft);
         }
@@ -367,7 +367,7 @@ namespace android {
 
                 // compute the CRC
                 if (compute_crc32(file, &r) != NO_ERROR) {
-                    ALOGW("Unable to open file %s", file);
+                    LOGW("Unable to open file %s", file);
                     continue;
                 }
             }
@@ -407,7 +407,7 @@ namespace android {
                     || f.mode != g.s.mode || f.size != g.s.size || f.crc32 != g.s.crc32) {
                     int fd = open(g.file.string(), O_RDONLY);
                     if (fd < 0) {
-                        ALOGE("Unable to read file for backup: %s", g.file.string());
+                        LOGE("Unable to read file for backup: %s", g.file.string());
                     } else {
                         write_update_file(dataStream, fd, g.s.mode, p, g.file.string());
                         close(fd);
@@ -512,7 +512,7 @@ namespace android {
         //TODO FIX
        /* if (lstat64(filepath.string(), &s) != 0) {
             err = errno;
-            ALOGE("Error %d (%s) from lstat64(%s)", err, strerror(err), filepath.string());
+            LOGE("Error %d (%s) from lstat64(%s)", err, strerror(err), filepath.string());
             return err;
         }*/
 
@@ -540,7 +540,7 @@ namespace android {
         int fd = open(filepath.string(), O_RDONLY);
         if (fd < 0) {
             err = errno;
-            ALOGE("Error %d (%s) from open(%s)", err, strerror(err), filepath.string());
+            LOGE("Error %d (%s) from open(%s)", err, strerror(err), filepath.string());
             return err;
         }
 
@@ -555,7 +555,7 @@ namespace android {
         char *const paxData = paxHeader + PAXHEADER_SIZE;
 
         if (buf == NULL) {
-            ALOGE("Out of mem allocating transfer buffer");
+            LOGE("Out of mem allocating transfer buffer");
             err = ENOMEM;
             goto done;
         }
@@ -588,7 +588,7 @@ namespace android {
         } else if (S_ISREG(s.st_mode)) {
             type = '0';     // tar magic: '0' == normal file
         } else {
-            ALOGW("Error: unknown file mode 0%o [%s]", s.st_mode, filepath.string());
+            LOGW("Error: unknown file mode 0%o [%s]", s.st_mode, filepath.string());
             goto cleanup;
         }
         buf[156] = type;
@@ -687,11 +687,11 @@ namespace android {
                 ssize_t nRead = read(fd, buf, toRead);
                 if (nRead < 0) {
                     err = errno;
-                    ALOGE("Unable to read file [%s], err=%d (%s)", filepath.string(),
+                    LOGE("Unable to read file [%s], err=%d (%s)", filepath.string(),
                           err, strerror(err));
                     break;
                 } else if (nRead == 0) {
-                    ALOGE("EOF but expect %lld more bytes in [%s]", (long long) toWrite,
+                    LOGE("EOF but expect %lld more bytes in [%s]", (long long) toWrite,
                           filepath.string());
                     err = EIO;
                     break;
@@ -755,7 +755,7 @@ namespace android {
         file_metadata_v1 metadata;
         amt = in->ReadEntityData(&metadata, sizeof(metadata));
         if (amt != sizeof(metadata)) {
-            ALOGW("Could not read metadata for %s -- %ld / %s", filename.string(),
+            LOGW("Could not read metadata for %s -- %ld / %s", filename.string(),
                   (long) amt, strerror(errno));
             return EIO;
         }
@@ -764,7 +764,7 @@ namespace android {
         if (metadata.version > CURRENT_METADATA_VERSION) {
             if (!m_loggedUnknownMetadata) {
                 m_loggedUnknownMetadata = true;
-                ALOGW("Restoring file with unsupported metadata version %d (currently %d)",
+                LOGW("Restoring file with unsupported metadata version %d (currently %d)",
                       metadata.version, CURRENT_METADATA_VERSION);
             }
         }
@@ -774,7 +774,7 @@ namespace android {
         crc = crc32(0L, Z_NULL, 0);
         fd = open(filename.string(), O_CREAT | O_RDWR | O_TRUNC, mode);
         if (fd == -1) {
-            ALOGW("Could not open file %s -- %s", filename.string(), strerror(errno));
+            LOGW("Could not open file %s -- %s", filename.string(), strerror(errno));
             return errno;
         }
 
@@ -782,7 +782,7 @@ namespace android {
             err = write(fd, buf, amt);
             if (err != amt) {
                 close(fd);
-                ALOGW("Error '%s' writing '%s'", strerror(errno), filename.string());
+                LOGW("Error '%s' writing '%s'", strerror(errno), filename.string());
                 return errno;
             }
             crc = crc32(crc, (Bytef *) buf, amt);
@@ -793,7 +793,7 @@ namespace android {
         // Record for the snapshot
         err = stat(filename.string(), &st);
         if (err != 0) {
-            ALOGW("Error stating file that we just created %s", filename.string());
+            LOGW("Error stating file that we just created %s", filename.string());
             return errno;
         }
 

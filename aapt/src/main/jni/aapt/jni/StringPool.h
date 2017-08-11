@@ -26,22 +26,23 @@ using namespace android;
 
 #define PRINT_STRING_METRICS 0
 
-void strcpy16_htod(uint16_t* dst, const uint16_t* src);
+void strcpy16_htod(uint16_t *dst, const uint16_t *src);
 
-void printStringPool(const ResStringPool* pool);
+void printStringPool(const ResStringPool *pool);
 
 /**
  * The StringPool class is used as an intermediate representation for
  * generating the string pool resource data structure that can be parsed with
  * ResStringPool in include/utils/ResourceTypes.h.
  */
-class StringPool
-{
+class StringPool {
 public:
     struct entry {
-        entry() : offset(0) { }
-        entry(const String16& _value) : value(_value), offset(0) { }
-        entry(const entry& o) : value(o.value), offset(o.offset), indices(o.indices) { }
+        entry() : offset(0) {}
+
+        entry(const String16 &_value) : value(_value), offset(0) {}
+
+        entry(const entry &o) : value(o.value), offset(o.offset), indices(o.indices) {}
 
         String16 value;
         size_t offset;
@@ -54,9 +55,9 @@ public:
     };
 
     struct entry_style {
-        entry_style() : offset(0) { }
+        entry_style() : offset(0) {}
 
-        entry_style(const entry_style& o) : offset(o.offset), spans(o.spans) { }
+        entry_style(const entry_style &o) : offset(o.offset), spans(o.spans) {}
 
         size_t offset;
         Vector<entry_style_span> spans;
@@ -84,27 +85,29 @@ public:
      * if this string pool is sorted, the returned index will not be valid
      * when the pool is finally written.
      */
-    ssize_t add(const String16& value, bool mergeDuplicates = false);
+    ssize_t add(const String16 &value, bool mergeDuplicates = false);
 
-    ssize_t add(const String16& value, const Vector<entry_style_span>& spans);
+    ssize_t add(const String16 &value, const Vector<entry_style_span> &spans);
 
-    ssize_t add(const String16& ident, const String16& value,
+    ssize_t add(const String16 &ident, const String16 &value,
                 bool mergeDuplicates = false);
 
-    status_t addStyleSpan(size_t idx, const String16& name,
+    status_t addStyleSpan(size_t idx, const String16 &name,
                           uint32_t start, uint32_t end);
-    status_t addStyleSpans(size_t idx, const Vector<entry_style_span>& spans);
-    status_t addStyleSpan(size_t idx, const entry_style_span& span);
+
+    status_t addStyleSpans(size_t idx, const Vector<entry_style_span> &spans);
+
+    status_t addStyleSpan(size_t idx, const entry_style_span &span);
 
     size_t size() const;
 
-    const entry& entryAt(size_t idx) const;
+    const entry &entryAt(size_t idx) const;
 
     size_t countIdentifiers() const;
 
     sp<AaptFile> createStringBlock();
 
-    status_t writeStringBlock(const sp<AaptFile>& pool);
+    status_t writeStringBlock(const sp<AaptFile> &pool);
 
     /**
      * Find out an offset in the pool for a particular string.  If the string
@@ -114,7 +117,7 @@ public:
      * multiple times in the pool, the first offset will be returned.  Returns
      * -1 if the string does not exist.
      */
-    ssize_t offsetForString(const String16& val) const;
+    ssize_t offsetForString(const String16 &val) const;
 
     /**
      * Find all of the offsets in the pool for a particular string.  If the
@@ -122,29 +125,29 @@ public:
      * createStringBlock() or writeStringBlock() has been called
      * (which determines the offsets).  Returns NULL if the string does not exist.
      */
-    const Vector<size_t>* offsetsForString(const String16& val) const;
+    const Vector<size_t> *offsetsForString(const String16 &val) const;
 
 private:
-    const bool                              mSorted;
-    const bool                              mUTF8;
+    const bool mSorted;
+    const bool mUTF8;
     // Raw array of unique strings, in some arbitrary order.
-    Vector<entry>                           mEntries;
+    Vector<entry> mEntries;
     // Array of indices into mEntries, in the order they were
     // added to the pool.  This can be different than mEntries
     // if the same string was added multiple times (it will appear
     // once in mEntries, with multiple occurrences in this array).
-    Vector<size_t>                          mEntryArray;
+    Vector<size_t> mEntryArray;
     // Optional style span information associated with each index of
     // mEntryArray.
-    Vector<entry_style>                     mEntryStyleArray;
+    Vector<entry_style> mEntryStyleArray;
     // Mapping from indices in mEntryArray to indices in mValues.
-    Vector<size_t>                          mEntryArrayToValues;
+    Vector<size_t> mEntryArrayToValues;
     // Unique set of all the strings added to the pool, mapped to
     // the first index of mEntryArray where the value was added.
-    DefaultKeyedVector<String16, ssize_t>   mValues;
+    DefaultKeyedVector<String16, ssize_t> mValues;
     // Unique set of all (optional) identifiers of strings in the
     // pool, mapping to indices in mEntries.
-    DefaultKeyedVector<String16, ssize_t>   mIdents;
+    DefaultKeyedVector<String16, ssize_t> mIdents;
 
 };
 

@@ -38,7 +38,7 @@ const ResTable_entry* TypeVariant::iterator::operator*() const {
     const uint32_t* const entryIndices = reinterpret_cast<const uint32_t*>(
             reinterpret_cast<uintptr_t>(type) + dtohs(type->header.headerSize));
     if (reinterpret_cast<uintptr_t>(entryIndices) + (sizeof(uint32_t) * entryCount) > containerEnd) {
-        ALOGE("Type's entry indices extend beyond its boundaries");
+        LOGE("Type's entry indices extend beyond its boundaries");
         return NULL;
     }
 
@@ -48,20 +48,20 @@ const ResTable_entry* TypeVariant::iterator::operator*() const {
     }
 
     if ((entryOffset & 0x3) != 0) {
-        ALOGE("Index %u points to entry with unaligned offset 0x%08x", mIndex, entryOffset);
+        LOGE("Index %u points to entry with unaligned offset 0x%08x", mIndex, entryOffset);
         return NULL;
     }
 
     const ResTable_entry* entry = reinterpret_cast<const ResTable_entry*>(
             reinterpret_cast<uintptr_t>(type) + dtohl(type->entriesStart) + entryOffset);
     if (reinterpret_cast<uintptr_t>(entry) > containerEnd - sizeof(*entry)) {
-        ALOGE("Entry offset at index %u points outside the Type's boundaries", mIndex);
+        LOGE("Entry offset at index %u points outside the Type's boundaries", mIndex);
         return NULL;
     } else if (reinterpret_cast<uintptr_t>(entry) + dtohs(entry->size) > containerEnd) {
-        ALOGE("Entry at index %u extends beyond Type's boundaries", mIndex);
+        LOGE("Entry at index %u extends beyond Type's boundaries", mIndex);
         return NULL;
     } else if (dtohs(entry->size) < sizeof(*entry)) {
-        ALOGE("Entry at index %u is too small (%u)", mIndex, dtohs(entry->size));
+        LOGE("Entry at index %u is too small (%u)", mIndex, dtohs(entry->size));
         return NULL;
     }
     return entry;

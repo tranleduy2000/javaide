@@ -105,19 +105,19 @@ namespace android {
                     if ((size_t) size <= (size_t) (dataEnd - ((const uint8_t *) chunk))) {
                         return NO_ERROR;
                     }
-                    ALOGW("%s data size 0x%x extends beyond resource end %p.",
+                    LOGW("%s data size 0x%x extends beyond resource end %p.",
                           name, size, (void *) (dataEnd - ((const uint8_t *) chunk)));
                     return BAD_TYPE;
                 }
-                ALOGW("%s size 0x%x or headerSize 0x%x is not on an integer boundary.",
+                LOGW("%s size 0x%x or headerSize 0x%x is not on an integer boundary.",
                       name, (int) size, (int) headerSize);
                 return BAD_TYPE;
             }
-            ALOGW("%s size 0x%x is smaller than header size 0x%x.",
+            LOGW("%s size 0x%x is smaller than header size 0x%x.",
                   name, size, headerSize);
             return BAD_TYPE;
         }
-        ALOGW("%s header size 0x%04x is too small.",
+        LOGW("%s header size 0x%04x is too small.",
               name, headerSize);
         return BAD_TYPE;
     }
@@ -217,13 +217,13 @@ namespace android {
         }
 
         if (size < ResTable::IDMAP_HEADER_SIZE_BYTES) {
-            ALOGW("idmap: header too small (%d bytes)", (uint32_t) size);
+            LOGW("idmap: header too small (%d bytes)", (uint32_t) size);
             return false;
         }
 
         const uint32_t magic = htodl(*reinterpret_cast<const uint32_t *>(idmap));
         if (magic != IDMAP_MAGIC) {
-            ALOGW("idmap: no magic found in header (is 0x%08x, expected 0x%08x)",
+            LOGW("idmap: no magic found in header (is 0x%08x, expected 0x%08x)",
                   magic, IDMAP_MAGIC);
             return false;
         }
@@ -232,7 +232,7 @@ namespace android {
         if (version != IDMAP_CURRENT_VERSION) {
             // We are strict about versions because files with this format are
             // auto-generated and don't need backwards compatibility.
-            ALOGW("idmap: version mismatch in header (is 0x%08x, expected 0x%08x)",
+            LOGW("idmap: version mismatch in header (is 0x%08x, expected 0x%08x)",
                   version, IDMAP_CURRENT_VERSION);
             return false;
         }
@@ -363,7 +363,7 @@ namespace android {
         }
 
         if (mapCount > 255) {
-            ALOGW("idmap: too many mappings. Only 255 are possible but %u are present",
+            LOGW("idmap: too many mappings. Only 255 are possible but %u are present",
                   (uint32_t) mapCount);
         }
 
@@ -464,7 +464,7 @@ namespace android {
 
         if (mHeader->header.headerSize > mHeader->header.size
             || mHeader->header.size > size) {
-            ALOGW("Bad string block: header size %d or total size %d is larger than data size %d\n",
+            LOGW("Bad string block: header size %d or total size %d is larger than data size %d\n",
                   (int) mHeader->header.headerSize, (int) mHeader->header.size, (int) size);
             return (mError = BAD_TYPE);
         }
@@ -477,7 +477,7 @@ namespace android {
                  mHeader->stringCount)  // uint32 overflow?
                 || (mHeader->header.headerSize + (mHeader->stringCount * sizeof(uint32_t)))
                    > size) {
-                ALOGW("Bad string block: entry of %d items extends past data size %d\n",
+                LOGW("Bad string block: entry of %d items extends past data size %d\n",
                       (int) (mHeader->header.headerSize +
                              (mHeader->stringCount * sizeof(uint32_t))),
                       (int) size);
@@ -494,7 +494,7 @@ namespace android {
             // There should be at least space for the smallest string
             // (2 bytes length, null terminator).
             if (mHeader->stringsStart >= (mSize - sizeof(uint16_t))) {
-                ALOGW("Bad string block: string pool starts at %d, after total size %d\n",
+                LOGW("Bad string block: string pool starts at %d, after total size %d\n",
                       (int) mHeader->stringsStart, (int) mHeader->header.size);
                 return (mError = BAD_TYPE);
             }
@@ -507,13 +507,13 @@ namespace android {
             } else {
                 // check invariant: styles starts before end of data
                 if (mHeader->stylesStart >= (mSize - sizeof(uint16_t))) {
-                    ALOGW("Bad style block: style block starts at %d past data size of %d\n",
+                    LOGW("Bad style block: style block starts at %d past data size of %d\n",
                           (int) mHeader->stylesStart, (int) mHeader->header.size);
                     return (mError = BAD_TYPE);
                 }
                 // check invariant: styles follow the strings
                 if (mHeader->stylesStart <= mHeader->stringsStart) {
-                    ALOGW("Bad style block: style block starts at %d, before strings at %d\n",
+                    LOGW("Bad style block: style block starts at %d, before strings at %d\n",
                           (int) mHeader->stylesStart, (int) mHeader->stringsStart);
                     return (mError = BAD_TYPE);
                 }
@@ -523,7 +523,7 @@ namespace android {
 
             // check invariant: stringCount > 0 requires a string pool to exist
             if (mStringPoolSize == 0) {
-                ALOGW("Bad string block: stringCount is %d but pool size is 0\n",
+                LOGW("Bad string block: stringCount is %d but pool size is 0\n",
                       (int) mHeader->stringCount);
                 return (mError = BAD_TYPE);
             }
@@ -547,7 +547,7 @@ namespace android {
                  ((uint8_t *) mStrings)[mStringPoolSize - 1] != 0) ||
                 (!(mHeader->flags & ResStringPool_header::UTF8_FLAG) &&
                  ((uint16_t *) mStrings)[mStringPoolSize - 1] != 0)) {
-                ALOGW("Bad string block: last string is not 0-terminated\n");
+                LOGW("Bad string block: last string is not 0-terminated\n");
                 return (mError = BAD_TYPE);
             }
         } else {
@@ -559,12 +559,12 @@ namespace android {
             mEntryStyles = mEntries + mHeader->stringCount;
             // invariant: integer overflow in calculating mEntryStyles
             if (mEntryStyles < mEntries) {
-                ALOGW("Bad string block: integer overflow finding styles\n");
+                LOGW("Bad string block: integer overflow finding styles\n");
                 return (mError = BAD_TYPE);
             }
 
             if (((const uint8_t *) mEntryStyles - (const uint8_t *) mHeader) > (int) size) {
-                ALOGW("Bad string block: entry of %d styles extends past data size %d\n",
+                LOGW("Bad string block: entry of %d styles extends past data size %d\n",
                       (int) ((const uint8_t *) mEntryStyles - (const uint8_t *) mHeader),
                       (int) size);
                 return (mError = BAD_TYPE);
@@ -572,7 +572,7 @@ namespace android {
             mStyles = (const uint32_t *)
                     (((const uint8_t *) data) + mHeader->stylesStart);
             if (mHeader->stylesStart >= mHeader->header.size) {
-                ALOGW("Bad string block: style pool starts %d, after total size %d\n",
+                LOGW("Bad string block: style pool starts %d, after total size %d\n",
                       (int) mHeader->stylesStart, (int) mHeader->header.size);
                 return (mError = BAD_TYPE);
             }
@@ -597,7 +597,7 @@ namespace android {
             };
             if (memcmp(&mStyles[mStylePoolSize - (sizeof(endSpan) / sizeof(uint32_t))],
                        &endSpan, sizeof(endSpan)) != 0) {
-                ALOGW("Bad string block: last style is not 0xFFFFFFFF-terminated\n");
+                LOGW("Bad string block: last style is not 0xFFFFFFFF-terminated\n");
                 return (mError = BAD_TYPE);
             }
         } else {
@@ -686,13 +686,13 @@ namespace android {
                     if ((uint32_t) (str + *u16len - strings) < mStringPoolSize) {
                         // Reject malformed (non null-terminated) strings
                         if (str[*u16len] != 0x0000) {
-                            ALOGW("Bad string block: string #%d is not null-terminated",
+                            LOGW("Bad string block: string #%d is not null-terminated",
                                   (int) idx);
                             return NULL;
                         }
                         return reinterpret_cast<const char16_t *>(str);
                     } else {
-                        ALOGW("Bad string block: string #%d extends to %d, past end at %d\n",
+                        LOGW("Bad string block: string #%d extends to %d, past end at %d\n",
                               (int) idx, (int) (str + *u16len - strings), (int) mStringPoolSize);
                     }
                 } else {
@@ -714,12 +714,12 @@ namespace android {
                         }
 #else
                             // We do not want to be in this case when actually running Android.
-                            ALOGW("CREATING STRING CACHE OF %zu bytes",
+                            LOGW("CREATING STRING CACHE OF %zu bytes",
                                   static_cast<size_t>(mHeader->stringCount * sizeof(char16_t **)));
 #endif
                             mCache = (char16_t **) calloc(mHeader->stringCount, sizeof(char16_t *));
                             if (mCache == NULL) {
-                                ALOGW("No memory trying to allocate decode cache table of %d bytes\n",
+                                LOGW("No memory trying to allocate decode cache table of %d bytes\n",
                                       (int) (mHeader->stringCount * sizeof(char16_t **)));
                                 return NULL;
                             }
@@ -731,7 +731,7 @@ namespace android {
 
                         ssize_t actualLen = utf8_to_utf16_length(u8str, u8len);
                         if (actualLen < 0 || (size_t) actualLen != *u16len) {
-                            ALOGW("Bad string block: string #%lld decoded length is not correct "
+                            LOGW("Bad string block: string #%lld decoded length is not correct "
                                           "%lld vs %llu\n",
                                   (long long) idx, (long long) actualLen, (long long) *u16len);
                             return NULL;
@@ -739,14 +739,14 @@ namespace android {
 
                         // Reject malformed (non null-terminated) strings
                         if (u8str[u8len] != 0x00) {
-                            ALOGW("Bad string block: string #%d is not null-terminated",
+                            LOGW("Bad string block: string #%d is not null-terminated",
                                   (int) idx);
                             return NULL;
                         }
 
                         char16_t *u16str = (char16_t *) calloc(*u16len + 1, sizeof(char16_t));
                         if (!u16str) {
-                            ALOGW("No memory when trying to allocate decode cache for string #%d\n",
+                            LOGW("No memory when trying to allocate decode cache for string #%d\n",
                                   (int) idx);
                             return NULL;
                         }
@@ -758,13 +758,13 @@ namespace android {
                         mCache[idx] = u16str;
                         return u16str;
                     } else {
-                        ALOGW("Bad string block: string #%lld extends to %lld, past end at %lld\n",
+                        LOGW("Bad string block: string #%lld extends to %lld, past end at %lld\n",
                               (long long) idx, (long long) (u8str + u8len - strings),
                               (long long) mStringPoolSize);
                     }
                 }
             } else {
-                ALOGW("Bad string block: string #%d entry is at %d, past end at %d\n",
+                LOGW("Bad string block: string #%d entry is at %d, past end at %d\n",
                       (int) idx, (int) (off * sizeof(uint16_t)),
                       (int) (mStringPoolSize * sizeof(uint16_t)));
             }
@@ -786,11 +786,11 @@ namespace android {
                 if ((uint32_t) (str + encLen - strings) < mStringPoolSize) {
                     return (const char *) str;
                 } else {
-                    ALOGW("Bad string block: string #%d extends to %d, past end at %d\n",
+                    LOGW("Bad string block: string #%d extends to %d, past end at %d\n",
                           (int) idx, (int) (str + encLen - strings), (int) mStringPoolSize);
                 }
             } else {
-                ALOGW("Bad string block: string #%d entry is at %d, past end at %d\n",
+                LOGW("Bad string block: string #%d entry is at %d, past end at %d\n",
                       (int) idx, (int) (off * sizeof(uint16_t)),
                       (int) (mStringPoolSize * sizeof(uint16_t)));
             }
@@ -822,7 +822,7 @@ namespace android {
             if (off < mStylePoolSize) {
                 return (const ResStringPool_span *) (mStyles + off);
             } else {
-                ALOGW("Bad string block: style #%d entry is at %d, past end at %d\n",
+                LOGW("Bad string block: style #%d entry is at %d, past end at %d\n",
                       (int) idx, (int) (off * sizeof(uint32_t)),
                       (int) (mStylePoolSize * sizeof(uint32_t)));
             }
@@ -1427,14 +1427,14 @@ namespace android {
                     minExtSize = sizeof(ResXMLTree_cdataExt);
                     break;
                 default:
-                    ALOGW("Unknown XML block: header type %d in node at %d\n",
+                    LOGW("Unknown XML block: header type %d in node at %d\n",
                           (int) dtohs(next->header.type),
                           (int) (((const uint8_t *) next) - ((const uint8_t *) mTree.mHeader)));
                     continue;
             }
 
             if ((totalSize - headerSize) < minExtSize) {
-                ALOGW("Bad XML block: header type 0x%x in node at 0x%x has size %d, need %d\n",
+                LOGW("Bad XML block: header type 0x%x in node at 0x%x has size %d, need %d\n",
                       (int) dtohs(next->header.type),
                       (int) (((const uint8_t *) next) - ((const uint8_t *) mTree.mHeader)),
                       (int) (totalSize - headerSize), (int) minExtSize);
@@ -1508,7 +1508,7 @@ namespace android {
         mHeader = (const ResXMLTree_header *) data;
         mSize = dtohl(mHeader->header.size);
         if (dtohs(mHeader->header.headerSize) > mSize || mSize > size) {
-            ALOGW("Bad XML block: header size %d or total size %d is larger than data size %d\n",
+            LOGW("Bad XML block: header size %d or total size %d is larger than data size %d\n",
                   (int) dtohs(mHeader->header.headerSize),
                   (int) dtohl(mHeader->header.size), (int) size);
             mError = BAD_TYPE;
@@ -1573,7 +1573,7 @@ namespace android {
         }
 
         if (mRootNode == NULL) {
-            ALOGW("Bad XML block: no root element node found\n");
+            LOGW("Bad XML block: no root element node found\n");
             mError = BAD_TYPE;
             goto done;
         }
@@ -1624,11 +1624,11 @@ namespace android {
                 if ((dtohs(attrExt->attributeStart) + attrSize) <= (size - headerSize)) {
                     return NO_ERROR;
                 }
-                ALOGW("Bad XML block: node attributes use 0x%x bytes, only have 0x%x bytes\n",
+                LOGW("Bad XML block: node attributes use 0x%x bytes, only have 0x%x bytes\n",
                       (unsigned int) (dtohs(attrExt->attributeStart) + attrSize),
                       (unsigned int) (size - headerSize));
             } else {
-                ALOGW("Bad XML start block: node header size 0x%x, size 0x%x\n",
+                LOGW("Bad XML start block: node header size 0x%x, size 0x%x\n",
                       (unsigned int) headerSize, (unsigned int) size);
             }
             return BAD_TYPE;
@@ -1652,21 +1652,21 @@ namespace android {
                         <= (size-headerSize)) {
                     return NO_ERROR;
                 }
-                ALOGW("Bad XML block: node attributes use 0x%x bytes, only have 0x%x bytes\n",
+                LOGW("Bad XML block: node attributes use 0x%x bytes, only have 0x%x bytes\n",
                         ((int)dtohs(node->attributeSize))*dtohs(node->attributeCount),
                         (int)(size-headerSize));
                 return BAD_TYPE;
             }
-            ALOGW("Bad XML block: node at 0x%x extends beyond data end 0x%x\n",
+            LOGW("Bad XML block: node at 0x%x extends beyond data end 0x%x\n",
                     (int)(((const uint8_t*)node)-((const uint8_t*)mHeader)), (int)mSize);
             return BAD_TYPE;
         }
-        ALOGW("Bad XML block: node at 0x%x header size 0x%x smaller than total size 0x%x\n",
+        LOGW("Bad XML block: node at 0x%x header size 0x%x smaller than total size 0x%x\n",
                 (int)(((const uint8_t*)node)-((const uint8_t*)mHeader)),
                 (int)headerSize, (int)size);
         return BAD_TYPE;
     }
-    ALOGW("Bad XML block: node at 0x%x header size 0x%x too small\n",
+    LOGW("Bad XML block: node at 0x%x header size 0x%x too small\n",
             (int)(((const uint8_t*)node)-((const uint8_t*)mHeader)),
             (int)headerSize);
     return BAD_TYPE;
@@ -3268,7 +3268,7 @@ namespace android {
         mTable.lock();
         const ssize_t N = mTable.getBagLocked(resID, &bag, &bagTypeSpecFlags);
         if (kDebugTableNoisy) {
-            ALOGV("Applying style 0x%08x to theme %p, count=%zu", resID, this, N);
+            LOGV("Applying style 0x%08x to theme %p, count=%zu", resID, this, N);
         }
         if (N < 0) {
             mTable.unlock();
@@ -3337,7 +3337,7 @@ namespace android {
             }
             theme_entry *curEntry = curEntries + e;
             if (kDebugTableNoisy) {
-                ALOGV("Attr 0x%08x: type=0x%x, data=0x%08x; curType=0x%x",
+                LOGV("Attr 0x%08x: type=0x%x, data=0x%08x; curType=0x%x",
                       attrRes, bag->map.value.dataType, bag->map.value.data,
                       curEntry->value.dataType);
             }
@@ -3472,7 +3472,7 @@ namespace android {
                                     resID = te.value.data;
                                     continue;
                                 }
-                                ALOGW("Too many attribute references, stopped at: 0x%08x\n", resID);
+                                LOGW("Too many attribute references, stopped at: 0x%08x\n", resID);
                                 return BAD_INDEX;
                             } else if (type != Res_value::TYPE_NULL) {
                                 *outValue = te.value;
@@ -3582,7 +3582,7 @@ namespace android {
     status_t ResTable::add(Asset *asset, const int32_t cookie, bool copyData) {
         const void *data = asset->getBuffer(true);
         if (data == NULL) {
-            ALOGW("Unable to get buffer of resource asset file");
+            LOGW("Unable to get buffer of resource asset file");
             return UNKNOWN_ERROR;
         }
 
@@ -3595,7 +3595,7 @@ namespace android {
             bool appAsLib, bool isSystemAsset) {
         const void *data = asset->getBuffer(true);
         if (data == NULL) {
-            ALOGW("Unable to get buffer of resource asset file");
+            LOGW("Unable to get buffer of resource asset file");
             return UNKNOWN_ERROR;
         }
 
@@ -3604,7 +3604,7 @@ namespace android {
         if (idmapAsset != NULL) {
             idmapData = idmapAsset->getBuffer(true);
             if (idmapData == NULL) {
-                ALOGW("Unable to get buffer of idmap asset file");
+                LOGW("Unable to get buffer of idmap asset file");
                 return UNKNOWN_ERROR;
             }
             idmapSize = static_cast<size_t>(idmapAsset->getLength());
@@ -3696,7 +3696,7 @@ namespace android {
         const bool notDeviceEndian = htods(0xf0) != 0xf0;
 
         if (kDebugLoadTableNoisy) {
-            ALOGV("Adding resources to ResTable: data=%p, size=%zu, cookie=%d, copy=%d "
+            LOGV("Adding resources to ResTable: data=%p, size=%zu, cookie=%d, copy=%d "
                           "idmap=%p\n", data, dataSize, cookie, copyData, idmapData);
         }
 
@@ -3716,17 +3716,17 @@ namespace android {
                  dtohl(header->header->header.size), header->header->header.size);
         }
         if (kDebugLoadTableNoisy) {
-            ALOGV("Loading ResTable @%p:\n", header->header);
+            LOGV("Loading ResTable @%p:\n", header->header);
         }
         if (dtohs(header->header->header.headerSize) > header->size
             || header->size > dataSize) {
-            ALOGW("Bad resource table: header size 0x%x or total size 0x%x is larger than data size 0x%x\n",
+            LOGW("Bad resource table: header size 0x%x or total size 0x%x is larger than data size 0x%x\n",
                   (int) dtohs(header->header->header.headerSize),
                   (int) header->size, (int) dataSize);
             return (mError = BAD_TYPE);
         }
         if (((dtohs(header->header->header.headerSize) | header->size) & 0x3) != 0) {
-            ALOGW("Bad resource table: header size 0x%x or total size 0x%x is not on an integer boundary\n",
+            LOGW("Bad resource table: header size 0x%x or total size 0x%x is not on an integer boundary\n",
                   (int) dtohs(header->header->header.headerSize),
                   (int) header->size);
             return (mError = BAD_TYPE);
@@ -3747,7 +3747,7 @@ namespace android {
                 return (mError = err);
             }
             if (kDebugTableNoisy) {
-                ALOGV("Chunk: type=0x%x, headerSize=0x%x, size=0x%x, pos=%p\n",
+                LOGV("Chunk: type=0x%x, headerSize=0x%x, size=0x%x, pos=%p\n",
                       dtohs(chunk->type), dtohs(chunk->headerSize), dtohl(chunk->size),
                       (void *) (((const uint8_t *) chunk) - ((const uint8_t *) header->header)));
             }
@@ -3762,11 +3762,11 @@ namespace android {
                         return (mError = err);
                     }
                 } else {
-                    ALOGW("Multiple string chunks found in resource table.");
+                    LOGW("Multiple string chunks found in resource table.");
                 }
             } else if (ctype == RES_TABLE_PACKAGE_TYPE) {
                 if (curPackage >= dtohl(header->header->packageCount)) {
-                    ALOGW("More package chunks were found than the %d declared in the header.",
+                    LOGW("More package chunks were found than the %d declared in the header.",
                           dtohl(header->header->packageCount));
                     return (mError = BAD_TYPE);
                 }
@@ -3777,7 +3777,7 @@ namespace android {
                 }
                 curPackage++;
             } else {
-                ALOGW("Unknown chunk type 0x%x in table at %p.\n",
+                LOGW("Unknown chunk type 0x%x in table at %p.\n",
                       ctype,
                       (void *) (((const uint8_t *) chunk) - ((const uint8_t *) header->header)));
             }
@@ -3786,17 +3786,17 @@ namespace android {
         }
 
         if (curPackage < dtohl(header->header->packageCount)) {
-            ALOGW("Fewer package chunks (%d) were found than the %d declared in the header.",
+            LOGW("Fewer package chunks (%d) were found than the %d declared in the header.",
                   (int) curPackage, dtohl(header->header->packageCount));
             return (mError = BAD_TYPE);
         }
         mError = header->values.getError();
         if (mError != NO_ERROR) {
-            ALOGW("No string values found in resource table!");
+            LOGW("No string values found in resource table!");
         }
 
         if (kDebugTableNoisy) {
-            ALOGV("Returning from add with mError=%d\n", mError);
+            LOGV("Returning from add with mError=%d\n", mError);
         }
         return mError;
     }
@@ -3838,22 +3838,22 @@ namespace android {
 
         if (p < 0) {
             if (Res_GETPACKAGE(resID) + 1 == 0) {
-                ALOGW("No package identifier when getting name for resource number 0x%08x", resID);
+                LOGW("No package identifier when getting name for resource number 0x%08x", resID);
             } else {
 #ifndef STATIC_ANDROIDFW_FOR_TOOLS
-                ALOGW("No known package when getting name for resource number 0x%08x", resID);
+                LOGW("No known package when getting name for resource number 0x%08x", resID);
 #endif
             }
             return false;
         }
         if (t < 0) {
-            ALOGW("No type identifier when getting name for resource number 0x%08x", resID);
+            LOGW("No type identifier when getting name for resource number 0x%08x", resID);
             return false;
         }
 
         const PackageGroup *const grp = mPackageGroups[p];
         if (grp == NULL) {
-            ALOGW("Bad identifier when getting name for resource number 0x%08x", resID);
+            LOGW("Bad identifier when getting name for resource number 0x%08x", resID);
             return false;
         }
 
@@ -3903,20 +3903,20 @@ namespace android {
 
         if (p < 0) {
             if (Res_GETPACKAGE(resID) + 1 == 0) {
-                ALOGW("No package identifier when getting value for resource number 0x%08x", resID);
+                LOGW("No package identifier when getting value for resource number 0x%08x", resID);
             } else {
-                ALOGW("No known package when getting value for resource number 0x%08x", resID);
+                LOGW("No known package when getting value for resource number 0x%08x", resID);
             }
             return BAD_INDEX;
         }
         if (t < 0) {
-            ALOGW("No type identifier when getting value for resource number 0x%08x", resID);
+            LOGW("No type identifier when getting value for resource number 0x%08x", resID);
             return BAD_INDEX;
         }
 
         const PackageGroup *const grp = mPackageGroups[p];
         if (grp == NULL) {
-            ALOGW("Bad identifier when getting value for resource number 0x%08x", resID);
+            LOGW("Bad identifier when getting value for resource number 0x%08x", resID);
             return BAD_INDEX;
         }
 
@@ -3932,7 +3932,7 @@ namespace android {
             // Only log the failure when we're not running on the host as
             // part of a tool. The caller will do its own logging.
 #ifndef STATIC_ANDROIDFW_FOR_TOOLS
-            ALOGW("Failure getting entry for 0x%08x (t=%d e=%d) (error %d)\n",
+            LOGW("Failure getting entry for 0x%08x (t=%d e=%d) (error %d)\n",
                   resID, t, e, err);
 #endif
             return err;
@@ -3940,7 +3940,7 @@ namespace android {
 
         if ((dtohs(entry.entry->flags) & ResTable_entry::FLAG_COMPLEX) != 0) {
             if (!mayBeBag) {
-                ALOGW("Requesting resource 0x%08x failed because it is complex\n", resID);
+                LOGW("Requesting resource 0x%08x failed because it is complex\n", resID);
             }
             return BAD_VALUE;
         }
@@ -3958,7 +3958,7 @@ namespace android {
         // the actual package IDs of the corresponding packages in this ResTable.
         // We need to fix the package ID based on a mapping.
         if (grp->dynamicRefTable.lookupResourceValue(outValue) != NO_ERROR) {
-            ALOGW("Failed to resolve referenced package: 0x%08x", outValue->data);
+            LOGW("Failed to resolve referenced package: 0x%08x", outValue->data);
             return BAD_VALUE;
         }
 
@@ -4062,30 +4062,30 @@ namespace android {
         const int e = Res_GETENTRY(resID);
 
         if (p < 0) {
-            ALOGW("Invalid package identifier when getting bag for resource number 0x%08x", resID);
+            LOGW("Invalid package identifier when getting bag for resource number 0x%08x", resID);
             return BAD_INDEX;
         }
         if (t < 0) {
-            ALOGW("No type identifier when getting bag for resource number 0x%08x", resID);
+            LOGW("No type identifier when getting bag for resource number 0x%08x", resID);
             return BAD_INDEX;
         }
 
         //printf("Get bag: id=0x%08x, p=%d, t=%d\n", resID, p, t);
         PackageGroup *const grp = mPackageGroups[p];
         if (grp == NULL) {
-            ALOGW("Bad identifier when getting bag for resource number 0x%08x", resID);
+            LOGW("Bad identifier when getting bag for resource number 0x%08x", resID);
             return BAD_INDEX;
         }
 
         const TypeList &typeConfigs = grp->types[t];
         if (typeConfigs.isEmpty()) {
-            ALOGW("Type identifier 0x%x does not exist.", t + 1);
+            LOGW("Type identifier 0x%x does not exist.", t + 1);
             return BAD_INDEX;
         }
 
         const size_t NENTRY = typeConfigs[0]->entryCount;
         if (e >= (int) NENTRY) {
-            ALOGW("Entry identifier 0x%x is larger than entry count 0x%x",
+            LOGW("Entry identifier 0x%x is larger than entry count 0x%x",
                   e, (int) typeConfigs[0]->entryCount);
             return BAD_INDEX;
         }
@@ -4106,7 +4106,7 @@ namespace android {
                     }
                     return set->numAttrs;
                 }
-                ALOGW("Attempt to retrieve bag 0x%08x which is invalid or in a cycle.",
+                LOGW("Attempt to retrieve bag 0x%08x which is invalid or in a cycle.",
                       resID);
                 return BAD_INDEX;
             }
@@ -4217,7 +4217,7 @@ namespace android {
             }
 
             if (curOff > (dtohl(entry.type->header.size) - sizeof(ResTable_map))) {
-                ALOGW("ResTable_map at %d is beyond type chunk data %d",
+                LOGW("ResTable_map at %d is beyond type chunk data %d",
                       (int) curOff, dtohl(entry.type->header.size));
                 free(set);
                 return BAD_TYPE;
@@ -4369,7 +4369,7 @@ namespace android {
                     }
 
                     if (kDebugTableNoisy) {
-                        ALOGD("Updating pkg=%zu type=%zu with %zu filtered configs",
+                        LOGD("Updating pkg=%zu type=%zu with %zu filtered configs",
                               p, t, newFilteredConfigs->size());
                     }
 
@@ -4441,7 +4441,7 @@ namespace android {
                     && name[6] == '_') {
                     int index = atoi(String8(name + 7, nameLen - 7).string());
                     if (Res_CHECKID(index)) {
-                        ALOGW("Array resource index: %d is too large.",
+                        LOGW("Array resource index: %d is too large.",
                               index);
                         return 0;
                     }
@@ -4585,7 +4585,7 @@ namespace android {
                             Entry result;
                             if (getEntry(group, typeIndex, iter.index(), NULL, &result) !=
                                 NO_ERROR) {
-                                ALOGW("Failed to find spec flags for 0x%08x", resId);
+                                LOGW("Failed to find spec flags for 0x%08x", resId);
                                 return 0;
                             }
                             *outTypeSpecFlags = result.specFlags;
@@ -5833,20 +5833,20 @@ namespace android {
 
         if (p < 0) {
             if (Res_GETPACKAGE(resID) + 1 == 0) {
-                ALOGW("No package identifier when getting flags for resource number 0x%08x", resID);
+                LOGW("No package identifier when getting flags for resource number 0x%08x", resID);
             } else {
-                ALOGW("No known package when getting flags for resource number 0x%08x", resID);
+                LOGW("No known package when getting flags for resource number 0x%08x", resID);
             }
             return false;
         }
         if (t < 0) {
-            ALOGW("No type identifier when getting flags for resource number 0x%08x", resID);
+            LOGW("No type identifier when getting flags for resource number 0x%08x", resID);
             return false;
         }
 
         const PackageGroup *const grp = mPackageGroups[p];
         if (grp == NULL) {
-            ALOGW("Bad identifier when getting flags for resource number 0x%08x", resID);
+            LOGW("Bad identifier when getting flags for resource number 0x%08x", resID);
             return false;
         }
 
@@ -5866,7 +5866,7 @@ namespace android {
             Entry *outEntry) const {
         const TypeList &typeList = packageGroup->types[typeIndex];
         if (typeList.isEmpty()) {
-            ALOGV("Skipping entry type index 0x%02x because type is NULL!\n", typeIndex);
+            LOGV("Skipping entry type index 0x%02x because type is NULL!\n", typeIndex);
             return BAD_TYPE;
         }
 
@@ -5901,7 +5901,7 @@ namespace android {
             }
 
             if (static_cast<size_t>(realEntryIndex) >= typeSpec->entryCount) {
-                ALOGW("For resource 0x%08x, entry index(%d) is beyond type entryCount(%d)",
+                LOGW("For resource 0x%08x, entry index(%d) is beyond type entryCount(%d)",
                       Res_MAKEID(packageGroup->id - 1, typeIndex, entryIndex),
                       entryIndex, static_cast<int>(typeSpec->entryCount));
                 // We should normally abort here, but some legacy apps declare
@@ -5996,19 +5996,19 @@ namespace android {
         bestOffset += dtohl(bestType->entriesStart);
 
         if (bestOffset > (dtohl(bestType->header.size) - sizeof(ResTable_entry))) {
-            ALOGW("ResTable_entry at 0x%x is beyond type chunk data 0x%x",
+            LOGW("ResTable_entry at 0x%x is beyond type chunk data 0x%x",
                   bestOffset, dtohl(bestType->header.size));
             return BAD_TYPE;
         }
         if ((bestOffset & 0x3) != 0) {
-            ALOGW("ResTable_entry at 0x%x is not on an integer boundary", bestOffset);
+            LOGW("ResTable_entry at 0x%x is not on an integer boundary", bestOffset);
             return BAD_TYPE;
         }
 
         const ResTable_entry *const entry = reinterpret_cast<const ResTable_entry *>(
                 reinterpret_cast<const uint8_t *>(bestType) + bestOffset);
         if (dtohs(entry->size) < sizeof(*entry)) {
-            ALOGW("ResTable_entry size 0x%x is too small", dtohs(entry->size));
+            LOGW("ResTable_entry size 0x%x is too small", dtohs(entry->size));
             return BAD_TYPE;
         }
 
@@ -6037,22 +6037,22 @@ namespace android {
         const uint32_t pkgSize = dtohl(pkg->header.size);
 
         if (dtohl(pkg->typeStrings) >= pkgSize) {
-            ALOGW("ResTable_package type strings at 0x%x are past chunk size 0x%x.",
+            LOGW("ResTable_package type strings at 0x%x are past chunk size 0x%x.",
                   dtohl(pkg->typeStrings), pkgSize);
             return (mError = BAD_TYPE);
         }
         if ((dtohl(pkg->typeStrings) & 0x3) != 0) {
-            ALOGW("ResTable_package type strings at 0x%x is not on an integer boundary.",
+            LOGW("ResTable_package type strings at 0x%x is not on an integer boundary.",
                   dtohl(pkg->typeStrings));
             return (mError = BAD_TYPE);
         }
         if (dtohl(pkg->keyStrings) >= pkgSize) {
-            ALOGW("ResTable_package key strings at 0x%x are past chunk size 0x%x.",
+            LOGW("ResTable_package key strings at 0x%x are past chunk size 0x%x.",
                   dtohl(pkg->keyStrings), pkgSize);
             return (mError = BAD_TYPE);
         }
         if ((dtohl(pkg->keyStrings) & 0x3) != 0) {
-            ALOGW("ResTable_package key strings at 0x%x is not on an integer boundary.",
+            LOGW("ResTable_package key strings at 0x%x is not on an integer boundary.",
                   dtohl(pkg->keyStrings));
             return (mError = BAD_TYPE);
         }
@@ -6065,7 +6065,7 @@ namespace android {
             status_t err = parseIdmap(header->resourceIDMap, header->resourceIDMapSize,
                                       &targetPackageId, &idmapEntries);
             if (err != NO_ERROR) {
-                ALOGW("Overlay is broken");
+                LOGW("Overlay is broken");
                 return (mError = err);
             }
             id = targetPackageId;
@@ -6146,7 +6146,7 @@ namespace android {
         while (((const uint8_t *) chunk) <= (endPos - sizeof(ResChunk_header)) &&
                ((const uint8_t *) chunk) <= (endPos - dtohl(chunk->size))) {
             if (kDebugTableNoisy) {
-                ALOGV("PackageChunk: type=0x%x, headerSize=0x%x, size=0x%x, pos=%p\n",
+                LOGV("PackageChunk: type=0x%x, headerSize=0x%x, size=0x%x, pos=%p\n",
                       dtohs(chunk->type), dtohs(chunk->headerSize), dtohl(chunk->size),
                       (void *) (((const uint8_t *) chunk) - ((const uint8_t *) header->header)));
             }
@@ -6174,7 +6174,7 @@ namespace android {
                 if ((dtohl(typeSpec->entryCount) > (INT32_MAX / sizeof(uint32_t))
                      || dtohs(typeSpec->header.headerSize) + (sizeof(uint32_t) * newEntryCount)
                         > typeSpecSize)) {
-                    ALOGW("ResTable_typeSpec entry index to %p extends beyond chunk end %p.",
+                    LOGW("ResTable_typeSpec entry index to %p extends beyond chunk end %p.",
                           (void *) (dtohs(typeSpec->header.headerSize) +
                                     (sizeof(uint32_t) * newEntryCount)),
                           (void *) typeSpecSize);
@@ -6182,7 +6182,7 @@ namespace android {
                 }
 
                 if (typeSpec->id == 0) {
-                    ALOGW("ResTable_type has an id of 0.");
+                    LOGW("ResTable_type has an id of 0.");
                     return (mError = BAD_TYPE);
                 }
 
@@ -6197,7 +6197,7 @@ namespace android {
                     if (!typeList.isEmpty()) {
                         const Type *existingType = typeList[0];
                         if (existingType->entryCount != newEntryCount && idmapIndex < 0) {
-                            ALOGW("ResTable_typeSpec entry count inconsistent: given %d, previously %d",
+                            LOGW("ResTable_typeSpec entry count inconsistent: given %d, previously %d",
                                   (int) newEntryCount, (int) existingType->entryCount);
                             // We should normally abort here, but some legacy apps declare
                             // resources in the 'android' package (old bug in AAPT).
@@ -6214,7 +6214,7 @@ namespace android {
                     typeList.add(t);
                     group->largestTypeId = max(group->largestTypeId, typeSpec->id);
                 } else {
-                    ALOGV("Skipping empty ResTable_typeSpec for type %d", typeSpec->id);
+                    LOGV("Skipping empty ResTable_typeSpec for type %d", typeSpec->id);
                 }
 
             } else if (ctype == RES_TABLE_TYPE_TYPE) {
@@ -6237,7 +6237,7 @@ namespace android {
                 }
                 if (dtohs(type->header.headerSize) + (sizeof(uint32_t) * newEntryCount) >
                     typeSize) {
-                    ALOGW("ResTable_type entry index to %p extends beyond chunk end 0x%x.",
+                    LOGW("ResTable_type entry index to %p extends beyond chunk end 0x%x.",
                           (void *) (dtohs(type->header.headerSize) +
                                     (sizeof(uint32_t) * newEntryCount)),
                           typeSize);
@@ -6246,13 +6246,13 @@ namespace android {
 
                 if (newEntryCount != 0
                     && dtohl(type->entriesStart) > (typeSize - sizeof(ResTable_entry))) {
-                    ALOGW("ResTable_type entriesStart at 0x%x extends beyond chunk end 0x%x.",
+                    LOGW("ResTable_type entriesStart at 0x%x extends beyond chunk end 0x%x.",
                           dtohl(type->entriesStart), typeSize);
                     return (mError = BAD_TYPE);
                 }
 
                 if (type->id == 0) {
-                    ALOGW("ResTable_type has an id of 0.");
+                    LOGW("ResTable_type has an id of 0.");
                     return (mError = BAD_TYPE);
                 }
 
@@ -6290,7 +6290,7 @@ namespace android {
                              thisConfig.toString().string());
                     }
                 } else {
-                    ALOGV("Skipping empty ResTable_type for type %d", type->id);
+                    LOGV("Skipping empty ResTable_type for type %d", type->id);
                 }
 
             } else if (ctype == RES_TABLE_LIBRARY_TYPE) {
@@ -6307,7 +6307,7 @@ namespace android {
                                                           mPackageGroups[i]->id);
                     }
                 } else {
-                    ALOGW("Found multiple library tables, ignoring...");
+                    LOGW("Found multiple library tables, ignoring...");
                 }
             } else {
                 status_t err = validate_chunk(chunk, sizeof(ResChunk_header),
@@ -6350,7 +6350,7 @@ namespace android {
             strcpy16_dtoh(tmpName, entry->packageName,
                           sizeof(entry->packageName) / sizeof(char16_t));
             if (kDebugLibNoisy) {
-                ALOGV("Found lib entry %s with id %d\n", String8(tmpName).string(),
+                LOGV("Found lib entry %s with id %d\n", String8(tmpName).string(),
                       dtohl(entry->packageId));
             }
             if (packageId >= 256) {
@@ -6425,11 +6425,11 @@ namespace android {
         // Do a proper lookup.
         uint8_t translatedId = mLookupTable[packageId];
         if (translatedId == 0) {
-            ALOGV("DynamicRefTable(0x%02x): No mapping for build-time package ID 0x%02x.",
+            LOGV("DynamicRefTable(0x%02x): No mapping for build-time package ID 0x%02x.",
                   (uint8_t) mAssignedPackageId, (uint8_t) packageId);
             for (size_t i = 0; i < 256; i++) {
                 if (mLookupTable[i] != 0) {
-                    ALOGV("e[0x%02x] -> 0x%02x", (uint8_t) i, mLookupTable[i]);
+                    LOGV("e[0x%02x] -> 0x%02x", (uint8_t) i, mLookupTable[i]);
                 }
             }
             return UNKNOWN_ERROR;
@@ -6483,12 +6483,12 @@ namespace android {
                                    void **outData, size_t *outSize) const {
         // see README for details on the format of map
         if (mPackageGroups.size() == 0) {
-            ALOGW("idmap: target package has no package groups, cannot create idmap\n");
+            LOGW("idmap: target package has no package groups, cannot create idmap\n");
             return UNKNOWN_ERROR;
         }
 
         if (mPackageGroups[0]->packages.size() == 0) {
-            ALOGW("idmap: target package has no packages in its first package group, "
+            LOGW("idmap: target package has no packages in its first package group, "
                           "cannot create idmap\n");
             return UNKNOWN_ERROR;
         }
@@ -6580,7 +6580,7 @@ namespace android {
         }
 
         if (map.isEmpty()) {
-            ALOGW("idmap: no resources in overlay package present in base package");
+            LOGW("idmap: no resources in overlay package present in base package");
             return UNKNOWN_ERROR;
         }
 
@@ -6599,7 +6599,7 @@ namespace android {
             const char *path = paths[j];
             const size_t I = strlen(path);
             if (I > 255) {
-                ALOGV("path exceeds expected 255 characters: %s\n", path);
+                LOGV("path exceeds expected 255 characters: %s\n", path);
                 return UNKNOWN_ERROR;
             }
             for (size_t i = 0; i < 256; ++i) {

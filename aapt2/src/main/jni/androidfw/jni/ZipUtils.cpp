@@ -82,10 +82,10 @@ bool inflateToBuffer(T &reader, void *buf,
     zerr = inflateInit2(&zstream, -MAX_WBITS);
     if (zerr != Z_OK) {
         if (zerr == Z_VERSION_ERROR) {
-            ALOGE("Installed zlib is not compatible with linked version (%s)\n",
+            LOGE("Installed zlib is not compatible with linked version (%s)\n",
                   ZLIB_VERSION);
         } else {
-            ALOGE("Call to inflateInit2 failed (zerr=%d)\n", zerr);
+            LOGE("Call to inflateInit2 failed (zerr=%d)\n", zerr);
         }
         goto bail;
     }
@@ -100,14 +100,14 @@ bool inflateToBuffer(T &reader, void *buf,
         if (zstream.avail_in == 0) {
             getSize = (compRemaining > kReadBufSize) ?
                       kReadBufSize : compRemaining;
-            ALOGV("+++ reading %ld bytes (%ld left)\n",
+            LOGV("+++ reading %ld bytes (%ld left)\n",
                   getSize, compRemaining);
 
             unsigned char *nextBuffer = NULL;
             const unsigned long nextSize = reader.read(&nextBuffer, getSize);
 
             if (nextSize < getSize || nextBuffer == NULL) {
-                ALOGD("inflate read failed (%ld vs %ld)\n", nextSize, getSize);
+                LOGD("inflate read failed (%ld vs %ld)\n", nextSize, getSize);
                 goto z_bail;
             }
 
@@ -120,7 +120,7 @@ bool inflateToBuffer(T &reader, void *buf,
         /* uncompress the data */
         zerr = inflate(&zstream, Z_NO_FLUSH);
         if (zerr != Z_OK && zerr != Z_STREAM_END) {
-            ALOGD("zlib inflate call failed (zerr=%d)\n", zerr);
+            LOGD("zlib inflate call failed (zerr=%d)\n", zerr);
             goto z_bail;
         }
 
@@ -130,7 +130,7 @@ bool inflateToBuffer(T &reader, void *buf,
     assert(zerr == Z_STREAM_END);       /* other errors should've been caught */
 
     if ((long) zstream.total_out != uncompressedLen) {
-        ALOGW("Size mismatch on inflated file (%ld vs %ld)\n",
+        LOGW("Size mismatch on inflated file (%ld vs %ld)\n",
               zstream.total_out, uncompressedLen);
         goto z_bail;
     }

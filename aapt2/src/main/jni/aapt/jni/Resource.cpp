@@ -921,7 +921,7 @@ status_t massageManifest(Bundle *bundle, sp<XMLNode> root) {
         splitName.append(attr->string);
         status_t err = root->addAttribute(String16(), String16("split"), splitName);
         if (err != NO_ERROR) {
-            ALOGE("Failed to insert split name into AndroidManifest.xml");
+            LOGE("Failed to insert split name into AndroidManifest.xml");
             return err;
         }
     }

@@ -65,7 +65,7 @@ public:
     }
 
     T& editItemAt(size_t index) {
-        ALOG_ASSERT(index < size(), "ByteBucketArray.getOrCreate(index=%u) with size=%u",
+        LOG_ASSERT(index < size(), "ByteBucketArray.getOrCreate(index=%u) with size=%u",
                 (uint32_t) index, (uint32_t) size());
 
         uint8_t bucketIndex = static_cast<uint8_t>(index) >> 4;

@@ -2,7 +2,7 @@
 /* pngmem.c - stub functions for memory allocation
  *
  * Last changed in libpng 1.2.41 [February 25, 2010]
- * Copyright (c) 1998-2010 Glenn Randers-Pehrson
+ * Copyright (c) 1998-2002,2004,2006-2010 Glenn Randers-Pehrson
  * (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
  * (Version 0.88 Copyright (c) 1995, 1996 Guy Eric Schalnat, Group 42, Inc.)
  *
@@ -442,7 +442,7 @@ png_destroy_struct_2(png_voidp struct_ptr, png_free_ptr free_fn,
  * have the ability to do that.
  */
 
-png_voidp PNGAPI
+png_voidp /* PRIVATE */
 png_calloc(png_structp png_ptr, png_uint_32 size)
 {
    png_voidp ret;

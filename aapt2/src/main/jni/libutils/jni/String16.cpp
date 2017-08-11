@@ -105,7 +105,7 @@ namespace android {
     String16::String16(const char16_t *o) {
         size_t len = strlen16(o);
         SharedBuffer *buf = SharedBuffer::alloc((len + 1) * sizeof(char16_t));
-        ALOG_ASSERT(buf, "Unable to allocate shared buffer");
+        LOG_ASSERT(buf, "Unable to allocate shared buffer");
         if (buf) {
             char16_t *str = (char16_t *) buf->data();
             strcpy16(str, o);
@@ -118,7 +118,7 @@ namespace android {
 
     String16::String16(const char16_t *o, size_t len) {
         SharedBuffer *buf = SharedBuffer::alloc((len + 1) * sizeof(char16_t));
-        ALOG_ASSERT(buf, "Unable to allocate shared buffer");
+        LOG_ASSERT(buf, "Unable to allocate shared buffer");
         if (buf) {
             char16_t *str = (char16_t *) buf->data();
             memcpy(str, o, len * sizeof(char16_t));

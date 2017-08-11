@@ -22,7 +22,9 @@
 #define _CUTILS_LOGHACK_H
 
 #ifdef HAVE_ANDROID_OS
+
 #include <cutils/log.h>
+
 #else
 #include <stdio.h>
 #define LOG(level, ...) \

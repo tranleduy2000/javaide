@@ -22,13 +22,10 @@
 #include "cutils/logd.h"
 
 #include <stdlib.h>
-#include <string.h>
 #include <ctype.h>
-#include <errno.h>
 #include <fcntl.h>
 
 #ifdef HAVE_PTHREADS
-#include <pthread.h>
 #endif
 
 #define kMaxTagLen  16      /* from the long-dead utils/Log.cpp */
@@ -60,24 +57,24 @@ typedef enum {
  */
 typedef struct LogState {
     /* the fake fd that's seen by the user */
-    int     fakeFd;
+    int fakeFd;
 
     /* a printable name for this fake device */
-    char   *debugName;
+    char *debugName;
 
     /* nonzero if this is a binary log */
-    int     isBinary;
+    int isBinary;
 
     /* global minimum priority */
-    int     globalMinPriority;
+    int globalMinPriority;
 
     /* output format */
     LogFormat outputFormat;
 
     /* tags and priorities */
     struct {
-        char    tag[kMaxTagLen];
-        int     minPriority;
+        char tag[kMaxTagLen];
+        int minPriority;
     } tagSet[kTagSetSize];
 } LogState;
 
@@ -91,15 +88,14 @@ typedef struct LogState {
  */
 static pthread_mutex_t fakeLogDeviceLock = PTHREAD_MUTEX_INITIALIZER;
 
-static void lock()
-{
+static void lock() {
     pthread_mutex_lock(&fakeLogDeviceLock);
 }
 
-static void unlock()
-{
+static void unlock() {
     pthread_mutex_unlock(&fakeLogDeviceLock);
 }
+
 #else   // !HAVE_PTHREADS
 #define lock() ((void)0)
 #define unlock() ((void)0)
@@ -117,8 +113,7 @@ static LogState *openLogTable[MAX_OPEN_LOGS];
  * Allocate an fd and associate a new LogState with it.
  * The fd is available via the fakeFd field of the return value.
  */
-static LogState *createLogState()
-{
+static LogState *createLogState() {
     size_t i;
 
     for (i = 0; i < sizeof(openLogTable); i++) {
@@ -134,8 +129,7 @@ static LogState *createLogState()
 /*
  * Translate an fd to a LogState.
  */
-static LogState *fdToLogState(int fd)
-{
+static LogState *fdToLogState(int fd) {
     if (fd >= FAKE_FD_BASE && fd < FAKE_FD_BASE + MAX_OPEN_LOGS) {
         return openLogTable[fd - FAKE_FD_BASE];
     }
@@ -145,8 +139,7 @@ static LogState *fdToLogState(int fd)
 /*
  * Unregister the fake fd and free the memory it pointed to.
  */
-static void deleteFakeFd(int fd)
-{
+static void deleteFakeFd(int fd) {
     LogState *ls;
 
     lock();
@@ -174,8 +167,7 @@ static void deleteFakeFd(int fd)
  * We also want to check ANDROID_PRINTF_LOG to determine how the output
  * will look.
  */
-static void configureInitialState(const char* pathName, LogState* logState)
-{
+static void configureInitialState(const char *pathName, LogState *logState) {
     static const int kDevLogLen = sizeof("/dev/log/") - 1;
 
     logState->debugName = strdup(pathName);
@@ -191,7 +183,7 @@ static void configureInitialState(const char* pathName, LogState* logState)
     /*
      * This is based on the the long-dead utils/Log.cpp code.
      */
-    const char* tags = getenv("ANDROID_LOG_TAGS");
+    const char *tags = getenv("ANDROID_LOG_TAGS");
     TRACE("Found ANDROID_LOG_TAGS='%s'\n", tags);
     if (tags != NULL) {
         int entry = 0;
@@ -205,12 +197,11 @@ static void configureInitialState(const char* pathName, LogState* logState)
 
             i = 0;
             while (*tags != '\0' && !isspace(*tags) && *tags != ':' &&
-                i < kMaxTagLen)
-            {
+                   i < kMaxTagLen) {
                 tagName[i++] = *tags++;
             }
             if (i == kMaxTagLen) {
-                TRACE("ERROR: env tag too long (%d chars max)\n", kMaxTagLen-1);
+                TRACE("ERROR: env tag too long (%d chars max)\n", kMaxTagLen - 1);
                 return;
             }
             tagName[i] = '\0';
@@ -231,14 +222,30 @@ static void configureInitialState(const char* pathName, LogState* logState)
                         minPrio = *tags - '\0';
                 } else {
                     switch (*tags) {
-                    case 'v':   minPrio = ANDROID_LOG_VERBOSE;  break;
-                    case 'd':   minPrio = ANDROID_LOG_DEBUG;    break;
-                    case 'i':   minPrio = ANDROID_LOG_INFO;     break;
-                    case 'w':   minPrio = ANDROID_LOG_WARN;     break;
-                    case 'e':   minPrio = ANDROID_LOG_ERROR;    break;
-                    case 'f':   minPrio = ANDROID_LOG_FATAL;    break;
-                    case 's':   minPrio = ANDROID_LOG_SILENT;   break;
-                    default:    minPrio = ANDROID_LOG_DEFAULT;  break;
+                        case 'v':
+                            minPrio = ANDROID_LOG_VERBOSE;
+                            break;
+                        case 'd':
+                            minPrio = ANDROID_LOG_DEBUG;
+                            break;
+                        case 'i':
+                            minPrio = ANDROID_LOG_INFO;
+                            break;
+                        case 'w':
+                            minPrio = ANDROID_LOG_WARN;
+                            break;
+                        case 'e':
+                            minPrio = ANDROID_LOG_ERROR;
+                            break;
+                        case 'f':
+                            minPrio = ANDROID_LOG_FATAL;
+                            break;
+                        case 's':
+                            minPrio = ANDROID_LOG_SILENT;
+                            break;
+                        default:
+                            minPrio = ANDROID_LOG_DEFAULT;
+                            break;
                     }
                 }
 
@@ -257,9 +264,9 @@ static void configureInitialState(const char* pathName, LogState* logState)
                 logState->tagSet[entry].minPriority = minPrio;
                 strcpy(logState->tagSet[entry].tag, tagName);
                 TRACE("+++ entry %d: %s:%d\n",
-                    entry,
-                    logState->tagSet[entry].tag,
-                    logState->tagSet[entry].minPriority);
+                      entry,
+                      logState->tagSet[entry].tag,
+                      logState->tagSet[entry].minPriority);
                 entry++;
             }
         }
@@ -269,7 +276,7 @@ static void configureInitialState(const char* pathName, LogState* logState)
     /*
      * Taken from the long-dead utils/Log.cpp
      */
-    const char* fstr = getenv("ANDROID_PRINTF_LOG");
+    const char *fstr = getenv("ANDROID_PRINTF_LOG");
     LogFormat format;
     if (fstr == NULL) {
         format = FORMAT_BRIEF;
@@ -299,11 +306,10 @@ static void configureInitialState(const char* pathName, LogState* logState)
  * Return a human-readable string for the priority level.  Always returns
  * a valid string.
  */
-static const char* getPriorityString(int priority)
-{
+static const char *getPriorityString(int priority) {
     /* the first character of each string should be unique */
-    static const char* priorityStrings[] = {
-        "Verbose", "Debug", "Info", "Warn", "Error", "Assert"
+    static const char *priorityStrings[] = {
+            "Verbose", "Debug", "Info", "Warn", "Error", "Assert"
     };
     int idx;
 
@@ -315,13 +321,14 @@ static const char* getPriorityString(int priority)
 }
 
 #ifndef HAVE_WRITEV
+
 /*
  * Some platforms like WIN32 do not have writev().
  * Make up something to replace it.
  */
 static ssize_t fake_writev(int fd, const struct iovec *iov, int iovcnt) {
     int result = 0;
-    struct iovec* end = iov + iovcnt;
+    struct iovec *end = iov + iovcnt;
     for (; iov < end; iov++) {
         int w = write(fd, iov->iov_base, iov->iov_len);
         if (w != iov->iov_len) {
@@ -344,12 +351,11 @@ static ssize_t fake_writev(int fd, const struct iovec *iov, int iovcnt) {
  * Log format parsing taken from the long-dead utils/Log.cpp.
  */
 static void showLog(LogState *state,
-        int logPrio, const char* tag, const char* msg)
-{
+                    int logPrio, const char *tag, const char *msg) {
 #if defined(HAVE_LOCALTIME_R)
     struct tm tmBuf;
 #endif
-    struct tm* ptm;
+    struct tm *ptm;
     char timeBuf[32];
     char prefixBuf[128], suffixBuf[128];
     char priChar;
@@ -385,76 +391,84 @@ static void showLog(LogState *state,
     size_t prefixLen, suffixLen;
 
     switch (state->outputFormat) {
-    case FORMAT_TAG:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%c/%-8s: ", priChar, tag);
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-    case FORMAT_PROCESS:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%c(%5d) ", priChar, pid);
-        suffixLen = snprintf(suffixBuf, sizeof(suffixBuf),
-            "  (%s)\n", tag);
-        break;
-    case FORMAT_THREAD:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%c(%5d:%p) ", priChar, pid, (void*)tid);
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-    case FORMAT_RAW:
-        prefixBuf[0] = 0; prefixLen = 0;
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-    case FORMAT_TIME:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%s %-8s\n\t", timeBuf, tag);
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-    case FORMAT_THREADTIME:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%s %5d %5d %c %-8s \n\t", timeBuf, pid, tid, priChar, tag);
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-    case FORMAT_LONG:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "[ %s %5d:%p %c/%-8s ]\n",
-            timeBuf, pid, (void*)tid, priChar, tag);
-        strcpy(suffixBuf, "\n\n"); suffixLen = 2;
-        break;
-    default:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%c/%-8s(%5d): ", priChar, tag, pid);
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-     }
+        case FORMAT_TAG:
+            prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
+                                 "%c/%-8s: ", priChar, tag);
+            strcpy(suffixBuf, "\n");
+            suffixLen = 1;
+            break;
+        case FORMAT_PROCESS:
+            prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
+                                 "%c(%5d) ", priChar, pid);
+            suffixLen = snprintf(suffixBuf, sizeof(suffixBuf),
+                                 "  (%s)\n", tag);
+            break;
+        case FORMAT_THREAD:
+            prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
+                                 "%c(%5d:%p) ", priChar, pid, (void *) tid);
+            strcpy(suffixBuf, "\n");
+            suffixLen = 1;
+            break;
+        case FORMAT_RAW:
+            prefixBuf[0] = 0;
+            prefixLen = 0;
+            strcpy(suffixBuf, "\n");
+            suffixLen = 1;
+            break;
+        case FORMAT_TIME:
+            prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
+                                 "%s %-8s\n\t", timeBuf, tag);
+            strcpy(suffixBuf, "\n");
+            suffixLen = 1;
+            break;
+        case FORMAT_THREADTIME:
+            prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
+                                 "%s %5d %5d %c %-8s \n\t", timeBuf, pid, tid, priChar, tag);
+            strcpy(suffixBuf, "\n");
+            suffixLen = 1;
+            break;
+        case FORMAT_LONG:
+            prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
+                                 "[ %s %5d:%p %c/%-8s ]\n",
+                                 timeBuf, pid, (void *) tid, priChar, tag);
+            strcpy(suffixBuf, "\n\n");
+            suffixLen = 2;
+            break;
+        default:
+            prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
+                                 "%c/%-8s(%5d): ", priChar, tag, pid);
+            strcpy(suffixBuf, "\n");
+            suffixLen = 1;
+            break;
+    }
 
     /*
      * Figure out how many lines there will be.
      */
-    const char* end = msg + strlen(msg);
+    const char *end = msg + strlen(msg);
     size_t numLines = 0;
-    const char* p = msg;
+    const char *p = msg;
     while (p < end) {
         if (*p++ == '\n') numLines++;
     }
-    if (p > msg && *(p-1) != '\n') numLines++;
+    if (p > msg && *(p - 1) != '\n') numLines++;
 
     /*
      * Create an array of iovecs large enough to write all of
      * the lines with a prefix and a suffix.
      */
     const size_t INLINE_VECS = 6;
-    const size_t MAX_LINES   = ((size_t)~0)/(3*sizeof(struct iovec*));
+    const size_t MAX_LINES = ((size_t) ~0) / (3 * sizeof(struct iovec *));
     struct iovec stackVec[INLINE_VECS];
-    struct iovec* vec = stackVec;
+    struct iovec *vec = stackVec;
     size_t numVecs;
 
     if (numLines > MAX_LINES)
         numLines = MAX_LINES;
 
-    numVecs = numLines*3;  // 3 iovecs per line.
+    numVecs = numLines * 3;  // 3 iovecs per line.
     if (numVecs > INLINE_VECS) {
-        vec = (struct iovec*)malloc(sizeof(struct iovec)*numVecs);
+        vec = (struct iovec *) malloc(sizeof(struct iovec) * numVecs);
         if (vec == NULL) {
             msg = "LOG: write failed, no memory";
             numVecs = 3;
@@ -467,7 +481,7 @@ static void showLog(LogState *state,
      * Fill in the iovec pointers.
      */
     p = msg;
-    struct iovec* v = vec;
+    struct iovec *v = vec;
     int totalLen = 0;
     while (numLines > 0 && p < end) {
         if (prefixLen > 0) {
@@ -476,12 +490,12 @@ static void showLog(LogState *state,
             totalLen += prefixLen;
             v++;
         }
-        const char* start = p;
+        const char *start = p;
         while (p < end && *p != '\n') p++;
-        if ((p-start) > 0) {
-            v->iov_base = (void*)start;
-            v->iov_len = p-start;
-            totalLen += p-start;
+        if ((p - start) > 0) {
+            v->iov_base = (void *) start;
+            v->iov_len = p - start;
+            totalLen += p - start;
             v++;
         }
         if (*p == '\n') p++;
@@ -493,7 +507,7 @@ static void showLog(LogState *state,
         }
         numLines -= 1;
     }
-    
+
     /*
      * Write the entire message to the log file with a single writev() call.
      * We need to use this rather than a collection of printf()s on a FILE*
@@ -508,19 +522,19 @@ static void showLog(LogState *state,
      * somewhat by wrapping the writev call in the Mutex.
      */
 
-    for(;;) {
-        int cc = writev(fileno(stderr), vec, v-vec);
+    for (;;) {
+        int cc = writev(fileno(stderr), vec, v - vec);
 
         if (cc == totalLen) break;
-        
+
         if (cc < 0) {
-            if(errno == EINTR) continue;
-            
-                /* can't really log the failure; for now, throw out a stderr */
+            if (errno == EINTR) continue;
+
+            /* can't really log the failure; for now, throw out a stderr */
             fprintf(stderr, "+++ LOG: write failed (errno=%d)\n", errno);
             break;
         } else {
-                /* shouldn't happen when writing to file or tty */
+            /* shouldn't happen when writing to file or tty */
             fprintf(stderr, "+++ LOG: write partial (%d of %d)\n", cc, totalLen);
             break;
         }
@@ -539,9 +553,8 @@ static void showLog(LogState *state,
  *  tag (N bytes -- null-terminated ASCII string)
  *  message (N bytes -- null-terminated ASCII string)
  */
-static ssize_t logWritev(int fd, const struct iovec* vector, int count)
-{
-    LogState* state;
+static ssize_t logWritev(int fd, const struct iovec *vector, int count) {
+    LogState *state;
 
     /* Make sure that no-one frees the LogState while we're using it.
      * Also guarantees that only one thread is in showLog() at a given
@@ -562,14 +575,14 @@ static ssize_t logWritev(int fd, const struct iovec* vector, int count)
 
     if (count != 3) {
         TRACE("%s: writevLog with count=%d not expected\n",
-            state->debugName, count);
+              state->debugName, count);
         goto error;
     }
 
     /* pull out the three fields */
-    int logPrio = *(const char*)vector[0].iov_base;
-    const char* tag = (const char*) vector[1].iov_base;
-    const char* msg = (const char*) vector[2].iov_base;
+    int logPrio = *(const char *) vector[0].iov_base;
+    const char *tag = (const char *) vector[1].iov_base;
+    const char *msg = (const char *) vector[2].iov_base;
 
     /* see if this log tag is configured */
     int i;
@@ -591,10 +604,10 @@ static ssize_t logWritev(int fd, const struct iovec* vector, int count)
         //TRACE("+++ NOLOG(%d): %s %s", logPrio, tag, msg);
     }
 
-bail:
+    bail:
     unlock();
     return vector[0].iov_len + vector[1].iov_len + vector[2].iov_len;
-error:
+    error:
     unlock();
     return -1;
 }
@@ -602,8 +615,7 @@ error:
 /*
  * Free up our state and close the fake descriptor.
  */
-static int logClose(int fd)
-{
+static int logClose(int fd) {
     deleteFakeFd(fd);
     return 0;
 }
@@ -611,8 +623,7 @@ static int logClose(int fd)
 /*
  * Open a log output device and return a fake fd.
  */
-static int logOpen(const char* pathName, int flags)
-{
+static int logOpen(const char *pathName, int flags) {
     LogState *logState;
     int fd = -1;
 
@@ -622,7 +633,7 @@ static int logOpen(const char* pathName, int flags)
     if (logState != NULL) {
         configureInitialState(pathName, logState);
         fd = logState->fakeFd;
-    } else  {
+    } else {
         errno = ENFILE;
     }
 
@@ -639,12 +650,13 @@ static int logOpen(const char* pathName, int flags)
  */
 
 static int (*redirectOpen)(const char *pathName, int flags) = NULL;
-static int (*redirectClose)(int fd) = NULL;
-static ssize_t (*redirectWritev)(int fd, const struct iovec* vector, int count)
-        = NULL;
 
-static void setRedirects()
-{
+static int (*redirectClose)(int fd) = NULL;
+
+static ssize_t (*redirectWritev)(int fd, const struct iovec *vector, int count)
+= NULL;
+
+static void setRedirects() {
     const char *ws;
 
     /* Wrapsim sets this environment variable on children that it's
@@ -653,7 +665,7 @@ static void setRedirects()
     ws = getenv("ANDROID_WRAPSIM");
     if (ws != NULL && strcmp(ws, "1") == 0) {
         /* We're running inside wrapsim, so we can just write to the device. */
-        redirectOpen = (int (*)(const char *pathName, int flags))open;
+        redirectOpen = (int (*)(const char *pathName, int flags)) open;
         redirectClose = close;
         redirectWritev = writev;
     } else {
@@ -664,22 +676,19 @@ static void setRedirects()
     }
 }
 
-int fakeLogOpen(const char *pathName, int flags)
-{
+int fakeLogOpen(const char *pathName, int flags) {
     if (redirectOpen == NULL) {
         setRedirects();
     }
     return redirectOpen(pathName, flags);
 }
 
-int fakeLogClose(int fd)
-{
+int fakeLogClose(int fd) {
     /* Assume that open() was called first. */
     return redirectClose(fd);
 }
 
-ssize_t fakeLogWritev(int fd, const struct iovec* vector, int count)
-{
+ssize_t fakeLogWritev(int fd, const struct iovec *vector, int count) {
     /* Assume that open() was called first. */
     return redirectWritev(fd, vector, count);
 }

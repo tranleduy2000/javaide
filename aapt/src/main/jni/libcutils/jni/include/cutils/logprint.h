@@ -17,9 +17,9 @@
 #ifndef _LOGPRINT_H
 #define _LOGPRINT_H
 
-#include <cutils/log.h>
-#include <cutils/logger.h>
-#include <cutils/event_tag_map.h>
+#include <log.h>
+#include <logger.h>
+#include <event_tag_map.h>
 #include <pthread.h>
 
 #ifdef __cplusplus

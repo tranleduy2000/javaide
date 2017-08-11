@@ -123,7 +123,7 @@ namespace android {
             Looper::setForThread(looper);
         }
         if (looper->getAllowNonCallbacks() != allowNonCallbacks) {
-            ALOGW("Looper already prepared for this thread with a different value for the "
+            LOGW("Looper already prepared for this thread with a different value for the "
                           "LOOPER_PREPARE_ALLOW_NON_CALLBACKS option.");
         }
         return looper;
@@ -137,7 +137,7 @@ namespace android {
         // Close old epoll instance if we have one.
         if (mEpollFd >= 0) {
 #if DEBUG_CALLBACKS
-            ALOGD("%p ~ rebuildEpollLocked - rebuilding epoll set", this);
+            LOGD("%p ~ rebuildEpollLocked - rebuilding epoll set", this);
 #endif
             close(mEpollFd);
         }
@@ -170,7 +170,7 @@ namespace android {
     void Looper::scheduleEpollRebuildLocked() {
         if (!mEpollRebuildRequired) {
 #if DEBUG_CALLBACKS
-            ALOGD("%p ~ scheduleEpollRebuildLocked - scheduling epoll set rebuild", this);
+            LOGD("%p ~ scheduleEpollRebuildLocked - scheduling epoll set rebuild", this);
 #endif
             mEpollRebuildRequired = true;
             wake();
@@ -188,7 +188,7 @@ namespace android {
                     int events = response.events;
                     void *data = response.request.data;
 #if DEBUG_POLL_AND_WAKE
-                    ALOGD("%p ~ pollOnce - returning signalled identifier %d: "
+                    LOGD("%p ~ pollOnce - returning signalled identifier %d: "
                             "fd=%d, events=0x%x, data=%p",
                             this, ident, fd, events, data);
 #endif
@@ -201,7 +201,7 @@ namespace android {
 
             if (result != 0) {
 #if DEBUG_POLL_AND_WAKE
-                ALOGD("%p ~ pollOnce - returning result %d", this, result);
+                LOGD("%p ~ pollOnce - returning result %d", this, result);
 #endif
                 if (outFd != NULL) *outFd = 0;
                 if (outEvents != NULL) *outEvents = 0;
@@ -215,7 +215,7 @@ namespace android {
 
     int Looper::pollInner(int timeoutMillis) {
 #if DEBUG_POLL_AND_WAKE
-        ALOGD("%p ~ pollOnce - waiting: timeoutMillis=%d", this, timeoutMillis);
+        LOGD("%p ~ pollOnce - waiting: timeoutMillis=%d", this, timeoutMillis);
 #endif
 
         // Adjust the timeout based on when the next message is due.
@@ -227,7 +227,7 @@ namespace android {
                 timeoutMillis = messageTimeoutMillis;
             }
 #if DEBUG_POLL_AND_WAKE
-            ALOGD("%p ~ pollOnce - next message in %" PRId64 "ns, adjusted timeout: timeoutMillis=%d",
+            LOGD("%p ~ pollOnce - next message in %" PRId64 "ns, adjusted timeout: timeoutMillis=%d",
                     this, mNextMessageUptime - now, timeoutMillis);
 #endif
         }
@@ -261,7 +261,7 @@ namespace android {
             if (errno == EINTR) {
                 goto Done;
             }
-            ALOGW("Poll failed with an unexpected error: %s", strerror(errno));
+            LOGW("Poll failed with an unexpected error: %s", strerror(errno));
             result = POLL_ERROR;
             goto Done;
         }
@@ -269,7 +269,7 @@ namespace android {
         // Check for poll timeout.
         if (eventCount == 0) {
 #if DEBUG_POLL_AND_WAKE
-            ALOGD("%p ~ pollOnce - timeout", this);
+            LOGD("%p ~ pollOnce - timeout", this);
 #endif
             result = POLL_TIMEOUT;
             goto Done;
@@ -277,7 +277,7 @@ namespace android {
 
         // Handle all events.
 #if DEBUG_POLL_AND_WAKE
-        ALOGD("%p ~ pollOnce - handling events from %d fds", this, eventCount);
+        LOGD("%p ~ pollOnce - handling events from %d fds", this, eventCount);
 #endif
 
         for (int i = 0; i < eventCount; i++) {
@@ -287,7 +287,7 @@ namespace android {
                 if (epollEvents & EPOLLIN) {
                     awoken();
                 } else {
-                    ALOGW("Ignoring unexpected epoll events 0x%x on wake event fd.", epollEvents);
+                    LOGW("Ignoring unexpected epoll events 0x%x on wake event fd.", epollEvents);
                 }
             } else {
                 ssize_t requestIndex = mRequests.indexOfKey(fd);
@@ -299,7 +299,7 @@ namespace android {
                     if (epollEvents & EPOLLHUP) events |= EVENT_HANGUP;
                     pushResponse(events, mRequests.valueAt(requestIndex));
                 } else {
-                    ALOGW("Ignoring unexpected epoll events 0x%x on fd %d that is "
+                    LOGW("Ignoring unexpected epoll events 0x%x on fd %d that is "
                                   "no longer registered.", epollEvents, fd);
                 }
             }
@@ -324,7 +324,7 @@ namespace android {
                     mLock.unlock();
 
 #if DEBUG_POLL_AND_WAKE || DEBUG_CALLBACKS
-                    ALOGD("%p ~ pollOnce - sending message: handler=%p, what=%d",
+                    LOGD("%p ~ pollOnce - sending message: handler=%p, what=%d",
                             this, handler.get(), message.what);
 #endif
                     handler->handleMessage(message);
@@ -351,7 +351,7 @@ namespace android {
                 int events = response.events;
                 void *data = response.request.data;
 #if DEBUG_POLL_AND_WAKE || DEBUG_CALLBACKS
-                ALOGD("%p ~ pollOnce - invoking fd event callback %p: fd=%d, events=0x%x, data=%p",
+                LOGD("%p ~ pollOnce - invoking fd event callback %p: fd=%d, events=0x%x, data=%p",
                         this, response.request.callback.get(), fd, events, data);
 #endif
                 // Invoke the callback.  Note that the file descriptor may be closed by
@@ -399,21 +399,21 @@ namespace android {
 
     void Looper::wake() {
 #if DEBUG_POLL_AND_WAKE
-        ALOGD("%p ~ wake", this);
+        LOGD("%p ~ wake", this);
 #endif
 
         uint64_t inc = 1;
         ssize_t nWrite = TEMP_FAILURE_RETRY(write(mWakeEventFd, &inc, sizeof(uint64_t)));
         if (nWrite != sizeof(uint64_t)) {
             if (errno != EAGAIN) {
-                ALOGW("Could not write wake signal: %s", strerror(errno));
+                LOGW("Could not write wake signal: %s", strerror(errno));
             }
         }
     }
 
     void Looper::awoken() {
 #if DEBUG_POLL_AND_WAKE
-        ALOGD("%p ~ awoken", this);
+        LOGD("%p ~ awoken", this);
 #endif
 
         uint64_t counter;
@@ -434,7 +434,7 @@ namespace android {
     int
     Looper::addFd(int fd, int ident, int events, const sp<LooperCallback> &callback, void *data) {
 #if DEBUG_CALLBACKS
-        ALOGD("%p ~ addFd - fd=%d, ident=%d, events=0x%x, callback=%p, data=%p", this, fd, ident,
+        LOGD("%p ~ addFd - fd=%d, ident=%d, events=0x%x, callback=%p, data=%p", this, fd, ident,
                 events, callback.get(), data);
 #endif
 
@@ -493,7 +493,7 @@ namespace android {
                         // No such problem would have occurred if we were using the poll system
                         // call instead, but that approach carries others disadvantages.
 #if DEBUG_CALLBACKS
-                        ALOGD("%p ~ addFd - EPOLL_CTL_MOD failed due to file descriptor "
+                        LOGD("%p ~ addFd - EPOLL_CTL_MOD failed due to file descriptor "
                                 "being recycled, falling back on EPOLL_CTL_ADD: %s",
                                 this, strerror(errno));
 #endif
@@ -521,7 +521,7 @@ namespace android {
 
     int Looper::removeFd(int fd, int seq) {
 #if DEBUG_CALLBACKS
-        ALOGD("%p ~ removeFd - fd=%d, seq=%d", this, fd, seq);
+        LOGD("%p ~ removeFd - fd=%d, seq=%d", this, fd, seq);
 #endif
 
         { // acquire lock
@@ -534,7 +534,7 @@ namespace android {
             // Check the sequence number if one was given.
             if (seq != -1 && mRequests.valueAt(requestIndex).seq != seq) {
 #if DEBUG_CALLBACKS
-                ALOGD("%p ~ removeFd - sequence number mismatch, oldSeq=%d",
+                LOGD("%p ~ removeFd - sequence number mismatch, oldSeq=%d",
                         this, mRequests.valueAt(requestIndex).seq);
 #endif
                 return 0;
@@ -559,7 +559,7 @@ namespace android {
                     // No such problem would have occurred if we were using the poll system
                     // call instead, but that approach carries others disadvantages.
 #if DEBUG_CALLBACKS
-                    ALOGD("%p ~ removeFd - EPOLL_CTL_DEL failed due to file descriptor "
+                    LOGD("%p ~ removeFd - EPOLL_CTL_DEL failed due to file descriptor "
                             "being closed: %s", this, strerror(errno));
 #endif
                     scheduleEpollRebuildLocked();
@@ -591,7 +591,7 @@ namespace android {
     void Looper::sendMessageAtTime(nsecs_t uptime, const sp<MessageHandler> &handler,
                                    const Message &message) {
 #if DEBUG_CALLBACKS
-        ALOGD("%p ~ sendMessageAtTime - uptime=%" PRId64 ", handler=%p, what=%d",
+        LOGD("%p ~ sendMessageAtTime - uptime=%" PRId64 ", handler=%p, what=%d",
                 this, uptime, handler.get(), message.what);
 #endif
 
@@ -624,7 +624,7 @@ namespace android {
 
     void Looper::removeMessages(const sp<MessageHandler> &handler) {
 #if DEBUG_CALLBACKS
-        ALOGD("%p ~ removeMessages - handler=%p", this, handler.get());
+        LOGD("%p ~ removeMessages - handler=%p", this, handler.get());
 #endif
 
         { // acquire lock
@@ -641,7 +641,7 @@ namespace android {
 
     void Looper::removeMessages(const sp<MessageHandler> &handler, int what) {
 #if DEBUG_CALLBACKS
-        ALOGD("%p ~ removeMessages - handler=%p, what=%d", this, handler.get(), what);
+        LOGD("%p ~ removeMessages - handler=%p, what=%d", this, handler.get(), what);
 #endif
 
         { // acquire lock

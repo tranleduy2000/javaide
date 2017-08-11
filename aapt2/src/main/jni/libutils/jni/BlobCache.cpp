@@ -48,32 +48,32 @@ namespace android {
         mRandState[1] = (now >> 16) & 0xFFFF;
         mRandState[2] = (now >> 32) & 0xFFFF;
 #endif
-        ALOGV("initializing random seed using %lld", (unsigned long long) now);
+        LOGV("initializing random seed using %lld", (unsigned long long) now);
     }
 
     void BlobCache::set(const void *key, size_t keySize, const void *value,
                         size_t valueSize) {
         if (mMaxKeySize < keySize) {
-            ALOGV("set: not caching because the key is too large: %zu (limit: %zu)",
+            LOGV("set: not caching because the key is too large: %zu (limit: %zu)",
                   keySize, mMaxKeySize);
             return;
         }
         if (mMaxValueSize < valueSize) {
-            ALOGV("set: not caching because the value is too large: %zu (limit: %zu)",
+            LOGV("set: not caching because the value is too large: %zu (limit: %zu)",
                   valueSize, mMaxValueSize);
             return;
         }
         if (mMaxTotalSize < keySize + valueSize) {
-            ALOGV("set: not caching because the combined key/value size is too "
+            LOGV("set: not caching because the combined key/value size is too "
                           "large: %zu (limit: %zu)", keySize + valueSize, mMaxTotalSize);
             return;
         }
         if (keySize == 0) {
-            ALOGW("set: not caching because keySize is 0");
+            LOGW("set: not caching because keySize is 0");
             return;
         }
         if (valueSize <= 0) {
-            ALOGW("set: not caching because valueSize is 0");
+            LOGW("set: not caching because valueSize is 0");
             return;
         }
 
@@ -93,7 +93,7 @@ namespace android {
                         clean();
                         continue;
                     } else {
-                        ALOGV("set: not caching new key/value pair because the "
+                        LOGV("set: not caching new key/value pair because the "
                                       "total cache size limit would be exceeded: %zu "
                                       "(limit: %zu)",
                               keySize + valueSize, mMaxTotalSize);
@@ -102,7 +102,7 @@ namespace android {
                 }
                 mCacheEntries.add(CacheEntry(keyBlob, valueBlob));
                 mTotalSize = newTotalSize;
-                ALOGV("set: created new cache entry with %zu byte key and %zu byte value",
+                LOGV("set: created new cache entry with %zu byte key and %zu byte value",
                       keySize, valueSize);
             } else {
                 // Update the existing cache entry.
@@ -115,7 +115,7 @@ namespace android {
                         clean();
                         continue;
                     } else {
-                        ALOGV("set: not caching new value because the total cache "
+                        LOGV("set: not caching new value because the total cache "
                                       "size limit would be exceeded: %zu (limit: %zu)",
                               keySize + valueSize, mMaxTotalSize);
                         break;
@@ -123,7 +123,7 @@ namespace android {
                 }
                 mCacheEntries.editItemAt(index).setValue(valueBlob);
                 mTotalSize = newTotalSize;
-                ALOGV("set: updated existing cache entry with %zu byte key and %zu byte "
+                LOGV("set: updated existing cache entry with %zu byte key and %zu byte "
                               "value", keySize, valueSize);
             }
             break;
@@ -133,7 +133,7 @@ namespace android {
     size_t BlobCache::get(const void *key, size_t keySize, void *value,
                           size_t valueSize) {
         if (mMaxKeySize < keySize) {
-            ALOGV("get: not searching because the key is too large: %zu (limit %zu)",
+            LOGV("get: not searching because the key is too large: %zu (limit %zu)",
                   keySize, mMaxKeySize);
             return 0;
         }
@@ -141,7 +141,7 @@ namespace android {
         CacheEntry dummyEntry(dummyKey, NULL);
         ssize_t index = mCacheEntries.indexOf(dummyEntry);
         if (index < 0) {
-            ALOGV("get: no cache entry found for key of size %zu", keySize);
+            LOGV("get: no cache entry found for key of size %zu", keySize);
             return 0;
         }
 
@@ -150,10 +150,10 @@ namespace android {
         sp<Blob> valueBlob(mCacheEntries[index].getValue());
         size_t valueBlobSize = valueBlob->getSize();
         if (valueBlobSize <= valueSize) {
-            ALOGV("get: copying %zu bytes to caller's buffer", valueBlobSize);
+            LOGV("get: copying %zu bytes to caller's buffer", valueBlobSize);
             memcpy(value, valueBlob->getData(), valueBlobSize);
         } else {
-            ALOGV("get: caller's buffer is too small for value: %zu (needs %zu)",
+            LOGV("get: caller's buffer is too small for value: %zu (needs %zu)",
                   valueSize, valueBlobSize);
         }
         return valueBlobSize;
@@ -178,7 +178,7 @@ namespace android {
     status_t BlobCache::flatten(void *buffer, size_t size) const {
         // Write the cache header
         if (size < sizeof(Header)) {
-            ALOGE("flatten: not enough room for cache header");
+            LOGE("flatten: not enough room for cache header");
             return BAD_VALUE;
         }
         Header *header = reinterpret_cast<Header *>(buffer);
@@ -203,7 +203,7 @@ namespace android {
             size_t entrySize = sizeof(EntryHeader) + keySize + valueSize;
             size_t totalSize = align4(entrySize);
             if (byteOffset + totalSize > size) {
-                ALOGE("flatten: not enough room for cache entries");
+                LOGE("flatten: not enough room for cache entries");
                 return BAD_VALUE;
             }
 
@@ -233,12 +233,12 @@ namespace android {
 
         // Read the cache header
         if (size < sizeof(Header)) {
-            ALOGE("unflatten: not enough room for cache header");
+            LOGE("unflatten: not enough room for cache header");
             return BAD_VALUE;
         }
         const Header *header = reinterpret_cast<const Header *>(buffer);
         if (header->mMagicNumber != blobCacheMagic) {
-//            ALOGE("unflatten: bad magic number: %"
+//            LOGE("unflatten: bad magic number: %"
 //                          PRIu32, header->mMagicNumber);
             return BAD_VALUE;
         }
@@ -259,7 +259,7 @@ namespace android {
         for (size_t i = 0; i < numEntries; i++) {
             if (byteOffset + sizeof(EntryHeader) > size) {
                 mCacheEntries.clear();
-                ALOGE("unflatten: not enough room for cache entry headers");
+                LOGE("unflatten: not enough room for cache entry headers");
                 return BAD_VALUE;
             }
 
@@ -272,7 +272,7 @@ namespace android {
             size_t totalSize = align4(entrySize);
             if (byteOffset + totalSize > size) {
                 mCacheEntries.clear();
-                ALOGE("unflatten: not enough room for cache entry headers");
+                LOGE("unflatten: not enough room for cache entry headers");
                 return BAD_VALUE;
             }
 

@@ -10,29 +10,27 @@
 using namespace android;
 
 static int
-usage()
-{
+usage() {
     fprintf(stderr,
             "usage: apk APKFILE\n"
-            "\n"
-            "APKFILE   an android packge file produced by aapt.\n"
-            );
+                    "\n"
+                    "APKFILE   an android packge file produced by aapt.\n"
+    );
     return 1;
 }
 
 
 int
-main(int argc, char** argv)
-{
-    const char* filename;
+main(int argc, char **argv) {
+    const char *filename;
     int fd;
     ssize_t amt;
     off_t size;
-    void* buf;
+    void *buf;
     zipfile_t zip;
     zipentry_t entry;
-    void* cookie;
-    void* resfile;
+    void *cookie;
+    void *resfile;
     int bufsize;
     int err;
 
@@ -79,7 +77,7 @@ main(int argc, char** argv)
     printf("files:\n");
     cookie = NULL;
     while ((entry = iterate_zipfile(zip, &cookie))) {
-        char* name = get_zipentry_name(entry);
+        char *name = get_zipentry_name(entry);
         printf("  %s\n", name);
         free(name);
     }

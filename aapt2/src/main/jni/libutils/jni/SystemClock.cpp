@@ -56,7 +56,7 @@ namespace android {
         int err = clock_gettime(CLOCK_BOOTTIME, &ts);
         if (CC_UNLIKELY(err)) {
             // This should never happen, but just in case ...
-            ALOGE("clock_gettime(CLOCK_BOOTTIME) failed: %s", strerror(errno));
+            LOGE("clock_gettime(CLOCK_BOOTTIME) failed: %s", strerror(errno));
             return 0;
         }
 

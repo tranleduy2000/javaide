@@ -15,21 +15,21 @@
  */
 #include <time.h>
 #include <stdio.h>
+
 #ifdef HAVE_PTHREADS
+
 #include <pthread.h>
+
 #endif
+
 #include <unistd.h>
-#include <errno.h>
 #include <fcntl.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
 
 #include <cutils/logger.h>
 #include <cutils/logd.h>
 #include <cutils/log.h>
 
-#define LOG_BUF_SIZE	1024
+#define LOG_BUF_SIZE    1024
 
 #if FAKE_LOG_DEVICE
 // This will be defined when building for the host.
@@ -43,12 +43,14 @@
 #endif
 
 static int __write_to_log_init(log_id_t, struct iovec *vec, size_t nr);
+
 static int (*write_to_log)(log_id_t, struct iovec *vec, size_t nr) = __write_to_log_init;
+
 #ifdef HAVE_PTHREADS
 static pthread_mutex_t log_init_lock = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
-static int log_fds[(int)LOG_ID_MAX] = { -1, -1, -1, -1 };
+static int log_fds[(int) LOG_ID_MAX] = {-1, -1, -1, -1};
 
 /*
  * This is used by the C++ code to decide if it should write logs through
@@ -58,8 +60,8 @@ static int log_fds[(int)LOG_ID_MAX] = { -1, -1, -1, -1 };
 static enum {
     kLogUninitialized, kLogNotAvailable, kLogAvailable
 } g_log_status = kLogUninitialized;
-int __android_log_dev_available(void)
-{
+
+int __android_log_dev_available(void) {
     if (g_log_status == kLogUninitialized) {
         if (access("/dev/"LOGGER_LOG_MAIN, W_OK) == 0)
             g_log_status = kLogAvailable;
@@ -70,18 +72,16 @@ int __android_log_dev_available(void)
     return (g_log_status == kLogAvailable);
 }
 
-static int __write_to_log_null(log_id_t log_fd, struct iovec *vec, size_t nr)
-{
+static int __write_to_log_null(log_id_t log_fd, struct iovec *vec, size_t nr) {
     return -1;
 }
 
-static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr)
-{
+static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr) {
     ssize_t ret;
     int log_fd;
 
-    if (/*(int)log_id >= 0 &&*/ (int)log_id < (int)LOG_ID_MAX) {
-        log_fd = log_fds[(int)log_id];
+    if (/*(int)log_id >= 0 &&*/ (int) log_id < (int) LOG_ID_MAX) {
+        log_fd = log_fds[(int) log_id];
     } else {
         return EBADF;
     }
@@ -93,22 +93,25 @@ static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr)
     return ret;
 }
 
-static int __write_to_log_init(log_id_t log_id, struct iovec *vec, size_t nr)
-{
+static int __write_to_log_init(log_id_t log_id, struct iovec *vec, size_t nr) {
 #ifdef HAVE_PTHREADS
     pthread_mutex_lock(&log_init_lock);
 #endif
 
     if (write_to_log == __write_to_log_init) {
-        log_fds[LOG_ID_MAIN] = log_open("/dev/"LOGGER_LOG_MAIN, O_WRONLY);
-        log_fds[LOG_ID_RADIO] = log_open("/dev/"LOGGER_LOG_RADIO, O_WRONLY);
-        log_fds[LOG_ID_EVENTS] = log_open("/dev/"LOGGER_LOG_EVENTS, O_WRONLY);
-        log_fds[LOG_ID_SYSTEM] = log_open("/dev/"LOGGER_LOG_SYSTEM, O_WRONLY);
+        log_fds[LOG_ID_MAIN] = log_open("/dev/"
+                                                LOGGER_LOG_MAIN, O_WRONLY);
+        log_fds[LOG_ID_RADIO] = log_open("/dev/"
+                                                 LOGGER_LOG_RADIO, O_WRONLY);
+        log_fds[LOG_ID_EVENTS] = log_open("/dev/"
+                                                  LOGGER_LOG_EVENTS, O_WRONLY);
+        log_fds[LOG_ID_SYSTEM] = log_open("/dev/"
+                                                  LOGGER_LOG_SYSTEM, O_WRONLY);
 
         write_to_log = __write_to_log_kernel;
 
         if (log_fds[LOG_ID_MAIN] < 0 || log_fds[LOG_ID_RADIO] < 0 ||
-                log_fds[LOG_ID_EVENTS] < 0) {
+            log_fds[LOG_ID_EVENTS] < 0) {
             log_close(log_fds[LOG_ID_MAIN]);
             log_close(log_fds[LOG_ID_RADIO]);
             log_close(log_fds[LOG_ID_EVENTS]);
@@ -130,8 +133,7 @@ static int __write_to_log_init(log_id_t log_id, struct iovec *vec, size_t nr)
     return write_to_log(log_id, vec, nr);
 }
 
-int __android_log_write(int prio, const char *tag, const char *msg)
-{
+int __android_log_write(int prio, const char *tag, const char *msg) {
     struct iovec vec[3];
     log_id_t log_id = LOG_ID_MAIN;
 
@@ -147,20 +149,19 @@ int __android_log_write(int prio, const char *tag, const char *msg)
         !strcmp(tag, "CDMA") ||
         !strcmp(tag, "PHONE") ||
         !strcmp(tag, "SMS"))
-            log_id = LOG_ID_RADIO;
+        log_id = LOG_ID_RADIO;
 
-    vec[0].iov_base   = (unsigned char *) &prio;
-    vec[0].iov_len    = 1;
-    vec[1].iov_base   = (void *) tag;
-    vec[1].iov_len    = strlen(tag) + 1;
-    vec[2].iov_base   = (void *) msg;
-    vec[2].iov_len    = strlen(msg) + 1;
+    vec[0].iov_base = (unsigned char *) &prio;
+    vec[0].iov_len = 1;
+    vec[1].iov_base = (void *) tag;
+    vec[1].iov_len = strlen(tag) + 1;
+    vec[2].iov_base = (void *) msg;
+    vec[2].iov_len = strlen(msg) + 1;
 
     return write_to_log(log_id, vec, 3);
 }
 
-int __android_log_buf_write(int bufID, int prio, const char *tag, const char *msg)
-{
+int __android_log_buf_write(int bufID, int prio, const char *tag, const char *msg) {
     struct iovec vec[3];
 
     if (!tag)
@@ -175,20 +176,19 @@ int __android_log_buf_write(int bufID, int prio, const char *tag, const char *ms
         !strcmp(tag, "CDMA") ||
         !strcmp(tag, "PHONE") ||
         !strcmp(tag, "SMS"))
-            bufID = LOG_ID_RADIO;
+        bufID = LOG_ID_RADIO;
 
-    vec[0].iov_base   = (unsigned char *) &prio;
-    vec[0].iov_len    = 1;
-    vec[1].iov_base   = (void *) tag;
-    vec[1].iov_len    = strlen(tag) + 1;
-    vec[2].iov_base   = (void *) msg;
-    vec[2].iov_len    = strlen(msg) + 1;
+    vec[0].iov_base = (unsigned char *) &prio;
+    vec[0].iov_len = 1;
+    vec[1].iov_base = (void *) tag;
+    vec[1].iov_len = strlen(tag) + 1;
+    vec[2].iov_base = (void *) msg;
+    vec[2].iov_len = strlen(msg) + 1;
 
     return write_to_log(bufID, vec, 3);
 }
 
-int __android_log_vprint(int prio, const char *tag, const char *fmt, va_list ap)
-{
+int __android_log_vprint(int prio, const char *tag, const char *fmt, va_list ap) {
     char buf[LOG_BUF_SIZE];
 
     vsnprintf(buf, LOG_BUF_SIZE, fmt, ap);
@@ -196,8 +196,7 @@ int __android_log_vprint(int prio, const char *tag, const char *fmt, va_list ap)
     return __android_log_write(prio, tag, buf);
 }
 
-int __android_log_print(int prio, const char *tag, const char *fmt, ...)
-{
+int __android_log_print(int prio, const char *tag, const char *fmt, ...) {
     va_list ap;
     char buf[LOG_BUF_SIZE];
 
@@ -208,8 +207,7 @@ int __android_log_print(int prio, const char *tag, const char *fmt, ...)
     return __android_log_write(prio, tag, buf);
 }
 
-int __android_log_buf_print(int bufID, int prio, const char *tag, const char *fmt, ...)
-{
+int __android_log_buf_print(int bufID, int prio, const char *tag, const char *fmt, ...) {
     va_list ap;
     char buf[LOG_BUF_SIZE];
 
@@ -221,8 +219,7 @@ int __android_log_buf_print(int bufID, int prio, const char *tag, const char *fm
 }
 
 void __android_log_assert(const char *cond, const char *tag,
-			  const char *fmt, ...)
-{
+                          const char *fmt, ...) {
     char buf[LOG_BUF_SIZE];
 
     if (fmt) {
@@ -246,13 +243,12 @@ void __android_log_assert(const char *cond, const char *tag,
     __builtin_trap(); /* trap so we have a chance to debug the situation */
 }
 
-int __android_log_bwrite(int32_t tag, const void *payload, size_t len)
-{
+int __android_log_bwrite(int32_t tag, const void *payload, size_t len) {
     struct iovec vec[2];
 
     vec[0].iov_base = &tag;
     vec[0].iov_len = sizeof(tag);
-    vec[1].iov_base = (void*)payload;
+    vec[1].iov_base = (void *) payload;
     vec[1].iov_len = len;
 
     return write_to_log(LOG_ID_EVENTS, vec, 2);
@@ -264,15 +260,14 @@ int __android_log_bwrite(int32_t tag, const void *payload, size_t len)
  * handy if we just want to dump an integer into the log.
  */
 int __android_log_btwrite(int32_t tag, char type, const void *payload,
-    size_t len)
-{
+                          size_t len) {
     struct iovec vec[3];
 
     vec[0].iov_base = &tag;
     vec[0].iov_len = sizeof(tag);
     vec[1].iov_base = &type;
     vec[1].iov_len = sizeof(type);
-    vec[2].iov_base = (void*)payload;
+    vec[2].iov_base = (void *) payload;
     vec[2].iov_len = len;
 
     return write_to_log(LOG_ID_EVENTS, vec, 3);

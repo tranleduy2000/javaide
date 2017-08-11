@@ -234,7 +234,7 @@ namespace android {
     }
 
     ssize_t VectorImpl::replaceAt(const void *prototype, size_t index) {
-        ALOG_ASSERT(index < size(),
+        LOG_ASSERT(index < size(),
                     "[%p] replace: index=%d, size=%d", this, (int) index, (int) size());
 
         if (index >= size()) {
@@ -256,7 +256,7 @@ namespace android {
     }
 
     ssize_t VectorImpl::removeItemsAt(size_t index, size_t count) {
-        ALOG_ASSERT((index + count) <= size(),
+        LOG_ASSERT((index + count) <= size(),
                     "[%p] remove: index=%d, count=%d, size=%d",
                     this, (int) index, (int) count, (int) size());
 
@@ -277,7 +277,7 @@ namespace android {
     }
 
     void *VectorImpl::editItemLocation(size_t index) {
-        ALOG_ASSERT(index < capacity(),
+        LOG_ASSERT(index < capacity(),
                     "[%p] editItemLocation: index=%d, capacity=%d, count=%d",
                     this, (int) index, (int) capacity(), (int) mCount);
 
@@ -291,7 +291,7 @@ namespace android {
     }
 
     const void *VectorImpl::itemLocation(size_t index) const {
-        ALOG_ASSERT(index < capacity(),
+        LOG_ASSERT(index < capacity(),
                     "[%p] itemLocation: index=%d, capacity=%d, count=%d",
                     this, (int) index, (int) capacity(), (int) mCount);
 
@@ -346,10 +346,10 @@ namespace android {
     }
 
     void *VectorImpl::_grow(size_t where, size_t amount) {
-        ALOGV("_grow(this=%p, where=%d, amount=%d) count=%d, capacity=%d",
+        LOGV("_grow(this=%p, where=%d, amount=%d) count=%d, capacity=%d",
               this, (int) where, (int) amount, (int) mCount, (int) capacity());
 
-        ALOG_ASSERT(where <= mCount,
+        LOG_ASSERT(where <= mCount,
                     "[%p] _grow: where=%d, amount=%d, count=%d",
                     this, (int) where, (int) amount, (int) mCount); // caller already checked
 
@@ -375,7 +375,7 @@ namespace android {
 //            LOG_ALWAYS_FATAL_IF(!safe_mul(&new_alloc_size, new_capacity, mItemSize),
 //                                "new_alloc_size overflow");
 
-//        ALOGV("grow vector %p, new_capacity=%d", this, (int)new_capacity);
+//        LOGV("grow vector %p, new_capacity=%d", this, (int)new_capacity);
             if ((mStorage) &&
                 (mCount == where) &&
                 (mFlags & HAS_TRIVIAL_COPY) &&
@@ -424,10 +424,10 @@ namespace android {
         if (!mStorage)
             return;
 
-//    ALOGV("_shrink(this=%p, where=%d, amount=%d) count=%d, capacity=%d",
+//    LOGV("_shrink(this=%p, where=%d, amount=%d) count=%d, capacity=%d",
 //        this, (int)where, (int)amount, (int)mCount, (int)capacity());
 
-        ALOG_ASSERT(where + amount <= mCount,
+        LOG_ASSERT(where + amount <= mCount,
                     "[%p] _shrink: where=%d, amount=%d, count=%d",
                     this, (int) where, (int) amount, (int) mCount); // caller already checked
 

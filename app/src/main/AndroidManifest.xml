@@ -39,6 +39,7 @@
             <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
+        <activity android:name=".activities.DonateActivity" />
         <activity
             android:name="com.duy.run.activities.ExecuteActivity"
             android:configChanges="orientation|screenLayout|uiMode|screenSize|smallestScreenSize"

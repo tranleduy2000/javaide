@@ -122,8 +122,8 @@ public class MenuEditor {
             case R.id.action_copy_all:
                 if (listener != null) listener.copyAll();
                 break;
-            case R.id.action_select_theme:                analytics.logEvent("action_select_theme", new Bundle());
-
+            case R.id.action_select_theme:
+                analytics.logEvent("action_select_theme", new Bundle());
                 if (listener != null) listener.selectThemeFont();
                 break;
             case R.id.action_more_feature:

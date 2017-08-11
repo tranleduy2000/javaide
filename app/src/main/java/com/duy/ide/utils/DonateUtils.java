@@ -17,13 +17,12 @@
 package com.duy.ide.utils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
 
 import com.duy.ide.DLog;
-import com.duy.ide.R;
+import com.duy.ide.activities.DonateActivity;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.BufferedReader;
@@ -44,7 +43,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class DonateUtils {
     public static final String DONATE_PACKAGE = "com.duy.pascaldonate";
-    public static final int REQUEST_DONATE = 2;
+    public static final int REQUEST_DONATE = 10010;
     private static final String TAG = "Utils";
     public static boolean DONATED = false;
 
@@ -155,23 +154,24 @@ public class DonateUtils {
     }
 
     public static void showDialogDonate(final Activity context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.donate);
-        builder.setMessage(R.string.donate_summary);
-        builder.setPositiveButton(R.string.donate_yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                FirebaseAnalytics.getInstance(context).logEvent("click_donate", new Bundle());
-                StoreUtil.gotoPlayStore(context, DonateUtils.DONATE_PACKAGE, DonateUtils.REQUEST_DONATE);
-            }
-        });
-        builder.setNegativeButton(R.string.donate_nope, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-        builder.create().show();
+        FirebaseAnalytics.getInstance(context).logEvent("click_donate", new Bundle());
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        builder.setTitle(R.string.donate);
+//        builder.setMessage(R.string.donate_summary);
+//        builder.setPositiveButton(R.string.donate_yes, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                StoreUtil.gotoPlayStore(context, DonateUtils.DONATE_PACKAGE, DonateUtils.REQUEST_DONATE);
+//            }
+//        });
+//        builder.setNegativeButton(R.string.donate_nope, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                dialogInterface.cancel();
+//            }
+//        });
+//        builder.create().show();
+        context.startActivity(new Intent(context, DonateActivity.class));
     }
 
 }

@@ -21,7 +21,6 @@
     android:background="?android:windowBackground"
     android:gravity="bottom"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:umanoDragView="@+id/drag_view_horizontal"
     app:umanoOverlay="false"
     app:umanoPanelHeight="@dimen/drag_view_height"
     app:umanoShadowHeight="4dp">

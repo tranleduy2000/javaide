@@ -126,7 +126,7 @@ public class DonateActivity extends AbstractAppCompatActivity implements IabBroa
 
     private void iabError(Exception e) {
         if (e != null) {
-//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }

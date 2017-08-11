@@ -147,6 +147,7 @@
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_back_undo"
+            android:visibility="gone"
             android:title="@string/back_to_undo" />
 
     </PreferenceCategory>
@@ -168,7 +169,6 @@
             android:entries="@array/language_entry"
             android:entryValues="@array/language_code"
             android:key="@string/key_pref_lang"
-            android:shouldDisableView="true"
             android:title="@string/language" />
 
         <EditTextPreference
@@ -190,7 +190,7 @@
         <EditTextPreference
             android:defaultValue="@string/default_classpath"
             android:key="@string/key_classpath"
-            android:shouldDisableView="true"
+            android:visibility="gone"
             android:summary="@string/classpath_desc"
             android:title="Classpath">
 

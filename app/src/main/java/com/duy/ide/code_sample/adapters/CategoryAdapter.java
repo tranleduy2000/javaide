@@ -24,8 +24,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.duy.ide.R;
-import com.duy.ide.code_sample.StringUtil;
 import com.duy.ide.code_sample.fragments.SelectCategoryFragment;
+import com.duy.ide.code_sample.model.CodeCategory;
+
+import java.util.ArrayList;
 
 /**
  * Adapter for list sample code
@@ -36,9 +38,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     private SelectCategoryFragment.CategoryClickListener listener;
     private LayoutInflater layoutInflater;
-    private String[] categories;
+    private ArrayList<CodeCategory> categories;
 
-    public CategoryAdapter(FragmentActivity activity, String[] categories) {
+    public CategoryAdapter(FragmentActivity activity, ArrayList<CodeCategory> categories) {
         this.layoutInflater = LayoutInflater.from(activity);
         this.categories = categories;
     }
@@ -50,12 +52,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.txtName.setText(position + ". " + StringUtil.insertSpace(categories[position]));
+        holder.txtName.setText(categories.get(position).getTitle());
         holder.txtName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onCategoryClick(categories[holder.getAdapterPosition()]);
+                    listener.onCategoryClick(categories.get(holder.getAdapterPosition()));
                 }
             }
         });
@@ -63,7 +65,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return categories.length;
+        return categories.size();
     }
 
     public void setListener(SelectCategoryFragment.CategoryClickListener listener) {

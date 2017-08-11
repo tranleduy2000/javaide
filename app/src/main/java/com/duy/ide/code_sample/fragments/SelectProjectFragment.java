@@ -2,7 +2,6 @@ package com.duy.ide.code_sample.fragments;
 
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,9 +13,8 @@ import android.view.ViewGroup;
 
 import com.duy.ide.R;
 import com.duy.ide.code_sample.adapters.ProjectCategoryAdapter;
-import com.duy.ide.code_sample.model.AssetUtil;
-
-import java.io.IOException;
+import com.duy.ide.code_sample.model.CodeCategory;
+import com.duy.ide.code_sample.model.CodeProjectSample;
 
 /**
  * Created by Duy on 27-Jul-17.
@@ -27,10 +25,10 @@ public class SelectProjectFragment extends Fragment {
 
     private ProjectClickListener listener;
 
-    public static SelectProjectFragment newInstance(String category) {
+    public static SelectProjectFragment newInstance(CodeCategory category) {
 
         Bundle args = new Bundle();
-        args.putString("category", category);
+        args.putSerializable("category", category);
         SelectProjectFragment fragment = new SelectProjectFragment();
         fragment.setArguments(args);
         return fragment;
@@ -45,11 +43,11 @@ public class SelectProjectFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final String[] names = getCategories();
+        final CodeCategory category = (CodeCategory) getArguments().getSerializable("category");
         final RecyclerView recyclerView = view.findViewById(R.id.list_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        ProjectCategoryAdapter adapter = new ProjectCategoryAdapter(getActivity(), names);
+        ProjectCategoryAdapter adapter = new ProjectCategoryAdapter(getActivity(), category);
         adapter.setListener(listener);
         recyclerView.setAdapter(adapter);
     }
@@ -64,18 +62,8 @@ public class SelectProjectFragment extends Fragment {
         }
     }
 
-    private String[] getCategories() {
-        AssetManager assets = getContext().getAssets();
-        String[] samples = new String[0];
-        try {
-            samples = assets.list(AssetUtil.ASSET_SAMPLE_PATH + "/" + getArguments().getString("category"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return samples;
-    }
 
-    public interface ProjectClickListener extends SelectCategoryFragment.CategoryClickListener{
-        void onProjectClick(String sampleName);
+    public interface ProjectClickListener extends SelectCategoryFragment.CategoryClickListener {
+        void onProjectClick(CodeProjectSample codeProjectSample);
     }
 }

@@ -26,7 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.code_sample.model.CodeSampleEntry;
+import com.duy.ide.code_sample.model.CodeProjectSample;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.utils.clipboard.ClipboardManagerCompat;
 import com.duy.ide.utils.clipboard.ClipboardManagerCompatFactory;
@@ -40,8 +40,8 @@ import java.util.ArrayList;
  */
 public class CodeSampleAdapter extends RecyclerView.Adapter<CodeSampleAdapter.CodeHolder> {
     private final ClipboardManagerCompat clipboardManagerCompat;
-    private ArrayList<CodeSampleEntry> codeSampleEntries = new ArrayList<>();
-    private ArrayList<CodeSampleEntry> originalData = new ArrayList<>();
+    private ArrayList<CodeProjectSample> codeSampleEntries = new ArrayList<>();
+    private ArrayList<CodeProjectSample> originalData = new ArrayList<>();
     private Context context;
     private LayoutInflater inflater;
     private OnCodeClickListener listener;
@@ -60,7 +60,7 @@ public class CodeSampleAdapter extends RecyclerView.Adapter<CodeSampleAdapter.Co
 
     @Override
     public void onBindViewHolder(final CodeHolder holder, int position) {
-        final CodeSampleEntry codeSampleEntry = codeSampleEntries.get(position);
+        final CodeProjectSample codeSampleEntry = codeSampleEntries.get(position);
         holder.bind(codeSampleEntry, listener, clipboardManagerCompat);
     }
 
@@ -68,7 +68,7 @@ public class CodeSampleAdapter extends RecyclerView.Adapter<CodeSampleAdapter.Co
         this.listener = listener;
     }
 
-    public void addCodes(ArrayList<CodeSampleEntry> listCodeCategories) {
+    public void addCodes(ArrayList<CodeProjectSample> listCodeCategories) {
         this.originalData.addAll(listCodeCategories);
         this.codeSampleEntries.addAll(listCodeCategories);
     }
@@ -84,10 +84,10 @@ public class CodeSampleAdapter extends RecyclerView.Adapter<CodeSampleAdapter.Co
         notifyItemRangeRemoved(0, size);
 
         int count = 0;
-        for (CodeSampleEntry codeSampleEntry : originalData) {
+        for (CodeProjectSample codeSampleEntry : originalData) {
             if (codeSampleEntry.getName().contains(query) ||
                     codeSampleEntry.getContent().contains(query)) {
-                CodeSampleEntry clone = codeSampleEntry.clone();
+                CodeProjectSample clone = codeSampleEntry.clone();
                 clone.setQuery(query);
                 codeSampleEntries.add(clone);
                 notifyItemInserted(codeSampleEntries.size() - 1);
@@ -127,7 +127,7 @@ public class CodeSampleAdapter extends RecyclerView.Adapter<CodeSampleAdapter.Co
             editorView = (EditorView) view.findViewById(R.id.editor_view);
         }
 
-        public void bind(CodeSampleEntry codeSampleEntry,
+        public void bind(CodeProjectSample codeSampleEntry,
                          final OnCodeClickListener listener,
                          final ClipboardManagerCompat clipboardManagerCompat) {
             //set code

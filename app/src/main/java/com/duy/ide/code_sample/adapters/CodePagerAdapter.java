@@ -20,7 +20,6 @@ import android.support.v4.app.FragmentManager;
 
 import com.commonsware.cwac.pager.PageDescriptor;
 import com.commonsware.cwac.pager.v4.ArrayPagerAdapter;
-import com.duy.ide.code_sample.fragments.FragmentCodeSample;
 
 import java.util.List;
 

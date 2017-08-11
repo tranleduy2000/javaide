@@ -16,31 +16,47 @@
 
 package com.duy.ide.code_sample.model;
 
+import com.google.common.base.MoreObjects;
+
 /**
  * Created by Duy on 08-Apr-17.
  */
 
-@SuppressWarnings("DefaultFileTemplate")
-public class CodeSampleEntry {
+public class CodeProjectSample {
     /**
      * name of file code
      */
     private String name;
-
+    private String path;
+    private String description;
     /**
      * code
      */
     private String content;
     private String query;
 
-    public CodeSampleEntry(String name, CharSequence content) {
+    public CodeProjectSample(String name, String path, String description) {
+        this.name = name;
+        this.path = path;
+        this.description = description;
+    }
+
+    public CodeProjectSample(String name, CharSequence content) {
         this.name = name;
         this.content = content.toString();
     }
 
-    public CodeSampleEntry(String name, String content) {
+    public CodeProjectSample(String name, String content) {
         this.name = name;
         this.content = content;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public String getName() {
@@ -67,7 +83,18 @@ public class CodeSampleEntry {
         this.query = query;
     }
 
-    public CodeSampleEntry clone() {
-        return new CodeSampleEntry(name, content);
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("name", name)
+                .add("path", path)
+                .add("description", description)
+                .add("content", content)
+                .add("query", query)
+                .toString();
+    }
+
+    public CodeProjectSample clone() {
+        return new CodeProjectSample(name, content);
     }
 }

@@ -24,8 +24,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.duy.ide.R;
-import com.duy.ide.code_sample.StringUtil;
 import com.duy.ide.code_sample.fragments.SelectProjectFragment;
+import com.duy.ide.code_sample.model.CodeCategory;
 
 /**
  * Adapter for list sample code
@@ -36,9 +36,9 @@ public class ProjectCategoryAdapter extends RecyclerView.Adapter<ProjectCategory
 
     private SelectProjectFragment.ProjectClickListener listener;
     private LayoutInflater layoutInflater;
-    private String[] categories;
+    private CodeCategory categories;
 
-    public ProjectCategoryAdapter(FragmentActivity activity, String[] categories) {
+    public ProjectCategoryAdapter(FragmentActivity activity, CodeCategory categories) {
         this.layoutInflater = LayoutInflater.from(activity);
         this.categories = categories;
     }
@@ -50,12 +50,12 @@ public class ProjectCategoryAdapter extends RecyclerView.Adapter<ProjectCategory
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.txtName.setText(position + ". " + StringUtil.insertSpace(categories[position]));
+        holder.txtName.setText(categories.getProject(position).getName());
         holder.txtName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onProjectClick(categories[holder.getAdapterPosition()]);
+                    listener.onProjectClick(categories.getProject(holder.getAdapterPosition()));
                 }
             }
         });
@@ -63,7 +63,7 @@ public class ProjectCategoryAdapter extends RecyclerView.Adapter<ProjectCategory
 
     @Override
     public int getItemCount() {
-        return categories.length;
+        return categories.size();
     }
 
     public void setListener(SelectProjectFragment.ProjectClickListener listener) {

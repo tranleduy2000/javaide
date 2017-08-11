@@ -16,6 +16,7 @@
 
 package com.duy.ide.code_sample.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -23,38 +24,47 @@ import java.util.ArrayList;
  */
 
 @SuppressWarnings("DefaultFileTemplate")
-public class CodeCategory {
+public class CodeCategory implements Serializable, Cloneable {
     private String title;
     private String description;
     private String imagePath;
-
-    public ArrayList<CodeSampleEntry> getCodeSampleEntries() {
-        return codeSampleEntries;
-    }
-
-    private ArrayList<CodeSampleEntry> codeSampleEntries = new ArrayList<>();
+    private String categoryPath;
+    private ArrayList<CodeProjectSample> codeSampleEntries = new ArrayList<>();
 
     public CodeCategory(String title, String description) {
         this.title = title;
         this.description = description;
     }
 
-    public CodeCategory(String title, String description, String imagePath) {
+    public CodeCategory(String title, String description, String imagePath, String categoryPath) {
         this.title = title;
         this.description = description;
         this.imagePath = imagePath;
+        this.categoryPath = categoryPath;
 
     }
 
-    public int getCodeSize() {
+    public String getProjectPath() {
+        return categoryPath;
+    }
+
+    public void setProjectPath(String categoryPath) {
+        this.categoryPath = categoryPath;
+    }
+
+    public ArrayList<CodeProjectSample> getCodeSampleEntries() {
+        return codeSampleEntries;
+    }
+
+    public int size() {
         return codeSampleEntries.size();
     }
 
-    public void addCodeItem(CodeSampleEntry entry) {
+    public void addCodeItem(CodeProjectSample entry) {
         codeSampleEntries.add(entry);
     }
 
-    public void removeCode(CodeSampleEntry entry) {
+    public void removeCode(CodeProjectSample entry) {
         codeSampleEntries.remove(entry);
     }
 
@@ -87,7 +97,7 @@ public class CodeCategory {
         this.imagePath = imagePath;
     }
 
-    public CodeSampleEntry getCode(int childPosition) {
+    public CodeProjectSample getProject(int childPosition) {
         return codeSampleEntries.get(childPosition);
     }
 }

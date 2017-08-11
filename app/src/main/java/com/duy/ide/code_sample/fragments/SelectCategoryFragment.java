@@ -1,7 +1,6 @@
 package com.duy.ide.code_sample.fragments;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,20 +12,22 @@ import android.view.ViewGroup;
 
 import com.duy.ide.R;
 import com.duy.ide.code_sample.adapters.CategoryAdapter;
+import com.duy.ide.code_sample.model.CodeCategory;
 
-import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Duy on 27-Jul-17.
  */
 
 public class SelectCategoryFragment extends Fragment {
+    public static final String TAG = "SelectCategoryFragment";
     private CategoryClickListener listener;
 
-    public static SelectCategoryFragment newInstance() {
+    public static SelectCategoryFragment newInstance(ArrayList<CodeCategory> codeCategories) {
 
         Bundle args = new Bundle();
-
+        args.putSerializable("categories", codeCategories);
         SelectCategoryFragment fragment = new SelectCategoryFragment();
         fragment.setArguments(args);
         return fragment;
@@ -42,7 +43,8 @@ public class SelectCategoryFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final RecyclerView recyclerView = view.findViewById(R.id.list_view);
-        final String[] categories = getCategories();
+        final ArrayList<CodeCategory> categories =
+                (ArrayList<CodeCategory>) getArguments().getSerializable("categories");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         CategoryAdapter adapter = new CategoryAdapter(getActivity(), categories);
@@ -60,19 +62,9 @@ public class SelectCategoryFragment extends Fragment {
         }
     }
 
-    private String[] getCategories() {
-        AssetManager assets = getContext().getAssets();
-        String[] samples = new String[0];
-        try {
-            samples = assets.list("sample");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return samples;
-    }
 
     public interface CategoryClickListener {
-        void onCategoryClick(String category);
+        void onCategoryClick(CodeCategory category);
     }
 
 }

@@ -9,16 +9,16 @@ import java.util.LinkedHashMap;
 
 public class CheckValueOfLinkedHashMapExample {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        //create LinkedHashMap object
-        LinkedHashMap lHashMap = new LinkedHashMap();
+    //create LinkedHashMap object
+    LinkedHashMap lHashMap = new LinkedHashMap();
 
-        //add key value pairs to LinkedHashMap
-        lHashMap.put("1", "One");
-        lHashMap.put("2", "Two");
-        lHashMap.put("3", "Three");
-   
+    //add key value pairs to LinkedHashMap
+    lHashMap.put("1", "One");
+    lHashMap.put("2", "Two");
+    lHashMap.put("3", "Three");
+
     /*
       To check whether a particular value exists in LinkedHashMap use
       boolean containsValue(Object key) method of LinkedHashMap class.
@@ -26,12 +26,12 @@ public class CheckValueOfLinkedHashMapExample {
       LinkedHashMap otherwise false.
     */
 
-        boolean blnExists = lHashMap.containsValue("Two");
-        System.out.println("Two exists in LinkedHashMap ? : " + blnExists);
-    }
+    boolean blnExists = lHashMap.containsValue("Two");
+    System.out.println("Two exists in LinkedHashMap ? : " + blnExists);
+  }
 }
- 
+
 /*
-Output would be
-Two exists in LinkedHashMap ? : true
-*/
+ Output would be
+ Two exists in LinkedHashMap ? : true
+ */

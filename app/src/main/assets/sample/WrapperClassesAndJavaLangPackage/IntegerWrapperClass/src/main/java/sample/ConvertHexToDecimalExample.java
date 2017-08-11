@@ -8,27 +8,26 @@ package sample;
 
 public class ConvertHexToDecimalExample {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        //declare string containing hexadecimal number
-        String strHexNumber = "20";
-               
-                /*
-                 * to convert hexadecimal number to decimal number use,
-                 * int parseInt method of Integer wrapper class.
-                 *
-                 * Pass 16 as redix second argument.
-                 */
+    //declare string containing hexadecimal number
+    String strHexNumber = "20";
 
-        int decimalNumber = Integer.parseInt(strHexNumber, 16);
-        System.out.println("Hexadecimal number converted to decimal number");
-        System.out.println("Decimal number is : " + decimalNumber);
+    /*
+     * to convert hexadecimal number to decimal number use,
+     * int parseInt method of Integer wrapper class.
+     *
+     * Pass 16 as redix second argument.
+     */
 
-    }
+    int decimalNumber = Integer.parseInt(strHexNumber, 16);
+    System.out.println("Hexadecimal number converted to decimal number");
+    System.out.println("Decimal number is : " + decimalNumber);
+  }
 }
- 
+
 /*
-Output would be
-Hexadecimal number converted to decimal number
-Decimal number is : 32
-*/
+ Output would be
+ Hexadecimal number converted to decimal number
+ Decimal number is : 32
+ */

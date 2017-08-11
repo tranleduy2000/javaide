@@ -9,16 +9,16 @@ import java.util.Hashtable;
 
 public class CheckValueOfHashtableExample {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        //create Hashtable object
-        Hashtable ht = new Hashtable();
+    //create Hashtable object
+    Hashtable ht = new Hashtable();
 
-        //add key value pairs to Hashtable
-        ht.put("1", "One");
-        ht.put("2", "Two");
-        ht.put("3", "Three");
-   
+    //add key value pairs to Hashtable
+    ht.put("1", "One");
+    ht.put("2", "Two");
+    ht.put("3", "Three");
+
     /*
       To check whether a particular value exists in Hashtable use
       boolean contains(Object key) method of Hashtable class.
@@ -26,12 +26,12 @@ public class CheckValueOfHashtableExample {
       Hashtable otherwise false.
     */
 
-        boolean blnExists = ht.contains("Two");
-        System.out.println("Two exists in Hashtable ? : " + blnExists);
-    }
+    boolean blnExists = ht.contains("Two");
+    System.out.println("Two exists in Hashtable ? : " + blnExists);
+  }
 }
- 
+
 /*
-Output would be
-Two exists in Hashtable ? : true
-*/
+ Output would be
+ Two exists in Hashtable ? : true
+ */

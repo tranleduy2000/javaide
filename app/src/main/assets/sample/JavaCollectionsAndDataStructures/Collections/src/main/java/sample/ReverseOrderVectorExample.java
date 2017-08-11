@@ -5,41 +5,40 @@ package sample;
   using reverse method of Collections class.
 */
 
-import java.util.Vector;
 import java.util.Collections;
+import java.util.Vector;
 
 public class ReverseOrderVectorExample {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        //create a Vector object
-        Vector v = new Vector();
+    //create a Vector object
+    Vector v = new Vector();
 
-        //Add elements to Vector
-        v.add("A");
-        v.add("B");
-        v.add("C");
-        v.add("D");
-        v.add("E");
+    //Add elements to Vector
+    v.add("A");
+    v.add("B");
+    v.add("C");
+    v.add("D");
+    v.add("E");
 
-        System.out.println("Before Reverse Order, Vector Contains : " + v);
-   
+    System.out.println("Before Reverse Order, Vector Contains : " + v);
+
     /*
       To reverse the order of all elements of Java Vector use,
       static void reverse(List list) method of Collections class.
-     
+
       This method reverse the order of elements of specified list.
     */
 
-        Collections.reverse(v);
+    Collections.reverse(v);
 
-        System.out.println("After Reverse Order, Vector Contains : " + v);
-
-    }
+    System.out.println("After Reverse Order, Vector Contains : " + v);
+  }
 }
- 
+
 /*
-Output would be
-Before Reverse Order, Vector Contains : [A, B, C, D, E]
-After Reverse Order, Vector Contains : [E, D, C, B, A]
-*/
+ Output would be
+ Before Reverse Order, Vector Contains : [A, B, C, D, E]
+ After Reverse Order, Vector Contains : [E, D, C, B, A]
+ */

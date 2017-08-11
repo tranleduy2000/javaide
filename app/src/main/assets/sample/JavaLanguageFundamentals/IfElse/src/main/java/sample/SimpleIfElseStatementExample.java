@@ -4,11 +4,10 @@ package sample;
   This Java Example shows how to use if else statement in Java program.
 */
 
-
 public class SimpleIfElseStatementExample {
 
-    public static void main(String[] args) {
-   
+  public static void main(String[] args) {
+
     /*
      * If else statement is used to execute either of two conditions based
      * upon certain condition.
@@ -24,16 +23,14 @@ public class SimpleIfElseStatementExample {
      * be executed.
      */
 
-        int i = 0;
+    int i = 0;
 
-        if (i == 0)
-            System.out.println("i is 0");
-        else
-            System.out.println("i is not 0");
-    }
+    if (i == 0) System.out.println("i is 0");
+    else System.out.println("i is not 0");
+  }
 }
- 
+
 /*
-Output would be
-i is 0
-*/
+ Output would be
+ i is 0
+ */

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,9 +28,9 @@ public class Template {
             "package %2$s;\n" +
                     "\n" +
                     "public class %1$s {\n\n" +
-                    "    public static void main(String[] args) {\n" +
-                    "        \n" +
-                    "    }\n" +
+                    "  public static void main(String[] args) {\n" +
+                    "   \n" +
+                    "  }\n" +
                     "}\n";
 
     private static final String INTERFACE_TEMPLATE =
@@ -51,7 +51,7 @@ public class Template {
     private static final String JAVA_TEMPLATE =
             "%5$s\n" + "\n" +
                     "%1$s%2$s%3$s %4$s {\n" +
-                    "    \n" +
+                    "  \n" +
                     "}\n";
 
     @NonNull

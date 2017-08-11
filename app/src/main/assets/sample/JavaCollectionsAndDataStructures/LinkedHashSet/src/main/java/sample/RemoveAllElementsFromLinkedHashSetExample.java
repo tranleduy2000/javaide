@@ -10,18 +10,18 @@ import java.util.LinkedHashSet;
 
 public class RemoveAllElementsFromLinkedHashSetExample {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        //create object of LinkedHashSet
-        LinkedHashSet lhashSet = new LinkedHashSet();
+    //create object of LinkedHashSet
+    LinkedHashSet lhashSet = new LinkedHashSet();
 
-        //add elements to LinkedHashSet object
-        lhashSet.add(new Integer("1"));
-        lhashSet.add(new Integer("2"));
-        lhashSet.add(new Integer("3"));
+    //add elements to LinkedHashSet object
+    lhashSet.add(new Integer("1"));
+    lhashSet.add(new Integer("2"));
+    lhashSet.add(new Integer("3"));
 
-        System.out.println("LinkedHashSet before removal : " + lhashSet);
-   
+    System.out.println("LinkedHashSet before removal : " + lhashSet);
+
     /*
       To remove all elements from Java LinkedHashSet or to clear LinkedHashSet
       object use,
@@ -29,9 +29,9 @@ public class RemoveAllElementsFromLinkedHashSetExample {
       This method removes all elements from LinkedHashSet.
     */
 
-        lhashSet.clear();
-        System.out.println("LinkedHashSet after removal : " + lhashSet);
-   
+    lhashSet.clear();
+    System.out.println("LinkedHashSet after removal : " + lhashSet);
+
     /*
       To check whether LinkedHashSet contains any elements or not
       use
@@ -40,18 +40,18 @@ public class RemoveAllElementsFromLinkedHashSetExample {
       otherwise false.
     */
 
-        System.out.println("Is LinkedHashSet empty ? " + lhashSet.isEmpty());
-   
+    System.out.println("Is LinkedHashSet empty ? " + lhashSet.isEmpty());
+
     /*
       Please note that removeAll method of Java LinkedHashSet class can
       also be used to remove all elements from LinkedHashSet object.
     */
-    }
+  }
 }
- 
+
 /*
-Output would be
-LinkedHashSet before removal : [1, 2, 3]
-LinkedHashSet after removal : []
-Is LinkedHashSet empty ? true
-*/
+ Output would be
+ LinkedHashSet before removal : [1, 2, 3]
+ LinkedHashSet after removal : []
+ Is LinkedHashSet empty ? true
+ */

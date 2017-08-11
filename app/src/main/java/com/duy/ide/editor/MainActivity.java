@@ -58,13 +58,13 @@ import com.duy.ide.Builder;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.AutoCompleteService;
-import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
+import com.duy.ide.autocomplete.AutoCompleteProvider;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.util.JavaUtil;
 import com.duy.ide.code_sample.activities.DocumentActivity;
 import com.duy.ide.code_sample.activities.SampleActivity;
-import com.duy.ide.editor.view.IndentEditText;
 import com.duy.ide.editor.view.EditorView;
+import com.duy.ide.editor.view.IndentEditText;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.setting.JavaPreferences;
@@ -811,6 +811,7 @@ public class MainActivity extends BaseEditorActivity implements
         mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         mDiagnosticPresenter.clear();
 
+        mBottomPage.setCurrentItem(0);
     }
 
     private void updateUIFinish() {

@@ -7,26 +7,26 @@ package sample;
 
 public class StrinBufferResetExample {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        //create StringBuffer object
-        StringBuffer sbf = new StringBuffer("Hello World!");
+    //create StringBuffer object
+    StringBuffer sbf = new StringBuffer("Hello World!");
 
-        System.out.println("StringBuffer content: " + sbf);
-               
-                /*
-                 * To reset StringBuffer to empty value, user
-                 * StringBuffer delete() method of StringBuffer class.
-                 */
+    System.out.println("StringBuffer content: " + sbf);
 
-        sbf.delete(0, sbf.length());
+    /*
+     * To reset StringBuffer to empty value, user
+     * StringBuffer delete() method of StringBuffer class.
+     */
 
-        System.out.println("StringBuffer content after reset:" + sbf);
-    }
+    sbf.delete(0, sbf.length());
+
+    System.out.println("StringBuffer content after reset:" + sbf);
+  }
 }
- 
+
 /*
-Output of above given Java StringBuffer Reset example would be
-StringBuffer content: Hello World!
-StringBuffer content after reset:
-*/
+ Output of above given Java StringBuffer Reset example would be
+ StringBuffer content: Hello World!
+ StringBuffer content after reset:
+ */

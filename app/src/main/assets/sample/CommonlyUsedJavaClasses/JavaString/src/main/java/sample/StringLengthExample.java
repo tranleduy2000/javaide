@@ -6,17 +6,17 @@ package sample;
 
 public class StringLengthExample {
 
-    public static void main(String[] args) {
-        //declare the String object
-        String str = "Hello World";
+  public static void main(String[] args) {
+    //declare the String object
+    String str = "Hello World";
 
-        //length() method of String returns the length of a String.
-        int length = str.length();
-        System.out.println("Length of a String is : " + length);
-    }
+    //length() method of String returns the length of a String.
+    int length = str.length();
+    System.out.println("Length of a String is : " + length);
+  }
 }
- 
+
 /*
-Output of a program would be:
-Length of a String is : 11
-*/
+ Output of a program would be:
+ Length of a String is : 11
+ */

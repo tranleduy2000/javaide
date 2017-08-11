@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <category name="Java Language Fundamentals" description="While, if, for, switch... statement"
+        path="sample/JavaLanguageFundamentals">
+        <project name="Basic Sample" path="sample/JavaLanguageFundamentals/BasicSample" />
+        <project name="Break Statement" path="sample/JavaLanguageFundamentals/BreakStatment" />
+        <project name="Continue Statement"
+            path="sample/JavaLanguageFundamentals/ContinueStatment" />
+        <project name="Data Types" path="sample/JavaLanguageFundamentals/DataTypes" />
+        <project name="Do While Loop" path="sample/JavaLanguageFundamentals/DoWhileLoop" />
+        <project name="Final" path="sample/JavaLanguageFundamentals/Final" />
+        <project name="For Loop" path="sample/JavaLanguageFundamentals/ForLoop" />
+        <project name="While Loop" path="sample/JavaLanguageFundamentals/IfElse" />
+        <project name="If Else" path="sample/JavaLanguageFundamentals/Operators" />
+        <project name="Operators" path="sample/JavaLanguageFundamentals/SortingAlgorithms" />
+        <project name="Sorting Algorithms" path="sample/JavaLanguageFundamentals/Static" />
+        <project name="Static" path="sample/JavaLanguageFundamentals/SwitchStatement" />
+        <project name="Switch Statement" path="sample/JavaLanguageFundamentals/Thread" />
+        <project name="Thread" path="sample/JavaLanguageFundamentals/WhileLoop" />
+    </category>
+
+    <category name="Commonly Used Java Classes" path="sample/CommonlyUsedJavaClasses">
+        <project name="Calender" path="sample/CommonlyUsedJavaClasses/Calender" />
+        <project name="Java Date" path="sample/CommonlyUsedJavaClasses/JavaDate" />
+        <project name="Java Date Formatting"
+            path="sample/CommonlyUsedJavaClasses/JavaDateFormatting" />
+        <project name="Java String" path="sample/CommonlyUsedJavaClasses/JavaString" />
+        <project name="Java String Buffer" path="sample/CommonlyUsedJavaClasses/JavaStringBuffer" />
+        <project name="String Tokenizer" path="sample/CommonlyUsedJavaClasses/StringTokenizer" />
+    </category>
+
+    <category name="Wrapper Classes And Other Classes Of java.lang Package"
+        path="sample/WrapperClassesAndJavaLangPackage">
+        <project name="BigInteger" path="sample/WrapperClassesAndJavaLangPackage/BigInteger" />
+        <project name="BooleanWrapperClass"
+            path="sample/WrapperClassesAndJavaLangPackage/BooleanWrapperClass" />
+        <project name="ByteWrapperClass"
+            path="sample/WrapperClassesAndJavaLangPackage/ByteWrapperClass" />
+        <project name="DoubleWrapperClass"
+            path="sample/WrapperClassesAndJavaLangPackage/DoubleWrapperClass" />
+        <project name="FloatWrapperClass"
+            path="sample/WrapperClassesAndJavaLangPackage/FloatWrapperClass" />
+        <project name="IntegerWrapperClass"
+            path="sample/WrapperClassesAndJavaLangPackage/IntegerWrapperClass" />
+        <project name="LongWrapperClass"
+            path="sample/WrapperClassesAndJavaLangPackage/LongWrapperClass" />
+        <project name="MathClass" path="sample/WrapperClassesAndJavaLangPackage/MathClass" />
+        <project name="ShortWrapperClass"
+            path="sample/WrapperClassesAndJavaLangPackage/ShortWrapperClass" />
+    </category>
+
+    <category name="Java Collections And Data Structures (java.util package)"
+        path="sample/JavaCollectionsAndDataStructures">
+        <project name="Arrays" path="sample/JavaCollectionsAndDataStructures/Arrays" />
+        <project name="Array List" path="sample/JavaCollectionsAndDataStructures/ArrayList" />
+        <project name="Collections" path="sample/JavaCollectionsAndDataStructures/Collections" />
+        <project name="Comparator" path="sample/JavaCollectionsAndDataStructures/Comparator" />
+        <project name="Enumeration" path="sample/JavaCollectionsAndDataStructures/Enumeration" />
+        <project name="Hash Map" path="sample/JavaCollectionsAndDataStructures/Hashmap" />
+        <project name="Hash Set" path="sample/JavaCollectionsAndDataStructures/HashSet" />
+        <project name="Hash Table" path="sample/JavaCollectionsAndDataStructures/Hashtable" />
+        <project name="Iterator" path="sample/JavaCollectionsAndDataStructures/Iterator" />
+        <project name="Linked Has hMap"
+            path="sample/JavaCollectionsAndDataStructures/LinkedHashMap" />
+        <project name="Linked Hash Set"
+            path="sample/JavaCollectionsAndDataStructures/LinkedHashSet" />
+    </category>
+
+</root>

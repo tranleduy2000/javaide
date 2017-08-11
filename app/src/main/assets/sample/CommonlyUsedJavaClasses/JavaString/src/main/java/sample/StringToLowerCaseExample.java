@@ -7,25 +7,25 @@ package sample;
 
 public class StringToLowerCaseExample {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        String str = "STRING TOLOWERCASE EXAMPLE";
-               
-                /*
-                 * To change the case of string to lower case use,
-                 * public String toLowerCase() method of String class.
-                 *
-                 */
+    String str = "STRING TOLOWERCASE EXAMPLE";
 
-        String strLower = str.toLowerCase();
+    /*
+     * To change the case of string to lower case use,
+     * public String toLowerCase() method of String class.
+     *
+     */
 
-        System.out.println("Original String: " + str);
-        System.out.println("String changed to lower case: " + strLower);
-    }
+    String strLower = str.toLowerCase();
+
+    System.out.println("Original String: " + str);
+    System.out.println("String changed to lower case: " + strLower);
+  }
 }
- 
+
 /*
-Output would be
-Original String: STRING TOLOWERCASE EXAMPLE
-String changed to lower case: string tolowercase example
-*/
+ Output would be
+ Original String: STRING TOLOWERCASE EXAMPLE
+ String changed to lower case: string tolowercase example
+ */

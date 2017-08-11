@@ -7,22 +7,22 @@ package sample;
 
 public class StringToPrimitiveLongExample {
 
-    public static void main(String[] args) {
-        //declare String object
-        String str = new String("10");
-   
+  public static void main(String[] args) {
+    //declare String object
+    String str = new String("10");
+
     /*
     use parseLong method of Long class to convert String into long primitive
     data type. This is a static method.
     Please note that this method can throw a NumberFormatException if the string
     is not parsable to long.
     */
-        long l = Long.parseLong(str);
-        System.out.println(l);
-    }
+    long l = Long.parseLong(str);
+    System.out.println(l);
+  }
 }
- 
+
 /*
-Output the program would be
-10
-*/
+ Output the program would be
+ 10
+ */

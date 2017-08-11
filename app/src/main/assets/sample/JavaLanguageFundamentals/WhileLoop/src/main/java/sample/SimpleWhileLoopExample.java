@@ -6,8 +6,8 @@ package sample;
 
 public class SimpleWhileLoopExample {
 
-    public static void main(String[] args) {
-   
+  public static void main(String[] args) {
+
     /*
      * Syntax of while loop is
      *
@@ -21,31 +21,29 @@ public class SimpleWhileLoopExample {
      * enclosed in a block.
      */
 
-        int i = 0;
+    int i = 0;
 
-        while (i < 5) {
-            System.out.println("i is : " + i);
-            i++;
-        }
-     
-     
-     /*
-      * The following code will create an infinite loop, since j < 5 will always
-      * evaluated to true
-      */
-        //int j = 0;
-        //while(j < 5)
-        //  System.out.println("j is : " + j);
-
-
+    while (i < 5) {
+      System.out.println("i is : " + i);
+      i++;
     }
+
+    /*
+     * The following code will create an infinite loop, since j < 5 will always
+     * evaluated to true
+     */
+    //int j = 0;
+    //while(j < 5)
+    //  System.out.println("j is : " + j);
+
+  }
 }
- 
+
 /*
-Output would be
-i is : 0
-i is : 1
-i is : 2
-i is : 3
-i is : 4
-*/
+ Output would be
+ i is : 0
+ i is : 1
+ i is : 2
+ i is : 3
+ i is : 4
+ */

@@ -6,20 +6,19 @@ package sample;
 
 public class longToLongExample {
 
-    public static void main(String[] args) {
-        long i = 10;
-   
+  public static void main(String[] args) {
+    long i = 10;
+
     /*
     Use Long constructor to convert long primitive type to Long object.
     */
 
-        Long lObj = new Long(i);
-        System.out.println(lObj);
-
-    }
+    Long lObj = new Long(i);
+    System.out.println(lObj);
+  }
 }
- 
+
 /*
-Output of the program would be
-10
-*/
+ Output of the program would be
+ 10
+ */

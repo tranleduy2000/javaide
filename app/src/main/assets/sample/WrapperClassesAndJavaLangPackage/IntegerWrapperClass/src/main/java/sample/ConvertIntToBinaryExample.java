@@ -7,20 +7,19 @@ package sample;
 
 public class ConvertIntToBinaryExample {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        int i = 56;
+    int i = 56;
 
-        String strBinaryNumber = Integer.toBinaryString(i);
+    String strBinaryNumber = Integer.toBinaryString(i);
 
-        System.out.println("Convert decimal number to binary number example");
-        System.out.println("Binary value of " + i + " is " + strBinaryNumber);
-
-    }
+    System.out.println("Convert decimal number to binary number example");
+    System.out.println("Binary value of " + i + " is " + strBinaryNumber);
+  }
 }
- 
+
 /*
-Output would be
-Convert decimal number to binary number example
-Binary value of 56 is 111000
-*/
+ Output would be
+ Convert decimal number to binary number example
+ Binary value of 56 is 111000
+ */

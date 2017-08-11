@@ -18,18 +18,20 @@ package com.duy.ide;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.duy.ide.activities.InstallActivity;
 import com.duy.ide.code_sample.activities.SampleActivity;
 import com.duy.ide.editor.MainActivity;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.setting.SettingsActivity;
-import com.duy.ide.activities.InstallActivity;
 import com.duy.ide.utils.DonateUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 /**
  * Handler for menu click
@@ -70,39 +72,29 @@ public class MenuEditor {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
         if (menuItem.isCheckable()) menuItem.setChecked(!menuItem.isChecked());
+        FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(activity);
         switch (id) {
             case R.id.action_setting:
                 activity.startActivity(new Intent(activity, SettingsActivity.class));
                 break;
             case R.id.action_find:
                 activity.showDialogFind();
-
                 break;
             case R.id.action_find_and_replace:
-                if (listener != null) {
-                    listener.findAndReplace();
-                }
+                if (listener != null) listener.findAndReplace();
                 break;
             case R.id.action_run:
                 builder.runProject();
                 break;
             case R.id.action_save:
-                if (listener != null) {
-                    listener.saveCurrentFile();
-                }
-
+                if (listener != null) listener.saveCurrentFile();
                 break;
-
             case R.id.action_goto_line:
-                if (listener != null) {
-                    listener.goToLine();
-                }
-
+                if (listener != null) listener.goToLine();
                 break;
             case R.id.action_format:
-                if (listener != null) {
-                    listener.formatCode();
-                }
+                analytics.logEvent("action_format_code", new Bundle());
+                if (listener != null) listener.formatCode();
                 break;
             case R.id.action_report_bug: {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
@@ -117,33 +109,22 @@ public class MenuEditor {
                 break;
             }
             case R.id.action_undo:
-                if (listener != null) {
-                    listener.undo();
-                }
-
+                analytics.logEvent("action_undo", new Bundle());
+                if (listener != null) listener.undo();
                 break;
             case R.id.action_redo:
-                if (listener != null) {
-                    listener.redo();
-                }
-
+                analytics.logEvent("action_redo", new Bundle());
+                if (listener != null) listener.redo();
                 break;
             case R.id.action_paste:
-                if (listener != null) {
-                    listener.paste();
-                }
-
+                if (listener != null) listener.paste();
                 break;
             case R.id.action_copy_all:
-                if (listener != null) {
-                    listener.copyAll();
-                }
-
+                if (listener != null) listener.copyAll();
                 break;
-            case R.id.action_select_theme:
-                if (listener != null) {
-                    listener.selectThemeFont();
-                }
+            case R.id.action_select_theme:                analytics.logEvent("action_select_theme", new Bundle());
+
+                if (listener != null) listener.selectThemeFont();
                 break;
             case R.id.action_more_feature:
                 activity.openDrawer(GravityCompat.END);

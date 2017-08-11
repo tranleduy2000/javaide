@@ -75,9 +75,12 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
                 public void run() {
                     try {
                         runProgram(projectFile, action, intent);
+                    } catch (Error error) {
+                        error.printStackTrace(mConsoleEditText.getErrorStream());
                     } catch (Exception e) {
                         e.printStackTrace(mConsoleEditText.getErrorStream());
-                        mHandler.sendMessage(mHandler.obtainMessage(RUN_TIME_ERR, e));
+                    } catch (Throwable e) {
+                        e.printStackTrace(mConsoleEditText.getErrorStream());
                     }
                 }
             });

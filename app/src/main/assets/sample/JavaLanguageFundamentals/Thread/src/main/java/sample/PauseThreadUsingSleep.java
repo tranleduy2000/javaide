@@ -7,45 +7,44 @@ package sample;
 
 public class PauseThreadUsingSleep {
 
-    public static void main(String[] args) {
-               
-                /*
-                 * To pause execution of a thread, use
-                 * void sleep(int milliseconds) method of Thread class.
-                 *
-                 * This is a static method and causes the suspension of the thread
-                 * for specified period of time.
-                 *
-                 * Please note that, this method may throw InterruptedException.
-                 */
+  public static void main(String[] args) {
 
-        System.out.println("Print number after pausing for 1000 milliseconds");
-        try {
+    /*
+     * To pause execution of a thread, use
+     * void sleep(int milliseconds) method of Thread class.
+     *
+     * This is a static method and causes the suspension of the thread
+     * for specified period of time.
+     *
+     * Please note that, this method may throw InterruptedException.
+     */
 
-            for (int i = 0; i < 5; i++) {
+    System.out.println("Print number after pausing for 1000 milliseconds");
+    try {
 
-                System.out.println(i);
-                               
-                                /*
-                                 * This thread will pause for 1000 milliseconds after
-                                 * printing each number.
-                                 */
-                Thread.sleep(1000);
-            }
-        } catch (InterruptedException ie) {
-            System.out.println("Thread interrupted !" + ie);
-        }
+      for (int i = 0; i < 5; i++) {
 
+        System.out.println(i);
+
+        /*
+         * This thread will pause for 1000 milliseconds after
+         * printing each number.
+         */
+        Thread.sleep(1000);
+      }
+    } catch (InterruptedException ie) {
+      System.out.println("Thread interrupted !" + ie);
     }
+  }
 }
- 
+
 /*
-Output of this example would be
- 
-Print number after pausing for 1000 milliseconds
-0
-1
-2
-3
-4
-*/
+ Output of this example would be
+
+ Print number after pausing for 1000 milliseconds
+ 0
+ 1
+ 2
+ 3
+ 4
+ */

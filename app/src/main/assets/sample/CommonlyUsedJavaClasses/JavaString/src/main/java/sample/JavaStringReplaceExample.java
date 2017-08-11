@@ -7,8 +7,8 @@ can be used to replace character or substring can be replaced by new one.
 
 public class JavaStringReplaceExample {
 
-    public static void main(String args[]) {
- 
+  public static void main(String args[]) {
+
     /*
     Java String class defines three methods to replace character or substring from
     the given Java String object.
@@ -23,36 +23,34 @@ public class JavaStringReplaceExample {
     given regular expression with the given new string.
     */
 
-        String str = "Replace Region";
-   
+    String str = "Replace Region";
+
     /*
     Replaces all occourances of given character with new one and returns new
     String object.
     */
-        System.out.println(str.replace('R', 'A'));
-   
+    System.out.println(str.replace('R', 'A'));
+
     /*
     Replaces only first occourances of given String with new one and
     returns new String object.
     */
-        System.out.println(str.replaceFirst("Re", "Ra"));
-   
+    System.out.println(str.replaceFirst("Re", "Ra"));
+
     /*
     Replaces all occourances of given String with new one and returns
     new String object.
     */
-        System.out.println(str.replaceAll("Re", "Ra"));
-
-    }
-
+    System.out.println(str.replaceAll("Re", "Ra"));
+  }
 }
- 
+
 /*
- 
-OUTPUT of the above given Java String Replace Example would be :
- 
-Aeplace Aegion
-Raplace Region
-Raplace Ragion
- 
-*/
+
+ OUTPUT of the above given Java String Replace Example would be :
+
+ Aeplace Aegion
+ Raplace Region
+ Raplace Ragion
+
+ */

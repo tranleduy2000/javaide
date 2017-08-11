@@ -6,8 +6,8 @@ package sample;
 
 public class SimpleForLoopExample {
 
-    public static void main(String[] args) {
-   
+  public static void main(String[] args) {
+
     /* Syntax of for loop is
      *
      * for(<initialization> ; <condition> ; <expression> )
@@ -21,34 +21,33 @@ public class SimpleForLoopExample {
      * Initialization is executed only once.
      */
 
-        for (int index = 0; index < 5; index++)
-            System.out.println("Index is : " + index);
-       
-     /*
-      * Loop body may contains more than one statement. In that case they should
-      * be in the block.
-      */
+    for (int index = 0; index < 5; index++) System.out.println("Index is : " + index);
 
-        for (int index = 0; index < 5; index++) {
-            System.out.println("Index is : " + index);
-            index++;
-        }
-     
-      /*
-       * Please note that in above loop, index is a local variable whose scope
-       * is limited to the loop. It can not be referenced from outside the loop.
-       */
+    /*
+     * Loop body may contains more than one statement. In that case they should
+     * be in the block.
+     */
+
+    for (int index = 0; index < 5; index++) {
+      System.out.println("Index is : " + index);
+      index++;
     }
+
+    /*
+     * Please note that in above loop, index is a local variable whose scope
+     * is limited to the loop. It can not be referenced from outside the loop.
+     */
+  }
 }
- 
+
 /*
-Output would be
-Index is : 0
-Index is : 1
-Index is : 2
-Index is : 3
-Index is : 4
-Index is : 0
-Index is : 2
-Index is : 4
-*/
+ Output would be
+ Index is : 0
+ Index is : 1
+ Index is : 2
+ Index is : 3
+ Index is : 4
+ Index is : 0
+ Index is : 2
+ Index is : 4
+ */

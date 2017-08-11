@@ -220,7 +220,7 @@ public class UndoRedoSupportEditText extends HighlightEditor {
         } else {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_TAB:
-                    String textToInsert = TAB_CHARACTER;
+                    String textToInsert = mSettings.getTabStr();
                     int start, end;
                     start = Math.max(getSelectionStart(), 0);
                     end = Math.max(getSelectionEnd(), 0);
@@ -302,11 +302,9 @@ public class UndoRedoSupportEditText extends HighlightEditor {
         selectionStart = Math.min(selectionStart, selectionEnd);
         selectionEnd = Math.max(selectionStart, selectionEnd);
         try {
-
             getText().delete(selectionStart, selectionEnd);
             getText().insert(selectionStart, delta);
         } catch (Exception ignored) {
-            FirebaseCrash.report(ignored);
         }
     }
 

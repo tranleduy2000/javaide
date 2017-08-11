@@ -1,26 +1,23 @@
 package sample;
 
 /**
- * Java Interface example.
- * This Java Interface example describes how interface is defined and
- * being used in Java language.
- * <p>
- * Syntax of defining java interface is,
- * <modifier> interface <interface-name>{
- * //members and methods()
- * }
+ * Java Interface example. This Java Interface example describes how interface is defined and being
+ * used in Java language.
+ *
+ * <p>Syntax of defining java interface is, <modifier> interface <interface-name>{ //members and
+ * methods() }
  */
 
 //declare an interface
 interface IntExample {
- 
+
   /*
   Syntax to declare method in java interface is,
   <modifier> <return-type> methodName(<optional-parameters>);
   IMPORTANT : Methods declared in the interface are implicitly public and abstract.
   */
 
-    public void sayHello();
+  public void sayHello();
 }
 
 /*
@@ -36,19 +33,19 @@ public class JavaInterfaceExample implements IntExample {
   or else we have to declare the implementing class as abstract class.
   */
 
-    public static void main(String args[]) {
-        //create object of the class
-        JavaInterfaceExample javaInterfaceExample = new JavaInterfaceExample();
-        //invoke sayHello(), declared in IntExample interface.
-        javaInterfaceExample.sayHello();
-    }
+  public static void main(String args[]) {
+    //create object of the class
+    JavaInterfaceExample javaInterfaceExample = new JavaInterfaceExample();
+    //invoke sayHello(), declared in IntExample interface.
+    javaInterfaceExample.sayHello();
+  }
 
-    public void sayHello() {
-        System.out.println("Hello Visitor !");
-    }
+  public void sayHello() {
+    System.out.println("Hello Visitor !");
+  }
 }
- 
+
 /*
-OUTPUT of the above given Java Interface example would be :
-Hello Visitor !
-*/
+ OUTPUT of the above given Java Interface example would be :
+ Hello Visitor !
+ */

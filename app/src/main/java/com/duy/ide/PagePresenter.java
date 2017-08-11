@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.commonsware.cwac.pager.SimplePageDescriptor;
-import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
+import com.duy.ide.autocomplete.AutoCompleteProvider;
 import com.duy.ide.editor.BaseEditorActivity;
 import com.duy.ide.editor.EditorFragment;
 import com.duy.ide.editor.EditorPagerAdapter;

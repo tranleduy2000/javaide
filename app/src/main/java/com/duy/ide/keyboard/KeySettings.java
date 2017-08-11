@@ -63,4 +63,7 @@ public class KeySettings {
         return CONTROL_KEY_SCHEMES[mControlKeyId];
     }
 
+    public String getTabStr() {
+        return "  ";
+    }
 }

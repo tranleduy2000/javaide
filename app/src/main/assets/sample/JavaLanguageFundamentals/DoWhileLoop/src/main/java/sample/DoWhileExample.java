@@ -6,8 +6,8 @@ package sample;
 
 public class DoWhileExample {
 
-    public static void main(String[] args) {
-   
+  public static void main(String[] args) {
+
     /*
      * Do while loop executes statment until certain condition become false.
      * Syntax of do while loop is
@@ -22,22 +22,21 @@ public class DoWhileExample {
      * So loop will be executed at least once even if the condition is false.
      */
 
-        int i = 0;
+    int i = 0;
 
-        do {
-            System.out.println("i is : " + i);
-            i++;
+    do {
+      System.out.println("i is : " + i);
+      i++;
 
-        } while (i < 5);
-
-    }
+    } while (i < 5);
+  }
 }
- 
+
 /*
-Output would be
-i is : 0
-i is : 1
-i is : 2
-i is : 3
-i is : 4
-*/
+ Output would be
+ i is : 0
+ i is : 1
+ i is : 2
+ i is : 3
+ i is : 4
+ */

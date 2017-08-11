@@ -35,7 +35,7 @@ import com.duy.compile.CompileManager;
 import com.duy.ide.EditPageContract;
 import com.duy.ide.EditorControl;
 import com.duy.ide.R;
-import com.duy.ide.autocomplete.autocomplete.AutoCompleteProvider;
+import com.duy.ide.autocomplete.AutoCompleteProvider;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
@@ -244,7 +244,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     public void setCursorPosition(int endPosition) {
         if (mCodeEditor != null) {
             mCodeEditor.requestFocus();
-            mCodeEditor.setSelection(endPosition);
+            mCodeEditor.setSelection(Math.min(endPosition, mCodeEditor.length()));
         }
     }
 

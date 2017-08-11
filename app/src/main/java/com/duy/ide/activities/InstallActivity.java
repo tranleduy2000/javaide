@@ -151,6 +151,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
     }
 
     private void showDialogError(Exception e) {
+        if (isFinishing()) return;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.error);
         builder.setMessage(e == null ? " " : e.getMessage());

@@ -10,10 +10,10 @@ import java.util.LinkedHashSet;
 
 public class SimpleLinkedHashSetExample {
 
-    public static void main(String[] args) {
-        //create object of LinkedHashSet
-        LinkedHashSet lhashSet = new LinkedHashSet();
-   
+  public static void main(String[] args) {
+    //create object of LinkedHashSet
+    LinkedHashSet lhashSet = new LinkedHashSet();
+
     /*
       Add an Object to LinkedHashSet using
       boolean add(Object obj) method of Java LinkedHashSet class.
@@ -22,21 +22,21 @@ public class SimpleLinkedHashSetExample {
       It returns true if the element was added to LinkedHashSet, false otherwise.
     */
 
-        lhashSet.add(new Integer("1"));
-        lhashSet.add(new Integer("2"));
-        lhashSet.add(new Integer("3"));
-   
+    lhashSet.add(new Integer("1"));
+    lhashSet.add(new Integer("2"));
+    lhashSet.add(new Integer("3"));
+
     /*
       Please note that add method accepts Objects. Java Primitive values CAN NOT
       be added directly to LinkedHashSet. It must be converted to corrosponding
       wrapper class first.
     */
 
-        System.out.println("LinkedHashSet contains.." + lhashSet);
-    }
+    System.out.println("LinkedHashSet contains.." + lhashSet);
+  }
 }
- 
+
 /*
-Output of the program would be
-LinkedHashSet contains..[1, 2, 3]
-*/
+ Output of the program would be
+ LinkedHashSet contains..[1, 2, 3]
+ */

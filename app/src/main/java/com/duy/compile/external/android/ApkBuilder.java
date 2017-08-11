@@ -3,9 +3,9 @@ package com.duy.compile.external.android;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
-import com.duy.Aapt;
 import com.duy.compile.external.CommandManager;
 import com.duy.project.file.android.AndroidProjectFile;
+import com.duy.project.file.android.KeyStore;
 import com.spartacusrex.spartacuside.external.apkbuilder;
 
 import java.io.File;
@@ -108,20 +108,20 @@ public class ApkBuilder {
 //             TODO use user defined certificate
 //        }
 
-//        // use embedded private key
-//        KeyStore keyStore = projectFile.getKeyStore();
-//        String keystorePath = keyStore.getFile().getPath();
-//        char[] keystorePw = keyStore.getPassword();
-//        String certAlias = keyStore.getCertAlias();
-//        char[] certPw = keyStore.getCertPassword();
-//        String signatureAlgorithm = "SHA1withRSA";
-//
-//        kellinwood.security.zipsigner.ZipSigner zipsigner = new kellinwood.security.zipsigner.ZipSigner();
-//        zipsigner.addProgressListener(new SignProgress());
-//        kellinwood.security.zipsigner.optional.CustomKeySigner.signZip(zipsigner, keystorePath, keystorePw, certAlias,
-//                certPw, signatureAlgorithm,
-//                projectFile.getApkUnsigned().getPath(),
-//                projectFile.getApkUnaligned().getPath());
+        // use embedded private key
+        KeyStore keyStore = projectFile.getKeyStore();
+        String keystorePath = keyStore.getFile().getPath();
+        char[] keystorePw = keyStore.getPassword();
+        String certAlias = keyStore.getCertAlias();
+        char[] certPw = keyStore.getCertPassword();
+        String signatureAlgorithm = "SHA1withRSA";
+
+        kellinwood.security.zipsigner.ZipSigner zipsigner = new kellinwood.security.zipsigner.ZipSigner();
+        zipsigner.addProgressListener(new SignProgress());
+        kellinwood.security.zipsigner.optional.CustomKeySigner.signZip(zipsigner, keystorePath, keystorePw, certAlias,
+                certPw, signatureAlgorithm,
+                projectFile.getApkUnsigned().getPath(),
+                projectFile.getApkUnaligned().getPath());
     }
 
 
@@ -144,11 +144,11 @@ public class ApkBuilder {
 
     }
 
-   /* static class SignProgress implements kellinwood.security.zipsigner.ProgressListener {
+    static class SignProgress implements kellinwood.security.zipsigner.ProgressListener {
 
         public void onProgress(kellinwood.security.zipsigner.ProgressEvent event) {
         }
 
-    }*/
+    }
 
 }

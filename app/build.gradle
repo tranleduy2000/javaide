@@ -17,20 +17,16 @@ android {
 
         ndk {
             moduleName "libjackpal-androidterm2"
+            abiFilters 'armeabi-v7a', 'x86', 'x86_64'//, 'arm64-v8a'
         }
     }
 
     buildTypes {
         release {
-            ndk {
-                abiFilters 'armeabi', 'armeabi-v7a', 'x86', 'x86_64'//, 'arm64-v8a'
-            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        } debug {
-            ndk {
-                abiFilters 'armeabi-v7a'
-            }
+        }
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -59,18 +55,20 @@ repositories {
     mavenCentral()
 }
 dependencies {
+    ///test dependencies
     androidTestCompile 'com.android.support:support-annotations:26.0.0-alpha1'
     androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
-    // Optional -- Hamcrest library
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    // Optional -- UI testing with Espresso
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    // Optional -- UI testing with UI Automator
-    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile project(':pager')
+    compile project(':colorpicker')
+    compile project(':splitview')
+    compile project(':treeview')
+
+    //android support
     compile 'com.android.support:multidex:1.0.1'
     compile "com.android.support:support-annotations:$android_support_version"
     compile "com.android.support:support-v4:$android_support_version"
@@ -78,25 +76,22 @@ dependencies {
     compile "com.android.support:design:$android_support_version"
     compile "com.android.support:cardview-v7:$android_support_version"
     compile "com.android.support:recyclerview-v7:$android_support_version"
+
+    //firebase sdk
     compile "com.google.firebase:firebase-core:$google_service_version"
     compile "com.google.firebase:firebase-crash:$google_service_version"
     compile "com.google.firebase:firebase-messaging:$google_service_version"
     compile "com.google.android.gms:play-services-ads:$google_service_version"
     compile "com.google.firebase:firebase-storage:$google_service_version"
+
     compile 'io.github.kobakei:ratethisapp:1.1.2'
     compile 'commons-io:commons-io:2.4'
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
     compile 'com.sothree.slidinguppanel:library:3.3.1'
-    compile project(':pager')
-    compile project(':colorpicker')
-    compile project(':splitview')
-    compile project(':treeview')
-    compile project(':aapt')
+
     compile 'com.google.guava:guava:22.0-android'
-    compile files('libs/commons-compress-1.5.jar')
-    compile files('libs/commons-codec-1.10.jar')
 }
 
 apply plugin: 'com.google.gms.google-services'

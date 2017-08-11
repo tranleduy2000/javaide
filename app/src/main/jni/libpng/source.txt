@@ -1,0 +1,7 @@
+http://android.git.kernel.org/
+
+[platform/external/libpng.git] / Android.mk
+
+AND
+
+https://sourceforge.net/projects/libpng/files/libpng12/1.2.56/

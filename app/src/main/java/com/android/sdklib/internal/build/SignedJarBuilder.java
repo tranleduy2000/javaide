@@ -45,6 +45,12 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import sun.security.pkcs.ContentInfo;
+import sun.security.pkcs.PKCS7;
+import sun.security.pkcs.SignerInfo;
+import sun.security.x509.AlgorithmId;
+import sun.security.x509.X500Name;
+
 /**
  * A Jar file builder with signature support.
  */
@@ -279,21 +285,20 @@ public class SignedJarBuilder {
     private void writeSignatureBlock(Signature signature, X509Certificate publicKey,
                                      PrivateKey privateKey)
             throws IOException, GeneralSecurityException {
-        // TODO: 11-Aug-17 Un comment this code if you want uses jar signer
-//        SignerInfo signerInfo = new SignerInfo(
-//                new X500Name(publicKey.getIssuerX500Principal().getName()),
-//                publicKey.getSerialNumber(),
-//                AlgorithmId.get(DIGEST_ALGORITHM),
-//                AlgorithmId.get(privateKey.getAlgorithm()),
-//                signature.sign());
-//
-//        PKCS7 pkcs7 = new PKCS7(
-//                new AlgorithmId[]{AlgorithmId.get(DIGEST_ALGORITHM)},
-//                new ContentInfo(ContentInfo.DATA_OID, null),
-//                new X509Certificate[]{publicKey},
-//                new SignerInfo[]{signerInfo});
-//
-//        pkcs7.encodeSignedData(mOutputJar);
+        SignerInfo signerInfo = new SignerInfo(
+                new X500Name(publicKey.getIssuerX500Principal().getName()),
+                publicKey.getSerialNumber(),
+                AlgorithmId.get(DIGEST_ALGORITHM),
+                AlgorithmId.get(privateKey.getAlgorithm()),
+                signature.sign());
+
+        PKCS7 pkcs7 = new PKCS7(
+                new AlgorithmId[]{AlgorithmId.get(DIGEST_ALGORITHM)},
+                new ContentInfo(ContentInfo.DATA_OID, null),
+                new X509Certificate[]{publicKey},
+                new SignerInfo[]{signerInfo});
+
+        pkcs7.encodeSignedData(mOutputJar);
     }
 
     /**

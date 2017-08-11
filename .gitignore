@@ -54,3 +54,4 @@ freeline_project_description.json
 /temp/
 !/app/src/main/java/com/android/sdklib/build/
 /testfile/
+!/app/src/main/java/com/android/sdklib/internal/build/

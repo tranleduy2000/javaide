@@ -89,7 +89,6 @@ dependencies {
     compile 'com.google.guava:guava:22.0-android'
     compile files('libs/commons-compress-1.5.jar')
     compile files('libs/commons-codec-1.10.jar')
-    compile files('libs/android-sun-jarsign-support-1.1.jar')
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -10,7 +10,7 @@
 // So, com.t_arn.JavaIDEdroid becomes com_t_1arn_JavaIDEdroid
 
 //===================================================================
-jint Java_com_t_1arn_JavaIDEdroid_Aapt_JNImain(JNIEnv * env, jobject this, jstring args)
+jint Java_com_duy_compile_external_android_Aapt_JNImain(JNIEnv * env, jobject this, jstring args)
 //===================================================================
 {
 	jboolean isCopy;

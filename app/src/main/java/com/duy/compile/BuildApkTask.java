@@ -1,6 +1,7 @@
 package com.duy.compile;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.duy.compile.external.CommandManager;
@@ -40,12 +41,12 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
         if (params[0] == null) return null;
         OutputStream outputStream = new OutputStream() {
             @Override
-            public void write(@android.support.annotation.NonNull byte[] b) throws IOException {
+            public void write(@NonNull byte[] b) throws IOException {
                 super.write(b);
             }
 
             @Override
-            public void write(@android.support.annotation.NonNull byte[] b, int off, int len) throws IOException {
+            public void write(@NonNull byte[] b, int off, int len) throws IOException {
                 publishProgress(b, off, len);
 
             }

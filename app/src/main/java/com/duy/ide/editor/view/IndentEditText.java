@@ -23,7 +23,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Layout;
 import android.text.Spanned;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 
@@ -31,24 +30,25 @@ import android.util.Log;
  * Created by Duy on 12-May-17.
  */
 
-public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
+public class IndentEditText extends AppCompatMultiAutoCompleteTextView {
     public static final String TAB_CHARACTER = "    ";
     public static final String TAB = "  "; //2 space
-    private static final String TAG = "AutoIndentEditText";
     public static final String CURSOR = "\u2622";
-    public AutoIndentEditText(Context context) {
+    private static final String TAG = "AutoIndentEditText";
+
+    public IndentEditText(Context context) {
         super(context);
         init();
 
     }
 
-    public AutoIndentEditText(Context context, AttributeSet attrs) {
+    public IndentEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
 
     }
 
-    public AutoIndentEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IndentEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -92,49 +92,30 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
                             char c = source.charAt(start);
                             if (c == '\n') {
                                 return indentLine(source, start, end, dest, dstart, dend);
+                            } else {
+                                return addBracket(source, start, end, dest, dstart, dend);
                             }
                         }
                         return source;
                     }
                 }
         });
+    }
 
-        //auto add bracket
-        addTextChangedListener(new TextWatcher() {
-            private int start;
-            private int count;
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                this.start = start;
-                this.count = count;
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.length() > start && count == 1) {
-                    Character textToInsert = getCloseBracket(editable.charAt(start), start);
-                    if (textToInsert != 0) {
-                        try {
-                            editable.insert(start + 1, Character.toString(textToInsert));
-                            setSelection(start);
-                        } catch (Exception ignored) {
-                        }
-                    }
-                } else if (editable.length() > start && count > 1) {
-                    CharSequence newText = editable.subSequence(start, start + count);
-                    int i = newText.toString().indexOf(CURSOR);
-                    if (i > -1) {
-                        editable.delete(start + i, start + i + 1);
-                        setSelection(start);
-                    }
-                }
-            }
-        });
+    private CharSequence addBracket(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+        switch (source.charAt(start)) {
+            case '"':
+                return "\"" + CURSOR + "\"";
+            case '\'':
+                return "'" + CURSOR + "'";
+            case '(':
+                return "(" + CURSOR + ")";
+            case '{':
+                return "{" + CURSOR + "}";
+            case '[':
+                return "[" + CURSOR + "]";
+        }
+        return source;
     }
 
     /**
@@ -217,9 +198,12 @@ public class AutoIndentEditText extends AppCompatMultiAutoCompleteTextView {
             }
             indent += dest.subSequence(indexStart, indexEnd);
         }
-        if (parenthesesCount < 0)
+        if (parenthesesCount < 0) {
             indent += TAB_CHARACTER;
+        }
         Log.d(TAG, "indentLine: " + dest.charAt(dend) + " " + dest.charAt(dstart));
+
+
         //new line in bracket
         if (dest.charAt(dend) == '}' && dstart - 1 >= 0 && dest.charAt(dstart - 1) == '{') {
             int mstart = dstart - 2;

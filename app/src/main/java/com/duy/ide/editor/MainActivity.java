@@ -63,7 +63,7 @@ import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.util.JavaUtil;
 import com.duy.ide.code_sample.activities.DocumentActivity;
 import com.duy.ide.code_sample.activities.SampleActivity;
-import com.duy.ide.editor.view.AutoIndentEditText;
+import com.duy.ide.editor.view.IndentEditText;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileSelectListener;
@@ -178,7 +178,7 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     void insertTab(View v) {
-        onKeyClick(v, AutoIndentEditText.TAB_CHARACTER);
+        onKeyClick(v, IndentEditText.TAB_CHARACTER);
     }
 
     @Override

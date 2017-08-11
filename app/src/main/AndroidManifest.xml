@@ -41,7 +41,7 @@
         </activity>
         <activity
             android:name="com.duy.run.activities.ExecuteActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:configChanges="orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="stateAlwaysVisible" />
 
         <activity
@@ -53,7 +53,7 @@
         <activity android:name="com.duy.ide.themefont.activities.ThemeFontActivity" />
         <activity
             android:name="com.duy.ide.activities.InstallActivity"
-            android:configChanges="keyboardHidden|screenSize|orientation|keyboard" />
+            android:configChanges="orientation|screenLayout" />
 
 
         <activity android:name="com.spartacusrex.spartacuside.keyboard.KeyboardPrefs" />

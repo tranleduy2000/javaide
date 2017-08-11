@@ -44,6 +44,8 @@
             app:tabIndicatorHeight="0dp"
             app:tabMode="scrollable"
             app:tabPaddingEnd="0dp"
+            app:tabPaddingTop="0dp"
+            app:tabPaddingBottom="0dp"
             app:tabPaddingStart="0dp"
             app:tabTextAppearance="@style/TextAppearance.AppCompat.Small" />
 

@@ -57,8 +57,9 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:gravity="top|left"
-                    android:imeOptions="flagNoExtractUi|flagNoEnterAction"
-                    android:inputType="textMultiLine|textNoSuggestions"
+                    android:imeOptions="flagNoExtractUi"
+                    android:inputType="textMultiLine|textNoSuggestions|text"
+                    android:padding="4dp"
                     android:singleLine="false" />
             </HorizontalScrollView>
         </ScrollView>

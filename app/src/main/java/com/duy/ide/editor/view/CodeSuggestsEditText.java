@@ -44,7 +44,7 @@ import java.util.ArrayList;
  * Created by Duy on 28-Feb-17.
  */
 
-public abstract class CodeSuggestsEditText extends AutoIndentEditText
+public abstract class CodeSuggestsEditText extends IndentEditText
         implements CodeSuggestAdapter.OnSuggestItemClickListener {
     protected static final String TAG = CodeSuggestsEditText.class.getSimpleName();
     public int mCharHeight = 0;

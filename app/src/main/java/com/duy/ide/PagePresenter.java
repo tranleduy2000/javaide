@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -120,12 +121,16 @@ public class PagePresenter implements EditPageContract.Presenter {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
                 for (int i = 0; i < mPageAdapter.getCount(); i++) {
-                    final TabLayout.Tab tab = mTabLayout.getTabAt(i);
-                    View view = null;
+                    TabLayout.Tab tab = mTabLayout.getTabAt(i);
+                    View view = layoutInflater.inflate(R.layout.item_tab_file, null);
                     if (tab != null) {
-                        tab.setCustomView(R.layout.item_tab_file);
-                        view = tab.getCustomView();
+                        tab.setCustomView(view);
+                    } else {
+                        tab = mTabLayout.newTab();
+                        mTabLayout.addTab(tab);
+                        tab.setCustomView(view);
                     }
 
                     if (view != null) {

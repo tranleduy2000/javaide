@@ -62,7 +62,7 @@ int socket_inaddr_any_server(int port, int type)
 
         if (ret < 0) {
             close(s);
-            return -1;
+            return -1; 
         }
     }
 

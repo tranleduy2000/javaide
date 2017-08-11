@@ -2487,10 +2487,10 @@ int doPackage(Bundle *bundle) {
     status_t err;
     sp<AaptAssets> assets;
 
-    //<mrduy>
+    //<duy>
     // clear old error messages
     SourcePos::clear();
-    // </mrduy>
+    // </duy>
 
     int N;
     FILE *fp;

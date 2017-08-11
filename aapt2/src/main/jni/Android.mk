@@ -19,7 +19,6 @@ libpng_SRC_FILES := \
 	libpng/jni/pngrtran.c \
 	libpng/jni/pngrutil.c \
 	libpng/jni/pngset.c \
-	libpng/jni/pngtest.c \
 	libpng/jni/pngtrans.c \
 	libpng/jni/pngwio.c \
 	libpng/jni/pngwrite.c \
@@ -179,15 +178,13 @@ androidfw_SRC_FILES := \
     androidfw/jni/AssetManager.cpp \
     androidfw/jni/LocaleData.cpp \
     androidfw/jni/misc.cpp \
-    androidfw/jni/ObbFile.cpp \
     androidfw/jni/ResourceTypes.cpp \
     androidfw/jni/StreamingZipInflater.cpp \
     androidfw/jni/TypeWrappers.cpp \
     androidfw/jni/ZipFileRO.cpp \
     androidfw/jni/ZipUtils.cpp \
     androidfw/jni/BackupData.cpp \
-    androidfw/jni/BackupHelpers.cpp \
-    androidfw/jni/CursorWindow.cpp
+    androidfw/jni/BackupHelpers.cpp
 
 androidfw_C_INCLUDES := $(LOCAL_PATH)/androidfw/jni/include
 
@@ -241,7 +238,8 @@ aapt_SRC_FILES := \
 	aapt/jni/WorkQueue.cpp \
 	aapt/jni/XMLNode.cpp \
 	aapt/jni/ZipEntry.cpp \
-	aapt/jni/ZipFile.cpp
+	aapt/jni/ZipFile.cpp \
+    aapt/jni/Main.cpp
 
 aapt_CFLAGS += -Wno-format-y2k
 

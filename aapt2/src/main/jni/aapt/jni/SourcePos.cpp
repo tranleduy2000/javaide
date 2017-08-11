@@ -149,11 +149,11 @@ SourcePos::printErrors(FILE *to) {
 }
 
 
-// <ta>
+// <duy>
 // clears the errors vectors
 void
 SourcePos::clear()
 {
     g_errors.clear();
 }
-// </ta>
+// </duy>

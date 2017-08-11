@@ -13,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// modified by Tom Arn, www.t-arn.com <ta>
+// <ta>
+#if defined(HAVE_ANDROID_OS)
+#define OS_PATH_SEPARATOR '/'
+#endif
+// </ta>
 
 #define __STDC_LIMIT_MACROS
 

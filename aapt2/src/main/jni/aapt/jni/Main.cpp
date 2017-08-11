@@ -4,11 +4,11 @@
 // Android Asset Packaging Tool main entry point.
 //
 
-//mrduy
+//<duy>
 #if defined(HAVE_ANDROID_OS)
 #define OS_PATH_SEPARATOR '/'
 #endif
-//mrduy
+//</duy>
 
 #include "Main.h"
 

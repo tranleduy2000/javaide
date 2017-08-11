@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <android/log.h>
 
-jint Java_com_duy_Aapt_JNImain(JNIEnv * env, jobject this, jstring args) {
+jint Java_com_arn_tom_Aapt_JNImain(JNIEnv * env, jobject this, jstring args) {
 
 	jboolean isCopy;
 	const char * szArgs = (*env)->GetStringUTFChars(env, args, &isCopy);

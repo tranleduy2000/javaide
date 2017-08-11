@@ -19,25 +19,14 @@
 
 #include <ctype.h>
 #include <memory.h>
-#include <stddef.h>
-#include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include <algorithm>
-#include <limits>
 #include <memory>
-#include <type_traits>
 
 #include <androidfw/ByteBucketArray.h>
 #include <androidfw/ResourceTypes.h>
 #include <androidfw/TypeWrappers.h>
-#include <utils/Atomic.h>
-#include <utils/ByteOrder.h>
-#include <utils/Debug.h>
-#include <utils/Log.h>
-#include <utils/String16.h>
-#include <utils/String8.h>
 
 #ifdef __ANDROID__
 
@@ -223,7 +212,7 @@ namespace android {
 
     static bool assertIdmapHeader(const void *idmap, size_t size) {
         if (reinterpret_cast<uintptr_t>(idmap) & 0x03) {
-            ALOGE("idmap: header is not word aligned");
+            LOGE("idmap: header is not word aligned");
             return false;
         }
 
@@ -286,12 +275,12 @@ namespace android {
 
         status_t setTo(const void *entryHeader, size_t size) {
             if (reinterpret_cast<uintptr_t>(entryHeader) & 0x03) {
-                ALOGE("idmap: entry header is not word aligned");
+                LOGE("idmap: entry header is not word aligned");
                 return UNKNOWN_ERROR;
             }
 
             if (size < sizeof(uint16_t) * 4) {
-                ALOGE("idmap: entry header is too small (%u bytes)", (uint32_t) size);
+                LOGE("idmap: entry header is too small (%u bytes)", (uint32_t) size);
                 return UNKNOWN_ERROR;
             }
 
@@ -300,13 +289,13 @@ namespace android {
             const uint16_t overlayTypeId = dtohs(header[1]);
             if (targetTypeId == 0 || overlayTypeId == 0 || targetTypeId > 255 ||
                 overlayTypeId > 255) {
-                ALOGE("idmap: invalid type map (%u -> %u)", targetTypeId, overlayTypeId);
+                LOGE("idmap: invalid type map (%u -> %u)", targetTypeId, overlayTypeId);
                 return UNKNOWN_ERROR;
             }
 
             uint16_t entryCount = dtohs(header[2]);
             if (size < sizeof(uint32_t) * (entryCount + 2)) {
-                ALOGE("idmap: too small (%u bytes) for the number of entries (%u)",
+                LOGE("idmap: too small (%u bytes) for the number of entries (%u)",
                       (uint32_t) size, (uint32_t) entryCount);
                 return UNKNOWN_ERROR;
             }
@@ -354,7 +343,7 @@ namespace android {
 
         size -= ResTable::IDMAP_HEADER_SIZE_BYTES;
         if (size < sizeof(uint16_t) * 2) {
-            ALOGE("idmap: too small to contain any mapping");
+            LOGE("idmap: too small to contain any mapping");
             return UNKNOWN_ERROR;
         }
 
@@ -363,13 +352,13 @@ namespace android {
 
         uint16_t targetPackageId = dtohs(*(data++));
         if (targetPackageId == 0 || targetPackageId > 255) {
-            ALOGE("idmap: target package ID is invalid (%02x)", targetPackageId);
+            LOGE("idmap: target package ID is invalid (%02x)", targetPackageId);
             return UNKNOWN_ERROR;
         }
 
         uint16_t mapCount = dtohs(*(data++));
         if (mapCount == 0) {
-            ALOGE("idmap: no mappings");
+            LOGE("idmap: no mappings");
             return UNKNOWN_ERROR;
         }
 
@@ -3305,7 +3294,7 @@ namespace android {
             if (curPackage != p) {
                 const ssize_t pidx = mTable.getResourcePackageIndex(attrRes);
                 if (pidx < 0) {
-                    ALOGE("Style contains key with bad package: 0x%08x\n", attrRes);
+                    LOGE("Style contains key with bad package: 0x%08x\n", attrRes);
                     bag++;
                     continue;
                 }
@@ -3321,7 +3310,7 @@ namespace android {
             }
             if (curType != t) {
                 if (t > Res_MAXTYPE) {
-                    ALOGE("Style contains key with bad type: 0x%08x\n", attrRes);
+                    LOGE("Style contains key with bad type: 0x%08x\n", attrRes);
                     bag++;
                     continue;
                 }
@@ -3342,7 +3331,7 @@ namespace android {
                 numEntries = curPI->types[t].numEntries;
             }
             if (e >= numEntries) {
-                ALOGE("Style contains key with bad entry: 0x%08x\n", attrRes);
+                LOGE("Style contains key with bad entry: 0x%08x\n", attrRes);
                 bag++;
                 continue;
             }
@@ -3685,7 +3674,7 @@ namespace android {
         }
 
         if (dataSize < sizeof(ResTable_header)) {
-            ALOGE("Invalid data. Size(%d) is smaller than a ResTable_header(%d).",
+            LOGE("Invalid data. Size(%d) is smaller than a ResTable_header(%d).",
                   (int) dataSize, (int) sizeof(ResTable_header));
             return UNKNOWN_ERROR;
         }
@@ -4173,7 +4162,7 @@ namespace android {
             // TYPE_DYNAMIC_REFERENCE.
             status_t err = grp->dynamicRefTable.lookupResourceId(&resolvedParent);
             if (err != NO_ERROR) {
-                ALOGE("Failed resolving bag parent id 0x%08x", parent);
+                LOGE("Failed resolving bag parent id 0x%08x", parent);
                 return UNKNOWN_ERROR;
             }
 
@@ -4241,7 +4230,7 @@ namespace android {
                 // Attributes don't have a resource id as the name. They specify
                 // other data, which would be wrong to change via a lookup.
                 if (grp->dynamicRefTable.lookupResourceId(&newName) != NO_ERROR) {
-                    ALOGE("Failed resolving ResTable_map name at %d with ident 0x%08x",
+                    LOGE("Failed resolving ResTable_map name at %d with ident 0x%08x",
                           (int) curOff, (int) newName);
                     free(set);
                     return UNKNOWN_ERROR;
@@ -4301,7 +4290,7 @@ namespace android {
             cur->map.value.copyFrom_dtoh(map->value);
             status_t err = grp->dynamicRefTable.lookupResourceValue(&cur->map.value);
             if (err != NO_ERROR) {
-                ALOGE("Reference item(0x%08x) in bag could not be resolved.", cur->map.value.data);
+                LOGE("Reference item(0x%08x) in bag could not be resolved.", cur->map.value.data);
                 return UNKNOWN_ERROR;
             }
 
@@ -4709,27 +4698,27 @@ namespace android {
     };
 
     static const unit_entry unitNames[] = {
-            {"px",  strlen("px"),  Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_PX,       1.0f},
+            {"px",  strlen("px"), Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_PX,       1.0f},
             {"dip", strlen(
-                    "dip"),        Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_DIP,      1.0f},
+                    "dip"),       Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_DIP,      1.0f},
             {"dp",  strlen(
-                    "dp"),         Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_DIP,      1.0f},
+                    "dp"),        Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_DIP,      1.0f},
             {"sp",  strlen(
-                    "sp"),         Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_SP,       1.0f},
+                    "sp"),        Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_SP,       1.0f},
             {"pt",  strlen(
-                    "pt"),         Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_PT,       1.0f},
+                    "pt"),        Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_PT,       1.0f},
             {"in",  strlen(
-                    "in"),         Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_IN,       1.0f},
+                    "in"),        Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_IN,       1.0f},
             {"mm",  strlen(
-                    "mm"),         Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_MM,       1.0f},
+                    "mm"),        Res_value::TYPE_DIMENSION, Res_value::COMPLEX_UNIT_MM,       1.0f},
             {"%",   strlen(
-                    "%"),          Res_value::TYPE_FRACTION,  Res_value::COMPLEX_UNIT_FRACTION, 1.0f /
-                                                                                                100},
+                    "%"),         Res_value::TYPE_FRACTION,  Res_value::COMPLEX_UNIT_FRACTION, 1.0f /
+                                                                                               100},
             {"%p",  strlen(
-                    "%p"),         Res_value::TYPE_FRACTION,  Res_value::COMPLEX_UNIT_FRACTION_PARENT,
-                                                                                                1.0f /
-                                                                                                100},
-            {NULL,  0,             0,                         0,                                0}
+                    "%p"),        Res_value::TYPE_FRACTION,  Res_value::COMPLEX_UNIT_FRACTION_PARENT,
+                                                                                               1.0f /
+                                                                                               100},
+            {NULL,  0,            0,                         0,                                0}
     };
 
     static bool parse_unit(const char *str, Res_value *outValue,
@@ -6276,19 +6265,19 @@ namespace android {
 
                     TypeList &typeList = group->types.editItemAt(typeIndex);
                     if (typeList.isEmpty()) {
-                        ALOGE("No TypeSpec for type %d", type->id);
+                        LOGE("No TypeSpec for type %d", type->id);
                         return (mError = BAD_TYPE);
                     }
 
                     Type *t = typeList.editItemAt(typeList.size() - 1);
                     if (newEntryCount != t->entryCount) {
-                        ALOGE("ResTable_type entry count inconsistent: given %d, previously %d",
+                        LOGE("ResTable_type entry count inconsistent: given %d, previously %d",
                               (int) newEntryCount, (int) t->entryCount);
                         return (mError = BAD_TYPE);
                     }
 
                     if (t->package != package) {
-                        ALOGE("No TypeSpec for type %d", type->id);
+                        LOGE("No TypeSpec for type %d", type->id);
                         return (mError = BAD_TYPE);
                     }
 
@@ -6348,7 +6337,7 @@ namespace android {
         const uint32_t sizeOfEntries = sizeof(ResTable_lib_entry) * entryCount;
         const uint32_t expectedSize = dtohl(header->header.size) - dtohl(header->header.headerSize);
         if (sizeOfEntries > expectedSize) {
-            ALOGE("ResTable_lib_header size %u is too small to fit %u entries (x %u).",
+            LOGE("ResTable_lib_header size %u is too small to fit %u entries (x %u).",
                   expectedSize, entryCount, (uint32_t) sizeof(ResTable_lib_entry));
             return UNKNOWN_ERROR;
         }
@@ -6365,7 +6354,7 @@ namespace android {
                       dtohl(entry->packageId));
             }
             if (packageId >= 256) {
-                ALOGE("Bad package id 0x%08x", packageId);
+                LOGE("Bad package id 0x%08x", packageId);
                 return UNKNOWN_ERROR;
             }
             mEntries.replaceValueFor(String16(tmpName), (uint8_t) packageId);
@@ -6565,7 +6554,7 @@ namespace android {
                 }
 
                 if (Res_GETTYPE(overlayResID) + 1 != static_cast<size_t>(typeMap.overlayTypeId)) {
-                    ALOGE("idmap: can't mix type ids in entry map. Resource 0x%08x maps to 0x%08x"
+                    LOGE("idmap: can't mix type ids in entry map. Resource 0x%08x maps to 0x%08x"
                                   " but entries should map to resources of type %02zx",
                           resID, overlayResID, typeMap.overlayTypeId);
                     return BAD_TYPE;

@@ -11,6 +11,7 @@ LOCAL_PATH:= $(call my-dir)
 libpng_SRC_FILES := \
 	libpng/jni/png.c \
 	libpng/jni/pngerror.c \
+	libpng/jni/pnggccrd.c \
 	libpng/jni/pngget.c \
 	libpng/jni/pngmem.c \
 	libpng/jni/pngpread.c \
@@ -19,19 +20,16 @@ libpng_SRC_FILES := \
 	libpng/jni/pngrtran.c \
 	libpng/jni/pngrutil.c \
 	libpng/jni/pngset.c \
-	libpng/jni/pngtest.c \
 	libpng/jni/pngtrans.c \
+	libpng/jni/pngvcrd.c \
 	libpng/jni/pngwio.c \
 	libpng/jni/pngwrite.c \
 	libpng/jni/pngwtran.c \
-	libpng/jni/pngwutil.c \
-	libpng/jni/arm/arm_init.c \
-	libpng/jni/arm/filter_neon.S \
-	libpng/jni/arm/filter_neon_intrinsics.c
+	libpng/jni/pngwutil.c 
 
 libpng_C_INCLUDES := $(LOCAL_PATH)/libpng/jni
-#############################################################################
 
+#############################################################################
 # expat definitions
 #############################################################################
 expat_SRC_FILES := \
@@ -164,7 +162,7 @@ libutils_SRC_FILES := \
 	libutils/jni/ZipFileRO.cpp \
 	libutils/jni/ZipUtils.cpp \
 	libutils/jni/misc.cpp \
-     libutils/jni/BackupData.cpp \
+  libutils/jni/BackupData.cpp \
 	libutils/jni/BackupHelpers.cpp \
 	libutils/jni/Looper.cpp
 

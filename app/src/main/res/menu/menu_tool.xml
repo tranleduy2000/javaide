@@ -37,7 +37,7 @@
                 android:id="@+id/action_new_android_project"
                 android:icon="@drawable/ic_fiber_new_white_24dp"
                 android:title="@string/new_android_project"
-                android:visible="false" />
+          />
 
             <item
                 android:id="@+id/action_new_class"
@@ -47,7 +47,7 @@
                 android:id="@+id/action_new_file"
                 android:icon="@drawable/ic_fiber_new_white_24dp"
                 android:title="@string/new_file"
-                android:visible="false" />
+          />
             <item
                 android:id="@+id/action_open_project"
                 android:icon="@drawable/ic_folder_open_white_24dp"
@@ -152,7 +152,7 @@
                 android:id="@+id/action_build_apk"
                 android:icon="@drawable/ic_jar_file_white"
                 android:title="@string/build_apk"
-                android:visible="false" />
+          />
         </menu>
     </item>
     <item

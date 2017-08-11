@@ -121,6 +121,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 //            items.add(new InfoItem(StructureType.TYPE_KEY_WORD, s));
 //        }
 //        mCodeEditor.setSuggestData(items);
+        if (autoCompleteProvider != null) mCodeEditor.setAutoCompleteProvider(autoCompleteProvider);
         return view;
     }
 

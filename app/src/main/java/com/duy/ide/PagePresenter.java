@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -125,6 +126,7 @@ public class PagePresenter implements EditPageContract.Presenter {
                 for (int i = 0; i < mPageAdapter.getCount(); i++) {
                     TabLayout.Tab tab = mTabLayout.getTabAt(i);
                     View view = layoutInflater.inflate(R.layout.item_tab_file, null);
+                    view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                     if (tab != null) {
                         tab.setCustomView(view);
                     } else {
@@ -224,6 +226,8 @@ public class PagePresenter implements EditPageContract.Presenter {
     }
 
     public void setAutoCompleteProvider(@NonNull AutoCompleteProvider autoCompleteProvider) {
+        Log.d(TAG, "setAutoCompleteProvider() called with: autoCompleteProvider = [" + autoCompleteProvider + "]");
+
         this.autoCompleteProvider = autoCompleteProvider;
         for (int i = 0; i < mPageAdapter.getCount(); i++) {
             EditorFragment fm = mPageAdapter.getExistingFragment(i);

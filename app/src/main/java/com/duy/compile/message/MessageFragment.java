@@ -52,7 +52,6 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
         super.onViewCreated(view, savedInstanceState);
         mCompileMsg = view.findViewById(R.id.txt_message);
         mCompileMsg.setTypeface(Typeface.MONOSPACE);
-        mCompileMsg.setAutoLinkMask(Linkify.ALL);
         mScrollView = view.findViewById(R.id.scrollView);
         if (savedInstanceState != null) {
             mCompileMsg.setText(savedInstanceState.getString(KEY_COMPILE_MSG));

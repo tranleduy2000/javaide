@@ -23,6 +23,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Layout;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 
@@ -99,6 +100,33 @@ public class IndentEditText extends AppCompatMultiAutoCompleteTextView {
                         return source;
                     }
                 }
+        });//auto add bracket
+        addTextChangedListener(new TextWatcher() {
+            private int start;
+            private int count;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                this.start = start;
+                this.count = count;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+              if (editable.length() > start && count > 1) {
+                    CharSequence newText = editable.subSequence(start, start + count);
+                    int i = newText.toString().indexOf(CURSOR);
+                    if (i > -1) {
+                        editable.delete(start + i, start + i + 1);
+                        setSelection(start);
+                    }
+                }
+            }
         });
     }
 

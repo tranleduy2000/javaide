@@ -35,7 +35,7 @@ public class ParseCSVFileExample {
           //display csv values
           tokenNumber++;
           System.out.println(
-              "Line # " + lineNumber + ", Token # " + tokenNumber + ", Token : " + st.nextToken());
+                  "Line # " + lineNumber + ", Token # " + tokenNumber + ", Token : " + st.nextToken());
         }
 
         //reset token number

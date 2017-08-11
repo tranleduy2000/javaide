@@ -11,8 +11,8 @@ public class CompareIntArraysExample {
 
   public static void main(String[] args) {
     //create int arrays
-    int[] intArray1 = new int[] {27, 78, 1023};
-    int[] intArray2 = new int[] {27, 78, 1023};
+    int[] intArray1 = new int[]{27, 78, 1023};
+    int[] intArray2 = new int[]{27, 78, 1023};
 
     /*
       To compare two int arrays use,

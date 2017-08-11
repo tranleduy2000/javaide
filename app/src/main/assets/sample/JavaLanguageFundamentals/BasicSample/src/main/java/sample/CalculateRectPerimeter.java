@@ -3,6 +3,7 @@ package sample;
  * Calculate Rectangle Perimeter using Java Example This Calculate Rectangle Perimeter using Java
  * Example shows how to calculate perimeter of Rectangle using it's length and width.
  */
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

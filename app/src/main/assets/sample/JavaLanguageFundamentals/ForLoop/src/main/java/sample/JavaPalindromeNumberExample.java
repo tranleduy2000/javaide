@@ -10,7 +10,7 @@ public class JavaPalindromeNumberExample {
   public static void main(String[] args) {
 
     //array of numbers to be checked
-    int numbers[] = new int[] {121, 13, 34, 11, 22, 54};
+    int numbers[] = new int[]{121, 13, 34, 11, 22, 54};
 
     //iterate through the numbers
     for (int i = 0; i < numbers.length; i++) {

@@ -34,20 +34,20 @@ public class GetCurrentDateTimeExample {
 
     //display full date time
     System.out.println(
-        "Current full date time is : "
-            + (now.get(Calendar.MONTH) + 1)
-            + "-"
-            + now.get(Calendar.DATE)
-            + "-"
-            + now.get(Calendar.YEAR)
-            + " "
-            + now.get(Calendar.HOUR_OF_DAY)
-            + ":"
-            + now.get(Calendar.MINUTE)
-            + ":"
-            + now.get(Calendar.SECOND)
-            + "."
-            + now.get(Calendar.MILLISECOND));
+            "Current full date time is : "
+                    + (now.get(Calendar.MONTH) + 1)
+                    + "-"
+                    + now.get(Calendar.DATE)
+                    + "-"
+                    + now.get(Calendar.YEAR)
+                    + " "
+                    + now.get(Calendar.HOUR_OF_DAY)
+                    + ":"
+                    + now.get(Calendar.MINUTE)
+                    + ":"
+                    + now.get(Calendar.SECOND)
+                    + "."
+                    + now.get(Calendar.MILLISECOND));
   }
 }
 

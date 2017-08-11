@@ -15,35 +15,35 @@ public class AddMonthsToCurrentDate {
     Calendar now = Calendar.getInstance();
 
     System.out.println(
-        "Current date : "
-            + (now.get(Calendar.MONTH) + 1)
-            + "-"
-            + now.get(Calendar.DATE)
-            + "-"
-            + now.get(Calendar.YEAR));
+            "Current date : "
+                    + (now.get(Calendar.MONTH) + 1)
+                    + "-"
+                    + now.get(Calendar.DATE)
+                    + "-"
+                    + now.get(Calendar.YEAR));
 
     //add months to current date using Calendar.add method
     now.add(Calendar.MONTH, 10);
 
     System.out.println(
-        "date after 10 months : "
-            + (now.get(Calendar.MONTH) + 1)
-            + "-"
-            + now.get(Calendar.DATE)
-            + "-"
-            + now.get(Calendar.YEAR));
+            "date after 10 months : "
+                    + (now.get(Calendar.MONTH) + 1)
+                    + "-"
+                    + now.get(Calendar.DATE)
+                    + "-"
+                    + now.get(Calendar.YEAR));
 
     //substract months from current date using Calendar.add method
     now = Calendar.getInstance();
     now.add(Calendar.MONTH, -5);
 
     System.out.println(
-        "date before 5 months : "
-            + (now.get(Calendar.MONTH) + 1)
-            + "-"
-            + now.get(Calendar.DATE)
-            + "-"
-            + now.get(Calendar.YEAR));
+            "date before 5 months : "
+                    + (now.get(Calendar.MONTH) + 1)
+                    + "-"
+                    + now.get(Calendar.DATE)
+                    + "-"
+                    + now.get(Calendar.YEAR));
   }
 }
 

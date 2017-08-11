@@ -3,7 +3,7 @@ package sample;
 /**
  * Java Interface example. This Java Interface example describes how interface is defined and being
  * used in Java language.
- *
+ * <p>
  * <p>Syntax of defining java interface is, <modifier> interface <interface-name>{ //members and
  * methods() }
  */

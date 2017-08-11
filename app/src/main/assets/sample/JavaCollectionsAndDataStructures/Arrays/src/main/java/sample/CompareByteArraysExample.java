@@ -11,8 +11,8 @@ public class CompareByteArraysExample {
 
   public static void main(String[] args) {
     //create byte arrays
-    byte[] byteArray1 = new byte[] {7, 25, 12};
-    byte[] byteArray2 = new byte[] {7, 25, 12};
+    byte[] byteArray1 = new byte[]{7, 25, 12};
+    byte[] byteArray2 = new byte[]{7, 25, 12};
 
     /*
       To compare two byte arrays use,

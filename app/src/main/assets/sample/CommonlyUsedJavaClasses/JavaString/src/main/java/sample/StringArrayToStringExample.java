@@ -12,7 +12,7 @@ public class StringArrayToStringExample {
   public static void main(String args[]) {
 
     //String array
-    String[] strArray = new String[] {"Java", "String", "Array", "To", "String", "Example"};
+    String[] strArray = new String[]{"Java", "String", "Array", "To", "String", "Example"};
 
     /*
      * There are several in which we can convert String array to

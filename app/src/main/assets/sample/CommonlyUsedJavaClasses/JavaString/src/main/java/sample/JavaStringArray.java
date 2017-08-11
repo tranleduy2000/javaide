@@ -16,7 +16,7 @@ public class JavaStringArray {
      * Declare and initialize String array in single statement as given below.
      * This method is particularly useful when we are dealing with very small size array.
      */
-    String[] myFirstStringArray = new String[] {"String 1", "String 2", "String 3"};
+    String[] myFirstStringArray = new String[]{"String 1", "String 2", "String 3"};
 
     /*
      * Declaration and assignment can be done separately as given below.

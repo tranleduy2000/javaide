@@ -15,23 +15,23 @@ public class AddMinutesToCurrentDate {
     Calendar now = Calendar.getInstance();
 
     System.out.println(
-        "Current time : "
-            + now.get(Calendar.HOUR_OF_DAY)
-            + ":"
-            + now.get(Calendar.MINUTE)
-            + ":"
-            + now.get(Calendar.SECOND));
+            "Current time : "
+                    + now.get(Calendar.HOUR_OF_DAY)
+                    + ":"
+                    + now.get(Calendar.MINUTE)
+                    + ":"
+                    + now.get(Calendar.SECOND));
 
     //add minutes to current date using Calendar.add method
     now.add(Calendar.MINUTE, 20);
 
     System.out.println(
-        "New time after adding 20 minutes : "
-            + now.get(Calendar.HOUR_OF_DAY)
-            + ":"
-            + now.get(Calendar.MINUTE)
-            + ":"
-            + now.get(Calendar.SECOND));
+            "New time after adding 20 minutes : "
+                    + now.get(Calendar.HOUR_OF_DAY)
+                    + ":"
+                    + now.get(Calendar.MINUTE)
+                    + ":"
+                    + now.get(Calendar.SECOND));
 
     /*
          * Java Calendar class automatically adjust the date or hour accordingly
@@ -43,12 +43,12 @@ public class AddMinutesToCurrentDate {
     now.add(Calendar.MINUTE, -50);
 
     System.out.println(
-        "Time before 50 minutes : "
-            + now.get(Calendar.HOUR_OF_DAY)
-            + ":"
-            + now.get(Calendar.MINUTE)
-            + ":"
-            + now.get(Calendar.SECOND));
+            "Time before 50 minutes : "
+                    + now.get(Calendar.HOUR_OF_DAY)
+                    + ":"
+                    + now.get(Calendar.MINUTE)
+                    + ":"
+                    + now.get(Calendar.SECOND));
   }
 }
 

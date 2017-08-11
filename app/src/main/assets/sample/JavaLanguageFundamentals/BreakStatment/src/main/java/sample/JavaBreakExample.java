@@ -15,7 +15,7 @@ public class JavaBreakExample {
      * immediately after the loop containing break statement.
      */
 
-    int intArray[] = new int[] {1, 2, 3, 4, 5};
+    int intArray[] = new int[]{1, 2, 3, 4, 5};
 
     System.out.println("Elements less than 3 are : ");
     for (int i = 0; i < intArray.length; i++) {

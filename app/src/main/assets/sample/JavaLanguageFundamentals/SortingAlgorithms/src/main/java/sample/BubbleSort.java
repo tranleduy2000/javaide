@@ -10,7 +10,7 @@ public class BubbleSort {
   public static void main(String[] args) {
 
     //create an int array we want to sort using bubble sort algorithm
-    int intArray[] = new int[] {5, 90, 35, 45, 150, 3};
+    int intArray[] = new int[]{5, 90, 35, 45, 150, 3};
 
     //print array before sorting using bubble sort algorithm
     System.out.println("Array Before Bubble Sort");

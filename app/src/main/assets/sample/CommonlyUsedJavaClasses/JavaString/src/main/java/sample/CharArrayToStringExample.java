@@ -10,7 +10,7 @@ public class CharArrayToStringExample {
   public static void main(String args[]) {
 
     //char array
-    char[] charArray = new char[] {'J', 'a', 'v', 'a'};
+    char[] charArray = new char[]{'J', 'a', 'v', 'a'};
 
     /*
      * To convert char array to String in Java, use

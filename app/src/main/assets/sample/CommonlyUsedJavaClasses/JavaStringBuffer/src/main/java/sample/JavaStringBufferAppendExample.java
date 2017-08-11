@@ -27,7 +27,7 @@ public class JavaStringBufferAppendExample {
 
     /*StringBuffer append(char[] c) method appends character array
     to StringBuffer object*/
-    char[] c1 = new char[] {'Y', 'e', 's'};
+    char[] c1 = new char[]{'Y', 'e', 's'};
     StringBuffer sb3 = new StringBuffer("Character Array Appended : ");
     sb3.append(c1);
     System.out.println(sb3);

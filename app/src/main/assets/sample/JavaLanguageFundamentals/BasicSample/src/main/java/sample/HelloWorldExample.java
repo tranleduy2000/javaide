@@ -1,5 +1,8 @@
 package sample;
-/** Java Hello World example. */
+
+/**
+ * Java Hello World example.
+ */
 public class HelloWorldExample {
 
   public static void main(String args[]) {

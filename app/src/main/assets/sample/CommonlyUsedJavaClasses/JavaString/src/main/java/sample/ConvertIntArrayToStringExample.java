@@ -12,7 +12,7 @@ public class ConvertIntArrayToStringExample {
   public static void main(String args[]) {
 
     //int array
-    int[] intNumbers = new int[] {1, 2, 3, 4, 5};
+    int[] intNumbers = new int[]{1, 2, 3, 4, 5};
 
     /*
      * First approach is to loop through all elements of an int array

@@ -11,8 +11,8 @@ public class CompareDoubleArraysExample {
 
   public static void main(String[] args) {
     //create double arrays
-    double[] dblArray1 = new double[] {10.3221, 789.23, 427.213};
-    double[] dblArray2 = new double[] {10.3221, 789.23, 427.213};
+    double[] dblArray1 = new double[]{10.3221, 789.23, 427.213};
+    double[] dblArray2 = new double[]{10.3221, 789.23, 427.213};
 
     /*
       To compare two double arrays use,

@@ -1,4 +1,5 @@
 package sample;
+
 /**
  * Swap Numbers Without Using Third Variable Java Example This Swap Numbers Java Example shows how
  * to swap value of two numbers without using third variable using java.

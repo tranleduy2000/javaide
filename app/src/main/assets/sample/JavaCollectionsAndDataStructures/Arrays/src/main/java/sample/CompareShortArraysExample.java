@@ -11,8 +11,8 @@ public class CompareShortArraysExample {
 
   public static void main(String[] args) {
     //create short arrays
-    short[] shortArray1 = new short[] {107, 93, 58};
-    short[] shortArray2 = new short[] {107, 93, 58};
+    short[] shortArray1 = new short[]{107, 93, 58};
+    short[] shortArray2 = new short[]{107, 93, 58};
 
     /*
       To compare two short arrays use,

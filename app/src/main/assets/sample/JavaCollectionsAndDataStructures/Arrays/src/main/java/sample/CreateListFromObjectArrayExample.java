@@ -13,7 +13,7 @@ public class CreateListFromObjectArrayExample {
 
   public static void main(String[] args) {
     //create an array of type Object, in this case we will create String array
-    String[] strArray = new String[] {"Object", "Array", "Converted", "To", "List"};
+    String[] strArray = new String[]{"Object", "Array", "Converted", "To", "List"};
 
     /*
       To create List from an array of type Object use,

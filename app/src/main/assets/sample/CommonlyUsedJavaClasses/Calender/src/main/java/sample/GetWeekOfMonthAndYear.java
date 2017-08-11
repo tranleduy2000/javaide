@@ -20,12 +20,12 @@ public class GetWeekOfMonthAndYear {
 
     now.add(Calendar.WEEK_OF_MONTH, 1);
     System.out.println(
-        "date after one year : "
-            + (now.get(Calendar.MONTH) + 1)
-            + "-"
-            + now.get(Calendar.DATE)
-            + "-"
-            + now.get(Calendar.YEAR));
+            "date after one year : "
+                    + (now.get(Calendar.MONTH) + 1)
+                    + "-"
+                    + now.get(Calendar.DATE)
+                    + "-"
+                    + now.get(Calendar.YEAR));
   }
 }
 

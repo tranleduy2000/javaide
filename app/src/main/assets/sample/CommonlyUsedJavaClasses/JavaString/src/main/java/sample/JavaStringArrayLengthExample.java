@@ -10,7 +10,7 @@ public class JavaStringArrayLengthExample {
   public static void main(String args[]) {
 
     //create String array
-    String[] strArray = new String[] {"Java", "String", "Array", "Length"};
+    String[] strArray = new String[]{"Java", "String", "Array", "Length"};
 
     /*
      * To get length of array, use length property of array.

@@ -10,7 +10,7 @@ public class CalculateArrayAverageExample {
   public static void main(String[] args) {
 
     //define an array
-    int[] numbers = new int[] {10, 20, 15, 25, 16, 60, 100};
+    int[] numbers = new int[]{10, 20, 15, 25, 16, 60, 100};
 
     /*
      * Average value of array elements would be

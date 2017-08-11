@@ -12,7 +12,7 @@ public class StringArrayContainsExample {
   public static void main(String args[]) {
 
     //String array
-    String[] strMonths = new String[] {"January", "February", "March", "April", "May"};
+    String[] strMonths = new String[]{"January", "February", "March", "April", "May"};
 
     //Strings to find
     String strFind1 = "March";

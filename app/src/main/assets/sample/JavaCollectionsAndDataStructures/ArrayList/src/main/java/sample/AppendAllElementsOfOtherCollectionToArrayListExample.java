@@ -11,20 +11,20 @@ import java.util.Vector;
 
 public class AppendAllElementsOfOtherCollectionToArrayListExample {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        //create an ArrayList object
-        ArrayList arrayList = new ArrayList();
+    //create an ArrayList object
+    ArrayList arrayList = new ArrayList();
 
-        //Add elements to Arraylist
-        arrayList.add("1");
-        arrayList.add("2");
-        arrayList.add("3");
+    //Add elements to Arraylist
+    arrayList.add("1");
+    arrayList.add("2");
+    arrayList.add("3");
 
-        //create a new Vector object
-        Vector v = new Vector();
-        v.add("4");
-        v.add("5");
+    //create a new Vector object
+    Vector v = new Vector();
+    v.add("4");
+    v.add("5");
    
     /*
       To append all elements of another Collection to ArrayList use
@@ -32,16 +32,16 @@ public class AppendAllElementsOfOtherCollectionToArrayListExample {
       It returns true if the ArrayList was changed by the method call.
     */
 
-        //append all elements of Vector to ArrayList
-        arrayList.addAll(v);
+    //append all elements of Vector to ArrayList
+    arrayList.addAll(v);
 
-        //display elements of ArrayList
-        System.out.println("After appending all elements of Vector,
-                ArrayList contains.. ");
-        for (int i = 0; i < arrayList.size(); i++)
-            System.out.println(arrayList.get(i));
+    //display elements of ArrayList
+    System.out.println("After appending all elements of Vector,
+            ArrayList contains.. ");
+    for (int i = 0; i < arrayList.size(); i++)
+      System.out.println(arrayList.get(i));
 
-    }
+  }
 }
  
 /*

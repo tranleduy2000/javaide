@@ -11,8 +11,8 @@ public class CompareLongArraysExample {
 
   public static void main(String[] args) {
     //create long arrays
-    long[] longArray1 = new long[] {213873, 87210, 320918};
-    long[] longArray2 = new long[] {213873, 87210, 320918};
+    long[] longArray1 = new long[]{213873, 87210, 320918};
+    long[] longArray2 = new long[]{213873, 87210, 320918};
 
     /*
       To compare two long arrays use,

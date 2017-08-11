@@ -1,4 +1,5 @@
 package sample;
+
 /**
  * Swap Numbers Java Example This Swap Numbers Java Example shows how to swap value of two numbers
  * using java.

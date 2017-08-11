@@ -11,8 +11,8 @@ public class CompareBooleanArraysExample {
 
   public static void main(String[] args) {
     //create boolean arrays
-    boolean[] blnArray1 = new boolean[] {true, false, true};
-    boolean[] blnArray2 = new boolean[] {true, false, true};
+    boolean[] blnArray1 = new boolean[]{true, false, true};
+    boolean[] blnArray2 = new boolean[]{true, false, true};
 
     /*
       To compare two boolean arrays use,

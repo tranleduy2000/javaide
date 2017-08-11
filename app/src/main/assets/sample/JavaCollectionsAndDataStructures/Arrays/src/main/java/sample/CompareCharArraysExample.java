@@ -11,8 +11,8 @@ public class CompareCharArraysExample {
 
   public static void main(String[] args) {
     //create character arrays
-    char[] charArray1 = new char[] {'d', 'h', 'r', 'f'};
-    char[] charArray2 = new char[] {'d', 'h', 'r', 'f'};
+    char[] charArray1 = new char[]{'d', 'h', 'r', 'f'};
+    char[] charArray2 = new char[]{'d', 'h', 'r', 'f'};
 
     /*
       To compare two char arrays use,

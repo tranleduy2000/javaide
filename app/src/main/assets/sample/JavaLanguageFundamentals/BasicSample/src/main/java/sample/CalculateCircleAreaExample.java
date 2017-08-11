@@ -1,10 +1,9 @@
 package sample;
 
-/*
-        Calculate Circle Area using Java Example
-        This Calculate Circle Area using Java Example shows how to calculate
-        area of circle using it's radius.
-*/
+/**
+ * Calculate Circle Area using Java Example This Calculate Circle Area using Java Example shows how
+ * to calculate area of circle using it's radius.
+ */
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,8 +44,8 @@ public class CalculateCircleAreaExample {
 }
 
 /*
- Output of Calculate Circle Area using Java Example would be
- Please enter radius of a circle
- 19
- Area of a circle is 1134.1149479459152
- */
+Output of Calculate Circle Area using Java Example would be
+Please enter radius of a circle
+19
+Area of a circle is 1134.1149479459152
+*/

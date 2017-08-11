@@ -34,7 +34,7 @@ public class JavaStringBufferInsertExample {
      StringBuffer insert(int offset, char[] c1) method inserts
      character array to StringBuffer object at specified offset
     */
-    char[] c1 = new char[] {'Y', 'e', 's'};
+    char[] c1 = new char[]{'Y', 'e', 's'};
     StringBuffer sb3 = new StringBuffer("Hello  World");
     sb3.insert(6, c1);
     System.out.println(sb3);

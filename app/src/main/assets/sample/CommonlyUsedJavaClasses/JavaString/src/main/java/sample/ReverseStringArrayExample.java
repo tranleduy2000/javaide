@@ -14,7 +14,7 @@ public class ReverseStringArrayExample {
   public static void main(String args[]) {
 
     //String array
-    String[] strDays = new String[] {"Sunday", "Monday", "Tuesday", "Wednesday"};
+    String[] strDays = new String[]{"Sunday", "Monday", "Tuesday", "Wednesday"};
 
     /*
      * There are basically two methods, one is to use temporary array and

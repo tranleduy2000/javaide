@@ -15,7 +15,7 @@ public class JavaStringArrayToListExample {
   public static void main(String args[]) {
 
     //create String array
-    String[] numbers = new String[] {"one", "two", "three"};
+    String[] numbers = new String[]{"one", "two", "three"};
 
     /*
      * To covert String array to java.util.List object, use

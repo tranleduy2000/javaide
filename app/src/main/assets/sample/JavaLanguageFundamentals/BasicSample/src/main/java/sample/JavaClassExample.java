@@ -1,8 +1,9 @@
 package sample;
+
 /**
  * Java Class example. This Java class example describes how class is defined and being used in Java
  * language.
- *
+ * <p>
  * <p>Syntax of defining java class is, <modifier> class <class-name>{ // members and methods }
  */
 public class JavaClassExample {

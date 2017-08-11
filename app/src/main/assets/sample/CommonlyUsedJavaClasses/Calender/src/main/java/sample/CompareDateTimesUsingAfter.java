@@ -31,12 +31,12 @@ public class CompareDateTimesUsingAfter {
      */
 
     System.out.println(
-        "Current date : "
-            + (now.get(Calendar.MONTH) + 1)
-            + "-"
-            + now.get(Calendar.DATE)
-            + "-"
-            + now.get(Calendar.YEAR));
+            "Current date : "
+                    + (now.get(Calendar.MONTH) + 1)
+                    + "-"
+                    + now.get(Calendar.DATE)
+                    + "-"
+                    + now.get(Calendar.YEAR));
 
     System.out.println("Is futureCal after now ? : " + futureCal.after(now));
   }

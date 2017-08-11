@@ -1,4 +1,5 @@
 package sample;
+
 /**
  * Java break statement with label example. This example shows how to use java break statement to
  * terminate the labeled loop. The following example uses break to terminate the labeled loop while
@@ -8,7 +9,7 @@ public class JavaBreakWithLableExample {
 
   public static void main(String[] args) {
 
-    int[][] intArray = new int[][] {{1, 2, 3, 4, 5}, {10, 20, 30, 40, 50}};
+    int[][] intArray = new int[][]{{1, 2, 3, 4, 5}, {10, 20, 30, 40, 50}};
     boolean blnFound = false;
 
     System.out.println("Searching 30 in two dimensional int array..");

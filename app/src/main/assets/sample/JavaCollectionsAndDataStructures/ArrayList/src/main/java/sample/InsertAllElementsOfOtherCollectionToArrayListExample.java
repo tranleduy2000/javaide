@@ -11,20 +11,20 @@ import java.util.Vector;
 
 public class InsertAllElementsOfOtherCollectionToArrayListExample {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        //create an ArrayList object
-        ArrayList arrayList = new ArrayList();
+    //create an ArrayList object
+    ArrayList arrayList = new ArrayList();
 
-        //Add elements to Arraylist
-        arrayList.add("1");
-        arrayList.add("2");
-        arrayList.add("3");
+    //Add elements to Arraylist
+    arrayList.add("1");
+    arrayList.add("2");
+    arrayList.add("3");
 
-        //create a new Vector object
-        Vector v = new Vector();
-        v.add("4");
-        v.add("5");
+    //create a new Vector object
+    Vector v = new Vector();
+    v.add("4");
+    v.add("5");
    
     /*
       To insert all elements of another Collection to sepcified index of ArrayList
@@ -33,16 +33,16 @@ public class InsertAllElementsOfOtherCollectionToArrayListExample {
       It returns true if the ArrayList was changed by the method call.
     */
 
-        //insert all elements of Vector to ArrayList at index 1
-        arrayList.addAll(1, v);
+    //insert all elements of Vector to ArrayList at index 1
+    arrayList.addAll(1, v);
 
-        //display elements of ArrayList
-        System.out.println("After inserting all elements of Vector at index 1,
-                ArrayList contains.. ");
-        for (int i = 0; i < arrayList.size(); i++)
-            System.out.println(arrayList.get(i));
+    //display elements of ArrayList
+    System.out.println("After inserting all elements of Vector at index 1,
+            ArrayList contains.. ");
+    for (int i = 0; i < arrayList.size(); i++)
+      System.out.println(arrayList.get(i));
 
-    }
+  }
 }
  
 /*

@@ -29,16 +29,15 @@
         app:showAsAction="always">
 
         <menu>
-            <group>
-                <item
-                    android:id="@+id/action_new_java_project"
-                    android:icon="@drawable/ic_fiber_new_white_24dp"
-                    android:title="@string/new_java_project" />
-                <item
-                    android:id="@+id/action_new_android_project"
-                    android:icon="@drawable/ic_fiber_new_white_24dp"
-                    android:title="@string/new_android_project" />
-            </group>
+            <item
+                android:id="@+id/action_new_java_project"
+                android:icon="@drawable/ic_fiber_new_white_24dp"
+                android:title="@string/new_java_project" />
+            <item
+                android:id="@+id/action_new_android_project"
+                android:icon="@drawable/ic_fiber_new_white_24dp"
+                android:title="@string/new_android_project"
+                android:visible="false" />
 
             <item
                 android:id="@+id/action_new_class"

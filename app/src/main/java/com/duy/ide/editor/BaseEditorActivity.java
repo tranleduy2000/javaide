@@ -104,11 +104,11 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected PagePresenter mPagePresenter;
     protected DiagnosticPresenter mDiagnosticPresenter;
     protected MessagePresenter mMessagePresenter;
-    Toolbar toolbar;
-    AppBarLayout appBarLayout;
-    DrawerLayout mDrawerLayout;
-    NavigationView navigationView;
-    TabLayout mTabLayout;
+    protected AppBarLayout appBarLayout;
+    protected DrawerLayout mDrawerLayout;
+    protected NavigationView navigationView;
+    protected TabLayout mTabLayout;
+    protected   Toolbar toolbar;
     @Nullable
     View mContainerSymbol; //don't support in landscape mode
     @Nullable

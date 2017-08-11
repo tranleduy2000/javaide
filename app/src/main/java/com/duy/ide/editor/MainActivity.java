@@ -265,7 +265,7 @@ public class MainActivity extends BaseEditorActivity implements
                     || mProjectFile.getPackageName().isEmpty()
                     || !mProjectFile.getMainClass().exist(mProjectFile)) {
                 String msg = getString(R.string.main_class_not_define);
-                Snackbar.make(mDrawerLayout, msg, Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
                         .setAction(R.string.config, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -281,7 +281,7 @@ public class MainActivity extends BaseEditorActivity implements
                 clasz.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.dark_color_accent))
                         , 0, clasz.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 msg.append(clasz);
-                Snackbar.make(mDrawerLayout, msg, Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
                         .setAction(R.string.config, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {

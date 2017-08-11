@@ -8,8 +8,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import com.duy.compile.CompileManager;
 import com.duy.compile.external.CommandManager;
@@ -60,7 +58,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exec);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setupToolbar();
         bindView();
         final Intent intent = getIntent();
         if (intent != null) {
@@ -112,9 +110,13 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        mConsoleEditText.stop();
+    }
+
+    @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy() called");
-        mConsoleEditText.destroy();
         super.onDestroy();
     }
 

@@ -67,8 +67,6 @@ public class ConsoleEditText extends AppCompatEditText {
     private TextListener mTextListener = new TextListener();
     private EnterListener mEnterListener = new EnterListener();
     private byte[] mReceiveBuffer;
-    private PrintStream systemOut, systemErr;
-    private InputStream systemIn;
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -82,6 +80,8 @@ public class ConsoleEditText extends AppCompatEditText {
             }
         }
     };
+    private PrintStream systemOut, systemErr;
+    private InputStream systemIn;
 
     public ConsoleEditText(Context context) {
         super(context);
@@ -115,12 +115,23 @@ public class ConsoleEditText extends AppCompatEditText {
     }
 
     private void createIOStream() {
-        inputStream = new ConsoleInputStream();
-        outputStream = new ConsoleOutputStream();
-        errorStream = new ConsoleErrorStream();
         mReceiveBuffer = new byte[4 * 1024];
         mStdoutBuffer = new ByteQueue(4 * 1024);
         mStderrBuffer = new ByteQueue(4 * 1024);
+
+        inputStream = new ConsoleInputStream(mInputBuffer);
+        outputStream = new ConsoleOutputStream(mStdoutBuffer, new StdListener() {
+            @Override
+            public void onUpdate() {
+                mHandler.sendMessage(mHandler.obtainMessage(NEW_OUTPUT));
+            }
+        });
+        errorStream = new ConsoleErrorStream(mStderrBuffer, new StdListener() {
+            @Override
+            public void onUpdate() {
+                mHandler.sendMessage(mHandler.obtainMessage(NEW_ERR));
+            }
+        });
 
         systemIn = System.in;
         systemOut = System.out;
@@ -204,7 +215,7 @@ public class ConsoleEditText extends AppCompatEditText {
     }
 
 
-    public void destroy() {
+    public void stop() {
         mInputBuffer.write(-1);
         isRunning.set(false);
 
@@ -212,6 +223,77 @@ public class ConsoleEditText extends AppCompatEditText {
         System.setOut(systemOut);
         System.setErr(systemErr);
         System.setIn(systemIn);
+    }
+
+    public interface StdListener {
+        void onUpdate();
+    }
+
+    private static class ConsoleOutputStream extends OutputStream {
+        private ByteQueue mStdoutBuffer;
+        private StdListener listener;
+
+        private ConsoleOutputStream(ByteQueue mStdoutBuffer, StdListener listener) {
+            this.mStdoutBuffer = mStdoutBuffer;
+            this.listener = listener;
+        }
+
+        @Override
+        public void write(@NonNull byte[] b, int off, int len) throws IOException {
+            try {
+                mStdoutBuffer.write(b, off, len);
+                listener.onUpdate();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            write(new byte[]{(byte) b}, 0, 1);
+        }
+    }
+
+    private static class ConsoleErrorStream extends OutputStream {
+        private ByteQueue mStderrBuffer;
+        private StdListener stdListener;
+
+        public ConsoleErrorStream(ByteQueue mStderrBuffer, StdListener stdListener) {
+            this.mStderrBuffer = mStderrBuffer;
+            this.stdListener = stdListener;
+        }
+
+        @Override
+        public void write(@NonNull byte[] b, int off, int len) throws IOException {
+            try {
+                mStderrBuffer.write(b, off, len);
+                stdListener.onUpdate();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            write(new byte[]{(byte) b}, 0, 1);
+        }
+    }
+
+    private static class ConsoleInputStream extends InputStream {
+        private final Object mLock = new Object();
+        @NonNull
+        private IntegerQueue mInputBuffer;
+
+        public ConsoleInputStream(@NonNull IntegerQueue mInputBuffer) {
+            this.mInputBuffer = mInputBuffer;
+        }
+
+        @Override
+        public int read() throws IOException {
+            synchronized (mLock) {
+                return mInputBuffer.read();
+            }
+        }
     }
 
     private class EnterListener implements TextWatcher {
@@ -239,51 +321,6 @@ public class ConsoleEditText extends AppCompatEditText {
                 }
                 mInputBuffer.write(-1); //flush
                 mLength = s.length(); //append to console
-            }
-        }
-    }
-
-    private class ConsoleOutputStream extends OutputStream {
-        @Override
-        public void write(@NonNull byte[] b, int off, int len) throws IOException {
-            try {
-                mStdoutBuffer.write(b, off, len);
-                mHandler.sendMessage(mHandler.obtainMessage(NEW_OUTPUT));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void write(int b) throws IOException {
-            write(new byte[]{(byte) b}, 0, 1);
-        }
-    }
-
-    private class ConsoleErrorStream extends OutputStream {
-        @Override
-        public void write(@NonNull byte[] b, int off, int len) throws IOException {
-            try {
-                mStderrBuffer.write(b, off, len);
-                mHandler.sendMessage(mHandler.obtainMessage(NEW_ERR));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void write(int b) throws IOException {
-            write(new byte[]{(byte) b}, 0, 1);
-        }
-    }
-
-    private class ConsoleInputStream extends InputStream {
-        private final Object mLock = new Object();
-
-        @Override
-        public int read() throws IOException {
-            synchronized (mLock) {
-                return mInputBuffer.read();
             }
         }
     }

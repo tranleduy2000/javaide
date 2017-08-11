@@ -41,8 +41,8 @@
         </activity>
         <activity
             android:name="com.duy.run.activities.ExecuteActivity"
-            android:windowSoftInputMode="stateAlwaysVisible"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:windowSoftInputMode="stateAlwaysVisible" />
 
         <activity
             android:name="com.duy.ide.editor.MainActivity"

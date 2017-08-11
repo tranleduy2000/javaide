@@ -242,7 +242,6 @@ public class FolderStructureFragment extends Fragment
         View view = mTreeView.getView();
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mContainerView.addView(view, params);
-
     }
 
     @Override
@@ -255,7 +254,7 @@ public class FolderStructureFragment extends Fragment
         super.onAttach(context);
         try {
             this.listener = (ProjectFileContract.FileActionListener) getActivity();
-        } catch (ClassCastException e) {
+        } catch (ClassCastException ignored) {
         }
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
     }

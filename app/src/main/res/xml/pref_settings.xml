@@ -78,10 +78,10 @@
 
         <ListPreference
             android:defaultValue="@string/zero"
-            android:title="@string/format_type_"
             android:entries="@array/format_types"
             android:entryValues="@array/format_type_value"
-            android:key="@string/key_format_type" />
+            android:key="@string/key_format_type"
+            android:title="@string/format_type_" />
     </PreferenceCategory>
 
     <!--<PreferenceCategory android:title="@string/console_screen">-->
@@ -168,6 +168,7 @@
             android:entries="@array/language_entry"
             android:entryValues="@array/language_code"
             android:key="@string/key_pref_lang"
+            android:shouldDisableView="true"
             android:title="@string/language" />
 
         <EditTextPreference
@@ -189,6 +190,7 @@
         <EditTextPreference
             android:defaultValue="@string/default_classpath"
             android:key="@string/key_classpath"
+            android:shouldDisableView="true"
             android:summary="@string/classpath_desc"
             android:title="Classpath">
 

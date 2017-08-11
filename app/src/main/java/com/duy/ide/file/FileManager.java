@@ -160,7 +160,7 @@ public class FileManager {
     }
 
     public static boolean canEdit(File file) {
-        return file.canWrite() && com.duy.ide.file.FileUtils.hasExtension(file, ".java", ".xml");
+        return file.canWrite() && com.duy.ide.file.FileUtils.hasExtension(file, ".java", ".xml", ".txt");
     }
 
     public static void copyFile(InputStream in, OutputStream out) throws IOException {
@@ -207,6 +207,12 @@ public class FileManager {
             file.getParentFile().mkdirs();
         }
         file.createNewFile();
+        return file;
+    }
+
+    public static File getClasspathFile(Context context) {
+        File file = new File(context.getFilesDir(), "system" + File.separator + "classes"
+                + File.separator + "android.jar");
         return file;
     }
 
@@ -602,12 +608,6 @@ public class FileManager {
 
     public void destroy() {
         mDatabase.close();
-    }
-
-    public static File getClasspathFile(Context context) {
-        File file = new File(context.getFilesDir(), "system" + File.separator + "classes"
-                + File.separator + "android.jar");
-        return file;
     }
 
     public static class SAVE_MODE {

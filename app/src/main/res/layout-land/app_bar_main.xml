@@ -13,26 +13,31 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/coordinate_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:baselineAligned="false"
-    android:orientation="horizontal"
-    android:weightSum="10">
+    android:layout_height="match_parent">
 
-    <include
-        layout="@layout/main_left"
-        android:layout_width="0dp"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:layout_weight="3"
-        android:fitsSystemWindows="true" />
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:weightSum="10">
 
-    <include
-        layout="@layout/content_main"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="7" />
-</LinearLayout>
+        <include
+            layout="@layout/main_left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_weight="3"
+            android:fitsSystemWindows="true" />
 
+        <include
+            layout="@layout/content_main"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7" />
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

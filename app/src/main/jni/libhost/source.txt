@@ -1,2 +1,4 @@
-https://android.googlesource.com/platform/build/+/jb-mr2-dev/libs/host
+http://android.git.kernel.org/
+
+[platform/build.git] / libs / host / Android.mk
 

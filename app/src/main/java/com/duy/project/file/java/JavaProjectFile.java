@@ -32,7 +32,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
     protected final File dirOutput;
     protected final File dirOutputJar;
     public File dirDexedLibs;
-    public File classpathFile;
+    public  final File classpathFile;
     protected File dirDexedClass;
     protected File dexedClassesFile;
     /*Main class*/

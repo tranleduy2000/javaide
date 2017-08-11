@@ -8,6 +8,12 @@ LOCAL_SRC_FILES:= \
 ifeq ($(HOST_OS),cygwin)
 LOCAL_CFLAGS += -DWIN32_EXE
 endif
+ifeq ($(HOST_OS),windows)
+  ifeq ($(USE_MINGW),)
+    # Case where we're building windows but not under linux (so it must be cygwin)
+    LOCAL_CFLAGS += -DUSE_MINGW
+  endif
+endif
 ifeq ($(HOST_OS),darwin)
 LOCAL_CFLAGS += -DMACOSX_RSRC
 endif
@@ -17,11 +23,5 @@ endif
 LOCAL_MODULE:= libhost
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 
-# acp uses libhost, so we can't use
-# acp to install libhost.
-LOCAL_ACP_UNAVAILABLE:= true
+include $(BUILD_SHARED_LIBRARY)
 
-include $(BUILD_HOST_STATIC_LIBRARY)
-
-# Include toolchain prebuilt modules if they exist.
--include $(TARGET_TOOLCHAIN_ROOT)/toolchain.mk

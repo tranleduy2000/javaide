@@ -1,3 +1,0 @@
-http://android.git.kernel.org/
-
-[platform/external/zlib.git] / Android.mk

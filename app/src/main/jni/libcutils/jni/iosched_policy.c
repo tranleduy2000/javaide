@@ -16,11 +16,18 @@
 ** limitations under the License.
 */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+#include <fcntl.h>
+
 #ifdef HAVE_SCHED_H
 
 #include <cutils/iosched_policy.h>
 
-extern int ioprio_set(int which, int who, int ioprio);
+//extern int ioprio_set(int which, int who, int ioprio);
 
 enum {
     WHO_PROCESS = 1,
@@ -31,30 +38,30 @@ enum {
 #define CLASS_SHIFT 13
 #define IOPRIO_NORM 4
 
-int android_set_ioprio(int pid, IoSchedClass clazz, int ioprio) {
-#ifdef HAVE_ANDROID_OS
+//int android_set_ioprio(int pid, IoSchedClass clazz, int ioprio) {
+//#ifdef HAVE_ANDROID_OS
 //    if (ioprio_set(WHO_PROCESS, pid, ioprio | (clazz << CLASS_SHIFT))) {
-        return -1;
+//        return -1;
 //    }
-#endif
-    return 0;
-}
+//#endif
+//    return 0;
+//}
 
-int android_get_ioprio(int pid, IoSchedClass *clazz, int *ioprio) {
-#ifdef HAVE_ANDROID_OS
-    int rc;
-
+//int android_get_ioprio(int pid, IoSchedClass *clazz, int *ioprio) {
+//#ifdef HAVE_ANDROID_OS
+//    int rc;
+//
 //    if ((rc = ioprio_get(WHO_PROCESS, pid)) < 0) {
 //        return -1;
 //    }
-
-    *clazz = (rc >> CLASS_SHIFT);
-    *ioprio = (rc & 0xff);
-#else
-    *clazz = IoSchedClass_NONE;
-    *ioprio = 0;
-#endif
-    return 0;
-}
+//
+//    *clazz = (rc >> CLASS_SHIFT);
+//    *ioprio = (rc & 0xff);
+//#else
+//    *clazz = IoSchedClass_NONE;
+//    *ioprio = 0;
+//#endif
+//    return 0;
+//}
 
 #endif /* HAVE_SCHED_H */

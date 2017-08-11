@@ -90,6 +90,8 @@ public class DonateActivity extends AbstractAppCompatActivity implements IabBroa
         findViewById(R.id.btn_donate_2).setOnClickListener(this);
         findViewById(R.id.btn_donate_3).setOnClickListener(this);
         findViewById(R.id.btn_donate_4).setOnClickListener(this);
+
+        initIab();
     }
 
     private void initIab() {

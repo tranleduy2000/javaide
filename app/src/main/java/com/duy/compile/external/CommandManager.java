@@ -175,8 +175,9 @@ public class CommandManager {
 
     public static File buildApk(AndroidProjectFile projectFile,
                                 OutputStream out,
-                                DiagnosticCollector diagnosticCollector) throws IOException {
-        ApkBuilder.build(projectFile, out, diagnosticCollector);
+                                DiagnosticCollector diagnosticCollector,
+                                ApkBuilder.SignProgress signProgress) throws IOException {
+        ApkBuilder.build(projectFile, out, diagnosticCollector, signProgress);
         return projectFile.getApkUnaligned();
     }
 

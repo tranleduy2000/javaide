@@ -1,8 +1,10 @@
 package com.duy.compile;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.duy.compile.external.CommandManager;
+import com.duy.compile.external.android.ApkBuilder;
 import com.duy.project.file.android.AndroidProjectFile;
 
 import java.io.File;
@@ -13,7 +15,10 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 
+import kellinwood.security.zipsigner.ProgressEvent;
+
 public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
+    private static final String TAG = "BuildApkTask";
     private BuildApkTask.CompileListener listener;
     private DiagnosticCollector mDiagnosticCollector;
     private Exception error;
@@ -54,7 +59,15 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
         projectFile.clean();
         projectFile.createBuildDir();
         try {
-            return CommandManager.buildApk(projectFile, outputStream, mDiagnosticCollector);
+            ApkBuilder.SignProgress signProgress = new ApkBuilder.SignProgress() {
+                @Override
+                public void onProgress(ProgressEvent event) {
+                    super.onProgress(event);
+                    Log.d(TAG, "onProgress: " + event);
+                }
+            };
+            return CommandManager.buildApk(projectFile, outputStream, mDiagnosticCollector,
+                    signProgress);
         } catch (Exception e) {
             this.error = e;
         }
@@ -84,7 +97,7 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
         }
     }
 
-    public  interface CompileListener {
+    public interface CompileListener {
         void onStart();
 
         void onError(Exception e, List<Diagnostic> diagnostics);

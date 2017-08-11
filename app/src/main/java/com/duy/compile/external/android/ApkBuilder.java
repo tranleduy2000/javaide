@@ -15,6 +15,9 @@ import java.io.PrintWriter;
 
 import javax.tools.DiagnosticCollector;
 
+import kellinwood.security.zipsigner.ZipSigner;
+import kellinwood.security.zipsigner.optional.CustomKeySigner;
+
 
 public class ApkBuilder {
     private static final String TAG = "BuildTask";
@@ -29,7 +32,8 @@ public class ApkBuilder {
     }
 
     public static void build(AndroidProjectFile projectFile, @NonNull OutputStream out,
-                             @NonNull DiagnosticCollector diagnosticCollector) {
+                             @NonNull DiagnosticCollector diagnosticCollector,
+                             @NonNull SignProgress signProgress) {
         projectFile.clean();
         PrintStream systemOut = System.out;
         PrintStream systemErr = System.err;
@@ -53,11 +57,10 @@ public class ApkBuilder {
 
             //zip apk
             ApkBuilder.buildApk(projectFile);
-            ApkBuilder.zipSign(projectFile);
+            ApkBuilder.zipSign(projectFile, signProgress);
             ApkBuilder.zipAlign();
             ApkBuilder.publishApk();
 
-            projectFile.getApkUnsigned().delete();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -103,7 +106,7 @@ public class ApkBuilder {
 
     }
 
-    private static void zipSign(AndroidProjectFile projectFile) throws Exception {
+    private static void zipSign(AndroidProjectFile projectFile, SignProgress signProgress) throws Exception {
 //        if (!appContext.getString(R.string.keystore).contentEquals(projectFile.jksEmbedded.getName())) {
 //             TODO use user defined certificate
 //        }
@@ -116,9 +119,9 @@ public class ApkBuilder {
         char[] certPw = keyStore.getCertPassword();
         String signatureAlgorithm = "SHA1withRSA";
 
-        kellinwood.security.zipsigner.ZipSigner zipsigner = new kellinwood.security.zipsigner.ZipSigner();
-        zipsigner.addProgressListener(new SignProgress());
-        kellinwood.security.zipsigner.optional.CustomKeySigner.signZip(zipsigner, keystorePath, keystorePw, certAlias,
+        ZipSigner zipsigner = new ZipSigner();
+        zipsigner.addProgressListener(signProgress);
+        CustomKeySigner.signZip(zipsigner, keystorePath, keystorePw, certAlias,
                 certPw, signatureAlgorithm,
                 projectFile.getApkUnsigned().getPath(),
                 projectFile.getApkUnaligned().getPath());
@@ -136,7 +139,6 @@ public class ApkBuilder {
 //        Util.copy(projectFile.apkUnaligned, new FileOutputStream(projectFile.apkRedistributable));
 //
 //        projectFile.apkRedistributable.setReadable(true, false);
-//
     }
 
     public void run() {
@@ -144,7 +146,7 @@ public class ApkBuilder {
 
     }
 
-    static class SignProgress implements kellinwood.security.zipsigner.ProgressListener {
+    public static class SignProgress implements kellinwood.security.zipsigner.ProgressListener {
 
         public void onProgress(kellinwood.security.zipsigner.ProgressEvent event) {
         }

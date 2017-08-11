@@ -1,2 +1,0 @@
-https://android.googlesource.com/platform/build/+/jb-mr2-dev/libs/host
-

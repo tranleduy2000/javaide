@@ -51,7 +51,7 @@ public class ProjectCategoryAdapter extends RecyclerView.Adapter<ProjectCategory
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.txtName.setText(categories.getProject(position).getName());
-        holder.txtName.setOnClickListener(new View.OnClickListener() {
+        holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
@@ -72,10 +72,12 @@ public class ProjectCategoryAdapter extends RecyclerView.Adapter<ProjectCategory
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView txtName;
+        public View root;
 
         public ViewHolder(View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.txt_name);
+            root = itemView.findViewById(R.id.root);
         }
     }
 }

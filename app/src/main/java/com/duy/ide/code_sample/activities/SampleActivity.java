@@ -74,7 +74,7 @@ public class SampleActivity extends AbstractAppCompatActivity implements
             Element root = parse.getDocumentElement();
             NodeList categories = root.getElementsByTagName("category");
             for (int i = 0; i < categories.getLength(); i++) {
-                Element category = (Element) categories.item(0);
+                Element category = (Element) categories.item(i);
                 String categoryName = category.getAttribute("name");
                 String categoryDescription = category.getAttribute("description");
                 String headerImage = category.getAttribute("image");
@@ -91,6 +91,7 @@ public class SampleActivity extends AbstractAppCompatActivity implements
                     Log.d(TAG, "getCategories entry = " + entry);
                     codeCategory.addCodeItem(entry);
                 }
+                codeSamples.add(codeCategory);
             }
         } catch (IOException e) {
             e.printStackTrace();

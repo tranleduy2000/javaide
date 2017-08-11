@@ -10,7 +10,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion as Integer
         targetSdkVersion rootProject.ext.targetSdkVersion as Integer
         multiDexEnabled true
-        versionCode 19
+        versionCode 20
         versionName "1.0.14 beta"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -78,11 +78,6 @@ dependencies {
     compile 'com.google.guava:guava:22.0-android'
     compile files('libs/commons-compress-1.5.jar')
     compile files('libs/commons-codec-1.10.jar')
-    compile files('libs/prov-1.56.0.0.jar')
-    compile files('libs/ecj-4.5.1.jar')
-    compile files('libs/core-1.56.0.0.jar')
-    compile files('libs/bcpkix-jdk15on-1.56.0.0.jar')
-    compile files('libs/bcpg-jdk15on-1.56.0.0.jar')
     compile files('libs/android-sun-jarsign-support-1.1.jar')
 }
 

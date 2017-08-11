@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -87,7 +88,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
 
     private void selectFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
+        intent.setType(MimeTypeMap.getSingleton().getExtensionFromMimeType("zip"));
         startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
     }
 
@@ -170,7 +171,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Success!");
+        builder.setMessage(R.string.success);
         builder.setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -187,7 +188,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Error");
+        builder.setTitle(R.string.error);
         builder.setMessage(error.getMessage());
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
@@ -210,7 +211,6 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         builder.setTitle("Download system");
     }
 
-    @SuppressWarnings("ConstantConditions")
     private class InstallTask extends AsyncTask<File, String, Boolean> {
         private Exception error = null;
         private Context context;
@@ -222,7 +222,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mInfo.setText("Starting install system");
+            mInfo.setText(R.string.start_install_system);
             mProgressBar.setIndeterminate(true);
             mInstallButton.setEnabled(false);
             installing = true;

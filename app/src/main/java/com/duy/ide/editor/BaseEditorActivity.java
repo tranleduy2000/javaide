@@ -486,6 +486,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     private void openFileByAnotherApp(File file) {
+        if (file.getPath().endsWith(".jar") || file.getPath().endsWith(".dex")) {
+            Toast.makeText(this, "Unable to open file", Toast.LENGTH_SHORT).show();
+            return;
+        }
         //create intent open filek
         MimeTypeMap myMime = MimeTypeMap.getSingleton();
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -589,7 +593,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
             mDrawerLayout.closeDrawer(start);
         }
     }
-
 
 
     /**

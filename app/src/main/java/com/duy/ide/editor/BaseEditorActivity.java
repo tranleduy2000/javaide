@@ -53,6 +53,7 @@ import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.compile.diagnostic.DiagnosticPresenter;
 import com.duy.compile.message.MessageFragment;
 import com.duy.compile.message.MessagePresenter;
+import com.duy.ide.EditPageContract;
 import com.duy.ide.EditorControl;
 import com.duy.ide.PagePresenter;
 import com.duy.ide.R;
@@ -91,7 +92,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         ProjectFileContract.FileActionListener,
         DialogNewJavaProject.OnCreateProjectListener,
         DialogNewClass.OnCreateFileListener,
-        DialogNewAndroidResource.OnFileCreateListener,
         DialogNewFile.OnFileTypeSelectListener,
         ViewPager.OnPageChangeListener {
     private static final String TAG = "BaseEditorActivity";
@@ -565,7 +565,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
 
-    private void showDialogSelectFileType(@Nullable File parent) {
+    public void showDialogSelectFileType(@Nullable File parent) {
         DialogNewFile dialogNewFile = DialogNewFile.newInstance(parent);
         dialogNewFile.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
     }
@@ -593,6 +593,12 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     public void showDialogCreateNewClass(@Nullable File file) {
+        if (file == null) {
+            EditPageContract.View currentPage = mPagePresenter.getCurrentPage();
+            if (currentPage != null) {
+                file = currentPage.getCurrentFile().getParentFile();
+            }
+        }
         if (mProjectFile != null && file != null) {
             DialogNewClass dialogNewClass;
             dialogNewClass = DialogNewClass.newInstance(mProjectFile, null, file);

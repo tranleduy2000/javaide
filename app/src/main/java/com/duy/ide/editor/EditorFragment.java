@@ -248,6 +248,16 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         }
     }
 
+    @Override
+    public File getCurrentFile() {
+        String filePath = getArguments().getString(CompileManager.FILE_PATH);
+        if (filePath != null) {
+            return new File(filePath);
+        } else {
+            return null;
+        }
+    }
+
     private void showDialog(String msg) {
         dismissDialog();
         ProgressDialog progressDialog = new ProgressDialog(getContext());

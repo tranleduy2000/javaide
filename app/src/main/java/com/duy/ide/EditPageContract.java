@@ -31,6 +31,8 @@ public class EditPageContract {
         void highlightError(long startPosition, long endPosition);
 
         void setCursorPosition(int endPosition);
+
+        File getCurrentFile();
     }
 
     public interface Presenter {

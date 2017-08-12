@@ -156,7 +156,7 @@ public class MenuEditor {
                 if (listener != null) listener.createNewFile(null);
                 break;
             case R.id.action_new_class:
-                activity.showDialogSelectFileType(null);
+                activity.showDialogCreateNewClass(null);
                 break;
             case R.id.action_install:
                 activity.startActivity(new Intent(activity, InstallActivity.class));

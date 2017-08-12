@@ -34,7 +34,7 @@ public class AutoCompleteService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mAutoCompleteProvider.load();
+                mAutoCompleteProvider.load(mProjectFile);
                 if (callback != null) callback.onLoaded(mAutoCompleteProvider);
             }
         }).start();

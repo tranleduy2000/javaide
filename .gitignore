@@ -64,3 +64,4 @@ art/screenshot/
 system/system/src/demo_android/dist/
 testapplication/src/Epsilon Notes Markdown Editor_v2.13_apkpure.com.apk
 testapplication/src/main/res/drawable/
+!/app/src/main/assets/templates/src/main/androiddebug.jks

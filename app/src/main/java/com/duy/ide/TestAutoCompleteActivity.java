@@ -31,7 +31,7 @@ public class TestAutoCompleteActivity extends AbstractAppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mAutoCompleteProvider.load();
+                mAutoCompleteProvider.load(mProjectFile);
                 mEditorFragment.setAutoCompleteProvider(mAutoCompleteProvider);
             }
         }).start();

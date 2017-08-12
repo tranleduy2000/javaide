@@ -17,15 +17,12 @@
 package com.duy.ide.editor;
 
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -39,7 +36,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,7 +54,6 @@ import com.duy.ide.Builder;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.AutoCompleteProvider;
-import com.duy.ide.autocomplete.AutoCompleteService;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.util.JavaUtil;
 import com.duy.ide.code_sample.activities.DocumentActivity;
@@ -98,30 +93,9 @@ public class MainActivity extends BaseEditorActivity implements
     private Dialog mDialog;
     private MenuItem mActionRun;
     private ProgressBar mCompileProgress;
-    private AutoCompleteService mAutoCompleteService;
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            AutoCompleteService.ACBinder acBinder = (AutoCompleteService.ACBinder) service;
-            mAutoCompleteService = acBinder.getService();
-            populateAutoCompleteService();
-        }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mAutoCompleteService = null;
-        }
-    };
-
-    private void populateAutoCompleteService() {
-        Log.d(TAG, "populateAutoCompleteService() called");
-        mAutoCompleteService.setCallback(new AutoCompleteService.OnAutoCompleteServiceLoadListener() {
-            @Override
-            public void onLoaded(@NonNull AutoCompleteProvider provider) {
-                Log.d(TAG, "onLoaded() called with: provider = [" + provider + "]");
-                mPagePresenter.setAutoCompleteProvider(provider);
-            }
-        });
+    private void populateAutoCompleteService(AutoCompleteProvider provider) {
+        mPagePresenter.setAutoCompleteProvider(provider);
     }
 
     @Override
@@ -132,15 +106,21 @@ public class MainActivity extends BaseEditorActivity implements
         initView(savedInstanceState);
 
         startAutoCompleteService();
-        Log.d(TAG, "onCreate: file " + new File("/data/data/com.duy.compiler.javanide/files/system/classes/android.jar").exists());
     }
 
     private void startAutoCompleteService() {
-        Intent intent = new Intent(this, AutoCompleteService.class);
-        if (!bindService(intent, mServiceConnection, BIND_AUTO_CREATE)) {
-            Log.e(TAG, "startAutoCompleteService: bind service failed");
+        if (mProjectFile != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AutoCompleteProvider provider = new AutoCompleteProvider(MainActivity.this);
+                    provider.load(mProjectFile);
+                    populateAutoCompleteService(provider);
+                }
+            }).start();
         }
     }
+
 
     public void initView(Bundle savedInstanceState) {
         mDrawerLayout.addDrawerListener(this);
@@ -485,7 +465,6 @@ public class MainActivity extends BaseEditorActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
         }

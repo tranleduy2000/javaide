@@ -64,7 +64,9 @@ import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.view.SymbolListView;
 import com.duy.project.dialog.DialogNewAndroidProject;
+import com.duy.project.dialog.DialogNewAndroidResource;
 import com.duy.project.dialog.DialogNewClass;
+import com.duy.project.dialog.DialogNewFile;
 import com.duy.project.dialog.DialogNewJavaProject;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFile;
@@ -87,7 +89,11 @@ import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         implements SymbolListView.OnKeyListener, EditorControl,
         ProjectFileContract.FileActionListener,
-        DialogNewJavaProject.OnCreateProjectListener, DialogNewClass.OnCreateClassListener, ViewPager.OnPageChangeListener {
+        DialogNewJavaProject.OnCreateProjectListener,
+        DialogNewClass.OnCreateFileListener,
+        DialogNewAndroidResource.OnFileCreateListener,
+        DialogNewFile.OnFileTypeSelectListener,
+        ViewPager.OnPageChangeListener {
     private static final String TAG = "BaseEditorActivity";
 
     private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
@@ -468,7 +474,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     @Override
-    public void onClassCreated(File classF) {
+    public void onFileCreated(File classF) {
         mFilePresenter.show(mProjectFile, true);
         addNewPageEditor(classF, true);
     }
@@ -522,8 +528,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     @Override
-    public boolean doCreateNewClass(File file, ProjectFileContract.ActionCallback callBack) {
-        showDialogCreateClass(file);
+    public boolean createNewFile(File file, ProjectFileContract.ActionCallback callBack) {
+        showDialogSelectFileType(file);
         return false;
     }
 
@@ -559,17 +565,40 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
 
-    public void showDialogCreateClass(@Nullable File file) {
-        if (mProjectFile != null) {
-            DialogNewClass dialogNewClass;
-            if (file != null) {
-                dialogNewClass = DialogNewClass.newInstance(mProjectFile, null, file);
-            } else {
-                dialogNewClass = DialogNewClass.newInstance(mProjectFile, mProjectFile.getPackageName(), null);
-            }
+    private void showDialogSelectFileType(@Nullable File parent) {
+        DialogNewFile dialogNewFile = DialogNewFile.newInstance(parent);
+        dialogNewFile.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
+    }
+
+    @Override
+    public void onFileTypeSelected(File parent, String ext) {
+        switch (ext.toLowerCase()) {
+            case "java":
+                showDialogCreateNewClass(parent);
+                break;
+            case "xml":
+                showDialogCreateNewXml(parent);
+                break;
+        }
+    }
+
+    private void showDialogCreateNewXml(File file) {
+        if (mProjectFile != null && file != null) {
+            DialogNewAndroidResource dialogNewClass;
+            dialogNewClass = DialogNewAndroidResource.newInstance(mProjectFile, file);
             dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
         } else {
-            complain("You need create project");
+            complain("Can not create Android resource file");
+        }
+    }
+
+    public void showDialogCreateNewClass(@Nullable File file) {
+        if (mProjectFile != null && file != null) {
+            DialogNewClass dialogNewClass;
+            dialogNewClass = DialogNewClass.newInstance(mProjectFile, null, file);
+            dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
+        } else {
+            complain("Can not create new class");
         }
     }
 

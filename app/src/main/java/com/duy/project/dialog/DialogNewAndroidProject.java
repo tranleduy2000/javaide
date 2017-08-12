@@ -164,12 +164,6 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
                 if (listener != null) {
                     listener.onProjectCreated(projectFile);
                 }
-
-//                File classpathFile = projectFile.bootClasspath;
-//                FileOutputStream stream = new FileOutputStream(classpathFile);
-//                FileManager.copyFile(assets.open("templates/src/main/android.jar"), stream);
-//                stream.close();
-
                 this.dismiss();
             } catch (Exception e) {
                 e.printStackTrace();

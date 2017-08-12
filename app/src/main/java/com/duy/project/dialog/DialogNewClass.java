@@ -34,7 +34,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     private Spinner mKind;
     private RadioGroup mModifiers, mVisibility;
     @Nullable
-    private OnCreateClassListener listener;
+    private OnCreateFileListener listener;
 
     private EditText mPackage;
 
@@ -61,7 +61,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (OnCreateClassListener) getActivity();
+            listener = (OnCreateFileListener) getActivity();
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
@@ -150,14 +150,14 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         if (projectFile != null) {
             File classf = JavaProjectFile.createClass(projectFile, currentPackage, className, content);
             if (listener != null) {
-                listener.onClassCreated(classf);
+                listener.onFileCreated(classf);
                 Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();
                 this.dismiss();
             }
         }
     }
 
-    public interface OnCreateClassListener {
-        void onClassCreated(File classF);
+    public interface OnCreateFileListener {
+        void onFileCreated(File classF);
     }
 }

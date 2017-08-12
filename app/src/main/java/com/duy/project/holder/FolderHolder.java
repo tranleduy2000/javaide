@@ -81,7 +81,7 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    listener.doCreateNewClass(file, new ProjectFileContract.ActionCallback() {
+                    listener.createNewFile(file, new ProjectFileContract.ActionCallback() {
                         @Override
                         public void onSuccess(File newf) {
                             TreeNode child = new TreeNode(new TreeItem(item.getProjectFile(), newf, listener));

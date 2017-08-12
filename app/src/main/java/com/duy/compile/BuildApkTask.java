@@ -2,6 +2,7 @@ package com.duy.compile;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.duy.compile.external.CommandManager;
 import com.duy.project.file.android.AndroidProjectFile;
@@ -70,6 +71,7 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
             int start = (int) values[1];
             int end = (int) values[2];
             listener.onNewMessage(chars, start, end);
+            Log.d(TAG, new String(chars, start, end));
         } catch (Exception e) {
             e.printStackTrace();
         }

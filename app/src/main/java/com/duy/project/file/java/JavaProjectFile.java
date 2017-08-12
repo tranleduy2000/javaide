@@ -68,27 +68,27 @@ public class JavaProjectFile implements Serializable, Cloneable {
 
         if (!dirRoot.exists()) {
             dirRoot.mkdirs();
-            dirRoot.setReadable(true, true);
+            dirRoot.setReadable(true);
         }
         if (!dirProject.exists()) {
             dirProject.mkdirs();
-            dirProject.setReadable(true, true);
+            dirProject.setReadable(true);
         }
         if (!dirLibs.exists()) {
             dirLibs.mkdirs();
-            dirLibs.setReadable(true, true);
+            dirLibs.setReadable(true);
         }
         if (!dirSrcMain.exists()) {
             dirSrcMain.mkdirs();
-            dirSrcMain.setReadable(true, true);
+            dirSrcMain.setReadable(true);
         }
         if (!dirJava.exists()) {
             dirJava.mkdirs();
-            dirJava.setReadable(true, true);
+            dirJava.setReadable(true);
         }
         if (!dirBuildClasses.exists()) {
             dirBuildClasses.mkdirs();
-            dirBuildClasses.setReadable(true, true);
+            dirBuildClasses.setReadable(true);
         }
     }
 
@@ -144,6 +144,9 @@ public class JavaProjectFile implements Serializable, Cloneable {
     }
 
     public File getDirDexedClass() {
+        if (!dirDexedClass.exists()){
+            dirDexedClass.mkdirs();
+        }
         return dirDexedClass;
     }
 
@@ -300,7 +303,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
         return classpath;
     }
 
-    public File getDirJava() {
+    public File getDirSrcJava() {
         if (!dirJava.exists()) dirJava.mkdirs();
         return dirJava;
     }

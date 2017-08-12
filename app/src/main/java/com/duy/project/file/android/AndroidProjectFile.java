@@ -24,6 +24,11 @@ public class AndroidProjectFile extends JavaProjectFile {
     private File classR;
     private File dirOutApk;
 
+    public  File zipSrc;
+    public  File zipRes;
+    public  File zipLibs;
+    public  File zipDexedLibs;
+
     public AndroidProjectFile(File dirRoot,
                               @Nullable String mainClassName,
                               @Nullable String packageName,
@@ -50,6 +55,11 @@ public class AndroidProjectFile extends JavaProjectFile {
                 "android".toCharArray(),
                 "android",
                 "android".toCharArray());
+
+        zipSrc = new File(dirBuild, "src.zip");
+        zipRes = new File(dirBuild, "res.zip");
+        zipLibs = new File(dirBuild, "libs.zip");
+        zipDexedLibs = new File(dirBuild, "dexedLibs.zip");
     }
 
     public KeyStore getKeyStore() {

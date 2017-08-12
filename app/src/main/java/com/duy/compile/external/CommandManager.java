@@ -7,7 +7,7 @@ import android.util.Log;
 import com.android.dx.io.DexBuffer;
 import com.android.dx.merge.CollisionPolicy;
 import com.android.dx.merge.DexMerger;
-import com.duy.compile.external.android.ApkBuilder;
+import com.duy.compile.external.android.AndroidBuilder;
 import com.duy.compile.external.dex.Dex;
 import com.duy.compile.external.java.Jar;
 import com.duy.compile.external.java.Java;
@@ -78,7 +78,7 @@ public class CommandManager {
             String[] args = new String[]{
                     "-verbose",
                     "-classpath", projectFile.getClassPath(),
-                    "-sourcepath", projectFile.getDirJava().getPath(), //sourcepath
+                    "-sourcepath", projectFile.getDirSrcJava().getPath(), //sourcepath
                     "-d", projectFile.getDirBuildClasses().getPath(), //output dir
                     projectFile.getMainClass().getPath(projectFile) //main class
             };
@@ -143,10 +143,10 @@ public class CommandManager {
         if (projectFile.getDirDexedLibs().exists()) {
             File[] files = projectFile.getDirDexedLibs().listFiles();
             if (files != null && files.length > 0) {
-                for (File dexLib : files) {
+                for (File dexedLib : files) {
                     DexBuffer merged = new DexMerger(
                             new DexBuffer(projectFile.getDexedClassesFile()),
-                            new DexBuffer(dexLib),
+                            new DexBuffer(dexedLib),
                             CollisionPolicy.FAIL).merge();
                     merged.writeTo(projectFile.getDexedClassesFile());
                 }
@@ -178,7 +178,7 @@ public class CommandManager {
     public static File buildApk(AndroidProjectFile projectFile,
                                 OutputStream out,
                                 DiagnosticCollector diagnosticCollector) throws Exception {
-        ApkBuilder.build(projectFile, out, diagnosticCollector);
+        AndroidBuilder.build(projectFile, out, diagnosticCollector);
         return projectFile.getApkUnaligned();
     }
 

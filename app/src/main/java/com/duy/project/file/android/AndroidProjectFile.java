@@ -62,10 +62,10 @@ public class AndroidProjectFile extends JavaProjectFile {
     }
 
     public File getApkUnaligned() throws IOException {
-        if (!apkUnaligned.exists()) {
-            apkUnaligned.getParentFile().mkdirs();
-            apkUnaligned.createNewFile();
-        }
+//        if (!apkUnaligned.exists()) {
+//            apkUnaligned.getParentFile().mkdirs();
+//            apkUnaligned.createNewFile();
+//        }
         return apkUnaligned;
     }
 
@@ -115,7 +115,7 @@ public class AndroidProjectFile extends JavaProjectFile {
     }
 
     public File getApkUnsigned() throws IOException {
-        if (apkUnsigned.exists()) {
+        if (!apkUnsigned.exists()) {
             apkUnsigned.getParentFile().mkdirs();
             apkUnsigned.createNewFile();
         }

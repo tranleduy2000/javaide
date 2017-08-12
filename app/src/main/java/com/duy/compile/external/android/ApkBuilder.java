@@ -7,6 +7,7 @@ import com.duy.compile.external.CommandManager;
 import com.duy.project.file.android.AndroidProjectFile;
 import com.duy.project.file.android.KeyStore;
 import com.spartacusrex.spartacuside.external.apkbuilder;
+import com.sun.tools.javac.main.Main;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 
 import javax.tools.DiagnosticCollector;
 
+import kellinwood.security.zipsigner.ProgressEvent;
 import kellinwood.security.zipsigner.ZipSigner;
 import kellinwood.security.zipsigner.optional.CustomKeySigner;
 
@@ -34,35 +36,44 @@ public class ApkBuilder {
     }
 
     public static void build(AndroidProjectFile projectFile, @NonNull OutputStream out,
-                             @NonNull DiagnosticCollector diagnosticCollector,
-                             @NonNull SignProgress signProgress) {
+                             @NonNull DiagnosticCollector diagnosticCollector) {
         projectFile.clean();
         PrintStream systemOut = System.out;
         PrintStream systemErr = System.err;
         try {
-
             System.setOut(new PrintStream(out));
             System.setErr(new PrintStream(out));
 
             //create R.java
+            System.out.println("Run aidl");
             ApkBuilder.runAidl(projectFile);
+            System.out.println("Run aapt");
             ApkBuilder.runAapt(projectFile);
 
             //compile java
-            CommandManager.compileJava(projectFile, new PrintWriter(out), diagnosticCollector);
+            System.out.println("Compile Java file");
+            int status = CommandManager.compileJava(projectFile, new PrintWriter(out), diagnosticCollector);
             System.gc();
+            if (status == Main.EXIT_ERROR) {
+                System.out.println("Compile error");
+                throw new RuntimeException("Compile time error!");
+            }
 
             //classes to dex
+            System.out.println("Convert class to dex");
             CommandManager.dexLibs(projectFile, true);
             CommandManager.dexBuildClasses(projectFile);
             CommandManager.dexMerge(projectFile);
 
             //zip apk
+            System.out.println("Build apk");
             ApkBuilder.buildApk(projectFile);
-            ApkBuilder.zipSign(projectFile, signProgress);
+            System.out.println("Zip sign");
+            ApkBuilder.zipSign(projectFile);
+            System.out.println("Zip align");
             ApkBuilder.zipAlign();
+            System.out.println("Publish apk");
             ApkBuilder.publishApk();
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -108,9 +119,7 @@ public class ApkBuilder {
 
     }
 
-    private static void zipSign(AndroidProjectFile projectFile, SignProgress signProgress) throws Exception {
-        Log.d(TAG, "zipSign() called with: projectFile = [" + projectFile + "], signProgress = [" + signProgress + "]");
-
+    private static void zipSign(AndroidProjectFile projectFile) throws Exception {
 //        if (!appContext.getString(R.string.keystore).contentEquals(projectFile.jksEmbedded.getName())) {
 //             TODO use user defined certificate
 //        }
@@ -124,7 +133,13 @@ public class ApkBuilder {
         String signatureAlgorithm = "SHA1withRSA";
 
         ZipSigner zipsigner = new ZipSigner();
-        zipsigner.addProgressListener(signProgress);
+        zipsigner.addProgressListener(new SignProgress(){
+            @Override
+            public void onProgress(ProgressEvent event) {
+                super.onProgress(event);
+                System.out.println("Sign progress: " + event.getPercentDone());
+            }
+        });
         CustomKeySigner.signZip(zipsigner, keystorePath, keystorePw, certAlias,
                 certPw, signatureAlgorithm,
                 projectFile.getApkUnsigned().getPath(),

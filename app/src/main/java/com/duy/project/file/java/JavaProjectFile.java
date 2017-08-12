@@ -176,7 +176,6 @@ public class JavaProjectFile implements Serializable, Cloneable {
     @CallSuper
     public void clean() {
         FileManager.deleteFolder(dirBuildClasses);
-        FileManager.deleteFolder(dirDexedLibs);
     }
 
     public File getRootDir() {

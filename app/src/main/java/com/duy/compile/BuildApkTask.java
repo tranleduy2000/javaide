@@ -2,10 +2,8 @@ package com.duy.compile;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.duy.compile.external.CommandManager;
-import com.duy.compile.external.android.ApkBuilder;
 import com.duy.project.file.android.AndroidProjectFile;
 
 import java.io.File;
@@ -15,8 +13,6 @@ import java.util.List;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
-
-import kellinwood.security.zipsigner.ProgressEvent;
 
 public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
     private static final String TAG = "BuildApkTask";
@@ -58,17 +54,8 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
         };
         //clean
         projectFile.clean();
-        projectFile.createBuildDir();
         try {
-            ApkBuilder.SignProgress signProgress = new ApkBuilder.SignProgress() {
-                @Override
-                public void onProgress(ProgressEvent event) {
-                    super.onProgress(event);
-                    Log.d(TAG, "onProgress: " + event);
-                }
-            };
-            return CommandManager.buildApk(projectFile, outputStream, mDiagnosticCollector,
-                    signProgress);
+            return CommandManager.buildApk(projectFile, outputStream, mDiagnosticCollector);
         } catch (Exception e) {
             this.error = e;
         }

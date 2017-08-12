@@ -810,7 +810,7 @@ public class MainActivity extends BaseEditorActivity implements
             case ACTION_OPEN_ANDROID_PROJECT: //import new project
             {
                 saveCurrentFile();
-                JavaProjectFile pf = ProjectManager.importAndroidProject(getApplicationContext(), file);
+                AndroidProjectFile pf = ProjectManager.importAndroidProject(getApplicationContext(), file);
                 Log.d(TAG, "onFileSelected pf = " + pf);
                 if (pf != null) {
                     super.onProjectCreated(pf);

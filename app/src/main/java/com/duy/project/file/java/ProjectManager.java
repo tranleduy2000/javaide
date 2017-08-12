@@ -74,7 +74,7 @@ public class ProjectManager {
         return projectFile;
     }
 
-    public static JavaProjectFile importAndroidProject(Context context, File file) {
+    public static AndroidProjectFile importAndroidProject(Context context, File file) {
         Log.d(TAG, "importAndroidProject() called with: context = [" + context + "], file = [" + file + "]");
 
         AndroidProjectFile project = new AndroidProjectFile(file.getParentFile(),

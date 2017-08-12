@@ -84,7 +84,7 @@
         android:id="@+id/linearLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="5dp" 
         android:orientation="horizontal">
 
         <Button

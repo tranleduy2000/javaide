@@ -476,7 +476,11 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         if (mainClass != null && mainClass.exist(projectFile)) {
             addNewPageEditor(new File(mainClass.getPath(projectFile)), true);
         }
+
+        startAutoCompleteService();
     }
+
+    protected abstract void startAutoCompleteService();
 
     @Override
     public void onFileCreated(File classF) {

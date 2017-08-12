@@ -119,58 +119,49 @@ public class PagePresenter implements EditPageContract.Presenter {
     @Override
     public void invalidateTab() {
         Log.d(TAG, "invalidateTab() called");
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                for (int i = 0; i < mPageAdapter.getCount(); i++) {
-                    TabLayout.Tab tab = mTabLayout.getTabAt(i);
-                    View view = layoutInflater.inflate(R.layout.item_tab_file, null);
-                    view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                    if (tab != null) {
-                        tab.setCustomView(view);
-                    } else {
-                        tab = mTabLayout.newTab();
-                        mTabLayout.addTab(tab);
-                        tab.setCustomView(view);
-                    }
+        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+        mTabLayout.removeAllTabs();
+        for (int i = 0; i < mPageAdapter.getCount(); i++) {
 
-                    if (view != null) {
-                        View close = view.findViewById(R.id.img_close);
-                        final int position = i;
-                        close.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                removePage(position);
-                            }
-                        });
-                        TextView txtTitle = view.findViewById(R.id.txt_title);
-                        txtTitle.setText(mPageAdapter.getPageTitle(i));
-                        txtTitle.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                mViewPager.setCurrentItem(position);
-                            }
-                        });
+            View view = layoutInflater.inflate(R.layout.item_tab_file, null);
+            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            TabLayout.Tab tab = mTabLayout.newTab();
+            mTabLayout.addTab(tab);
+            tab.setCustomView(view);
 
-                        if (i == mViewPager.getCurrentItem()) {
-                            tab.select();
-                        }
-                        final EditorFragment fm = mPageAdapter.getExistingFragment(position);
-                        if (fm != null && fm.getTag().endsWith(".java")) {
-                            View run = view.findViewById(R.id.image_run_file);
-                            run.setVisibility(View.VISIBLE);
-                            run.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    mContext.runFile(fm.getTag());
-                                }
-                            });
-                        }
-                    }
+            View close = view.findViewById(R.id.img_close);
+            final int position = i;
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removePage(position);
                 }
+            });
+            TextView txtTitle = view.findViewById(R.id.txt_title);
+            txtTitle.setText(mPageAdapter.getPageTitle(i));
+            txtTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mViewPager.setCurrentItem(position);
+                }
+            });
+
+            if (i == mViewPager.getCurrentItem()) {
+                tab.select();
             }
-        }, 0);
+            final EditorFragment fm = mPageAdapter.getExistingFragment(position);
+            if (fm != null && fm.getTag().endsWith(".java")) {
+                View run = view.findViewById(R.id.image_run_file);
+                run.setVisibility(View.VISIBLE);
+                run.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mContext.runFile(fm.getTag());
+                    }
+                });
+            }
+        }
+
     }
 
 
@@ -227,7 +218,9 @@ public class PagePresenter implements EditPageContract.Presenter {
 
     public void setAutoCompleteProvider(@NonNull AutoCompleteProvider autoCompleteProvider) {
         Log.d(TAG, "setAutoCompleteProvider() called with: autoCompleteProvider = [" + autoCompleteProvider + "]");
-
+        if (this.autoCompleteProvider != null) {
+            this.autoCompleteProvider.dispose();
+        }
         this.autoCompleteProvider = autoCompleteProvider;
         for (int i = 0; i < mPageAdapter.getCount(); i++) {
             EditorFragment fm = mPageAdapter.getExistingFragment(i);

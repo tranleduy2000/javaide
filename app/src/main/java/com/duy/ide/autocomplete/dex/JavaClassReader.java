@@ -96,6 +96,7 @@ public class JavaClassReader {
         if (loaded) {
             return;
         }
+        this.mClasses.clear();
         this.mClasses.putAll(getAllClassesFromProject(
                 projectFolder instanceof AndroidProjectFolder, //is android
                 projectFolder.getDirLibs().listFiles()));

@@ -1,31 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, CalculatorActivity!</string>
-    <string name="app_name">Calculator_AIUB</string>
-    <string name="welcome_msg">Welcome to AIUB calculator</string>
-    
-    <string name="square_root_symbol">√¯¯</string>
-    <string name="squared_two">"X\u00B2"</string>
-    <string name="qube">"X\u00B3"</string>
-    <string name="delete_numbers">"\u21D0"</string>
-    
-    <string name="degree_celsius">"\u2103"</string>
-    <string name="pi">"\u03C0"</string>
-    
-        
-    <style name="ButtonText">
-	    <item name="android:layout_width">34dp</item>
-	    <item name="android:layout_height">40dp</item>
-	    <item name="android:textColor">#ffffff</item>
-	    <item name="android:gravity">center</item>
-	    <item name="android:layout_margin">3dp</item>
-	    <item name="android:textSize">20dp</item>
-	    <item name="android:textStyle"></item>
-	    <item name="android:shadowColor">#000000</item>
-	    <item name="android:shadowDx">1</item>
-	    <item name="android:shadowDy">1</item>
-	    <item name="android:shadowRadius">2</item>
-	</style>
-
+    <string name="app_name">NewN</string>
+    <string name="title_activity_main">NewN</string>
 </resources>

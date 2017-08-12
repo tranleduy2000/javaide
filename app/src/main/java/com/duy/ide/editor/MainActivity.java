@@ -105,10 +105,9 @@ public class MainActivity extends BaseEditorActivity implements
         mMenuEditor = new MenuEditor(this, this);
         initView(savedInstanceState);
 
-        startAutoCompleteService();
     }
 
-    private void startAutoCompleteService() {
+    protected void startAutoCompleteService() {
         if (mProjectFile != null) {
             new Thread(new Runnable() {
                 @Override

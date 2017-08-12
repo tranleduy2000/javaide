@@ -151,4 +151,8 @@ public class AutoCompleteProvider {
         }
 //        mClassLoader.touchClass(suggestion.getDescription());
     }
+
+    public void dispose() {
+        mClassLoader.getClassReader().dispose();
+    }
 }

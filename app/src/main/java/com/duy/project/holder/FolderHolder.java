@@ -40,10 +40,11 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
         this.leaf = node.isLeaf();
         View imgNew = view.findViewById(R.id.img_add);
         View imgDelete = view.findViewById(R.id.img_delete);
-        if (!ProjectFileUtil.inSrcDir(item.getProjectFile(), item.getFile())) {
-            imgNew.setVisibility(View.GONE);
-        } else {
+
+        if (item.getFile().isDirectory() && !node.isRoot()) {
             imgNew.setVisibility(View.VISIBLE);
+        } else {
+            imgNew.setVisibility(View.GONE);
         }
         if (ProjectFileUtil.isRoot(item.getProjectFile(), item.getFile())) {
             imgDelete.setVisibility(View.GONE);

@@ -324,6 +324,7 @@ public class MainActivity extends BaseEditorActivity implements
 
     @Override
     public void buildJar() {
+        saveAllFile();
         if (mProjectFile != null) {
             new BuildJarAchieveTask(new BuildJarAchieveTask.CompileListener() {
                 @Override
@@ -337,6 +338,7 @@ public class MainActivity extends BaseEditorActivity implements
                     openDrawer(GravityCompat.START);
                     mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
                     mDiagnosticPresenter.display(diagnostics);
+                    mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
                     updateUIFinish();
                 }
 
@@ -347,10 +349,11 @@ public class MainActivity extends BaseEditorActivity implements
                     mFilePresenter.refresh(mProjectFile);
                     mDiagnosticPresenter.display(diagnostics);
                     mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    updateUIFinish();
                 }
 
                 @Override
-                public void onNewMessage(char[] chars, int start, int end) {
+                public void onNewMessage(byte[] chars, int start, int end) {
                     mMessagePresenter.append(chars, start, end);
                 }
             }).execute(mProjectFile);
@@ -779,7 +782,6 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     private void updateUIFinish() {
-
         if (mActionRun != null) mActionRun.setEnabled(true);
         if (mCompileProgress != null) {
             mHandler.postDelayed(new Runnable() {

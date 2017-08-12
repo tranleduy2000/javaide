@@ -67,7 +67,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
         projectFile.createBuildDir();
 
         int status = CommandManager.compileJava(projectFile, printWriter, listener);
-        if (status != Main.EXIT_ERROR) {
+        if (status == Main.EXIT_OK) {
             try {
                 CommandManager.convertToDexFormat(projectFile);
             } catch (Exception e) {
@@ -98,7 +98,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
     @Override
     protected void onPostExecute(final Integer result) {
         super.onPostExecute(result);
-        if (result == Main.EXIT_ERROR) {
+        if (result != Main.EXIT_OK) {
             if (compileListener != null) compileListener.onError(error, mDiagnostics);
         } else {
             if (compileListener != null) compileListener.onComplete(projectFile, mDiagnostics);

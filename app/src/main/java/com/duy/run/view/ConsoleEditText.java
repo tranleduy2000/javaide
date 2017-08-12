@@ -80,9 +80,6 @@ public class ConsoleEditText extends AppCompatEditText {
             }
         }
     };
-    private PrintStream systemOut, systemErr;
-    private InputStream systemIn;
-
     public ConsoleEditText(Context context) {
         super(context);
         init(context);
@@ -132,10 +129,6 @@ public class ConsoleEditText extends AppCompatEditText {
                 mHandler.sendMessage(mHandler.obtainMessage(NEW_ERR));
             }
         });
-
-        systemIn = System.in;
-        systemOut = System.out;
-        systemErr = System.err;
     }
 
     private void writeStdoutToScreen() {
@@ -218,11 +211,6 @@ public class ConsoleEditText extends AppCompatEditText {
     public void stop() {
         mInputBuffer.write(-1);
         isRunning.set(false);
-
-        //restore
-        System.setOut(systemOut);
-        System.setErr(systemErr);
-        System.setIn(systemIn);
     }
 
     public interface StdListener {

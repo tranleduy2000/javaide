@@ -20,25 +20,30 @@ import java.io.Serializable;
 
 public class JavaProjectFolder implements Serializable, Cloneable {
     private static final String TAG = "ProjectFile";
+
     public final File dirLibs;
     public final File dirSrcMain;
     public final File dirJava;
     public final File dirBuildClasses;
+
     /* Project */
     protected final File dirRoot;
     protected final File dirProject;
+
     /* Build */
     protected final File dirBuild;
     protected final File dirOutput;
     protected final File dirOutputJar;
-    public File dirDexedLibs;
     public File bootClasspath;
+    protected File dirDexedLibs;
     protected File dirDexedClass;
     protected File dexedClassesFile;
     protected String packageName;
+
     /*Main class*/
     private ClassFile mainClass;
     private String projectName;
+    private File jarArchive;
 
     public JavaProjectFolder(File root, String mainClassName, String packageName, String projectName,
                              String classpath) {
@@ -90,6 +95,8 @@ public class JavaProjectFolder implements Serializable, Cloneable {
             dirBuildClasses.mkdirs();
             dirBuildClasses.setReadable(true);
         }
+
+        jarArchive = new File(dirOutputJar, projectName + ".jar");
     }
 
     public static File createClass(JavaProjectFolder projectFile,
@@ -123,6 +130,15 @@ public class JavaProjectFolder implements Serializable, Cloneable {
             return null;
         }
         return new JavaProjectFolder(dirRoot, mainClass.getName(), packageName, projectName, classpath);
+    }
+
+    public File getOutJarArchive() throws IOException {
+        if (!jarArchive.exists()) {
+            jarArchive.getParentFile().mkdirs();
+            jarArchive.createNewFile();
+        }
+        return jarArchive;
+
     }
 
     public File getBootClasspath() {
@@ -184,7 +200,8 @@ public class JavaProjectFolder implements Serializable, Cloneable {
 
     @CallSuper
     public void clean() {
-        FileManager.deleteFolder(dirBuildClasses);
+        FileManager.deleteFolder(dirBuild);
+        dirBuild.mkdirs();
     }
 
     public File getRootDir() {

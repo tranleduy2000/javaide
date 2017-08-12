@@ -37,33 +37,32 @@ public class CommandManager {
     private static final String TAG = "CommandManager";
 
     @Nullable
-    public static File buildJarAchieve(JavaProjectFolder projectFile, PrintWriter out, DiagnosticListener listener) {
-        Log.d(TAG, "buildJarAchieve() called with: projectFile = [" + projectFile + "], out = [" + out + "], listener = [" + listener + "]");
-
+    public static File buildJarAchieve(JavaProjectFolder projectFile, OutputStream out,
+                                       DiagnosticListener listener) {
+        Log.d(TAG, "buildJarAchieve() called with: projectFile = [" + projectFile + "], out = ["
+                + out + "], listener = [" + listener + "]");
+        File jarFile = null;
+        PrintStream stdout, stderr;
+        stdout = System.out;
+        stderr = System.err;
+        System.setOut(new PrintStream(out));
+        System.setErr(new PrintStream(out));
         try {
-            int status = compileJava(projectFile, out, listener);
-            if (status == Main.EXIT_ERROR) {
-                return null; //can not compile
+            int status = compileJava(projectFile, new PrintWriter(out), listener);
+            if (status != Main.EXIT_OK) {
+                throw new RuntimeException("Compile time error... Exit code(" + status + ")");
             }
-            String projectName = projectFile.getProjectName();
-            String rootPkg = projectFile.getMainClass().getRootPackage();
-
-            File jarFolder = new File(projectFile.getDirBuildClasses(), rootPkg);
-            File outJar = new File(projectFile.getDirOutputJar(), projectName + ".jar");
-            if (outJar.exists()) outJar.delete();
-            outJar.createNewFile();
-            String[] args = new String[]{"-v", outJar.getPath(), jarFolder.getPath()};
             //now create normal jar file
-            Jar.main(args);
-            //ok, create dex file
-//            dexBuildClasses(projectFile);
-            return outJar;
+            Jar.createJarArchive(projectFile);
+            jarFile = projectFile.getOutJarArchive();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "buildJarAchieve: ", e);
             //compile time error
-            e.printStackTrace(out);
+            e.printStackTrace(new PrintStream(out));
         }
-        return null;
+        System.setOut(stdout);
+        System.setErr(stderr);
+        return jarFile;
     }
 
     public static int compileJava(JavaProjectFolder pf, PrintWriter out) {

@@ -8,6 +8,8 @@ public class MessageContract {
     public interface View {
         void append(String text);
 
+        void append(byte[] chars, int start, int end);
+
         void append(char[] chars, int start, int end);
 
         void clear();
@@ -18,6 +20,8 @@ public class MessageContract {
     public interface Presenter {
 
         void clear();
+
+        void append(byte[] chars, int start, int end);
 
         void append(char[] chars, int start, int end);
 

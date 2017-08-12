@@ -54,7 +54,7 @@ public class AndroidBuilder {
             System.out.println("Compile Java file");
             int status = CommandManager.compileJava(projectFile, new PrintWriter(out), diagnosticCollector);
             System.gc();
-            if (status == Main.EXIT_ERROR) {
+            if (status != Main.EXIT_OK) {
                 System.out.println("Compile error");
                 throw new RuntimeException("Compile time error!");
             }

@@ -37,6 +37,14 @@ public class MessagePresenter implements MessageContract.Presenter {
     }
 
     @Override
+    public void append(byte[] chars, int start, int end) {
+        this.view = (MessageContract.View) adapter.getExistingFragment(0);
+        if (view != null) {
+            view.append(chars, start, end);
+        }
+    }
+
+    @Override
     public void append(char[] chars, int start, int end) {
         this.view = (MessageContract.View) adapter.getExistingFragment(0);
         if (view != null) {

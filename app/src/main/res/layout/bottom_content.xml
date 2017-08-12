@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/output_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clickable="true"
-    android:foreground="?selectableItemBackground"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/output_view"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:clickable="true"
+              android:foreground="?selectableItemBackground"
+              android:orientation="vertical">
 
     <ImageView
         android:id="@+id/drag_view_horizontal"
@@ -17,15 +17,15 @@
         android:contentDescription="@string/expand_collapse"
         android:foreground="?selectableItemBackground"
         android:src="@drawable/ic_more_horiz_white_24dp"
-        android:tint="?colorAccent" />
+        android:tint="?colorAccent"/>
 
     <ProgressBar
         android:id="@+id/compile_progress"
         style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="5dp"
         android:indeterminate="true"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/bottom_tab"

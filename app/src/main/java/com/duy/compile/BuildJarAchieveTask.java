@@ -1,21 +1,22 @@
 package com.duy.compile;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
-import com.android.annotations.NonNull;
 import com.duy.compile.external.CommandManager;
 import com.duy.project.file.java.JavaProjectFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 
 public class BuildJarAchieveTask extends AsyncTask<JavaProjectFolder, Object, File> {
+    private static final String TAG = "BuildJarAchieveTask";
     private BuildJarAchieveTask.CompileListener listener;
     private DiagnosticCollector mDiagnosticCollector;
     private Exception error;
@@ -35,27 +36,25 @@ public class BuildJarAchieveTask extends AsyncTask<JavaProjectFolder, Object, Fi
     protected File doInBackground(JavaProjectFolder... params) {
         JavaProjectFolder projectFile = params[0];
         if (params[0] == null) return null;
-        PrintWriter printWriter = new PrintWriter(new Writer() {
+        OutputStream out = new OutputStream() {
             @Override
-            public void write(@NonNull char[] chars, int i, int i1) throws IOException {
-                publishProgress(chars, i, i1);
+            public void write(@NonNull byte[] b, int off, int len) throws IOException {
+                publishProgress(b, off, len);
             }
 
             @Override
-            public void flush() throws IOException {
-
+            public void write(int b) throws IOException {
+                write(new byte[]{(byte) b}, 0, 1);
             }
-
-            @Override
-            public void close() throws IOException {
-
-            }
-        });
-        //clean
-        projectFile.clean();
-        projectFile.createBuildDir();
+        };
         try {
-            return CommandManager.buildJarAchieve(projectFile, printWriter, mDiagnosticCollector);
+            out.write("Clean...\n".getBytes());
+            projectFile.clean();
+        } catch (IOException ignored) {
+        }
+
+        try {
+            return CommandManager.buildJarAchieve(projectFile, out, mDiagnosticCollector);
         } catch (Exception e) {
             this.error = e;
         }
@@ -66,12 +65,13 @@ public class BuildJarAchieveTask extends AsyncTask<JavaProjectFolder, Object, Fi
     protected void onProgressUpdate(Object... values) {
         super.onProgressUpdate(values);
         try {
-            char[] chars = (char[]) values[0];
+            byte[] chars = (byte[]) values[0];
             int start = (int) values[1];
             int end = (int) values[2];
             listener.onNewMessage(chars, start, end);
+            Log.d(TAG, new String(chars, start, end));
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "onProgressUpdate: ", e);
         }
     }
 
@@ -93,6 +93,6 @@ public class BuildJarAchieveTask extends AsyncTask<JavaProjectFolder, Object, Fi
 
         void onComplete(File jarfile, List<Diagnostic> diagnostics);
 
-        void onNewMessage(char[] chars, int start, int end);
+        void onNewMessage(byte[] chars, int start, int end);
     }
 }

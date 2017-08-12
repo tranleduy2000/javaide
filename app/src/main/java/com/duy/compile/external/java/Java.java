@@ -26,6 +26,14 @@ public class Java {
                            @Nullable PrintStream out,
                            @Nullable InputStream in,
                            @Nullable PrintStream err) {
+        PrintStream stdout = System.out;
+        PrintStream stderr = System.err;
+        InputStream stdin = System.in;
+
+        if (out != null) System.setOut(out);
+        if (in != null) System.setIn(in);
+        if (err != null) System.setErr(err);
+
         try {
             String jarfile = "";
             String classname = "";
@@ -124,9 +132,6 @@ public class Java {
             }
 
 //            main.invoke(null, new Object[]{pargs});
-            if (out != null) System.setOut(out);
-            if (in != null) System.setIn(in);
-            if (err != null) System.setErr(err);
 
             main.invoke(null, new Object[]{mainargs});
 
@@ -137,5 +142,8 @@ public class Java {
             ex.printStackTrace();
             usage();
         }
+        System.setIn(stdin);
+        System.setOut(stdout);
+        System.setErr(stderr);
     }
 }

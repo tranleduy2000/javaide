@@ -5,6 +5,8 @@
 
 package com.duy.compile.external.java;
 
+import com.duy.project.file.java.JavaProjectFolder;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,9 +23,9 @@ import java.util.jar.Manifest;
 
 public class Jar {
 
-    static int BUFFER_SIZE = 10240;
-    static byte mBuffer[] = new byte[BUFFER_SIZE];
-    static boolean mVerbose = false;
+    private static int BUFFER_SIZE = 10240;
+    private static byte mBuffer[] = new byte[BUFFER_SIZE];
+    private static boolean mVerbose = false;
 
     public static void main(String[] zArgs) {
         if (zArgs == null || zArgs.length < 2) {
@@ -47,7 +49,77 @@ public class Jar {
         }
     }
 
-    protected static void createJarArchive(File archiveFile, File zTobeJared) {
+    public static void createJarArchive(JavaProjectFolder projectFolder) throws IOException {
+        //input file
+        File dirBuildClasses = projectFolder.getDirBuildClasses();
+        File archiveFile = projectFolder.getOutJarArchive();
+
+
+        // Open archive file
+        FileOutputStream stream = new FileOutputStream(archiveFile);
+        Manifest manifest = new Manifest();
+        manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+
+        //Create the jar file
+        JarOutputStream out = new JarOutputStream(stream, manifest);
+
+        //Add the files..
+        if (dirBuildClasses.listFiles() != null) {
+            for (File file : dirBuildClasses.listFiles()) {
+                addzz(dirBuildClasses.getPath(), file, out);
+            }
+        }
+
+        out.close();
+        stream.close();
+        System.out.println("Adding completed OK");
+    }
+
+    private static void addzz(String parentPath, File source, JarOutputStream target) throws IOException {
+        String name = source.getPath().substring(parentPath.length() + 1);
+        System.out.println("Adding file : " + name);
+        BufferedInputStream in = null;
+        try {
+            System.out.println("name = " + name);
+            if (source.isDirectory()) {
+                if (!name.isEmpty()) {
+                    if (!name.endsWith("/"))
+                        name += "/";
+
+                    //Add the Entry
+                    JarEntry entry = new JarEntry(name);
+                    entry.setTime(source.lastModified());
+                    target.putNextEntry(entry);
+                    target.closeEntry();
+                }
+
+                for (File nestedFile : source.listFiles()) {
+                    addzz(parentPath, nestedFile, target);
+                }
+                return;
+            }
+
+            JarEntry entry = new JarEntry(name);
+            entry.setTime(source.lastModified());
+            target.putNextEntry(entry);
+            in = new BufferedInputStream(new FileInputStream(source));
+            byte[] buffer = new byte[1024];
+            while (true) {
+                int count = in.read(buffer);
+                if (count == -1)
+                    break;
+                target.write(buffer, 0, count);
+            }
+            target.closeEntry();
+
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
+    }
+
+    public static void createJarArchive(File archiveFile, File zTobeJared) {
         try {
             // Open archive file
             FileOutputStream stream = new FileOutputStream(archiveFile);

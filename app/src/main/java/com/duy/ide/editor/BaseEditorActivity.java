@@ -177,6 +177,8 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         bottomTab.setupWithViewPager(mBottomPage);
         //create project if need
         createProjectIfNeed();
+
+        startAutoCompleteService();
     }
 
     private void createProjectIfNeed() {

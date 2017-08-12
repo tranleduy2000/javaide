@@ -33,16 +33,15 @@ import dalvik.system.DexClassLoader;
 public class JavaClassReader {
     private static final String TAG = "JavaClassReader";
     private String classpath;
+    private String tempDir;
     private HashMap<String, Class> mClasses = new HashMap<>();
     private WeakHashMap<String, ClassDescription> mCache = new WeakHashMap<>();
 
-    private DexClassLoader mDexClassLoader;
     private boolean loaded = false;
 
-    public JavaClassReader(String classpath, String outDir) {
+    public JavaClassReader(String classpath, String tempDir) {
         this.classpath = classpath;
-        mDexClassLoader = new DexClassLoader(classpath, outDir, null,
-                ClassLoader.getSystemClassLoader());
+        this.tempDir = tempDir;
     }
 
     public HashMap<String, Class> getClasses() {
@@ -63,6 +62,7 @@ public class JavaClassReader {
     }
 
     private HashMap<String, Class> getAllClassesFromJar(boolean android, String path) {
+        DexClassLoader dexClassLoader = new DexClassLoader(path, tempDir, null, ClassLoader.getSystemClassLoader());
         HashMap<String, Class> classes = new HashMap<>();
         try {
             JarFile jarFile = new JarFile(path);
@@ -77,10 +77,10 @@ public class JavaClassReader {
                 className = className.replace('/', '.');
                 try {
                     if (android) {
-                        Class c = mDexClassLoader.loadClass(className);
+                        Class c = dexClassLoader.loadClass(className);
                         classes.put(c.getName(), c);
                     } else if (!className.startsWith("android")) {
-                        Class c = mDexClassLoader.loadClass(className);
+                        Class c = dexClassLoader.loadClass(className);
                         classes.put(c.getName(), c);
                     }
                 } catch (ClassNotFoundException e1) {

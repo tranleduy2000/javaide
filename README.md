@@ -14,9 +14,7 @@ target="_blank">
 <img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
 alt="IMAGE ALT TEXT HERE" width="240"/></a>
 
-
 ## Todo
-
 1. Java compiler JDK 1.7 &#10004;
 2. Java editor &#10004;
 3. Java auto complete code &#10004; (But not working perfect)
@@ -30,14 +28,12 @@ alt="IMAGE ALT TEXT HERE" width="240"/></a>
 11. XML auto complete
 12. Layout builder for Android
 
-## What does the project include?
-1. Java IDE
-2. Javac - Java compiler
-3. Aapt - Android asset package tool
-4. Dx - Dex for dalvik vm
-5. Zip Signer
-6. Apk builder
-
+## What does tools the project include?
+1. Javac - Java compiler
+2. Aapt - Android asset package tool
+3. Dx - Dex for dalvik vm
+4. Zip Signer
+5. Apk builder
 
 ## Contribute
 I would absolutely love every possible kind of contributions. If you
@@ -45,8 +41,7 @@ have a questions, ideas, need help or want to propose a change just open
 an issue. Pull request are greatly appreciated.
 
 ## Tutorials
-
-1. Setup system https://www.youtube.com/watch?v=UtEZDSdi9ek&t=1s
+1. Setup system https://youtu.be/FZtSbgq8ZN0
 
 ## Licence
 

@@ -229,10 +229,10 @@ include $(BUILD_SHARED_LIBRARY)
 
 ######################################################################################
 
-include $(CLEAR_VARS)
-LOCAL_MODULE:= libjackpal-androidterm2
-LOCAL_SRC_FILES:= \
-  termExec.cpp
-LOCAL_LDLIBS := -ldl -llog
-include $(BUILD_SHARED_LIBRARY)
+#include $(CLEAR_VARS)
+#LOCAL_MODULE:= libjackpal-androidterm2
+#LOCAL_SRC_FILES:= \
+#  termExec.cpp
+#LOCAL_LDLIBS := -ldl -llog
+#include $(BUILD_SHARED_LIBRARY)
 

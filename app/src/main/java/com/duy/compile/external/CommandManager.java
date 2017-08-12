@@ -56,7 +56,7 @@ public class CommandManager {
             //now create normal jar file
             Jar.main(args);
             //ok, create dex file
-            dexBuildClasses(projectFile);
+//            dexBuildClasses(projectFile);
             return outJar;
         } catch (Exception e) {
             e.printStackTrace();

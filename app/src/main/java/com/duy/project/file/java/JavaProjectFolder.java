@@ -35,10 +35,10 @@ public class JavaProjectFolder implements Serializable, Cloneable {
     public File bootClasspath;
     protected File dirDexedClass;
     protected File dexedClassesFile;
+    protected String packageName;
     /*Main class*/
     private ClassFile mainClass;
     private String projectName;
-    protected String packageName;
 
     public JavaProjectFolder(File root, String mainClassName, String packageName, String projectName,
                              String classpath) {
@@ -296,14 +296,9 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         String classpath = ".";
         File[] files = getDirLibs().listFiles();
         if (files != null) {
-            for (int i = 0; i < files.length; i++) {
-                File jarLib = files[i];
+            for (File jarLib : files) {
                 if (jarLib.isFile() && jarLib.getName().endsWith(".jar")) {
-                    if (i != 0) {
-                        classpath += File.pathSeparator + jarLib.getPath();
-                    } else {
-                        classpath += jarLib.getPath();
-                    }
+                    classpath += File.pathSeparator + jarLib.getPath();
                 }
             }
         }

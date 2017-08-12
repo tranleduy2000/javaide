@@ -32,7 +32,7 @@ import android.util.Log;
  */
 
 public class IndentEditText extends AppCompatMultiAutoCompleteTextView {
-    public static final String TAB_CHARACTER = "    ";
+    public static final String TAB_CHARACTER = "  ";
     public static final String TAB = "  "; //2 space
     public static final String CURSOR = "\u2622";
     private static final String TAG = "AutoIndentEditText";

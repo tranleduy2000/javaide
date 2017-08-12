@@ -1,6 +1,7 @@
 package com.duy.compile;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -18,12 +19,12 @@ import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 
 public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Integer> {
+    private static final String TAG = "CompileJavaTask";
     private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
     private JavaProjectFolder projectFile;
     @Nullable
     private CompileListener compileListener;
     private Exception error;
-
 
     public CompileJavaTask(CompileListener compileListener) {
         this.compileListener = compileListener;
@@ -87,9 +88,11 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
             int start = (int) values[1];
             int end = (int) values[2];
             if (compileListener != null) compileListener.onNewMessage(chars, start, end);
+            Log.d(TAG, "onProgressUpdate: " + new String(chars, start, end));
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @Override

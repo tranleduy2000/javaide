@@ -32,7 +32,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
     protected final File dirOutput;
     protected final File dirOutputJar;
     public File dirDexedLibs;
-    public  final File classpathFile;
+    public File bootClasspath;
     protected File dirDexedClass;
     protected File dexedClassesFile;
     /*Main class*/
@@ -64,7 +64,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
         dirDexedClass = new File(dirBuild, "dexedClasses");
 
         dexedClassesFile = new File(dirDexedClass, projectName + ".dex");
-        classpathFile = new File(classpath);
+        bootClasspath = new File(classpath);
 
         if (!dirRoot.exists()) {
             dirRoot.mkdirs();
@@ -125,6 +125,12 @@ public class JavaProjectFile implements Serializable, Cloneable {
         return new JavaProjectFile(dirRoot, mainClass.getName(), packageName, projectName, classpath);
     }
 
+    public File getBootClasspath() {
+        if (bootClasspath.exists()) {
+        }
+        return bootClasspath;
+    }
+
     public File getDexedClassesFile() throws IOException {
         if (!dexedClassesFile.exists()) {
             dexedClassesFile.getParentFile().mkdirs();
@@ -144,7 +150,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
     }
 
     public File getDirDexedClass() {
-        if (!dirDexedClass.exists()){
+        if (!dirDexedClass.exists()) {
             dirDexedClass.mkdirs();
         }
         return dirDexedClass;
@@ -258,7 +264,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
             json.put("root_dir", dirRoot);
             json.put("package_name", packageName);
             json.put("project_name", projectName);
-            json.put("classpath", classpathFile.getPath());
+            json.put("classpath", bootClasspath.getPath());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -283,7 +289,10 @@ public class JavaProjectFile implements Serializable, Cloneable {
         }
     }
 
-    public String getClassPath() {
+    /**
+     * @return the string contains all file *.jar in dirLibs
+     */
+    public String getJavaClassPath() {
         String classpath = ".";
         File[] files = getDirLibs().listFiles();
         if (files != null) {
@@ -298,13 +307,15 @@ public class JavaProjectFile implements Serializable, Cloneable {
                 }
             }
         }
-        classpath += (classpath.isEmpty() ? "" : File.pathSeparator) + classpathFile.getPath();
-        Log.d(TAG, "getClassPath() returned: " + classpath);
         return classpath;
     }
 
     public File getDirSrcJava() {
         if (!dirJava.exists()) dirJava.mkdirs();
         return dirJava;
+    }
+
+    public String getJavaBootClassPath() {
+        return bootClasspath.getPath();
     }
 }

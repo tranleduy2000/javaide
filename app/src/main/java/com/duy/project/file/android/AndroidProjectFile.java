@@ -17,17 +17,16 @@ public class AndroidProjectFile extends JavaProjectFile {
     private final File apkUnaligned;
     public File xmlManifest;
     public File resourceFile;
+    public File zipSrc;
+    public File zipRes;
+    public File zipLibs;
+    public File zipDexedLibs;
     private KeyStore keystore;
     /* PROJECT */
     private File dirRes;
     private File dirAssets;
     private File classR;
     private File dirOutApk;
-
-    public  File zipSrc;
-    public  File zipRes;
-    public  File zipLibs;
-    public  File zipDexedLibs;
 
     public AndroidProjectFile(File dirRoot,
                               @Nullable String mainClassName,
@@ -60,6 +59,7 @@ public class AndroidProjectFile extends JavaProjectFile {
         zipRes = new File(dirBuild, "res.zip");
         zipLibs = new File(dirBuild, "libs.zip");
         zipDexedLibs = new File(dirBuild, "dexedLibs.zip");
+
     }
 
     public KeyStore getKeyStore() {

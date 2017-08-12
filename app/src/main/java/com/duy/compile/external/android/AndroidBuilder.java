@@ -101,7 +101,7 @@ public class AndroidBuilder {
         String command = "aapt p -f -v" +
                 " -M " + projectFile.xmlManifest.getPath() + //manifest file
                 " -F " + projectFile.getResourceFile().getPath() + //
-                " -I " + projectFile.classpathFile.getPath() + //include
+                " -I " + projectFile.bootClasspath.getPath() + //include
                 " -A " + projectFile.getDirAssets().getPath() + //assets dir
                 " -S " + projectFile.getDirRes().getPath() + //resource dir
                 " -J " + projectFile.getClassR().getParent();//out R.java dir

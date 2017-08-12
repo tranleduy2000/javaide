@@ -77,7 +77,8 @@ public class CommandManager {
         try {
             String[] args = new String[]{
                     "-verbose",
-                    "-classpath", projectFile.getClassPath(),
+                    "-bootclasspath", projectFile.getJavaBootClassPath(),
+                    "-cp", projectFile.getJavaClassPath(),
                     "-sourcepath", projectFile.getDirSrcJava().getPath(), //sourcepath
                     "-d", projectFile.getDirBuildClasses().getPath(), //output dir
                     projectFile.getMainClass().getPath(projectFile) //main class
@@ -117,7 +118,7 @@ public class CommandManager {
                         continue;
                     }
                     if (!outLib.exists()) outLib.createNewFile();
-                    String[] args = new String[]{"--dex", "--verbose",
+                    String[] args = new String[]{"--dex", "--verbose", "--no-strict",
                             "--output=" + outLib.getPath(), lib.getPath()};
                     Dex.main(args);
                 }
@@ -129,7 +130,7 @@ public class CommandManager {
         Log.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
         String input = projectFile.dirBuildClasses.getPath();
         FileManager.ensureFileExist(new File(input));
-        String[] args = new String[]{"--dex", "--verbose",
+        String[] args = new String[]{"--dex", "--verbose", "--no-strict",
                 "--output=" + projectFile.getDexedClassesFile().getPath(), //output dex file
                 input}; //input file
         Dex.main(args);
@@ -169,9 +170,8 @@ public class CommandManager {
 
     public static void convertToDexFormat(@NonNull JavaProjectFile projectFile) throws IOException {
         Log.d(TAG, "convertToDexFormat() called with: projectFile = [" + projectFile + "]");
-
-        dexBuildClasses(projectFile);
         dexLibs(projectFile, false);
+        dexBuildClasses(projectFile);
         dexMerge(projectFile);
     }
 

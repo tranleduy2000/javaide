@@ -279,7 +279,7 @@ public class Paths {
     }
 
     //SPARTACUS HACK
-    /*private Path computeAndroidClasspath() {
+    private Path computeAndroidClasspath() {
         Map<String,String> envs = System.getenv();
         Path path = new Path();
         path.addFile(new File(envs.get("HOME")+"/system/android/android.jar"),true);
@@ -287,7 +287,7 @@ public class Paths {
 //        path.addDirectory(new File("/data/data/com.spartacusrex.spartacuside/files"),true);
 //        path.addDirectory(new File("/sdcard"),true);
         return path;
-    }*/
+    }
 
     public Collection<File> bootClassPath() {
         lazy();
@@ -320,10 +320,10 @@ public class Paths {
 
         String bootclasspath = envs.get("BOOTCLASSPATH");
         path.addFiles(bootclasspath);
-//        String defaultClasspath = "/data/data/com.duy.compiler.javanide/files/system/classes/android.jar";
-//        if (bootclasspath == null || !bootclasspath.equals(defaultClasspath)) {
-//            path.addFiles(defaultClasspath);
-//        }
+        String defaultClasspath = "/data/user/0/com.duy.compiler.javanide/files/system/classes/android.jar";
+        if (bootclasspath == null || !bootclasspath.equals(defaultClasspath)) {
+            path.addFiles(defaultClasspath);
+        }
 
         /*path.addFiles(options.get(XBOOTCLASSPATH_PREPEND));
 

@@ -159,16 +159,13 @@ public class FileManager {
         return zFile.delete();
     }
 
-    public static boolean canEdit(File file) {
-        return file.canWrite() && com.duy.ide.file.FileUtils.hasExtension(file, ".java", ".xml", ".txt");
-    }
-
     public static void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
         while ((read = in.read(buffer)) != -1) {
             out.write(buffer, 0, read);
         }
+        out.flush();
     }
 
     public static void extractAsset(Context zContext, String zAssetFile, File zOuput) throws IOException {
@@ -211,8 +208,8 @@ public class FileManager {
     }
 
     public static File getClasspathFile(Context context) {
-        File file = new File(context.getFilesDir(), "system" + File.separator + "classes"
-                + File.separator + "android.jar");
+        File file = new File(context.getFilesDir(),
+                "system" + File.separator + "classes" + File.separator + "android.jar");
         return file;
     }
 

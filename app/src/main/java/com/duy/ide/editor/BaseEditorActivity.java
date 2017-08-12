@@ -108,7 +108,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected DrawerLayout mDrawerLayout;
     protected NavigationView navigationView;
     protected TabLayout mTabLayout;
-    protected   Toolbar toolbar;
+    protected Toolbar toolbar;
     @Nullable
     View mContainerSymbol; //don't support in landscape mode
     @Nullable
@@ -475,20 +475,23 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
     @Override
     public void onFileClick(File file, ProjectFileContract.ActionCallback callBack) {
-        if (FileManager.canEdit(file)) {
+        if (FileUtils.canEdit(file)) {
             //save current file
             addNewPageEditor(file, SELECT);
             //close drawer
             mDrawerLayout.closeDrawers();
         } else {
-            openFileByAnotherApp(file);
+            boolean success = openFileByAnotherApp(file);
+            if (!success) {
+                showFileInfo(file);
+            }
         }
     }
 
-    private void openFileByAnotherApp(File file) {
+    private boolean openFileByAnotherApp(File file) {
         if (file.getPath().endsWith(".jar") || file.getPath().endsWith(".dex")) {
             Toast.makeText(this, "Unable to open file", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
         //create intent open filek
         MimeTypeMap myMime = MimeTypeMap.getSingleton();
@@ -503,6 +506,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "No handler for this type of file.", Toast.LENGTH_LONG).show();
         }
+        return true;
     }
 
 
@@ -511,7 +515,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         if (FileUtils.canRead(file)) {
             showFileInfo(file);
         } else {
-            openFileByAnotherApp(file);
+            if (!openFileByAnotherApp(file)) {
+                showFileInfo(file);
+            }
         }
     }
 
@@ -534,9 +540,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         AlertDialog dialog = builder.create();
         dialog.show();
         TextView txtInfo = (TextView) dialog.findViewById(R.id.txt_info);
-        txtInfo.setText(file.getPath());
+        txtInfo.setText(file.getPath() + "\n" +
+                file.length() + " byte");
         EditorView editorView = (EditorView) dialog.findViewById(R.id.editor_view);
-        if (editorView != null) {
+        if (editorView != null && FileUtils.canEdit(file)) {
             editorView.setTextHighlighted(mFileManager.fileToString(file));
         }
     }

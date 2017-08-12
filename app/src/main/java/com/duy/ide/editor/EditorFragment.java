@@ -228,9 +228,17 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     @Override
     public void formatCode() {
-        JavaPreferences javaPreferences = new JavaPreferences(getContext());
-        int formatType = javaPreferences.getFormatType();
-        new TaskFormatCode(formatType).execute(getCode());
+        String filePath = getArguments().getString(CompileManager.FILE_PATH);
+        if (filePath != null) {
+            File f = new File(filePath);
+            if (f.getName().endsWith(".java")) {
+                JavaPreferences javaPreferences = new JavaPreferences(getContext());
+                int formatType = javaPreferences.getFormatType();
+                new JavaFormatCode(formatType).execute(getCode());
+            }else {
+                Toast.makeText(getContext(), R.string.unsupport_format_file, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
@@ -348,11 +356,11 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         }
     }
 
-    private class TaskFormatCode extends AsyncTask<String, Void, String> {
+    private class JavaFormatCode extends AsyncTask<String, Void, String> {
         private Exception error;
         private int formatType;
 
-        public TaskFormatCode(int formatType) {
+        public JavaFormatCode(int formatType) {
             this.formatType = formatType;
         }
 

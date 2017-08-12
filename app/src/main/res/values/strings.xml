@@ -470,4 +470,5 @@
     <string name="success">Success!</string>
     <string name="start_install_system">Starting install system</string>
     <string name="donate_for_project">Donate for project</string>
+    <string name="unsupport_format_file">Unsupported format this type</string>
 </resources>

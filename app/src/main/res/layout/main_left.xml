@@ -13,7 +13,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sothree.slidinguppanel.SlidingUpPanelLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
@@ -21,20 +22,21 @@
     android:background="?android:windowBackground"
     android:gravity="bottom"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    app:umanoDragView="@+id/drag_view_horizontal"
     app:umanoOverlay="false"
     app:umanoPanelHeight="@dimen/drag_view_height"
     app:umanoShadowHeight="4dp">
 
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/container_file"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?android:windowBackground"
-        android:fitsSystemWindows="true">
+                 android:id="@+id/container_file"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:background="?android:windowBackground"
+                 android:fitsSystemWindows="true">
 
     </FrameLayout>
 
-    <include layout="@layout/bottom_content" />
+    <include layout="@layout/bottom_content"/>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

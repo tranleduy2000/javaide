@@ -465,6 +465,10 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
 
         //show file structure of project
         mFilePresenter.show(projectFile, true);
+        mBottomPage.setCurrentItem(0);
+        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        mMessagePresenter.clear();
+        mDiagnosticPresenter.clear();
         openDrawer(GravityCompat.START);
 
         ClassFile mainClass = projectFile.getMainClass();

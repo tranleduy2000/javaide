@@ -95,12 +95,13 @@ public class MainActivity extends BaseEditorActivity implements
     public static final int REQUEST_CODE_SAMPLE = 1015;
 
     private static final String TAG = "MainActivity";
+    private static final int ACTION_OPEN_ANDROID_PROJECT = 3;
+    private static final int ACTION_OPEN_JAVA_PROJECT = 2;
     private CompileManager mCompileManager;
     private MenuEditor mMenuEditor;
     private Dialog mDialog;
     private MenuItem mActionRun;
     private ProgressBar mCompileProgress;
-
     private AutoCompleteService mAutoCompleteService;
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
@@ -138,14 +139,12 @@ public class MainActivity extends BaseEditorActivity implements
         Log.d(TAG, "onCreate: file " + new File("/data/data/com.duy.compiler.javanide/files/system/classes/android.jar").exists());
     }
 
-
     private void startAutoCompleteService() {
         Intent intent = new Intent(this, AutoCompleteService.class);
         if (!bindService(intent, mServiceConnection, BIND_AUTO_CREATE)) {
             Log.e(TAG, "startAutoCompleteService: bind service failed");
         }
     }
-
 
     public void initView(Bundle savedInstanceState) {
         mDrawerLayout.addDrawerListener(this);
@@ -291,48 +290,61 @@ public class MainActivity extends BaseEditorActivity implements
                         }).show();
                 return;
             }
-            CompileJavaTask.CompileListener compileListener = new CompileJavaTask.CompileListener() {
-                @Override
-                public void onStart() {
-                    updateUiStartCompile();
-                }
-
-                @Override
-                public void onError(Exception e, ArrayList<Diagnostic> diagnostics) {
-                    Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
-                    openDrawer(GravityCompat.START);
-                    mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
-                    mDiagnosticPresenter.display(diagnostics);
-                    updateUIFinish();
-                }
-
-                @Override
-                public void onComplete(final JavaProjectFile projectFile,
-                                       final List<Diagnostic> diagnostics) {
-                    updateUIFinish();
-                    Toast.makeText(MainActivity.this, R.string.compile_success, Toast.LENGTH_SHORT).show();
-                    mDiagnosticPresenter.display(diagnostics);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                mCompileManager.executeDex(projectFile, mProjectFile.getDexedClassesFile());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, 200);
-                }
-
-                @Override
-                public void onNewMessage(char[] chars, int start, int end) {
-                    mMessagePresenter.append(chars, start, end);
-                }
-            };
-            new CompileJavaTask(compileListener).execute(mProjectFile);
+            if (mProjectFile instanceof AndroidProjectFile) {
+                compileAndroidProject();
+            } else if (mProjectFile instanceof JavaProjectFile) {
+                compileJavaProject();
+            }
         } else {
             Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void compileAndroidProject() {
+        buildApk();
+    }
+
+
+    private void compileJavaProject() {
+        CompileJavaTask.CompileListener compileListener = new CompileJavaTask.CompileListener() {
+            @Override
+            public void onStart() {
+                updateUiStartCompile();
+            }
+
+            @Override
+            public void onError(Exception e, ArrayList<Diagnostic> diagnostics) {
+                Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
+                openDrawer(GravityCompat.START);
+                mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
+                mDiagnosticPresenter.display(diagnostics);
+                updateUIFinish();
+            }
+
+            @Override
+            public void onComplete(final JavaProjectFile projectFile,
+                                   final List<Diagnostic> diagnostics) {
+                updateUIFinish();
+                Toast.makeText(MainActivity.this, R.string.compile_success, Toast.LENGTH_SHORT).show();
+                mDiagnosticPresenter.display(diagnostics);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mCompileManager.executeDex(projectFile, mProjectFile.getDexedClassesFile());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, 200);
+            }
+
+            @Override
+            public void onNewMessage(char[] chars, int start, int end) {
+                mMessagePresenter.append(chars, start, end);
+            }
+        };
+        new CompileJavaTask(compileListener).execute(mProjectFile);
     }
 
     @Override
@@ -414,7 +426,6 @@ public class MainActivity extends BaseEditorActivity implements
             }
         }
     }
-
 
     /**
      * replace dialog find
@@ -753,7 +764,6 @@ public class MainActivity extends BaseEditorActivity implements
                 }).create().show();
     }
 
-
     public void showDialogRunConfig() {
         if (mProjectFile != null) {
             DialogRunConfig dialogRunConfig = DialogRunConfig.newInstance(mProjectFile);
@@ -771,24 +781,42 @@ public class MainActivity extends BaseEditorActivity implements
         }
     }
 
-    public void showDialogOpenProject() {
-        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR, 2);
+    public void showDialogOpenJavaProject() {
+        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
+                ACTION_OPEN_JAVA_PROJECT);
+        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
+    }
+
+    public void showDialogOpenAndroidProject() {
+        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
+                ACTION_OPEN_ANDROID_PROJECT);
         dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
     }
 
     @Override
     public void onFileSelected(File file, int request) {
         Log.d(TAG, "onFileSelected() called with: file = [" + file + "], request = [" + request + "]");
-
         switch (request) {
-            case 2: //import new project
-                saveCurrentFile();
+            case ACTION_OPEN_JAVA_PROJECT: //import new project
+            {
+                saveAllFile();
                 JavaProjectFile pf = ProjectManager.createProjectIfNeed(getApplicationContext(), file);
                 Log.d(TAG, "onFileSelected pf = " + pf);
                 if (pf != null) {
                     super.onProjectCreated(pf);
                 }
                 break;
+            }
+            case ACTION_OPEN_ANDROID_PROJECT: //import new project
+            {
+                saveCurrentFile();
+                JavaProjectFile pf = ProjectManager.importAndroidProject(getApplicationContext(), file);
+                Log.d(TAG, "onFileSelected pf = " + pf);
+                if (pf != null) {
+                    super.onProjectCreated(pf);
+                }
+                break;
+            }
 
         }
     }

@@ -166,7 +166,10 @@ public class MenuEditor {
                 activity.showDialogRunConfig();
                 break;
             case R.id.action_open_project:
-                activity.showDialogOpenProject();
+                activity.showDialogOpenJavaProject();
+                break;
+            case R.id.action_open_android_project:
+                activity.showDialogOpenAndroidProject();
                 break;
             case R.id.action_build_jar:
                 activity.buildJar();

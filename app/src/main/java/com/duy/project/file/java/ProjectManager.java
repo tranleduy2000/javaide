@@ -3,6 +3,14 @@ package com.duy.project.file.java;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.android.sdklib.xml.AndroidManifestParser;
+import com.android.sdklib.xml.ManifestData;
+import com.duy.ide.file.FileManager;
+import com.duy.project.file.android.AndroidProjectFile;
+import com.duy.project.file.android.Constants;
+import com.duy.project.file.android.KeyStore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +26,7 @@ import java.io.ObjectOutputStream;
 public class ProjectManager {
 
     private static final String CURRENT_PROJECT = "file_project.nide";
+    private static final String TAG = "ProjectManager";
 
     public static boolean saveProject(@NonNull Context context, @NonNull JavaProjectFile projectFile) {
         try {
@@ -54,7 +63,7 @@ public class ProjectManager {
         }
         // TODO: 05-Aug-17 dynamic change classpath
         JavaProjectFile projectFile = new JavaProjectFile(file.getParentFile(), null, null, file.getName(),
-                new File(context.getFilesDir(), "system/classes/android.jar").getPath());
+                FileManager.getClasspathFile(context).getPath());
         projectFile.setProjectName(file.getName());
         try {
             projectFile.createMainClass();
@@ -63,5 +72,39 @@ public class ProjectManager {
             return null;
         }
         return projectFile;
+    }
+
+    public static JavaProjectFile importAndroidProject(Context context, File file) {
+        Log.d(TAG, "importAndroidProject() called with: context = [" + context + "], file = [" + file + "]");
+
+        AndroidProjectFile project = new AndroidProjectFile(file.getParentFile(),
+                null, null, file.getName(), FileManager.getClasspathFile(context).getPath());
+        try {
+            if (project.getXmlManifest().exists()) {
+                ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(project.getXmlManifest()));
+                ManifestData.Activity launcherActivity = manifestData.getLauncherActivity();
+                if (launcherActivity != null) {
+                    project.setMainClass(new ClassFile(launcherActivity.getName()));
+                }
+                Log.d(TAG, "importAndroidProject launcherActivity = " + launcherActivity);
+            } else {
+                return null;
+            }
+            if (project.getKeyStore().getFile().exists()) {
+                File key = new File(project.dirProject, "keystore.jks");
+                if (!key.getParentFile().exists()) {
+                    key.getParentFile().mkdirs();
+                }
+                key.createNewFile();
+                FileOutputStream out = new FileOutputStream(key);
+                FileManager.copyFile(context.getAssets().open(Constants.KEY_STORE_ASSET_PATH), out);
+                out.close();
+                project.setKeystore(new KeyStore(key, Constants.KEY_STORE_PASSWORD,
+                        Constants.KEY_STORE_ALIAS, Constants.KEY_STORE_ALIAS_PASS));
+            }
+        } catch (Exception e) {
+
+        }
+        return null;
     }
 }

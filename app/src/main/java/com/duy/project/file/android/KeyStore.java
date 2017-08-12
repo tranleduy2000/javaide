@@ -22,10 +22,6 @@ public class KeyStore implements Serializable, Cloneable {
     }
 
     public File getFile() throws IOException {
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            file.createNewFile();
-        }
         return file;
     }
 

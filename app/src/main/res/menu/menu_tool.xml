@@ -15,13 +15,13 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/action_run"
         android:icon="@drawable/ic_play_arrow_white_24dp"
         android:title="@string/run"
-        app:showAsAction="always" />
+        app:showAsAction="always"/>
 
     <item
         android:icon="@drawable/ic_folder_white_24dp"
@@ -32,30 +32,34 @@
             <item
                 android:id="@+id/action_new_java_project"
                 android:icon="@drawable/ic_fiber_new_white_24dp"
-                android:title="@string/new_java_project" />
+                android:title="@string/new_java_project"/>
             <item
                 android:id="@+id/action_new_android_project"
                 android:icon="@drawable/ic_fiber_new_white_24dp"
                 android:title="@string/new_android_project"
-          />
+                />
 
             <item
                 android:id="@+id/action_new_class"
                 android:icon="@drawable/ic_fiber_new_white_24dp"
-                android:title="@string/new_class" />
+                android:title="@string/new_class"/>
             <item
                 android:id="@+id/action_new_file"
                 android:icon="@drawable/ic_fiber_new_white_24dp"
                 android:title="@string/new_file"
-          />
+                />
             <item
                 android:id="@+id/action_open_project"
                 android:icon="@drawable/ic_folder_open_white_24dp"
-                android:title="@string/open_java_project" />
+                android:title="@string/open_java_project"/>
+            <item
+                android:id="@+id/action_open_android_project"
+                android:icon="@drawable/ic_folder_open_white_24dp"
+                android:title="@string/open_android_project"/>
             <item
                 android:id="@+id/action_save"
                 android:icon="@drawable/ic_save_white_24dp"
-                android:title="@string/save" />
+                android:title="@string/save"/>
 
         </menu>
     </item>
@@ -67,20 +71,20 @@
             <item
                 android:id="@+id/action_undo"
                 android:icon="@drawable/ic_undo_white_24dp"
-                android:title="@string/undo" />
+                android:title="@string/undo"/>
             <item
                 android:id="@+id/action_redo"
                 android:icon="@drawable/ic_redo_white_24dp"
-                android:title="@string/redo" />
+                android:title="@string/redo"/>
 
             <item
                 android:id="@+id/action_paste"
                 android:icon="@drawable/ic_content_paste_white_24dp"
-                android:title="@string/paste" />
+                android:title="@string/paste"/>
             <item
                 android:id="@+id/action_copy_all"
                 android:icon="@drawable/ic_content_copy_white_24dp"
-                android:title="@string/copy_all" />
+                android:title="@string/copy_all"/>
         </menu>
     </item>
 
@@ -93,21 +97,21 @@
             <item
                 android:id="@+id/action_find"
                 android:icon="@drawable/ic_search_white_24dp"
-                android:title="@string/find" />
+                android:title="@string/find"/>
 
             <item
                 android:id="@+id/action_find_and_replace"
                 android:icon="@drawable/ic_find_replace_white_24dp"
-                android:title="@string/find_replace" />
+                android:title="@string/find_replace"/>
             <item
                 android:id="@+id/action_goto_line"
                 android:icon="@drawable/ic_format_list_numbered_white_24dp"
-                android:title="@string/goto_line" />
+                android:title="@string/goto_line"/>
 
             <item
                 android:id="@+id/action_format"
                 android:icon="@drawable/ic_format_indent_increase_white_24dp"
-                android:title="@string/format_code" />
+                android:title="@string/format_code"/>
         </menu>
     </item>
 
@@ -121,22 +125,22 @@
                 android:id="@+id/action_edit_word_wrap"
                 android:checkable="true"
                 android:icon="@drawable/ic_wrap_text_white_24dp"
-                android:title="@string/word_wrap" />
+                android:title="@string/word_wrap"/>
             <item
                 android:id="@+id/action_show_symbol"
                 android:checkable="true"
                 android:icon="@drawable/ic_apps_white_24dp"
-                android:title="@string/show_symbol" />
+                android:title="@string/show_symbol"/>
             <item
                 android:id="@+id/action_show_line"
                 android:checkable="true"
                 android:icon="@drawable/ic_format_list_numbered_white_24dp"
-                android:title="@string/show_line" />
+                android:title="@string/show_line"/>
             <item
                 android:id="@+id/action_show_popup"
                 android:checkable="true"
                 android:icon="@drawable/ic_chat_bubble_outline_white_24dp"
-                android:title="@string/show_suggest_popup" />
+                android:title="@string/show_suggest_popup"/>
         </menu>
     </item>
     <item
@@ -147,23 +151,23 @@
             <item
                 android:id="@+id/action_build_jar"
                 android:icon="@drawable/ic_jar_file_white"
-                android:title="@string/build_jar_file" />
+                android:title="@string/build_jar_file"/>
             <item
                 android:id="@+id/action_build_apk"
                 android:icon="@drawable/ic_jar_file_white"
                 android:title="@string/build_apk"
-          />
+                />
         </menu>
     </item>
     <item
         android:id="@+id/action_edit_run"
         android:icon="@drawable/ic_play_arrow_white_24dp"
-        android:title="@string/run_configuration" />
+        android:title="@string/run_configuration"/>
 
     <item
         android:id="@+id/action_more_feature"
         android:icon="@drawable/ic_more_vert_white_24dp"
         android:title="@string/more_feature"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
 
 </menu>

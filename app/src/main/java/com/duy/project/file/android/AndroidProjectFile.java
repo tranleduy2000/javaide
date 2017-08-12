@@ -17,10 +17,6 @@ public class AndroidProjectFile extends JavaProjectFile {
     private final File apkUnaligned;
     public File xmlManifest;
     public File resourceFile;
-    public File zipSrc;
-    public File zipRes;
-    public File zipLibs;
-    public File zipDexedLibs;
     private KeyStore keystore;
     /* PROJECT */
     private File dirRes;
@@ -54,12 +50,10 @@ public class AndroidProjectFile extends JavaProjectFile {
                 "android".toCharArray(),
                 "android",
                 "android".toCharArray());
+    }
 
-        zipSrc = new File(dirBuild, "src.zip");
-        zipRes = new File(dirBuild, "res.zip");
-        zipLibs = new File(dirBuild, "libs.zip");
-        zipDexedLibs = new File(dirBuild, "dexedLibs.zip");
-
+    public void setKeystore(KeyStore keystore) {
+        this.keystore = keystore;
     }
 
     public KeyStore getKeyStore() {
@@ -67,10 +61,6 @@ public class AndroidProjectFile extends JavaProjectFile {
     }
 
     public File getXmlManifest() throws IOException {
-        if (!xmlManifest.exists()) {
-            xmlManifest.getParentFile().mkdirs();
-            xmlManifest.createNewFile();
-        }
         return xmlManifest;
     }
 

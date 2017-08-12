@@ -57,8 +57,8 @@ import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.ide.Builder;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
-import com.duy.ide.autocomplete.AutoCompleteService;
 import com.duy.ide.autocomplete.AutoCompleteProvider;
+import com.duy.ide.autocomplete.AutoCompleteService;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.util.JavaUtil;
 import com.duy.ide.code_sample.activities.DocumentActivity;
@@ -135,6 +135,7 @@ public class MainActivity extends BaseEditorActivity implements
         initView(savedInstanceState);
 
         startAutoCompleteService();
+        Log.d(TAG, "onCreate: file " + new File("/data/data/com.duy.compiler.javanide/files/system/classes/android.jar").exists());
     }
 
 

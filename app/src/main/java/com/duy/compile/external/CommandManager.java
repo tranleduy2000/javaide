@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 import javax.tools.DiagnosticCollector;
 import javax.tools.DiagnosticListener;
@@ -81,6 +82,7 @@ public class CommandManager {
                     "-d", projectFile.getDirBuildClasses().getPath(), //output dir
                     projectFile.getMainClass().getPath(projectFile) //main class
             };
+            Log.d(TAG, "compileJava args = " + Arrays.toString(args));
             int compileStatus;
             compileStatus = out != null ? Javac.compile(args, out, listener) : Javac.compile(args);
             return compileStatus;
@@ -115,7 +117,7 @@ public class CommandManager {
                         continue;
                     }
                     if (!outLib.exists()) outLib.createNewFile();
-                    String[] args = new String[]{"--dex", "--verbose", "--no-strict",
+                    String[] args = new String[]{"--dex", "--verbose",
                             "--output=" + outLib.getPath(), lib.getPath()};
                     Dex.main(args);
                 }
@@ -127,7 +129,7 @@ public class CommandManager {
         Log.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
         String input = projectFile.dirBuildClasses.getPath();
         FileManager.ensureFileExist(new File(input));
-        String[] args = new String[]{"--dex", "--verbose", "--no-strict",
+        String[] args = new String[]{"--dex", "--verbose",
                 "--output=" + projectFile.getDexedClassesFile().getPath(), //output dex file
                 input}; //input file
         Dex.main(args);
@@ -169,13 +171,13 @@ public class CommandManager {
         Log.d(TAG, "convertToDexFormat() called with: projectFile = [" + projectFile + "]");
 
         dexBuildClasses(projectFile);
-        dexLibs(projectFile, true);
+        dexLibs(projectFile, false);
         dexMerge(projectFile);
     }
 
     public static File buildApk(AndroidProjectFile projectFile,
                                 OutputStream out,
-                                DiagnosticCollector diagnosticCollector) throws IOException {
+                                DiagnosticCollector diagnosticCollector) throws Exception {
         ApkBuilder.build(projectFile, out, diagnosticCollector);
         return projectFile.getApkUnaligned();
     }

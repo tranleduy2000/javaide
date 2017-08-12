@@ -155,8 +155,9 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
                 //copy keystore
                 File file = projectFile.getKeyStore().getFile();
-                FileManager.copyFile(assets.open("templates/src/main/keystore.jks"),
-                        new FileOutputStream(file));
+                FileOutputStream out = new FileOutputStream(file);
+                FileManager.copyFile(assets.open("templates/src/main/androiddebug.jks"), out);
+                out.close();
 
                 //copy android support library
                 AssetUtil.copyAssetFolder(assets, "templates/libs", projectFile.dirLibs.getPath());

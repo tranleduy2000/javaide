@@ -1,7 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Android template
 # Built application files
-*.apk
 *.ap_
 
 # Files for the ART/Dalvik VM
@@ -55,3 +54,13 @@ freeline_project_description.json
 !/app/src/main/java/com/android/sdklib/build/
 /testfile/
 !/app/src/main/java/com/android/sdklib/internal/build/
+app/app-prod-release.apk
+app/src/main/assets/sample/FileAndIO/
+app/src/main/assets/templates/src/main/res/drawable/
+app/src/main/assets/templates/src/main/res/menu/
+app/src/main/java/com/android/sdklib/internal/avd/
+app/src/main/res/color/
+art/screenshot/
+system/system/src/demo_android/dist/
+testapplication/src/Epsilon Notes Markdown Editor_v2.13_apkpure.com.apk
+testapplication/src/main/res/drawable/

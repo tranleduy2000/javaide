@@ -46,7 +46,10 @@ public class AndroidProjectFile extends JavaProjectFile {
 
         resourceFile = new File(dirBuild, "resources.res");
         dexedClassesFile = new File(dirBuild, "classes.dex");
-        keystore = new KeyStore(new File(dirProject, "keystore.jks"), "1234567".toCharArray(), "android", "1234567".toCharArray());
+        keystore = new KeyStore(new File(dirProject, "keystore.jks"),
+                "android".toCharArray(),
+                "android",
+                "android".toCharArray());
     }
 
     public KeyStore getKeyStore() {
@@ -84,12 +87,8 @@ public class AndroidProjectFile extends JavaProjectFile {
 
     public void mkdirs() {
         super.mkdirs();
-        if (!dirRes.exists()) dirRes.mkdirs();
-        if (!dirAssets.exists()) dirAssets.mkdirs();
-        if (!dirDexedLibs.exists()) dirDexedLibs.mkdirs();
-        dirRes.setReadable(true, true);
-        dirAssets.setReadable(true, true);
-        dirDexedLibs.setReadable(true, true);
+        getDirRes();
+        getDirAssets();
 
         File menu = new File(dirRes, "menu");
         if (!menu.exists()) menu.mkdirs();
@@ -118,6 +117,7 @@ public class AndroidProjectFile extends JavaProjectFile {
         if (!apkUnsigned.exists()) {
             apkUnsigned.getParentFile().mkdirs();
             apkUnsigned.createNewFile();
+            apkUnsigned.setReadable(true);
         }
         return apkUnsigned;
     }
@@ -125,7 +125,7 @@ public class AndroidProjectFile extends JavaProjectFile {
     public File getDirRes() {
         if (!dirRes.exists()) {
             dirRes.mkdirs();
-            dirRes.setReadable(true, true);
+            dirRes.setReadable(true);
         }
         return dirRes;
     }
@@ -133,7 +133,7 @@ public class AndroidProjectFile extends JavaProjectFile {
     public File getDirAssets() {
         if (!dirAssets.exists()) {
             dirAssets.mkdirs();
-            dirAssets.setReadable(true, true);
+            dirAssets.setReadable(true);
         }
         return dirAssets;
     }
@@ -142,7 +142,7 @@ public class AndroidProjectFile extends JavaProjectFile {
         if (!classR.exists()) {
             classR.getParentFile().mkdirs();
             classR.createNewFile();
-            classR.setReadable(true, true);
+            classR.setReadable(true);
         }
         return classR;
     }

@@ -36,7 +36,7 @@ public class ApkBuilder {
     }
 
     public static void build(AndroidProjectFile projectFile, @NonNull OutputStream out,
-                             @NonNull DiagnosticCollector diagnosticCollector) {
+                             @NonNull DiagnosticCollector diagnosticCollector) throws Exception {
         projectFile.clean();
         PrintStream systemOut = System.out;
         PrintStream systemErr = System.err;
@@ -60,10 +60,8 @@ public class ApkBuilder {
             }
 
             //classes to dex
-            System.out.println("Convert class to dex");
-            CommandManager.dexLibs(projectFile, true);
-            CommandManager.dexBuildClasses(projectFile);
-            CommandManager.dexMerge(projectFile);
+            System.out.println("Convert classes to dex");
+            CommandManager.convertToDexFormat(projectFile);
 
             //zip apk
             System.out.println("Build apk");
@@ -76,7 +74,13 @@ public class ApkBuilder {
             ApkBuilder.publishApk();
         } catch (Exception ex) {
             ex.printStackTrace();
+
+            System.setErr(systemErr);
+            System.setOut(systemOut);
+
+            throw ex;
         }
+
         System.setErr(systemErr);
         System.setOut(systemOut);
     }
@@ -133,7 +137,7 @@ public class ApkBuilder {
         String signatureAlgorithm = "SHA1withRSA";
 
         ZipSigner zipsigner = new ZipSigner();
-        zipsigner.addProgressListener(new SignProgress(){
+        zipsigner.addProgressListener(new SignProgress() {
             @Override
             public void onProgress(ProgressEvent event) {
                 super.onProgress(event);

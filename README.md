@@ -1,6 +1,6 @@
 # Java N-DE Java compiler on Android.
 
-![Screenshot](art/screenshot/Screenshot_20170722-164603.png)
+![Screenshot](art/wall.png)
 
 
 ## Overview

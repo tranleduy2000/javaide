@@ -13,12 +13,12 @@ public class ProjectFilePresenter implements ProjectFileContract.Presenter {
     }
 
     @Override
-    public void show(JavaProjectFile projectFile, boolean expand) {
+    public void show(JavaProjectFolder projectFile, boolean expand) {
         view.display(projectFile, expand);
     }
 
     @Override
-    public void refresh(JavaProjectFile projectFile) {
+    public void refresh(JavaProjectFolder projectFile) {
         view.refresh();
     }
 }

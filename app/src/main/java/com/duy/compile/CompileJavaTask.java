@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.compile.external.CommandManager;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.JavaProjectFolder;
 import com.sun.tools.javac.main.Main;
 
 import java.io.IOException;
@@ -17,9 +17,9 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 
-public class CompileJavaTask extends AsyncTask<JavaProjectFile, Object, Integer> {
+public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Integer> {
     private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
-    private JavaProjectFile projectFile;
+    private JavaProjectFolder projectFile;
     @Nullable
     private CompileListener compileListener;
     private Exception error;
@@ -36,7 +36,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFile, Object, Integer>
     }
 
     @Override
-    protected Integer doInBackground(JavaProjectFile... params) {
+    protected Integer doInBackground(JavaProjectFolder... params) {
         if (params[0] == null) return null;
         this.projectFile = params[0];
         PrintWriter printWriter = new PrintWriter(new Writer() {
@@ -107,7 +107,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFile, Object, Integer>
 
         void onError(Exception e, ArrayList<Diagnostic> diagnostics);
 
-        void onComplete(JavaProjectFile projectFile, List<Diagnostic> diagnostics);
+        void onComplete(JavaProjectFolder projectFile, List<Diagnostic> diagnostics);
 
         void onNewMessage(char[] chars, int start, int end);
     }

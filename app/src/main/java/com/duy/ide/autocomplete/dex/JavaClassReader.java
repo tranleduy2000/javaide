@@ -7,7 +7,10 @@ import com.duy.ide.autocomplete.model.ClassDescription;
 import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.FieldDescription;
 import com.duy.ide.autocomplete.model.MethodDescription;
+import com.duy.project.file.android.AndroidProjectFolder;
+import com.duy.project.file.java.JavaProjectFolder;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -36,20 +39,33 @@ public class JavaClassReader {
     private DexClassLoader mDexClassLoader;
     private boolean loaded = false;
 
-    public HashMap<String, Class> getClasses() {
-        return mClasses;
-    }
-
     public JavaClassReader(String classpath, String outDir) {
         this.classpath = classpath;
         mDexClassLoader = new DexClassLoader(classpath, outDir, null,
                 ClassLoader.getSystemClassLoader());
     }
 
-    public HashMap<String, Class> getAllClassesFromJar(boolean usesAndroid) {
+    public HashMap<String, Class> getClasses() {
+        return mClasses;
+    }
+
+    public HashMap<String, Class> getAllClassesFromProject(boolean android, @Nullable File[] libs) {
+        HashMap<String, Class> classes = new HashMap<>();
+        if (classpath != null) classes.putAll(getAllClassesFromJar(android, classpath));
+        if (libs != null) {
+            for (File lib : libs) {
+                if (lib.getPath().endsWith(".jar")) {
+                    classes.putAll(getAllClassesFromJar(android, lib.getPath()));
+                }
+            }
+        }
+        return classes;
+    }
+
+    private HashMap<String, Class> getAllClassesFromJar(boolean android, String path) {
         HashMap<String, Class> classes = new HashMap<>();
         try {
-            JarFile jarFile = new JarFile(classpath);
+            JarFile jarFile = new JarFile(path);
             Enumeration<JarEntry> e = jarFile.entries();
 
             while (e.hasMoreElements()) {
@@ -60,7 +76,7 @@ public class JavaClassReader {
                 String className = je.getName().substring(0, je.getName().length() - 6);
                 className = className.replace('/', '.');
                 try {
-                    if (usesAndroid) {
+                    if (android) {
                         Class c = mDexClassLoader.loadClass(className);
                         classes.put(c.getName(), c);
                     } else if (!className.startsWith("android")) {
@@ -76,11 +92,13 @@ public class JavaClassReader {
         return classes;
     }
 
-    public void load() {
+    public void load(JavaProjectFolder projectFolder) {
         if (loaded) {
             return;
         }
-        this.mClasses.putAll(getAllClassesFromJar(false));
+        this.mClasses.putAll(getAllClassesFromProject(
+                projectFolder instanceof AndroidProjectFolder, //is android
+                projectFolder.getDirLibs().listFiles()));
         loaded = true;
     }
 

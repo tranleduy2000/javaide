@@ -4,8 +4,6 @@ package com.duy.compile.external.java;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.duy.project.file.java.JavaProjectFile;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

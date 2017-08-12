@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import com.android.annotations.NonNull;
 import com.duy.compile.external.CommandManager;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.JavaProjectFolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 
-public class BuildJarAchieveTask extends AsyncTask<JavaProjectFile, Object, File> {
+public class BuildJarAchieveTask extends AsyncTask<JavaProjectFolder, Object, File> {
     private BuildJarAchieveTask.CompileListener listener;
     private DiagnosticCollector mDiagnosticCollector;
     private Exception error;
@@ -32,8 +32,8 @@ public class BuildJarAchieveTask extends AsyncTask<JavaProjectFile, Object, File
     }
 
     @Override
-    protected File doInBackground(JavaProjectFile... params) {
-        JavaProjectFile projectFile = params[0];
+    protected File doInBackground(JavaProjectFolder... params) {
+        JavaProjectFolder projectFile = params[0];
         if (params[0] == null) return null;
         PrintWriter printWriter = new PrintWriter(new Writer() {
             @Override

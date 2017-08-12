@@ -19,7 +19,7 @@ import com.duy.ide.code_sample.model.AssetUtil;
 import com.duy.ide.code_sample.model.CodeCategory;
 import com.duy.ide.code_sample.model.CodeProjectSample;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.project.file.java.ProjectManager;
 
 import org.w3c.dom.Document;
@@ -131,7 +131,7 @@ public class SampleActivity extends AbstractAppCompatActivity implements
                         codeProjectSample.getPath(),
                         out.getPath());
                 if (success) {
-                    JavaProjectFile pf = ProjectManager.createProjectIfNeed(getApplicationContext(), out);
+                    JavaProjectFolder pf = ProjectManager.createProjectIfNeed(getApplicationContext(), out);
                     Intent intent = getIntent();
                     intent.putExtra(PROJECT_FILE, pf);
                     setResult(RESULT_OK, intent);

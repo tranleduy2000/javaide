@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.android.annotations.NonNull;
 import com.duy.compile.external.CommandManager;
-import com.duy.project.file.android.AndroidProjectFile;
+import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.android.KeyStore;
 import com.spartacusrex.spartacuside.external.apkbuilder;
 import com.sun.tools.javac.main.Main;
@@ -25,7 +25,7 @@ import kellinwood.security.zipsigner.optional.CustomKeySigner;
 public class AndroidBuilder {
     private static final String TAG = "BuildTask";
 
-    private static void buildApk(AndroidProjectFile projectFile) throws Exception {
+    private static void buildApk(AndroidProjectFolder projectFile) throws Exception {
         String[] args = {
                 projectFile.getApkUnsigned().getPath(),
                 "-v", "-u", "-z", projectFile.getResourceFile().getPath(),
@@ -35,7 +35,7 @@ public class AndroidBuilder {
         apkbuilder.main(args);
     }
 
-    public static void build(AndroidProjectFile projectFile, @NonNull OutputStream out,
+    public static void build(AndroidProjectFolder projectFile, @NonNull OutputStream out,
                              @NonNull DiagnosticCollector diagnosticCollector) throws Exception {
         projectFile.clean();
         PrintStream systemOut = System.out;
@@ -88,13 +88,13 @@ public class AndroidBuilder {
         System.setOut(systemOut);
     }
 
-    private static void runAidl(AndroidProjectFile projectFile) throws Exception {
+    private static void runAidl(AndroidProjectFolder projectFile) throws Exception {
         Log.d(TAG, "runAidl() called");
 
         // TODO make aidl.so
     }
 
-    private static void runAapt(AndroidProjectFile projectFile) throws Exception {
+    private static void runAapt(AndroidProjectFolder projectFile) throws Exception {
         Log.d(TAG, "runAapt() called");
 
         Aapt aapt = new Aapt();
@@ -126,7 +126,7 @@ public class AndroidBuilder {
 
     }
 
-    private static void zipSign(AndroidProjectFile projectFile) throws Exception {
+    private static void zipSign(AndroidProjectFolder projectFile) throws Exception {
 //        if (!appContext.getString(R.string.keystore).contentEquals(projectFile.jksEmbedded.getName())) {
 //             TODO use user defined certificate
 //        }

@@ -3,6 +3,7 @@ package com.duy.ide.autocomplete.dex;
 import android.support.annotation.NonNull;
 
 import com.duy.ide.autocomplete.model.ClassDescription;
+import com.duy.project.file.java.JavaProjectFolder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class JavaDexClassLoader {
         return mClassReader.readClassByName(className);
     }
 
-    public void loadAllClasses(boolean fullRefresh) {
-        mClassReader.load();
+    public void loadAllClasses(boolean fullRefresh, JavaProjectFolder projectFile) {
+        mClassReader.load(projectFile);
     }
 }

@@ -62,9 +62,9 @@ import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.editor.view.IndentEditText;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
-import com.duy.project.file.android.AndroidProjectFile;
+import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.java.ClassFile;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.project.file.java.ProjectManager;
 import com.duy.project.utils.ClassUtil;
 import com.duy.run.dialog.DialogRunConfig;
@@ -266,9 +266,9 @@ public class MainActivity extends BaseEditorActivity implements
                         }).show();
                 return;
             }
-            if (mProjectFile instanceof AndroidProjectFile) {
+            if (mProjectFile instanceof AndroidProjectFolder) {
                 compileAndroidProject();
-            } else if (mProjectFile instanceof JavaProjectFile) {
+            } else if (mProjectFile instanceof JavaProjectFolder) {
                 compileJavaProject();
             }
         } else {
@@ -298,7 +298,7 @@ public class MainActivity extends BaseEditorActivity implements
             }
 
             @Override
-            public void onComplete(final JavaProjectFile projectFile,
+            public void onComplete(final JavaProjectFolder projectFile,
                                    final List<Diagnostic> diagnostics) {
                 updateUIFinish();
                 Toast.makeText(MainActivity.this, R.string.compile_success, Toast.LENGTH_SHORT).show();
@@ -362,8 +362,8 @@ public class MainActivity extends BaseEditorActivity implements
 
     public void buildApk() {
         saveAllFile();
-        if (mProjectFile instanceof AndroidProjectFile) {
-            ((AndroidProjectFile) mProjectFile).checkKeyStoreExits(this);
+        if (mProjectFile instanceof AndroidProjectFolder) {
+            ((AndroidProjectFolder) mProjectFile).checkKeyStoreExits(this);
             new BuildApkTask(new BuildApkTask.CompileListener() {
                 @Override
                 public void onStart() {
@@ -393,7 +393,7 @@ public class MainActivity extends BaseEditorActivity implements
                 public void onNewMessage(byte[] chars, int start, int end) {
                     mMessagePresenter.append(new String(chars, start, end));
                 }
-            }).execute((AndroidProjectFile) mProjectFile);
+            }).execute((AndroidProjectFolder) mProjectFile);
         } else {
             if (mProjectFile != null) {
                 complain("This is Java project, please create new Android project");
@@ -628,7 +628,7 @@ public class MainActivity extends BaseEditorActivity implements
                 break;
             case REQUEST_CODE_SAMPLE:
                 if (resultCode == RESULT_OK) {
-                    final JavaProjectFile projectFile = (JavaProjectFile)
+                    final JavaProjectFolder projectFile = (JavaProjectFolder)
                             data.getSerializableExtra(SampleActivity.PROJECT_FILE);
                     if (projectFile != null) {
                         mHandler.postDelayed(new Runnable() {
@@ -749,7 +749,7 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     @Override
-    public void onConfigChange(JavaProjectFile projectFile) {
+    public void onConfigChange(JavaProjectFolder projectFile) {
         this.mProjectFile = projectFile;
         if (projectFile != null) {
             ProjectManager.saveProject(this, projectFile);

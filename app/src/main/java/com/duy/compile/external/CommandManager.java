@@ -13,8 +13,8 @@ import com.duy.compile.external.java.Jar;
 import com.duy.compile.external.java.Java;
 import com.duy.compile.external.java.Javac;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.android.AndroidProjectFile;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.android.AndroidProjectFolder;
+import com.duy.project.file.java.JavaProjectFolder;
 import com.sun.tools.javac.main.Main;
 
 import java.io.File;
@@ -37,7 +37,7 @@ public class CommandManager {
     private static final String TAG = "CommandManager";
 
     @Nullable
-    public static File buildJarAchieve(JavaProjectFile projectFile, PrintWriter out, DiagnosticListener listener) {
+    public static File buildJarAchieve(JavaProjectFolder projectFile, PrintWriter out, DiagnosticListener listener) {
         Log.d(TAG, "buildJarAchieve() called with: projectFile = [" + projectFile + "], out = [" + out + "], listener = [" + listener + "]");
 
         try {
@@ -66,11 +66,11 @@ public class CommandManager {
         return null;
     }
 
-    public static int compileJava(JavaProjectFile pf, PrintWriter out) {
+    public static int compileJava(JavaProjectFolder pf, PrintWriter out) {
         return compileJava(pf, out, null);
     }
 
-    public static int compileJava(JavaProjectFile projectFile, @Nullable PrintWriter out,
+    public static int compileJava(JavaProjectFolder projectFile, @Nullable PrintWriter out,
                                   @Nullable DiagnosticListener listener) {
         Log.d(TAG, "compileJava() called with: projectFile = [" + projectFile + "], out = [" + out + "], listener = [" + listener + "]");
 
@@ -95,7 +95,7 @@ public class CommandManager {
     }
 
     public static void compileAndRun(PrintStream out, InputStream in, PrintStream err,
-                                     File tempDir, JavaProjectFile projectFile) throws IOException {
+                                     File tempDir, JavaProjectFolder projectFile) throws IOException {
         Log.d(TAG, "compileAndRun() called with: out = [" + out + "], in = [" + in + "], err = [" +
                 err + "], tempDir = [" + tempDir + "], projectFile = [" + projectFile + "]");
 
@@ -104,7 +104,7 @@ public class CommandManager {
         executeDex(out, in, err, projectFile.getDexedClassesFile(), tempDir, projectFile.getMainClass().getName());
     }
 
-    public static void dexLibs(@NonNull JavaProjectFile projectFile, boolean ignoreExist) throws IOException {
+    public static void dexLibs(@NonNull JavaProjectFolder projectFile, boolean ignoreExist) throws IOException {
         Log.d(TAG, "dexLibs() called with: projectFile = [" + projectFile + "], ignoreExist = [" + ignoreExist + "]");
 
         File dirLibs = projectFile.dirLibs;
@@ -126,7 +126,7 @@ public class CommandManager {
         }
     }
 
-    public static File dexBuildClasses(@NonNull JavaProjectFile projectFile) throws IOException {
+    public static File dexBuildClasses(@NonNull JavaProjectFolder projectFile) throws IOException {
         Log.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
         String input = projectFile.dirBuildClasses.getPath();
         FileManager.ensureFileExist(new File(input));
@@ -137,7 +137,7 @@ public class CommandManager {
         return projectFile.getDexedClassesFile();
     }
 
-    public static File dexMerge(@NonNull JavaProjectFile projectFile) throws IOException {
+    public static File dexMerge(@NonNull JavaProjectFolder projectFile) throws IOException {
         Log.d(TAG, "dexMerge() called with: projectFile = [" + projectFile + "]");
         FileManager.ensureFileExist(projectFile.getDexedClassesFile());
 
@@ -168,14 +168,14 @@ public class CommandManager {
         Java.run(args, tempDir.getPath(), out, in, err);
     }
 
-    public static void convertToDexFormat(@NonNull JavaProjectFile projectFile) throws IOException {
+    public static void convertToDexFormat(@NonNull JavaProjectFolder projectFile) throws IOException {
         Log.d(TAG, "convertToDexFormat() called with: projectFile = [" + projectFile + "]");
         dexLibs(projectFile, false);
         dexBuildClasses(projectFile);
         dexMerge(projectFile);
     }
 
-    public static File buildApk(AndroidProjectFile projectFile,
+    public static File buildApk(AndroidProjectFolder projectFile,
                                 OutputStream out,
                                 DiagnosticCollector diagnosticCollector) throws Exception {
         AndroidBuilder.build(projectFile, out, diagnosticCollector);

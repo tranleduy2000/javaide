@@ -18,7 +18,7 @@ import java.io.Serializable;
  * Created by Duy on 16-Jul-17.
  */
 
-public class JavaProjectFile implements Serializable, Cloneable {
+public class JavaProjectFolder implements Serializable, Cloneable {
     private static final String TAG = "ProjectFile";
     public final File dirLibs;
     public final File dirSrcMain;
@@ -40,8 +40,8 @@ public class JavaProjectFile implements Serializable, Cloneable {
     private String projectName;
     protected String packageName;
 
-    public JavaProjectFile(File root, String mainClassName, String packageName, String projectName,
-                           String classpath) {
+    public JavaProjectFolder(File root, String mainClassName, String packageName, String projectName,
+                             String classpath) {
         Log.d(TAG, "JavaProjectFile() called with: root = [" + root + "], mainClassName = ["
                 + mainClassName + "], packageName = [" + packageName + "], projectName = ["
                 + projectName + "], classpath = [" + classpath + "]");
@@ -92,7 +92,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
         }
     }
 
-    public static File createClass(JavaProjectFile projectFile,
+    public static File createClass(JavaProjectFolder projectFile,
                                    String currentPackage, String className,
                                    String content) {
         File file = new File(projectFile.dirJava, currentPackage.replace(".", File.separator));
@@ -105,7 +105,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
     }
 
     @Nullable
-    public static JavaProjectFile restore(@Nullable JSONObject json) throws JSONException {
+    public static JavaProjectFolder restore(@Nullable JSONObject json) throws JSONException {
         if (json == null) return null;
         ClassFile mainClass = new ClassFile("");
         if (json.has("main_class_mame")) {
@@ -122,7 +122,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
         if (dirRoot == null || packageName == null || projectName == null || classpath == null) {
             return null;
         }
-        return new JavaProjectFile(dirRoot, mainClass.getName(), packageName, projectName, classpath);
+        return new JavaProjectFolder(dirRoot, mainClass.getName(), packageName, projectName, classpath);
     }
 
     public File getBootClasspath() {
@@ -215,7 +215,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
         this.projectName = projectName;
     }
 
-    public JavaProjectFile createMainClass() throws IOException {
+    public JavaProjectFolder createMainClass() throws IOException {
         this.mkdirs();
         if (packageName != null) {
             //create package file

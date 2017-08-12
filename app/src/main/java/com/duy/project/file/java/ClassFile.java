@@ -46,13 +46,13 @@ public class ClassFile implements Serializable, Cloneable {
         }
     }
 
-    public boolean exist(JavaProjectFile parent) {
+    public boolean exist(JavaProjectFolder parent) {
         String path = getPath(parent);
         return !path.isEmpty() && new File(path).exists();
     }
 
     @NonNull
-    public String getPath(JavaProjectFile parent) {
+    public String getPath(JavaProjectFolder parent) {
         try {
             File file = new File(parent.dirJava, name.replace(".", File.separator) + ".java");
             return file.getPath();

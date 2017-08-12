@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.duy.ide.R;
 import com.duy.ide.code_sample.model.AssetUtil;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.android.AndroidProjectFile;
+import com.duy.project.file.android.AndroidProjectFolder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -107,7 +107,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             String classpath = FileManager.getClasspathFile(getContext()).getPath();
 
             String projectName = appName.replaceAll("\\s+", "");
-            AndroidProjectFile projectFile = new AndroidProjectFile(
+            AndroidProjectFolder projectFile = new AndroidProjectFolder(
                     new File(FileManager.EXTERNAL_DIR), activityClass, packageName, projectName, classpath);
             try {
                 //create directory

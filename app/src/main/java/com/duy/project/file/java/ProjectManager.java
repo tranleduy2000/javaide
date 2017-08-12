@@ -8,7 +8,7 @@ import android.util.Log;
 import com.android.sdklib.xml.AndroidManifestParser;
 import com.android.sdklib.xml.ManifestData;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.android.AndroidProjectFile;
+import com.duy.project.file.android.AndroidProjectFolder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +26,7 @@ public class ProjectManager {
     private static final String CURRENT_PROJECT = "file_project.nide";
     private static final String TAG = "ProjectManager";
 
-    public static boolean saveProject(@NonNull Context context, @NonNull JavaProjectFile projectFile) {
+    public static boolean saveProject(@NonNull Context context, @NonNull JavaProjectFolder projectFile) {
         try {
             File file = new File(context.getFilesDir(), CURRENT_PROJECT);
             ObjectOutputStream inputStream = new ObjectOutputStream(new FileOutputStream(file));
@@ -41,13 +41,13 @@ public class ProjectManager {
     }
 
     @Nullable
-    public static JavaProjectFile getLastProject(@NonNull Context context) {
+    public static JavaProjectFolder getLastProject(@NonNull Context context) {
         try {
             File file = new File(context.getFilesDir(), CURRENT_PROJECT);
             ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file));
             Object o = objectInputStream.readObject();
             objectInputStream.close();
-            return (JavaProjectFile) o;
+            return (JavaProjectFolder) o;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -55,12 +55,12 @@ public class ProjectManager {
     }
 
     @Nullable
-    public static JavaProjectFile createProjectIfNeed(Context context, File file) {
+    public static JavaProjectFolder createProjectIfNeed(Context context, File file) {
         if (file.isFile() || !file.canWrite() || !file.canRead()) {
             return null;
         }
         // TODO: 05-Aug-17 dynamic change classpath
-        JavaProjectFile projectFile = new JavaProjectFile(file.getParentFile(), null, null, file.getName(),
+        JavaProjectFolder projectFile = new JavaProjectFolder(file.getParentFile(), null, null, file.getName(),
                 FileManager.getClasspathFile(context).getPath());
         projectFile.setProjectName(file.getName());
         try {
@@ -72,10 +72,10 @@ public class ProjectManager {
         return projectFile;
     }
 
-    public static AndroidProjectFile importAndroidProject(Context context, File file) {
+    public static AndroidProjectFolder importAndroidProject(Context context, File file) {
         Log.d(TAG, "importAndroidProject() called with: context = [" + context + "], file = [" + file + "]");
 
-        AndroidProjectFile project = new AndroidProjectFile(file.getParentFile(),
+        AndroidProjectFolder project = new AndroidProjectFolder(file.getParentFile(),
                 null, null, file.getName(), FileManager.getClasspathFile(context).getPath());
         try {
             if (project.getXmlManifest().exists()) {

@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.JavaProjectFolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +91,7 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
 
     private void doCreateProject() {
         if (isOk()) {
-            JavaProjectFile projectFile = new JavaProjectFile(
+            JavaProjectFolder projectFile = new JavaProjectFolder(
                     new File(FileManager.EXTERNAL_DIR),
                     editPackage.getText().toString() + "." + editMainClass.getText().toString(),
                     editPackage.getText().toString(), editProjectName.getText().toString(),
@@ -133,6 +133,6 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
 
 
     public interface OnCreateProjectListener {
-        void onProjectCreated(JavaProjectFile projectFile);
+        void onProjectCreated(JavaProjectFolder projectFile);
     }
 }

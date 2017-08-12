@@ -13,7 +13,7 @@ import com.duy.compile.CompileManager;
 import com.duy.compile.external.CommandManager;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.run.view.ConsoleEditText;
 
 import java.io.File;
@@ -62,7 +62,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
         bindView();
         final Intent intent = getIntent();
         if (intent != null) {
-            final JavaProjectFile projectFile = (JavaProjectFile) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
+            final JavaProjectFolder projectFile = (JavaProjectFolder) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
             if (projectFile == null) {
                 finish();
                 return;
@@ -91,7 +91,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
     }
 
     @WorkerThread
-    private void runProgram(JavaProjectFile projectFile, int action, Intent intent) throws IOException {
+    private void runProgram(JavaProjectFolder projectFile, int action, Intent intent) throws IOException {
         PrintStream out = mConsoleEditText.getOutputStream();
         InputStream in = mConsoleEditText.getInputStream();
         PrintStream err = mConsoleEditText.getErrorStream();

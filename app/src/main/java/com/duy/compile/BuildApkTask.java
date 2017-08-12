@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.duy.compile.external.CommandManager;
-import com.duy.project.file.android.AndroidProjectFile;
+import com.duy.project.file.android.AndroidProjectFolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 
-public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
+public class BuildApkTask extends AsyncTask<AndroidProjectFolder, Object, File> {
     private static final String TAG = "BuildApkTask";
     private BuildApkTask.CompileListener listener;
     private DiagnosticCollector mDiagnosticCollector;
@@ -33,8 +33,8 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFile, Object, File> {
     }
 
     @Override
-    protected File doInBackground(AndroidProjectFile... params) {
-        AndroidProjectFile projectFile = params[0];
+    protected File doInBackground(AndroidProjectFolder... params) {
+        AndroidProjectFolder projectFile = params[0];
         if (params[0] == null) return null;
         OutputStream outputStream = new OutputStream() {
             @Override

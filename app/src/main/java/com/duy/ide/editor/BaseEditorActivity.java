@@ -71,9 +71,9 @@ import com.duy.project.dialog.DialogNewClass;
 import com.duy.project.dialog.DialogNewFile;
 import com.duy.project.dialog.DialogNewJavaProject;
 import com.duy.project.dialog.DialogSelectDirectory;
-import com.duy.project.file.android.AndroidProjectFile;
+import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.java.ClassFile;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.project.file.java.ProjectFileContract;
 import com.duy.project.file.java.ProjectFilePresenter;
 import com.duy.project.file.java.ProjectManager;
@@ -108,7 +108,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected FileManager mFileManager;
     protected EditorPagerAdapter mPageAdapter;
     protected SlidingUpPanelLayout mContainerOutput;
-    protected JavaProjectFile mProjectFile;
+    protected JavaProjectFolder mProjectFile;
     protected ProjectFileContract.Presenter mFilePresenter;
     protected ViewPager mBottomPage;
     protected PagePresenter mPagePresenter;
@@ -151,7 +151,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState != null) {
-            this.mProjectFile = (JavaProjectFile) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
+            this.mProjectFile = (JavaProjectFolder) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
         } else {
             this.mProjectFile = ProjectManager.getLastProject(this);
         }
@@ -452,7 +452,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     @Override
-    public void onProjectCreated(@NonNull JavaProjectFile projectFile) {
+    public void onProjectCreated(@NonNull JavaProjectFolder projectFile) {
         Log.d(TAG, "onProjectCreated() called with: projectFile = [" + projectFile + "]");
 
         //save project
@@ -651,14 +651,14 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         switch (request) {
             case ACTION_OPEN_JAVA_PROJECT: {
                 saveAllFile();
-                JavaProjectFile pf = ProjectManager.createProjectIfNeed(getApplicationContext(), file);
+                JavaProjectFolder pf = ProjectManager.createProjectIfNeed(getApplicationContext(), file);
                 if (pf != null) onProjectCreated(pf);
                 else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
                 break;
             }
             case ACTION_OPEN_ANDROID_PROJECT: {
                 saveCurrentFile();
-                AndroidProjectFile pf = ProjectManager.importAndroidProject(getApplicationContext(), file);
+                AndroidProjectFolder pf = ProjectManager.importAndroidProject(getApplicationContext(), file);
                 if (pf != null) onProjectCreated(pf);
                 else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
                 break;

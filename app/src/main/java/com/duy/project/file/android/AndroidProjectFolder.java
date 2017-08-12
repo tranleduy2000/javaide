@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.android.annotations.Nullable;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.JavaProjectFolder;
 import com.google.common.base.MoreObjects;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import java.io.IOException;
  * Created by Duy on 05-Aug-17.
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class AndroidProjectFile extends JavaProjectFile {
+public class AndroidProjectFolder extends JavaProjectFolder {
     /* Output */
     private final File apkUnsigned;
     private final File apkUnaligned;
@@ -28,11 +28,11 @@ public class AndroidProjectFile extends JavaProjectFile {
     private File classR;
     private File dirOutApk;
 
-    public AndroidProjectFile(File dirRoot,
-                              @Nullable String mainClassName,
-                              @Nullable String packageName,
-                              String projectName,
-                              String classpath) {
+    public AndroidProjectFolder(File dirRoot,
+                                @Nullable String mainClassName,
+                                @Nullable String packageName,
+                                String projectName,
+                                String classpath) {
         super(dirRoot, mainClassName, packageName, projectName, classpath);
 
         dirRes = new File(dirSrcMain, "res");

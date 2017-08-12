@@ -15,7 +15,7 @@ import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.model.Member;
 import com.duy.ide.autocomplete.util.EditorUtil;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.JavaProjectFolder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,8 +39,8 @@ public class AutoCompleteProvider {
         mClassLoader = new JavaDexClassLoader(FileManager.getClasspathFile(context), outDir);
     }
 
-    public void load(JavaProjectFile projectFile) {
-        mClassLoader.loadAllClasses(true);
+    public void load(JavaProjectFolder projectFile) {
+        mClassLoader.loadAllClasses(true, projectFile);
     }
 
     public boolean isLoaded() {

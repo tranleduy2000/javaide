@@ -10,7 +10,7 @@ import java.io.File;
 
 public class ProjectFileContract {
     public interface View {
-        void display(JavaProjectFile projectFile, boolean expand);
+        void display(JavaProjectFolder projectFile, boolean expand);
 
         void refresh();
 
@@ -18,9 +18,9 @@ public class ProjectFileContract {
     }
 
     public interface Presenter {
-        void show(JavaProjectFile projectFile, boolean expand);
+        void show(JavaProjectFolder projectFile, boolean expand);
 
-        void refresh(JavaProjectFile projectFile);
+        void refresh(JavaProjectFolder projectFile);
     }
 
     public interface ActionCallback {

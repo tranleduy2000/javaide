@@ -25,15 +25,5 @@ public class TestAutoCompleteActivity extends AbstractAppCompatActivity {
         File file = new File(Environment.getExternalStorageDirectory(), "JavaNIDE/sample/src/main/java/com/duy/Main.java");
         mEditorFragment = EditorFragment.newInstance(file.getPath());
         getSupportFragmentManager().beginTransaction().replace(R.id.container, mEditorFragment).commit();
-
-
-        mAutoCompleteProvider = new AutoCompleteProvider(this);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mAutoCompleteProvider.load(mProjectFile);
-                mEditorFragment.setAutoCompleteProvider(mAutoCompleteProvider);
-            }
-        }).start();
     }
 }

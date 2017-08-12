@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.editor.completion.Template;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.project.utils.ProjectFileUtil;
 
 import java.io.File;
@@ -67,7 +67,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         }
     }
 
-    public static DialogNewClass newInstance(@NonNull JavaProjectFile p,
+    public static DialogNewClass newInstance(@NonNull JavaProjectFolder p,
                                              @Nullable String currentPackage,
                                              @Nullable File currentFolder) {
         Bundle args = new Bundle();
@@ -111,7 +111,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         String packageName = getArguments().getString(KEY_PACKAGE);
         if (packageName == null || packageName.isEmpty()) {
             File currentFolder = (File) getArguments().getSerializable(KEY_PARENT_FILE);
-            JavaProjectFile projectFile = (JavaProjectFile) getArguments().getSerializable(KEY_PROJECT_FILE);
+            JavaProjectFolder projectFile = (JavaProjectFolder) getArguments().getSerializable(KEY_PROJECT_FILE);
             if (currentFolder != null && projectFile != null) {
                 packageName = ProjectFileUtil.findPackage(projectFile.dirJava, currentFolder);
             }
@@ -145,10 +145,10 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
 
 
         Bundle arguments = getArguments();
-        JavaProjectFile projectFile = (JavaProjectFile) arguments.getSerializable(KEY_PROJECT_FILE);
+        JavaProjectFolder projectFile = (JavaProjectFolder) arguments.getSerializable(KEY_PROJECT_FILE);
 
         if (projectFile != null) {
-            File classf = JavaProjectFile.createClass(projectFile, currentPackage, className, content);
+            File classf = JavaProjectFolder.createClass(projectFile, currentPackage, className, content);
             if (listener != null) {
                 listener.onFileCreated(classf);
                 Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();

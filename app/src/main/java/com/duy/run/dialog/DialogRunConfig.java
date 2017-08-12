@@ -21,7 +21,7 @@ import com.duy.ide.R;
 import com.duy.compile.CompileManager;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.ClassFile;
-import com.duy.project.file.java.JavaProjectFile;
+import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.project.utils.ClassUtil;
 
 import java.io.File;
@@ -39,11 +39,11 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     private EditText mArgs;
     private EditText mPackage;
     private SharedPreferences mPref;
-    private JavaProjectFile projectFile;
+    private JavaProjectFolder projectFile;
     @Nullable
     private OnConfigChangeListener listener;
 
-    public static DialogRunConfig newInstance(JavaProjectFile project) {
+    public static DialogRunConfig newInstance(JavaProjectFolder project) {
 
         Bundle args = new Bundle();
         args.putSerializable(CompileManager.PROJECT_FILE, project);
@@ -85,7 +85,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        projectFile = (JavaProjectFile) getArguments().getSerializable(CompileManager.PROJECT_FILE);
+        projectFile = (JavaProjectFolder) getArguments().getSerializable(CompileManager.PROJECT_FILE);
         mPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         if (projectFile == null) {
             return;
@@ -131,7 +131,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
         }
     }
 
-    private void setupSpinnerMainClass(View view, JavaProjectFile projectFile) {
+    private void setupSpinnerMainClass(View view, JavaProjectFolder projectFile) {
         ArrayList<String> names = FileManager.listClassName(projectFile.dirJava);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, names);
@@ -152,6 +152,6 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     }
 
     public interface OnConfigChangeListener {
-        void onConfigChange(JavaProjectFile projectFile);
+        void onConfigChange(JavaProjectFolder projectFile);
     }
 }

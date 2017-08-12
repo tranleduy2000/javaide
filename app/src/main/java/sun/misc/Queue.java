@@ -69,7 +69,7 @@ public class Queue {
      * Dequeue the oldest object on the queue.  Will wait indefinitely.
      *
      * @return    the oldest object on the queue.
-     * @exception java.lang.InterruptedException if any thread has
+     * @exception InterruptedException if any thread has
      *              interrupted this thread.
      */
     public Object dequeue() throws InterruptedException {
@@ -82,7 +82,7 @@ public class Queue {
      * to arrive.
      *
      * @return    the oldest object on the queue.
-     * @exception java.lang.InterruptedException if any thread has
+     * @exception InterruptedException if any thread has
      *              interrupted this thread.
      */
     public synchronized Object dequeue(long timeOut)

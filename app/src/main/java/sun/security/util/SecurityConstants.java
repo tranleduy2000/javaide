@@ -25,15 +25,16 @@
 
 package sun.security.util;
 
-import java.net.NetPermission;
-import java.net.SocketPermission;
-import java.security.AllPermission;
-import java.security.SecurityPermission;
-
-import javax.security.auth.AuthPermission;
-
+import java.io.FilePermission;
 //HACK
 //import java.awt.AWTPermission;
+import java.util.PropertyPermission;
+import java.lang.RuntimePermission;
+import java.net.SocketPermission;
+import java.net.NetPermission;
+import java.security.SecurityPermission;
+import java.security.AllPermission;
+import javax.security.auth.AuthPermission;
 
 /**
  * Permission constants and string constants used to create permissions
@@ -110,88 +111,88 @@ public final class SecurityConstants {
     public static final AWTPermission ACCESS_SYSTEM_TRAY_PERMISSION =
         new AWTPermission("accessSystemTray");
         */
-
+    
     // java.net.URL
     public static final NetPermission SPECIFY_HANDLER_PERMISSION =
-            new NetPermission("specifyStreamHandler");
+       new NetPermission("specifyStreamHandler");
 
     // java.net.ProxySelector
     public static final NetPermission SET_PROXYSELECTOR_PERMISSION =
-            new NetPermission("setProxySelector");
+       new NetPermission("setProxySelector");
 
     // java.net.ProxySelector
     public static final NetPermission GET_PROXYSELECTOR_PERMISSION =
-            new NetPermission("getProxySelector");
+       new NetPermission("getProxySelector");
 
     // java.net.CookieHandler
     public static final NetPermission SET_COOKIEHANDLER_PERMISSION =
-            new NetPermission("setCookieHandler");
+       new NetPermission("setCookieHandler");
 
     // java.net.CookieHandler
     public static final NetPermission GET_COOKIEHANDLER_PERMISSION =
-            new NetPermission("getCookieHandler");
+       new NetPermission("getCookieHandler");
 
     // java.net.ResponseCache
     public static final NetPermission SET_RESPONSECACHE_PERMISSION =
-            new NetPermission("setResponseCache");
+       new NetPermission("setResponseCache");
 
     // java.net.ResponseCache
     public static final NetPermission GET_RESPONSECACHE_PERMISSION =
-            new NetPermission("getResponseCache");
+       new NetPermission("getResponseCache");
 
     // java.lang.SecurityManager, sun.applet.AppletPanel, sun.misc.Launcher
     public static final RuntimePermission CREATE_CLASSLOADER_PERMISSION =
-            new RuntimePermission("createClassLoader");
+        new RuntimePermission("createClassLoader");
 
     // java.lang.SecurityManager
     public static final RuntimePermission CHECK_MEMBER_ACCESS_PERMISSION =
-            new RuntimePermission("accessDeclaredMembers");
+        new RuntimePermission("accessDeclaredMembers");
 
     // java.lang.SecurityManager, sun.applet.AppletSecurity
     public static final RuntimePermission MODIFY_THREAD_PERMISSION =
-            new RuntimePermission("modifyThread");
+        new RuntimePermission("modifyThread");
 
     // java.lang.SecurityManager, sun.applet.AppletSecurity
     public static final RuntimePermission MODIFY_THREADGROUP_PERMISSION =
-            new RuntimePermission("modifyThreadGroup");
+        new RuntimePermission("modifyThreadGroup");
 
     // java.lang.Class
     public static final RuntimePermission GET_PD_PERMISSION =
-            new RuntimePermission("getProtectionDomain");
+        new RuntimePermission("getProtectionDomain");
 
     // java.lang.Class, java.lang.ClassLoader, java.lang.Thread
     public static final RuntimePermission GET_CLASSLOADER_PERMISSION =
-            new RuntimePermission("getClassLoader");
+        new RuntimePermission("getClassLoader");
 
     // java.lang.Thread
     public static final RuntimePermission STOP_THREAD_PERMISSION =
-            new RuntimePermission("stopThread");
+       new RuntimePermission("stopThread");
 
     // java.lang.Thread
     public static final RuntimePermission GET_STACK_TRACE_PERMISSION =
-            new RuntimePermission("getStackTrace");
+       new RuntimePermission("getStackTrace");
 
     // java.security.AccessControlContext
     public static final SecurityPermission CREATE_ACC_PERMISSION =
-            new SecurityPermission("createAccessControlContext");
+       new SecurityPermission("createAccessControlContext");
 
     // java.security.AccessControlContext
     public static final SecurityPermission GET_COMBINER_PERMISSION =
-            new SecurityPermission("getDomainCombiner");
+       new SecurityPermission("getDomainCombiner");
 
     // java.security.Policy, java.security.ProtectionDomain
     public static final SecurityPermission GET_POLICY_PERMISSION =
-            new SecurityPermission ("getPolicy");
+        new SecurityPermission ("getPolicy");
 
     // java.lang.SecurityManager
     public static final SocketPermission LOCAL_LISTEN_PERMISSION =
-            new SocketPermission("localhost:1024-", SOCKET_LISTEN_ACTION);
+        new SocketPermission("localhost:1024-", SOCKET_LISTEN_ACTION);
 
     // javax.security.auth.Subject
     public static final AuthPermission DO_AS_PERMISSION =
-            new AuthPermission("doAs");
+        new AuthPermission("doAs");
 
     // javax.security.auth.Subject
     public static final AuthPermission DO_AS_PRIVILEGED_PERMISSION =
-            new AuthPermission("doAsPrivileged");
+        new AuthPermission("doAsPrivileged");
 }

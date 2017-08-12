@@ -1,12 +1,18 @@
 package kellinwood.security.zipsigner.optional;
 
-import kellinwood.logging.LoggerInterface;
-import kellinwood.logging.LoggerManager;
-import kellinwood.security.zipsigner.Base64;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
+
+import kellinwood.logging.LoggerInterface;
+import kellinwood.logging.LoggerManager;
+import kellinwood.security.zipsigner.Base64;
 
 public class PasswordObfuscator {
 

@@ -96,7 +96,7 @@ public class ReflectionFactory {
      *
      * <p> First, if there is a security manager, its
      * <code>checkPermission</code> method is called with a {@link
-     * java.lang.RuntimePermission} with target
+     * RuntimePermission} with target
      * <code>"reflectionFactoryAccess"</code>.  This may result in a
      * security exception.
      *

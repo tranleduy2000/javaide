@@ -328,8 +328,8 @@ public class URLClassPath {
      */
     private Loader getLoader(final URL url) throws IOException {
         try {
-            return (Loader)java.security.AccessController.doPrivileged
-                (new java.security.PrivilegedExceptionAction() {
+            return (Loader) AccessController.doPrivileged
+                (new PrivilegedExceptionAction() {
                 public Object run() throws IOException {
                     String file = url.getFile();
                     if (file != null && file.endsWith("/")) {
@@ -605,8 +605,8 @@ public class URLClassPath {
         private void ensureOpen() throws IOException {
             if (jar == null) {
                 try {
-                    java.security.AccessController.doPrivileged(
-                        new java.security.PrivilegedExceptionAction() {
+                    AccessController.doPrivileged(
+                        new PrivilegedExceptionAction() {
                             public Object run() throws IOException {
                                 if (DEBUG) {
                                     System.err.println("Opening " + csu);

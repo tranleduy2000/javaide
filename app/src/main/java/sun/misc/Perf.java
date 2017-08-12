@@ -47,7 +47,7 @@ import java.io.UnsupportedEncodingException;
  * @since    1.4.2
  * @see      #getPerf
  * @see      sun.misc.Perf$GetPerfAction
- * @see      java.nio.ByteBuffer
+ * @see      ByteBuffer
  */
 public final class Perf {
 
@@ -84,7 +84,7 @@ public final class Perf {
      * is not a JDK specified permission.
      *
      * @see  java.security.AccessController#doPrivileged(PrivilegedAction)
-     * @see  java.lang.RuntimePermission
+     * @see  RuntimePermission
      */
     public static class GetPerfAction implements PrivilegedAction<Perf>
     {
@@ -127,7 +127,7 @@ public final class Perf {
      * @throws AccessControlException  if a security manager exists and
      *               its <code>checkPermission</code> method doesn't allow
      *               access to the <em>"sun.misc.Perf.getPerf"</em> target.
-     * @see  java.lang.RuntimePermission
+     * @see  RuntimePermission
      * @see  #attach
      */
     public static Perf getPerf()
@@ -191,7 +191,7 @@ public final class Perf {
      *                           the instrumentation buffer.
      * @throws  OutOfMemoryError The instrumentation buffer could not be mapped
      *                           into the virtual machine's address space.
-     * @see     java.nio.ByteBuffer
+     * @see     ByteBuffer
      */
     public ByteBuffer attach(int lvmid, String mode)
            throws IllegalArgumentException, IOException
@@ -227,7 +227,7 @@ public final class Perf {
      *                           the instrumentation buffer.
      * @throws  OutOfMemoryError The instrumentation buffer could not be mapped
      *                           into the virtual machine's address space.
-     * @see     java.nio.ByteBuffer
+     * @see     ByteBuffer
      */
     public ByteBuffer attach(String user, int lvmid, String mode)
            throws IllegalArgumentException, IOException
@@ -344,7 +344,7 @@ public final class Perf {
      *
      * @param ByteBuffer  A direct allocated byte buffer created by the
      *                    <code>attach</code> method.
-     * @see   java.nio.ByteBuffer
+     * @see   ByteBuffer
      * @see   #attach
      */
     private native void detach(ByteBuffer bb);
@@ -367,7 +367,7 @@ public final class Perf {
      *
      * see sun.misc.perf.Variability
      * see sun.misc.perf.Units
-     * @see java.nio.ByteBuffer
+     * @see ByteBuffer
      */
     public native ByteBuffer createLong(String name, int variability,
                                         int units, long value);
@@ -400,7 +400,7 @@ public final class Perf {
      *
      * see sun.misc.perf.Variability
      * see sun.misc.perf.Units
-     * @see java.nio.ByteBuffer
+     * @see ByteBuffer
      */
     public ByteBuffer createString(String name, int variability,
                                    int units, String value, int maxLength)
@@ -439,7 +439,7 @@ public final class Perf {
      *
      * see sun.misc.perf.Variability
      * see sun.misc.perf.Units
-     * @see java.nio.ByteBuffer
+     * @see ByteBuffer
      */
     public ByteBuffer createString(String name, int variability,
                                    int units, String value)
@@ -477,7 +477,7 @@ public final class Perf {
      *
      * see sun.misc.perf.Variability
      * see sun.misc.perf.Units
-     * @see java.nio.ByteBuffer
+     * @see ByteBuffer
      */
     public native ByteBuffer createByteArray(String name, int variability,
                                              int units, byte[] value,
@@ -513,7 +513,7 @@ public final class Perf {
      *          the start of the Java virtual machine.
      *
      * @see #highResFrequency
-     * @see java.lang.System#currentTimeMillis()
+     * @see System#currentTimeMillis()
      */
     public native long highResCounter();
 

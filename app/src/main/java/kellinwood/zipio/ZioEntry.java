@@ -17,9 +17,9 @@ package kellinwood.zipio;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.File;
 import java.io.OutputStream;
 import java.io.SequenceInputStream;
 import java.util.Date;
@@ -133,7 +133,7 @@ public class ZioEntry implements Cloneable {
     }
     
     // Return a copy with a new name
-    public ZioEntry getClonedEntry( String newName) 
+    public ZioEntry getClonedEntry(String newName)
     {
         
         ZioEntry clone;

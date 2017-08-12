@@ -15,7 +15,6 @@
  */
 package kellinwood.logging;
 
-import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

@@ -339,8 +339,8 @@ public final class Service {
      *         If a provider-configuration file violates the specified format
      *         or names a provider class that cannot be found and instantiated
      *
-     * @see #providers(java.lang.Class)
-     * @see #installedProviders(java.lang.Class)
+     * @see #providers(Class)
+     * @see #installedProviders(Class)
      */
     public static Iterator providers(Class service, ClassLoader loader)
         throws ServiceConfigurationError
@@ -372,7 +372,7 @@ public final class Service {
      *         If a provider-configuration file violates the specified format
      *         or names a provider class that cannot be found and instantiated
      *
-     * @see #providers(java.lang.Class, java.lang.ClassLoader)
+     * @see #providers(Class, ClassLoader)
      */
     public static Iterator providers(Class service)
         throws ServiceConfigurationError
@@ -409,7 +409,7 @@ public final class Service {
      *         If a provider-configuration file violates the specified format
      *         or names a provider class that cannot be found and instantiated
      *
-     * @see #providers(java.lang.Class, java.lang.ClassLoader)
+     * @see #providers(Class, ClassLoader)
      */
     public static Iterator installedProviders(Class service)
         throws ServiceConfigurationError

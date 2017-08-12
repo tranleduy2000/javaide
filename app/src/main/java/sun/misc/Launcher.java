@@ -91,7 +91,7 @@ public class Launcher {
         if (s != null) {
             SecurityManager sm = null;
             if ("".equals(s) || "default".equals(s)) {
-                sm = new java.lang.SecurityManager();
+                sm = new SecurityManager();
             } else {
                 try {
                     sm = (SecurityManager)loader.loadClass(s).newInstance();
@@ -326,7 +326,7 @@ public class Launcher {
          */
 
         private static AccessControlContext getContext(File[] cp)
-            throws java.net.MalformedURLException
+            throws MalformedURLException
         {
             PathPermissions perms =
                 new PathPermissions(cp);

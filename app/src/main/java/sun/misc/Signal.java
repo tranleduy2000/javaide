@@ -87,7 +87,7 @@ public final class Signal {
      * Returns the signal name.
      *
      * @return the name of the signal.
-     * @see sun.misc.Signal#Signal(String name)
+     * @see Signal#Signal(String name)
      */
     public String getName() {
         return name;
@@ -134,7 +134,7 @@ public final class Signal {
      *
      * @param name the name of the signal.
      * @exception IllegalArgumentException unknown signal
-     * @see sun.misc.Signal#getName()
+     * @see Signal#getName()
      */
     public Signal(String name) {
         number = findSignal(name);
@@ -151,7 +151,7 @@ public final class Signal {
      * @param handler the handler to be registered with the given signal.
      * @result the old handler
      * @exception IllegalArgumentException the signal is in use by the VM
-     * @see sun.misc.Signal#raise(Signal sig)
+     * @see Signal#raise(Signal sig)
      * @see sun.misc.SignalHandler
      * @see sun.misc.SignalHandler#SIG_DFL
      * @see sun.misc.SignalHandler#SIG_IGN
@@ -189,7 +189,7 @@ public final class Signal {
      * Raises a signal in the current process.
      *
      * @param sig a signal
-     * @see sun.misc.Signal#handle(Signal sig, SignalHandler handler)
+     * @see Signal#handle(Signal sig, SignalHandler handler)
      */
     public static void raise(Signal sig) throws IllegalArgumentException {
         if (handlers.get(sig) == null) {

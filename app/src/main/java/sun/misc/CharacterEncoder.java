@@ -69,6 +69,8 @@ import java.nio.ByteBuffer;
  *
  * @author      Chuck McManis
  * @see         CharacterDecoder;
+ * @see         UCEncoder
+ * @see         UUEncoder
  * @see         BASE64Encoder
  */
 public abstract class CharacterEncoder {

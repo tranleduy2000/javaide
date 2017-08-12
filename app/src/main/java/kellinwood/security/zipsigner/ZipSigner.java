@@ -28,31 +28,55 @@
 
 package kellinwood.security.zipsigner;
 
-import kellinwood.logging.LoggerInterface;
-import kellinwood.logging.LoggerManager;
-import kellinwood.zipio.ZioEntry;
-import kellinwood.zipio.ZipInput;
-import kellinwood.zipio.ZipOutput;
-
-import javax.crypto.Cipher;
-import javax.crypto.EncryptedPrivateKeyInfo;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.security.*;
+import java.security.DigestOutputStream;
+import java.security.GeneralSecurityException;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.KeyStore;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.TreeMap;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
+
+import javax.crypto.Cipher;
+import javax.crypto.EncryptedPrivateKeyInfo;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
+import kellinwood.logging.LoggerInterface;
+import kellinwood.logging.LoggerManager;
+import kellinwood.zipio.ZioEntry;
+import kellinwood.zipio.ZipInput;
+import kellinwood.zipio.ZipOutput;
 
 /**
  * This is a modified copy of com.android.signapk.SignApk.java.  It provides an
@@ -147,7 +171,7 @@ public class ZipSigner
     }
 
     
-    protected String autoDetectKey( String mode, Map<String,ZioEntry> zioEntries) 
+    protected String autoDetectKey( String mode, Map<String,ZioEntry> zioEntries)
         throws NoSuchAlgorithmException, IOException 
     {
         boolean debug = getLogger().isDebugEnabled();
@@ -475,7 +499,7 @@ public class ZipSigner
 
     /** Write a .RSA file with a digital signature. */
     @SuppressWarnings("unchecked")
-    private void writeSignatureBlock( KeySet keySet, byte[] signatureFileBytes, OutputStream out)
+    private void writeSignatureBlock(KeySet keySet, byte[] signatureFileBytes, OutputStream out)
         throws IOException, GeneralSecurityException
     {
         if (keySet.getSigBlockTemplate() != null) {
@@ -617,7 +641,7 @@ public class ZipSigner
     /** Sign the input with the default test key and certificate.  
      *  Save result to output file.
      */
-    public void signZip( Map<String,ZioEntry> zioEntries, String outputZipFilename)
+    public void signZip(Map<String,ZioEntry> zioEntries, String outputZipFilename)
         throws IOException, GeneralSecurityException
     {
         progressHelper.initProgress();        
@@ -652,7 +676,7 @@ public class ZipSigner
      *  parameter may be null, but if so
      *  android-sun-jarsign-support.jar must be in the classpath.
      */
-    public void signZip( Map<String,ZioEntry> zioEntries, OutputStream outputStream, String outputZipFilename)
+    public void signZip(Map<String,ZioEntry> zioEntries, OutputStream outputStream, String outputZipFilename)
         throws IOException, GeneralSecurityException    
     {
         boolean debug =  getLogger().isDebugEnabled();

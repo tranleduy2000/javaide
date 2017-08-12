@@ -1,6 +1,5 @@
 package kellinwood.security.zipsigner.optional;
 
-import kellinwood.security.zipsigner.KeySet;
 import org.spongycastle.cert.jcajce.JcaCertStore;
 import org.spongycastle.cms.*;
 import org.spongycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
@@ -12,6 +11,8 @@ import org.spongycastle.util.Store;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import kellinwood.security.zipsigner.KeySet;
 
 /**
  *

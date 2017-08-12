@@ -1,14 +1,23 @@
 package kellinwood.security.zipsigner.optional;
 
 
-import kellinwood.logging.LoggerInterface;
-import kellinwood.logging.LoggerManager;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 
-import java.io.*;
-import java.security.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.Provider;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 
+import kellinwood.logging.LoggerInterface;
+import kellinwood.logging.LoggerManager;
 
 
 /**

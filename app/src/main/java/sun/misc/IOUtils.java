@@ -29,12 +29,10 @@
 
 package sun.misc;
 
+import com.spartacusrex.spartacuside.helper.Arrays;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-
-import sys.util.Arrays;
-
 
 public class IOUtils {
 

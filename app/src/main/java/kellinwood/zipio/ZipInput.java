@@ -18,10 +18,7 @@ package kellinwood.zipio;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +26,6 @@ import java.util.TreeSet;
 import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 import kellinwood.logging.LoggerInterface;
 import kellinwood.logging.LoggerManager;
@@ -71,14 +67,14 @@ public class ZipInput
         return fileLength;
     }
     
-    public static ZipInput read( String filename) throws IOException {
+    public static ZipInput read(String filename) throws IOException {
         ZipInput zipInput = new ZipInput( filename);
         zipInput.doRead();
         return zipInput;
     }
     
     
-    public ZioEntry getEntry( String filename) {
+    public ZioEntry getEntry(String filename) {
         return zioEntries.get(filename);
     }
     

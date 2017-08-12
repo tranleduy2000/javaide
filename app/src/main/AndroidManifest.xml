@@ -61,7 +61,6 @@
 
         <activity android:name="com.spartacusrex.spartacuside.keyboard.KeyboardPrefs" />
 
-        <service android:name=".autocomplete.AutoCompleteService" />
 
         <service
             android:name="com.spartacusrex.spartacuside.keyboard.TerminalKeyboard"

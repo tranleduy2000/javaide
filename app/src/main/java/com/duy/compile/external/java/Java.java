@@ -2,12 +2,12 @@ package com.duy.compile.external.java;
 
 import android.support.annotation.Nullable;
 
-import com.duy.compile.external.dex.DexClassLoader;
-
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import dalvik.system.DexClassLoader;
 
 /**
  * Created by duy on 19/07/2017.
@@ -101,9 +101,8 @@ public class Java {
             }
 
             //Now load this class..
-            //DexClassLoader loader = new DexClassLoader(jarfile, dexfolder, null, ClassLoader.getSystemClassLoader());
-            DexClassLoader loader = new DexClassLoader(jarfile, tempDir, null, ClassLoader.getSystemClassLoader(), verbose);
-            Class loadedclass = loader.loadClass(classname);
+            DexClassLoader loader = new DexClassLoader(jarfile, tempDir, null, ClassLoader.getSystemClassLoader());
+            Class loadedClass = loader.loadClass(classname);
 
             //Now sort the command line inputs
             String[] mainargs;
@@ -119,7 +118,7 @@ public class Java {
 
             //Gat public static void main
             Class[] ptypes = new Class[]{mainargs.getClass()};
-            Method main = loadedclass.getDeclaredMethod("main", ptypes);
+            Method main = loadedClass.getDeclaredMethod("main", ptypes);
             //String[] pargs = new String[mainargs.length - 1];
             //System.arraycopy(mainargs, 1, pargs, 0, pargs.length);
 

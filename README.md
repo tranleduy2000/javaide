@@ -30,6 +30,15 @@ alt="IMAGE ALT TEXT HERE" width="240"/></a>
 11. XML auto complete
 12. Layout builder for Android
 
+## What does the project include?
+1. Java IDE
+2. Javac - Java compiler
+3. Aapt - Android asset package tool
+4. Dx - Dex for dalvik vm
+5. Zip Signer
+6. Apk builder
+
+
 ## Contribute
 I would absolutely love every possible kind of contributions. If you
 have a questions, ideas, need help or want to propose a change just open

@@ -102,6 +102,7 @@ public class ProjectManager {
                 project.setKeystore(new KeyStore(key, Constants.KEY_STORE_PASSWORD,
                         Constants.KEY_STORE_ALIAS, Constants.KEY_STORE_ALIAS_PASS));
             }
+            return project;
         } catch (Exception e) {
 
         }

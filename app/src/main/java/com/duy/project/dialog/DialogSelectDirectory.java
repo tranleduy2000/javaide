@@ -95,7 +95,7 @@ public class DialogSelectDirectory extends AppCompatDialogFragment implements Vi
         if (dialog != null) {
             Window window = dialog.getWindow();
             if (window != null) window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT);
+                    WindowManager.LayoutParams.MATCH_PARENT);
         }
     }
 

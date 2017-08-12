@@ -31,7 +31,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -57,29 +57,32 @@
             android:id="@+id/refresh_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/btn_select"
-            android:layout_below="@+id/linearLayout2"
             app:layout_behavior="">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list_file"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/action_new_folder"
-                android:clickable="true"
-                android:padding="8dp"/>
+                android:orientation="vertical">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list_file"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_below="@+id/action_new_folder"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:padding="8dp"/>
+
+                <Button
+                    android:id="@+id/btn_select"
+                    style="@style/Base.Widget.AppCompat.Button.Colored"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Select this folder"/>
+            </LinearLayout>
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <Button
-            android:id="@+id/btn_select"
-            style="@style/Base.Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select this folder"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"/>
 
-
-    </RelativeLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

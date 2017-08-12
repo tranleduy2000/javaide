@@ -55,19 +55,17 @@ repositories {
     mavenCentral()
 }
 dependencies {
+
     ///test dependencies
     androidTestCompile 'com.android.support:support-annotations:26.0.0-alpha1'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
     compile project(':pager')
     compile project(':colorpicker')
     compile project(':splitview')
     compile project(':treeview')
-
     //android support
     compile 'com.android.support:multidex:1.0.1'
     compile "com.android.support:support-annotations:$android_support_version"
@@ -76,22 +74,28 @@ dependencies {
     compile "com.android.support:design:$android_support_version"
     compile "com.android.support:cardview-v7:$android_support_version"
     compile "com.android.support:recyclerview-v7:$android_support_version"
-
     //firebase sdk
     compile "com.google.firebase:firebase-core:$google_service_version"
     compile "com.google.firebase:firebase-crash:$google_service_version"
     compile "com.google.firebase:firebase-messaging:$google_service_version"
     compile "com.google.android.gms:play-services-ads:$google_service_version"
     compile "com.google.firebase:firebase-storage:$google_service_version"
-
     compile 'io.github.kobakei:ratethisapp:1.1.2'
     compile 'commons-io:commons-io:2.4'
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
     compile 'com.sothree.slidinguppanel:library:3.3.1'
-
     compile 'com.google.guava:guava:22.0-android'
+    compile files('libs/android-sun-jarsign-support-1.1.jar')
+    compile files('libs/bcpg-jdk15on-1.56.0.0.jar')
+    compile files('libs/bcpkix-jdk15on-1.56.0.0.jar')
+    compile files('libs/commons-codec-1.10.jar')
+    compile files('libs/commons-compress-1.5.jar')
+    compile files('libs/core-1.56.0.0.jar')
+    compile files('libs/dx.jar')
+    compile files('libs/log4j-1.2.17.jar')
+    compile files('libs/prov-1.56.0.0.jar')
 }
 
 apply plugin: 'com.google.gms.google-services'

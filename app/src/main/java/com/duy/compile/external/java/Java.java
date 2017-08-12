@@ -102,7 +102,8 @@ public class Java {
 
             //Now load this class..
             DexClassLoader loader = new DexClassLoader(jarfile, tempDir, null, ClassLoader.getSystemClassLoader());
-            Class loadedClass = loader.loadClass(classname);
+//            DexClassLoader loader = new DexClassLoader(jarfile, tempDir, null, ClassLoader.getSystemClassLoader(), verbose);
+            Class loadedclass = loader.loadClass(classname);
 
             //Now sort the command line inputs
             String[] mainargs;
@@ -118,7 +119,7 @@ public class Java {
 
             //Gat public static void main
             Class[] ptypes = new Class[]{mainargs.getClass()};
-            Method main = loadedClass.getDeclaredMethod("main", ptypes);
+            Method main = loadedclass.getDeclaredMethod("main", ptypes);
             //String[] pargs = new String[mainargs.length - 1];
             //System.arraycopy(mainargs, 1, pargs, 0, pargs.length);
 

@@ -144,7 +144,7 @@ public class DonateActivity extends AbstractAppCompatActivity implements IabBroa
     }
 
     private void purchase(String sku) {
-        FirebaseAnalytics.getInstance(this).logEvent("purchase", new Bundle());
+        FirebaseAnalytics.getInstance(this).logEvent("purchase" + sku, new Bundle());
         String payload = "";
         try {
             mIabHelper.launchPurchaseFlow(this, sku, REQUEST_DONATE, mPurchaseFinishedListener, payload);

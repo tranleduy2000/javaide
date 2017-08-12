@@ -4,11 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.android.dx.io.DexBuffer;
+import com.android.dex.Dex;
 import com.android.dx.merge.CollisionPolicy;
 import com.android.dx.merge.DexMerger;
 import com.duy.compile.external.android.AndroidBuilder;
-import com.duy.compile.external.dex.Dex;
+import com.duy.compile.external.dex.DexTool;
 import com.duy.compile.external.java.Jar;
 import com.duy.compile.external.java.Java;
 import com.duy.compile.external.java.Javac;
@@ -117,9 +117,9 @@ public class CommandManager {
                         continue;
                     }
                     if (!outLib.exists()) outLib.createNewFile();
-                    String[] args = new String[]{"--dex", "--verbose", "--no-strict",
+                    String[] args = new String[]{"--dex", "--verbose", /*"--no-strict",*/
                             "--output=" + outLib.getPath(), lib.getPath()};
-                    Dex.main(args);
+                    DexTool.main(args);
                 }
             }
         }
@@ -129,10 +129,10 @@ public class CommandManager {
         Log.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
         String input = projectFile.dirBuildClasses.getPath();
         FileManager.ensureFileExist(new File(input));
-        String[] args = new String[]{"--dex", "--verbose", "--no-strict",
+        String[] args = new String[]{"--dex", "--verbose", /*"--no-strict",*/
                 "--output=" + projectFile.getDexedClassesFile().getPath(), //output dex file
                 input}; //input file
-        Dex.main(args);
+        DexTool.main(args);
         return projectFile.getDexedClassesFile();
     }
 
@@ -144,9 +144,9 @@ public class CommandManager {
             File[] files = projectFile.getDirDexedLibs().listFiles();
             if (files != null && files.length > 0) {
                 for (File dexedLib : files) {
-                    DexBuffer merged = new DexMerger(
-                            new DexBuffer(projectFile.getDexedClassesFile()),
-                            new DexBuffer(dexedLib),
+                    Dex merged = new DexMerger(
+                            new Dex(projectFile.getDexedClassesFile()),
+                            new Dex(dexedLib),
                             CollisionPolicy.FAIL).merge();
                     merged.writeTo(projectFile.getDexedClassesFile());
                 }

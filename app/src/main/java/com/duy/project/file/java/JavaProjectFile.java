@@ -38,7 +38,7 @@ public class JavaProjectFile implements Serializable, Cloneable {
     /*Main class*/
     private ClassFile mainClass;
     private String projectName;
-    private String packageName;
+    protected String packageName;
 
     public JavaProjectFile(File root, String mainClassName, String packageName, String projectName,
                            String classpath) {
@@ -318,4 +318,5 @@ public class JavaProjectFile implements Serializable, Cloneable {
     public String getJavaBootClassPath() {
         return bootClasspath.getPath();
     }
+
 }

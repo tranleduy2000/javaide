@@ -9,8 +9,6 @@ import com.android.sdklib.xml.AndroidManifestParser;
 import com.android.sdklib.xml.ManifestData;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProjectFile;
-import com.duy.project.file.android.Constants;
-import com.duy.project.file.android.KeyStore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -85,22 +83,14 @@ public class ProjectManager {
                 ManifestData.Activity launcherActivity = manifestData.getLauncherActivity();
                 if (launcherActivity != null) {
                     project.setMainClass(new ClassFile(launcherActivity.getName()));
+                    project.setPackageName(manifestData.getPackage());
                 }
                 Log.d(TAG, "importAndroidProject launcherActivity = " + launcherActivity);
             } else {
                 return null;
             }
             if (project.getKeyStore().getFile().exists()) {
-                File key = new File(project.dirProject, "keystore.jks");
-                if (!key.getParentFile().exists()) {
-                    key.getParentFile().mkdirs();
-                }
-                key.createNewFile();
-                FileOutputStream out = new FileOutputStream(key);
-                FileManager.copyFile(context.getAssets().open(Constants.KEY_STORE_ASSET_PATH), out);
-                out.close();
-                project.setKeystore(new KeyStore(key, Constants.KEY_STORE_PASSWORD,
-                        Constants.KEY_STORE_ALIAS, Constants.KEY_STORE_ALIAS_PASS));
+                project.checkKeyStoreExits(context);
             }
             return project;
         } catch (Exception e) {

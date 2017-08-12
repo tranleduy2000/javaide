@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.editor.completion.Patterns;
+import com.duy.ide.autocomplete.autocomplete.PatternFactory;
 
 import java.util.regex.Matcher;
 
@@ -76,8 +75,13 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
     public void append(char[] chars, int start, int end) {
         CharSequence charSequence = new String(chars).subSequence(start, end);
         SpannableString spannableString = new SpannableString(charSequence);
-        Matcher matcher = Patterns.FILE_JAVA.matcher(spannableString);
+        Matcher matcher = PatternFactory.JAVA_FILE.matcher(spannableString);
         int color = ContextCompat.getColor(getContext(), R.color.dark_color_file_java);
+        while (matcher.find()) {
+            spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        matcher = PatternFactory.JAVA_FILE_LINE_COL.matcher(spannableString);
         while (matcher.find()) {
             spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

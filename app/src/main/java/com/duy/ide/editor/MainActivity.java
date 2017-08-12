@@ -65,11 +65,8 @@ import com.duy.ide.code_sample.activities.DocumentActivity;
 import com.duy.ide.code_sample.activities.SampleActivity;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.editor.view.IndentEditText;
-import com.duy.ide.file.FileManager;
-import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
-import com.duy.project.dialog.DialogSelectDirectory;
 import com.duy.project.file.android.AndroidProjectFile;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFile;
@@ -88,15 +85,14 @@ import javax.tools.Diagnostic;
 public class MainActivity extends BaseEditorActivity implements
         DrawerLayout.DrawerListener,
         DialogRunConfig.OnConfigChangeListener,
-        FileSelectListener, Builder {
+        Builder {
     public static final int ACTION_FILE_SELECT_CODE = 1012;
     public static final int ACTION_PICK_MEDIA_URL = 1013;
     public static final int ACTION_CREATE_SHORTCUT = 1014;
     public static final int REQUEST_CODE_SAMPLE = 1015;
 
     private static final String TAG = "MainActivity";
-    private static final int ACTION_OPEN_ANDROID_PROJECT = 3;
-    private static final int ACTION_OPEN_JAVA_PROJECT = 2;
+
     private CompileManager mCompileManager;
     private MenuEditor mMenuEditor;
     private Dialog mDialog;
@@ -387,6 +383,7 @@ public class MainActivity extends BaseEditorActivity implements
     public void buildApk() {
         saveAllFile();
         if (mProjectFile instanceof AndroidProjectFile) {
+            ((AndroidProjectFile) mProjectFile).checkKeyStoreExits(this);
             new BuildApkTask(new BuildApkTask.CompileListener() {
                 @Override
                 public void onStart() {
@@ -397,7 +394,6 @@ public class MainActivity extends BaseEditorActivity implements
                 public void onError(Exception e, List<Diagnostic> diagnostics) {
                     Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                     openDrawer(GravityCompat.START);
-                    mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
                     mDiagnosticPresenter.display(diagnostics);
                     updateUIFinish();
                 }
@@ -420,7 +416,7 @@ public class MainActivity extends BaseEditorActivity implements
             }).execute((AndroidProjectFile) mProjectFile);
         } else {
             if (mProjectFile != null) {
-                complain("This is java project, please create new Android project");
+                complain("This is Java project, please create new Android project");
             } else {
                 complain("You need create project");
             }
@@ -781,45 +777,6 @@ public class MainActivity extends BaseEditorActivity implements
         }
     }
 
-    public void showDialogOpenJavaProject() {
-        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
-                ACTION_OPEN_JAVA_PROJECT);
-        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
-    }
-
-    public void showDialogOpenAndroidProject() {
-        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
-                ACTION_OPEN_ANDROID_PROJECT);
-        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
-    }
-
-    @Override
-    public void onFileSelected(File file, int request) {
-        Log.d(TAG, "onFileSelected() called with: file = [" + file + "], request = [" + request + "]");
-        switch (request) {
-            case ACTION_OPEN_JAVA_PROJECT: //import new project
-            {
-                saveAllFile();
-                JavaProjectFile pf = ProjectManager.createProjectIfNeed(getApplicationContext(), file);
-                Log.d(TAG, "onFileSelected pf = " + pf);
-                if (pf != null) {
-                    super.onProjectCreated(pf);
-                }
-                break;
-            }
-            case ACTION_OPEN_ANDROID_PROJECT: //import new project
-            {
-                saveCurrentFile();
-                AndroidProjectFile pf = ProjectManager.importAndroidProject(getApplicationContext(), file);
-                Log.d(TAG, "onFileSelected pf = " + pf);
-                if (pf != null) {
-                    super.onProjectCreated(pf);
-                }
-                break;
-            }
-
-        }
-    }
 
     private void hideKeyboard() {
         View view = this.getCurrentFocus();

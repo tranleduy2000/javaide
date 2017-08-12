@@ -61,6 +61,7 @@ import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.ide.adapters.BottomPageAdapter;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.FileManager;
+import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.view.SymbolListView;
@@ -69,6 +70,8 @@ import com.duy.project.dialog.DialogNewAndroidResource;
 import com.duy.project.dialog.DialogNewClass;
 import com.duy.project.dialog.DialogNewFile;
 import com.duy.project.dialog.DialogNewJavaProject;
+import com.duy.project.dialog.DialogSelectDirectory;
+import com.duy.project.file.android.AndroidProjectFile;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFile;
 import com.duy.project.file.java.ProjectFileContract;
@@ -93,19 +96,20 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         DialogNewJavaProject.OnCreateProjectListener,
         DialogNewClass.OnCreateFileListener,
         DialogNewFile.OnFileTypeSelectListener,
+        FileSelectListener,
         ViewPager.OnPageChangeListener {
     private static final String TAG = "BaseEditorActivity";
 
     private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
+    private static final int ACTION_OPEN_ANDROID_PROJECT = 3;
+    private static final int ACTION_OPEN_JAVA_PROJECT = 2;
     protected final boolean SELECT = true;
-
     protected final Handler mHandler = new Handler();
     protected FileManager mFileManager;
     protected EditorPagerAdapter mPageAdapter;
     protected SlidingUpPanelLayout mContainerOutput;
     protected JavaProjectFile mProjectFile;
     protected ProjectFileContract.Presenter mFilePresenter;
-
     protected ViewPager mBottomPage;
     protected PagePresenter mPagePresenter;
     protected DiagnosticPresenter mDiagnosticPresenter;
@@ -255,7 +259,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected void removePage(int position) {
         mPagePresenter.removePage(position);
     }
-
 
     /**
      * Add new page for editor
@@ -434,13 +437,11 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         }
     }
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(KEY_PROJECT_FILE, mProjectFile);
     }
-
 
     public void openDrawer(int gravity) {
         try {
@@ -519,7 +520,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         return true;
     }
 
-
     @Override
     public void onFileLongClick(File file, ProjectFileContract.ActionCallback callBack) {
         if (FileUtils.canRead(file)) {
@@ -567,7 +567,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         DialogNewAndroidProject dialogNewProject = DialogNewAndroidProject.newInstance();
         dialogNewProject.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
     }
-
 
     public void showDialogSelectFileType(@Nullable File parent) {
         DialogNewFile dialogNewFile = DialogNewFile.newInstance(parent);
@@ -632,6 +631,40 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    public void showDialogOpenJavaProject() {
+        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
+                ACTION_OPEN_JAVA_PROJECT);
+        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
+    }
+
+    public void showDialogOpenAndroidProject() {
+        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
+                ACTION_OPEN_ANDROID_PROJECT);
+        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
+    }
+
+    @Override
+    public void onFileSelected(File file, int request) {
+        Log.d(TAG, "onFileSelected() called with: file = [" + file + "], request = [" + request + "]");
+        switch (request) {
+            case ACTION_OPEN_JAVA_PROJECT: {
+                saveAllFile();
+                JavaProjectFile pf = ProjectManager.createProjectIfNeed(getApplicationContext(), file);
+                if (pf != null) onProjectCreated(pf);
+                else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                break;
+            }
+            case ACTION_OPEN_ANDROID_PROJECT: {
+                saveCurrentFile();
+                AndroidProjectFile pf = ProjectManager.importAndroidProject(getApplicationContext(), file);
+                if (pf != null) onProjectCreated(pf);
+                else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                break;
+            }
+
+        }
     }
 
     public void closeDrawer(int start) {

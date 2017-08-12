@@ -42,7 +42,6 @@ public class Patterns {
             Pattern.CASE_INSENSITIVE);
     public static final Pattern JAVA_COMMENTS = Pattern.compile("(//.*)|(/\\*(?:.|[\\n\\r])*?\\*/)");
 
-    public static final Pattern FILE_JAVA = Pattern.compile(PatternFactory.IDENTIFIER_STR + "\\.java");
 
     /**
      * match number

@@ -1,10 +1,14 @@
 package com.duy.project.file.android;
 
+import android.content.Context;
+
 import com.android.annotations.Nullable;
+import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.JavaProjectFile;
 import com.google.common.base.MoreObjects;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -39,10 +43,7 @@ public class AndroidProjectFile extends JavaProjectFile {
         apkUnsigned = new File(dirOutput, "app-unsigned-debug.apk");
         apkUnaligned = new File(dirOutput, "app-unaligned-debug.apk");
 
-        if (packageName != null) {
-            classR = new File(dirJava,
-                    packageName.replace(".", File.separator) + File.separator + "R.java");
-        }
+        createClassR();
 
         resourceFile = new File(dirBuild, "resources.res");
         dexedClassesFile = new File(dirBuild, "classes.dex");
@@ -50,6 +51,12 @@ public class AndroidProjectFile extends JavaProjectFile {
                 "android".toCharArray(),
                 "android",
                 "android".toCharArray());
+    }
+
+    private void createClassR() {
+        if (packageName != null) {
+            classR = new File(dirJava, packageName.replace(".", File.separator) + File.separator + "R.java");
+        }
     }
 
     public void setKeystore(KeyStore keystore) {
@@ -139,6 +146,7 @@ public class AndroidProjectFile extends JavaProjectFile {
     }
 
     public File getClassR() throws IOException {
+        if (classR == null) createClassR();
         if (!classR.exists()) {
             classR.getParentFile().mkdirs();
             classR.createNewFile();
@@ -153,5 +161,24 @@ public class AndroidProjectFile extends JavaProjectFile {
             file.mkdirs();
         }
         return file;
+    }
+
+    public void checkKeyStoreExits(Context context) {
+        if (!keystore.getFile().exists()) {
+            File key = new File(dirProject, "keystore.jks");
+            if (!key.getParentFile().exists()) {
+                key.getParentFile().mkdirs();
+            }
+            try {
+                key.createNewFile();
+                FileOutputStream out = new FileOutputStream(key);
+                FileManager.copyFile(context.getAssets().open(Constants.KEY_STORE_ASSET_PATH), out);
+                out.close();
+                setKeystore(new KeyStore(key, Constants.KEY_STORE_PASSWORD,
+                        Constants.KEY_STORE_ALIAS, Constants.KEY_STORE_ALIAS_PASS));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

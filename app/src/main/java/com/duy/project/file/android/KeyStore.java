@@ -1,7 +1,6 @@
 package com.duy.project.file.android;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -21,7 +20,7 @@ public class KeyStore implements Serializable, Cloneable {
         this.certPassword = certPassword;
     }
 
-    public File getFile() throws IOException {
+    public File getFile()  {
         return file;
     }
 

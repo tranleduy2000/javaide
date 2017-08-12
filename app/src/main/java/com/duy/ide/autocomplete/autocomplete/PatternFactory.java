@@ -22,12 +22,8 @@ public class PatternFactory {
     public static final Pattern ANNOTATION = Pattern.compile("@[A-Za-z][A-Za-z0-9]*");
     public static final Pattern BRACKET = Pattern.compile("\\[(.*?)\\]");
     public static final Pattern MODIFIERS = Pattern.compile("\\b(public|protected|private|abstract|static|final|strictfp)\\b");
-
-    private static final String GENERIC_STR = "<[A-Z][a-zA-Z0-9_<>, ]*>";
-
     public static final Pattern SPLIT_NON_WORD = Pattern.compile("\\W+");
     public static final String SPLIT_NON_WORD_STR = "\\W+";
-
     public static final String[] PRIMITIVE_TYPE = new String[]{"boolean", "byte", "char", "int",
             "short", "long", "float", "double"};
     public static final String[] KEYWORD_MODIFIERS = new String[]{"public", "private", "protected",
@@ -35,12 +31,20 @@ public class PatternFactory {
     public static final String[] KEYWORD_TYPE = new String[]{"class", "interface", "enum"};
     public static final String[] KEYWORD;
 
+    public static final String GENERIC_STR = "<[A-Z][a-zA-Z0-9_<>, ]*>";
+
+    /*Match file*/
+    public static final Pattern JAVA_FILE = Pattern.compile(PatternFactory.IDENTIFIER_STR + "\\.java");
+    public static final Pattern JAVA_FILE_LINE_COL = Pattern.compile(PatternFactory.IDENTIFIER_STR
+            + "\\.java[0-9]+:[0-9]+");
+
     static {
         KEYWORD = new String[PRIMITIVE_TYPE.length + KEYWORD_MODIFIERS.length + KEYWORD_TYPE.length];
         System.arraycopy(PRIMITIVE_TYPE, 0, KEYWORD, 0, PRIMITIVE_TYPE.length);
         System.arraycopy(KEYWORD_MODIFIERS, 0, KEYWORD, PRIMITIVE_TYPE.length, KEYWORD_MODIFIERS.length);
         System.arraycopy(KEYWORD_TYPE, 0, KEYWORD, KEYWORD_MODIFIERS.length, KEYWORD_TYPE.length);
     }
+
     public static Pattern makeImport(String className) {
         return Pattern.compile("(import\\s+)(.*" + className + ")(\\s?;)");
     }

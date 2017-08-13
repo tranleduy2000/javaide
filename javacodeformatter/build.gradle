@@ -17,3 +17,8 @@ android {
         }
     }
 }
+
+dependencies {
+    compile 'com.google.guava:guava:22.0-android'
+    compile project(':javacompiler')
+}

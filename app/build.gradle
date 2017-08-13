@@ -109,7 +109,6 @@ dependencies {
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
     compile 'com.sothree.slidinguppanel:library:3.3.1'
-    compile 'com.google.guava:guava:22.0-android'
     compile files('libs/android-sun-jarsign-support-1.1.jar')
     compile files('libs/bcpg-jdk15on-1.56.0.0.jar')
     compile files('libs/bcpkix-jdk15on-1.56.0.0.jar')

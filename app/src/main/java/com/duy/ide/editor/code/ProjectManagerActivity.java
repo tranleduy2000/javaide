@@ -71,7 +71,6 @@ import com.duy.project.dialog.DialogNewAndroidResource;
 import com.duy.project.dialog.DialogNewClass;
 import com.duy.project.dialog.DialogNewFile;
 import com.duy.project.dialog.DialogNewJavaProject;
-import com.duy.project.dialog.DialogSelectDirectory;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFolder;
@@ -612,6 +611,22 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
                     });
                 }
                 break;
+            case REQUEST_OPEN_JAVA_PROJECT: {
+                String file = FileExplorerActivity.getFile(data);
+                JavaProjectFolder pf = ProjectManager.createProjectIfNeed(getApplicationContext(),
+                        new File(file));
+                if (pf != null) onProjectCreated(pf);
+                else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                break;
+            }
+            case REQUEST_OPEN_ANDROID_PROJECT: {
+                String file = FileExplorerActivity.getFile(data);
+                AndroidProjectFolder pf = ProjectManager.importAndroidProject(getApplicationContext(),
+                        new File(file));
+                if (pf != null) onProjectCreated(pf);
+                else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                break;
+            }
         }
     }
 
@@ -646,35 +661,25 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     }
 
     public void showDialogOpenJavaProject() {
-        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
-                REQUEST_OPEN_JAVA_PROJECT);
-        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
+//        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
+//                REQUEST_OPEN_JAVA_PROJECT);
+//        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
+        FileExplorerActivity.startPickPathActivity(null, FileManager.EXTERNAL_DIR, null, REQUEST_OPEN_JAVA_PROJECT);
     }
 
     public void showDialogOpenAndroidProject() {
-        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
-                REQUEST_OPEN_ANDROID_PROJECT);
-        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
+//        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
+//                REQUEST_OPEN_ANDROID_PROJECT);
+//        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
+        FileExplorerActivity.startPickPathActivity(null, FileManager.EXTERNAL_DIR, null, REQUEST_OPEN_ANDROID_PROJECT);
+
     }
 
     @Override
     public void onFileSelected(File file, int request) {
         Log.d(TAG, "onFileSelected() called with: file = [" + file + "], request = [" + request + "]");
         switch (request) {
-            case REQUEST_OPEN_JAVA_PROJECT: {
-                saveAllFile();
-                JavaProjectFolder pf = ProjectManager.createProjectIfNeed(getApplicationContext(), file);
-                if (pf != null) onProjectCreated(pf);
-                else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
-                break;
-            }
-            case REQUEST_OPEN_ANDROID_PROJECT: {
-                saveCurrentFile();
-                AndroidProjectFolder pf = ProjectManager.importAndroidProject(getApplicationContext(), file);
-                if (pf != null) onProjectCreated(pf);
-                else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
-                break;
-            }
+
 
         }
     }

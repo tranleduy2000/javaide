@@ -82,9 +82,6 @@ public class MainActivity extends ProjectManagerActivity implements
         DrawerLayout.DrawerListener,
         DialogRunConfig.OnConfigChangeListener,
         Builder {
-    public static final int ACTION_FILE_SELECT_CODE = 1012;
-    public static final int ACTION_PICK_MEDIA_URL = 1013;
-    public static final int ACTION_CREATE_SHORTCUT = 1014;
     public static final int REQUEST_CODE_SAMPLE = 1015;
 
     private static final String TAG = "MainActivity";

@@ -319,7 +319,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
                 }
             }
         }
-        return classpath;
+        return classpath + File.pathSeparator + getJavaBootClassPath();
     }
 
     public File getDirSrcJava() {

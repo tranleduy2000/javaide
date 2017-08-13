@@ -2,6 +2,7 @@ package com.duy.compile.external.java;
 
 import com.sun.tools.javac.Main;
 
+import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import javax.tools.DiagnosticListener;
@@ -20,8 +21,8 @@ public class Javac {
         return Main.compile(args, printWriter);
     }
 
-    public static int compile(String[] args, PrintWriter printWriter, DiagnosticListener listener) {
-        return Main.compile(args, printWriter, listener);
+    public static int compile(String[] args, PrintStream out, DiagnosticListener listener) {
+        return Main.compile(args, out, listener);
     }
 
 }

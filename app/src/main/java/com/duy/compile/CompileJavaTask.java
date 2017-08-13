@@ -1,17 +1,17 @@
 package com.duy.compile;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.compile.external.CommandManager;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.sun.tools.javac.main.Main;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,20 +40,15 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
     protected Integer doInBackground(JavaProjectFolder... params) {
         if (params[0] == null) return null;
         this.projectFile = params[0];
-        PrintWriter printWriter = new PrintWriter(new Writer() {
+        PrintStream printStream = new PrintStream(new OutputStream() {
             @Override
-            public void write(@NonNull char[] chars, int i, int i1) throws IOException {
-                publishProgress(chars, i, i1);
+            public void write(@NonNull byte[] b, int off, int len) throws IOException {
+                publishProgress(b, off, error);
             }
 
             @Override
-            public void flush() throws IOException {
-
-            }
-
-            @Override
-            public void close() throws IOException {
-
+            public void write(int b) throws IOException {
+                write(new byte[]{(byte) b}, 0, 1);
             }
         });
         DiagnosticListener listener = new DiagnosticListener() {
@@ -66,10 +61,10 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
         projectFile.clean();
         projectFile.createBuildDir();
 
-        int status = CommandManager.compileJava(projectFile, printWriter, listener);
+        int status = CommandManager.compileJava(projectFile, printStream, listener);
         if (status == Main.EXIT_OK) {
             try {
-                CommandManager.convertToDexFormat(projectFile);
+                CommandManager.convertToDexFormat(projectFile, printStream);
             } catch (Exception e) {
                 this.error = e;
                 e.printStackTrace();
@@ -84,15 +79,16 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
     protected void onProgressUpdate(Object... values) {
         super.onProgressUpdate(values);
         try {
-            char[] chars = (char[]) values[0];
+            byte[] chars = (byte[]) values[0];
             int start = (int) values[1];
             int end = (int) values[2];
-            if (compileListener != null) compileListener.onNewMessage(chars, start, end);
-            Log.d(TAG, "onProgressUpdate: " + new String(chars, start, end));
+            if (compileListener != null) {
+                compileListener.onNewMessage(new String(chars, start, end));
+            }
+            Log.d(TAG, new String(chars, start, end));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -113,5 +109,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
         void onComplete(JavaProjectFolder projectFile, List<Diagnostic> diagnostics);
 
         void onNewMessage(char[] chars, int start, int end);
+
+        void onNewMessage(String msg);
     }
 }

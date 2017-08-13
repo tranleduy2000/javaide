@@ -25,6 +25,7 @@
 
 package com.sun.tools.javac;
 
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
@@ -115,8 +116,8 @@ public class Main {
      * @return an integer equivalent to the exit value from invoking
      * javac, see the man page for details.
      */
-    public static int compile(String[] args, PrintWriter out, DiagnosticListener listener) {
-        com.sun.tools.javac.main.Main compiler = new com.sun.tools.javac.main.Main("javac", out);
+    public static int compile(String[] args, PrintStream out, DiagnosticListener listener) {
+        com.sun.tools.javac.main.Main compiler = new com.sun.tools.javac.main.Main("javac", new PrintWriter(out));
         compiler.setDiagnosticListener(listener);
         return compiler.compile(args);
     }

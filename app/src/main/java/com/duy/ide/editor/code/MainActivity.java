@@ -60,7 +60,7 @@ import com.duy.ide.code_sample.activities.DocumentActivity;
 import com.duy.ide.code_sample.activities.SampleActivity;
 import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.editor.code.view.IndentEditText;
-import com.duy.ide.editor.layout.inflate.DialogLayoutPreview;
+import com.duy.ide.editor.uidesigner.inflate.DialogLayoutPreview;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
 import com.duy.project.file.android.AndroidProjectFolder;
@@ -328,7 +328,12 @@ public class MainActivity extends BaseEditorActivity implements
 
             @Override
             public void onNewMessage(char[] chars, int start, int end) {
-                mMessagePresenter.append(chars, start, end);
+                onNewMessage(new String(chars, start, end));
+            }
+
+            @Override
+            public void onNewMessage(String msg) {
+                mMessagePresenter.append(msg);
             }
         };
         new CompileJavaTask(compileListener).execute(mProjectFile);
@@ -717,7 +722,7 @@ public class MainActivity extends BaseEditorActivity implements
         if (currentFile != null) {
             DialogLayoutPreview dialogPreview = DialogLayoutPreview.newInstance(currentFile);
             dialogPreview.show(getSupportFragmentManager(), DialogLayoutPreview.TAG);
-        }else {
+        } else {
             Toast.makeText(this, "Can not find file", Toast.LENGTH_SHORT).show();
         }
     }

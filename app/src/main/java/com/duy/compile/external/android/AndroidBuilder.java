@@ -12,7 +12,6 @@ import com.sun.tools.javac.main.Main;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.Arrays;
 
 import javax.tools.DiagnosticCollector;
@@ -41,8 +40,9 @@ public class AndroidBuilder {
         PrintStream systemOut = System.out;
         PrintStream systemErr = System.err;
         try {
-            System.setOut(new PrintStream(out));
-            System.setErr(new PrintStream(out));
+            PrintStream printStream = new PrintStream(out);
+            System.setOut(printStream);
+            System.setErr(printStream);
 
             //create R.java
             System.out.println("Run aidl");
@@ -52,7 +52,7 @@ public class AndroidBuilder {
 
             //compile java
             System.out.println("Compile Java file");
-            int status = CommandManager.compileJava(projectFile, new PrintWriter(out), diagnosticCollector);
+            int status = CommandManager.compileJava(projectFile, printStream, diagnosticCollector);
             System.gc();
             if (status != Main.EXIT_OK) {
                 System.out.println("Compile error");
@@ -61,7 +61,7 @@ public class AndroidBuilder {
 
             //classes to dex
             System.out.println("Convert classes to dex");
-            CommandManager.convertToDexFormat(projectFile);
+            CommandManager.convertToDexFormat(projectFile, printStream);
 
             //zip apk
             System.out.println("Build apk");

@@ -320,10 +320,10 @@ public class Paths {
 
         String bootclasspath = envs.get("BOOTCLASSPATH");
         path.addFiles(bootclasspath);
-        String defaultClasspath = "/data/user/0/com.duy.compiler.javanide/files/system/classes/android.jar";
-        if (bootclasspath == null || !bootclasspath.equals(defaultClasspath)) {
-            path.addFiles(defaultClasspath);
-        }
+//        String defaultClasspath = "/data/user/0/com.duy.compiler.javanide/files/system/classes/android.jar";
+//        if (bootclasspath == null || !bootclasspath.equals(defaultClasspath)) {
+//            path.addFiles(defaultClasspath);
+//        }
 
         /*path.addFiles(options.get(XBOOTCLASSPATH_PREPEND));
 

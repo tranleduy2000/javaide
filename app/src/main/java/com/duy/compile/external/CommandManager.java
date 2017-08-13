@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.Arrays;
 
 import javax.tools.DiagnosticCollector;
@@ -39,16 +38,14 @@ public class CommandManager {
     @Nullable
     public static File buildJarAchieve(JavaProjectFolder projectFile, OutputStream out,
                                        DiagnosticListener listener) {
-        Log.d(TAG, "buildJarAchieve() called with: projectFile = [" + projectFile + "], out = ["
-                + out + "], listener = [" + listener + "]");
         File jarFile = null;
-        PrintStream stdout, stderr;
-        stdout = System.out;
-        stderr = System.err;
+
+        PrintStream stdout = System.out, stderr = System.err;
         System.setOut(new PrintStream(out));
         System.setErr(new PrintStream(out));
+
         try {
-            int status = compileJava(projectFile, new PrintWriter(out), listener);
+            int status = compileJava(projectFile, new PrintStream(out), listener);
             if (status != Main.EXIT_OK) {
                 throw new RuntimeException("Compile time error... Exit code(" + status + ")");
             }
@@ -65,18 +62,16 @@ public class CommandManager {
         return jarFile;
     }
 
-    public static int compileJava(JavaProjectFolder pf, PrintWriter out) {
+    public static int compileJava(JavaProjectFolder pf, PrintStream out) {
         return compileJava(pf, out, null);
     }
 
-    public static int compileJava(JavaProjectFolder projectFile, @Nullable PrintWriter out,
+    public static int compileJava(JavaProjectFolder projectFile, @Nullable PrintStream out,
                                   @Nullable DiagnosticListener listener) {
-        Log.d(TAG, "compileJava() called with: projectFile = [" + projectFile + "], out = [" + out + "], listener = [" + listener + "]");
-
         try {
             String[] args = new String[]{
                     "-verbose",
-                    "-bootclasspath", projectFile.getJavaBootClassPath(),
+//                    "-bootclasspath", projectFile.getJavaBootClassPath(),
                     "-cp", projectFile.getJavaClassPath(),
                     "-sourcepath", projectFile.getDirSrcJava().getPath(), //sourcepath
                     "-d", projectFile.getDirBuildClasses().getPath(), //output dir
@@ -95,11 +90,8 @@ public class CommandManager {
 
     public static void compileAndRun(PrintStream out, InputStream in, PrintStream err,
                                      File tempDir, JavaProjectFolder projectFile) throws IOException {
-        Log.d(TAG, "compileAndRun() called with: out = [" + out + "], in = [" + in + "], err = [" +
-                err + "], tempDir = [" + tempDir + "], projectFile = [" + projectFile + "]");
-
-        compileJava(projectFile, new PrintWriter(out));
-        convertToDexFormat(projectFile);
+        compileJava(projectFile, out);
+        convertToDexFormat(projectFile, out);
         executeDex(out, in, err, projectFile.getDexedClassesFile(), tempDir, projectFile.getMainClass().getName());
     }
 
@@ -117,7 +109,7 @@ public class CommandManager {
                         continue;
                     }
                     if (!outLib.exists()) outLib.createNewFile();
-                    String[] args = new String[]{"--dex", "--verbose", /*"--no-strict",*/
+                    String[] args = new String[]{"--dex", "--verbose", "--no-strict",
                             "--output=" + outLib.getPath(), lib.getPath()};
                     DexTool.main(args);
                 }
@@ -129,7 +121,7 @@ public class CommandManager {
         Log.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
         String input = projectFile.dirBuildClasses.getPath();
         FileManager.ensureFileExist(new File(input));
-        String[] args = new String[]{"--dex", "--verbose", /*"--no-strict",*/
+        String[] args = new String[]{"--dex", "--verbose", "--no-strict",
                 "--output=" + projectFile.getDexedClassesFile().getPath(), //output dex file
                 input}; //input file
         DexTool.main(args);
@@ -167,11 +159,18 @@ public class CommandManager {
         Java.run(args, tempDir.getPath(), out, in, err);
     }
 
-    public static void convertToDexFormat(@NonNull JavaProjectFolder projectFile) throws IOException {
+    public static void convertToDexFormat(@NonNull JavaProjectFolder projectFile, PrintStream out) throws IOException {
         Log.d(TAG, "convertToDexFormat() called with: projectFile = [" + projectFile + "]");
+        PrintStream stdout = System.out, stderr = System.err;
+        System.setOut(out);
+        System.setErr(out);
+
         dexLibs(projectFile, false);
         dexBuildClasses(projectFile);
         dexMerge(projectFile);
+
+        System.setOut(stdout);
+        System.setErr(stderr);
     }
 
     public static File buildApk(AndroidProjectFolder projectFile,

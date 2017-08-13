@@ -11,7 +11,6 @@ import com.duy.ide.editor.uidesigner.dynamiclayoutinflator.DynamicLayoutInflator
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 /**
  * Created by Duy on 13-Aug-17.
@@ -49,12 +48,12 @@ public class Inflater {
 //            txtError.setVisibility(View.VISIBLE);
 //        }
         try {
-            View view = DynamicLayoutInflator.inflate(context, new FileInputStream(file));
+            View view = DynamicLayoutInflator.inflate(context, new FileInputStream(file), container);
             DynamicLayoutInflator.setDelegate(view, delegate);
             container.removeAllViews();
             container.addView(view, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                     FrameLayout.LayoutParams.MATCH_PARENT));
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             txtError.setText(e.getMessage());
             txtError.setVisibility(View.VISIBLE);

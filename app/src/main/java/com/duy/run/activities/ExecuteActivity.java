@@ -17,7 +17,6 @@ import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.run.view.ConsoleEditText;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
@@ -91,7 +90,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
     }
 
     @WorkerThread
-    private void runProgram(JavaProjectFolder projectFile, int action, Intent intent) throws IOException {
+    private void runProgram(JavaProjectFolder projectFile, int action, Intent intent) throws Exception {
         PrintStream out = mConsoleEditText.getOutputStream();
         InputStream in = mConsoleEditText.getInputStream();
         PrintStream err = mConsoleEditText.getErrorStream();

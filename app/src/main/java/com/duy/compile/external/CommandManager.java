@@ -8,6 +8,7 @@ import com.android.dex.Dex;
 import com.android.dx.merge.CollisionPolicy;
 import com.android.dx.merge.DexMerger;
 import com.duy.compile.external.android.AndroidBuilder;
+import com.duy.compile.external.android.util.Util;
 import com.duy.compile.external.dex.DexTool;
 import com.duy.compile.external.java.Jar;
 import com.duy.compile.external.java.Java;
@@ -89,28 +90,33 @@ public class CommandManager {
     }
 
     public static void compileAndRun(PrintStream out, InputStream in, PrintStream err,
-                                     File tempDir, JavaProjectFolder projectFile) throws IOException {
+                                     File tempDir, JavaProjectFolder projectFile) throws Exception {
         compileJava(projectFile, out);
         convertToDexFormat(projectFile, out);
         executeDex(out, in, err, projectFile.getDexedClassesFile(), tempDir, projectFile.getMainClass().getName());
     }
 
-    public static void dexLibs(@NonNull JavaProjectFolder projectFile, boolean ignoreExist) throws IOException {
-        Log.d(TAG, "dexLibs() called with: projectFile = [" + projectFile + "], ignoreExist = [" + ignoreExist + "]");
+    public static void dexLibs(@NonNull JavaProjectFolder projectFile) throws Exception {
 
         File dirLibs = projectFile.dirLibs;
         if (dirLibs.exists()) {
             File[] files = dirLibs.listFiles();
             if (files != null && files.length > 0) {
-                for (File lib : files) {
-                    File outLib = new File(projectFile.getDirDexedLibs(), lib.getName().replace(".jar", ".dex"));
-                    Log.d(TAG, "dexLibs outLib = " + lib);
-                    if (lib.exists() && ignoreExist) {
+                for (File jarLib : files) {
+                    // skip native libs in sub directories
+                    if (!jarLib.isFile() || !jarLib.getName().endsWith(".jar")) {
                         continue;
                     }
-                    if (!outLib.exists()) outLib.createNewFile();
+
+                    // compare hash of jar contents to name of dexed version
+                    String md5 = Util.getMD5Checksum(jarLib);
+
+                    File dexLib = new File(projectFile.getDirDexedLibs(), jarLib.getName().replace(".jar", "-" + md5 + ".dex"));
+                    if (!dexLib.exists()) {
+                        continue;
+                    }
                     String[] args = new String[]{"--dex", "--verbose", "--no-strict",
-                            "--output=" + outLib.getPath(), lib.getPath()};
+                            "--output=" + dexLib.getPath(), jarLib.getPath()};
                     DexTool.main(args);
                 }
             }
@@ -159,13 +165,13 @@ public class CommandManager {
         Java.run(args, tempDir.getPath(), out, in, err);
     }
 
-    public static void convertToDexFormat(@NonNull JavaProjectFolder projectFile, PrintStream out) throws IOException {
+    public static void convertToDexFormat(@NonNull JavaProjectFolder projectFile, PrintStream out) throws Exception {
         Log.d(TAG, "convertToDexFormat() called with: projectFile = [" + projectFile + "]");
         PrintStream stdout = System.out, stderr = System.err;
         System.setOut(out);
         System.setErr(out);
 
-        dexLibs(projectFile, false);
+        dexLibs(projectFile);
         dexBuildClasses(projectFile);
         dexMerge(projectFile);
 

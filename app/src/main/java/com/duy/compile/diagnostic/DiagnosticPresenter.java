@@ -7,7 +7,7 @@ import android.util.Log;
 import com.android.annotations.Nullable;
 import com.duy.ide.EditPageContract;
 import com.duy.ide.adapters.BottomPageAdapter;
-import com.duy.ide.editor.code.BaseEditorActivity;
+import com.duy.ide.editor.code.ProjectManagerActivity;
 
 import java.util.List;
 
@@ -21,13 +21,13 @@ import javax.tools.JavaFileObject;
 public class DiagnosticPresenter implements DiagnosticContract.Presenter {
 
     private static final String TAG = "DiagnosticPresenter";
-    private BaseEditorActivity mMainActivity;
+    private ProjectManagerActivity mMainActivity;
     private BottomPageAdapter adapter;
     private EditPageContract.Presenter mPagePresenter;
     @Nullable
     private DiagnosticContract.View view;
 
-    public DiagnosticPresenter(BaseEditorActivity mainActivity,
+    public DiagnosticPresenter(ProjectManagerActivity mainActivity,
                                @NonNull BottomPageAdapter adapter,
                                EditPageContract.Presenter pagePresenter) {
         this.mMainActivity = mainActivity;

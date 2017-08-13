@@ -271,5 +271,13 @@
         <item>0</item>
         <item>1</item>
     </string-array>
+    <string-array name="select_type">
+        <item>@string/java_file</item>
+        <item>@string/xml_file</item>
+        <item>@string/from_storage</item>
+    </string-array>
 
+    <string name="java_file">Java file</string>
+    <string name="xml_file">Xml file</string>
+    <string name="from_storage">Select from storage</string>
 </resources>

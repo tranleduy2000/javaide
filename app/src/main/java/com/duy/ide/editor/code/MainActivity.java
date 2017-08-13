@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -36,6 +35,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,7 +78,7 @@ import java.util.List;
 
 import javax.tools.Diagnostic;
 
-public class MainActivity extends BaseEditorActivity implements
+public class MainActivity extends ProjectManagerActivity implements
         DrawerLayout.DrawerListener,
         DialogRunConfig.OnConfigChangeListener,
         Builder {
@@ -106,9 +106,12 @@ public class MainActivity extends BaseEditorActivity implements
         mMenuEditor = new MenuEditor(this, this);
         initView(savedInstanceState);
 
+        startAutoCompleteService();
     }
 
     protected void startAutoCompleteService() {
+        Log.d(TAG, "startAutoCompleteService() called");
+
         if (mProjectFile != null) {
             new Thread(new Runnable() {
                 @Override
@@ -615,35 +618,6 @@ public class MainActivity extends BaseEditorActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case ACTION_FILE_SELECT_CODE:
-                if (resultCode == RESULT_OK) {
-                    // Get the Uri of the selected file
-                    Uri uri = data.getData();
-                    // Get the path
-                    String path;
-                    try {
-                        path = mFileManager.getPath(this, uri);
-                        mFileManager.setWorkingFilePath(path);
-                        addNewPageEditor(new File(path), SELECT);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-                break;
-            case ACTION_PICK_MEDIA_URL:
-                if (resultCode == RESULT_OK) {
-                    String path = data.getData().toString();
-                    EditorFragment currentFragment = mPageAdapter.getCurrentFragment();
-                    if (currentFragment != null && path != null) {
-                        currentFragment.insert(path);
-                    }
-                }
-                break;
-            case ACTION_CREATE_SHORTCUT:
-                data.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-                getApplicationContext().sendBroadcast(data);
-                break;
             case REQUEST_CODE_SAMPLE:
                 if (resultCode == RESULT_OK) {
                     final JavaProjectFolder projectFile = (JavaProjectFolder)

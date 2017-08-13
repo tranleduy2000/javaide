@@ -65,6 +65,7 @@ import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.view.SymbolListView;
+import com.duy.project.dialog.DialogManager;
 import com.duy.project.dialog.DialogNewAndroidProject;
 import com.duy.project.dialog.DialogNewAndroidResource;
 import com.duy.project.dialog.DialogNewClass;
@@ -78,6 +79,7 @@ import com.duy.project.file.java.ProjectFileContract;
 import com.duy.project.file.java.ProjectFilePresenter;
 import com.duy.project.file.java.ProjectManager;
 import com.duy.project.fragments.FolderStructureFragment;
+import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -86,25 +88,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+import static com.duy.project.fragments.FolderStructureFragment.Callback;
+import static com.duy.project.fragments.FolderStructureFragment.FileActionListener;
+import static com.duy.project.fragments.FolderStructureFragment.newInstance;
 
 /**
  * Created by Duy on 09-Mar-17.
  */
-public abstract class BaseEditorActivity extends AbstractAppCompatActivity
+public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         implements SymbolListView.OnKeyListener, EditorControl,
-        ProjectFileContract.FileActionListener,
-        DialogNewJavaProject.OnCreateProjectListener,
-        DialogNewClass.OnCreateFileListener,
-        DialogNewFile.OnFileTypeSelectListener,
-        FileSelectListener,
-        ViewPager.OnPageChangeListener {
+        FileActionListener,
+        DialogNewJavaProject.OnCreateProjectListener, DialogNewClass.OnCreateFileListener,
+        DialogNewFile.OnFileTypeSelectListener, FileSelectListener {
     private static final String TAG = "BaseEditorActivity";
 
+    /*Constants*/
     private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
-    private static final int ACTION_OPEN_ANDROID_PROJECT = 3;
-    private static final int ACTION_OPEN_JAVA_PROJECT = 2;
+    private static final int REQUEST_OPEN_JAVA_PROJECT = 2;
+    private static final int REQUEST_OPEN_ANDROID_PROJECT = 3;
+    private static final int REQUEST_PICK_FILE = 4;
+
     protected final boolean SELECT = true;
     protected final Handler mHandler = new Handler();
+
     protected FileManager mFileManager;
     protected EditorPagerAdapter mPageAdapter;
     protected SlidingUpPanelLayout mContainerOutput;
@@ -120,13 +126,11 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     protected TabLayout mTabLayout;
     protected Toolbar toolbar;
     @Nullable
-    View mContainerSymbol; //don't support in landscape mode
+    protected View mContainerSymbol; //don't support in landscape mode
     @Nullable
-    SymbolListView mKeyList;
-    ViewPager mViewPager;
+    protected SymbolListView mKeyList;
+    protected ViewPager mViewPager;
     private KeyBoardEventListener keyBoardListener;
-    private MessageFragment mMessageFragment;
-    private DiagnosticFragment mDiagnosticFragment;
 
     protected void onShowKeyboard() {
         mTabLayout.setVisibility(View.GONE);
@@ -177,8 +181,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         bottomTab.setupWithViewPager(mBottomPage);
         //create project if need
         createProjectIfNeed();
-
-        startAutoCompleteService();
     }
 
     private void createProjectIfNeed() {
@@ -199,7 +201,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
                     getSupportFragmentManager().findFragmentByTag(FolderStructureFragment.TAG);
         }
         if (folderStructureFragment == null) {
-            folderStructureFragment = FolderStructureFragment.newInstance(mProjectFile);
+            folderStructureFragment = newInstance(mProjectFile);
         }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.container_file, folderStructureFragment, FolderStructureFragment.TAG).commit();
@@ -215,7 +217,6 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), descriptors);
         mViewPager.setAdapter(mPageAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
-        mViewPager.addOnPageChangeListener(this);
 
         mPagePresenter = new PagePresenter((MainActivity) this, mViewPager, mPageAdapter, mTabLayout, mFileManager);
         mPagePresenter.invalidateTab();
@@ -322,7 +323,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
      * @return true if delete success
      */
     @Override
-    public boolean doRemoveFile(final File file, final ProjectFileContract.ActionCallback callback) {
+    public boolean clickRemoveFile(final File file, final Callback callback) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.remove_file_msg) + " " + file.getName());
         builder.setTitle(R.string.delete_file);
@@ -388,7 +389,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
                                         currentFile.getParent() + "/" + fileName);
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                Toast.makeText(BaseEditorActivity.this, R.string.can_not_save_file,
+                                Toast.makeText(ProjectManagerActivity.this, R.string.can_not_save_file,
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -491,7 +492,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     @Override
-    public void onFileClick(File file, ProjectFileContract.ActionCallback callBack) {
+    public void onFileClick(File file, Callback callBack) {
         if (FileUtils.canEdit(file)) {
             //save current file
             addNewPageEditor(file, SELECT);
@@ -527,7 +528,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     @Override
-    public void onFileLongClick(File file, ProjectFileContract.ActionCallback callBack) {
+    public void onFileLongClick(File file, Callback callBack) {
         if (FileUtils.canRead(file)) {
             showFileInfo(file);
         } else {
@@ -538,7 +539,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     @Override
-    public boolean createNewFile(File file, ProjectFileContract.ActionCallback callBack) {
+    public boolean clickCreateNewFile(File file, Callback callBack) {
         showDialogSelectFileType(file);
         return false;
     }
@@ -580,13 +581,36 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     @Override
-    public void onFileTypeSelected(File parent, String ext) {
-        switch (ext.toLowerCase()) {
-            case "java":
-                showDialogCreateNewClass(parent);
-                break;
-            case "xml":
-                showDialogCreateNewXml(parent);
+    public void onFileTypeSelected(File parent, String type) {
+        if (type.equals(getString(R.string.java_file))) {
+            showDialogCreateNewClass(parent);
+        } else if (type.equals(getString(R.string.xml_file))) {
+            showDialogCreateNewXml(parent);
+        } else if (type.equals(getString(R.string.from_storage))) {
+            FileExplorerActivity.startPickFileActivity(this, null, REQUEST_PICK_FILE, parent);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_PICK_FILE:
+                if (resultCode == RESULT_OK) {
+                    String selectedFile = FileExplorerActivity.getFile(data);
+                    File parentFile = FileExplorerActivity.getParentFile(data);
+                    DialogManager.showDialogCopyFile(selectedFile, parentFile, this, new Callback() {
+                        @Override
+                        public void onSuccess(File file) {
+                            mFilePresenter.refresh(mProjectFile);
+                        }
+
+                        @Override
+                        public void onFailed(@Nullable Exception e) {
+                            Toast.makeText(ProjectManagerActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
                 break;
         }
     }
@@ -621,33 +645,15 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        EditorFragment fm = mPageAdapter.getExistingFragment(position);
-        if (fm != null) {
-            setTitle(fm.getTag());
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
-
     public void showDialogOpenJavaProject() {
         DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
-                ACTION_OPEN_JAVA_PROJECT);
+                REQUEST_OPEN_JAVA_PROJECT);
         dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
     }
 
     public void showDialogOpenAndroidProject() {
         DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
-                ACTION_OPEN_ANDROID_PROJECT);
+                REQUEST_OPEN_ANDROID_PROJECT);
         dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
     }
 
@@ -655,14 +661,14 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     public void onFileSelected(File file, int request) {
         Log.d(TAG, "onFileSelected() called with: file = [" + file + "], request = [" + request + "]");
         switch (request) {
-            case ACTION_OPEN_JAVA_PROJECT: {
+            case REQUEST_OPEN_JAVA_PROJECT: {
                 saveAllFile();
                 JavaProjectFolder pf = ProjectManager.createProjectIfNeed(getApplicationContext(), file);
                 if (pf != null) onProjectCreated(pf);
                 else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
                 break;
             }
-            case ACTION_OPEN_ANDROID_PROJECT: {
+            case REQUEST_OPEN_ANDROID_PROJECT: {
                 saveCurrentFile();
                 AndroidProjectFolder pf = ProjectManager.importAndroidProject(getApplicationContext(), file);
                 if (pf != null) onProjectCreated(pf);
@@ -674,9 +680,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
     }
 
     public void closeDrawer(int start) {
-        if (mDrawerLayout.isDrawerOpen(start)) {
-            mDrawerLayout.closeDrawer(start);
-        }
+        if (mDrawerLayout.isDrawerOpen(start)) mDrawerLayout.closeDrawer(start);
     }
 
 
@@ -685,9 +689,9 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
      * if the keyboard is showing, we will hide the toolbar for more space
      */
     private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {
-        BaseEditorActivity activity;
+        ProjectManagerActivity activity;
 
-        KeyBoardEventListener(BaseEditorActivity activityIde) {
+        KeyBoardEventListener(ProjectManagerActivity activityIde) {
             this.activity = activityIde;
         }
 

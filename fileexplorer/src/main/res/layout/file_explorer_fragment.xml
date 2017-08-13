@@ -16,7 +16,7 @@
   ~ limitations under the License.
   -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data></data>
 
@@ -28,18 +28,18 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/pathScrollView"
             android:layout_width="match_parent"
-            android:layout_height="30dp" />
+            android:layout_height="30dp"/>
 
         <EditText
             android:id="@+id/nameFilterEditText"
-            android:background="@drawable/input_edittext_background"
-            android:hint="@string/filter_by_name"
-            android:padding="5dp"
-            android:textSize="12sp"
-            android:singleLine="true"
-            android:maxLength="20"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:hint="@string/filter_by_name"
+            android:maxLength="20"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:textSize="12sp"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -49,27 +49,29 @@
                 android:id="@+id/explorer_swipe_refresh_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
                 <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:fastScrollAutoHide="false"
                     app:fastScrollAutoHideDelay="1500"
+                    app:fastScrollPopupBackgroundSize="88dp"
                     app:fastScrollPopupBgColor="?attr/colorAccent"
                     app:fastScrollPopupTextColor="?attr/colorPrimaryDark"
-                    app:fastScrollThumbColor="?attr/colorAccent"
                     app:fastScrollPopupTextSize="56sp"
-                    app:fastScrollPopupBackgroundSize="88dp"
-                    app:fastScrollTrackColor="#1f000000" />
+                    app:fastScrollThumbColor="?attr/colorAccent"
+                    app:fastScrollTrackColor="#1f000000"/>
             </android.support.v4.widget.SwipeRefreshLayout>
 
-            <TextView android:id="@+id/emptyLayout"
+            <TextView
+                android:id="@+id/emptyLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:drawableTop="@drawable/empty"
                 android:text="@string/no_data"
-                android:visibility="gone"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:visibility="gone"/>
         </FrameLayout>
 
     </LinearLayout>

@@ -3,7 +3,7 @@ package com.duy.compile.message;
 import android.widget.Toast;
 
 import com.duy.ide.adapters.BottomPageAdapter;
-import com.duy.ide.editor.code.BaseEditorActivity;
+import com.duy.ide.editor.code.ProjectManagerActivity;
 
 /**
  * Created by duy on 19/07/2017.
@@ -11,12 +11,12 @@ import com.duy.ide.editor.code.BaseEditorActivity;
 
 public class MessagePresenter implements MessageContract.Presenter {
 
-    private BaseEditorActivity activity;
+    private ProjectManagerActivity activity;
     private BottomPageAdapter adapter;
     private MessageContract.View view;
 
 
-    public MessagePresenter(BaseEditorActivity activity, BottomPageAdapter adapter) {
+    public MessagePresenter(ProjectManagerActivity activity, BottomPageAdapter adapter) {
         this.activity = activity;
         this.adapter = adapter;
         this.view = (MessageContract.View) adapter.getExistingFragment(0);

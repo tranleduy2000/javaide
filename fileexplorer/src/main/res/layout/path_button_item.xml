@@ -17,14 +17,14 @@
   -->
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/textView"
-    android:gravity="center_vertical"
-    android:paddingLeft="8dp"
-    android:text="Path"
-    android:textColor="#6f707a"
-    android:drawablePadding="8dp"
-    android:drawableRight="@drawable/path_sp_icon"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent">
+          android:id="@+id/textView"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:drawablePadding="8dp"
+          android:drawableRight="@drawable/path_sp_icon"
+          android:gravity="center_vertical"
+          android:paddingLeft="8dp"
+          android:text="Path"
+          android:textColor="?colorAccent">
 
 </TextView>

@@ -83,12 +83,10 @@ public class PagePresenter implements EditPageContract.Presenter {
         int position = mPageAdapter.getPositionForTag(file.getPath());
         if (position != -1) { //existed in list file
             //check need select tab
-            if (select) {
-                TabLayout.Tab tab = mTabLayout.getTabAt(position);
-                if (tab != null) {
-                    tab.select();
-                    mViewPager.setCurrentItem(position);
-                }
+            TabLayout.Tab tab = mTabLayout.getTabAt(position);
+            if (tab != null) {
+                tab.select();
+                mViewPager.setCurrentItem(position);
             }
         } else { //new file
             if (mPageAdapter.getCount() >= mPreferences.getMaxPage()) {
@@ -106,13 +104,12 @@ public class PagePresenter implements EditPageContract.Presenter {
             mPageAdapter.add(new SimplePageDescriptor(file.getPath(), file.getName()));
             invalidateTab();
             setAutoCompleteProvider(autoCompleteProvider);
-            if (select) {
-                int indexOfNewPage = mPageAdapter.getCount() - 1;
-                TabLayout.Tab tab = mTabLayout.getTabAt(indexOfNewPage);
-                if (tab != null) {
-                    tab.select();
-                    mViewPager.setCurrentItem(indexOfNewPage);
-                }
+
+            int indexOfNewPage = mPageAdapter.getCount() - 1;
+            TabLayout.Tab tab = mTabLayout.getTabAt(indexOfNewPage);
+            if (tab != null) {
+                tab.select();
+                mViewPager.setCurrentItem(indexOfNewPage);
             }
         }
     }

@@ -38,7 +38,7 @@ public class FolderStructureFragment extends Fragment
     private final android.os.Handler mHandler = new android.os.Handler();
     private JavaProjectFolder mProjectFile;
     @Nullable
-    private ProjectFileContract.FileActionListener listener;
+    private FileActionListener listener;
     private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
         @Override
         public void onClick(TreeNode node, Object value) {
@@ -253,7 +253,7 @@ public class FolderStructureFragment extends Fragment
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            this.listener = (ProjectFileContract.FileActionListener) getActivity();
+            this.listener = (FileActionListener) getActivity();
         } catch (ClassCastException ignored) {
         }
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
@@ -266,5 +266,29 @@ public class FolderStructureFragment extends Fragment
             mPref.edit().putString("tree_state", saveState).apply();
         }
         super.onDestroyView();
+    }
+
+
+    public interface FileActionListener {
+        /**
+         * This method will be call when user click file or folder
+         *
+         * @param file
+         * @param callBack
+         */
+        void onFileClick(File file, @Nullable Callback callBack);
+
+        void onFileLongClick(File file, @Nullable Callback callBack);
+
+        boolean clickRemoveFile(File file, Callback callBack);
+
+        boolean clickCreateNewFile(File file, Callback callBack);
+
+    }
+
+    public interface Callback {
+        void onSuccess(File file);
+
+        void onFailed(@Nullable Exception e);
     }
 }

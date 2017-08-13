@@ -63,7 +63,7 @@ public class DialogNewFile extends AppCompatDialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ListView listView = view.findViewById(R.id.file_types);
-        final String[] fileTypes = new String[]{"java", "xml"};
+        final String[] fileTypes = getResources().getStringArray(R.array.select_type);
         listView.setAdapter(new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, fileTypes));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

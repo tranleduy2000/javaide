@@ -474,4 +474,6 @@
     <string name="open_android_project">Open android project</string>
     <string name="can_not_find_launcher_activity">Can not find launcher activity in manifest</string>
     <string name="thank_you_for_your_support_for_open_source_software">Thank you for your support for open source software.</string>
+    <string name="new_name">New name</string>
+    <string name="copy_file">Copy file</string>
 </resources>

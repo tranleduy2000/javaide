@@ -31,6 +31,7 @@ import com.jecelyin.common.utils.SysUtils;
 import com.jecelyin.styles.R;
 import com.stericson.RootTools.RootTools;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -79,32 +80,14 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
     public static final int SCREEN_ORIENTATION_PORTRAIT = 2;
     public static final String VALUE_SYMBOL = TextUtils.join("\n", new String[]{"{", "}", "<", ">"
             , ",", ";", "'", "\"", "(", ")", "/", "\\", "%", "[", "]", "|", "#", "=", "$", ":"
-            , "&", "?", "!", "@", "^", "+", "*", "-", "_", "`", "\\t", "\\n" });
+            , "&", "?", "!", "@", "^", "+", "*", "-", "_", "`", "\\t", "\\n"});
 
-    public static final int[] THEMES = new int[] {
+    public static final int[] THEMES = new int[]{
             R.style.DefaultTheme,
             R.style.DarkTheme
     };
-
-    @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})
-    public @interface ScreenOrientation {}
-
-    private static Pref instance;
-    private final SharedPreferences pm;
-
-    private final Map<String, Object> map;
-    private final Context context;
-    private Set<String> toolbarIcons;
-
     private static final Object mContent = new Object();
-    private final WeakHashMap<SharedPreferences.OnSharedPreferenceChangeListener, Object> mListeners = new WeakHashMap<>();
-
-    public static Pref getInstance(Context context) {
-        if(instance == null) {
-            instance = new Pref(context.getApplicationContext());
-        }
-        return instance;
-    }
+    private static Pref instance;
 
     static {
         // All Private Keys should go here like this:
@@ -117,10 +100,16 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
 //        privateKeys.put("skydrive_key", "00000000400F4500");
 //        privateKeys.put("skydrive_secret", "0uUmcI0Bjdxux9KdSWVxmgRCZcpzacyz");
     }
-    
+
+    private final SharedPreferences pm;
+    private final Map<String, Object> map;
+    private final Context context;
+    private final WeakHashMap<SharedPreferences.OnSharedPreferenceChangeListener, Object> mListeners = new WeakHashMap<>();
+    private Set<String> toolbarIcons;
+
     public Pref(Context context) {
         this.context = context;
-        pm =  PreferenceManager.getDefaultSharedPreferences(context);
+        pm = PreferenceManager.getDefaultSharedPreferences(context);
         pm.registerOnSharedPreferenceChangeListener(this);
 
         //init variable
@@ -150,7 +139,8 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
 
         //not at preference setting
         toolbarIcons = pm.getStringSet(KEY_TOOLBAR_ICONS, null);
-        map.put(KEY_LAST_OPEN_PATH, Environment.getExternalStorageDirectory().getPath());
+        map.put(KEY_LAST_OPEN_PATH, Environment.getExternalStorageDirectory().getPath() +
+                File.separator + "JavaNIDE");
         map.put(KEY_READ_ONLY, false);
         map.put(KEY_SHOW_HIDDEN_FILES, false);
         map.put(KEY_FILE_SORT_TYPE, 0);
@@ -158,61 +148,16 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
         map.put(KEY_LAST_TAB, 0);
 
         Map<String, ?> values = pm.getAll();
-        for(String key : map.keySet()) {
+        for (String key : map.keySet()) {
             updateValue(key, values);
         }
     }
 
-    private void updateValue(String key, Map<String, ?> values) {
-        Object value = map.get(key);
-        // 跳过一些不能通过本方法取值的东东
-        if(value == null)
-            return;
-        Class cls = value.getClass();
-
-        try {
-            if(cls == int.class || cls == Integer.class) {
-//                value = StringUtils.toInt(pm.getString(key, String.valueOf(value)));
-                Object in = values.get(key);
-                if (in != null)
-                    value = in instanceof Integer ? (int)in : StringUtils.toInt(String.valueOf(in));
-            } else if(cls == boolean.class || cls == Boolean.class) {
-//                value = pm.getBoolean(key, (boolean)value);
-                Boolean b = (Boolean) values.get(key);
-                value = b == null ? (boolean)value : b;
-            } else {
-//                value = pm.getString(key, (String)value);
-                String str = (String) values.get(key);
-                value = str == null ? (String)value : str;
-            }
-        } catch (Exception e) {
-            L.e("key = " + key, e);
-            return;
+    public static Pref getInstance(Context context) {
+        if (instance == null) {
+            instance = new Pref(context.getApplicationContext());
         }
-        map.put(key, value);
-    }
-
-    public void registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        synchronized(this) {
-            mListeners.put(listener, mContent);
-        }
-    }
-
-    public void unregisterOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        synchronized(this) {
-            mListeners.remove(listener);
-        }
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        updateValue(key, sharedPreferences.getAll());
-        Set<SharedPreferences.OnSharedPreferenceChangeListener> listeners = mListeners.keySet();
-        for(SharedPreferences.OnSharedPreferenceChangeListener listener : listeners) {
-            if (listener != null) {
-                listener.onSharedPreferenceChanged(sharedPreferences, key);
-            }
-        }
+        return instance;
     }
 
     public static String getGoogleDriveKey() {
@@ -230,7 +175,59 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
     public static String getBoxApiSecret() {
         return null;
     }
-    
+
+    private void updateValue(String key, Map<String, ?> values) {
+        Object value = map.get(key);
+        // 跳过一些不能通过本方法取值的东东
+        if (value == null)
+            return;
+        Class cls = value.getClass();
+
+        try {
+            if (cls == int.class || cls == Integer.class) {
+//                value = StringUtils.toInt(pm.getString(key, String.valueOf(value)));
+                Object in = values.get(key);
+                if (in != null)
+                    value = in instanceof Integer ? (int) in : StringUtils.toInt(String.valueOf(in));
+            } else if (cls == boolean.class || cls == Boolean.class) {
+//                value = pm.getBoolean(key, (boolean)value);
+                Boolean b = (Boolean) values.get(key);
+                value = b == null ? (boolean) value : b;
+            } else {
+//                value = pm.getString(key, (String)value);
+                String str = (String) values.get(key);
+                value = str == null ? (String) value : str;
+            }
+        } catch (Exception e) {
+            L.e("key = " + key, e);
+            return;
+        }
+        map.put(key, value);
+    }
+
+    public void registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        synchronized (this) {
+            mListeners.put(listener, mContent);
+        }
+    }
+
+    public void unregisterOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        synchronized (this) {
+            mListeners.remove(listener);
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        updateValue(key, sharedPreferences.getAll());
+        Set<SharedPreferences.OnSharedPreferenceChangeListener> listeners = mListeners.keySet();
+        for (SharedPreferences.OnSharedPreferenceChangeListener listener : listeners) {
+            if (listener != null) {
+                listener.onSharedPreferenceChanged(sharedPreferences, key);
+            }
+        }
+    }
+
     public boolean isShowLineNumber() {
         return (boolean) map.get(KEY_SHOW_LINE_NUMBER);
     }
@@ -245,6 +242,7 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
 
     /**
      * theme index of {@link #THEMES}
+     *
      * @param theme
      */
     public void setTheme(int theme) {
@@ -292,7 +290,7 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
     }
 
     public String getLastOpenPath() {
-        return (String)map.get(KEY_LAST_OPEN_PATH);
+        return (String) map.get(KEY_LAST_OPEN_PATH);
     }
 
     public void setLastOpenPath(String path) {
@@ -301,7 +299,7 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
     }
 
     public int getFontSize() {
-        return (int)map.get(KEY_FONT_SIZE);
+        return (int) map.get(KEY_FONT_SIZE);
     }
 
     public int getCursorThickness() {
@@ -346,7 +344,7 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
     }
 
     public int getTabSize() {
-        return (int)map.get(KEY_TAB_SIZE);
+        return (int) map.get(KEY_TAB_SIZE);
     }
 
     @ScreenOrientation
@@ -354,7 +352,7 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
         String ori = (String) map.get(KEY_SCREEN_ORIENTATION);
         if ("landscape".equals(ori)) {
             return SCREEN_ORIENTATION_LANDSCAPE;
-        } else if("portrait".equals(ori)) {
+        } else if ("portrait".equals(ori)) {
             return SCREEN_ORIENTATION_PORTRAIT;
         } else {
             return SCREEN_ORIENTATION_AUTO;
@@ -362,7 +360,7 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
     }
 
     public boolean isRootable() {
-        return ((boolean)map.get(KEY_ENABLE_ROOT)) && RootTools.isRootAvailable() && RootTools.isAccessGiven();
+        return ((boolean) map.get(KEY_ENABLE_ROOT)) && RootTools.isRootAvailable() && RootTools.isAccessGiven();
     }
 
     public boolean isKeepBackupFile() {
@@ -391,13 +389,17 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
         map.put(KEY_FILE_SORT_TYPE, type);
     }
 
+    public boolean isFullScreenMode() {
+        return (boolean) map.get(KEY_FULL_SCREEN);
+    }
+
     public void setFullScreenMode(boolean b) {
         pm.edit().putBoolean(KEY_FULL_SCREEN, b).apply();
         map.put(KEY_FULL_SCREEN, b);
     }
 
-    public boolean isFullScreenMode() {
-        return (boolean)map.get(KEY_FULL_SCREEN);
+    public int getLastTab() {
+        return (int) map.get(KEY_LAST_TAB);
     }
 
     public void setLastTab(int index) {
@@ -405,11 +407,11 @@ public class Pref implements SharedPreferences.OnSharedPreferenceChangeListener 
         map.put(KEY_LAST_TAB, index);
     }
 
-    public int getLastTab() {
-        return (int)map.get(KEY_LAST_TAB);
+    public boolean isEnabledDrawers() {
+        return (boolean) map.get(KEY_PREF_ENABLE_DRAWERS);
     }
 
-    public boolean isEnabledDrawers() {
-        return (boolean)map.get(KEY_PREF_ENABLE_DRAWERS);
+    @IntDef({SCREEN_ORIENTATION_AUTO, SCREEN_ORIENTATION_LANDSCAPE, SCREEN_ORIENTATION_PORTRAIT})
+    public @interface ScreenOrientation {
     }
 }

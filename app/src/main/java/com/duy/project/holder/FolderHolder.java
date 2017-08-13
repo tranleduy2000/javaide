@@ -10,11 +10,13 @@ import android.widget.TextView;
 
 import com.duy.ide.R;
 import com.duy.ide.themefont.fonts.FontManager;
-import com.duy.project.file.java.ProjectFileContract;
 import com.duy.project.utils.ProjectFileUtil;
 import com.unnamed.b.atv.model.TreeNode;
 
 import java.io.File;
+
+import static com.duy.project.fragments.FolderStructureFragment.Callback;
+import static com.duy.project.fragments.FolderStructureFragment.FileActionListener;
 
 
 public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeItem> {
@@ -58,12 +60,12 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
         final File file = item.getFile();
         setIcon((ImageView) view.findViewById(R.id.img_icon), file);
 
-        final ProjectFileContract.FileActionListener listener = item.getListener();
+        final FileActionListener listener = item.getListener();
         imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    listener.doRemoveFile(file, new ProjectFileContract.ActionCallback() {
+                    listener.clickRemoveFile(file, new Callback() {
                         @Override
                         public void onSuccess(File old) {
                             getTreeView().removeNode(node);
@@ -81,7 +83,7 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    listener.createNewFile(file, new ProjectFileContract.ActionCallback() {
+                    listener.clickCreateNewFile(file, new Callback() {
                         @Override
                         public void onSuccess(File newf) {
                             TreeNode child = new TreeNode(new TreeItem(item.getProjectFile(), newf, listener));
@@ -132,10 +134,10 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
         @NonNull
         private File file;
         @Nullable
-        private ProjectFileContract.FileActionListener listener;
+        private FileActionListener listener;
 
         public TreeItem(@NonNull File projectFile, @Nullable File file,
-                        @Nullable ProjectFileContract.FileActionListener listener) {
+                        @Nullable FileActionListener listener) {
             this.projectFile = projectFile;
             this.file = file;
             this.listener = listener;
@@ -146,7 +148,7 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
         }
 
         @Nullable
-        public ProjectFileContract.FileActionListener getListener() {
+        public FileActionListener getListener() {
             return listener;
         }
 

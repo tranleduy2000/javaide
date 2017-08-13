@@ -228,7 +228,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     public void formatCode() {
         String filePath = getArguments().getString(CompileManager.FILE_PATH);
         if (filePath != null) {
-            new JavaFormatCode(getContext(), FormatFactory.getType(new File(filePath))).execute(filePath);
+            new FormatSource(getContext(), FormatFactory.getType(new File(filePath))).execute(getCode());
         }
     }
 
@@ -347,12 +347,12 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         }
     }
 
-    private class JavaFormatCode extends AsyncTask<String, Void, String> {
+    private class FormatSource extends AsyncTask<String, Void, String> {
         private Exception error;
         private Context context;
         private FormatFactory.Type type;
 
-        public JavaFormatCode(Context context, FormatFactory.Type type) {
+        public FormatSource(Context context, FormatFactory.Type type) {
             this.context = context;
             this.type = type;
         }
@@ -372,6 +372,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
             } catch (Exception e) {
                 //format unexpected
                 error = e;
+                e.printStackTrace();
             }
             return null;
         }

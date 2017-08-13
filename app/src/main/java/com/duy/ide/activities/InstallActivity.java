@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duy.ide.R;
+import com.duy.ide.file.FileManager;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.utils.MemoryUtils;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -240,6 +241,12 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
                 File outputDir = new File(context.getFilesDir(), "system" + File.separator + "classes");
                 unzipArchive(download, outputDir);
                 download.delete();
+
+                File classpath = FileManager.getClasspathFile(context);
+                if (!(classpath.exists() && classpath.length() > 0)) {
+                    throw new RuntimeException("Install failed, Not a classes.zip file");
+                }
+
 //                File tmp = new File(home, "tmp");
 //                if (!tmp.exists()) tmp.mkdirs();
 //
@@ -423,8 +430,6 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             }
             mInstallButton.setEnabled(true);
             mProgressBar.setIndeterminate(false);
-//            String version = getString(R.string.system_version) + mPreferences.getSystemVersion();
-//            mTxtVersion.setText(version);
             installing = false;
         }
 

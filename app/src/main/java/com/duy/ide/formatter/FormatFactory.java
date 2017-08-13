@@ -9,11 +9,12 @@ import com.google.googlejavaformat.java.FormatterException;
 import com.google.googlejavaformat.java.JavaFormatterOptions;
 
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -72,12 +73,13 @@ public class FormatFactory {
     private static String formatXml(Context context, String src) throws TransformerException,
             ParserConfigurationException, IOException, SAXException {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document doc = builder.parse(new ByteArrayInputStream(src.getBytes()));
+        Document doc = builder.parse(new InputSource(new StringReader(src)));
 
         JavaPreferences setting = new JavaPreferences(context);
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", setting.getTab());
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", setting.getTab().length() + "");
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
         //initialize StreamResult with File object to save to file
         StreamResult result = new StreamResult(new StringWriter());

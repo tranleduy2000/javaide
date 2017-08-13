@@ -13,14 +13,16 @@ import java.util.regex.Pattern;
 
 /**
  * Created by nick on 8/10/15.
- *
+ * <p>
  * Taken from http://stackoverflow.com/questions/8343971/how-to-parse-a-dimension-string-and-convert-it-to-a-dimension-value
  */
 public class DimensionConverter {
-    public static Map<String, Float>cached = new HashMap<>();
-
     // -- Initialize dimension string to constant lookup.
     public static final Map<String, Integer> dimensionConstantLookup = initDimensionConstantLookup();
+    // -- Initialize pattern for dimension string.
+    private static final Pattern DIMENSION_PATTERN = Pattern.compile("^\\s*(\\d+(\\.\\d+)*)\\s*([a-zA-Z]+)\\s*$");
+    public static Map<String, Float> cached = new HashMap<>();
+
     private static Map<String, Integer> initDimensionConstantLookup() {
         Map<String, Integer> m = new HashMap<String, Integer>();
         m.put("px", TypedValue.COMPLEX_UNIT_PX);
@@ -32,16 +34,15 @@ public class DimensionConverter {
         m.put("mm", TypedValue.COMPLEX_UNIT_MM);
         return Collections.unmodifiableMap(m);
     }
-    // -- Initialize pattern for dimension string.
-    private static final Pattern DIMENSION_PATTERN = Pattern.compile("^\\s*(\\d+(\\.\\d+)*)\\s*([a-zA-Z]+)\\s*$");
 
     public static int stringToDimensionPixelSize(String dimension, DisplayMetrics metrics, ViewGroup parent, boolean horizontal) {
         if (dimension.endsWith("%")) {
             float pct = Float.parseFloat(dimension.substring(0, dimension.length() - 1)) / 100.0f;
-            return (int)(pct * (horizontal ? parent.getMeasuredWidth() : parent.getMeasuredHeight()));
+            return (int) (pct * (horizontal ? parent.getMeasuredWidth() : parent.getMeasuredHeight()));
         }
         return stringToDimensionPixelSize(dimension, metrics);
     }
+
     public static int stringToDimensionPixelSize(String dimension, DisplayMetrics metrics) {
         // -- Mimics TypedValue.complexToDimensionPixelSize(int data, DisplayMetrics metrics).
         final float f;
@@ -53,7 +54,7 @@ public class DimensionConverter {
             f = TypedValue.applyDimension(internalDimension.unit, value, metrics);
             cached.put(dimension, f);
         }
-        final int res = (int)(f+0.5f);
+        final int res = (int) (f + 0.5f);
         if (res != 0) return res;
         if (f == 0) return 0;
         if (f > 0) return 1;

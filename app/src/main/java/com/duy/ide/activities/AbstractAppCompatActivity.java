@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.duy.ide.R;
 import com.duy.ide.setting.JavaPreferences;
@@ -27,6 +28,9 @@ public class AbstractAppCompatActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         mPreferences = new JavaPreferences(this);
         mPreferences.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        if (mPreferences.useFullScreen()) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
     }
 
     @Override
@@ -39,7 +43,13 @@ public class AbstractAppCompatActivity extends AppCompatActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-
+        if (s.equals(getString(R.string.key_full_screen))) {
+            if (mPreferences.useFullScreen()) {
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            } else {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+        }
     }
 
     @Override

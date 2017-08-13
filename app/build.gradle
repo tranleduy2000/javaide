@@ -5,10 +5,6 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion as String
     useLibrary 'org.apache.http.legacy'
 
-    dexOptions {
-        incremental true
-    }
-
     defaultConfig {
         applicationId "com.duy.compiler.javanide"
         minSdkVersion rootProject.ext.minSdkVersion as Integer

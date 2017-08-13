@@ -7,7 +7,7 @@ import java.io.File;
  */
 
 public class EditPageContract {
-    public interface View {
+    public interface SourceView {
         void gotoLine(int line, int col);
 
         void display(String src);
@@ -54,9 +54,9 @@ public class EditPageContract {
 
         int getPagePosition(String path);
 
-        View getCurrentPage();
+        SourceView getCurrentPage();
 
-        void showError(View view, int line);
+        void showError(SourceView sourceView, int line);
 
         void pause();
     }

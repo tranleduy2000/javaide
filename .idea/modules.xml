@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/colorpicker/colorpicker.iml" filepath="$PROJECT_DIR$/colorpicker/colorpicker.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/fileexplorer/fileexplorer.iml" filepath="$PROJECT_DIR$/fileexplorer/fileexplorer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gitforandroid/gitforandroid.iml" filepath="$PROJECT_DIR$/gitforandroid/gitforandroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/javacodeformatter/javacodeformatter.iml" filepath="$PROJECT_DIR$/javacodeformatter/javacodeformatter.iml" />
       <module fileurl="file://$PROJECT_DIR$/javacompiler/javacompiler.iml" filepath="$PROJECT_DIR$/javacompiler/javacompiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/javaide.iml" filepath="$PROJECT_DIR$/javaide.iml" />

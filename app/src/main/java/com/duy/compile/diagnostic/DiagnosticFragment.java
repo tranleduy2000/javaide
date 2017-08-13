@@ -30,7 +30,6 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     private DiagnosticContract.Presenter presenter;
 
     public static DiagnosticFragment newInstance() {
-
         Bundle args = new Bundle();
 
         DiagnosticFragment fragment = new DiagnosticFragment();
@@ -40,6 +39,7 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
 
     @Nullable
     @Override
+
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_diagnostic, container, false);
     }

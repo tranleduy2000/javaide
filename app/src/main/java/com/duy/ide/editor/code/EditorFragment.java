@@ -51,7 +51,7 @@ import java.io.FileNotFoundException;
  * Created by Duy on 15-Mar-17.
  * Editor fragment
  */
-public class EditorFragment extends Fragment implements EditorListener, EditPageContract.View {
+public class EditorFragment extends Fragment implements EditorListener, EditPageContract.SourceView {
     private static final String TAG = "EditorFragment";
     private EditorView mCodeEditor;
     @Nullable

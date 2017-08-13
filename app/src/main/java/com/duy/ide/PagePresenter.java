@@ -210,12 +210,12 @@ public class PagePresenter implements EditPageContract.Presenter {
     }
 
     @Override
-    public EditPageContract.View getCurrentPage() {
+    public EditPageContract.SourceView getCurrentPage() {
         return mPageAdapter.getCurrentFragment();
     }
 
     @Override
-    public void showError(EditPageContract.View view, int line) {
+    public void showError(EditPageContract.SourceView sourceView, int line) {
 
     }
 

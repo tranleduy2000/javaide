@@ -51,7 +51,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             if (i == -1) {
                 mPagePresenter.addPage(path, true);
             }
-            EditPageContract.View editor = mPagePresenter.getCurrentPage();
+            EditPageContract.SourceView editor = mPagePresenter.getCurrentPage();
             if (editor == null) {
                 Log.d(TAG, "click: editor null");
                 return;

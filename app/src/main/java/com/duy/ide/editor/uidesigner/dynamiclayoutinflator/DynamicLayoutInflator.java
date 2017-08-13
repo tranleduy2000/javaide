@@ -53,55 +53,37 @@ import javax.xml.parsers.ParserConfigurationException;
 /**
  * Copyright Nicholas White 2015.
  * Source: https://github.com/nickwah/DynamicLayoutInflator
- *
+ * <p>
  * Licensed under the MIT License:
- *
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 public class DynamicLayoutInflator {
-    private static final String ns = null;
     public static final int NO_LAYOUT_RULE = -999;
     public static final String[] CORNERS = {"TopLeft", "TopRight", "BottomRight", "BottomLeft"};
+    private static final String ns = null;
     public static int highestIdNumberUsed = 1234567;
-
-    public interface ViewParamRunnable {
-        void apply(View view, String value, ViewGroup parent, Map<String, String> attrs);
-    }
     public static Map<String, ViewParamRunnable> viewRunnables;
-
-    public interface ImageLoader {
-        void loadImage(ImageView view, String url);
-        void loadRoundedImage(ImageView view, String url, int radius);
-    }
-
     private static ImageLoader imageLoader = null;
+
     public static void setImageLoader(ImageLoader il) {
         imageLoader = il;
-    }
-
-    public static class DynamicLayoutInfo {
-        public DynamicLayoutInfo() {
-            nameToIdNumber = new HashMap<>();
-        }
-        public HashMap<String, Integer> nameToIdNumber;
-        public Object delegate;
-        public GradientDrawable bgDrawable;
     }
 
     public static void setDelegate(View root, Object delegate) {
@@ -110,7 +92,7 @@ public class DynamicLayoutInflator {
             info = new DynamicLayoutInfo();
             root.setTag(info);
         } else {
-            info = (DynamicLayoutInfo)root.getTag();
+            info = (DynamicLayoutInfo) root.getTag();
         }
         info.delegate = delegate;
     }
@@ -118,6 +100,7 @@ public class DynamicLayoutInflator {
     public static View inflateName(Context context, String name) {
         return inflateName(context, name, null);
     }
+
     public static View inflateName(Context context, String name, ViewGroup parent) {
         if (name.startsWith("<")) {
             // Assume it's XML
@@ -167,6 +150,7 @@ public class DynamicLayoutInflator {
     public static View inflate(Context context, InputStream inputStream) {
         return inflate(context, inputStream, null);
     }
+
     public static View inflate(Context context, InputStream inputStream, ViewGroup parent) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -191,9 +175,11 @@ public class DynamicLayoutInflator {
     public static View inflate(Context context, Node node) {
         return inflate(context, node, null);
     }
+
     public static View inflate(Context context, Node node, ViewGroup parent) {
         View mainView = getViewForName(context, node.getNodeName());
-        if (parent != null) parent.addView(mainView); // have to add to parent to enable certain layout attrs
+        if (parent != null)
+            parent.addView(mainView); // have to add to parent to enable certain layout attrs
         applyAttributes(mainView, getAttributesMap(node), parent);
         if (mainView instanceof ViewGroup && node.hasChildNodes()) {
             parseChildren(context, node, (ViewGroup) mainView);
@@ -217,7 +203,7 @@ public class DynamicLayoutInflator {
             }
             Class<?> clazz = Class.forName(name);
             Constructor<?> constructor = clazz.getConstructor(Context.class);
-            return (View)constructor.newInstance(context);
+            return (View) constructor.newInstance(context);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {
@@ -251,9 +237,9 @@ public class DynamicLayoutInflator {
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         int layoutRule;
         int marginLeft = 0, marginRight = 0, marginTop = 0, marginBottom = 0,
-        paddingLeft = 0, paddingRight = 0, paddingTop = 0, paddingBottom = 0;
+                paddingLeft = 0, paddingRight = 0, paddingTop = 0, paddingBottom = 0;
         boolean hasCornerRadius = false, hasCornerRadii = false;
-        for (Map.Entry<String,String> entry : attrs.entrySet()) {
+        for (Map.Entry<String, String> entry : attrs.entrySet()) {
             String attr = entry.getKey();
             if (viewRunnables.containsKey(attr)) {
                 viewRunnables.get(attr).apply(view, entry.getValue(), parent, attrs);
@@ -308,14 +294,14 @@ public class DynamicLayoutInflator {
                     break;
                 case "layout_gravity":
                     if (parent != null && parent instanceof LinearLayout) {
-                        ((LinearLayout.LayoutParams)layoutParams).gravity = parseGravity(entry.getValue());
+                        ((LinearLayout.LayoutParams) layoutParams).gravity = parseGravity(entry.getValue());
                     } else if (parent != null && parent instanceof FrameLayout) {
-                        ((FrameLayout.LayoutParams)layoutParams).gravity = parseGravity(entry.getValue());
+                        ((FrameLayout.LayoutParams) layoutParams).gravity = parseGravity(entry.getValue());
                     }
                     break;
                 case "layout_weight":
                     if (parent != null && parent instanceof LinearLayout) {
-                        ((LinearLayout.LayoutParams)layoutParams).weight = Float.parseFloat(entry.getValue());
+                        ((LinearLayout.LayoutParams) layoutParams).weight = Float.parseFloat(entry.getValue());
                     }
                     break;
                 case "layout_below":
@@ -506,7 +492,7 @@ public class DynamicLayoutInflator {
     private static DynamicLayoutInfo getDynamicLayoutInfo(View parent) {
         DynamicLayoutInfo info;
         if (parent.getTag() != null && parent.getTag() instanceof DynamicLayoutInfo) {
-            info = (DynamicLayoutInfo)parent.getTag();
+            info = (DynamicLayoutInfo) parent.getTag();
         } else {
             info = new DynamicLayoutInfo();
             parent.setTag(info);
@@ -522,10 +508,10 @@ public class DynamicLayoutInflator {
                 DynamicLayoutInfo info = null;
                 while (root != null && (root.getParent() instanceof ViewGroup)) {
                     if (root.getTag() != null && root.getTag() instanceof DynamicLayoutInfo) {
-                        info = (DynamicLayoutInfo)root.getTag();
+                        info = (DynamicLayoutInfo) root.getTag();
                         if (info.delegate != null) break;
                     }
-                    root = (ViewGroup)root.getParent();
+                    root = (ViewGroup) root.getParent();
                 }
                 if (info != null && info.delegate != null) {
                     final Object delegate = info.delegate;
@@ -634,9 +620,9 @@ public class DynamicLayoutInflator {
         if (!(view instanceof ViewGroup)) return 0;
         Object tag = view.getTag();
         if (!(tag instanceof DynamicLayoutInfo)) return 0; // not inflated by this class
-        DynamicLayoutInfo info = (DynamicLayoutInfo)view.getTag();
+        DynamicLayoutInfo info = (DynamicLayoutInfo) view.getTag();
         if (!info.nameToIdNumber.containsKey(id)) {
-            ViewGroup grp = (ViewGroup)view;
+            ViewGroup grp = (ViewGroup) view;
             for (int i = 0; i < grp.getChildCount(); i++) {
                 int val = idNumFromIdString(grp.getChildAt(i), id);
                 if (val != 0) return val;
@@ -668,9 +654,9 @@ public class DynamicLayoutInflator {
         int red = color & 0xFF0000 >> 16;
         int green = color & 0x00FF00 >> 8;
         int blue = color & 0x0000FF;
-        int result = (int)(blue * amount);
-        result += (int)(green * amount) << 8;
-        result += (int)(red * amount) << 16;
+        int result = (int) (blue * amount);
+        result += (int) (green * amount) << 8;
+        result += (int) (red * amount) << 16;
         return result;
     }
 
@@ -686,7 +672,7 @@ public class DynamicLayoutInflator {
             @Override
             public void apply(View view, String value, ViewGroup parent, Map<String, String> attrs) {
                 if (view instanceof ImageView) {
-                    ImageView.ScaleType scaleType = ((ImageView)view).getScaleType();
+                    ImageView.ScaleType scaleType = ((ImageView) view).getScaleType();
                     switch (value.toLowerCase()) {
                         case "center":
                             scaleType = ImageView.ScaleType.CENTER;
@@ -721,7 +707,7 @@ public class DynamicLayoutInflator {
             @Override
             public void apply(View view, String value, ViewGroup parent, Map<String, String> attrs) {
                 if (view instanceof LinearLayout) {
-                    ((LinearLayout)view).setOrientation(value.equals("vertical") ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
+                    ((LinearLayout) view).setOrientation(value.equals("vertical") ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
                 }
             }
         });
@@ -729,7 +715,7 @@ public class DynamicLayoutInflator {
             @Override
             public void apply(View view, String value, ViewGroup parent, Map<String, String> attrs) {
                 if (view instanceof TextView) {
-                    ((TextView)view).setText(value);
+                    ((TextView) view).setText(value);
                 }
             }
         });
@@ -737,7 +723,7 @@ public class DynamicLayoutInflator {
             @Override
             public void apply(View view, String value, ViewGroup parent, Map<String, String> attrs) {
                 if (view instanceof TextView) {
-                    ((TextView)view).setTextSize(TypedValue.COMPLEX_UNIT_PX, DimensionConverter.stringToDimension(value, view.getResources().getDisplayMetrics()));
+                    ((TextView) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, DimensionConverter.stringToDimension(value, view.getResources().getDisplayMetrics()));
                 }
             }
         });
@@ -745,7 +731,7 @@ public class DynamicLayoutInflator {
             @Override
             public void apply(View view, String value, ViewGroup parent, Map<String, String> attrs) {
                 if (view instanceof TextView) {
-                    ((TextView)view).setTextColor(parseColor(view, value));
+                    ((TextView) view).setTextColor(parseColor(view, value));
                 }
             }
         });
@@ -755,7 +741,7 @@ public class DynamicLayoutInflator {
                 if (view instanceof TextView) {
                     int typeFace = Typeface.NORMAL;
                     if (value.contains("bold")) typeFace |= Typeface.BOLD;
-                    else  if (value.contains("italic")) typeFace |= Typeface.ITALIC;
+                    else if (value.contains("italic")) typeFace |= Typeface.ITALIC;
                     ((TextView) view).setTypeface(null, typeFace);
                 }
             }
@@ -792,7 +778,7 @@ public class DynamicLayoutInflator {
                             gravity = Gravity.RIGHT;
                             break;
                     }
-                    ((TextView)view).setGravity(gravity);
+                    ((TextView) view).setGravity(gravity);
                 }
             }
         });
@@ -822,7 +808,7 @@ public class DynamicLayoutInflator {
             @Override
             public void apply(View view, String value, ViewGroup parent, Map<String, String> attrs) {
                 if (view instanceof TextView) {
-                    ((TextView)view).setSingleLine();
+                    ((TextView) view).setSingleLine();
                 }
             }
         });
@@ -830,7 +816,7 @@ public class DynamicLayoutInflator {
             @Override
             public void apply(View view, String value, ViewGroup parent, Map<String, String> attrs) {
                 if (view instanceof EditText) {
-                    ((EditText)view).setHint(value);
+                    ((EditText) view).setHint(value);
                 }
             }
         });
@@ -850,7 +836,7 @@ public class DynamicLayoutInflator {
                             inputType |= InputType.TYPE_CLASS_PHONE;
                             break;
                     }
-                    if (inputType > 0) ((TextView)view).setInputType(inputType);
+                    if (inputType > 0) ((TextView) view).setInputType(inputType);
                 }
             }
         });
@@ -861,9 +847,9 @@ public class DynamicLayoutInflator {
                 if (view instanceof TextView) {
                     ((TextView) view).setGravity(gravity);
                 } else if (view instanceof LinearLayout) {
-                    ((LinearLayout)view).setGravity(gravity);
+                    ((LinearLayout) view).setGravity(gravity);
                 } else if (view instanceof RelativeLayout) {
-                    ((RelativeLayout)view).setGravity(gravity);
+                    ((RelativeLayout) view).setGravity(gravity);
                 }
             }
         });
@@ -877,14 +863,14 @@ public class DynamicLayoutInflator {
                         if (imageLoader != null) {
                             if (attrs.containsKey("cornerRadius")) {
                                 int radius = DimensionConverter.stringToDimensionPixelSize(attrs.get("cornerRadius"), view.getResources().getDisplayMetrics());
-                                imageLoader.loadRoundedImage((ImageView)view, imageName, radius);
+                                imageLoader.loadRoundedImage((ImageView) view, imageName, radius);
                             } else {
                                 imageLoader.loadImage((ImageView) view, imageName);
                             }
                         }
                     } else if (imageName.startsWith("@drawable/")) {
                         imageName = imageName.substring("@drawable/".length());
-                        ((ImageView)view).setImageDrawable(getDrawableByName(view, imageName));
+                        ((ImageView) view).setImageDrawable(getDrawableByName(view, imageName));
                     }
                 }
             }
@@ -918,6 +904,25 @@ public class DynamicLayoutInflator {
                 view.setOnClickListener(getClickListener(parent, value));
             }
         });
+    }
+
+    public interface ViewParamRunnable {
+        void apply(View view, String value, ViewGroup parent, Map<String, String> attrs);
+    }
+
+    public interface ImageLoader {
+        void loadImage(ImageView view, String url);
+
+        void loadRoundedImage(ImageView view, String url, int radius);
+    }
+
+    public static class DynamicLayoutInfo {
+        public HashMap<String, Integer> nameToIdNumber;
+        public Object delegate;
+        public GradientDrawable bgDrawable;
+        public DynamicLayoutInfo() {
+            nameToIdNumber = new HashMap<>();
+        }
     }
 
 }

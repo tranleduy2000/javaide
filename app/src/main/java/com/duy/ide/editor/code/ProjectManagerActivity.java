@@ -642,7 +642,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
 
     public void showDialogCreateNewClass(@Nullable File file) {
         if (file == null) {
-            EditPageContract.View currentPage = mPagePresenter.getCurrentPage();
+            EditPageContract.SourceView currentPage = mPagePresenter.getCurrentPage();
             if (currentPage != null) {
                 file = currentPage.getCurrentFile().getParentFile();
             }
@@ -664,14 +664,14 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
 //        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
 //                REQUEST_OPEN_JAVA_PROJECT);
 //        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
-        FileExplorerActivity.startPickPathActivity(null, FileManager.EXTERNAL_DIR, null, REQUEST_OPEN_JAVA_PROJECT);
+        FileExplorerActivity.startPickPathActivity(this, FileManager.EXTERNAL_DIR, null, REQUEST_OPEN_JAVA_PROJECT);
     }
 
     public void showDialogOpenAndroidProject() {
 //        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
 //                REQUEST_OPEN_ANDROID_PROJECT);
 //        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
-        FileExplorerActivity.startPickPathActivity(null, FileManager.EXTERNAL_DIR, null, REQUEST_OPEN_ANDROID_PROJECT);
+        FileExplorerActivity.startPickPathActivity(this, FileManager.EXTERNAL_DIR, null, REQUEST_OPEN_ANDROID_PROJECT);
 
     }
 

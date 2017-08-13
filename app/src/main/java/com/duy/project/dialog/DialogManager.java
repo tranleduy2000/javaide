@@ -45,6 +45,7 @@ public class DialogManager {
                     e.printStackTrace();
                     callback.onFailed(e);
                 }
+                alertDialog.cancel();
             }
         });
         alertDialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {

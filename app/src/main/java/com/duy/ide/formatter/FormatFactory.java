@@ -48,8 +48,6 @@ public class FormatFactory {
         }
     }
 
-    ;
-
     public static String format(Context context, String src, @Nullable Type type) throws Exception {
         if (type == null) throw new UnsupportedTypeException();
         switch (type) {

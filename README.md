@@ -27,6 +27,8 @@ alt="IMAGE ALT TEXT HERE" width="240"/></a>
 10. Build Android app. &#10004;
 11. XML auto complete
 12. Layout builder for Android
+13. Android Logcat
+14. Android debugger
 
 ## What does tools the project include?
 1. Javac - Java compiler

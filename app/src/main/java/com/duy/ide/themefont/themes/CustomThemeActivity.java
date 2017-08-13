@@ -30,7 +30,7 @@ import android.widget.EditText;
 
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
-import com.duy.ide.editor.view.EditorView;
+import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.themefont.themes.database.CodeTheme;

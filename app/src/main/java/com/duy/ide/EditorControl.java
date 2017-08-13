@@ -45,5 +45,4 @@ public interface EditorControl {
 
     void selectThemeFont();
 
-    void runFile(String tag);
 }

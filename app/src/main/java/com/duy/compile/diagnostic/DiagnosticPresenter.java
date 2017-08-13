@@ -7,7 +7,7 @@ import android.util.Log;
 import com.android.annotations.Nullable;
 import com.duy.ide.EditPageContract;
 import com.duy.ide.adapters.BottomPageAdapter;
-import com.duy.ide.editor.BaseEditorActivity;
+import com.duy.ide.editor.code.BaseEditorActivity;
 
 import java.util.List;
 

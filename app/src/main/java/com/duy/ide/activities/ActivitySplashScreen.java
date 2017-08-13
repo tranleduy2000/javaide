@@ -29,7 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.editor.MainActivity;
+import com.duy.ide.editor.code.MainActivity;
 
 import java.io.File;
 

@@ -9,14 +9,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.commonsware.cwac.pager.SimplePageDescriptor;
 import com.duy.ide.autocomplete.AutoCompleteProvider;
-import com.duy.ide.editor.BaseEditorActivity;
-import com.duy.ide.editor.EditorFragment;
-import com.duy.ide.editor.EditorPagerAdapter;
+import com.duy.ide.editor.code.EditorFragment;
+import com.duy.ide.editor.code.EditorPagerAdapter;
+import com.duy.ide.editor.code.MainActivity;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.setting.JavaPreferences;
 
@@ -34,11 +35,11 @@ public class PagePresenter implements EditPageContract.Presenter {
     private TabLayout mTabLayout;
     private JavaPreferences mPreferences;
     private FileManager mFileManager;
-    private BaseEditorActivity mContext;
+    private MainActivity mContext;
     private Handler mHandler = new Handler();
     private AutoCompleteProvider autoCompleteProvider;
 
-    public PagePresenter(BaseEditorActivity context, ViewPager mViewPager,
+    public PagePresenter(MainActivity context, ViewPager mViewPager,
                          EditorPagerAdapter mPageAdapter, TabLayout tabLayout,
                          FileManager fileManager) {
         this.mViewPager = mViewPager;
@@ -150,15 +151,25 @@ public class PagePresenter implements EditPageContract.Presenter {
                 tab.select();
             }
             final EditorFragment fm = mPageAdapter.getExistingFragment(position);
-            if (fm != null && fm.getTag().endsWith(".java")) {
-                View run = view.findViewById(R.id.image_run_file);
-                run.setVisibility(View.VISIBLE);
-                run.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mContext.runFile(fm.getTag());
-                    }
-                });
+            ImageView action = view.findViewById(R.id.image_run_file);
+            if (fm != null) {
+                if (fm.getTag().endsWith(".java")) {
+                    action.setVisibility(View.VISIBLE);
+                    action.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mContext.runFile(fm.getTag());
+                        }
+                    });
+                } else if (fm.getTag().endsWith(".xml")) {
+                    action.setVisibility(View.VISIBLE);
+                    action.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mContext.previewLayout(fm.getTag());
+                        }
+                    });
+                }
             }
         }
 

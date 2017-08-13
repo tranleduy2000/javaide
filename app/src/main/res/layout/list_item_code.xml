@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:fillViewport="true">
 
-            <com.duy.ide.editor.view.EditorView
+            <com.duy.ide.editor.code.view.EditorView
                 android:id="@+id/editor_view"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

@@ -24,7 +24,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.duy.ide.adapters.SymbolAdapter;
-import com.duy.ide.editor.completion.KeyWord;
+import com.duy.ide.editor.code.completion.KeyWord;
 
 import java.util.ArrayList;
 

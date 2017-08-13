@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.ide.autocomplete.AutoCompleteProvider;
-import com.duy.ide.editor.EditorFragment;
+import com.duy.ide.editor.code.EditorFragment;
 
 import java.io.File;
 

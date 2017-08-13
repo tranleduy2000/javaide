@@ -3,7 +3,7 @@ package com.duy.compile.message;
 import android.widget.Toast;
 
 import com.duy.ide.adapters.BottomPageAdapter;
-import com.duy.ide.editor.BaseEditorActivity;
+import com.duy.ide.editor.code.BaseEditorActivity;
 
 /**
  * Created by duy on 19/07/2017.

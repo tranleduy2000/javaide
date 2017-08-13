@@ -1,7 +1,7 @@
 package com.duy.ide.autocomplete.model;
 
 import com.duy.ide.autocomplete.util.JavaUtil;
-import com.duy.ide.editor.view.IndentEditText;
+import com.duy.ide.editor.code.view.IndentEditText;
 
 import java.lang.reflect.Constructor;
 

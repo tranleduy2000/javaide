@@ -29,7 +29,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.code.CodeSample;
-import com.duy.ide.editor.view.EditorView;
+import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.themefont.themes.database.CodeTheme;
 import com.duy.ide.themefont.themes.database.ThemeDatabase;

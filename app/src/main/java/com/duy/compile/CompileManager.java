@@ -21,7 +21,7 @@ import android.content.Intent;
 
 import com.duy.compile.external.CommandManager;
 import com.duy.ide.debug.activities.DebugActivity;
-import com.duy.ide.editor.MainActivity;
+import com.duy.ide.editor.code.MainActivity;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.run.activities.ExecuteActivity;
 

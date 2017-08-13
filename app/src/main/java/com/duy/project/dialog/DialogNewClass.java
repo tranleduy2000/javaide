@@ -15,7 +15,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.editor.completion.Template;
+import com.duy.ide.editor.code.completion.Template;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.project.utils.ProjectFileUtil;
 

@@ -61,7 +61,9 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     public ManifestData.Activity getLauncherActivity() {
         try {
             ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(getXmlManifest()));
-            return manifestData.getLauncherActivity();
+            ManifestData.Activity launcherActivity = manifestData.getLauncherActivity();
+            this.launcherActivity = launcherActivity;
+            return launcherActivity;
         } catch (Exception e) {
             return null;
         }

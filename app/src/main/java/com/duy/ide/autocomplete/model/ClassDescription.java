@@ -2,7 +2,7 @@ package com.duy.ide.autocomplete.model;
 
 
 import com.duy.ide.autocomplete.util.JavaUtil;
-import com.duy.ide.editor.view.CodeSuggestsEditText;
+import com.duy.ide.editor.code.view.CodeSuggestsEditText;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

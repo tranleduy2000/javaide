@@ -24,5 +24,8 @@ public interface Builder {
 
     void buildApk();
 
-    void runFile(String tag);
+    void runFile(String path);
+
+    void previewLayout(String path);
+
 }

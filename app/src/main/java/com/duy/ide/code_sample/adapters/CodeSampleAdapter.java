@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.code_sample.model.CodeProjectSample;
-import com.duy.ide.editor.view.EditorView;
+import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.utils.clipboard.ClipboardManagerCompat;
 import com.duy.ide.utils.clipboard.ClipboardManagerCompatFactory;
 

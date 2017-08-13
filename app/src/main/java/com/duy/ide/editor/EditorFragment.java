@@ -39,11 +39,9 @@ import com.duy.ide.autocomplete.AutoCompleteProvider;
 import com.duy.ide.editor.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.formatter.FormatFactory;
 import com.duy.ide.view.LockableScrollView;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.googlejavaformat.java.Formatter;
-import com.google.googlejavaformat.java.JavaFormatterOptions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -230,14 +228,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     public void formatCode() {
         String filePath = getArguments().getString(CompileManager.FILE_PATH);
         if (filePath != null) {
-            File f = new File(filePath);
-            if (f.getName().endsWith(".java")) {
-                JavaPreferences javaPreferences = new JavaPreferences(getContext());
-                int formatType = javaPreferences.getFormatType();
-                new JavaFormatCode(formatType).execute(getCode());
-            }else {
-                Toast.makeText(getContext(), R.string.unsupport_format_file, Toast.LENGTH_SHORT).show();
-            }
+            new JavaFormatCode(getContext(), FormatFactory.getType(new File(filePath))).execute(filePath);
         }
     }
 
@@ -358,10 +349,12 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     private class JavaFormatCode extends AsyncTask<String, Void, String> {
         private Exception error;
-        private int formatType;
+        private Context context;
+        private FormatFactory.Type type;
 
-        public JavaFormatCode(int formatType) {
-            this.formatType = formatType;
+        public JavaFormatCode(Context context, FormatFactory.Type type) {
+            this.context = context;
+            this.type = type;
         }
 
         @Override
@@ -375,15 +368,10 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
             try {
                 String src = params[0];
                 if (src == null) return null;
-
-                JavaFormatterOptions.Builder builder = JavaFormatterOptions.builder();
-                builder.style(formatType == 0 ? JavaFormatterOptions.Style.GOOGLE
-                        : JavaFormatterOptions.Style.AOSP);
-                return new Formatter(builder.build()).formatSource(src);
+                return FormatFactory.format(context, src, type);
             } catch (Exception e) {
                 //format unexpected
                 error = e;
-                e.printStackTrace();
             }
             return null;
         }

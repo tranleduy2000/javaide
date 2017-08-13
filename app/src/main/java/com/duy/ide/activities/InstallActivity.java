@@ -12,10 +12,10 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.setting.JavaPreferences;
@@ -88,8 +88,12 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
 
     private void selectFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType(MimeTypeMap.getSingleton().getExtensionFromMimeType("zip"));
-        startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
+        intent.setType("file/*");
+        try {
+            startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
+        } catch (Exception e) {
+            Toast.makeText(this, "No file explorer available", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

@@ -355,4 +355,8 @@ public class JavaPreferences {
     public int getFormatType() {
         return getInt(context.getString(R.string.key_format_type), 0);
     }
+
+    public String getTab() {
+        return "  ";
+    }
 }

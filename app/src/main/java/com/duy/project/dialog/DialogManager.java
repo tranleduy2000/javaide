@@ -1,10 +1,11 @@
 package com.duy.project.dialog;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.duy.ide.R;
 import com.duy.project.fragments.FolderStructureFragment;
@@ -24,36 +25,35 @@ public class DialogManager {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.copy_file);
         builder.setView(R.layout.dialog_new_file);
-
-        AlertDialog alertDialog = builder.create();
+        final AlertDialog alertDialog = builder.create();
         alertDialog.show();
         final EditText editText = (EditText) alertDialog.findViewById(R.id.edit_file_name);
         editText.setText(new File(selectedFile).getName());
-        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,
-                context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String name = editText.getText().toString();
-                        if (TextUtils.isEmpty(name)) {
-                            editText.setError(context.getString(R.string.enter_name));
-                            return;
-                        }
-                        File file = new File(parentFile, name);
-                        try {
-                            FileUtils.copyFile(new File(selectedFile), file);
-                            callback.onSuccess(file);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            callback.onFailed(e);
-                        }
-                    }
-                });
-        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
-                context.getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+        alertDialog.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = editText.getText().toString();
+                if (TextUtils.isEmpty(name)) {
+                    editText.setError(context.getString(R.string.enter_name));
+                    return;
+                }
+                File file = new File(parentFile, name);
+                try {
+                    FileUtils.copyFile(new File(selectedFile), file);
+                    callback.onSuccess(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    callback.onFailed(e);
+                }
+            }
+        });
+        alertDialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.cancel();
+            }
+        });
+        ((TextView) alertDialog.findViewById(R.id.txt_title)).setText(R.string.copy_file);
+
     }
 }

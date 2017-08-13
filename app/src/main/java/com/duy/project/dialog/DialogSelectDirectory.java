@@ -151,16 +151,15 @@ public class DialogSelectDirectory extends AppCompatDialogFragment implements Vi
         final TextInputLayout textInputLayout = (TextInputLayout) alertDialog.findViewById(R.id.hint);
         assert textInputLayout != null;
         textInputLayout.setHint(getString(R.string.enter_new_folder_name));
-        Button btnOK = (Button) alertDialog.findViewById(R.id.btn_ok);
+        Button btnOK = null;
+//        btnOK = (Button) alertDialog.findViewById(R.id.btn_ok);
         Button btnCancel = (Button) alertDialog.findViewById(R.id.btn_cancel);
-        assert btnCancel != null;
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.cancel();
             }
         });
-        assert btnOK != null;
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

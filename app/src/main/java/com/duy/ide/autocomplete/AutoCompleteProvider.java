@@ -47,6 +47,9 @@ public class AutoCompleteProvider {
         return mClassLoader.getClassReader().isLoaded();
     }
 
+    public void getSuggestions(EditText editor){
+
+    }
 
     public ArrayList<Description> getSuggestions(EditText editor, int position) {
         // text: 'package.Class.me', prefix: 'package.Class', suffix: 'me'

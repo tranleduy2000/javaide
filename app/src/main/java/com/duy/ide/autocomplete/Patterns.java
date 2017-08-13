@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.editor.code.completion;
+package com.duy.ide.autocomplete;
 
 import java.util.regex.Pattern;
 
@@ -45,11 +45,10 @@ public class Patterns {
      * match number
      */
     public static final Pattern DECIMAL_NUMBERS = Pattern.compile(
-            "\\b((\\d*[.]?\\d+([Ee][+-]?[\\d]+)?)|" + //simple decimal
-                    "(\\$[0-9a-fA-F]+)|" + //hex
-                    "(%[01]+)|" + //binary
-                    "(&[0-7]+)|" +//octal
-                    "([Ee][+-]?[\\d]+))\\b");
+            "\\b((\\d*[.]?\\d+([Ee][+-]?[\\d]+)?[LlfFdD]?)|" + //simple decimal
+                    "(0[xX][0-9a-zA-Z]+)|" + //hex
+                    "(0[bB][0-1]+)|" + //binary
+                    "(0[0-7]+))\\b"); //octal);
 
     /*XML patterns*/
     public static final Pattern XML_TAGS = Pattern.compile(

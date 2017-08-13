@@ -1,5 +1,7 @@
 package com.duy.ide.editor.code.completion;
 
+import com.duy.ide.autocomplete.Template;
+
 import junit.framework.TestCase;
 
 import java.lang.reflect.Modifier;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.editor.code.completion;
+package com.duy.ide.autocomplete;
 
 
 /**

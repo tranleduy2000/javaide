@@ -4,7 +4,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.duy.ide.editor.code.completion.Template;
+import com.duy.ide.autocomplete.Template;
 import com.duy.ide.file.FileManager;
 
 import org.json.JSONException;

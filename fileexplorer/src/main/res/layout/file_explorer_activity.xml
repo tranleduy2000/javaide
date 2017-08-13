@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="@string/filename"/>
+                android:text="@string/path"/>
 
             <com.jecelyin.android.file_explorer.widget.FileNameEditText
                 android:id="@+id/filename_editText"
@@ -55,13 +55,13 @@
                 android:textColor="#333"/>
 
             <TextView
-                android:id="@+id/save_btn"
+                android:id="@+id/btn_select"
                 style="@style/Base.Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:minWidth="50dp"
-                android:text="@string/file_save"
+                android:text="@string/select"
                 android:textSize="12sp"/>
         </LinearLayout>
 
@@ -73,7 +73,8 @@
             android:gravity="top"
             android:orientation="horizontal"
             android:paddingLeft="8dp"
-            android:paddingRight="8dp">
+            android:paddingRight="8dp"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -92,6 +93,8 @@
                 android:minHeight="30dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"/>
+
         </LinearLayout>
+
     </LinearLayout>
 </layout>

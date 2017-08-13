@@ -38,7 +38,6 @@ import com.jecelyin.android.file_explorer.io.LocalFile;
 import com.jecelyin.android.file_explorer.listener.OnClipboardDataChangedListener;
 import com.jecelyin.android.file_explorer.util.FileListSorter;
 import com.jecelyin.common.utils.IOUtils;
-import com.jecelyin.common.utils.UIUtils;
 import com.jecelyin.editor.v2.FullScreenActivity;
 import com.jecelyin.editor.v2.Pref;
 
@@ -124,13 +123,13 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
         if (!TextUtils.isEmpty(destPath)) {
             File dest = new File(destPath);
             lastPath = dest.isFile() ? dest.getParent() : dest.getPath();
-            binding.filenameEditText.setText(dest.getName());
+            binding.filenameEditText.setText(dest.getPath());
         } else {
-            binding.filenameEditText.setText(getString(R.string.untitled_file_name));
+            binding.filenameEditText.setText("");
         }
 
         initPager();
-        binding.saveBtn.setOnClickListener(this);
+        binding.btnSelect.setOnClickListener(this);
         binding.fileEncodingTextView.setOnClickListener(this);
 
         String encoding = it.getStringExtra("encoding");
@@ -141,6 +140,8 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
         binding.fileEncodingTextView.setText(encoding);
 
         binding.filenameLayout.setVisibility(mode == MODE_PICK_FILE ? View.GONE : View.VISIBLE);
+//        binding.filenameLayout.setVisibility(View.GONE);
+        binding.fileEncodingTextView.setVisibility(View.GONE);
 
         getFileClipboard().setOnClipboardDataChangedListener(this);
     }
@@ -215,7 +216,7 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
                 setResult(RESULT_OK, it);
                 finish();
             } else {
-                binding.filenameEditText.setText(file.getName());
+                binding.filenameEditText.setText(file.getPath());
             }
 
             return true;
@@ -229,8 +230,8 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.save_btn) {
-            onSave();
+        if (id == R.id.btn_select) {
+            onSelectPath();
         } else if (id == R.id.file_encoding_textView) {
             onShowEncodingList();
         }
@@ -266,7 +267,7 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
                 .show();
     }
 
-    private void onSave() {
+    private void onSelectPath() {
         String fileName = binding.filenameEditText.getText().toString().trim();
         if (TextUtils.isEmpty(fileName)) {
             binding.filenameEditText.setError(getString(R.string.can_not_be_empty));
@@ -285,18 +286,17 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
         if (f.isFile()) {
             f = f.getParentFile();
         }
-
-        final File newFile = new File(f, fileName);
-        if (newFile.exists()) {
-            UIUtils.showConfirmDialog(getContext(), getString(R.string.override_file_prompt, fileName), new UIUtils.OnClickCallback() {
-                @Override
-                public void onOkClick() {
-                    saveAndFinish(newFile);
-                }
-            });
-        } else {
-            saveAndFinish(newFile);
-        }
+//        final File newFile = new File(f, fileName);
+//        if (newFile.exists()) {
+//            UIUtils.showConfirmDialog(getContext(), getString(R.string.override_file_prompt, fileName), new UIUtils.OnClickCallback() {
+//                @Override
+//                public void onOkClick() {
+//                    saveAndFinish(newFile);
+//                }
+//            });
+//        } else {
+            saveAndFinish(f);
+//        }
     }
 
     private void saveAndFinish(File file) {

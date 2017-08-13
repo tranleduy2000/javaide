@@ -200,8 +200,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
 
     @CallSuper
     public void clean() {
-        FileManager.deleteFolder(dirBuild);
-        dirBuild.mkdirs();
+        FileManager.deleteFolder(dirBuildClasses);
     }
 
     public File getRootDir() {

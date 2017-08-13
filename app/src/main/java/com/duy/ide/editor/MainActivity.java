@@ -234,40 +234,51 @@ public class MainActivity extends BaseEditorActivity implements
     public void runProject() {
         saveAllFile();
         if (mProjectFile != null) {
-            //check main class exist
-            if (mProjectFile.getMainClass() == null
-                    || mProjectFile.getPackageName() == null
-                    || mProjectFile.getPackageName().isEmpty()
-                    || !mProjectFile.getMainClass().exist(mProjectFile)) {
-                String msg = getString(R.string.main_class_not_define);
-                Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.config, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                showDialogRunConfig();
-                            }
-                        }).show();
-                return;
-            }
-            //check main function exist
-            if (!ClassUtil.hasMainFunction(new File(mProjectFile.getMainClass().getPath(mProjectFile)))) {
-                SpannableStringBuilder msg = new SpannableStringBuilder(getString(R.string.can_not_find_main_func));
-                Spannable clasz = new SpannableString(mProjectFile.getMainClass().getName());
-                clasz.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.dark_color_accent))
-                        , 0, clasz.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                msg.append(clasz);
-                Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.config, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                showDialogRunConfig();
-                            }
-                        }).show();
-                return;
-            }
             if (mProjectFile instanceof AndroidProjectFolder) {
+                //check launcher activity
+                if (((AndroidProjectFolder) mProjectFile).getLauncherActivity() == null) {
+                    String msg = getString(R.string.can_not_find_launcher_activity);
+                    Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.config, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                }
+                            }).show();
+                    return;
+                }
                 compileAndroidProject();
-            } else if (mProjectFile instanceof JavaProjectFolder) {
+            } else {
+                //check main class exist
+                if (mProjectFile.getMainClass() == null
+                        || mProjectFile.getPackageName() == null
+                        || mProjectFile.getPackageName().isEmpty()
+                        || !mProjectFile.getMainClass().exist(mProjectFile)) {
+                    String msg = getString(R.string.main_class_not_define);
+                    Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.config, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    showDialogRunConfig();
+                                }
+                            }).show();
+                    return;
+                }
+                //check main function exist
+                if (!ClassUtil.hasMainFunction(new File(mProjectFile.getMainClass().getPath(mProjectFile)))) {
+                    SpannableStringBuilder msg = new SpannableStringBuilder(getString(R.string.can_not_find_main_func));
+                    Spannable clasz = new SpannableString(mProjectFile.getMainClass().getName());
+                    clasz.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.dark_color_accent))
+                            , 0, clasz.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    msg.append(clasz);
+                    Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.config, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    showDialogRunConfig();
+                                }
+                            }).show();
+                    return;
+                }
                 compileJavaProject();
             }
         } else {

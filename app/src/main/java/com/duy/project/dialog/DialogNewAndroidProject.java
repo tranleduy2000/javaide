@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.sdklib.xml.AndroidManifestParser;
+import com.android.sdklib.xml.ManifestData;
 import com.duy.ide.R;
 import com.duy.ide.code_sample.model.AssetUtil;
 import com.duy.ide.file.FileManager;
@@ -161,6 +163,8 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
                 //copy android support library
                 AssetUtil.copyAssetFolder(assets, "templates/libs", projectFile.dirLibs.getPath());
+
+
                 if (listener != null) {
                     listener.onProjectCreated(projectFile);
                 }

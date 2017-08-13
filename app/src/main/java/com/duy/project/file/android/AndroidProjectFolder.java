@@ -3,11 +3,15 @@ package com.duy.project.file.android;
 import android.content.Context;
 
 import com.android.annotations.Nullable;
+import com.android.sdklib.xml.AndroidManifestParser;
+import com.android.sdklib.xml.ManifestData;
 import com.duy.ide.file.FileManager;
+import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.google.common.base.MoreObjects;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -27,6 +31,7 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     private File dirAssets;
     private File classR;
     private File dirOutApk;
+    private ManifestData.Activity launcherActivity;
 
     public AndroidProjectFolder(File dirRoot,
                                 @Nullable String mainClassName,
@@ -51,6 +56,19 @@ public class AndroidProjectFolder extends JavaProjectFolder {
                 "android".toCharArray(),
                 "android",
                 "android".toCharArray());
+    }
+
+    public ManifestData.Activity getLauncherActivity() {
+        try {
+            ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(getXmlManifest()));
+            return manifestData.getLauncherActivity();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void setLauncherActivity(ManifestData.Activity launcherActivity) {
+        this.launcherActivity = launcherActivity;
     }
 
     private void createClassR() {
@@ -161,6 +179,18 @@ public class AndroidProjectFolder extends JavaProjectFolder {
             file.mkdirs();
         }
         return file;
+    }
+
+    /**
+     * use for javac
+     *
+     * @return main class
+     */
+    @Override
+    public ClassFile getMainClass() {
+        if (launcherActivity != null) {
+            return new ClassFile(launcherActivity.getName());
+        } else return null;
     }
 
     public void checkKeyStoreExits(Context context) {

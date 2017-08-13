@@ -109,6 +109,8 @@ public class AndroidProjectFolder extends JavaProjectFolder {
 
     public void clean() {
         super.clean();
+        apkUnsigned.delete();
+        apkUnaligned.delete();
     }
 
 

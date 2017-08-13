@@ -18,6 +18,7 @@ import java.io.Serializable;
  * Created by Duy on 16-Jul-17.
  */
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class JavaProjectFolder implements Serializable, Cloneable {
     private static final String TAG = "ProjectFile";
 

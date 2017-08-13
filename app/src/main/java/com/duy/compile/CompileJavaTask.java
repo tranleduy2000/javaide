@@ -43,7 +43,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
         PrintStream printStream = new PrintStream(new OutputStream() {
             @Override
             public void write(@NonNull byte[] b, int off, int len) throws IOException {
-                publishProgress(b, off, error);
+                publishProgress(b, off, len);
             }
 
             @Override
@@ -67,7 +67,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
                 CommandManager.convertToDexFormat(projectFile, printStream);
             } catch (Exception e) {
                 this.error = e;
-                e.printStackTrace();
+                Log.e(TAG, "doInBackground: ", e);
                 publishProgress(e.getMessage().toCharArray(), 0, e.getMessage().length());
                 status = Main.EXIT_ERROR;
             }
@@ -87,7 +87,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
             }
             Log.d(TAG, new String(chars, start, end));
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "onProgressUpdate: ", e);
         }
     }
 

@@ -214,6 +214,7 @@ public abstract class BaseEditorActivity extends AbstractAppCompatActivity
         }
         mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), descriptors);
         mViewPager.setAdapter(mPageAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
         mViewPager.addOnPageChangeListener(this);
 
         mPagePresenter = new PagePresenter((MainActivity) this, mViewPager, mPageAdapter, mTabLayout, mFileManager);

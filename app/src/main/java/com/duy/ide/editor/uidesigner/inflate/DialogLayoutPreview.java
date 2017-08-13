@@ -54,7 +54,7 @@ public class DialogLayoutPreview extends AppCompatDialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        inflater = new Inflater((ViewGroup) view.findViewById(R.id.content),
+        inflater = new Inflater(getContext(), this, (ViewGroup) view.findViewById(R.id.content),
                 (TextView) view.findViewById(R.id.txt_error));
         inflater.inflate((File) getArguments().getSerializable("file"));
     }

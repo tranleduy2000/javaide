@@ -50,6 +50,10 @@ android {
             path 'src/main/jni/Android.mk'
         }
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
 repositories {
     mavenCentral()
@@ -66,6 +70,7 @@ dependencies {
     compile project(':colorpicker')
     compile project(':splitview')
     compile project(':treeview')
+    compile project(':fileexplorer')
     //android support
     compile 'com.android.support:multidex:1.0.1'
     compile "com.android.support:support-annotations:$android_support_version"

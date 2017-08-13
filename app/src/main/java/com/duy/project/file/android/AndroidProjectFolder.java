@@ -192,8 +192,9 @@ public class AndroidProjectFolder extends JavaProjectFolder {
      */
     @Override
     public ClassFile getMainClass() {
+        if (launcherActivity == null) getLauncherActivity();
         if (launcherActivity != null) {
-            return new ClassFile(launcherActivity.getName());
+            return new ClassFile(this.launcherActivity.getName());
         } else return null;
     }
 

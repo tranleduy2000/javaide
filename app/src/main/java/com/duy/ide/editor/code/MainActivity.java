@@ -236,50 +236,8 @@ public class MainActivity extends BaseEditorActivity implements
         saveAllFile();
         if (mProjectFile != null) {
             if (mProjectFile instanceof AndroidProjectFolder) {
-                //check launcher activity
-                if (((AndroidProjectFolder) mProjectFile).getLauncherActivity() == null) {
-                    String msg = getString(R.string.can_not_find_launcher_activity);
-                    Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
-                            .setAction(R.string.config, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                }
-                            }).show();
-                    return;
-                }
                 compileAndroidProject();
             } else {
-                //check main class exist
-                if (mProjectFile.getMainClass() == null
-                        || mProjectFile.getPackageName() == null
-                        || mProjectFile.getPackageName().isEmpty()
-                        || !mProjectFile.getMainClass().exist(mProjectFile)) {
-                    String msg = getString(R.string.main_class_not_define);
-                    Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
-                            .setAction(R.string.config, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    showDialogRunConfig();
-                                }
-                            }).show();
-                    return;
-                }
-                //check main function exist
-                if (!ClassUtil.hasMainFunction(new File(mProjectFile.getMainClass().getPath(mProjectFile)))) {
-                    SpannableStringBuilder msg = new SpannableStringBuilder(getString(R.string.can_not_find_main_func));
-                    Spannable clasz = new SpannableString(mProjectFile.getMainClass().getName());
-                    clasz.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.dark_color_accent))
-                            , 0, clasz.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    msg.append(clasz);
-                    Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
-                            .setAction(R.string.config, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    showDialogRunConfig();
-                                }
-                            }).show();
-                    return;
-                }
                 compileJavaProject();
             }
         } else {
@@ -288,11 +246,91 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     private void compileAndroidProject() {
-        buildApk();
+        //check launcher activity
+        if (((AndroidProjectFolder) mProjectFile).getLauncherActivity() == null) {
+            String msg = getString(R.string.can_not_find_launcher_activity);
+            Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.config, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                        }
+                    }).show();
+            return;
+        }
+        if (mProjectFile instanceof AndroidProjectFolder) {
+            ((AndroidProjectFolder) mProjectFile).checkKeyStoreExits(this);
+            new BuildApkTask(new BuildApkTask.CompileListener() {
+                @Override
+                public void onStart() {
+                    updateUiStartCompile();
+                }
+
+                @Override
+                public void onError(Exception e, List<Diagnostic> diagnostics) {
+                    Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
+                    openDrawer(GravityCompat.START);
+                    mDiagnosticPresenter.display(diagnostics);
+                    updateUIFinish();
+                }
+
+                @Override
+                public void onComplete(File apk, List<Diagnostic> diagnostics) {
+                    updateUIFinish();
+                    Toast.makeText(MainActivity.this, R.string.build_success + " " + apk.getPath(),
+                            Toast.LENGTH_SHORT).show();
+                    mFilePresenter.refresh(mProjectFile);
+                    mDiagnosticPresenter.display(diagnostics);
+                    mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    onFileClick(apk, null);
+                }
+
+                @Override
+                public void onNewMessage(byte[] chars, int start, int end) {
+                    mMessagePresenter.append(new String(chars, start, end));
+                }
+            }).execute((AndroidProjectFolder) mProjectFile);
+        } else {
+            if (mProjectFile != null) {
+                complain("This is Java project, please create new Android project");
+            } else {
+                complain("You need create project");
+            }
+        }
     }
 
 
     private void compileJavaProject() {
+        //check main class exist
+        if (mProjectFile.getMainClass() == null
+                || mProjectFile.getPackageName() == null
+                || mProjectFile.getPackageName().isEmpty()
+                || !mProjectFile.getMainClass().exist(mProjectFile)) {
+            String msg = getString(R.string.main_class_not_define);
+            Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.config, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            showDialogRunConfig();
+                        }
+                    }).show();
+            return;
+        }
+        //check main function exist
+        if (!ClassUtil.hasMainFunction(new File(mProjectFile.getMainClass().getPath(mProjectFile)))) {
+            SpannableStringBuilder msg = new SpannableStringBuilder(getString(R.string.can_not_find_main_func));
+            Spannable clasz = new SpannableString(mProjectFile.getMainClass().getName());
+            clasz.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.dark_color_accent))
+                    , 0, clasz.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            msg.append(clasz);
+            Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.config, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            showDialogRunConfig();
+                        }
+                    }).show();
+            return;
+        }
         CompileJavaTask.CompileListener compileListener = new CompileJavaTask.CompileListener() {
             @Override
             public void onStart() {
@@ -380,46 +418,7 @@ public class MainActivity extends BaseEditorActivity implements
     }
 
     public void buildApk() {
-        saveAllFile();
-        if (mProjectFile instanceof AndroidProjectFolder) {
-            ((AndroidProjectFolder) mProjectFile).checkKeyStoreExits(this);
-            new BuildApkTask(new BuildApkTask.CompileListener() {
-                @Override
-                public void onStart() {
-                    updateUiStartCompile();
-                }
-
-                @Override
-                public void onError(Exception e, List<Diagnostic> diagnostics) {
-                    Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
-                    openDrawer(GravityCompat.START);
-                    mDiagnosticPresenter.display(diagnostics);
-                    updateUIFinish();
-                }
-
-                @Override
-                public void onComplete(File apk, List<Diagnostic> diagnostics) {
-                    updateUIFinish();
-                    Toast.makeText(MainActivity.this, R.string.build_success + " " + apk.getPath(),
-                            Toast.LENGTH_SHORT).show();
-                    mFilePresenter.refresh(mProjectFile);
-                    mDiagnosticPresenter.display(diagnostics);
-                    mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    onFileClick(apk, null);
-                }
-
-                @Override
-                public void onNewMessage(byte[] chars, int start, int end) {
-                    mMessagePresenter.append(new String(chars, start, end));
-                }
-            }).execute((AndroidProjectFolder) mProjectFile);
-        } else {
-            if (mProjectFile != null) {
-                complain("This is Java project, please create new Android project");
-            } else {
-                complain("You need create project");
-            }
-        }
+        compileAndroidProject();
     }
 
     /**

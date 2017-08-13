@@ -53,7 +53,6 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
         }
         if (node.isLeaf()) {
             imgArrow.setVisibility(View.INVISIBLE);
-            imgNew.setVisibility(View.INVISIBLE);
         }
 
         final File file = item.getFile();

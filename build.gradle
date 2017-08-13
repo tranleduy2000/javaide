@@ -16,9 +16,8 @@ allprojects {
         jcenter()
         maven { url 'https://dl.bintray.com/ppartisan/maven/' }
         maven { url "https://clojars.org/repo/" }
+        maven { url "https://jitpack.io" }
     }
-
-
 }
 
 

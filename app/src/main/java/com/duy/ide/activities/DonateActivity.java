@@ -30,6 +30,7 @@ public class DonateActivity extends AbstractAppCompatActivity implements IabBroa
     private static final String SKU_DONATE_TWO = "java_nide_donate_two_dollar";
     private static final String SKU_DONATE_THREE = "java_nide_donate_three_dollar";
     private static final String SKU_DONATE_FOUR = "java_nide_donate_four_dollar";
+    private static final String SKU_DONATE_FIVE = "java_nide_donate_five_dollar";
 
     private static final String TAG = "DonateActivity";
     private Handler mHandler = new Handler();
@@ -90,6 +91,7 @@ public class DonateActivity extends AbstractAppCompatActivity implements IabBroa
         findViewById(R.id.btn_donate_2).setOnClickListener(this);
         findViewById(R.id.btn_donate_3).setOnClickListener(this);
         findViewById(R.id.btn_donate_4).setOnClickListener(this);
+        findViewById(R.id.btn_donate_5).setOnClickListener(this);
 
         initIab();
     }
@@ -194,6 +196,9 @@ public class DonateActivity extends AbstractAppCompatActivity implements IabBroa
                 break;
             case R.id.btn_donate_4:
                 purchase(SKU_DONATE_FOUR);
+                break;
+            case R.id.btn_donate_5:
+                purchase(SKU_DONATE_FIVE);
                 break;
         }
     }

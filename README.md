@@ -42,6 +42,8 @@ an issue. Pull request are greatly appreciated.
 
 ## Tutorials
 1. Setup system https://youtu.be/FZtSbgq8ZN0
+1. Build java file with library https://youtu.be/fUFqR8ZlChg
+3. Build simple Android app https://youtu.be/euZilR8-EhA
 
 ## Licence
 

@@ -1,1 +1,2 @@
-include ':app', ':splitview', ':colorpicker', ':pager', ':sample', ':treeview', ':testapplication'
+include ':app', ':splitview', ':colorpicker', ':pager', ':sample', ':treeview', ':testapplication',
+        ':fileexplorer', ':common', ':styles'

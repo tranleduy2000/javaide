@@ -112,7 +112,7 @@ public class CommandManager {
                     String md5 = Util.getMD5Checksum(jarLib);
 
                     File dexLib = new File(projectFile.getDirDexedLibs(), jarLib.getName().replace(".jar", "-" + md5 + ".dex"));
-                    if (!dexLib.exists()) {
+                    if (dexLib.exists()) {
                         continue;
                     }
                     String[] args = new String[]{"--dex", "--verbose", "--no-strict",

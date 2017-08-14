@@ -82,6 +82,11 @@ public class MethodDescription implements Member, Description {
         return method.getReturnType();
     }
 
+    @Override
+    public int getModifiers() {
+        return method.getModifiers();
+    }
+
     public String getSimpleName() {
         return simpleName;
     }

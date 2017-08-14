@@ -38,7 +38,7 @@ public class JavaDexClassLoader {
     }
 
     public ClassDescription loadClass(String className) {
-        return mClassReader.readClassByName(className);
+        return mClassReader.readClassByName(className, null);
     }
 
     public void loadAllClasses(boolean fullRefresh, JavaProjectFolder projectFile) {

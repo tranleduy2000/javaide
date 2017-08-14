@@ -1,7 +1,6 @@
 package com.duy.ide.autocomplete.dex;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -24,9 +23,7 @@ public class JavaClassManager {
     private static final String TAG = "JavaClassManager";
 
     public static ArrayList<String> determineClassName(EditText editor, int pos, String text,
-                                                       @NonNull String prefix, String suffix,
-                                                       @Nullable Class preReturnType) {
-        Log.d(TAG, "determineClassName() called with: text = [" + text + "], prefix = [" + prefix + "], suffix = [" + suffix + "], preReturnType = [" + preReturnType + "]");
+                                                       @NonNull String prefix, String suffix) {
 
         try {
             ArrayList<String> classNames = null;

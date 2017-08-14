@@ -10,4 +10,6 @@ public interface Member {
     String getPrototype();
 
     Class getReturnType();
+
+    int getModifiers();
 }

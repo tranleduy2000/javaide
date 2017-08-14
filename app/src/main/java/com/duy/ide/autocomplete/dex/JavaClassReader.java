@@ -1,8 +1,10 @@
 package com.duy.ide.autocomplete.dex;
 
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.util.Log;
 
+import com.android.annotations.NonNull;
 import com.duy.ide.autocomplete.model.ClassDescription;
 import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.FieldDescription;
@@ -17,9 +19,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.WeakHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -34,7 +38,9 @@ public class JavaClassReader {
     private static final String TAG = "JavaClassReader";
     private String classpath;
     private String tempDir;
-    private HashMap<String, Class> mClasses = new HashMap<>();
+    private ArrayList<Class> mClasses = new ArrayList<>();
+    private ArrayList<Pair<String, Class>> mSimpleClasses = new ArrayList<>();
+
     private WeakHashMap<String, ClassDescription> mCache = new WeakHashMap<>();
 
     private boolean loaded = false;
@@ -44,26 +50,28 @@ public class JavaClassReader {
         this.tempDir = tempDir;
     }
 
-    public HashMap<String, Class> getClasses() {
+    public ArrayList<Class> getAllClasses() {
         return mClasses;
     }
 
-    public HashMap<String, Class> getAllClassesFromProject(boolean android, @Nullable File[] libs) {
-        HashMap<String, Class> classes = new HashMap<>();
-        if (classpath != null) classes.putAll(getAllClassesFromJar(android, classpath));
+    public ArrayList<Class> getAllClassesFromProject(boolean android, @Nullable File[] libs) {
+        ArrayList<Class> classes = new ArrayList<>();
+        if (classpath != null) classes.addAll(getAllClassesFromJar(android, classpath));
         if (libs != null) {
             for (File lib : libs) {
                 if (lib.getPath().endsWith(".jar")) {
-                    classes.putAll(getAllClassesFromJar(android, lib.getPath()));
+                    classes.addAll(getAllClassesFromJar(android, lib.getPath()));
+                } else if (lib.getPath().equals(".dex")) {
+                    classes.addAll(getAllClassesFromDex(android, lib.getPath()));
                 }
             }
         }
         return classes;
     }
 
-    private HashMap<String, Class> getAllClassesFromJar(boolean android, String path) {
+    private Collection<? extends Class> getAllClassesFromDex(boolean android, String path) {
         DexClassLoader dexClassLoader = new DexClassLoader(path, tempDir, null, ClassLoader.getSystemClassLoader());
-        HashMap<String, Class> classes = new HashMap<>();
+        ArrayList<Class> classes = new ArrayList<>();
         try {
             JarFile jarFile = new JarFile(path);
             Enumeration<JarEntry> e = jarFile.entries();
@@ -78,10 +86,41 @@ public class JavaClassReader {
                 try {
                     if (android) {
                         Class c = dexClassLoader.loadClass(className);
-                        classes.put(c.getName(), c);
+                        classes.add(c);
                     } else if (!className.startsWith("android")) {
                         Class c = dexClassLoader.loadClass(className);
-                        classes.put(c.getName(), c);
+                        classes.add(c);
+                    }
+                } catch (ClassNotFoundException e1) {
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return classes;
+    }
+
+    private ArrayList<Class> getAllClassesFromJar(boolean android, String path) {
+        DexClassLoader dexClassLoader = new DexClassLoader(path, tempDir, null, ClassLoader.getSystemClassLoader());
+        ArrayList<Class> classes = new ArrayList<>();
+        try {
+            JarFile jarFile = new JarFile(path);
+            Enumeration<JarEntry> e = jarFile.entries();
+
+            while (e.hasMoreElements()) {
+                JarEntry je = e.nextElement();
+                if (je.isDirectory() || !je.getName().endsWith(".class")) {
+                    continue;
+                }
+                String className = je.getName().substring(0, je.getName().length() - 6);
+                className = className.replace('/', '.');
+                try {
+                    if (android) {
+                        Class c = dexClassLoader.loadClass(className);
+                        classes.add(c);
+                    } else if (!className.startsWith("android")) {
+                        Class c = dexClassLoader.loadClass(className);
+                        classes.add(c);
                     }
                 } catch (ClassNotFoundException e1) {
                 }
@@ -96,10 +135,29 @@ public class JavaClassReader {
         if (loaded) {
             return;
         }
-        this.mClasses.clear();
-        this.mClasses.putAll(getAllClassesFromProject(
+        mClasses.clear();
+        mClasses.addAll(getAllClassesFromProject(
                 projectFolder instanceof AndroidProjectFolder, //is android
                 projectFolder.getDirLibs().listFiles()));
+        long time = System.currentTimeMillis();
+        Collections.sort(mClasses, new Comparator<Class>() {
+            @Override
+            public int compare(Class o1, Class o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+        for (Class mClass : mClasses) {
+            mSimpleClasses.add(new Pair<>(mClass.getSimpleName(), mClass));
+        }
+        Collections.sort(mSimpleClasses, new Comparator<Pair<String, Class>>() {
+            @Override
+            public int compare(Pair<String, Class> o1, Pair<String, Class> o2) {
+                return o1.first.compareTo(o2.first);
+            }
+        });
+
+        System.out.println("load classes " + (System.currentTimeMillis() - time));
         loaded = true;
     }
 
@@ -108,13 +166,12 @@ public class JavaClassReader {
     }
 
     @Nullable
-    public ClassDescription readClassByName(String className) {
+    public ClassDescription readClassByName(String className, @Nullable Class second) {
         ClassDescription cache = mCache.get(className);
         if (cache != null) {
             return cache;
         }
-        Class aClass = mClasses.get(className);
-        Log.d(TAG, "readClassByName() called with: className = [" + className + "]");
+        Class aClass = second != null ? second : binarySearch(className);
 
         if (aClass != null) {
             String superclass = aClass.getSuperclass() != null ? aClass.getSuperclass().getName() : "";
@@ -142,13 +199,70 @@ public class JavaClassReader {
         return null;
     }
 
-    public ArrayList<ClassDescription> findClass(String simpleNamePrefix) {
-        ArrayList<ClassDescription> classDescriptions = new ArrayList<>();
-        for (Map.Entry<String, Class> entry : mClasses.entrySet()) {
-            if (entry.getValue().getSimpleName().startsWith(simpleNamePrefix)) {
-                classDescriptions.add(new ClassDescription(entry.getValue()));
+    @Nullable
+    private Class binarySearch(String className) {
+        int left = 0;
+        int right = mClasses.size() - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            Class value = mClasses.get(mid);
+            if (value.getName().equals(className)) {
+                return value;
+            }
+            if (value.getName().compareTo(className) < 0) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
             }
         }
+        return null;
+    }
+
+    @Nullable
+    private List<Pair<String, Class>> binarySearch(ArrayList<Pair<String, Class>> classes, String className) {
+        //find left index
+        int start = -1, end = -1;
+        int left = 0;
+        int right = classes.size() - 1;
+        while (left < right) {
+            int mid = (left + right) / 2;
+            String midValue = classes.get(mid).first;
+            if (midValue.compareTo(className) <= 0) { //mid < key
+                left = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+        start = left;
+        left = 0;
+        right = classes.size() - 1;
+        while (left < right) {
+            int mid = (left + right) / 2;
+            String midValue = classes.get(mid).first;
+            if (midValue.compareTo(className) >= 0) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        end = right;
+        if (start >= 0 && end >= 0 && start - end >= 1) {
+            return classes.subList(start, end);
+        }
+        return null;
+    }
+
+    @NonNull
+    public ArrayList<ClassDescription> findClass(String simpleNamePrefix) {
+        long start = System.currentTimeMillis();
+        ArrayList<ClassDescription> classDescriptions = new ArrayList<>();
+        List<Pair<String, Class>> classes = binarySearch(mSimpleClasses, simpleNamePrefix);
+        if (classes != null) {
+            for (Pair<String, Class> c : classes) {
+                classDescriptions.add(readClassByName(c.first, c.second));
+            }
+        }
+        Log.d(TAG, "findClass: time " + simpleNamePrefix + " - " + (System.currentTimeMillis() - start));
         return classDescriptions;
     }
 

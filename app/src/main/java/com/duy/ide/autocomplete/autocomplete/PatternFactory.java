@@ -86,7 +86,19 @@ public class PatternFactory {
     }
 
     public static int firstMatch(EditText editor, Pattern pattern) {
-        Matcher matcher = pattern.matcher(editor.getText());
+        return firstMatch(editor.getText().toString(), pattern);
+    }
+
+    public static int matchEnd(String editor, Pattern pattern, int start) {
+        Matcher matcher = pattern.matcher(editor);
+        if (matcher.find(start)) {
+            return matcher.end();
+        }
+        return -1;
+    }
+
+    public static int firstMatch(String editor, Pattern pattern) {
+        Matcher matcher = pattern.matcher(editor);
         if (matcher.find()) {
             return matcher.start();
         }
@@ -98,5 +110,22 @@ public class PatternFactory {
         return Pattern.compile("(" + IDENTIFIER_STR + ")" + "(\\s?)" + //type
                 "((" + GENERIC_STR + ")?(\\s?)|(\\s+))" + //generic or space
                 "(" + prefix + ")(\\s?)([,;=)])"); //name
+    }
+
+    public static int lastMatch(String statement, String pattern) {
+        return lastMatch(statement, Pattern.compile(pattern));
+    }
+
+    public static int lastMatch(String statement, Pattern pattern) {
+        return lastMatch(statement, pattern, 0);
+    }
+
+    public static int lastMatch(String expr, Pattern pattern, int start) {
+        Matcher matcher = pattern.matcher(expr.substring(start));
+        int index = -1;
+        while (matcher.find()) {
+            index = matcher.end();
+        }
+        return index != 0 ? index + start : index;
     }
 }

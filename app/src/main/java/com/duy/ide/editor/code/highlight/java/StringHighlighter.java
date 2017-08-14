@@ -27,26 +27,15 @@ import com.duy.ide.themefont.themes.database.CodeTheme;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static com.duy.ide.autocomplete.Patterns.STRINGS;
 
 /**
  * Created by Duy on 18-Jun-17.
  */
 
 public class StringHighlighter implements Highlighter {
-    /**
-     * match string java
-     * include
-     * <p>
-     * 'string'
-     * <p>
-     * And can not find close quote
-     * <p>
-     * 'sadhasdhasdhashdhas ds asda sd
-     */
-    public static final Pattern STRINGS = Pattern.compile(
-            "((\")(.*?)(\"))" +//'string'
-                    "|((\")(.+))", Pattern.DOTALL); // no end string 'asdasdasd
+
 
     private ArrayList<Pair<Integer, Integer>> mStringRegion = new ArrayList<>();
     private CodeTheme codeTheme;

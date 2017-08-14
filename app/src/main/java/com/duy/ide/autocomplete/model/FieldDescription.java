@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
  * Created by Duy on 20-Jul-17.
  */
 
-public class FieldDescription implements Member , Description {
+public class FieldDescription implements Member, Description {
     private Field field;
 
     public FieldDescription(Field field) {
@@ -51,6 +51,11 @@ public class FieldDescription implements Member , Description {
     @Override
     public Class getReturnType() {
         return field.getType();
+    }
+
+    @Override
+    public int getModifiers() {
+        return field.getModifiers();
     }
 
     @Override

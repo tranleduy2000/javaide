@@ -1,68 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.nolanlawson.logcat">
+          package="com.pluscubed.logcat">
 
-    <application>
-        <activity
-            android:name=".LogcatActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="Logcat"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
-
-
-        <activity
-            android:name=".ShowRecordLogDialogActivity"
-            android:theme="@android:style/Theme.Dialog"/>
-
-        <activity android:name=".SettingsActivity"/>
-
-        <service android:name=".LogcatRecordingService"/>
-
-        <service android:name=".CrazyLoggerService"/>
-
-        <receiver android:name=".RecordingWidgetProvider">
-
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <data android:scheme="catlog_widget"/>
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="com.nolanlawson.logcat.action.RECORD_OR_STOP"/>
-                <data android:scheme="catlog_widget"/>
-            </intent-filter>
-
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/recording_widget_info"/>
-        </receiver>
-
-
-    </application>
-
-    <uses-sdk
-        android:minSdkVersion="3"
-        android:targetSdkVersion="10"/>
-
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
-    <!--  'Sup Koush: https://plus.google.com/103583939320326217147/posts/T9xnMJEnzf1 -->
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>
 
-    <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:resizeable="true"
-        android:smallScreens="true"
-        android:xlargeScreens="true"/>
+    <application
+        android:allowBackup="true">
 
+        <activity
+            android:name=".ui.LogcatActivity"
+            android:configChanges="screenSize|orientation"
+            android:launchMode="singleTop">
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts"/>
+        </activity>
 
-</manifest> 
+        <activity android:name=".ui.RecordLogDialogActivity"/>
+        <activity android:name=".ui.SettingsActivity"/>
+        <service android:name="com.pluscubed.logcat.LogcatRecordingService"/>
+        <service android:name="com.pluscubed.logcat.CrazyLoggerService"/>
+
+    </application>
+</manifest>

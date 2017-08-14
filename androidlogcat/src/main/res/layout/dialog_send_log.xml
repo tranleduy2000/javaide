@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingEnd="24dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="24dp"
+    android:paddingStart="16dp">
+
+    <CheckBox
+        android:id="@android:id/checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/text_include_device_info" />
+
+</LinearLayout>

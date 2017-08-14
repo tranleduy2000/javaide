@@ -54,14 +54,19 @@ public class JavaClassReader {
         return mClasses;
     }
 
-    public ArrayList<Class> getAllClassesFromProject(boolean android, @Nullable File[] libs) {
+    public ArrayList<Class> getAllClassesFromProject(@NonNull JavaProjectFolder projectFolder) {
         ArrayList<Class> classes = new ArrayList<>();
-        if (classpath != null) classes.addAll(getAllClassesFromJar(android, classpath));
-        if (libs != null) {
-            for (File lib : libs) {
+        boolean android = projectFolder instanceof AndroidProjectFolder;
+        //load all class from classpath
+        if (classpath != null) {
+            classes.addAll(getAllClassesFromJar(android, classpath));
+        }
+        if (projectFolder.getDirDexedLibs().listFiles() != null
+                && projectFolder.getDirDexedLibs().listFiles().length > 0) {
+            for (File lib : projectFolder.getDirDexedLibs().listFiles()) {
                 if (lib.getPath().endsWith(".jar")) {
                     classes.addAll(getAllClassesFromJar(android, lib.getPath()));
-                } else if (lib.getPath().equals(".dex")) {
+                } else if (lib.getPath().endsWith(".dex")) {
                     classes.addAll(getAllClassesFromDex(android, lib.getPath()));
                 }
             }
@@ -70,6 +75,7 @@ public class JavaClassReader {
     }
 
     private Collection<? extends Class> getAllClassesFromDex(boolean android, String path) {
+        Log.d(TAG, "getAllClassesFromDex() called with: android = [" + android + "], path = [" + path + "]");
         DexClassLoader dexClassLoader = new DexClassLoader(path, tempDir, null, ClassLoader.getSystemClassLoader());
         ArrayList<Class> classes = new ArrayList<>();
         try {
@@ -133,9 +139,7 @@ public class JavaClassReader {
 
     public void load(JavaProjectFolder projectFolder) {
         mClasses.clear();
-        mClasses.addAll(getAllClassesFromProject(
-                projectFolder instanceof AndroidProjectFolder, //is android
-                projectFolder.getDirLibs().listFiles()));
+        mClasses.addAll(getAllClassesFromProject(projectFolder));
         long time = System.currentTimeMillis();
         Collections.sort(mClasses, new Comparator<Class>() {
             @Override
@@ -270,8 +274,8 @@ public class JavaClassReader {
                 break;
             }
         }
-        if (end >= 0 && start >= 0 && end - start >= 1) {
-            return classes.subList(start, end);
+        if (end >= 0 && start >= 0 && end - start + 1 >= 1) {
+            return classes.subList(start, end + 1);
         }
         return null;
     }

@@ -325,12 +325,9 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int position = mPageAdapter.getPositionForTag(file.getPath());
+                mPagePresenter.removePage(file.getPath());
                 boolean success = mFileManager.deleteFile(file);
                 if (success) {
-                    if (position >= 0) {
-                        removePage(position);
-                    }
                     callback.onSuccess(null);
                     Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
                 } else {

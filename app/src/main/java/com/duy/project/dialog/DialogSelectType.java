@@ -21,15 +21,15 @@ import java.io.File;
  * Created by Duy on 16-Jul-17.
  */
 
-public class DialogNewFile extends AppCompatDialogFragment {
+public class DialogSelectType extends AppCompatDialogFragment {
     public static final String TAG = "DialogNewAndroidProject";
     private OnFileTypeSelectListener listener;
 
-    public static DialogNewFile newInstance(File parent) {
+    public static DialogSelectType newInstance(File parent) {
 
         Bundle args = new Bundle();
         args.putSerializable("parent", parent);
-        DialogNewFile fragment = new DialogNewFile();
+        DialogSelectType fragment = new DialogSelectType();
         fragment.setArguments(args);
         return fragment;
     }
@@ -39,7 +39,7 @@ public class DialogNewFile extends AppCompatDialogFragment {
         super.onAttach(context);
         try {
             listener = (OnFileTypeSelectListener) getActivity();
-        } catch (Exception e) {
+        } catch (ClassCastException ignored) {
         }
     }
 
@@ -47,7 +47,7 @@ public class DialogNewFile extends AppCompatDialogFragment {
     public void onStart() {
         super.onStart();
         Dialog dialog = getDialog();
-        if (dialog != null) {
+        if (dialog != null && dialog.getWindow() != null) {
             dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         }
     }
@@ -64,7 +64,7 @@ public class DialogNewFile extends AppCompatDialogFragment {
         super.onViewCreated(view, savedInstanceState);
         ListView listView = view.findViewById(R.id.file_types);
         final String[] fileTypes = getResources().getStringArray(R.array.select_type);
-        listView.setAdapter(new ArrayAdapter<String>(getActivity(),
+        listView.setAdapter(new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_list_item_1, fileTypes));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

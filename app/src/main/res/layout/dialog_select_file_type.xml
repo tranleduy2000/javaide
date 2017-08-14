@@ -21,6 +21,13 @@
               android:orientation="vertical"
               android:padding="8dp">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/create_new_file"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"/>
+
     <ListView
         android:id="@+id/file_types"
         android:layout_width="match_parent"

@@ -69,7 +69,7 @@ import com.duy.project.dialog.DialogManager;
 import com.duy.project.dialog.DialogNewAndroidProject;
 import com.duy.project.dialog.DialogNewAndroidResource;
 import com.duy.project.dialog.DialogNewClass;
-import com.duy.project.dialog.DialogNewFile;
+import com.duy.project.dialog.DialogSelectType;
 import com.duy.project.dialog.DialogNewJavaProject;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.java.ClassFile;
@@ -98,7 +98,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         implements SymbolListView.OnKeyListener, EditorControl,
         FileActionListener,
         DialogNewJavaProject.OnCreateProjectListener, DialogNewClass.OnCreateFileListener,
-        DialogNewFile.OnFileTypeSelectListener, FileSelectListener {
+        DialogSelectType.OnFileTypeSelectListener, FileSelectListener {
     private static final String TAG = "BaseEditorActivity";
 
     /*Constants*/
@@ -575,8 +575,8 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     }
 
     public void showDialogSelectFileType(@Nullable File parent) {
-        DialogNewFile dialogNewFile = DialogNewFile.newInstance(parent);
-        dialogNewFile.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
+        DialogSelectType dialogSelectType = DialogSelectType.newInstance(parent);
+        dialogSelectType.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
     }
 
     @Override

@@ -146,8 +146,6 @@ public class SettingsActivity extends AppCompatActivity {
             bufferPreference.setOnPreferenceChangeListener(this);
             setBufferPreferenceSummary(bufferPreference.getValue());
 
-            boolean donateInstalled = PackageHelper.isCatlogDonateInstalled(getActivity());
-
             String themeSummary = PreferenceHelper.getColorScheme(getActivity()).getDisplayableName(getActivity());
 
             mThemePreference.setSummary(themeSummary);
@@ -162,18 +160,6 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-            mAboutPreference = findPreference(getString(R.string.pref_about));
-            mAboutPreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    // launch about activity
-                    Intent intent = new Intent(getActivity(), AboutDialogActivity.class);
-                    startActivity(intent);
-                    return true;
-                }
-            });
-            mAboutPreference.setSummary(getString(R.string.version, PackageHelper.getVersionName(getActivity())));
 
             scrubberPreference = (SwitchPreference) getPreferenceScreen().findPreference("scrubber");
             scrubberPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {

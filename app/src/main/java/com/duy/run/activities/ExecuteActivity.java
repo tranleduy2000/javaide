@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.support.v7.app.AlertDialog;
 
+import com.duy.JavaApplication;
 import com.duy.compile.CompileManager;
 import com.duy.compile.external.CommandManager;
 import com.duy.ide.R;
@@ -18,7 +19,6 @@ import com.duy.run.view.ConsoleEditText;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.PrintStream;
 
 /**
  * Created by Duy on 30-Jul-17.
@@ -59,6 +59,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
         setContentView(R.layout.activity_exec);
         setupToolbar();
         bindView();
+        initInOut();
         final Intent intent = getIntent();
         if (intent != null) {
             final JavaProjectFolder projectFile = (JavaProjectFolder) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
@@ -89,22 +90,27 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
         }
     }
 
+    private void initInOut() {
+        JavaApplication application = (JavaApplication) getApplication();
+        application.addStdErr(mConsoleEditText.getErrorStream());
+        application.addStdOut(mConsoleEditText.getOutputStream());
+    }
+
     @WorkerThread
     private void runProgram(JavaProjectFolder projectFile, int action, Intent intent) throws Exception {
-        PrintStream out = mConsoleEditText.getOutputStream();
         InputStream in = mConsoleEditText.getInputStream();
-        PrintStream err = mConsoleEditText.getErrorStream();
 
+        File tempDir = getDir("dex", MODE_PRIVATE);
         switch (action) {
             case CommandManager.Action.RUN: {
-                CommandManager.compileAndRun(out, in, err, getDir("dex", MODE_PRIVATE), projectFile);
+                CommandManager.compileAndRun(in, tempDir, projectFile);
                 break;
             }
             case CommandManager.Action.RUN_DEX: {
                 File dex = (File) intent.getSerializableExtra(CompileManager.DEX_FILE);
                 if (dex != null) {
-                    CommandManager.executeDex(out, in, err, dex, getDir("dex", MODE_PRIVATE),
-                            projectFile.getMainClass().getName());
+                    String mainClass = projectFile.getMainClass().getName();
+                    CommandManager.executeDex(in, dex, tempDir, mainClass);
                 }
                 break;
             }
@@ -119,6 +125,9 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        JavaApplication application = (JavaApplication) getApplication();
+        application.removeErr(mConsoleEditText.getErrorStream());
+        application.removeOut(mConsoleEditText.getOutputStream());
         super.onDestroy();
     }
 

@@ -201,7 +201,11 @@ public class JavaProjectFolder implements Serializable, Cloneable {
 
     @CallSuper
     public void clean() {
-        FileManager.deleteFolder(dirBuildClasses);
+        try {
+            com.android.utils.FileUtils.emptyFolder(dirBuildClasses);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public File getRootDir() {

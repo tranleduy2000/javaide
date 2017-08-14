@@ -466,15 +466,20 @@
     <string name="application_name">Application name</string>
     <string name="build_apk">Build apk</string>
     <string name="github_repo">Git repo</string>
-    <string name="select_file">Select file</string>
     <string name="success">Success!</string>
     <string name="start_install_system">Starting install system</string>
-    <string name="donate_for_project">Donate for project</string>
-    <string name="unsupport_format_file">Unsupported format this type</string>
-    <string name="open_android_project">Open Android project</string>
+    <string name="unsupported_format_file">Unsupported format this type</string>
     <string name="can_not_find_launcher_activity">Can not find launcher activity in manifest</string>
-    <string name="thank_you_for_your_support_for_open_source_software">Thank you for your support for open source software.</string>
+
+    <!--File-->
     <string name="new_name">New name</string>
     <string name="copy_file">Copy file</string>
     <string name="create_new_file">Create new file</string>
+    <string name="open_android_project">Open Android project</string>
+    <string name="select_file">Select file</string>
+
+    <!--Donate-->
+    <string name="donate_for_project">Donate for project</string>
+    <string name="thank_you_for_your_support_for_open_source_software">Thank you for your support for open source software.</string>
+
 </resources>

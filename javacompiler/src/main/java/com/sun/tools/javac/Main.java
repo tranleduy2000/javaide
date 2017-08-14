@@ -121,4 +121,19 @@ public class Main {
         compiler.setDiagnosticListener(listener);
         return compiler.compile(args);
     }
+
+    /**
+     * Programmatic interface to the Java Programming Language
+     * compiler, javac.
+     *
+     * @param args The command line arguments that would normally be
+     *             passed to the javac program as described in the man page.
+     * @return an integer equivalent to the exit value from invoking
+     * javac, see the man page for details.
+     */
+    public static int compile(String[] args, DiagnosticListener listener) {
+        com.sun.tools.javac.main.Main compiler = new com.sun.tools.javac.main.Main("javac");
+        compiler.setDiagnosticListener(listener);
+        return compiler.compile(args);
+    }
 }

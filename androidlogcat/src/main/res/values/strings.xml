@@ -2,12 +2,6 @@
 <resources>
 
     <!-- non-translateable strings-->
-
-
-    <string name="app_name">MatLog</string>
-
-    <string name="donate_version_name">Donate</string>
-
     <string name="log_level_debug">Debug</string>
     <string name="log_level_error">Error</string>
     <string name="log_level_info">Info</string>
@@ -55,10 +49,6 @@
 
     <!-- translateable strings-->
 
-
-    <string name="about">About</string>
-    <string name="about_matlog">About MatLog</string>
-
     <string name="add_filter">Add Filter</string>
     <string name="add_filter_ellipsis">Add Filter…</string>
 
@@ -82,7 +72,6 @@
     <string name="delete_saved_log">Delete Saved Logs</string>
     <string name="delimiter">, </string>
     <string name="dialog_compiling_log">Compiling log…</string>
-    <string name="dialog_for_donate">For <b>bonus color\nschemes</b>, download\n<a href="market://details?id=com.pluscubed.logcat.donate">MatLog Donate</a></string>
     <string name="dialog_for_widget">For a <b>widget</b>,\ndo Home → Long\npress → Widgets</string>
     <string name="dialog_initializing_recorder">Loading recorder…</string>
     <string name="dialog_loading_updates">Loading updates…</string>
@@ -104,7 +93,7 @@
 
     <string name="first_run_pref_summary">Show introductory message again.</string>
     <string name="first_run_pref_title">Reset Introduction</string>
-    <string name="first_run_title">Welcome to MatLog!</string>
+    <string name="first_run_title">Welcome to log cat!</string>
 
     <string name="log_cleared">Logs cleared</string>
     <string name="log_level">Log Level</string>
@@ -205,9 +194,9 @@
         <item quantity="other">Log too large; showing last %d lines.</item>
     </plurals>
 
-    <string name="toast_no_root">Could not obtain root.  You will only see MatLog\'s own logs.</string>
-    <string name="toast_pref_changed_restart_required">Setting updated. Restart MatLog to see the changes.</string>
-    <string name="toast_request_root">MatLog requires root (superuser) access to read logs.</string>
+    <string name="toast_no_root">Could not obtain root.  You will only see own logs.</string>
+    <string name="toast_pref_changed_restart_required">Setting updated. Restart app to see the changes.</string>
+    <string name="toast_request_root">Logcat requires root (superuser) access to read logs.</string>
     <string name="toast_started_select_partial">Select Partial mode enabled</string>
 
     <string name="unable_to_save_log">Unable to save log. Did you enter a valid filename?</string>

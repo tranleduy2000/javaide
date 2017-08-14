@@ -49,7 +49,7 @@ public class SuperUserHelper {
                 final String command = String.format("adb shell pm grant %s android.permission.READ_LOGS", context.getPackageName());
                 new MaterialDialog.Builder(context)
                         .title(R.string.no_logs_warning_title)
-                        .content(Html.fromHtml(context.getString(R.string.no_logs_warning, context.getString(R.string.app_name), command)))
+                        .content(Html.fromHtml(context.getString(R.string.no_logs_warning, "Logcat", command)))
                         .positiveText(android.R.string.ok)
                         .neutralText(R.string.copy_command)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -179,7 +179,7 @@ public class SuperUserHelper {
 
     public static void requestRoot(final Context context) {
         // Don't request root when read logs permission is already granted
-        if(haveReadLogsPermission(context)) {
+        if (haveReadLogsPermission(context)) {
             failedToObtainRoot = true;
             return;
         }

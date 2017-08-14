@@ -30,45 +30,64 @@ public class JavaApplication extends MultiDexApplication {
         }
         systemOut = new InterceptorOutputStream(System.out, out);
         systemErr = new InterceptorOutputStream(System.err, err);
+        System.setOut(systemOut);
+        System.setErr(systemErr);
 
         //for log cat
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     public void addStdOut(PrintStream out) {
-        this.out.add(out);
+        systemOut.add(out);
     }
 
     public void addStdErr(PrintStream err) {
-        this.err.add(err);
+        systemErr.add(err);
     }
 
     public void removeOut(PrintStream out) {
-        this.out.remove(out);
+        systemOut.remove(out);
     }
 
     public void removeErr(PrintStream err) {
-        this.err.remove(err);
+        systemErr.remove(err);
     }
 
     private static class InterceptorOutputStream extends PrintStream {
 
-        private ArrayList<PrintStream> out;
+        private static final String TAG = "InterceptorOutputStream";
+        private ArrayList<PrintStream> streams;
 
-        public InterceptorOutputStream(@NonNull OutputStream file, ArrayList<PrintStream> out) {
+        public InterceptorOutputStream(@NonNull OutputStream file, ArrayList<PrintStream> streams) {
             super(file, true);
-            this.out = out;
+            this.streams = streams;
         }
 
+        public ArrayList<PrintStream> getStreams() {
+            return streams;
+        }
+
+        public void setStreams(ArrayList<PrintStream> streams) {
+            this.streams = streams;
+        }
+
+        public void add(PrintStream out) {
+            this.streams.add(out);
+        }
+
+        public void remove(PrintStream out) {
+            this.streams.remove(out);
+        }
 
         @Override
         public void write(@NonNull byte[] buf, int off, int len) {
             super.write(buf, off, len);
-            if (out != null) {
-                for (PrintStream printStream : out) {
+            if (streams != null) {
+                for (PrintStream printStream : streams) {
                     printStream.write(buf, off, len);
                 }
             }
         }
     }
+
 }

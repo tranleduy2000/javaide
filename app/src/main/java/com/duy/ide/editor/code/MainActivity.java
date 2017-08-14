@@ -227,8 +227,6 @@ public class MainActivity extends ProjectManagerActivity implements
                 alertDialog.dismiss();
             }
         });
-
-
     }
 
     @Override
@@ -284,10 +282,6 @@ public class MainActivity extends ProjectManagerActivity implements
                     onFileClick(apk, null);
                 }
 
-                @Override
-                public void onNewMessage(byte[] chars, int start, int end) {
-                    mMessagePresenter.append(new String(chars, start, end));
-                }
             }).execute((AndroidProjectFolder) mProjectFile);
         } else {
             if (mProjectFile != null) {
@@ -407,10 +401,6 @@ public class MainActivity extends ProjectManagerActivity implements
                     updateUIFinish();
                 }
 
-                @Override
-                public void onNewMessage(byte[] chars, int start, int end) {
-                    mMessagePresenter.append(chars, start, end);
-                }
             }).execute(mProjectFile);
         } else {
             complain("You need create project");

@@ -25,14 +25,6 @@
             android:summary="@string/pref_show_timestamp_summary"
             android:title="@string/pref_show_timestamp_title" />
 
-        <Preference
-            android:defaultValue="@string/pref_theme_choice_dark_value"
-            android:entries="@array/pref_theme_choices_names"
-            android:entryValues="@array/pref_theme_choices_values"
-            android:key="@string/pref_theme"
-            android:persistent="true"
-            android:title="@string/pref_theme_title" />
-
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_cat_configuration">
@@ -79,13 +71,4 @@
             android:defaultValue="false"/>
 
     </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/about">
-
-        <Preference
-            android:key="@string/pref_about"
-            android:title="@string/about_matlog" />
-
-    </PreferenceCategory>
-
 </PreferenceScreen>

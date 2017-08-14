@@ -2,6 +2,7 @@ package com.duy.compile.message;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
@@ -26,6 +27,7 @@ import java.util.regex.Matcher;
 public class MessageFragment extends android.support.v4.app.Fragment implements MessageContract.View {
     public static final String TAG = "MessageFragment";
     private static final String KEY_COMPILE_MSG = "compile_msg";
+    private final Handler mHandler = new Handler();
     private TextView mCompileMsg;
     private ScrollView mScrollView;
     @Nullable
@@ -58,21 +60,27 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
     }
 
     @Override
-    public void append(String text) {
-        SpannableString spannableString = new SpannableString(text);
-        Matcher matcher = PatternFactory.JAVA_FILE.matcher(spannableString);
-        int color = ContextCompat.getColor(getContext(), R.color.dark_color_file_java);
-        while (matcher.find()) {
-            spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        matcher = PatternFactory.JAVA_FILE_LINE_COL.matcher(spannableString);
-        while (matcher.find()) {
-            spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        mCompileMsg.append(spannableString);
-        mScrollView.fullScroll(View.FOCUS_DOWN);
+    public void append(final String text) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                SpannableString spannableString = new SpannableString(text);
+                Matcher matcher = PatternFactory.JAVA_FILE.matcher(spannableString);
+                int color = ContextCompat.getColor(getContext(), R.color.dark_color_file_java);
+                while (matcher.find()) {
+                    spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                matcher = PatternFactory.JAVA_FILE_LINE_COL.matcher(spannableString);
+                while (matcher.find()) {
+                    spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                mCompileMsg.append(spannableString);
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
+
     }
 
     @Override
@@ -84,36 +92,47 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
     }
 
     @Override
-    public void append(byte[] chars, int start, int end) {
-        CharSequence charSequence = new String(chars).subSequence(start, end);
-        SpannableString spannableString = new SpannableString(charSequence);
-        Matcher matcher = PatternFactory.JAVA_FILE.matcher(spannableString);
-        int color = ContextCompat.getColor(getContext(), R.color.dark_color_file_java);
-        while (matcher.find()) {
-            spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        matcher = PatternFactory.JAVA_FILE_LINE_COL.matcher(spannableString);
-        while (matcher.find()) {
-            spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        mCompileMsg.append(spannableString);
-        mScrollView.fullScroll(View.FOCUS_DOWN);
+    public void appendOut(final byte[] chars, final int start, final int end) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                CharSequence charSequence = new String(chars).subSequence(start, end);
+                SpannableString spannableString = new SpannableString(charSequence);
+                Matcher matcher = PatternFactory.JAVA_FILE.matcher(spannableString);
+                int color = ContextCompat.getColor(getContext(), R.color.dark_color_file_java);
+                while (matcher.find()) {
+                    spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                matcher = PatternFactory.JAVA_FILE_LINE_COL.matcher(spannableString);
+                while (matcher.find()) {
+                    spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                mCompileMsg.append(spannableString);
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
+
     }
 
     @Override
-    public void append(char[] chars, int start, int end) {
-        append(new String(chars, start, end));
+    public void appendErr(byte[] chars, int start, int end) {
+        appendOut(chars, start, end);
     }
 
     @Override
     public void clear() {
-        if (mCompileMsg != null) {
-            mCompileMsg.setText("");
-        } else {
-            Toast.makeText(getContext(), R.string.system_err_msg, Toast.LENGTH_SHORT).show();
-        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mCompileMsg != null) {
+                    mCompileMsg.setText("");
+                } else {
+                    Toast.makeText(getContext(), R.string.system_err_msg, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override

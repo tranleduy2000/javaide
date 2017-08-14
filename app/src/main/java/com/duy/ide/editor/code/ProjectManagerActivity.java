@@ -49,6 +49,7 @@ import android.widget.Toast;
 
 import com.commonsware.cwac.pager.PageDescriptor;
 import com.commonsware.cwac.pager.SimplePageDescriptor;
+import com.duy.JavaApplication;
 import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.compile.diagnostic.DiagnosticPresenter;
 import com.duy.compile.message.MessageFragment;
@@ -277,6 +278,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
+        mMessagePresenter.pause((JavaApplication) getApplication());
         mPagePresenter.pause();
         if (mProjectFile != null) {
             ProjectManager.saveProject(this, mProjectFile);
@@ -286,17 +288,9 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-//        Intent intent = getIntent();
-//        if (intent != null) {
-//            if (intent.getStringExtra(CompileManager.FILE_PATH) != null) {
-//                String filePath = intent.getStringExtra(CompileManager.FILE_PATH);
-//                //No need save last file because it is the frist file
-//                addNewPageEditor(new File(filePath), SELECT);
-//                //Remove path
-//                intent.removeExtra(CompileManager.FILE_PATH);
-//            }
-//        }
+        mMessagePresenter.resume((JavaApplication) getApplication());
     }
+
 
     @Override
     protected void onNewIntent(Intent intent) {

@@ -22,8 +22,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
 
 import javax.tools.DiagnosticCollector;
@@ -37,38 +35,22 @@ public class CommandManager {
     private static final String TAG = "CommandManager";
 
     @Nullable
-    public static File buildJarAchieve(JavaProjectFolder projectFile, OutputStream out,
-                                       DiagnosticListener listener) {
-        File jarFile = null;
-
-        PrintStream stdout = System.out, stderr = System.err;
-        System.setOut(new PrintStream(out));
-        System.setErr(new PrintStream(out));
-
-        try {
-            int status = compileJava(projectFile, new PrintStream(out), listener);
-            if (status != Main.EXIT_OK) {
-                throw new RuntimeException("Compile time error... Exit code(" + status + ")");
-            }
-            //now create normal jar file
-            Jar.createJarArchive(projectFile);
-            jarFile = projectFile.getOutJarArchive();
-        } catch (Exception e) {
-            Log.e(TAG, "buildJarAchieve: ", e);
-            //compile time error
-            e.printStackTrace(new PrintStream(out));
+    public static File buildJarAchieve(JavaProjectFolder projectFile,
+                                       DiagnosticListener listener) throws IOException {
+        int status = compileJava(projectFile, listener);
+        if (status != Main.EXIT_OK) {
+            throw new RuntimeException("Compile time error... Exit code(" + status + ")");
         }
-        System.setOut(stdout);
-        System.setErr(stderr);
-        return jarFile;
+        //now create normal jar file
+        Jar.createJarArchive(projectFile);
+        return projectFile.getOutJarArchive();
     }
 
-    public static int compileJava(JavaProjectFolder pf, PrintStream out) {
-        return compileJava(pf, out, null);
+    public static int compileJava(JavaProjectFolder pf) {
+        return compileJava(pf, null);
     }
 
-    public static int compileJava(JavaProjectFolder projectFile, @Nullable PrintStream out,
-                                  @Nullable DiagnosticListener listener) {
+    public static int compileJava(JavaProjectFolder projectFile, @Nullable DiagnosticListener listener) {
         try {
             String[] args = new String[]{
                     "-verbose",
@@ -80,20 +62,18 @@ public class CommandManager {
             };
             Log.d(TAG, "compileJava args = " + Arrays.toString(args));
             int compileStatus;
-            compileStatus = out != null ? Javac.compile(args, out, listener) : Javac.compile(args);
+            compileStatus = Javac.compile(args, listener);
             return compileStatus;
         } catch (Throwable e) {
             e.printStackTrace();
-            e.printStackTrace(out);
         }
         return Main.EXIT_ERROR;
     }
 
-    public static void compileAndRun(PrintStream out, InputStream in, PrintStream err,
-                                     File tempDir, JavaProjectFolder projectFile) throws Exception {
-        compileJava(projectFile, out);
-        convertToDexFormat(projectFile, out);
-        executeDex(out, in, err, projectFile.getDexedClassesFile(), tempDir, projectFile.getMainClass().getName());
+    public static void compileAndRun(InputStream in, File tempDir, JavaProjectFolder projectFile) throws Exception {
+        compileJava(projectFile);
+        convertToDexFormat(projectFile);
+        executeDex(in, projectFile.getDexedClassesFile(), tempDir, projectFile.getMainClass().getName());
     }
 
     public static void dexLibs(@NonNull JavaProjectFolder projectFile) throws Exception {
@@ -153,36 +133,24 @@ public class CommandManager {
         return projectFile.getDexedClassesFile();
     }
 
-    public static void executeDex(@NonNull PrintStream out, InputStream in, PrintStream err,
-                                  @NonNull File outDex, @NonNull File tempDir, String mainClass)
+    public static void executeDex(InputStream in, @NonNull File outDex, @NonNull File tempDir, String mainClass)
             throws FileNotFoundException {
-        Log.d(TAG, "executeDex() called with: out = [" + out + "], in = [" + in + "], err " +
-                "= [" + err + "], outDex = [" + outDex + "], tempDir = [" + tempDir + "], mainClass = [" + mainClass + "]");
-
         FileManager.ensureFileExist(outDex);
 
         String[] args = new String[]{"-jar", outDex.getPath(), mainClass};
-        Java.run(args, tempDir.getPath(), out, in, err);
+        Java.run(args, tempDir.getPath(), in);
     }
 
-    public static void convertToDexFormat(@NonNull JavaProjectFolder projectFile, PrintStream out) throws Exception {
+    public static void convertToDexFormat(@NonNull JavaProjectFolder projectFile) throws Exception {
         Log.d(TAG, "convertToDexFormat() called with: projectFile = [" + projectFile + "]");
-        PrintStream stdout = System.out, stderr = System.err;
-        System.setOut(out);
-        System.setErr(out);
-
         dexLibs(projectFile);
         dexBuildClasses(projectFile);
         dexMerge(projectFile);
-
-        System.setOut(stdout);
-        System.setErr(stderr);
     }
 
     public static File buildApk(AndroidProjectFolder projectFile,
-                                OutputStream out,
                                 DiagnosticCollector diagnosticCollector) throws Exception {
-        AndroidBuilder.build(projectFile, out, diagnosticCollector);
+        AndroidBuilder.build(projectFile, diagnosticCollector);
         return projectFile.getApkUnaligned();
     }
 

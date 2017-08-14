@@ -21,8 +21,8 @@ public class Javac {
         return Main.compile(args, printWriter);
     }
 
-    public static int compile(String[] args, PrintStream out, DiagnosticListener listener) {
-        return Main.compile(args, out, listener);
+    public static int compile(String[] args, DiagnosticListener listener) {
+        return Main.compile(args, listener);
     }
 
 }

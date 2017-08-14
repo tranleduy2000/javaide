@@ -1,15 +1,11 @@
 package com.duy.compile;
 
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.duy.compile.external.CommandManager;
 import com.duy.project.file.android.AndroidProjectFolder;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
 import javax.tools.Diagnostic;
@@ -36,46 +32,17 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFolder, Object, File> 
     protected File doInBackground(AndroidProjectFolder... params) {
         AndroidProjectFolder projectFile = params[0];
         if (params[0] == null) return null;
-        OutputStream outputStream = new OutputStream() {
-            @Override
-            public void write(@NonNull byte[] b) throws IOException {
-                super.write(b);
-            }
 
-            @Override
-            public void write(@NonNull byte[] b, int off, int len) throws IOException {
-                publishProgress(b, off, len);
-
-            }
-
-            @Override
-            public void write(int b) throws IOException {
-
-            }
-        };
         //clean
         projectFile.clean();
         try {
-            return CommandManager.buildApk(projectFile, outputStream, mDiagnosticCollector);
+            return CommandManager.buildApk(projectFile, mDiagnosticCollector);
         } catch (Exception e) {
             this.error = e;
         }
         return null;
     }
 
-    @Override
-    protected void onProgressUpdate(Object... values) {
-        super.onProgressUpdate(values);
-        try {
-            byte[] chars = (byte[]) values[0];
-            int start = (int) values[1];
-            int end = (int) values[2];
-            listener.onNewMessage(chars, start, end);
-            Log.d(TAG, new String(chars, start, end));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void onPostExecute(final File result) {
@@ -94,6 +61,5 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFolder, Object, File> 
 
         void onComplete(File apk, List<Diagnostic> diagnostics);
 
-        void onNewMessage(byte[] chars, int start, int end);
     }
 }

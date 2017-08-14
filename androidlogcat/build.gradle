@@ -20,6 +20,7 @@ android {
     dataBinding.enabled = true
 }
 
+
 dependencies {
     compile "com.android.support:appcompat-v7:$android_support_version"
     compile "com.android.support:recyclerview-v7:$android_support_version"
@@ -27,5 +28,5 @@ dependencies {
     compile "com.android.support:design:$android_support_version"
     compile "com.android.support:support-v13:$android_support_version"
     compile 'com.afollestad.material-dialogs:commons:0.9.4.6'
-    compile 'me.zhanghai.android.materialprogressbar:library:1.4.1'
+    compile project(':materialprogressbar')
 }

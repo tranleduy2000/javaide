@@ -10,7 +10,6 @@
     <application
         android:allowBackup="true">
 
-        <!--TODO: REMOVE THIS CONFIGCHANGES ATROCITY-->
         <activity
             android:name=".ui.LogcatActivity"
             android:configChanges="screenSize|orientation"
@@ -20,15 +19,8 @@
                 android:resource="@xml/shortcuts"/>
         </activity>
 
-        <activity
-            android:name=".ui.AboutDialogActivity"
-            android:theme="@style/Theme.MatLog.AlertDialog"/>
-        <activity
-            android:name=".ui.RecordLogDialogActivity"
-            android:theme="@style/Theme.MatLog.AlertDialog"/>
         <activity android:name=".ui.SettingsActivity"/>
 
-        <service android:name="com.pluscubed.logcat.LogcatRecordingService"/>
         <service android:name="com.pluscubed.logcat.CrazyLoggerService"/>
 
     </application>

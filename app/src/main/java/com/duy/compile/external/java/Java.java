@@ -3,7 +3,6 @@ package com.duy.compile.external.java;
 import android.support.annotation.Nullable;
 
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -19,21 +18,12 @@ public class Java {
     }
 
     public static void main(String[] zArgs) {
-        run(zArgs, null, null, null, null);
+        run(zArgs, null, null);
     }
 
-    public static void run(String[] zArgs, @Nullable String tempDir,
-                           @Nullable PrintStream out,
-                           @Nullable InputStream in,
-                           @Nullable PrintStream err) {
-        PrintStream stdout = System.out;
-        PrintStream stderr = System.err;
+    public static void run(String[] zArgs, @Nullable String tempDir, @Nullable InputStream in) {
         InputStream stdin = System.in;
-
-        if (out != null) System.setOut(out);
         if (in != null) System.setIn(in);
-        if (err != null) System.setErr(err);
-
         try {
             String jarfile = "";
             String classname = "";
@@ -143,7 +133,5 @@ public class Java {
             usage();
         }
         System.setIn(stdin);
-        System.setOut(stdout);
-        System.setErr(stderr);
     }
 }

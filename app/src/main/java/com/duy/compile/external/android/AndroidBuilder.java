@@ -10,8 +10,6 @@ import com.spartacusrex.spartacuside.external.apkbuilder;
 import com.sun.tools.javac.main.Main;
 
 import java.io.File;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
 
 import javax.tools.DiagnosticCollector;
@@ -34,58 +32,39 @@ public class AndroidBuilder {
         apkbuilder.main(args);
     }
 
-    public static void build(AndroidProjectFolder projectFile, @NonNull OutputStream out,
+    public static void build(AndroidProjectFolder projectFile,
                              @NonNull DiagnosticCollector diagnosticCollector) throws Exception {
-        projectFile.clean();
-        PrintStream systemOut = System.out;
-        PrintStream systemErr = System.err;
-        try {
-            PrintStream printStream = new PrintStream(out);
-            System.setOut(printStream);
-            System.setErr(printStream);
+        //create R.java
+        System.out.println("Run aidl");
+        AndroidBuilder.runAidl(projectFile);
+        System.out.println("Run aapt");
+        AndroidBuilder.runAapt(projectFile);
 
-            //create R.java
-            System.out.println("Run aidl");
-            AndroidBuilder.runAidl(projectFile);
-            System.out.println("Run aapt");
-            AndroidBuilder.runAapt(projectFile);
-
-            //compile java
-            System.out.println("Compile Java file");
-            int status = CommandManager.compileJava(projectFile, printStream, diagnosticCollector);
-            System.gc();
-            if (status != Main.EXIT_OK) {
-                System.out.println("Compile error");
-                throw new RuntimeException("Compile time error!");
-            }
-
-            //classes to dex
-            System.out.println("Convert classes to dex");
-            CommandManager.convertToDexFormat(projectFile, printStream);
-
-            //zip apk
-            System.out.println("Build apk");
-            AndroidBuilder.buildApk(projectFile);
-
-            System.out.println("Zip sign");
-            AndroidBuilder.zipSign(projectFile);
-
-            System.out.println("Zip align");
-            AndroidBuilder.zipAlign();
-
-            System.out.println("Publish apk");
-            AndroidBuilder.publishApk();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-            System.setErr(systemErr);
-            System.setOut(systemOut);
-
-            throw ex;
+        //compile java
+        System.out.println("Compile Java file");
+        int status = CommandManager.compileJava(projectFile, diagnosticCollector);
+        System.gc();
+        if (status != Main.EXIT_OK) {
+            System.out.println("Compile error");
+            throw new RuntimeException("Compile time error!");
         }
 
-        System.setErr(systemErr);
-        System.setOut(systemOut);
+        //classes to dex
+        System.out.println("Convert classes to dex");
+        CommandManager.convertToDexFormat(projectFile);
+
+        //zip apk
+        System.out.println("Build apk");
+        AndroidBuilder.buildApk(projectFile);
+
+        System.out.println("Zip sign");
+        AndroidBuilder.zipSign(projectFile);
+
+        System.out.println("Zip align");
+        AndroidBuilder.zipAlign();
+
+        System.out.println("Publish apk");
+        AndroidBuilder.publishApk();
     }
 
     private static void runAidl(AndroidProjectFolder projectFile) throws Exception {

@@ -61,10 +61,10 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
         projectFile.clean();
         projectFile.createBuildDir();
 
-        int status = CommandManager.compileJava(projectFile, printStream, listener);
+        int status = CommandManager.compileJava(projectFile, listener);
         if (status == Main.EXIT_OK) {
             try {
-                CommandManager.convertToDexFormat(projectFile, printStream);
+                CommandManager.convertToDexFormat(projectFile);
             } catch (Exception e) {
                 this.error = e;
                 Log.e(TAG, "doInBackground: ", e);

@@ -43,9 +43,9 @@ public class ConsoleEditText extends AppCompatEditText {
     private int mLength = 0;
 
     //out, in and err stream
-    private ConsoleOutputStream outputStream;
+    private PrintStream outputStream;
     private InputStream inputStream;
-    private ConsoleErrorStream errorStream;
+    private PrintStream errorStream;
 
     /**
      * uses for input
@@ -80,6 +80,7 @@ public class ConsoleEditText extends AppCompatEditText {
             }
         }
     };
+
     public ConsoleEditText(Context context) {
         super(context);
         init(context);
@@ -117,18 +118,18 @@ public class ConsoleEditText extends AppCompatEditText {
         mStderrBuffer = new ByteQueue(4 * 1024);
 
         inputStream = new ConsoleInputStream(mInputBuffer);
-        outputStream = new ConsoleOutputStream(mStdoutBuffer, new StdListener() {
+        outputStream = new PrintStream(new ConsoleOutputStream(mStdoutBuffer, new StdListener() {
             @Override
             public void onUpdate() {
                 mHandler.sendMessage(mHandler.obtainMessage(NEW_OUTPUT));
             }
-        });
-        errorStream = new ConsoleErrorStream(mStderrBuffer, new StdListener() {
+        }));
+        errorStream = new PrintStream(new ConsoleErrorStream(mStderrBuffer, new StdListener() {
             @Override
             public void onUpdate() {
                 mHandler.sendMessage(mHandler.obtainMessage(NEW_ERR));
             }
-        });
+        }));
     }
 
     private void writeStdoutToScreen() {
@@ -165,7 +166,7 @@ public class ConsoleEditText extends AppCompatEditText {
 
     @WorkerThread
     public PrintStream getOutputStream() {
-        return new PrintStream(outputStream);
+        return outputStream;
     }
 
     @WorkerThread
@@ -175,7 +176,7 @@ public class ConsoleEditText extends AppCompatEditText {
 
     @WorkerThread
     public PrintStream getErrorStream() {
-        return new PrintStream(errorStream);
+        return errorStream;
     }
 
 

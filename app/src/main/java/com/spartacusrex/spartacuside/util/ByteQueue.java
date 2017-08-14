@@ -36,7 +36,7 @@ public class ByteQueue {
         }
     }
 
-    public synchronized int read(byte[] buffer, int offset, int length)
+    public  int read(byte[] buffer, int offset, int length)
             throws InterruptedException {
         if (length + offset > buffer.length) {
             throw
@@ -77,7 +77,7 @@ public class ByteQueue {
         }
     }
 
-    public synchronized void write(byte[] buffer, int offset, int length) throws InterruptedException {
+    public  void write(byte[] buffer, int offset, int length) throws InterruptedException {
         if (length + offset > buffer.length) {
             throw
                     new IllegalArgumentException("length + offset > buffer.length");

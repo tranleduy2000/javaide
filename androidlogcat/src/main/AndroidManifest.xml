@@ -19,8 +19,9 @@
                 android:resource="@xml/shortcuts"/>
         </activity>
 
+        <activity android:name=".ui.RecordLogDialogActivity"/>
         <activity android:name=".ui.SettingsActivity"/>
-
+        <service android:name="com.pluscubed.logcat.LogcatRecordingService"/>
         <service android:name="com.pluscubed.logcat.CrazyLoggerService"/>
 
     </application>

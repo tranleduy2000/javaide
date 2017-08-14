@@ -29,6 +29,7 @@ import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -54,6 +55,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.pluscubed.logcat.LogcatRecordingService;
 import com.pluscubed.logcat.R;
 import com.pluscubed.logcat.data.ColorScheme;
 import com.pluscubed.logcat.data.FilterAdapter;
@@ -181,6 +183,12 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
             case COMPLETE_PARTIAL_SELECT_REQUEST:
                 completePartialSelect();
                 break;
+            case SHOW_RECORD_LOG_REQUEST:
+                showRecordLogDialog();
+                break;
+            case SHOW_RECORD_LOG_REQUEST_SHORTCUT:
+                handleShortcuts("record");
+                break;
         }
     }
 
@@ -191,13 +199,22 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
 
         LogLine.isScrubberEnabled = PreferenceHelper.isScrubberEnabled(this);
 
+        handleShortcuts(getIntent().getStringExtra("shortcut_action"));
+
         mHandler = new Handler(Looper.getMainLooper());
+
+        binding.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogHelper.stopRecordingLog(LogcatActivity.this);
+            }
+        });
 
         binding.list.setLayoutManager(new LinearLayoutManager(this));
 
         binding.list.setItemAnimator(null);
 
-        setSupportActionBar(binding.toolbar);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar_actionbar));
 
         mCollapsedMode = !PreferenceHelper.getExpandedByDefaultPreference(this);
 
@@ -216,6 +233,30 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
     }
 
     private void handleShortcuts(String action) {
+        if (action == null) return;
+
+        switch (action) {
+            case "record":
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            SHOW_RECORD_LOG_REQUEST_SHORTCUT);
+                    return;
+                }
+
+                String logFilename = DialogHelper.createLogFilename();
+                String defaultLogLevel = Character.toString(PreferenceHelper.getDefaultLogLevelPreference(this));
+
+                DialogHelper.startRecordingWithProgressDialog(logFilename, "", defaultLogLevel, new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                }, this);
+
+                break;
+        }
     }
 
     private void runUpdatesIfNecessaryAndShowWelcomeMessage() {
@@ -280,7 +321,10 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
             String filename = intent.getStringExtra("filename");
             openLogFile(filename);
         }
+
         doAfterInitialMessage(getIntent());
+
+
     }
 
     private void doAfterInitialMessage(Intent intent) {
@@ -321,6 +365,9 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
             // scroll to bottom, since for some reason it always scrolls to the top, which is annoying
             scrollToBottom();
         }
+
+        boolean recordingInProgress = ServiceHelper.checkIfServiceIsRunning(getApplicationContext(), LogcatRecordingService.class);
+        binding.fab.setVisibility(recordingInProgress ? View.VISIBLE : View.GONE);
     }
 
     private void restartMainLog() {
@@ -489,8 +536,12 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
         saveAsLogMenuItem.setEnabled(!showingMainLog);
         saveAsLogMenuItem.setVisible(!showingMainLog);
 
+        boolean recordingInProgress = ServiceHelper.checkIfServiceIsRunning(getApplicationContext(), LogcatRecordingService.class);
 
         MenuItem recordMenuItem = menu.findItem(R.id.menu_record_log);
+
+        recordMenuItem.setEnabled(!recordingInProgress);
+        recordMenuItem.setVisible(!recordingInProgress);
 
         MenuItem crazyLoggerMenuItem = menu.findItem(R.id.menu_crazy_logger_service);
         crazyLoggerMenuItem.setEnabled(UtilLogger.DEBUG_MODE);
@@ -584,6 +635,9 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
             return true;
         } else if (i == R.id.menu_save_log || i == R.id.menu_save_as_log) {
             showSaveLogDialog();
+            return true;
+        } else if (i == R.id.menu_record_log) {
+            showRecordLogDialog();
             return true;
         } else if (i == R.id.menu_send_log) {
             showSendLogDialog();
@@ -708,6 +762,23 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
         });
     }
 
+    private void showRecordLogDialog() {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    SHOW_RECORD_LOG_REQUEST);
+            return;
+        }
+        // start up the dialog-like activity
+        String[] suggestions = ArrayUtil.toArray(new ArrayList<>(mSearchSuggestionsSet), String.class);
+
+        Intent intent = new Intent(LogcatActivity.this, RecordLogDialogActivity.class);
+        intent.putExtra(RecordLogDialogActivity.EXTRA_QUERY_SUGGESTIONS, suggestions);
+
+        startActivity(intent);
+    }
 
     private void showFiltersDialog() {
 

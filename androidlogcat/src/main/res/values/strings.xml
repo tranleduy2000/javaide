@@ -221,5 +221,6 @@
     <string name="search">Search</string>
     <string name="scrubber">Omit sensitive info</string>
     <string name="scrubber_summary">Omit sensitive info like web urls, phone numbers or emails</string>
+    <string name="logcat">Logcat</string>
 
 </resources>

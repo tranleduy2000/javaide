@@ -121,13 +121,13 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
     protected void onStop() {
         super.onStop();
         mConsoleEditText.stop();
+        JavaApplication application = (JavaApplication) getApplication();
+        application.removeErr(mConsoleEditText.getErrorStream());
+        application.removeOut(mConsoleEditText.getOutputStream());
     }
 
     @Override
     protected void onDestroy() {
-        JavaApplication application = (JavaApplication) getApplication();
-        application.removeErr(mConsoleEditText.getErrorStream());
-        application.removeOut(mConsoleEditText.getOutputStream());
         super.onDestroy();
     }
 

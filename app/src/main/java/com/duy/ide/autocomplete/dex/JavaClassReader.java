@@ -132,9 +132,6 @@ public class JavaClassReader {
     }
 
     public void load(JavaProjectFolder projectFolder) {
-        if (loaded) {
-            return;
-        }
         mClasses.clear();
         mClasses.addAll(getAllClassesFromProject(
                 projectFolder instanceof AndroidProjectFolder, //is android
@@ -199,6 +196,11 @@ public class JavaClassReader {
         return null;
     }
 
+    /**
+     * search class
+     *
+     * @param className - full class name
+     */
     @Nullable
     private Class binarySearch(String className) {
         int left = 0;
@@ -218,35 +220,57 @@ public class JavaClassReader {
         return null;
     }
 
+    /**
+     * search class with binary search
+     *
+     * @param simpleName - simple class name
+     */
     @Nullable
-    private List<Pair<String, Class>> binarySearch(ArrayList<Pair<String, Class>> classes, String className) {
+    private List<Pair<String, Class>> binarySearch(ArrayList<Pair<String, Class>> classes, String simpleName) {
         //find left index
-        int start = -1, end = -1;
+        int start = 0, end = 0;
         int left = 0;
         int right = classes.size() - 1;
-        while (left < right) {
+        //search left most
+        while (left <= right) {
             int mid = (left + right) / 2;
-            String midValue = classes.get(mid).first;
-            if (midValue.compareTo(className) <= 0) { //mid < key
-                left = mid;
-            } else {
-                right = mid - 1;
-            }
-        }
-        start = left;
-        left = 0;
-        right = classes.size() - 1;
-        while (left < right) {
-            int mid = (left + right) / 2;
-            String midValue = classes.get(mid).first;
-            if (midValue.compareTo(className) >= 0) {
-                right = mid;
-            } else {
+            String midValue = classes.get(mid).first.substring(0, Math.min(classes.get(mid).first.length(),
+                    simpleName.length()));
+            if (midValue.compareTo(simpleName) < 0) { //mid < key
                 left = mid + 1;
+            } else if (midValue.compareTo(simpleName) > 0) {
+                right = mid - 1;
+            } else {
+                //exit here
+                while (mid >= 0 && classes.get(mid).first.substring(0, Math.min(classes.get(mid).first.length(),
+                        simpleName.length())).equals(simpleName)) {
+                    mid--;
+                }
+                start = mid + 1;
+                break;
             }
         }
-        end = right;
-        if (start >= 0 && end >= 0 && start - end >= 1) {
+        left = start >= 0 ? start : 0;
+        right = classes.size() - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            String midValue = classes.get(mid).first.substring(0, Math.min(classes.get(mid).first.length(),
+                    simpleName.length()));
+            if (midValue.compareTo(simpleName) < 0) { //mid < key
+                left = mid + 1;
+            } else if (midValue.compareTo(simpleName) > 0) {
+                right = mid - 1;
+            } else {
+                //exit here
+                while (mid < classes.size() && classes.get(mid).first.substring(0, Math.min(classes.get(mid).first.length(),
+                        simpleName.length())).equals(simpleName)) {
+                    mid++;
+                }
+                end = mid - 1;
+                break;
+            }
+        }
+        if (end >= 0 && start >= 0 && end - start >= 1) {
             return classes.subList(start, end);
         }
         return null;
@@ -254,12 +278,14 @@ public class JavaClassReader {
 
     @NonNull
     public ArrayList<ClassDescription> findClass(String simpleNamePrefix) {
+        Log.d(TAG, "findClass() called with: simpleNamePrefix = [" + simpleNamePrefix + "]");
+
         long start = System.currentTimeMillis();
         ArrayList<ClassDescription> classDescriptions = new ArrayList<>();
         List<Pair<String, Class>> classes = binarySearch(mSimpleClasses, simpleNamePrefix);
         if (classes != null) {
             for (Pair<String, Class> c : classes) {
-                classDescriptions.add(readClassByName(c.first, c.second));
+                classDescriptions.add(readClassByName(c.second.getName(), c.second));
             }
         }
         Log.d(TAG, "findClass: time " + simpleNamePrefix + " - " + (System.currentTimeMillis() - start));

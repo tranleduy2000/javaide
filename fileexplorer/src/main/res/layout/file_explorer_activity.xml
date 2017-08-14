@@ -52,7 +52,7 @@
                 android:inputType="textNoSuggestions"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:textColor="#333"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/btn_select"

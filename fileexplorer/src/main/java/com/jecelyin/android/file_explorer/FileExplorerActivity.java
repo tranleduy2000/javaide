@@ -222,8 +222,10 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
             return true;
         } else if (file.isDirectory()) {
             lastPath = file.getPath();
+            if (mode == MODE_PICK_PATH) {
+                binding.filenameEditText.setText(file.getPath());
+            }
         }
-
         return false;
     }
 
@@ -295,7 +297,7 @@ public class FileExplorerActivity extends FullScreenActivity implements View.OnC
 //                }
 //            });
 //        } else {
-            saveAndFinish(f);
+        saveAndFinish(f);
 //        }
     }
 

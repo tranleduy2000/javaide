@@ -258,8 +258,11 @@ public class JavaProjectFolder implements Serializable, Cloneable {
                     packageName += f.getName() + ".";
 
                     files = f.listFiles();
-                    if (files == null) f = null;
-                    else f = files[0];
+                    if (files == null || files.length == 0) {
+                        f = null;
+                    } else {
+                        f = files[0];
+                    }
                 }
                 if (packageName.charAt(packageName.length() - 1) == '.') {
                     packageName = packageName.substring(0, packageName.length() - 1);

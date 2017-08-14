@@ -612,19 +612,24 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
                 }
                 break;
             case REQUEST_OPEN_JAVA_PROJECT: {
-                String file = FileExplorerActivity.getFile(data);
-                JavaProjectFolder pf = ProjectManager.createProjectIfNeed(getApplicationContext(),
-                        new File(file));
-                if (pf != null) onProjectCreated(pf);
-                else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                if (resultCode == RESULT_OK) {
+                    String file = FileExplorerActivity.getFile(data);
+                    JavaProjectFolder pf = ProjectManager.createProjectIfNeed(getApplicationContext(),
+                            new File(file));
+                    if (pf != null) onProjectCreated(pf);
+                    else
+                        Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                }
                 break;
             }
             case REQUEST_OPEN_ANDROID_PROJECT: {
-                String file = FileExplorerActivity.getFile(data);
-                AndroidProjectFolder pf = ProjectManager.importAndroidProject(getApplicationContext(),
-                        new File(file));
-                if (pf != null) onProjectCreated(pf);
-                else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                if (resultCode == RESULT_OK) {
+                    String file = FileExplorerActivity.getFile(data);
+                    AndroidProjectFolder pf = ProjectManager.importAndroidProject(getApplicationContext(),
+                            new File(file));
+                    if (pf != null) onProjectCreated(pf);
+                    else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                }
                 break;
             }
         }

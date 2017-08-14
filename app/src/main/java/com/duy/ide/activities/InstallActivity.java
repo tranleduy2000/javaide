@@ -89,7 +89,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
 
     private void selectFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("file/*");
+        intent.setType("*/*");
         try {
             startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
         } catch (Exception e) {

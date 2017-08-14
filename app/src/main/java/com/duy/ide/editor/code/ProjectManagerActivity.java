@@ -502,18 +502,18 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
             Toast.makeText(this, "Unable to open file", Toast.LENGTH_SHORT).show();
             return false;
         }
-        //create intent open filek
-        MimeTypeMap myMime = MimeTypeMap.getSingleton();
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        String ext = FileUtils.fileExt(file.getPath());
-        String mimeType = myMime.getMimeTypeFromExtension(ext != null ? ext : "");
-        intent.setDataAndType(Uri.fromFile(file), mimeType);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
+            //create intent open file
+            MimeTypeMap myMime = MimeTypeMap.getSingleton();
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            String ext = FileUtils.fileExt(file.getPath());
+            String mimeType = myMime.getMimeTypeFromExtension(ext != null ? ext : "");
+            intent.setDataAndType(Uri.fromFile(file), mimeType);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, "No handler for this type of file.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
         return true;
     }

@@ -45,6 +45,7 @@
                 android:clipChildren="true"
                 app:tabBackground="@drawable/bg_tab"
                 app:tabGravity="center"
+                app:tabIndicatorHeight="0dp"
                 app:tabMode="scrollable"
                 app:tabPaddingBottom="0dp"
                 app:tabPaddingEnd="0dp"

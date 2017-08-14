@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_background"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/action_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/main_button_height"
+        android:background="@drawable/action_bar"
+        android:gravity="center_vertical|right"
+        android:orientation="horizontal" >
+
+        <!-- Dummy item to prevent AutoCompleteTextView from receiving focus -->
+
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+        <AutoCompleteTextView
+            android:id="@+id/main_edit_text"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="3dp"
+            android:layout_weight="1"
+            android:completionThreshold="1"
+            android:drawableLeft="@drawable/ic_btn_search"
+            android:drawablePadding="4dp"
+            android:gravity="center_vertical|left"
+            android:hint="@string/main_edit_text_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="textFilter"
+            android:nextFocusLeft="@+id/main_edit_text"
+            android:nextFocusUp="@+id/main_edit_text"
+            android:singleLine="true" />
+
+        <LinearLayout
+            android:id="@+id/main_pause_button"
+            style="@android:style/Widget.Button"
+            android:layout_width="@dimen/main_button_width"
+            android:layout_height="fill_parent"
+            android:background="@android:drawable/list_selector_background"
+            android:gravity="center_vertical|left"
+            android:orientation="horizontal" >
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="@android:color/darker_gray" />
+
+            <ImageView
+                android:id="@+id/main_pause_button_image"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_media_pause" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/main_more_button"
+            style="@android:style/Widget.Button"
+            android:layout_width="@dimen/main_button_width"
+            android:layout_height="fill_parent"
+            android:background="@android:drawable/list_selector_background"
+            android:gravity="center_vertical|left"
+            android:orientation="horizontal" >
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="@android:color/darker_gray" />
+
+            <ImageView
+                android:id="@+id/main_expand_button_image"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_menu_more_32" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/main_clear_button"
+            style="@android:style/Widget.Button"
+            android:layout_width="@dimen/main_button_width"
+            android:layout_height="fill_parent"
+            android:background="@android:drawable/list_selector_background"
+            android:gravity="center_vertical|left"
+            android:orientation="horizontal" >
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="@android:color/darker_gray" />
+
+            <ImageView
+                android:id="@+id/main_clear_button_image"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_menu_close_clear_cancel_32" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/main_filename_outer_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="vertical"
+        android:paddingBottom="1dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="3dp" >
+
+        <LinearLayout
+            android:id="@+id/main_filename_linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <View
+                android:id="@+id/main_border_view_1"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <View
+                    android:id="@+id/main_border_view_2"
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent" />
+
+                <LinearLayout
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0" >
+
+                    <TextView
+                        android:id="@+id/main_filename_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="1dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingTop="1dp"
+                        android:typeface="monospace" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/main_border_view_3"
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/main_border_view_4"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/main_dark_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/main_light_progress_bar"
+        style="@android:style/Widget.ProgressBar.Inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    <com.nolanlawson.logcat.widget.ExceptionCatchingListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="0px"
+        android:layout_weight="1"
+        android:layout_below="@+id/main_light_progress_bar"
+        android:dividerHeight="0px"
+        android:paddingBottom="2dp"
+        android:paddingTop="1dp"
+        android:scrollbars="none" />
+
+</LinearLayout>

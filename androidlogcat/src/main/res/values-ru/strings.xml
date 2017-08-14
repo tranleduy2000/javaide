@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- non-translateable strings-->
+    
+    
+    <string name="app_name">CatLog</string>
+    
+    <string name="donate_version_name">Помочь проекту</string>
+    
+    <string name="first_run">first_run23</string>
+    
+    <string name="log_level_debug">Отладка</string>
+    <string name="log_level_error">Ошибка</string>
+    <string name="log_level_info">Инфо</string>
+    <string name="log_level_value_debug">D</string>
+    <string name="log_level_value_error">E</string>
+    <string name="log_level_value_info">I</string>
+    <string name="log_level_value_verbose">V</string>
+    <string name="log_level_value_warn">W</string>
+    <string name="log_level_value_wtf">F</string>
+    <string name="log_level_verbose">Verbose</string>
+    <string name="log_level_warn">Warn</string>
+    <string name="log_level_wtf">What a Terrible Failure</string>
+    
+    <string name="pref_about">about</string>
+    <string name="pref_buffer">buffer</string>
+    <string name="pref_buffer_choice_events_value">events</string>
+    <string name="pref_buffer_choice_main_value">main</string>
+    <string name="pref_buffer_choice_radio_value">radio</string>
+    <string name="pref_default_log_level">default_level</string>
+    <string name="pref_display_limit">display_limit</string>
+    <string name="pref_display_limit_default">10000</string>
+    <string name="pref_expanded_by_default">expand_default</string>
+    <string name="pref_hide_partial_select_help">pref_hide_partial_select_help</string>
+    <string name="pref_include_device_info">device_info</string>
+    <string name="pref_log_line_period">log_line_period</string>
+    <string name="pref_log_line_period_default">200</string>
+    <string name="pref_ran_jellybean_su_update">jellybean_su</string>
+    <string name="pref_show_timestamp">show_timestamp</string>
+    <string name="pref_text_size">text_size</string>
+    <string name="pref_theme">theme</string>
+    <string name="pref_theme_choice_android_value">Android</string>
+    <string name="pref_theme_choice_att_value">Ma Bell</string>
+    <string name="pref_theme_choice_dark_value">Dark</string>
+    <string name="pref_theme_choice_light_value">Light</string>
+    <string name="pref_theme_choice_sprint_value">Big Yellow</string>
+    <string name="pref_theme_choice_tmobile_value">T-Mo</string>
+    <string name="pref_theme_choice_verizon_value">Big Red</string>
+    
+    <string name="text_size_large_value">L</string>
+    <string name="text_size_medium_value">M</string>
+    <string name="text_size_small_value">S</string>
+    <string name="text_size_xlarge_value">XL</string>
+    <string name="text_size_xsmall_value">XS</string>
+    
+    
+    <!-- translateable strings-->
+    
+    
+    <string name="about">О программе</string>
+    <string name="about_catlog">CatLog</string>
+    
+    <string name="add_filter">Добавить фильтр</string>
+    <string name="add_filter_ellipsis">Добавление фильтра…</string>
+    
+    <string name="are_you_sure">%d файл(ов) будет удалено.</string>
+    
+    <string name="as_attachment">Как приложение</string>
+    <string name="as_text">Как текст</string>
+    
+    <string name="checkbox_never_show_partial_select_help">Больше не показывать</string>
+    
+    <string name="copied_to_clipboard">Скопировано в буфер.</string>
+    
+    <string name="copy_to_clipboard">Скопировать в буфер</string>
+    
+    <string name="default_in_parens">(Стандартно)</string>
+    <string name="delete_all">Удалить все</string>
+    <string name="delete_saved_log">Удалить сохр. логи</string>
+    <string name="delimiter">, </string>
+    <string name="dialog_compiling_log">Компиляция лога…</string>
+    <string name="dialog_for_donate">Для получения <b>разных\nтем</b>, загрузите\n<a href="market://details?id=com.nolanlawson.logcat.donate">Помочь CatLog</a></string>
+    <string name="dialog_for_widget">Нужен <b>виджет</b>?\ Домашний экран→ Долгое\nнажатие → Виджеты</string>
+    <string name="dialog_initializing_recorder">Загрузка записей…</string>
+    <string name="dialog_loading_updates">Загрузка обновлений…</string>
+    <string name="dialog_partial_select_explanation">1. Выберите <b>первую</b> линию.\n2. Затем выберите<b>последнюю</b> линию.</string>
+    <string name="dialog_please_wait">Пожалуйста подождите</string>
+    
+    <string name="enter_filename">Введите имя файла:</string>
+    <string name="enter_good_filename">Пожалуйста введите правильное имя файла.</string>
+    
+    <string name="files_deleted">%d файл(ов) удалено.</string>
+    
+    <string name="filter_choice">Поиск</string>
+    <string name="filter_choice_pid">Id процесса</string>
+    <string name="filter_choice_tag">Тег</string>
+    <string name="filter_text_colon">Текст фильтра:</string>
+
+    <string name="first_run_pref_summary">Показать вступительное сообщение еще раз.</string>
+    <string name="first_run_pref_title">Сбросить вступление</string>
+    <string name="first_run_title">Добро пожаловать в CatLog!</string>
+    
+    <string name="log_cleared">Логи очищены. Долгое нажатие для перезагрузки.</string>
+    <string name="log_level">Уровень лога</string>
+    <string name="log_level_colon">Уровень лога:</string>
+    <string name="log_recording_started">Идет запись лога.</string>
+    <string name="log_saved">Лог сохранен.</string>
+    
+    <string name="main_edit_text_hint">Поиск лога</string>
+    
+    <string name="manage_saved_logs">Мои логи</string>
+    
+    <string name="menu_title_partial_select">Выбрать интервал</string>
+    
+    <string name="no_saved_logs">Нет сохраненных логов.</string>
+    
+    <string name="notification_subtext">Выберите, чтобы остановить запись.</string>
+    <string name="notification_ticker">Началась запись лога</string>
+    <string name="notification_title">Идет запись лога</string>
+    
+    <string name="open">Открыть</string>
+    <string name="open_log">Открыть лог</string>
+    
+    <string name="play_x1_log">Открыть %s лог</string>
+    <string formatted="false" name="play_x2_log">Открыть %s, %s</string>
+    <string name="play_x3_log">Открыть все логи</string>
+    
+    <string name="pref_buffer_choice_events">События</string>
+    <string name="pref_buffer_choice_main">Главное</string>
+    <string name="pref_buffer_choice_radio">Радио</string>
+    <string name="pref_buffer_none_checked_error">Пожалуйста, проверьте хотя бы один буфер.</string>
+    <string name="pref_buffer_title">Буфер лога</string>
+    <string name="pref_cat_advanced">Дополнительно</string>
+    <string name="pref_cat_appearance">Внешний вид</string>
+    <string name="pref_cat_configuration">Конфигурация</string>
+    <string name="pref_default_log_level_summary">Уровень лога при запуске, при открытии файлов, и при записи (%s)</string>
+    <string name="pref_default_log_level_title">Стандартный уровень лога</string>
+    <string formatted="false" name="pref_display_limit_summary">Показывать только последние %d логи, чтобы избежать OutOfMemoryErrors. (Стандартно: %s)</string>
+    <string name="pref_display_limit_title">Лимит отображения</string>
+    <string name="pref_expanded_by_default_summary">Стандартно: показывать весь текст.</string>
+    <string name="pref_expanded_by_default_title">Развернуть по умолчанию</string>
+    <string name="pref_log_line_period_error">Пожалуйста, введите целое число от 1 до 1000.</string>
+    <string formatted="false" name="pref_log_line_period_summary">Во время записи, запись на карту памяти каждой %d линия(ий) (Стандартно: %s).</string>
+    <string name="pref_log_line_period_title">Период записи</string>
+    <string name="pref_show_timestamp_summary">Показать идентификатор процесса и метку времени.</string>
+    <string name="pref_show_timestamp_title">Показывать id процесса &amp; время</string>
+    <string name="pref_text_size_title">Размер текста</string>
+    <string name="pref_theme_choice_android_name">Android</string>
+    <string name="pref_theme_choice_att_name">Ma Bell</string>
+    <string name="pref_theme_choice_dark_name">Dark</string>
+    <string name="pref_theme_choice_light_name">Light</string>
+    <string name="pref_theme_choice_sprint_name">Big Yellow</string>
+    <string name="pref_theme_choice_tmobile_name">T-Mo</string>
+    <string name="pref_theme_choice_verizon_name">Big Red</string>
+    <string name="pref_theme_summary_free">Требуется поддержка версии.</string>
+    <string name="pref_theme_title">Цветовая тема</string>
+    
+    <string name="record_log">Запись лога</string>
+    
+    <string name="recording_in_progress">Запись уже идет.</string>
+    
+    <string name="save">Сохранить</string>
+    <string name="save_as">Сохранить как…</string>
+    <string name="save_log">Сохранить лог</string>
+    
+    <string name="sd_card_not_found">Нет карты памяти.</string>
+    
+    <string name="select_logs_to_delete">Выберите лог для удаления.</string>
+    
+    <string name="send_as_attachment">Отправить как приложение</string>
+    <string name="send_as_text">Отправить как текст</string>
+    <string name="send_log">Отправить</string>
+    <string name="send_log_title">Отправка лога</string>
+    
+    <string name="settings">Настройки</string>
+    
+    <string name="simultaneous"> (Одновременно)</string>
+    
+    <string name="start_recording_log">Запись</string>
+    
+    <string name="stop_recording_log">Остановить запись</string>
+    
+    <string name="subject_log_report">Отчет лога</string>
+    
+    <string name="text_filter_ellipsis">Фильтр…</string>
+    <string name="text_filter_text">Текст фильтра</string>
+    <string name="text_include_device_info">Включая информацию устройства</string>
+    <string name="text_size_large_name">Большой (14pt)</string>
+    <string name="text_size_medium_name">Средний (12pt)</string>
+    <string name="text_size_small_name">Маленький (10pt)</string>
+    <string name="text_size_xlarge_name">Экстра большой (16pt)</string>
+    <string name="text_size_xsmall_name">Экстра маленький (8pt)</string>
+    
+    <string name="title_filter">Фильтр</string>
+    <string name="title_filters">Фильтры</string>
+    
+    <string formatted="false" name="toast_invalid_display_limit">Пожалуйста введите номер между %d и %d.</string>
+    <string name="toast_invalid_level">Неверное имя уровня: %s</string>
+    <string name="toast_invalid_selection">Неверный выбор.  Повторите позже.</string>
+    <string name="toast_log_truncated">Лог слишком большой; просмотр последних %d линий.</string>
+    <string name="toast_no_root">Не удалось получить рут.  Вы видите только свои CatLog логи.</string>
+    <string name="toast_pref_changed_restart_required">Настройки изменены. Перезагрузите CatLog для принятия изменений.</string>
+    <string name="toast_request_root">CatLog требует рут для чтения логов.</string>
+    <string name="toast_started_select_partial">Режим интервала включен</string>
+    
+    <string name="unable_to_save_log">Не удалось сохранить лог. Вы точно ввели правильное имя файла?</string>
+    
+    <string name="version">Версия %s</string>
+    
+    <string name="widget_recording_in_progress">Запись…</string>
+    <string name="widget_start_recording">Запись лога</string>
+</resources>

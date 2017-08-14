@@ -26,7 +26,7 @@ dependencies {
     compile "com.android.support:support-v4:$android_support_version"
     compile "com.android.support:appcompat-v7:$android_support_version"
     compile 'com.rengwuxian.materialedittext:library:2.0.3'
-    compile 'com.google.code.gson:gson:2.5'
+    compile 'com.google.code.gson:gson:2.7'
     compile 'com.github.afollestad.material-dialogs:commons:0.8.5.8'
 
 }

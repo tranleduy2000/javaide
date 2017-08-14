@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical"
+		android:gravity="center_horizontal"
+		android:padding="10dp">
+    <LinearLayout android:id="@+id/topPanel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@android:dimen/app_icon_size"
+        android:orientation="vertical"
+        android:paddingTop="7dp" android:paddingBottom="10dp">
+        <LinearLayout android:id="@+id/title_template"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="6dip"
+            android:layout_marginBottom="9dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip">
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:paddingTop="6dip"
+                android:paddingRight="10dip"
+                android:src="@drawable/icon" />
+            <TextView  
+                style="?android:attr/textAppearanceLarge"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textSize="18sp"
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content" 
+                android:text="@string/about_catlog"/>
+        </LinearLayout>
+        <View 
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:visibility="visible"
+            android:scaleType="fitXY"
+            android:gravity="fill_horizontal"
+            android:background="@color/dark_divider"/>
+        <!-- If the client uses a customTitle, it will be added here. -->
+    </LinearLayout>
+
+		<ProgressBar android:id="@+id/aboutProgressBar"
+		        android:layout_width="wrap_content" 
+		        android:layout_height="wrap_content"   
+		        android:indeterminate="true"
+		        />
+		
+		<WebView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/aboutTextWebView"
+			android:layout_weight="1.0" />
+			
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:orientation="horizontal"
+			android:gravity="center_horizontal" android:paddingTop="10dp">
+			<Button android:text="@android:string/ok" android:id="@+id/okButton"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:minWidth="100dp" />
+		</LinearLayout>
+	</LinearLayout>
+

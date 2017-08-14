@@ -1,0 +1,134 @@
+<resources>
+
+	<string-array name="pref_buffer_choices">
+		<item>@string/pref_buffer_choice_main</item>
+		<item>@string/pref_buffer_choice_events</item>
+		<item>@string/pref_buffer_choice_radio</item>
+	</string-array>	
+	
+	<string-array name="pref_buffer_choice_values">
+		<item>@string/pref_buffer_choice_main_value</item>
+		<item>@string/pref_buffer_choice_events_value</item>
+		<item>@string/pref_buffer_choice_radio_value</item>
+	</string-array>	
+
+	<string-array name="pref_theme_choices_values">
+		<item>@string/pref_theme_choice_dark_value</item>
+		<item>@string/pref_theme_choice_light_value</item>
+		<item>@string/pref_theme_choice_android_value</item>
+		<item>@string/pref_theme_choice_verizon_value</item>
+		<item>@string/pref_theme_choice_att_value</item>
+		<item>@string/pref_theme_choice_sprint_value</item>
+		<item>@string/pref_theme_choice_tmobile_value</item>
+	</string-array>
+
+	<string-array name="pref_theme_choices_names">
+		<item>@string/pref_theme_choice_dark_name</item>
+		<item>@string/pref_theme_choice_light_name</item>
+		<item>@string/pref_theme_choice_android_name</item>
+		<item>@string/pref_theme_choice_verizon_name</item>
+		<item>@string/pref_theme_choice_att_name</item>
+		<item>@string/pref_theme_choice_sprint_name</item>
+		<item>@string/pref_theme_choice_tmobile_name</item>
+	</string-array>
+	
+	<string-array name="filter_choices">
+		<item>@string/filter_choice_tag</item>
+		<item>@string/filter_choice_pid</item>
+	</string-array>
+
+	<string-array name="log_levels">
+		<item>@string/log_level_verbose</item>
+		<item>@string/log_level_debug</item>
+		<item>@string/log_level_info</item>
+		<item>@string/log_level_warn</item>
+		<item>@string/log_level_error</item>
+		<item>@string/log_level_wtf</item>
+	</string-array>
+
+	<string-array name="log_levels_values">
+		<item>@string/log_level_value_verbose</item>
+		<item>@string/log_level_value_debug</item>
+		<item>@string/log_level_value_info</item>
+		<item>@string/log_level_value_warn</item>
+		<item>@string/log_level_value_error</item>
+		<item>@string/log_level_value_wtf</item>
+	</string-array>	    
+	    	
+	<string-array name="text_size_values">
+		<item>@string/text_size_xsmall_value</item>
+		<item>@string/text_size_small_value</item>
+		<item>@string/text_size_medium_value</item>
+		<item>@string/text_size_large_value</item>
+		<item>@string/text_size_xlarge_value</item>
+	</string-array>
+		
+	<string-array name="text_sizes">
+		<item>@string/text_size_xsmall_name</item>
+		<item>@string/text_size_small_name</item>
+		<item>@string/text_size_medium_name</item>
+		<item>@string/text_size_large_name</item>
+		<item>@string/text_size_xlarge_name</item>
+	</string-array>
+
+
+	<integer-array name="dark_theme_colors">
+		<item>@color/tag_color_01</item>
+		<item>@color/tag_color_02</item>
+		<item>@color/tag_color_03</item>
+		<item>@color/tag_color_04</item>
+		<item>@color/tag_color_05</item>
+		<item>@color/tag_color_06</item>
+		<item>@color/tag_color_07</item>
+		<item>@color/tag_color_08</item>
+		<item>@color/tag_color_09</item>
+		<item>@color/tag_color_10</item>
+		<item>@color/tag_color_11</item>
+		<item>@color/tag_color_12</item>
+		<item>@color/tag_color_13</item>
+		<item>@color/tag_color_14</item>
+		<item>@color/tag_color_15</item>
+		<item>@color/tag_color_16</item>
+		<item>@color/tag_color_17</item>
+	</integer-array>
+			
+	<integer-array name="light_theme_colors">
+		<item>@color/light_tag_color_01</item>
+		<item>@color/light_tag_color_02</item>
+		<item>@color/light_tag_color_03</item>
+		<item>@color/light_tag_color_04</item>
+		<item>@color/light_tag_color_05</item>
+		<item>@color/light_tag_color_06</item>
+		<item>@color/light_tag_color_07</item>
+		<item>@color/light_tag_color_08</item>
+		<item>@color/light_tag_color_09</item>
+		<item>@color/light_tag_color_10</item>
+		<item>@color/light_tag_color_11</item>
+		<item>@color/light_tag_color_12</item>
+		<item>@color/light_tag_color_13</item>
+		<item>@color/light_tag_color_14</item>
+		<item>@color/light_tag_color_15</item>
+		<item>@color/light_tag_color_16</item>
+		<item>@color/light_tag_color_17</item>
+	</integer-array>			
+	
+	<integer-array name="android_theme_colors">
+		<item>@color/android_theme_tag_color_01</item>
+		<item>@color/android_theme_tag_color_02</item>
+		<item>@color/android_theme_tag_color_03</item>
+		<item>@color/android_theme_tag_color_04</item>
+		<item>@color/android_theme_tag_color_05</item>
+		<item>@color/android_theme_tag_color_06</item>
+		<item>@color/android_theme_tag_color_07</item>
+		<item>@color/android_theme_tag_color_08</item>
+		<item>@color/android_theme_tag_color_09</item>
+		<item>@color/android_theme_tag_color_10</item>
+		<item>@color/android_theme_tag_color_11</item>
+		<item>@color/android_theme_tag_color_12</item>
+		<item>@color/android_theme_tag_color_13</item>
+		<item>@color/android_theme_tag_color_14</item>
+		<item>@color/android_theme_tag_color_15</item>
+		<item>@color/android_theme_tag_color_16</item>
+		<item>@color/android_theme_tag_color_17</item>
+	</integer-array>	
+</resources>

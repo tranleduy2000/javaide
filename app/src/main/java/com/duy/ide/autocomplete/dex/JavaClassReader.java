@@ -79,16 +79,9 @@ public class JavaClassReader {
         DexClassLoader dexClassLoader = new DexClassLoader(path, tempDir, null, ClassLoader.getSystemClassLoader());
         ArrayList<Class> classes = new ArrayList<>();
         try {
-            JarFile jarFile = new JarFile(path);
-            Enumeration<JarEntry> e = jarFile.entries();
-
-            while (e.hasMoreElements()) {
-                JarEntry je = e.nextElement();
-                if (je.isDirectory() || !je.getName().endsWith(".class")) {
-                    continue;
-                }
-                String className = je.getName().substring(0, je.getName().length() - 6);
-                className = className.replace('/', '.');
+            dalvik.system.DexFile dexFile = new dalvik.system.DexFile(path);
+            for (Enumeration<String> iter = dexFile.entries(); iter.hasMoreElements(); ) {
+                String className = iter.nextElement();
                 try {
                     if (android) {
                         Class c = dexClassLoader.loadClass(className);

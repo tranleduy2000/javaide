@@ -1,0 +1,10 @@
+<resources>
+	
+	<dimen name="tag_width">170dp</dimen>
+	<dimen name="pid_width">190dp</dimen>
+	
+	<dimen name="log_level_width">20dp</dimen>
+	
+	<dimen name="main_button_height">60dp</dimen>
+	<dimen name="main_button_width">65dp</dimen>
+</resources>

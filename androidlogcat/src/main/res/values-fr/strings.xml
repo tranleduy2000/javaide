@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about">A propos</string>
+    <string name="about_catlog">A propos de CatLog</string>
+    
+    <string name="add_filter">Ajouter Filtre</string>
+    <string name="add_filter_ellipsis">Ajouter Filtre…</string>
+    
+    <string name="are_you_sure">%d fichiers seront supprimés.</string>
+    
+    <string name="as_attachment">Comme Pièce Jointe</string>
+    <string name="as_text">Comme Texte</string>
+    
+    <string name="checkbox_never_show_partial_select_help">Ne plus afficher.</string>
+    
+    <string name="copied_to_clipboard">Copié au presse-papiers.</string>
+    
+    <string name="copy_to_clipboard">Copier au presse-papiers</string>
+    
+    <string name="default_in_parens">(Défaut)</string>
+    <string name="delimiter">, </string>
+    <string name="delete_all">Tout supprimer</string>
+    <string name="delete_saved_log">Suppression de journaux</string>
+    
+    <string name="dialog_compiling_log">Compilation de journaux en cours…</string>
+    <string name="dialog_for_donate">Pour d\'autres <b>arrangements de couleurs</b>: \
+Téléchargez <a href="market://details?id=com.nolanlawson.logcat.donate">CatLog Donate</a></string>
+    <string name="dialog_for_widget">Pour un <b>widget</b>: Ecran d\'acceuil→ Appuyez et maintenez→ Choisissez «Widgets»</string>
+    <string name="dialog_initializing_recorder">Chargement d\'enregistreur en cours…</string>
+    <string name="dialog_loading_updates">Mise à jour en cours…</string>
+    <string name="dialog_partial_select_explanation">1. Appuyez sur le <b>premier</b> ligne.\n2. Appuyez sur le <b>dernier</b> ligne.</string>
+    <string name="dialog_please_wait">Veuillez attendre</string>
+    
+    <string name="enter_filename">Entrez le nom du fichier à sauvegarder：</string>
+    <string name="enter_good_filename">Veuillez entrer un nom de fichier valable.</string>
+    
+    <string name="files_deleted">%d fichiers supprimés.</string>
+    
+    <string name="filter_choice">Rechercher par…</string>
+    <string name="filter_choice_pid">Pid</string>
+    <string name="filter_choice_tag">Tag</string>
+    <string name="filter_text_colon">Texte pour filtrer:</string>
+    
+    <string name="first_run_pref_summary">Afficher de nouveau le message d\'introduction</string>
+    <string name="first_run_pref_title">Réinitialiser l\'introduction</string>
+    <string name="first_run_title">Bienvenue à CatLog!</string>
+    
+    <string name="log_cleared">Journaux nettoyés. Pour afficher de nouveau, appuyez et maintenez.</string>
+    <string name="log_level">Niveau</string>
+    <string name="log_level_colon">Niveau:</string>
+    <string name="log_recording_started">Enregistrement en cours.</string>
+    <string name="log_saved">Journal sauvegardé.</string>
+    
+    <string name="main_edit_text_hint">Rechercher</string>
+    
+    <string name="manage_saved_logs">Journaux sauvegardés</string>
+    
+    <string name="menu_title_partial_select">Sélection partielle</string>
+    
+    <string name="no_saved_logs">Aucun journal sauvegardé.</string>
+    
+    <string name="notification_subtext">Pour arrêter, appuyez ici.</string>
+    <string name="notification_ticker">Enregistrement en cours</string>
+    <string name="notification_title">Enregistrement en cours</string>
+    
+    <string name="open">Ouvrir</string>
+    <string name="open_log">Ouvrir un journal</string>
+    
+    <string name="play_x1_log">Lire %s</string>
+    <string formatted="false" name="play_x2_log">Lire %s, %s</string>
+    <string name="play_x3_log">Lire Tout</string>
+    
+    <string name="pref_buffer_choice_events">Events</string>
+    <string name="pref_buffer_choice_main">Main</string>
+    <string name="pref_buffer_choice_radio">Radio</string>
+    <string name="pref_buffer_none_checked_error">Veuillez selectionner au moins un buffer.</string>
+    <string name="pref_buffer_title">Buffer(s) de journal</string>
+    <string name="pref_cat_advanced">Avancé</string>
+    <string name="pref_cat_appearance">Affichage</string>
+    <string name="pref_cat_configuration">Configuration</string>
+    <string name="pref_default_log_level_summary">Niveau au démarrage, à l\'ouverture d\'un fichier, et à l\'enregistration (%s)</string>
+    <string name="pref_default_log_level_title">Niveau de défaut</string>
+    <string formatted="false" name="pref_display_limit_summary">Afficher les %d derniers logs seulement, pour éviter des OutOfMemoryErrors. (Défaut: %s)</string>
+    <string name="pref_display_limit_title">Limite d\'affichage</string>
+    <string name="pref_expanded_by_default_summary">Par défaut, les lignes de journal seront étendus.</string>
+    <string name="pref_expanded_by_default_title">Etendre par défaut</string>
+    <string name="pref_log_line_period_error">Veuillez entrer un nombre entier entre 1 et 1000.</string>
+    <string formatted="false" name="pref_log_line_period_summary">Pendant l\'enregistrement, écrire à la carte SD tous les %d lignes. (Défault: %s)</string>
+    <string name="pref_log_line_period_title">Période d\'écriture</string>
+    <string name="pref_show_timestamp_summary">Quand étendu, afficher le pid et l\'estampille.</string>
+    <string name="pref_show_timestamp_title">Pid et estampille</string>
+    <string name="pref_text_size_title">Taille de police</string>
+    <string name="pref_theme_choice_android_name">Android</string>
+    <string name="pref_theme_choice_att_name">Ma Bell</string>
+    <string name="pref_theme_choice_dark_name">Foncé</string>
+    <string name="pref_theme_choice_light_name">Clair</string>
+    <string name="pref_theme_choice_sprint_name">Big Yellow</string>
+    <string name="pref_theme_choice_tmobile_name">T-Mo</string>
+    <string name="pref_theme_choice_verizon_name">Big Red</string>
+    <string name="pref_theme_summary_free">La version «Donate» est requise.</string>
+    <string name="pref_theme_title">Arrangement de couleurs</string>
+    
+    <string name="record_log">Enregistrer un journal</string>
+    
+    <string name="recording_in_progress">Enregistrement en cours.</string>
+    
+    <string name="save">Sauvegarder</string>
+    <string name="save_as">Sauvegarder…</string>
+    <string name="save_log">Sauvegarder un journal</string>
+    
+    <string name="sd_card_not_found">Aucune carte SD trouvée.</string>
+    
+    <string name="select_logs_to_delete">Sélectionnez les journaux à supprimer.</string>
+    
+    <string name="send_as_attachment">Envoyer comme pièce jointe</string>
+    <string name="send_as_text">Envoyer comme texte</string>
+    <string name="send_log">Envoyer</string>
+    <string name="send_log_title">Envoyer le Journal</string>
+    
+    <string name="settings">Paramètres</string>
+    
+    <string name="simultaneous"> (Simultanément)</string>
+    
+    <string name="start_recording_log">Enregistrer</string>
+    
+    <string name="stop_recording_log">Arrêter</string>
+    
+    <string name="subject_log_report">Envoyer un journal</string>
+    
+    <string name="text_filter_ellipsis">Filtrer…</string>
+    <string name="text_filter_text">Texte pour filtrer</string>
+    <string name="text_include_device_info">Inclure les informations sur le système</string>
+    <string name="text_size_large_name">Grand (14pt)</string>
+    <string name="text_size_medium_name">Moyen (12pt)</string>
+    <string name="text_size_small_name">Petit (10pt)</string>
+    <string name="text_size_xlarge_name">Très grand (16pt)</string>
+    <string name="text_size_xsmall_name">Très petit (8pt)</string>
+    
+    <string name="title_filter">Filtrer</string>
+    <string name="title_filters">Filtres</string>
+    
+    <string formatted="false" name="toast_invalid_display_limit">Veuillez entrer un nombre entier entre %d et %d.</string>
+    <string name="toast_invalid_level">Nom de niveau invalable: %s</string>
+    <string name="toast_invalid_selection">Sélection pas valable. Veuillez réessayer.</string>
+    <string name="toast_log_truncated">Le journal est trop long; les derniers %d lignes sont affichés.</string>
+    <string name="toast_no_root">Permissions de root indisponible.  Vous ne verrez que le journal de CatLog.</string>
+    <string name="toast_pref_changed_restart_required">Paramètre changée. Un redémarrage de CatLog est nécessaire pour effectuer les changements.</string>
+    <string name="toast_request_root">CatLog a besoin des privilèges root (superuser) pour lire les journaux.</string>
+    <string name="toast_started_select_partial">Commencement du mode &quot;sélection partielle.&quot;</string>
+    
+    <string name="unable_to_save_log">Impossible de sauvegarder le journal. Avez-vous entré un nom de fichier valable?</string>
+    
+    <string name="version">Version %s</string>
+    
+    <string name="widget_recording_in_progress">En cours…</string>
+    <string name="widget_start_recording">Enregistrer</string>
+</resources>

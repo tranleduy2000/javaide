@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    >
+    
+    <Button
+        android:id="@android:id/button1"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_delete"
+        android:focusable="false"
+        android:clickable="true"
+        />
+    
+    <TextView 
+	    android:id="@android:id/text1"
+	    style="?android:attr/spinnerDropDownItemStyle"
+	    android:layout_alignParentLeft="true"
+	    android:layout_centerVertical="true"
+	    android:layout_toLeftOf="@android:id/button1"
+	    android:singleLine="true"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:ellipsize="marquee"
+	    android:textSize="18sp"
+	    android:paddingTop="10dp"
+	    android:paddingBottom="10dp"/>
+    
+</RelativeLayout>

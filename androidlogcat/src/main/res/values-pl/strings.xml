@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- non-translateable strings-->
+    
+    
+    <string name="app_name">CatLog</string>
+    
+    <string name="donate_version_name">Donate</string>
+    
+    <string name="first_run">first_run23</string>
+    
+    <string name="log_level_debug">Debug</string>
+    <string name="log_level_error">Error</string>
+    <string name="log_level_info">Info</string>
+    <string name="log_level_value_debug">D</string>
+    <string name="log_level_value_error">E</string>
+    <string name="log_level_value_info">I</string>
+    <string name="log_level_value_verbose">V</string>
+    <string name="log_level_value_warn">W</string>
+    <string name="log_level_value_wtf">F</string>
+    <string name="log_level_verbose">Verbose</string>
+    <string name="log_level_warn">Warn</string>
+    <string name="log_level_wtf">What a Terrible Failure</string>
+    
+    <string name="pref_about">about</string>
+    <string name="pref_buffer">buffer</string>
+    <string name="pref_buffer_choice_events_value">events</string>
+    <string name="pref_buffer_choice_main_value">main</string>
+    <string name="pref_buffer_choice_radio_value">radio</string>
+    <string name="pref_default_log_level">default_level</string>
+    <string name="pref_display_limit">display_limit</string>
+    <string name="pref_display_limit_default">10000</string>
+    <string name="pref_expanded_by_default">expand_default</string>
+    <string name="pref_hide_partial_select_help">pref_hide_partial_select_help</string>
+    <string name="pref_include_device_info">device_info</string>
+    <string name="pref_log_line_period">log_line_period</string>
+    <string name="pref_log_line_period_default">200</string>
+    <string name="pref_ran_jellybean_su_update">jellybean_su</string>
+    <string name="pref_show_timestamp">show_timestamp</string>
+    <string name="pref_text_size">text_size</string>
+    <string name="pref_theme">theme</string>
+    <string name="pref_theme_choice_android_value">Android</string>
+    <string name="pref_theme_choice_att_value">Ma Bell</string>
+    <string name="pref_theme_choice_dark_value">Dark</string>
+    <string name="pref_theme_choice_light_value">Light</string>
+    <string name="pref_theme_choice_sprint_value">Big Yellow</string>
+    <string name="pref_theme_choice_tmobile_value">T-Mo</string>
+    <string name="pref_theme_choice_verizon_value">Big Red</string>
+    
+    <string name="text_size_large_value">L</string>
+    <string name="text_size_medium_value">M</string>
+    <string name="text_size_small_value">S</string>
+    <string name="text_size_xlarge_value">XL</string>
+    <string name="text_size_xsmall_value">XS</string>
+    
+    
+    <!-- translateable strings-->
+    
+    
+    <string name="about">O…</string>
+    <string name="about_catlog">O aplikacji</string>
+    
+    <string name="add_filter">Dodaj filtr</string>
+    <string name="add_filter_ellipsis">Dodaj filtr…</string>
+    
+    <string name="are_you_sure">%d plik(i) zostaną usunięte.</string>
+    
+    <string name="as_attachment">Jako załącznik</string>
+    <string name="as_text">Jako tekst</string>
+    
+    <string name="checkbox_never_show_partial_select_help">Nie pokazuj więcej</string>
+    
+    <string name="copied_to_clipboard">Skopiowano do schowka.</string>
+    
+    <string name="copy_to_clipboard">Skopiuj do schowka.</string>
+    
+    <string name="default_in_parens">(Domyślny)</string>
+    <string name="delete_all">Usuń wszystko</string>
+    <string name="delete_saved_log">Usuń zapisane logi</string>
+    <string name="delimiter">, </string>
+    <string name="dialog_compiling_log">Kompilowanie logu…</string>
+    <string name="dialog_for_donate">Dla<b>bonus color\nschemes</b>, download\n<a href="market://details?id=com.nolanlawson.logcat.donate">CatLog Donate</a></string>
+    <string name="dialog_for_widget">Dla<b>widget</b>,\ndo Home → Long\npress → Widgets</string>
+    <string name="dialog_initializing_recorder">Ładowanie mechanizmu nagrywania…</string>
+    <string name="dialog_loading_updates">Ładowanie aktualizacji…</string>
+    <string name="dialog_partial_select_explanation">1. Wybierz <b>pierwszą</b> linię.\n2. Potem wybierz <b>ostatnią</b> linię.</string>
+    <string name="dialog_please_wait">Proszę czekać</string>
+    
+    <string name="enter_filename">Podaj nazwę pliku:</string>
+    <string name="enter_good_filename">Podaj prawidłową nazwę pliku.</string>
+    
+    <string name="files_deleted">%d plik(ów) usunięto.</string>
+    
+    <string name="filter_choice">Wyszukaj przez</string>
+    <string name="filter_choice_pid">ID procesu</string>
+    <string name="filter_choice_tag">Tag</string>
+    <string name="filter_text_colon">Filtruj tekst:</string>
+
+    <string name="first_run_pref_summary">Pokaż ponownie wiadomość powitalną.</string>
+    <string name="first_run_pref_title">Nie widziałem wiadomości powitalnej</string>
+    <string name="first_run_title">Witaj w aplikacji CatLog!</string>
+    
+    <string name="log_cleared">Logi usunięte. Przytrzymaj by załadować ponownie.</string>
+    <string name="log_level">Log Level</string>
+    <string name="log_level_colon">Log level:</string>
+    <string name="log_recording_started">Rozpoczęto nagrywanie.</string>
+    <string name="log_saved">Log zapisany.</string>
+    
+    <string name="main_edit_text_hint">Przeszukaj logi</string>
+    
+    <string name="manage_saved_logs">Zarządzaj zapisanymi logami</string>
+    
+    <string name="menu_title_partial_select">Wybierz część</string>
+    
+    <string name="no_saved_logs">Nie znaleziono zapisanych logów.</string>
+    
+    <string name="notification_subtext">Wybierz by zatrzymać nagrywanie.</string>
+    <string name="notification_ticker">Rozpoczęto nagrywanie.</string>
+    <string name="notification_title">Nagrywanie w toku.</string>
+    
+    <string name="open">Otwórz</string>
+    <string name="open_log">Otwórz log</string>
+    
+    <string name="play_x1_log">Odtwórz %s log</string>
+    <string formatted="false" name="play_x2_log">Odtwórz %s, %s</string>
+    <string name="play_x3_log">Odtwórz wszystkie logi</string>
+    
+    <string name="pref_buffer_choice_events">Eventy</string>
+    <string name="pref_buffer_choice_main">Main</string>
+    <string name="pref_buffer_choice_radio">Radio</string>
+    <string name="pref_buffer_none_checked_error">Sprawdź przynajmniej jeden bufor.</string>
+    <string name="pref_buffer_title">Zapisuj bufory</string>
+    <string name="pref_cat_advanced">Zaawansowane</string>
+    <string name="pref_cat_appearance">Wygląd</string>
+    <string name="pref_cat_configuration">Konfiguracja</string>
+    <string name="pref_default_log_level_summary">Log level podczas startu, otwierania plików i nagrywania (%s)</string>
+    <string name="pref_default_log_level_title">Domyślny Log level</string>
+    <string formatted="false" name="pref_display_limit_summary">Poakż tylko ostatnie %d log(ów), by unknąć OutOfMemoryErrors (błędów braku pamięci). (Domyślnie: %s)</string>
+    <string name="pref_display_limit_title">Limit wyświetlania</string>
+    <string name="pref_expanded_by_default_summary">Domyślnie pokaż cały log.</string>
+    <string name="pref_expanded_by_default_title">Domyślnie rozszerz widok.</string>
+    <string name="pref_log_line_period_error">Proszę podać liczbę całkowitą z zakresu 1 - 1000.</string>
+    <string formatted="false" name="pref_log_line_period_summary">Podczas nagrywania, zapisz każdą %d linię. (domyślnie: %s).</string>
+    <string name="pref_log_line_period_title">Okres zapisywania</string>
+    <string name="pref_show_timestamp_summary">Pokaż ID procesu i timestamp gdy rozszerzony.</string>
+    <string name="pref_show_timestamp_title">Pokaż pid i timestamp</string>
+    <string name="pref_text_size_title">Rozmiar tekstu</string>
+    <string name="pref_theme_choice_android_name">Android</string>
+    <string name="pref_theme_choice_att_name">Ma Bell</string>
+    <string name="pref_theme_choice_dark_name">Ciemny</string>
+    <string name="pref_theme_choice_light_name">Jasny</string>
+    <string name="pref_theme_choice_sprint_name">Big Yellow</string>
+    <string name="pref_theme_choice_tmobile_name">T-Mo</string>
+    <string name="pref_theme_choice_verizon_name">Big Red</string>
+    <string name="pref_theme_summary_free">Wymaga wersji donate.</string>
+    <string name="pref_theme_title">Schematy kolorów</string>
+    
+    <string name="record_log">Nagraj log</string>
+    
+    <string name="recording_in_progress">Nagrywanie już trwa.</string>
+    
+    <string name="save">Zapisz</string>
+    <string name="save_as">Zapisz jako…</string>
+    <string name="save_log">Zapisz log</string>
+    
+    <string name="sd_card_not_found">Nie odnaleziono karty SD.</string>
+    
+    <string name="select_logs_to_delete">Wskaż logi do usunięcia.</string>
+    
+    <string name="send_as_attachment">Wyślij jako załącznik</string>
+    <string name="send_as_text">Wyślij jako tekst</string>
+    <string name="send_log">Wyślij</string>
+    <string name="send_log_title">Wyślij log</string>
+    
+    <string name="settings">Ustawienia</string>
+    
+    <string name="simultaneous">(jednocznesny)</string>
+    
+    <string name="start_recording_log">Nagraj</string>
+    
+    <string name="stop_recording_log">Zatrzymaj nagrywanie</string>
+    
+    <string name="subject_log_report">Log report</string>
+    
+    <string name="text_filter_ellipsis">Filtruj…</string>
+    <string name="text_filter_text">Filtruj tekst.</string>
+    <string name="text_include_device_info">Dołącz informacje o urządzeniu.</string>
+    <string name="text_size_large_name">Duży (14pt)</string>
+    <string name="text_size_medium_name">Średni (12pt)</string>
+    <string name="text_size_small_name">Mały (10pt)</string>
+    <string name="text_size_xlarge_name">Bardzo duży (16pt)</string>
+    <string name="text_size_xsmall_name">Bardzo mały (8pt)</string>
+    
+    <string name="title_filter">Filtr</string>
+    <string name="title_filters">Filtry</string>
+    
+    <string formatted="false" name="toast_invalid_display_limit">Proszę podać prawidłową liczbę z zakresu %d - %d.</string>
+    <string name="toast_invalid_level">Nieprawidłowa nazwa Log level: %s</string>
+    <string name="toast_invalid_selection">Nieprawidłowy wybór. Spróbuj ponownie.</string>
+    <string name="toast_log_truncated">Log jest za duży, pokazuję ostatnie %d linii.</string>
+    <string name="toast_no_root">Nie można uzyskać uprawnień root. Możesz zobaczyć tylko własne logi CatLog\'a.</string>
+    <string name="toast_pref_changed_restart_required">Ustawienie zmienione. Zrestartuj CatLog\'a by uzyskać efekt.</string>
+    <string name="toast_request_root">CatLog wymaga uprawnień root do pokazywania logów.</string>
+    <string name="toast_started_select_partial">Tryb częściowy aktywny</string>
+    
+    <string name="unable_to_save_log">Nie można zapisać loga. Czy podana nazwa jest prawidłowa?</string>
+    
+    <string name="version">Wersja %s</string>
+    
+    <string name="widget_recording_in_progress">Nagrywanie…</string>
+    <string name="widget_start_recording">Nagraj log</string>
+</resources>

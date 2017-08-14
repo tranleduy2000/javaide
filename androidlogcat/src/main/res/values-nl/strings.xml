@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="about">Over</string>
+    <string name="about_catlog">Over CatLog</string>
+    
+    <string name="add_filter">Filter Toevoegen</string>
+    <string name="add_filter_ellipsis">Filter Toevoegen…</string>
+    
+    <string name="are_you_sure">%d bestand(en) word(en) verwijderd.</string>
+    
+    <string name="as_attachment">Als aanhangsel</string>
+    <string name="as_text">Als Tekst</string>
+    
+    <string name="checkbox_never_show_partial_select_help">Niet meer tonen</string>
+    
+    <string name="copied_to_clipboard">Gekopieerd naar klembord.</string>
+    
+    <string name="copy_to_clipboard">Kopie naar klembord</string>
+    
+    <string name="default_in_parens">(Standaard)</string>
+    <string name="delete_all">Alles Verwijderen</string>
+    <string name="delete_saved_log">Verwijder Opgeslagen Logs</string>
+    <string name="delimiter">, </string>
+    <string name="dialog_compiling_log">Compiling log…</string>
+    <string name="dialog_for_donate">Voor <b>bonus kleur\nschema</b>, download\n<a href="market://details?id=com.nolanlawson.logcat.donate">CatLog Donatie</a></string>
+    <string name="dialog_for_widget">Voor een <b>widget</b>,\nga Begin → Lang\ndrukken → Widgets</string>
+    <string name="dialog_initializing_recorder">Laden recorder…</string>
+    <string name="dialog_loading_updates">Laden updates…</string>
+    <string name="dialog_partial_select_explanation">1. Selecteer de <b>eerste</b> lijn.\n2. Dan selecteer de <b>laatste</b> lijn.</string>
+    <string name="dialog_please_wait">Even wachten</string>
+    
+    <string name="enter_filename">Voer bestandsnaam in voor opslaan:</string>
+    <string name="enter_good_filename">Voer een geldige bestandsnaam in.</string>
+    
+    <string name="files_deleted">%d bestand(en) verwijderd.</string>
+    
+    <string name="filter_choice">Zoeken op</string>
+    <string name="filter_choice_pid">Proces id</string>
+    <string name="filter_choice_tag">Tag</string>
+    <string name="filter_text_colon">Filter tekst:</string>
+
+    <string name="first_run_pref_summary">Toon inleidend bericht weer.</string>
+    <string name="first_run_pref_title">Reset Introductie</string>
+    <string name="first_run_title">Welkom bij CatLog!</string>
+    
+    <string name="log_cleared">Logs gewist. Lang-drukken voor herladen.</string>
+    <string name="log_level">Log Niveau</string>
+    <string name="log_level_colon">Log niveau:</string>
+    <string name="log_recording_started">Log opname gestart.</string>
+    <string name="log_saved">Log opgeslagen.</string>
+    
+    <string name="main_edit_text_hint">Zoek logs</string>
+    
+    <string name="manage_saved_logs">Beheer Opgeslagen Logs</string>
+    
+    <string name="menu_title_partial_select">Selecteer Gedeelte</string>
+    
+    <string name="no_saved_logs">Geen opgeslagen logs gevonden.</string>
+    
+    <string name="notification_subtext">Selecteer om opname te stoppen.</string>
+    <string name="notification_ticker">Log opname gestart</string>
+    <string name="notification_title">Log opname is bezig</string>
+    
+    <string name="open">Open</string>
+    <string name="open_log">Open Log</string>
+    
+    <string name="play_x1_log">Afspelen %s Log</string>
+    <string formatted="false" name="play_x2_log">Afspelen %s, %s</string>
+    <string name="play_x3_log">Alle Logs Afspelen</string>
+    
+    <string name="pref_buffer_choice_events">Evenementen</string>
+    <string name="pref_buffer_choice_main">Hoofd</string>
+    <string name="pref_buffer_choice_radio">Radio</string>
+    <string name="pref_buffer_none_checked_error">Controleer ten minste één buffer.</string>
+    <string name="pref_buffer_title">Log Buffer(s)</string>
+    <string name="pref_cat_advanced">Geavanceerd</string>
+    <string name="pref_cat_appearance">Uiterlijk</string>
+    <string name="pref_cat_configuration">Configuratie</string>
+    <string name="pref_default_log_level_summary">Log niveau bij opstarten, bij openen van bestanden, en tijdens opname (%s)</string>
+    <string name="pref_default_log_level_title">Standaard Log Niveau</string>
+    <string formatted="false" name="pref_display_limit_summary">laat alleen de laatste %d logs, om OutOfMemoryErrors te voorkomen. (Standaard: %s)</string>
+    <string name="pref_display_limit_title">Log Vertoon Limiet</string>
+    <string name="pref_expanded_by_default_summary">Laat volledige log tekst zien is standaard.</string>
+    <string name="pref_expanded_by_default_title">Uitbreiden is Standaard</string>
+    <string name="pref_log_line_period_error">Vul een geheel getal in tussen 1 en 1000.</string>
+    <string formatted="false" name="pref_log_line_period_summary">Bij opname, schrijf naar SD card elke %d lijn(en) (standaard: %s).</string>
+    <string name="pref_log_line_period_title">Schrijf Punt</string>
+    <string name="pref_show_timestamp_summary">Toon process id en tijdsaanduiding bij uitbreiding.</string>
+    <string name="pref_show_timestamp_title">Toon Pid &amp; Tijdsaanduiding</string>
+    <string name="pref_text_size_title">Tekst Groote</string>
+    <string name="pref_theme_choice_android_name">Android</string>
+    <string name="pref_theme_choice_att_name">Ma Bell</string>
+    <string name="pref_theme_choice_dark_name">Dark</string>
+    <string name="pref_theme_choice_light_name">Light</string>
+    <string name="pref_theme_choice_sprint_name">Big Yellow</string>
+    <string name="pref_theme_choice_tmobile_name">T-Mo</string>
+    <string name="pref_theme_choice_verizon_name">Big Red</string>
+    <string name="pref_theme_summary_free">Vereist donatie versie.</string>
+    <string name="pref_theme_title">Kleur Schema</string>
+    
+    <string name="record_log">Opname Log</string>
+    
+    <string name="recording_in_progress">Opname is al bezig.</string>
+    
+    <string name="save">Opslaan</string>
+    <string name="save_as">Opslaan Als…</string>
+    <string name="save_log">Log Opslaan</string>
+    
+    <string name="sd_card_not_found">SD card niet gevonden.</string>
+    
+    <string name="select_logs_to_delete">Selecteer welke logs worden verwijdert.</string>
+    
+    <string name="send_as_attachment">Verzend als Bijlage</string>
+    <string name="send_as_text">Verzend als Tekst</string>
+    <string name="send_log">Verzend</string>
+    <string name="send_log_title">Verzend Log</string>
+    
+    <string name="settings">Instellingen</string>
+    
+    <string name="simultaneous"> (Simultaan)</string>
+    
+    <string name="start_recording_log">Opname</string>
+    
+    <string name="stop_recording_log">Opname Stoppen</string>
+    
+    <string name="subject_log_report">Log report</string>
+    
+    <string name="text_filter_ellipsis">Filter…</string>
+    <string name="text_filter_text">Filter tekst</string>
+    <string name="text_include_device_info">Bevat apparaat informatie</string>
+    <string name="text_size_large_name">Groot (14pt)</string>
+    <string name="text_size_medium_name">Gemiddeld (12pt)</string>
+    <string name="text_size_small_name">Klein (10pt)</string>
+    <string name="text_size_xlarge_name">Extra Groot (16pt)</string>
+    <string name="text_size_xsmall_name">Extra Klein (8pt)</string>
+    
+    <string name="title_filter">Filter</string>
+    <string name="title_filters">Filters</string>
+    
+    <string formatted="false" name="toast_invalid_display_limit">Voer een geldig nummer in tussen %d en %d.</string>
+    <string name="toast_invalid_level">Ongeldige niveau naam: %s</string>
+    <string name="toast_invalid_selection">Ongeldige selectie.  Probeer opnieuw.</string>
+    <string name="toast_log_truncated">Log te groot; toont laatste %d lijne.</string>
+    <string name="toast_no_root"> Geen root permissie verkregen.  U zult alleen CatLog\'s eigen logs zien.</string>
+    <string name="toast_pref_changed_restart_required">Instellingen bijgewerkt. Herstart CatLog om de veranderingen te zien.</string>
+    <string name="toast_request_root">CatLog vereist root (superuser) toegand om de logs te lezen.</string>
+    <string name="toast_started_select_partial">Selecteer Partial modus inschakelen</string>
+    
+    <string name="unable_to_save_log">Niet in staat de log op te slaan. Gaf u een geldige bestandsnaam?</string>
+    
+    <string name="version">Versie %s</string>
+    
+    <string name="widget_recording_in_progress">Opname…</string>
+    <string name="widget_start_recording">Opname Log</string>
+</resources>

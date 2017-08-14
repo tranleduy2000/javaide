@@ -1,0 +1,26 @@
+body {
+    color : #cccccc;
+}
+
+table {
+    margin : auto;
+    border-collapse:separate;
+    border-spacing:10px;
+}
+
+a:link {
+    color: #0099dd;
+}
+a:visited : {
+    color: #0099dd;
+}
+h1 {
+    font-size : 1.2em;
+    font-weight : bold;
+    text-align : center;
+}
+h2 {
+    font-size : 1.1em;
+    font-weight : bold;
+    text-align : center;
+}

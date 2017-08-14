@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- layout_centerVertical doesn't work in Android 1.5, so I need two separate chooser_row.xml files -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:paddingTop="5dp"
+	android:paddingBottom="5dp"
+	android:background="@android:color/background_light"
+	>
+	<ImageView android:id="@android:id/icon"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:paddingLeft="2dp"
+		android:paddingTop="2dp"
+		android:paddingBottom="2dp"
+		android:paddingRight="10dp"
+		android:minWidth="@android:dimen/app_icon_size"
+		android:minHeight="@android:dimen/app_icon_size"
+	/>
+	<TextView
+		android:id="@android:id/title"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@android:id/icon"
+		android:textColor="@android:color/primary_text_light_nodisable"
+		android:layout_centerVertical = "true"
+		android:textSize="11pt"
+		android:paddingTop="2dp"
+		android:paddingBottom="2dp"
+	/>
+</RelativeLayout>

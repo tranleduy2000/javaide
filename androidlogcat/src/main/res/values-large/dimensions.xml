@@ -1,0 +1,4 @@
+<resources>
+	<dimen name="tag_width">100dp</dimen>
+	<dimen name="pid_width">115dp</dimen>
+</resources>

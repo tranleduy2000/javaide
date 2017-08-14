@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- translateable strings-->
+    
+    <string name="about">Über</string>
+    <string name="about_catlog">Über CatLog</string>
+    
+    <string name="add_filter">Filter hinzufügen</string>
+    <string name="add_filter_ellipsis">Filter hinzufügen…</string>
+    
+    <string name="are_you_sure">%d Datei(en) werden gelöscht.</string>
+    
+    <string name="as_attachment">Als Anhang</string>
+    <string name="as_text">Als Text</string>
+    
+    <string name="checkbox_never_show_partial_select_help">Nicht erneut zeigen</string>
+    
+    <string name="copied_to_clipboard">In Zwischenablage kopiert.</string>
+    
+    <string name="copy_to_clipboard">In Zwischenablage kopieren</string>
+    
+    <string name="default_in_parens">(Standard)</string>
+    <string name="delete_all">Alle löschen</string>
+    <string name="delete_saved_log">gespeicherte Logs löschen</string>
+    <string name="delimiter">, </string>
+    <string name="dialog_compiling_log">Sammle Log…</string>
+    <string name="dialog_for_donate">Für <b>zusätzliche Farb\nschemen</b>, downloade\n<a href="market://details?id=com.nolanlawson.logcat.donate">CatLog Donate</a></string>
+    <string name="dialog_for_widget">Für einen <b>Widget</b>,\ndrücke Home → Langes\ndrücken → Widgets</string>
+    <string name="dialog_initializing_recorder">Lade Aufnahmerekorder…</string>
+    <string name="dialog_loading_updates">Lade Updates…</string>
+    <string name="dialog_partial_select_explanation">1. Wähle die <b>erste</b> Zeile.\n2. Dann wähle die <b>letzte</b> Zeile aus.</string>
+    <string name="dialog_please_wait">Bitte warten</string>
+    
+    <string name="enter_filename">Dateinamen zum abspeichern eingeben:</string>
+    <string name="enter_good_filename">Bitte einen gültigen Dateinamen eingeben.</string>
+    
+    <string name="files_deleted">%d Datei(en) gelöscht.</string>
+    
+    <string name="filter_choice">Suche nach</string>
+    <string name="filter_choice_pid">Prozess-ID</string>
+    <string name="filter_choice_tag">Tag</string>
+    <string name="filter_text_colon">Filtere nach Text:</string>
+
+    <string name="first_run_pref_summary">Zeige Begrüßungsnachricht erneut.</string>
+    <string name="first_run_pref_title">Zurücksetzen Begrüßungsnachricht</string>
+    <string name="first_run_title">Willkommen zu CatLog!</string>
+    
+    <string name="log_cleared">Logs geleert. Lang drücken um erneut zu laden.</string>
+    <string name="log_level">Log Level</string>
+    <string name="log_level_colon">Log level:</string>
+    <string name="log_recording_started">Log-Aufnahme gestartet.</string>
+    <string name="log_saved">Log gespeichert.</string>
+    
+    <string name="main_edit_text_hint">Durchsuche</string>
+    
+    <string name="manage_saved_logs">Aufnahmen verwalten</string>
+    
+    <string name="menu_title_partial_select">Teilweiser Auswahlmodus</string>
+    
+    <string name="no_saved_logs">Keine Aufnahmen gefunden.</string>
+    
+    <string name="notification_subtext">Auswählen um die Aufnahme zu stoppen.</string>
+    <string name="notification_ticker">Aufnahme gestartet</string>
+    <string name="notification_title">Aufnahme in Arbeit</string>
+    
+    <string name="open">Öffnen</string>
+    <string name="open_log">Log öffnen</string>
+    
+    <string name="play_x1_log">Aufnahme %s abspielen</string>
+    <string formatted="false" name="play_x2_log">Spiele %s, %s ab</string>
+    <string name="play_x3_log">Alle Aufnahmen abspielen</string>
+    
+    <string name="pref_buffer_choice_events">Events</string>
+    <string name="pref_buffer_choice_main">Main</string>
+    <string name="pref_buffer_choice_radio">Radio</string>
+    <string name="pref_buffer_none_checked_error">Bitte wählen Sie mindestens einen Log-Typ aus.</string>
+    <string name="pref_buffer_title">Log-Typ</string>
+    <string name="pref_cat_advanced">Erweitert</string>
+    <string name="pref_cat_appearance">Aussehen</string>
+    <string name="pref_cat_configuration">Einstellungen</string>
+    <string name="pref_default_log_level_summary">Log-Level beim Start, wenn Dateien geöffnet werden, und bei der Aufnahme (%s)</string>
+    <string name="pref_default_log_level_title">Standardmäßiger Log-Level</string>
+    <string formatted="false" name="pref_display_limit_summary">Zeige nur die letzten %d Logs, um OutOfMemoryErrors zu verhindern. (Standard: %s)</string>
+    <string name="pref_display_limit_title">Log-Anzeige Limit</string>
+    <string name="pref_expanded_by_default_summary">Zeige Log-Einträge standardmäßig erweitert (ausgeklappt).</string>
+    <string name="pref_expanded_by_default_title">Standardmäßig Erweitern</string>
+    <string name="pref_log_line_period_error">Bitte geben Sie eine ganze Zahl zwischen 1 und 1000 ein.</string>
+    <string formatted="false" name="pref_log_line_period_summary">Bei Aufnahmen alle %d Zeile(n) zur SD-Karte schreiben (Standard: %s).</string>
+    <string name="pref_log_line_period_title">Schreib-Intervall</string>
+    <string name="pref_show_timestamp_summary">Zeige Prozess-ID und Zeitstempel wenn erweitert.</string>
+    <string name="pref_show_timestamp_title">Zeige Prozess-ID &amp; Zeitstempel</string>
+    <string name="pref_text_size_title">Textgröße</string>
+    <string name="pref_theme_choice_android_name">Android</string>
+    <string name="pref_theme_choice_att_name">Ma Bell</string>
+    <string name="pref_theme_choice_dark_name">Dunkel</string>
+    <string name="pref_theme_choice_light_name">Hell</string>
+    <string name="pref_theme_choice_sprint_name">Großes Gelb</string>
+    <string name="pref_theme_choice_tmobile_name">T-Mo</string>
+    <string name="pref_theme_choice_verizon_name">Großes Rot</string>
+    <string name="pref_theme_summary_free">Benötigt Donate-Version.</string>
+    <string name="pref_theme_title">Farbschema</string>
+    
+    <string name="record_log">Log aufnehmen</string>
+    
+    <string name="recording_in_progress">Aufnahme bereits in Vorgang.</string>
+    
+    <string name="save">Speichern</string>
+    <string name="save_as">Speichern als…</string>
+    <string name="save_log">Log Speichern</string>
+    
+    <string name="sd_card_not_found">SD-Karte nicht gefunden.</string>
+    
+    <string name="select_logs_to_delete">Zu löschende Logs auswählen.</string>
+    
+    <string name="send_as_attachment">Als Anhang senden</string>
+    <string name="send_as_text">Als Text senden</string>
+    <string name="send_log">Senden</string>
+    <string name="send_log_title">Sende Log</string>
+    
+    <string name="settings">Einstellungen</string>
+    
+    <string name="simultaneous"> (Gleichzeitig)</string>
+    
+    <string name="start_recording_log">Aufnehmen</string>
+    
+    <string name="stop_recording_log">Stoppe Aufnahme</string>
+    
+    <string name="subject_log_report">Log-Bericht</string>
+    
+    <string name="text_filter_ellipsis">Filter…</string>
+    <string name="text_filter_text">Filtere Text</string>
+    <string name="text_include_device_info">Geräteinformation mitsenden</string>
+    <string name="text_size_large_name">Groß (14pt)</string>
+    <string name="text_size_medium_name">Mittel (12pt)</string>
+    <string name="text_size_small_name">Klein (10pt)</string>
+    <string name="text_size_xlarge_name">Extra Groß (16pt)</string>
+    <string name="text_size_xsmall_name">Extra Klein (8pt)</string>
+    
+    <string name="title_filter">Filter</string>
+    <string name="title_filters">Filter</string>
+    
+    <string formatted="false" name="toast_invalid_display_limit">Bitte geben Sie eine gültige Zahl zwischen %d und %d ein.</string>
+    <string name="toast_invalid_level">Ungültiger Log-Level Name: %s</string>
+    <string name="toast_invalid_selection">Ungültige Auswahl.  Bitte erneut versuchen.</string>
+    <string name="toast_log_truncated">Log zu groß; Zeige die letzten %d Zeilen.</string>
+    <string name="toast_no_root">Root-Rechte nicht erhalten.  Sie werden nur CatLog\'s eigene Log-Einträge sehen können.</string>
+    <string name="toast_pref_changed_restart_required">Einstellungen geändert. Starte CatLog erneut um die Änderungen zu übernehmen.</string>
+    <string name="toast_request_root">CatLog benötigt Root(superuser)-Rechte um die System-Logs lesen zu können.</string>
+    <string name="toast_started_select_partial">Teilweiser Auswahlmodus aktiviert</string>
+    
+    <string name="unable_to_save_log">Speichern des Logs nicht möglich. Haben Sie einen gültigen Dateinamen angegeben?</string>
+    
+    <string name="version">Version %s</string>
+    
+    <string name="widget_recording_in_progress">Nehme auf…</string>
+    <string name="widget_start_recording">Log aufnehmen</string>
+</resources>

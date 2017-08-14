@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about">Om</string>
+    <string name="about_catlog">Om CatLog</string>
+    
+    <string name="add_filter">Lägg till Filter</string>
+    <string name="add_filter_ellipsis">Lägg till Filter…</string>
+    
+    <string name="app_name">CatLog</string>
+    
+    <string name="are_you_sure">%d fil(r) kommer att tas bort.</string>
+    
+    <string name="as_attachment">som Bilaga</string>
+    <string name="as_text">som Text</string>
+    
+    <string name="checkbox_never_show_partial_select_help">Visa inte igen</string>
+    
+    <string name="copied_to_clipboard">Kopierat till urklipp.</string>
+    
+    <string name="copy_to_clipboard">Kopiera till urklipp</string>
+    
+    <!-- TO TRANSLATE -->
+    <string name="default_in_parens">(Default)</string>
+    
+    <string name="delete_all">Ta bort alla</string>
+    <string name="delete_saved_log">Ta bort sparade loggar</string>
+    
+    <string name="delimiter">, </string>
+    
+    <string name="dialog_compiling_log">Bygger logg…</string>
+    <string name="dialog_for_donate">För <b>extra färguppsättningar</b>,\n ladda ner <a href="market://details?id=com.nolanlawson.logcat.donate">CatLog Donate</a></string>
+    <string name="dialog_for_widget">För en <b>widget</b>,\ntryck Home → Long\npress → Widgets</string>
+    <string name="dialog_initializing_recorder">Laddar inspelare…</string>
+    <string name="dialog_loading_updates">Laddar uppdateringar…</string>
+    <string name="dialog_partial_select_explanation">1. Välj <b>första</b> raden.\n2. Välj sedan <b>sista</b> raden.</string>
+    <string name="dialog_please_wait">Vänta</string>
+    
+    <string name="donate_version_name">Donera</string>
+    
+    <string name="enter_filename">Angefilnamn att spara:</string>
+    <string name="enter_good_filename">Ange ett korrekt filnamn.</string>
+    
+    <string name="files_deleted">%d fil(r) borttagna.</string>
+    
+    <string name="filter_choice">Sök efter</string>
+    <!-- TO TRANSLATE -->
+    <string name="filter_choice_pid">Process id</string>
+    <string name="filter_choice_tag">Tagg</string>
+    <!-- TO TRANSLATE -->
+    <string name="filter_text_colon">Filter text:</string>
+    
+    <string name="first_run_pref_summary">Visa välkomstmeddelandet igen.</string>
+    <string name="first_run_pref_title">Återställ introdukton</string>
+    <string name="first_run_title">Välkommen till CatLog!</string>
+    
+    <string name="log_cleared">Loggen rensad. Tryck länge för att uppdatera.</string>
+    <string name="log_level">Logglevel</string>
+    <string name="log_level_colon">Logglevel:</string>
+    <string name="log_level_debug">Debug</string>
+    <string name="log_level_error">Error</string>
+    <string name="log_level_info">Info</string>
+    <string name="log_level_value_debug">D</string>
+    <string name="log_level_value_error">E</string>
+    <string name="log_level_value_info">I</string>
+    <string name="log_level_value_verbose">V</string>
+    <string name="log_level_value_warn">W</string>
+    <string name="log_level_value_wtf">F</string>
+    <string name="log_level_verbose">Verbose</string>
+    <string name="log_level_warn">Warn</string>
+    <string name="log_level_wtf">What a Terrible Failure</string>
+    <string name="log_recording_started">Inspelning av logg påbörjad.</string>
+    <string name="log_saved">Logg sparad.</string>
+    
+    <string name="main_edit_text_hint">Sök i logg</string>
+    
+    <string name="manage_saved_logs">Hantera sparade loggar</string>
+    
+    <string name="menu_title_partial_select">Välj del</string>
+    
+    <string name="no_saved_logs">Hittar inga sparade loggar.</string>
+    
+    <string name="notification_subtext">Välj för att avbryta inspelningen.</string>
+    <string name="notification_ticker">Inspelning av logg påbörjad</string>
+    <string name="notification_title">Inspelning av logg pågår</string>
+    
+    <string name="open">Öppna</string>
+    <string name="open_log">Öppna logg</string>
+    
+    <string name="play_x1_log">Visa %s logg</string>
+    <string formatted="false" name="play_x2_log">Visa %s, %s</string>
+    <string name="play_x3_log">Visa alla loggar</string>
+    
+    <string name="pref_about">om</string>
+    <string name="pref_buffer">buffer</string>
+    <!-- TO TRANSLATE -->
+    <string name="pref_buffer_choice_events">Events</string>
+    <string name="pref_buffer_choice_events_value">events</string>
+    <!-- TO TRANSLATE -->
+    <string name="pref_buffer_choice_main">Main</string>
+    <string name="pref_buffer_choice_main_value">main</string>
+    <!-- TO TRANSLATE -->
+    <string name="pref_buffer_choice_radio">Radio</string>
+    <string name="pref_buffer_choice_radio_value">radio</string>
+    <string name="pref_buffer_none_checked_error">Ange minst en typ av loggbuffer.</string>
+    <string name="pref_buffer_title">Loggtyper</string>
+    <string name="pref_cat_advanced">Avancerat</string>
+    <string name="pref_cat_appearance">Utseende</string>
+    <string name="pref_cat_configuration">Konfiguration</string>
+    <string name="pref_default_log_level">default_level</string>
+    <string name="pref_default_log_level_summary">Logglevel vid uppstart, när filer öppnas och vid inspelning (%s)</string>
+    <string name="pref_default_log_level_title">Default Logglevel</string>
+    <string name="pref_display_limit">display_limit</string>
+    <string name="pref_display_limit_default">10000</string>
+    <string formatted="false" name="pref_display_limit_summary">Visa bara de sista %d raderna, för att undvika problem då minnet tar slut. (Default: %s)</string>
+    <string name="pref_display_limit_title">Loggräns</string>
+    <string name="pref_expanded_by_default">expand_default</string>
+    <string name="pref_expanded_by_default_summary">Visa hela loggtext som standard.</string>
+    <string name="pref_expanded_by_default_title">Expandera till standard</string>
+    <string name="pref_hide_partial_select_help">pref_hide_partial_select_help</string>
+    <string name="pref_include_device_info">device_info</string>
+    <string name="pref_log_line_period">log_line_period</string>
+    <string name="pref_log_line_period_default">200</string>
+    <string name="pref_log_line_period_error">Ange ett värde mellan 1 och 1000.</string>
+    <string formatted="false" name="pref_log_line_period_summary">Under inspelning, skriv till SD korten efter %d rader (default: %s).</string>
+    <string name="pref_log_line_period_title">Skrivintervall</string>
+    <string name="pref_ran_jellybean_su_update">jellybean_su</string>
+    <string name="pref_show_timestamp">show_timestamp</string>
+    <string name="pref_show_timestamp_summary">Visa process id and tid i expanderat läge.</string>
+    <string name="pref_show_timestamp_title">Visa Pid &amp; Tid</string>
+    <string name="pref_text_size">text_size</string>
+    <string name="pref_text_size_title">Textstorlek</string>
+    <string name="pref_theme">theme</string>
+    <!-- TO TRANSLATE -->
+    <string name="pref_theme_choice_android_name">Android</string>
+    <string name="pref_theme_choice_android_value">Android</string>
+    <!-- TO TRANSLATE -->
+    <string name="pref_theme_choice_att_name">Ma Bell</string>
+    <string name="pref_theme_choice_att_value">Ma Bell</string>
+    <!-- TO TRANSLATE -->
+    <string name="pref_theme_choice_dark_name">Dark</string>
+    <string name="pref_theme_choice_dark_value">Dark</string>
+    <!-- TO TRANSLATE -->
+    <string name="pref_theme_choice_light_name">Light</string>
+    <string name="pref_theme_choice_light_value">Light</string>
+    <!-- TO TRANSLATE -->
+    <string name="pref_theme_choice_sprint_name">Big Yellow</string>
+    <string name="pref_theme_choice_sprint_value">Big Yellow</string>
+    <!-- TO TRANSLATE -->
+    <string name="pref_theme_choice_tmobile_name">T-Mo</string>
+    <string name="pref_theme_choice_tmobile_value">T-Mo</string>
+    <!-- TO TRANSLATE -->
+    <string name="pref_theme_choice_verizon_name">Big Red</string>
+    <string name="pref_theme_choice_verizon_value">Big Red</string>
+    <string name="pref_theme_summary_free">Kräver version för donering.</string>
+    <string name="pref_theme_title">Färguppsättningar</string>
+    
+    <string name="record_log">Spela in logg</string>
+    
+    <string name="recording_in_progress">Inspelning pågår redan.</string>
+    
+    <string name="save">Spara</string>
+    <string name="save_as">Spara som…</string>
+    <string name="save_log">Spara logg</string>
+    
+    <string name="sd_card_not_found">SD card kunde inte hittas.</string>
+    
+    <string name="select_logs_to_delete">Välj vilka loggar som ska tas bort.</string>
+    
+    <string name="send_as_attachment">Skicka som Bilaga</string>
+    <string name="send_as_text">Skicka som Text</string>
+    <string name="send_log">Skicka</string>
+    <string name="send_log_title">Skicka logg</string>
+    
+    <!-- TO TRANSLATE -->
+    <string name="settings">Settings</string>
+    
+    <string name="simultaneous"> (samtidigt)</string>
+    
+    <string name="start_recording_log">Spela in</string>
+    
+    <string name="stop_recording_log">Stoppa inspelning</string>
+    
+    <string name="subject_log_report">Loggrapport</string>
+    
+    <!-- TO TRANSLATE -->
+    <string name="text_filter_ellipsis">Filter…</string>
+    <!-- TO TRANSLATE -->
+    <string name="text_filter_text">Filter text</string>
+    <string name="text_include_device_info">Infoga information om enheten</string>
+    <!-- TO TRANSLATE -->
+    <string name="text_size_large_name">Large (14pt)</string>
+    <string name="text_size_large_value">L</string>
+    <!-- TO TRANSLATE -->
+    <string name="text_size_medium_name">Medium (12pt)</string>
+    <string name="text_size_medium_value">M</string>
+    <!-- TO TRANSLATE -->
+    <string name="text_size_small_name">Small (10pt)</string>
+    <string name="text_size_small_value">S</string>
+    <!-- TO TRANSLATE -->
+    <string name="text_size_xlarge_name">Extra Large (16pt)</string>
+    <string name="text_size_xlarge_value">XL</string>
+    <!-- TO TRANSLATE -->
+    <string name="text_size_xsmall_name">Extra Small (8pt)</string>
+    <string name="text_size_xsmall_value">XS</string>
+    
+    <!-- TO TRANSLATE -->
+    <string name="title_filter">Filter</string>
+    <string name="title_filters">Filter</string>
+    
+    <string formatted="false" name="toast_invalid_display_limit">Ange ett värde mellan %d och %d.</string>
+    <string name="toast_invalid_level">Felaktigt namn på level: %s</string>
+    <string name="toast_invalid_selection">Ogiltigt val. Försök igen.</string>
+    <string name="toast_log_truncated">Loggen för stor, visar de sista %d raderna.</string>
+    <string name="toast_no_root">Kunde inte ansluta som root. Du kommer bara att se CatLogs egna loggar.</string>
+    <string name="toast_pref_changed_restart_required">Inställningarna uppdaterade. Starta om CatLog för att se ändringarna.</string>
+    <string name="toast_request_root">CatLog kräver root (administratör) behörighet för att läsa loggar.</string>
+    <string name="toast_started_select_partial">Läge för att välja del aktiverat</string>
+    
+    <string name="unable_to_save_log">Kunde in spara loggen. Angav du ett giltigt filnamn?</string>
+    
+    <!-- TO TRANSLATE -->
+    <string name="version">Version %s</string>
+    
+    <string name="widget_recording_in_progress">Spelar in…</string>
+    <string name="widget_start_recording">Spela in logg</string>
+</resources>

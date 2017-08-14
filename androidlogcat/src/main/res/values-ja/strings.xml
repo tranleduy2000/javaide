@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about">CatLogについて</string>
+    <string name="about_catlog">CatLogについて</string>
+
+    <string name="add_filter">フィルタを作る</string>
+    <string name="add_filter_ellipsis">フィルタを作る…</string>
+
+    <string name="are_you_sure">%d個のファイルを削除します。</string>
+
+    <string name="as_attachment">添付ファイルとして</string>
+    <string name="as_text">テキストとして</string>
+
+    <string name="checkbox_never_show_partial_select_help">今後表示しない</string>
+
+    <string name="copied_to_clipboard">クリップボードにコピーしました</string>
+
+    <string name="copy_to_clipboard">クリップボード</string>
+
+    <string name="default_in_parens">(デフォルト）</string>
+
+    <string name="delete_all">全て削除</string>
+    <string name="delete_saved_log">保存したログを削除</string>
+
+    <string name="delimiter">と</string>
+
+    <string name="dialog_compiling_log">ログを集めています…</string>
+    <string name="dialog_for_donate"><u>ほかの配色</u>:\n<a href="market://details?id=com.nolanlawson.logcat.donate">CatLog Donate</a>を\nダウンロード</string>
+    <string name="dialog_for_widget"><u>ウィジェット</u>:\nホーム 画面→\n押し続けて→\n「ウィジェット」を\nタッチ</string>
+    <string name="dialog_initializing_recorder">記録開始…</string>
+    <string name="dialog_loading_updates">アップデート開始…</string>
+    <string name="dialog_partial_select_explanation">1. 最初の行を選択。\n2. 最後の行を選択。</string>
+    <string name="dialog_please_wait">少々お待ちください</string>
+
+    <string name="enter_filename">保存するファイル名：</string>
+    <string name="enter_good_filename">適切なファイル名を入力してください。</string>
+
+    <string name="files_deleted">%dつのファイルを削除しました</string>
+
+    <string name="filter_choice">検索</string>
+    <string name="filter_choice_pid">プロセスID</string>
+    <string name="filter_choice_tag">タグ</string>
+    <string name="filter_text_colon">フィルタテキスト：</string>
+
+    <string name="first_run_pref_summary">再度紹介文をを表示する。</string>
+    <string name="first_run_pref_title">紹介文リセット</string>
+    <string name="first_run_title">CatLogにようこそ！</string>
+
+    <string name="log_cleared">ログをクリアしました。押し続けることでリロードできます。</string>
+    <string name="log_level">ログレベル</string>
+    <string name="log_level_colon">ログレベル：</string>
+    <string name="log_recording_started">ログ記録開始</string>
+    <string name="log_saved">保存完了</string>
+
+    <string name="main_edit_text_hint">検索</string>
+
+    <string name="manage_saved_logs">保存したログの管理</string>
+
+    <string name="menu_title_partial_select">ログの一部を選択</string>
+
+    <string name="no_saved_logs">保存したログはありません。</string>
+
+    <string name="notification_subtext">ここをタップすると、記録を中断します。</string>
+    <string name="notification_ticker">ログ記録開始</string>
+    <string name="notification_title">ログ記録中</string>
+
+    <string name="open">開く</string>
+    <string name="open_log">ログを開く</string>
+
+    <string name="play_x1_log">%sを読む</string>
+    <string formatted="false" name="play_x2_log">%sと%sを読む</string>
+    <string name="play_x3_log">全部を読む</string>
+
+    <string name="pref_buffer_choice_events">イベント</string>
+    <string name="pref_buffer_choice_main">メイン</string>
+    <string name="pref_buffer_choice_radio">無線</string>
+    <string name="pref_buffer_none_checked_error">少なくとも一つのバッファを選択してください</string>
+    <string name="pref_buffer_title">表示するバッファ</string>
+    <string name="pref_cat_advanced">アドバンスド</string>
+    <string name="pref_cat_appearance">表示</string>
+    <string name="pref_cat_configuration">コンフィギュレーション</string>
+    <string name="pref_default_log_level_summary">起動時、ファイルオープン時および記録時のデフォルトレベルです。（現在の設定値：%s）</string>
+    <string name="pref_default_log_level_title">デフォルトのレベル</string>
+    <string formatted="false" name="pref_display_limit_summary">メモリ不足エラーを避けるために、ログを最後の%d行だけ表示します。（デフォルト：%s）</string>
+    <string name="pref_display_limit_title">ログの表示限界</string>
+    <string name="pref_expanded_by_default_summary">デフォルトでログを全て表示する。</string>
+    <string name="pref_expanded_by_default_title">デフォルトで全て表示</string>
+    <string name="pref_log_line_period_error">１から１０００までの整数を入力してください。</string>
+    <string formatted="false" name="pref_log_line_period_summary">記録中、%d行ごとにSDカードへ書き込みます。（デフォルト：%s）</string>
+    <string name="pref_log_line_period_title">書き込み間隔</string>
+    <string name="pref_show_timestamp_summary">全て表示する際、プロセスIDと時間も表示する。</string>
+    <string name="pref_show_timestamp_title">プロセスIDと時間</string>
+    <string name="pref_text_size_title">文字サイズ</string>
+    <string name="pref_theme_choice_android_name">アンドロイド</string>
+    <string name="pref_theme_choice_att_name">Ma Bell</string>
+    <string name="pref_theme_choice_dark_name">暗い</string>
+    <string name="pref_theme_choice_light_name">明るい</string>
+    <string name="pref_theme_choice_sprint_name">Big Yellow</string>
+    <string name="pref_theme_choice_tmobile_name">T-Mo</string>
+    <string name="pref_theme_choice_verizon_name">Big Red</string>
+    <string name="pref_theme_summary_free">「寄付(Donate)」バージョンが必要です。</string>
+    <string name="pref_theme_title">配色</string>
+
+    <string name="record_log">ログを記録</string>
+
+    <string name="recording_in_progress">既に記録中です</string>
+
+    <string name="save">保存</string>
+    <string name="save_as">名前を付けて保存</string>
+    <string name="save_log">ログを保存</string>
+
+    <string name="sd_card_not_found">SDカードが見つかりませんでした。</string>
+
+    <string name="select_logs_to_delete">削除したいログを選んでください。</string>
+
+    <string name="send_as_attachment">添付として送信</string>
+    <string name="send_as_text">テキストとして送信</string>
+    <string name="send_log">送信</string>
+    <string name="send_log_title">ログを送信</string>
+
+    <string name="settings">設定</string>
+
+    <string name="simultaneous">（同時）</string>
+
+    <string name="start_recording_log">記録</string>
+
+    <string name="stop_recording_log">記録を中止</string>
+
+    <string name="subject_log_report">ログ</string>
+
+    <string name="text_filter_ellipsis">フィルタ…</string>
+    <string name="text_filter_text">フィルタテキスト</string>
+    <string name="text_include_device_info">デバイス情報を添付します</string>
+    <string name="text_size_large_name">大(14pt)</string>
+    <string name="text_size_medium_name">中(12pt)</string>
+    <string name="text_size_small_name">小(10pt)</string>
+    <string name="text_size_xlarge_name">最大(16pt)</string>
+    <string name="text_size_xsmall_name">最小(8pt)</string>
+
+    <string name="title_filter">フィルタ</string>
+    <string name="title_filters">フィルタ</string>
+
+    <string formatted="false" name="toast_invalid_display_limit">%dから%dまでの整数を入力してください。</string>
+    <string name="toast_invalid_level">無効なレベルの名：%s</string>
+    <string name="toast_invalid_selection">無効な選択。もう一度やってみてください。</string>
+    <string name="toast_log_truncated">ログが長すぎます。最終の%dのログを表示します。</string>
+    <string name="toast_no_root">root権限が得られませんでした。別のアプリのログは読めません。</string>
+    <string name="toast_pref_changed_restart_required">設定が受理されました。CatLogの再起動が必要です。</string>
+    <string name="toast_request_root">ログを読むために、root (superuser) 権限が必要です。</string>
+    <string name="toast_started_select_partial">一部選択モード開始</string>
+
+    <string name="unable_to_save_log">ログが保存出来ませんでした。適切なファイル名を入力したか確認してください。</string>
+
+    <string name="version">バージョン %s</string>
+
+    <string name="widget_recording_in_progress">記録中…</string>
+    <string name="widget_start_recording">ログを記録</string>
+</resources>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<PreferenceCategory android:title="@string/pref_cat_appearance">
+
+		<ListPreference android:key="@string/pref_text_size"
+			android:title="@string/pref_text_size_title" android:persistent="true"
+			android:entries="@array/text_sizes" android:entryValues="@array/text_size_values"
+			android:defaultValue="@string/text_size_medium_value" />
+	
+		<CheckBoxPreference android:key="@string/pref_expanded_by_default"
+			android:title="@string/pref_expanded_by_default_title"
+			android:summary="@string/pref_expanded_by_default_summary"
+			android:persistent="true" android:defaultValue="false"/>
+	
+		<CheckBoxPreference android:key="@string/pref_show_timestamp"
+			android:title="@string/pref_show_timestamp_title"
+			android:summary="@string/pref_show_timestamp_summary"
+			android:persistent="true" android:defaultValue="true"/>
+			
+		<com.nolanlawson.logcat.widget.MockDisabledListPreference android:key="@string/pref_theme"
+			android:title="@string/pref_theme_title" android:persistent="true"
+			android:entries="@array/pref_theme_choices_names" android:entryValues="@array/pref_theme_choices_values"
+			android:defaultValue="@string/pref_theme_choice_dark_value" />		
+		
+	</PreferenceCategory>
+	
+	<PreferenceCategory android:title="@string/pref_cat_configuration">
+	    		
+		<com.nolanlawson.logcat.widget.MultipleChoicePreference android:key="@string/pref_buffer"	
+			android:title="@string/pref_buffer_title" android:persistent="true"
+			android:entries="@array/pref_buffer_choices" android:entryValues="@array/pref_buffer_choice_values"
+			android:defaultValue="@string/pref_buffer_choice_main_value" />	
+		
+		<ListPreference android:key="@string/pref_default_log_level"
+			android:title="@string/pref_default_log_level_title" android:persistent="true"
+			android:entries="@array/log_levels" android:entryValues="@array/log_levels_values"
+			android:defaultValue="@string/log_level_value_verbose" />
+		
+	</PreferenceCategory>
+	
+	<PreferenceCategory android:title="@string/pref_cat_advanced">
+		<com.nolanlawson.logcat.widget.NonnegativeIntegerEditTextPreference 
+			android:key="@string/pref_log_line_period"
+			android:title="@string/pref_log_line_period_title"
+			android:summary="@string/pref_log_line_period_summary"
+			android:persistent="true" android:defaultValue="@string/pref_log_line_period_default"/>
+			
+		<com.nolanlawson.logcat.widget.NonnegativeIntegerEditTextPreference 
+			android:key="@string/pref_display_limit"
+			android:title="@string/pref_display_limit_title"
+			android:summary="@string/pref_display_limit_summary"
+			android:persistent="true" android:defaultValue="@string/pref_display_limit_default"/>
+		
+				
+		<CheckBoxPreference android:key="@string/first_run"
+			android:title="@string/first_run_pref_title"
+			android:summary="@string/first_run_pref_summary"
+			android:persistent="true" android:defaultValue="true"/>	
+	
+	</PreferenceCategory>
+	
+	<PreferenceCategory android:title="@string/about">
+	    
+	     <com.nolanlawson.logcat.widget.NoPopupDialogPreference android:key="@string/pref_about"
+	         android:title="@string/about_catlog"
+	         />
+	    
+	</PreferenceCategory>
+
+</PreferenceScreen>

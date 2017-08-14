@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string name="about">Sobre</string>
+    <string name="about_catlog">Sobre o CatLog</string>
+    
+    <string name="add_filter">Adicionar filtro</string>
+    <string name="add_filter_ellipsis">Adicionar filtro…</string>
+    
+    <string name="are_you_sure">%d file(s) will be deleted.</string>
+    
+    <string name="as_attachment">Como "Attachment"</string>
+    <string name="as_text">Como Texto</string>
+    
+    <string name="checkbox_never_show_partial_select_help">Não\ mostrar outra vez</string>
+    
+    <string name="copied_to_clipboard">Copiado para o "clipboard".</string>
+    
+    <string name="copy_to_clipboard">Copiar para o "clipboard"</string>
+    
+    <string name="default_in_parens">(Padrão)</string>
+    <string name="delete_all">Eliminar todos</string>
+    <string name="delete_saved_log">Eliminar registos (logs) guardados</string>
+    <string name="delimiter">, </string>
+    <string name="dialog_compiling_log">A compilar o registo (log)…</string>
+    <string name="dialog_for_donate">Para <b>esquemas de cores bónus\n</b>, é necesário transferir\n<a href="market://details?id=com.nolanlawson.logcat.donate">CatLog Donate App</a></string>
+    <string name="dialog_for_widget">Para um <b>widget</b>,\nfazer Home → Pressionar\n → Widgets</string>
+    <string name="dialog_initializing_recorder">A carregar o gravador…</string>
+    <string name="dialog_loading_updates">A carregar atualizações…</string>
+    <string name="dialog_partial_select_explanation">1. Select the <b>first</b> line.\n2. Then select the <b>last</b> line.</string>
+    <string name="dialog_please_wait">Por favor aguarde</string>
+    
+    <string name="enter_filename">Nome de ficheiro para o qual guardar:</string>
+    <string name="enter_good_filename">É necesário um nome de ficheiro válido.</string>
+    
+    <string name="files_deleted">%d ficheiro(s) eliminado(s).</string>
+    
+    <string name="filter_choice">Procurar por:</string>
+    <string name="filter_choice_pid">Id de processo</string>
+    <string name="filter_choice_tag">Tag</string>
+    <string name="filter_text_colon">Filtrar texto:</string>
+
+    <string name="first_run_pref_summary">Mostrar mensagem de intrudução outra vez.</string>
+    <string name="first_run_pref_title">Reativar a intrudução</string>
+    <string name="first_run_title">Bem-Vindo ao CatLog!</string>
+    
+    <string name="log_cleared">O registo (log) foi limpo. Pressione para recarregar.</string>
+    <string name="log_level">Nivel de registo (log)</string>
+    <string name="log_level_colon">Nivel de registo (log):</string>
+    <string name="log_recording_started">A gravação do registo (log) foi iniciada.</string>
+    <string name="log_saved">Registo (log) guardado.</string>
+    
+    <string name="main_edit_text_hint">Procurar registos (logs)</string>
+    
+    <string name="manage_saved_logs">Gerênciar os registos(logs) guardados</string>
+    
+    <string name="menu_title_partial_select">Selecionar parcial</string>
+    
+    <string name="no_saved_logs">Não foram encontrados registos (logs) guardados.</string>
+    
+    <string name="notification_subtext">Selecionar para parar a gravação.</string>
+    <string name="notification_ticker">A gravação do registo(log) foi iniciada</string>
+    <string name="notification_title">Gravação do registo (log) em progresso</string>
+    
+    <string name="open">Abrir</string>
+    <string name="open_log">Abrir registo (log)</string>
+    
+    <string name="play_x1_log">Reproduzir %s Log</string>
+    <string formatted="false" name="play_x2_log">Reproduzir %s, %s</string>
+    <string name="play_x3_log">Reproduzir Todos os Registos (Logs)</string>
+    
+    <string name="pref_buffer_choice_events">Eventos</string>
+    <string name="pref_buffer_choice_main">Main</string>
+    <string name="pref_buffer_choice_radio">Radio</string>
+    <string name="pref_buffer_none_checked_error">Por favor seleccione pelo menos um "buffer".</string>
+    <string name="pref_buffer_title">Buffer do registo (log)</string>
+    <string name="pref_cat_advanced">Avançado</string>
+    <string name="pref_cat_appearance">Aparência</string>
+    <string name="pref_cat_configuration">Configuração</string>
+    <string name="pref_default_log_level_summary">Registar (log) nivel no começo, ao abrir ficheiros, e a gravar (%s)</string>
+    <string name="pref_default_log_level_title">Nivel do registo (log) padrão</string>
+    <string formatted="false" name="pref_display_limit_summary">Amostrar apenas os ultimos %d registos (logs), para evitar "OutOfMemoryErrors". (Padrão: %s)</string>
+    <string name="pref_display_limit_title">Limite de display</string>
+    <string name="pref_expanded_by_default_summary">Amostrar todo o texto do registo (log) por padrão.</string>
+    <string name="pref_expanded_by_default_title">Expandido por padrão</string>
+    <string name="pref_log_line_period_error">Por favor ponha uma integer entre 1 e 1000.</string>
+    <string formatted="false" name="pref_log_line_period_summary">Quando está a gravar, gravar no cartão SD cada %d linha(s) (padrão: %s).</string>
+    <string name="pref_log_line_period_title">Escrever pontos finais</string>
+    <string name="pref_show_timestamp_summary">Amostrar o id dos processos (Pid) e "Timestamp" quando expandido.</string>
+    <string name="pref_show_timestamp_title">Amostrar Pid &amp; "Timestamp"</string>
+    <string name="pref_text_size_title">Tamanho do texto</string>
+    <string name="pref_theme_choice_android_name">Android</string>
+    <string name="pref_theme_choice_att_name">Sabão azul e branco</string>
+    <string name="pref_theme_choice_dark_name">Escuro</string>
+    <string name="pref_theme_choice_light_name">Claro</string>
+    <string name="pref_theme_choice_sprint_name">"Estrelado"</string>
+    <string name="pref_theme_choice_tmobile_name">Arrosado</string>
+    <string name="pref_theme_choice_verizon_name">Vermelhão</string>
+    <string name="pref_theme_summary_free">Necessário a versão de doação.</string>
+    <string name="pref_theme_title">Esquema de cores</string>
+    
+    <string name="record_log">Gravar registo (Log)</string>
+    
+    <string name="recording_in_progress">Gravação já em progresso.</string>
+    
+    <string name="save">Guardar</string>
+    <string name="save_as">Guardar como…</string>
+    <string name="save_log">Guardar registo (Log)</string>
+    
+    <string name="sd_card_not_found">Cartão SD não encontrado.</string>
+    
+    <string name="select_logs_to_delete">Seleccionar os logs para eliminar.</string>
+    
+    <string name="send_as_attachment">Enviar como "Attachment"</string>
+    <string name="send_as_text">Enviar como texto</string>
+    <string name="send_log">Enviar</string>
+    <string name="send_log_title">Enviar registos (logs)</string>
+    
+    <string name="settings">Definições</string>
+    
+    <string name="simultaneous"> (Simultâneamente)</string>
+    
+    <string name="start_recording_log">Gravar</string>
+    
+    <string name="stop_recording_log">Parar gravação</string>
+    
+    <string name="subject_log_report">Reportar registo (log)</string>
+    
+    <string name="text_filter_ellipsis">Filtrar…</string>
+    <string name="text_filter_text">Filtrar texto</string>
+    <string name="text_include_device_info">Incluir informação do dispositivo</string>
+    <string name="text_size_large_name">Grande (14pt)</string>
+    <string name="text_size_medium_name">Médio (12pt)</string>
+    <string name="text_size_small_name">Pequeno (10pt)</string>
+    <string name="text_size_xlarge_name">Extra Grande (16pt)</string>
+    <string name="text_size_xsmall_name">Extra Pequeno (8pt)</string>
+    
+    <string name="title_filter">Filtro</string>
+    <string name="title_filters">Filtros</string>
+    
+    <string formatted="false" name="toast_invalid_display_limit">Por favor ponha um número válido entre %d e %d.</string>
+    <string name="toast_invalid_level">Nome de "nivel" inválido: %s</string>
+    <string name="toast_invalid_selection">Seleção invalida.  Tente novamente.</string>
+    <string name="toast_log_truncated">Registo (log) demasiado grande; a amostrar as ultimas %d linhas.</string>
+    <string name="toast_no_root">Não foi possivel obter acesso root.  Só se vê os registos do CatLog.</string>
+    <string name="toast_pref_changed_restart_required">Defenições atualizadas. É necesário reiniciar o CatLog para fazer efeito.</string>
+    <string name="toast_request_root">O CatLog necessita acesso root (superuser) para ler os registos (logs) de sistema.</string>
+    <string name="toast_started_select_partial">Modo de selecção parcial ativado</string>
+    
+    <string name="unable_to_save_log">Não foi possivel guardar o registo(log). O nome do ficheiro era válido?</string>
+    
+    <string name="version">Versão %s</string>
+    
+    <string name="widget_recording_in_progress">A gravar…</string>
+    <string name="widget_start_recording">Gravar registo (Log)</string>
+</resources>

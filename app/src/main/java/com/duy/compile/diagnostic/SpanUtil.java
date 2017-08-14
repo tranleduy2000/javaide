@@ -25,6 +25,9 @@ import javax.tools.JavaFileObject;
 public class SpanUtil {
 
     public static Spannable createSrcSpan(Resources resources, @NonNull Diagnostic diagnostic) {
+        if (diagnostic.getSource() == null) {
+            return new SpannableString("Unknown");
+        }
         if (!(diagnostic.getSource() instanceof JavaFileObject)) {
             return new SpannableString(diagnostic.getSource().toString());
         }

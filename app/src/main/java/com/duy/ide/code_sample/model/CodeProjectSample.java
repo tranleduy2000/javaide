@@ -18,11 +18,13 @@ package com.duy.ide.code_sample.model;
 
 import com.google.common.base.MoreObjects;
 
+import java.io.Serializable;
+
 /**
  * Created by Duy on 08-Apr-17.
  */
 
-public class CodeProjectSample {
+public class CodeProjectSample implements Serializable{
     /**
      * name of file code
      */

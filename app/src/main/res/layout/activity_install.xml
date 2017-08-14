@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
 
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/toolbar"/>
 
 
     <LinearLayout
@@ -18,13 +18,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                app:srcCompat="@mipmap/ic_launcher" />
+                app:srcCompat="@mipmap/icon"/>
 
             <!--<android.support.v7.widget.AppCompatTextView-->
             <!--android:id="@+id/txt_version"-->
@@ -38,7 +37,7 @@
             android:id="@+id/progress_bar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -55,9 +54,16 @@
                     android:id="@+id/textView3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textIsSelectable="true"
                     android:autoLink="all"
-                    android:text="@string/install_msg" />
+                    android:text="@string/install_msg"
+                    android:textIsSelectable="true"/>
+
+                <TextView
+                    android:id="@+id/down_load_from_github"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/classes_link"
+                    android:textColor="?colorAccent"/>
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/txt_info"
@@ -65,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:autoLink="all"
-                    android:text="Info..." />
+                    android:text="Info..."/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -82,7 +88,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="bottom"
-                        android:text="@string/download_system_file" />
+                        android:text="@string/download_system_file"/>
 
                     <android.support.v7.widget.AppCompatButton
                         android:id="@+id/btn_select_file"
@@ -92,7 +98,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="bottom"
-                        android:text="@string/select_file" />
+                        android:text="@string/select_file"/>
 
                 </LinearLayout>
 

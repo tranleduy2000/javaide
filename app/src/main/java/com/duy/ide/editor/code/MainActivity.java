@@ -244,18 +244,18 @@ public class MainActivity extends ProjectManagerActivity implements
     }
 
     private void compileAndroidProject() {
-        //check launcher activity
-        if (((AndroidProjectFolder) mProjectFile).getLauncherActivity() == null) {
-            String msg = getString(R.string.can_not_find_launcher_activity);
-            Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.config, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                        }
-                    }).show();
-            return;
-        }
         if (mProjectFile instanceof AndroidProjectFolder) {
+            //check launcher activity
+            if (((AndroidProjectFolder) mProjectFile).getLauncherActivity() == null) {
+                String msg = getString(R.string.can_not_find_launcher_activity);
+                Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.config, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                            }
+                        }).show();
+                return;
+            }
             ((AndroidProjectFolder) mProjectFile).checkKeyStoreExits(this);
             new BuildApkTask(new BuildApkTask.CompileListener() {
                 @Override

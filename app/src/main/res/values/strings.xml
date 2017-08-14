@@ -432,8 +432,7 @@
         2. Wait for download finish
         3. Wait for install system file.
 
-        Note: If you can't download by click button "Download file system", just go to github page and download this file, then press select file and select file has been downloaded.
-        https://github.com/tranleduy2000/javaide/blob/master/system/classes/classes.zip"
+        Note: If you can't download by click button "Download file system", just go to github page and download this file, then press select file and select file has been downloaded."
     </string>
     <string name="run_configuration">Run configuration</string>
     <string name="main_class">Main class</string>
@@ -481,5 +480,6 @@
     <!--Donate-->
     <string name="donate_for_project">Donate for project</string>
     <string name="thank_you_for_your_support_for_open_source_software">Thank you for your support for open source software.</string>
+    <string name="classes_link">https://github.com/tranleduy2000/javaide/blob/master/system/classes/classes.zip</string>
 
 </resources>

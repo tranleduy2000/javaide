@@ -27,7 +27,7 @@ alt="IMAGE ALT TEXT HERE" width="200"/></a>
 10. Build Android app. &#10004;
 11. XML auto complete
 12. Layout builder for Android
-13. Android Logcat
+13. Android Logcat &#10004;
 14. Android debugger
 
 ## What does tools the project include?

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.file.FileManager;
@@ -73,6 +75,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
 //        mTxtVersion.setText(version);
         findViewById(R.id.btn_install).setOnClickListener(this);
         findViewById(R.id.btn_select_file).setOnClickListener(this);
+        findViewById(R.id.down_load_from_github).setOnClickListener(this);
     }
 
     @Override
@@ -85,6 +88,17 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             }
         } else if (v.getId() == R.id.btn_select_file) {
             selectFile();
+        } else if (v.getId() == R.id.down_load_from_github) {
+            downloadFromGit();
+        }
+    }
+
+    private void downloadFromGit() {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.classes_link)));
+        try {
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "No browser installed", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -124,7 +138,9 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         systemFile.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                progressDialog.dismiss();
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 new InstallTask(InstallActivity.this).execute(file);
             }
         }).addOnFailureListener(new OnFailureListener() {

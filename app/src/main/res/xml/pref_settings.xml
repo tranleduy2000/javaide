@@ -68,14 +68,6 @@
             android:entryValues="@array/code_themes"
             android:key="@string/key_code_theme"
             android:title="@string/theme" />
-
-        <EditTextPreference
-            android:defaultValue="2"
-            android:inputType="number"
-            android:key="key_pref_tab_width"
-            android:title="@string/tab_width"
-            android:visibility="gone" />
-
         <ListPreference
             android:defaultValue="@string/zero"
             android:entries="@array/format_types"
@@ -144,11 +136,11 @@
             android:summary="@string/ime_desc"
             android:title="@string/enable_ime_keyboard" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="@string/key_back_undo"
-            android:visibility="gone"
-            android:title="@string/back_to_undo" />
+        <!--<SwitchPreference-->
+            <!--android:defaultValue="false"-->
+            <!--android:key="@string/key_back_undo"-->
+            <!--android:visibility="gone"-->
+            <!--android:title="@string/back_to_undo" />-->
 
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/notifications">
@@ -186,14 +178,14 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="System">
-        <EditTextPreference
-            android:defaultValue="@string/default_classpath"
-            android:key="@string/key_classpath"
-            android:visibility="gone"
-            android:summary="@string/classpath_desc"
-            android:title="Classpath">
+    <!--<PreferenceCategory android:title="System">-->
+        <!--<EditTextPreference-->
+            <!--android:defaultValue="@string/default_classpath"-->
+            <!--android:key="@string/key_classpath"-->
+            <!--android:visibility="gone"-->
+            <!--android:summary="@string/classpath_desc"-->
+            <!--android:title="Classpath">-->
 
-        </EditTextPreference>
-    </PreferenceCategory>
+        <!--</EditTextPreference>-->
+    <!--</PreferenceCategory>-->
 </PreferenceScreen>

@@ -12,13 +12,15 @@ android {
         multiDexEnabled true
         versionCode 26
         versionName "1.0.19 beta"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
             moduleName "aapt"
             abiFilters 'armeabi-v7a', 'x86', 'x86_64'//, 'arm64-v8a'
         }
+
+        /*only support en*/
+        resConfig "en"
     }
 
     buildTypes {

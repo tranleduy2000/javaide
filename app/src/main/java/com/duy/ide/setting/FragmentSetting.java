@@ -37,7 +37,6 @@ public class FragmentSetting extends PreferenceFragment {
         try {
             bindPreferenceSummaryToValue(findPreference(getString(R.string.key_pref_font_size)));
             bindPreferenceSummaryToValue(findPreference(getString(R.string.key_code_theme)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_pref_lang)));
             bindPreferenceSummaryToValue(findPreference(getString(R.string.key_max_page)));
             bindPreferenceSummaryToValue(findPreference(getString(R.string.key_format_type)));
         } catch (Exception e) {

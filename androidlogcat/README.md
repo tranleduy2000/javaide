@@ -1,13 +1,4 @@
-![Icon](./app/src/main/res/mipmap-hdpi/ic_launcher.png)MatLog
-=========
-It's CatLog, but with material goodness.
-
-Graphical log reader for Android.
-
-[![Get it on Google Play](http://i.imgur.com/PeDVOwW.png)](https://play.google.com/store/apps/details?id=com.pluscubed.matlog)
-
-Based on Nolan Lawson's CatLog: [Google Play][1], [GitHub][2]
-
+LogCat
 Overview
 ---------
 MatLog is a free and open-source material-style log reader for Android based on CatLog.

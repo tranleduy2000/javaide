@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.file.FileManager;
@@ -27,6 +25,7 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.jecelyin.android.file_explorer.FileExplorerActivity;
 
 import org.apache.commons.io.IOUtils;
 
@@ -39,6 +38,8 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 /**
  * Created by Duy on 16-Jul-17.
@@ -90,11 +91,8 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
     private void selectFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
-        try {
-            startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
-        } catch (Exception e) {
-            Toast.makeText(this, "No file explorer available", Toast.LENGTH_SHORT).show();
-        }
+        FileExplorerActivity.startPickFileActivity(this,
+                Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS).getPath(), REQUEST_CODE_SELECT_FILE, null);
     }
 
     @Override
@@ -103,13 +101,8 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         switch (requestCode) {
             case REQUEST_CODE_SELECT_FILE:
                 if (resultCode == RESULT_OK) {
-                    try {
-                        Uri uri = data.getData();
-                        new InstallTask(this).execute(new File(uri.getPath()));
-                    } catch (Exception e) {
-                        //file not found
-                        e.printStackTrace();
-                    }
+                    File file = new File(FileExplorerActivity.getFile(data));
+                    new InstallTask(this).execute(file);
                 }
                 break;
         }

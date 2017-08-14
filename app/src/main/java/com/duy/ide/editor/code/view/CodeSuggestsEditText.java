@@ -308,7 +308,6 @@ public abstract class CodeSuggestsEditText extends IndentEditText
             } else {
                 setSuggestData(descriptions);
             }
-            Log.d(TAG, "onPostExecute() called with: infoItems = [" + descriptions + "]");
         }
     }
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="dialog_searchby_tag_text" type="id" />
+    <item name="dialog_searchby_pid_text" type="id" />
+    <item name="dialog_searchby_tag_linear" type="id" />
+    <item name="dialog_searchby_pid_linear" type="id" />
+</resources>

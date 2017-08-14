@@ -9,6 +9,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion as Integer
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -16,10 +17,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding.enabled = true
 }
 
 dependencies {
-    compile "com.android.support:support-v4:$android_support_version"
     compile "com.android.support:appcompat-v7:$android_support_version"
+    compile "com.android.support:recyclerview-v7:$android_support_version"
+    compile "com.android.support:support-annotations:$android_support_version"
+    compile "com.android.support:design:$android_support_version"
+    compile "com.android.support:support-v13:$android_support_version"
 
+    compile 'com.afollestad.material-dialogs:commons:0.9.4.5'
 }

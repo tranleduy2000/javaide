@@ -15,13 +15,22 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item
+        android:title="Tool">
+        <menu>
+            <item
+                android:id="@+id/action_see_logcat"
+                android:icon="@drawable/ic_line_weight_white_24dp"
+                android:title="Android Logcat">
+            </item>
+        </menu>
+    </item>
     <item android:title="@string/learn">
         <menu>
             <item
                 android:id="@+id/action_sample"
                 android:icon="@drawable/ic_code_white_24dp"
-                android:title="@string/sample_code_java" />
+                android:title="@string/sample_code_java"/>
         </menu>
     </item>
 
@@ -31,13 +40,13 @@
                 android:id="@+id/action_select_theme"
                 android:icon="@drawable/ic_color_lens_white_24dp"
                 android:title="@string/theme_font"
-                android:visible="false" />
+                android:visible="false"/>
 
             <item
                 android:id="@+id/action_setting"
                 android:enabled="true"
                 android:icon="@drawable/ic_settings_white_24dp"
-                android:title="@string/setting_editor" />
+                android:title="@string/setting_editor"/>
         </menu>
     </item>
 
@@ -48,20 +57,20 @@
             <item
                 android:id="@+id/action_donate"
                 android:icon="@drawable/ic_donate_white"
-                android:title="@string/donate" />
+                android:title="@string/donate"/>
             <item
                 android:id="@+id/action_report_bug"
                 android:icon="@drawable/ic_bug_report_white_24dp"
-                android:title="@string/report_bug" />
+                android:title="@string/report_bug"/>
             <item
                 android:id="@+id/action_github"
                 android:icon="@drawable/ic_bug_report_white_24dp"
-                android:title="@string/github_repo" />
+                android:title="@string/github_repo"/>
 
             <item
                 android:id="@+id/action_install"
                 android:icon="@drawable/ic_system_update_white_24dp"
-                android:title="@string/system_info" />
+                android:title="@string/system_info"/>
         </menu>
     </item>
 </menu>

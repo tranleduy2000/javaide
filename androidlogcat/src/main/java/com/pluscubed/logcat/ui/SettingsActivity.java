@@ -8,10 +8,8 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -21,7 +19,6 @@ import android.widget.Toast;
 
 import com.pluscubed.logcat.R;
 import com.pluscubed.logcat.data.LogLine;
-import com.pluscubed.logcat.helper.PackageHelper;
 import com.pluscubed.logcat.helper.PreferenceHelper;
 import com.pluscubed.logcat.util.ArrayUtil;
 import com.pluscubed.logcat.util.StringUtil;
@@ -93,8 +90,6 @@ public class SettingsActivity extends AppCompatActivity {
         private EditTextPreference logLinePeriodPreference, displayLimitPreference;
         private ListPreference textSizePreference, defaultLevelPreference;
         private MultipleChoicePreference bufferPreference;
-        private Preference mThemePreference;
-        private Preference mAboutPreference;
         private SwitchPreference scrubberPreference;
 
         private boolean bufferChanged = false;
@@ -139,27 +134,10 @@ public class SettingsActivity extends AppCompatActivity {
             defaultLevelPreference.setOnPreferenceChangeListener(this);
             setDefaultLevelPreferenceSummary(defaultLevelPreference.getEntry());
 
-            mThemePreference = findPreference(getString(R.string.pref_theme));
-            mThemePreference.setOnPreferenceChangeListener(this);
 
             bufferPreference = (MultipleChoicePreference) findPreference(getString(R.string.pref_buffer));
             bufferPreference.setOnPreferenceChangeListener(this);
             setBufferPreferenceSummary(bufferPreference.getValue());
-
-            String themeSummary = PreferenceHelper.getColorScheme(getActivity()).getDisplayableName(getActivity());
-
-            mThemePreference.setSummary(themeSummary);
-            mThemePreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    //TODO: Implement themes using color picker and remove this
-                    Snackbar.make(getActivity().findViewById(android.R.id.content),
-                            "Themes are not implemented yet. Stay tuned for updates!", Snackbar.LENGTH_LONG)
-                            .show();
-                    return true;
-                }
-            });
-
 
             scrubberPreference = (SwitchPreference) getPreferenceScreen().findPreference("scrubber");
             scrubberPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {

@@ -215,6 +215,7 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
         binding.list.setItemAnimator(null);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar_actionbar));
+        setTitle(R.string.logcat);
 
         mCollapsedMode = !PreferenceHelper.getExpandedByDefaultPreference(this);
 

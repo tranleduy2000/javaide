@@ -3,13 +3,14 @@ package com.pluscubed.logcat.helper;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 
+import com.pluscubed.logcat.CrazyLoggerService;
+import com.pluscubed.logcat.LogcatRecordingService;
+import com.pluscubed.logcat.reader.LogcatReaderLoader;
 import com.pluscubed.logcat.util.UtilLogger;
 
 import java.util.List;
-
-//import com.pluscubed.logcat.CrazyLoggerService;
-//import com.pluscubed.logcat.LogcatRecordingService;
 
 public class ServiceHelper {
 
@@ -17,51 +18,51 @@ public class ServiceHelper {
 
     public static void startOrStopCrazyLogger(Context context) {
 
-//        boolean alreadyRunning = checkIfServiceIsRunning(context, CrazyLoggerService.class);
-//        Intent intent = new Intent(context, CrazyLoggerService.class);
-//
-//        if (!alreadyRunning) {
-//            context.startService(intent);
-//        } else {
-//            context.stopService(intent);
-//        }
+        boolean alreadyRunning = checkIfServiceIsRunning(context, CrazyLoggerService.class);
+        Intent intent = new Intent(context, CrazyLoggerService.class);
+
+        if (!alreadyRunning) {
+            context.startService(intent);
+        } else {
+            context.stopService(intent);
+        }
 
     }
 
     public static synchronized void stopBackgroundServiceIfRunning(Context context) {
-//        boolean alreadyRunning = ServiceHelper.checkIfServiceIsRunning(context, LogcatRecordingService.class);
+        boolean alreadyRunning = ServiceHelper.checkIfServiceIsRunning(context, LogcatRecordingService.class);
 
-//        log.d("Is CatlogService running: %s", alreadyRunning);
-//
-//        if (alreadyRunning) {
-//            Intent intent = new Intent(context, LogcatRecordingService.class);
-//            context.stopService(intent);
-//        }
+        log.d("Is CatlogService running: %s", alreadyRunning);
+
+        if (alreadyRunning) {
+            Intent intent = new Intent(context, LogcatRecordingService.class);
+            context.stopService(intent);
+        }
 
     }
 
     public static synchronized void startBackgroundServiceIfNotAlreadyRunning(
             Context context, String filename, String queryFilter, String level) {
 
-//        boolean alreadyRunning = ServiceHelper.checkIfServiceIsRunning(context, LogcatRecordingService.class);
+        boolean alreadyRunning = ServiceHelper.checkIfServiceIsRunning(context, LogcatRecordingService.class);
 
-//        log.d("Is CatlogService already running: %s", alreadyRunning);
+        log.d("Is CatlogService already running: %s", alreadyRunning);
 
-//        if (!alreadyRunning) {
+        if (!alreadyRunning) {
 
-//            Intent intent = new Intent(context, LogcatRecordingService.class);
-//            intent.putExtra(LogcatRecordingService.EXTRA_FILENAME, filename);
-//
-//             load "lastLine" in the background
-//            LogcatReaderLoader loader = LogcatReaderLoader.create(context, true);
-//            intent.putExtra(LogcatRecordingService.EXTRA_LOADER, loader);
+            Intent intent = new Intent(context, LogcatRecordingService.class);
+            intent.putExtra(LogcatRecordingService.EXTRA_FILENAME, filename);
+
+            // load "lastLine" in the background
+            LogcatReaderLoader loader = LogcatReaderLoader.create(context, true);
+            intent.putExtra(LogcatRecordingService.EXTRA_LOADER, loader);
 
             // add query text and log level
-//            intent.putExtra(LogcatRecordingService.EXTRA_QUERY_FILTER, queryFilter);
-//            intent.putExtra(LogcatRecordingService.EXTRA_LEVEL, level);
-//
-//            context.startService(intent);
-//        }
+            intent.putExtra(LogcatRecordingService.EXTRA_QUERY_FILTER, queryFilter);
+            intent.putExtra(LogcatRecordingService.EXTRA_LEVEL, level);
+
+            context.startService(intent);
+        }
     }
 
     public static boolean checkIfServiceIsRunning(Context context, Class<?> service) {

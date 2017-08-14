@@ -84,6 +84,7 @@ dependencies {
     compile project(':zipsigner')
     compile project(':javacompiler')
     compile project(':javacodeformatter')
+    compile project(':androidlogcat')
 
     //android support
     compile 'com.android.support:multidex:1.0.1'

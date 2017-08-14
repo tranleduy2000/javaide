@@ -2,6 +2,7 @@ package com.duy;
 
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.duy.ide.BuildConfig;
 import com.google.firebase.crash.FirebaseCrash;
@@ -29,6 +30,9 @@ public class JavaApplication extends MultiDexApplication {
         }
         systemOut = new InterceptorOutputStream(System.out, out);
         systemErr = new InterceptorOutputStream(System.err, err);
+
+        //for log cat
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     public void addStdOut(PrintStream out) {

@@ -54,6 +54,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.pluscubed.logcat.LogcatRecordingService;
 import com.pluscubed.logcat.R;
 import com.pluscubed.logcat.data.ColorScheme;
 import com.pluscubed.logcat.data.FilterAdapter;
@@ -72,6 +73,7 @@ import com.pluscubed.logcat.helper.BuildHelper;
 import com.pluscubed.logcat.helper.DialogHelper;
 import com.pluscubed.logcat.helper.PreferenceHelper;
 import com.pluscubed.logcat.helper.SaveLogHelper;
+import com.pluscubed.logcat.helper.ServiceHelper;
 import com.pluscubed.logcat.helper.UpdateHelper;
 import com.pluscubed.logcat.intents.Intents;
 import com.pluscubed.logcat.reader.LogcatReader;
@@ -363,8 +365,8 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
             scrollToBottom();
         }
 
-//        boolean recordingInProgress = ServiceHelper.checkIfServiceIsRunning(getApplicationContext(), LogcatRecordingService.class);
-//        binding.fab.setVisibility(recordingInProgress ? View.VISIBLE : View.GONE);
+        boolean recordingInProgress = ServiceHelper.checkIfServiceIsRunning(getApplicationContext(), LogcatRecordingService.class);
+        binding.fab.setVisibility(recordingInProgress ? View.VISIBLE : View.GONE);
     }
 
     private void restartMainLog() {
@@ -533,12 +535,12 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
         saveAsLogMenuItem.setEnabled(!showingMainLog);
         saveAsLogMenuItem.setVisible(!showingMainLog);
 
-//        boolean recordingInProgress = ServiceHelper.checkIfServiceIsRunning(getApplicationContext(), LogcatRecordingService.class);
+        boolean recordingInProgress = ServiceHelper.checkIfServiceIsRunning(getApplicationContext(), LogcatRecordingService.class);
 
-//        MenuItem recordMenuItem = menu.findItem(R.id.menu_record_log);
+        MenuItem recordMenuItem = menu.findItem(R.id.menu_record_log);
 
-//        recordMenuItem.setEnabled(!recordingInProgress);
-//        recordMenuItem.setVisible(!recordingInProgress);
+        recordMenuItem.setEnabled(!recordingInProgress);
+        recordMenuItem.setVisible(!recordingInProgress);
 
         MenuItem crazyLoggerMenuItem = menu.findItem(R.id.menu_crazy_logger_service);
         crazyLoggerMenuItem.setEnabled(UtilLogger.DEBUG_MODE);
@@ -649,7 +651,7 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
             startSettingsActivity();
             return true;
         } else if (i == R.id.menu_crazy_logger_service) {
-//            ServiceHelper.startOrStopCrazyLogger(this);
+            ServiceHelper.startOrStopCrazyLogger(this);
             return true;
         } else if (i == R.id.menu_partial_select) {
             startPartialSelectMode();
@@ -1639,7 +1641,7 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
         MaterialDialog.SingleButtonCallback onCancelListener = new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (which == DialogAction.NEGATIVE) {
+                if(which == DialogAction.NEGATIVE) {
                     cancelPartialSelect();
                 }
             }

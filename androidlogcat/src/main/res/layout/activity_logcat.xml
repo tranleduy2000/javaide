@@ -57,10 +57,6 @@
                 app:srcCompat="@drawable/ic_stop_white_24dp"
                 tools:visibility="visible" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:background="?toolbarShadow" />
         </FrameLayout>
     </LinearLayout>
 </layout>

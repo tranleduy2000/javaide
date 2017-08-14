@@ -69,8 +69,8 @@ import com.duy.project.dialog.DialogManager;
 import com.duy.project.dialog.DialogNewAndroidProject;
 import com.duy.project.dialog.DialogNewAndroidResource;
 import com.duy.project.dialog.DialogNewClass;
-import com.duy.project.dialog.DialogSelectType;
 import com.duy.project.dialog.DialogNewJavaProject;
+import com.duy.project.dialog.DialogSelectType;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFolder;
@@ -215,6 +215,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         }
         mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), descriptors);
         mViewPager.setAdapter(mPageAdapter);
+        mViewPager.setOffscreenPageLimit(mPageAdapter.getCount());
         mTabLayout.setupWithViewPager(mViewPager);
 
         mPagePresenter = new PagePresenter((MainActivity) this, mViewPager, mPageAdapter, mTabLayout, mFileManager);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.pluscubed.logcat"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.pluscubed.logcat">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
@@ -8,27 +8,13 @@
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:name=".App"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:theme="@style/Theme.MatLog">
+        android:allowBackup="true">
 
         <!--TODO: REMOVE THIS CONFIGCHANGES ATROCITY-->
         <activity
             android:name=".ui.LogcatActivity"
             android:configChanges="screenSize|orientation"
             android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="com.pluscubed.logcat.intents.LAUNCH"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts"/>
@@ -37,17 +23,12 @@
         <activity
             android:name=".ui.AboutDialogActivity"
             android:theme="@style/Theme.MatLog.AlertDialog"/>
-
-
         <activity
             android:name=".ui.RecordLogDialogActivity"
             android:theme="@style/Theme.MatLog.AlertDialog"/>
-
-
         <activity android:name=".ui.SettingsActivity"/>
 
         <service android:name="com.pluscubed.logcat.LogcatRecordingService"/>
-
         <service android:name="com.pluscubed.logcat.CrazyLoggerService"/>
 
     </application>

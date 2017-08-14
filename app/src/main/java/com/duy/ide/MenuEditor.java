@@ -32,6 +32,7 @@ import com.duy.ide.setting.JavaPreferences;
 import com.duy.ide.setting.SettingsActivity;
 import com.duy.ide.utils.DonateUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.pluscubed.logcat.ui.LogcatActivity;
 
 /**
  * Handler for menu click
@@ -180,6 +181,9 @@ public class MenuEditor {
             case R.id.action_sample:
                 activity.startActivityForResult(new Intent(activity, SampleActivity.class),
                         MainActivity.REQUEST_CODE_SAMPLE);
+                break;
+            case R.id.action_see_logcat:
+                activity.startActivity(new Intent(activity, LogcatActivity.class));
                 break;
         }
         return true;

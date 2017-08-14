@@ -1,0 +1,42 @@
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:orientation="horizontal" android:paddingLeft="3dp"
+	android:paddingRight="3dp" android:paddingBottom="1dp"
+	android:paddingTop="2dp">
+
+		<TextView android:layout_width="@dimen/pid_width" android:layout_height="wrap_content"
+			android:paddingRight="2dp" android:textSize="12sp" android:text="6177"
+			android:id="@+id/pid_text"
+			android:typeface="monospace" android:layout_alignParentLeft="true"
+			android:singleLine="true"/>
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:paddingRight="2dp" android:paddingLeft="2dp" 
+			android:textSize="12sp" android:text="12 June 2011"
+			android:id="@+id/timestamp_text"
+			android:typeface="monospace" android:layout_toRightOf="@+id/pid_text"
+			android:singleLine="true"/>
+
+		<TextView android:layout_width="@dimen/tag_width" android:layout_height="wrap_content"
+			android:paddingRight="2dp" android:textSize="12sp" android:text="SomeActivity"
+			android:id="@+id/tag_text"
+			android:typeface="monospace" android:layout_alignParentLeft="true"
+			android:layout_below="@+id/pid_text"/>
+
+		<TextView android:layout_width="@dimen/log_level_width"
+			android:layout_height="wrap_content" android:textSize="12sp"
+			android:text="D" android:id="@+id/log_level_text" android:gravity="center_horizontal"
+			android:typeface="monospace" android:layout_toRightOf="@+id/tag_text"
+			android:layout_below="@+id/pid_text"/>
+			android:singleLine="true"
+
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:textSize="12sp"
+			android:paddingLeft="2dp" android:text="Blah blah blah a bunch of output"
+			android:paddingRight="2dp" android:id="@+id/log_output_text"
+			android:typeface="monospace" android:layout_toRightOf="@+id/log_level_text"
+			android:layout_below="@+id/pid_text"/>
+
+
+</RelativeLayout>

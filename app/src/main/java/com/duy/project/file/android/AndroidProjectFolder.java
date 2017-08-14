@@ -87,7 +87,7 @@ public class AndroidProjectFolder extends JavaProjectFolder {
         return keystore;
     }
 
-    public File getXmlManifest() throws IOException {
+    public File getXmlManifest()  {
         return xmlManifest;
     }
 

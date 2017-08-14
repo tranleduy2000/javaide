@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:paddingLeft="12dip" android:paddingRight="7dip"
+	android:paddingTop="2dp" android:paddingBottom="2dp">
+
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="vertical">
+
+
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:orientation="horizontal"
+			android:gravity="center_vertical" android:padding="2dp">
+
+
+			<LinearLayout android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:orientation="horizontal"
+				android:gravity="center_vertical" android:background="@color/imageBackground">
+				<View android:layout_height="fill_parent" android:id="@+id/main_border_view_1"
+					android:layout_width="1dp" android:background="@color/imageBorder" />
+				<LinearLayout android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:orientation="vertical"
+					android:gravity="center_vertical">
+					<View android:layout_height="1dp" android:id="@+id/main_border_view_1"
+						android:layout_width="fill_parent" android:background="@color/imageBorder" />
+					<ImageView android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:src="@drawable/widget_explanation" 
+						android:id="@android:id/icon1"/>
+					<View android:layout_height="1dp" android:id="@+id/main_border_view_1"
+						android:layout_width="fill_parent" android:background="@color/imageBorder" />
+				</LinearLayout>
+				<View android:layout_height="fill_parent" android:id="@+id/main_border_view_1"
+					android:layout_width="1dp" android:background="@color/imageBorder" />
+			</LinearLayout>
+
+			<TextView android:id="@+id/first_run_text_view1" 
+				android:textColor="@android:color/primary_text_dark_nodisable"
+				android:text="@string/dialog_for_widget" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:textSize="16sp"
+				 android:linksClickable="true" 
+				android:paddingLeft="10dp" android:paddingRight="8dp"/>
+
+		</LinearLayout>
+
+
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:orientation="horizontal"
+			android:gravity="center_vertical" android:padding="2dp">
+
+			<LinearLayout android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:orientation="horizontal"
+				android:gravity="center_vertical" android:background="@color/imageBackground">
+				<View android:layout_height="fill_parent" android:id="@+id/main_border_view_1"
+					android:layout_width="1dp" android:background="@color/imageBorder" />
+				<LinearLayout android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:orientation="vertical"
+					android:gravity="center_vertical">
+					<View android:layout_height="1dp" android:id="@+id/main_border_view_1"
+						android:layout_width="fill_parent" android:background="@color/imageBorder" />
+					<ImageView android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:src="@drawable/donate_explanation" 
+						android:id="@android:id/icon2"/>
+					<View android:layout_height="1dp" android:id="@+id/main_border_view_1"
+						android:layout_width="fill_parent" android:background="@color/imageBorder" />
+				</LinearLayout>
+				<View android:layout_height="fill_parent" android:id="@+id/main_border_view_1"
+					android:layout_width="1dp" android:background="@color/imageBorder" />
+			</LinearLayout>
+
+			<TextView android:id="@+id/first_run_text_view_2"
+				android:textColor="@android:color/primary_text_dark_nodisable"
+				android:text="@string/dialog_for_donate"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:textSize="16sp"
+				 android:linksClickable="true" android:paddingRight="8dp"
+				android:paddingLeft="10dp"/>
+
+		</LinearLayout>
+
+	</LinearLayout>
+</ScrollView>

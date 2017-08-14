@@ -245,6 +245,10 @@ public class MainActivity extends ProjectManagerActivity implements
 
     private void compileAndroidProject() {
         if (mProjectFile instanceof AndroidProjectFolder) {
+            if (!((AndroidProjectFolder) mProjectFile).getXmlManifest().exists()) {
+                Toast.makeText(this, "Can not find AndroidManifest.xml", Toast.LENGTH_SHORT).show();
+                return;
+            }
             //check launcher activity
             if (((AndroidProjectFolder) mProjectFile).getLauncherActivity() == null) {
                 String msg = getString(R.string.can_not_find_launcher_activity);

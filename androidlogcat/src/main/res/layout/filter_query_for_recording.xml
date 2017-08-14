@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:singleLine="true" android:text="@string/filter_text_colon"
+        android:textSize="16sp" android:paddingLeft="5dp"/>
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@android:id/edit"
+        layout="@layout/new_filter_text_view" />
+    
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:singleLine="true" android:text="@string/log_level_colon"
+        android:textSize="16sp" android:paddingLeft="5dp"/>
+    
+    <Spinner android:layout_width="fill_parent" android:layout_height="wrap_content"
+        android:id="@+id/spinner" android:prompt="@string/log_level"
+        />
+
+</LinearLayout>

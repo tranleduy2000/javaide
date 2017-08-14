@@ -1,0 +1,64 @@
+<LinearLayout android:layout_width="fill_parent"
+	android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:id="@+id/record_dialog_linear_layout"
+	>
+	
+    <LinearLayout android:id="@+id/topPanel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@android:dimen/app_icon_size"
+        android:orientation="vertical"
+        android:paddingTop="7dp" android:paddingBottom="10dp">
+        <LinearLayout android:id="@+id/title_template"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="6dip"
+            android:layout_marginBottom="9dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip">
+            <TextView  
+                style="?android:attr/textAppearanceLarge"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content" 
+                android:text="@string/record_log"/>
+        </LinearLayout>
+        <View 
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:visibility="visible"
+            android:scaleType="fitXY"
+            android:gravity="fill_horizontal"
+            android:background="@color/dark_divider"/>
+        <!-- If the client uses a customTitle, it will be added here. -->
+    </LinearLayout>
+	
+
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:padding="10dp"
+		android:text="@string/enter_filename" style="?android:attr/textAppearanceMedium"/>
+
+	<LinearLayout android:id="@+id/LinearLayout02"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="horizontal" android:padding="3dp"
+		android:background="@android:color/darker_gray">
+
+		<Button android:text="@android:string/ok" android:layout_width="0px"
+			android:layout_height="wrap_content" android:id="@android:id/button1"
+			android:layout_weight="0.3" android:minWidth="50dp" />
+		<Button android:text="@string/text_filter_ellipsis"
+			android:layout_width="0px" android:layout_height="wrap_content"
+			android:id="@android:id/button2" android:layout_weight="0.3"
+			android:minWidth="50dp" />
+		<Button android:text="@android:string/cancel"
+			android:layout_width="0px" android:layout_height="wrap_content"
+			android:id="@android:id/button3" android:layout_weight="0.3"
+			android:minWidth="50dp" />
+	</LinearLayout>
+
+
+
+</LinearLayout>

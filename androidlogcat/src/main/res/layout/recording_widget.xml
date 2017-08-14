@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:gravity="center_vertical|center_horizontal"
+	focusable="true" android:padding="1dp">
+	<LinearLayout android:orientation="vertical"
+		android:gravity="center_vertical|center_horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:id="@+id/clickable_linear_layout" android:padding="2dp"
+		android:clickable="true" android:focusable="true"
+		android:drawSelectorOnTop="false" android:background="@drawable/app_selector">
+
+		<LinearLayout android:orientation="vertical"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:gravity="center_vertical|center_horizontal"
+			android:background="@drawable/bubble" android:paddingLeft="2dp"
+			android:paddingRight="2dp" android:paddingTop="5dp" android:paddingBottom="5dp" >
+
+
+			<FrameLayout android:layout_height="wrap_content"
+				android:layout_width="wrap_content">
+				<ImageView android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:src="@drawable/icon" />
+
+				<LinearLayout android:gravity="right|bottom"
+					android:layout_height="@android:dimen/app_icon_size"
+					android:layout_width="@android:dimen/app_icon_size">
+
+					<ImageView android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:src="@drawable/record_badge_smaller"
+						android:id="@+id/record_badge_image_view" android:visibility="invisible" />
+
+				</LinearLayout>
+
+			</FrameLayout>
+
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/widget_subtext"
+				android:textSize="12sp"
+				android:textColor="@android:color/white"
+				android:gravity="center_vertical" android:text="@string/widget_start_recording"
+				android:singleLine="true" android:ellipsize="marquee" />
+
+		</LinearLayout>
+
+	</LinearLayout>
+</LinearLayout>

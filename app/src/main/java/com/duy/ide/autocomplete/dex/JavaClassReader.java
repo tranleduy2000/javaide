@@ -38,7 +38,14 @@ public class JavaClassReader {
     private static final String TAG = "JavaClassReader";
     private String classpath;
     private String tempDir;
+    /**
+     * All classes sorted by full class name
+     */
     private ArrayList<Class> mClasses = new ArrayList<>();
+
+    /**
+     * All classes sorted by simple class name
+     */
     private ArrayList<Pair<String, Class>> mSimpleClasses = new ArrayList<>();
 
     private WeakHashMap<String, ClassDescription> mCache = new WeakHashMap<>();

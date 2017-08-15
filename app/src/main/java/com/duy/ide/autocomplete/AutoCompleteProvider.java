@@ -76,6 +76,9 @@ public class AutoCompleteProvider {
         mClassLoader = new JavaDexClassLoader(FileManager.getClasspathFile(context), outDir);
     }
 
+    /**
+     * find start position incomplete
+     */
     private int findStart(EditText editor) {
         int selectionStart = editor.getSelectionStart();
         Pattern pattern;
@@ -158,12 +161,12 @@ public class AutoCompleteProvider {
             selectionStart = selectionStart - (statement.length() - pos);
             statement = statement.replaceAll("\\s*\\(\\s*$", "");
             //" new ClassName?
-            String str = PatternFactory.match(statement, compile("^new\\s+" + Patterns.RE_QUALID + "$"));
-            if (str != null) {
-                str = str.replaceAll("^new\\s+", "");
-                if (!Patterns.KEYWORDS.matcher(str).find()) {
+
+            if (compile("^\\s*new\\s+" + Patterns.RE_QUALID + "$").matcher(statement).find()) {
+                statement = statement.replaceAll("^\\s*new\\s+", "");
+                if (!Patterns.KEYWORDS.matcher(statement).find()) {
                     incomplete = "+";
-                    dotExpr = str;
+                    dotExpr = statement;
                     return selectionStart - dotExpr.length();
                 }
             } else { //in case \(\s*$
@@ -195,16 +198,16 @@ public class AutoCompleteProvider {
         return -1;
     }
 
-    public ArrayList<? extends Description> complete(boolean findStart, EditText editor) {
-        if (findStart) {
-            findStart(editor);
-        }
+    public ArrayList<? extends Description> complete(EditText editor) {
         //" Return list of matches.
+        //case: all is empty
         if (dotExpr.matches("^\\s*$") && incomplete.matches("^\\s*$")) {
             return new ArrayList<>();
         }
+        //the result
         ArrayList<? extends Description> result = new ArrayList<>();
-        if (!dotExpr.matches("^\\s*$")) {
+
+        if (!dotExpr.matches("^\\s*$")) { //if not empty
             if (contextType == CONTEXT_AFTER_DOT) {
                 result = completeAfterDot(dotExpr);
             } else if (contextType == CONTEXT_IMPORT || contextType == CONTEXT_IMPORT_STATIC

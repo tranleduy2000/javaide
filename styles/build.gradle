@@ -20,7 +20,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:support-annotations:$android_support_version"
+    compile "com.android.support:support-annotations:$supportLibVersion"
     compile project(':common')
 }
 

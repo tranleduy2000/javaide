@@ -19,7 +19,7 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:support-v4:$android_support_version"
-    compile "com.android.support:appcompat-v7:$android_support_version"
+    compile "com.android.support:support-v4:$supportLibVersion"
+    compile "com.android.support:appcompat-v7:$supportLibVersion"
 
 }

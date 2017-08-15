@@ -17,6 +17,9 @@ allprojects {
         maven { url 'https://dl.bintray.com/ppartisan/maven/' }
         maven { url "https://clojars.org/repo/" }
         maven { url "https://jitpack.io" }
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
@@ -30,10 +33,9 @@ ext {
     buildToolsVersion = '26.0.0'
     targetSdkVersion = 26
     minSdkVersion = 14
-    android_support_version = "26.+"
     google_service_version = "11.0.2"
 
-    supportLibVersion = "26.+"
+    supportLibVersion = "26.0.0"
     runnerVersion = "0.5"
     rulesVersion = "0.5"
     espressoVersion = "2.2.2"

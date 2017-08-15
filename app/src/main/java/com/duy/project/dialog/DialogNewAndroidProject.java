@@ -15,9 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.sdklib.xml.AndroidManifestParser;
-import com.android.sdklib.xml.ManifestData;
 import com.duy.ide.R;
+import com.duy.ide.autocomplete.Patterns;
 import com.duy.ide.code_sample.model.AssetUtil;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProjectFolder;
@@ -26,6 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.regex.Pattern;
 
 /**
  * Created by Duy on 16-Jul-17.
@@ -33,7 +33,7 @@ import java.io.InputStream;
 
 public class DialogNewAndroidProject extends AppCompatDialogFragment implements View.OnClickListener {
     public static final String TAG = "DialogNewAndroidProject";
-    private EditText editProjectName, editPackage;
+    private EditText editAppName, editPackage;
     private Button btnCreate, btnCancel;
     @Nullable
     private DialogNewJavaProject.OnCreateProjectListener listener;
@@ -77,7 +77,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         editPackage = view.findViewById(R.id.edit_package_name);
-        editProjectName = view.findViewById(R.id.edit_project_name);
+        editAppName = view.findViewById(R.id.edit_project_name);
         btnCreate = view.findViewById(R.id.btn_create);
         btnCancel = view.findViewById(R.id.btn_cancel);
         btnCreate.setOnClickListener(this);
@@ -105,7 +105,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             String activityName = this.activityName.getText().toString();
             String activityClass = packageName + "." + activityName;
             String mainLayoutName = layoutName.getText().toString();
-            String appName = editProjectName.getText().toString();
+            String appName = editAppName.getText().toString();
             String classpath = FileManager.getClasspathFile(getContext()).getPath();
 
             String projectName = appName.replaceAll("\\s+", "");
@@ -183,21 +183,47 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
      * @return true if all is ok
      */
     private boolean isOk() {
-        if (editProjectName.getText().toString().isEmpty()) {
-            editProjectName.setError(getString(R.string.enter_name));
+        //check app name
+        if (editAppName.getText().toString().isEmpty()) {
+            editAppName.setError(getString(R.string.enter_name));
             return false;
         }
-        if (editPackage.getText().toString().isEmpty()) {
+        if (!editAppName.getText().toString().matches(Patterns.RE_IDENTIFIER + " ")) {
+            editAppName.setError("Invalid name");
+            return false;
+        }
+
+        String packageName = editPackage.getText().toString();
+        if (packageName.isEmpty()) {
             editPackage.setError(getString(R.string.enter_package));
             return false;
+        }
+        if (!packageName.contains(".")) {
+            editPackage.setError("Invalid package name: The package name must be least one '.' separator");
+            return false;
+        }
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9._]*");
+        for (int i = 0; i < packageName.length(); i++) {
+            if (!String.valueOf(packageName.charAt(i)).matches(pattern.toString())) {
+                editPackage.setError("Invalid character " + packageName.charAt(i));
+                return false;
+            }
         }
 
         if (activityName.getText().toString().isEmpty()) {
             activityName.setError(getString(R.string.enter_name));
             return false;
         }
+        if (!activityName.getText().toString().matches(Patterns.RE_IDENTIFIER.toString())) {
+            activityName.setText("Invalid name");
+            return false;
+        }
         if (layoutName.getText().toString().isEmpty()) {
             layoutName.setError(getString(R.string.enter_name));
+            return false;
+        }
+        if (!layoutName.getText().toString().matches(pattern.toString())) {
+            layoutName.setText("Invalid name");
             return false;
         }
         return true;

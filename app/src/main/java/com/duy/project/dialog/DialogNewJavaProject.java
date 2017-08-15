@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.duy.ide.R;
+import com.duy.ide.autocomplete.Patterns;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.JavaProjectFolder;
 
@@ -26,7 +27,7 @@ import java.io.IOException;
 
 public class DialogNewJavaProject extends AppCompatDialogFragment implements View.OnClickListener {
     public static final String TAG = "DialogNewProject";
-    private EditText editProjectName, editMainClass, editPackage;
+    private EditText editAppName, editMainClass, editPackage;
     private Button btnCreate, btnCancel;
     @Nullable
     private OnCreateProjectListener listener;
@@ -70,7 +71,7 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
         super.onViewCreated(view, savedInstanceState);
         editMainClass = view.findViewById(R.id.edit_main_class);
         editPackage = view.findViewById(R.id.edit_package_name);
-        editProjectName = view.findViewById(R.id.edit_project_name);
+        editAppName = view.findViewById(R.id.edit_project_name);
         btnCreate = view.findViewById(R.id.btn_create);
         btnCancel = view.findViewById(R.id.btn_cancel);
         btnCreate.setOnClickListener(this);
@@ -94,7 +95,7 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
             JavaProjectFolder projectFile = new JavaProjectFolder(
                     new File(FileManager.EXTERNAL_DIR),
                     editPackage.getText().toString() + "." + editMainClass.getText().toString(),
-                    editPackage.getText().toString(), editProjectName.getText().toString(),
+                    editPackage.getText().toString(), editAppName.getText().toString(),
                     new File(getContext().getFilesDir(), "system/classes/android.jar").getPath());
             try {
                 projectFile.createMainClass();
@@ -116,8 +117,13 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
      * @return true if all is ok
      */
     private boolean isOk() {
-        if (editProjectName.getText().toString().isEmpty()) {
-            editProjectName.setError(getString(R.string.enter_name));
+        //check app name
+        if (editAppName.getText().toString().isEmpty()) {
+            editAppName.setError(getString(R.string.enter_name));
+            return false;
+        }
+        if (!editAppName.getText().toString().matches(Patterns.RE_IDENTIFIER + " ")) {
+            editAppName.setError("Invalid name");
             return false;
         }
         if (editPackage.getText().toString().isEmpty()) {

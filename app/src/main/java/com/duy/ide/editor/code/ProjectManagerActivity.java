@@ -170,14 +170,14 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         pageDescriptors.add(new SimplePageDescriptor(DiagnosticFragment.TAG, "Diagnostic"));
         BottomPageAdapter bottomAdapter = new BottomPageAdapter(fm, pageDescriptors);
 
-        mBottomPage = (ViewPager) findViewById(R.id.bottom_page);
+        mBottomPage = findViewById(R.id.bottom_page);
         mBottomPage.setAdapter(bottomAdapter);
         mBottomPage.setOffscreenPageLimit(bottomAdapter.getCount());
 
         mMessagePresenter = new MessagePresenter(this, bottomAdapter);
         mDiagnosticPresenter = new DiagnosticPresenter(this, bottomAdapter, mPagePresenter);
 
-        TabLayout bottomTab = (TabLayout) findViewById(R.id.bottom_tab);
+        TabLayout bottomTab = findViewById(R.id.bottom_tab);
         bottomTab.setupWithViewPager(mBottomPage);
         //create project if need
         createProjectIfNeed();
@@ -224,20 +224,20 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     }
 
     protected void bindView() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mKeyList = (SymbolListView) findViewById(R.id.recycler_view);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mKeyList = findViewById(R.id.recycler_view);
         mFileManager = new FileManager(this);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        navigationView = findViewById(R.id.navigation_view);
+        mTabLayout = findViewById(R.id.tab_layout);
         mContainerSymbol = findViewById(R.id.container_symbol);
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mContainerOutput = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        mViewPager = findViewById(R.id.view_pager);
+        mContainerOutput = findViewById(R.id.sliding_layout);
     }
 
     public void setupToolbar() {
         //setup action bar
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+        toolbar = findViewById(R.id.toolbar);
+        appBarLayout = findViewById(R.id.app_bar);
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -498,7 +498,8 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     }
 
     private boolean openFileByAnotherApp(File file) {
-        if (file.getPath().endsWith(".jar") || file.getPath().endsWith(".dex")) {
+        //don't open compiled file
+        if (FileUtils.hasExtension(file, "class", "dex", "jar")) {
             Toast.makeText(this, "Unable to open file", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -547,10 +548,10 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         builder.setView(R.layout.dialog_view_file);
         AlertDialog dialog = builder.create();
         dialog.show();
-        TextView txtInfo = (TextView) dialog.findViewById(R.id.txt_info);
+        TextView txtInfo = dialog.findViewById(R.id.txt_info);
         txtInfo.setText(file.getPath() + "\n" +
                 file.length() + " byte");
-        EditorView editorView = (EditorView) dialog.findViewById(R.id.editor_view);
+        EditorView editorView = dialog.findViewById(R.id.editor_view);
         if (editorView != null && FileUtils.canEdit(file)) {
             editorView.setTextHighlighted(mFileManager.fileToString(file));
         }

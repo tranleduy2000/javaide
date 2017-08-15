@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.autocomplete.Patterns;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.JavaProjectFolder;
 
@@ -120,10 +119,6 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
         //check app name
         if (editAppName.getText().toString().isEmpty()) {
             editAppName.setError(getString(R.string.enter_name));
-            return false;
-        }
-        if (!editAppName.getText().toString().matches(Patterns.RE_IDENTIFIER + " ")) {
-            editAppName.setError("Invalid name");
             return false;
         }
         if (editPackage.getText().toString().isEmpty()) {

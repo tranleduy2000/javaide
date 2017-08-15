@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.sdklib.SdkManager;
+import com.android.sdklib.internal.project.ProjectCreator;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.Patterns;
 import com.duy.ide.code_sample.model.AssetUtil;
@@ -100,6 +102,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
     private void doCreateProject() {
         if (isOk()) {
+
             ///create new android project
             String packageName = editPackage.getText().toString();
             String activityName = this.activityName.getText().toString();
@@ -188,11 +191,6 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             editAppName.setError(getString(R.string.enter_name));
             return false;
         }
-        if (!editAppName.getText().toString().matches(Patterns.RE_IDENTIFIER + " ")) {
-            editAppName.setError("Invalid name");
-            return false;
-        }
-
         String packageName = editPackage.getText().toString();
         if (packageName.isEmpty()) {
             editPackage.setError(getString(R.string.enter_package));
@@ -209,7 +207,6 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
                 return false;
             }
         }
-
         if (activityName.getText().toString().isEmpty()) {
             activityName.setError(getString(R.string.enter_name));
             return false;

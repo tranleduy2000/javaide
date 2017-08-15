@@ -35,6 +35,7 @@
             <com.duy.ide.view.LatinEditText
                 android:id="@+id/edit_package_name"
                 android:layout_width="match_parent"
+                android:text="com.example.myapplication"
                 android:layout_height="wrap_content"
                 android:hint="@string/java_package_name_com_example" />
         </android.support.design.widget.TextInputLayout>

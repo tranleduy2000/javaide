@@ -296,6 +296,9 @@ public class AutoCompleteProvider {
         return constructors;
     }
 
+    /**
+     * get member of class name, package ...
+     */
     @NonNull
     private ArrayList<Description> getMember(String className) {
         ArrayList<ClassDescription> classes = mClassLoader.findClass(className);
@@ -345,8 +348,8 @@ public class AutoCompleteProvider {
         if (i > 0) {
             //  " cases: "this.|", "super.|", "ClassName.this.|", "ClassName.super.|", "TypeName.class.|"
             String itemAtK = items.get(k);
-            if (!itemAtK.equals("class") || !itemAtK.equals("this") || !itemAtK.equals("super")) {
-                ti = doGetClassInfo(itemAtK.equals("class") ? "java.lang.Class" : join(items, 0, k - 1, "."));
+            if (itemAtK.equals("class") || itemAtK.equals("this") || itemAtK.equals("super")) {
+                ti = doGetClassInfo(itemAtK.equals("class") ? "java.lang.Class" : join(items, 0, k, "."));
                 if (!ti.isEmpty()) {
                     itemKind = !itemAtK.equals("this") ? 1 : !itemAtK.equals("super") ? 2 : 0;
                     ii = k + 1;
@@ -369,7 +372,7 @@ public class AutoCompleteProvider {
             // 3) "var.|"		- variable or field
             // 4) "String.|" 		- type imported or defined locally
             // 5) "java.|"   		- package
-            if (items.get(0).matches("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*")) {
+            if (Pattern.compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*").matcher(items.get(0)).find()) {
                 String ident = items.get(0).replaceAll("\\s", "");
                 if (SourceVersion.isKeyword(ident)) {
                     // 1)
@@ -405,7 +408,7 @@ public class AutoCompleteProvider {
                 }
             }
             //" method invocation:	"method().|"	- "this.method().|"
-            else if (items.get(0).matches("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*\\(")) {
+            else if (compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*\\(").matcher(items.get(0)).find()) {
                 ti = methodInvokecation(items.get(0), ti, itemKind);
             }
             //" array type, return `class`: "int[] [].|", "java.lang.String[].|", "NestedClass[].|"
@@ -421,7 +424,7 @@ public class AutoCompleteProvider {
             }
             //" class instance creation expr:	"new String().|", "new NonLoadableClass().|"
 //            " array creation expr:	"new int[i=1] [val()].|", "new java.lang.String[].|"
-            else if (items.get(0).matches("^new\\s+")) {
+            else if (compile("^new\\s+").matcher(items.get(0)).find()) {
                 String clean = items.get(0).replaceAll("^new\\s+", "");
                 clean = clean.replaceAll("\\s", "");
                 Pattern compile = compile("(" + Patterns.RE_QUALID + ")\\s*([(\\[])");
@@ -435,14 +438,14 @@ public class AutoCompleteProvider {
                 }
             }
             // " casting conversion:	"(Object)o.|"
-            else if (items.get(0).matches(Patterns.RE_CASTING.toString())) {
+            else if (Patterns.RE_CASTING.matcher(items.get(0)).find()) {
                 Matcher matcher = Patterns.RE_CASTING.matcher(items.get(0));
                 if (matcher.find()) {
                     ti = doGetClassInfo(matcher.group(1));
                 }
             }
             //" array access:	"var[i][j].|"		Note: "var[i][]" is incorrect
-            else if (items.get(0).matches(Patterns.RE_ARRAY_ACCESS.toString())) {
+            else if (Patterns.RE_ARRAY_ACCESS.matcher(items.get(0)).find()) {
                 Matcher matcher = Patterns.RE_ARRAY_ACCESS.matcher(items.get(0));
                 matcher.find();
                 String typeName = matcher.group(1);
@@ -452,7 +455,6 @@ public class AutoCompleteProvider {
                 }
             }
         }
-
         /**
          * next items
          */
@@ -550,7 +552,7 @@ public class AutoCompleteProvider {
     }
 
     private String join(ArrayList<String> items, int start, int end, String s) {
-        List<String> strings = items.subList(start, end);
+        List<String> strings = items.subList(start, end + 1);
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < strings.size(); i++) {
             result.append(strings.get(i)).append(i == strings.size() - 1 ? "" : s);

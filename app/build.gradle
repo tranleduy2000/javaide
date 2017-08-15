@@ -71,6 +71,8 @@ repositories {
     mavenCentral()
 }
 dependencies {
+    testCompile 'junit:junit:4.12'
+
     compile project(':pager')
     compile project(':colorpicker')
     compile project(':splitview')

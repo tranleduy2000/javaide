@@ -54,7 +54,8 @@ import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardLocation;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static com.google.common.base.Charsets.UTF_8;
+
 
 /**
  * This is google-java-format, a new Java formatter that follows the Google Java Style Guide quite

@@ -121,16 +121,18 @@ public class AutoCompleteProvider {
                         dotExpr = statement.substring(matcher.end());
                     }
                 }
-            } else if (compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
+            }
+            //String literal
+            else if (compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
                 dotExpr = statement.replaceAll("\\s*\\.\\s*$", ".");
-                //// TODO: 13-Aug-17  string type
                 return selectionStart - incomplete.length();
-            } else {
-                //" type declaration		NOTE: not supported generic yet.
-                int indexType = PatternFactory.lastMatch(statement, "\\s*" + Patterns.RE_TYPE_DECL);
-                if (indexType != -1) {
-                    dotExpr = statement.substring(indexType);
-                    if (!dotExpr.matches("^\\s*(extend|implements)\\s+")) {
+            }
+            //" type declaration		NOTE: not supported generic yet.
+            else {
+                Matcher matcher = compile("^\\s*" + Patterns.RE_TYPE_DECL).matcher(statement);
+                if (matcher.find()) {
+                    dotExpr = statement.substring(matcher.start());
+                    if (!compile("^\\s*(extend|implements)\\s+").matcher(dotExpr).find()) {
                         // TODO: 13-Aug-17 suggest class
                         return -1;
                     }
@@ -148,7 +150,7 @@ public class AutoCompleteProvider {
             return selectionStart - incomplete.length();
         }
         //	" method parameters, treat methodname or 'new' as an incomplete word
-        else if (statement.matches("\\(\\s*$")) {
+        else if (compile("\\(\\s*$").matcher(statement).find()) {
             //" TODO: Need to exclude method declaration?
             contextType = CONTEXT_METHOD_PARAM;
             int pos = statement.lastIndexOf("(");
@@ -165,7 +167,9 @@ public class AutoCompleteProvider {
                     return selectionStart - dotExpr.length();
                 }
             } else { //in case \(\s*$
-                pos = PatternFactory.lastMatch(statement, "\\s*" + Patterns.RE_IDENTIFIER + "$");
+                Matcher matcher = compile("\\s*" + Patterns.RE_IDENTIFIER + "$").matcher(statement);
+                matcher.find();
+                pos = matcher.start();
                 //case: "method(|)", "this(|)", "super(|)"
                 if (pos == 0) {
                     statement = statement.replaceAll("^\\s*", "");
@@ -589,11 +593,11 @@ public class AutoCompleteProvider {
             if (newCursor == 0) break;
             char c = editor.getText().charAt(newCursor);
             if (c == '{' || c == '}' || c == ';') {
+                newCursor++;
                 break;
             }
             newCursor--;
         }
-        newCursor++;
         String statement = editor.getText().subSequence(newCursor, oldCursor).toString();
         return mergeLine(statement);
     }

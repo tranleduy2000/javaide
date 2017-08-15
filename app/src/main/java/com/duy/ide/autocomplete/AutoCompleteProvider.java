@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import javax.lang.model.SourceVersion;
 
 import static com.duy.ide.autocomplete.dex.JavaClassManager.determineClassName;
+import static java.util.regex.Pattern.compile;
 import static javax.lang.model.SourceVersion.isKeyword;
 
 
@@ -77,6 +78,7 @@ public class AutoCompleteProvider {
 
     private int findStart(EditText editor) {
         int selectionStart = editor.getSelectionStart();
+        Pattern pattern;
         //reset environment
         dotExpr = "";
         incomplete = "";
@@ -84,7 +86,7 @@ public class AutoCompleteProvider {
 
         statement = getStatement(editor); //ok
         Log.d(TAG, "findStart statement = " + statement);
-        if (statement.matches("[.0-9A-Za-z_]\\s*$")) {
+        if (compile("[.0-9A-Za-z_]\\s*$").matcher(statement).find()) {
             boolean valid = true;
             if (statement.matches("\\.\\s*$")) {
                 valid = statement.matches("[\")0-9A-Za-z_\\]]\\s*\\.\\s*$")
@@ -96,29 +98,30 @@ public class AutoCompleteProvider {
             }
             contextType = CONTEXT_AFTER_DOT;
             //import or package declaration
-            if (statement.matches("^\\s*(import|package)\\s+")) {
+            if (compile("^\\s*(import|package)\\s+").matcher(statement).find()) {
                 statement = statement.replaceAll("\\s+\\.", ".");
                 statement = statement.replaceAll("\\.\\s+", ".");
-                if (statement.matches("^\\s*(import)\\s+")) {
-                    if (statement.matches("^\\s*(import)\\s+(static)\\s+")) {
+                if (compile("^\\s*(import)\\s+").matcher(statement).find()) {
+                    //static import
+                    if (compile("^\\s*(import)\\s+(static)\\s+").matcher(statement).find()) {
                         contextType = CONTEXT_IMPORT_STATIC;
-                    } else {
+                    } else { //normal import
                         contextType = CONTEXT_IMPORT;
                     }
-                    Pattern importStatic = Pattern.compile("^\\s*(import)\\s+(static\\s+)?");
+                    Pattern importStatic = compile("^\\s*(import)\\s+(static\\s+)?");
                     Matcher matcher = importStatic.matcher(statement);
                     if (matcher.find()) {
                         dotExpr = statement.substring(matcher.end() + 1);
                     }
                 } else {
                     contextType = CONTEXT_PACKAGE_DECL;
-                    Pattern _package = Pattern.compile("^\\s*(package)\\s+?");
+                    Pattern _package = compile("^\\s*(package)\\s+?");
                     Matcher matcher = _package.matcher(statement);
                     if (matcher.find()) {
-                        dotExpr = statement.substring(matcher.end() + 1);
+                        dotExpr = statement.substring(matcher.end());
                     }
                 }
-            } else if (statement.matches("\"\\s*\\.\\s*$")) {
+            } else if (compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
                 dotExpr = statement.replaceAll("\\s*\\.\\s*$", ".");
                 //// TODO: 13-Aug-17  string type
                 return selectionStart - incomplete.length();
@@ -153,7 +156,7 @@ public class AutoCompleteProvider {
             selectionStart = selectionStart - (statement.length() - pos);
             statement = statement.replaceAll("\\s*\\(\\s*$", "");
             //" new ClassName?
-            String str = PatternFactory.match(statement, Pattern.compile("^new\\s+" + Patterns.RE_QUALID + "$"));
+            String str = PatternFactory.match(statement, compile("^new\\s+" + Patterns.RE_QUALID + "$"));
             if (str != null) {
                 str = str.replaceAll("^new\\s+", "");
                 if (!Patterns.KEYWORDS.matcher(str).find()) {
@@ -414,7 +417,7 @@ public class AutoCompleteProvider {
             else if (items.get(0).matches("^new\\s+")) {
                 String clean = items.get(0).replaceAll("^new\\s+", "");
                 clean = clean.replaceAll("\\s", "");
-                Pattern compile = Pattern.compile("(" + Patterns.RE_QUALID + ")\\s*([(\\[])");
+                Pattern compile = compile("(" + Patterns.RE_QUALID + ")\\s*([(\\[])");
                 Matcher matcher = compile.matcher(clean);
                 if (matcher.find()) {
                     if (matcher.group(2).charAt(0) == '[') {
@@ -516,9 +519,9 @@ public class AutoCompleteProvider {
         ArrayList<String> items = new ArrayList<>();
         int s = 0;
         //recognize ClassInstanceCreationExpr as a whole
-        int e = PatternFactory.lastMatch(expr, Pattern.compile("^new\\s+" + Patterns.RE_QUALID + "\\s*[(\\]]")) - 1;
+        int e = PatternFactory.lastMatch(expr, compile("^new\\s+" + Patterns.RE_QUALID + "\\s*[(\\]]")) - 1;
         if (e < 0) {//not found
-            e = PatternFactory.firstMatch(expr, Pattern.compile("[.(\\[]"));
+            e = PatternFactory.firstMatch(expr, compile("[.(\\[]"));
         }
         boolean isParen = false;
         while (e >= 0) {
@@ -533,7 +536,7 @@ public class AutoCompleteProvider {
                 if (e < 0) {
                     break;
                 } else {
-                    e = PatternFactory.matchEnd(expr, Pattern.compile("^\\s*[.\\[]"), e + 1) - 1;
+                    e = PatternFactory.matchEnd(expr, compile("^\\s*[.\\[]"), e + 1) - 1;
                     continue;
                 }
             } else if (expr.charAt(e) == '[') {
@@ -541,11 +544,11 @@ public class AutoCompleteProvider {
                 if (e < 0) {
                     break;
                 } else {
-                    e = PatternFactory.matchEnd(expr, Pattern.compile("^\\s*[.\\[]"), e + 1) - 1;
+                    e = PatternFactory.matchEnd(expr, compile("^\\s*[.\\[]"), e + 1) - 1;
                     continue;
                 }
             }
-            e = PatternFactory.matchEnd(expr, Pattern.compile("[.(\\[]"), s);
+            e = PatternFactory.matchEnd(expr, compile("[.(\\[]"), s);
         }
         String tail = expr.substring(s);
         if (!tail.matches("^\\s*$")) {//is empty
@@ -622,6 +625,7 @@ public class AutoCompleteProvider {
         }
         code = removeComment(code); //clear all comment
         code = code.replaceAll(Patterns.STRINGS.toString(), "\"\""); //clear all string content
+        code = code.replaceAll("[\n\t\r]", "");
         return code;
     }
 

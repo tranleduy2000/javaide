@@ -128,7 +128,7 @@ public class AutoCompleteProvider {
                 if (indexType != -1) {
                     dotExpr = statement.substring(indexType);
                     if (!dotExpr.matches("^\\s*(extend|implements)\\s+")) {
-                        // TODO: 13-Aug-17 don't need suggest
+                        // TODO: 13-Aug-17 suggest class
                         return -1;
                     }
                     contextType = CONTEXT_NEED_TYPE;
@@ -596,7 +596,7 @@ public class AutoCompleteProvider {
     }
 
     private String mergeLine(String statement) {
-        statement = prune(statement);
+        statement = cleanStatement(statement);
         return statement;
     }
 
@@ -616,13 +616,12 @@ public class AutoCompleteProvider {
      * set string literal empty, remove comments, trim begining or ending spaces
      * test case: ' 	sb. /* block comment"/ append( "stringliteral" ) // comment '
      */
-    private String prune(String code) {
+    private String cleanStatement(String code) {
         if (code.matches("\\s*")) {
             return "";
         }
         code = removeComment(code); //clear all comment
         code = code.replaceAll(Patterns.STRINGS.toString(), "\"\""); //clear all string content
-        code = code.replaceAll("\\s", "");//clear all space
         return code;
     }
 

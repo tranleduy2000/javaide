@@ -225,7 +225,7 @@ public class JavaClassReader {
     @Nullable
     private List<Pair<String, Class>> binarySearch(ArrayList<Pair<String, Class>> classes, String simpleName) {
         //find left index
-        int start = 0, end = 0;
+        int start = -1, end = -1;
         int left = 0;
         int right = classes.size() - 1;
         //search left most
@@ -238,32 +238,20 @@ public class JavaClassReader {
             } else if (midValue.compareTo(simpleName) > 0) {
                 right = mid - 1;
             } else {
+                start = mid;
+                end = mid;
                 //exit here
-                while (mid >= 0 && classes.get(mid).first.substring(0, Math.min(classes.get(mid).first.length(),
+                while (start >= 0 && classes.get(start).first.substring(0, Math.min(classes.get(start).first.length(),
                         simpleName.length())).equals(simpleName)) {
-                    mid--;
+                    start--;
                 }
-                start = mid + 1;
-                break;
-            }
-        }
-        left = start >= 0 ? start : 0;
-        right = classes.size() - 1;
-        while (left <= right) {
-            int mid = (left + right) / 2;
-            String midValue = classes.get(mid).first.substring(0, Math.min(classes.get(mid).first.length(),
-                    simpleName.length()));
-            if (midValue.compareTo(simpleName) < 0) { //mid < key
-                left = mid + 1;
-            } else if (midValue.compareTo(simpleName) > 0) {
-                right = mid - 1;
-            } else {
                 //exit here
-                while (mid < classes.size() && classes.get(mid).first.substring(0, Math.min(classes.get(mid).first.length(),
+                while (end < classes.size() && classes.get(end).first.substring(0, Math.min(classes.get(end).first.length(),
                         simpleName.length())).equals(simpleName)) {
-                    mid++;
+                    end++;
                 }
-                end = mid - 1;
+                start++;
+                end--;
                 break;
             }
         }

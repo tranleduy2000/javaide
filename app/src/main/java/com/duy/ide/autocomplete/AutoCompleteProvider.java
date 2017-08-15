@@ -82,7 +82,8 @@ public class AutoCompleteProvider {
         incomplete = "";
         contextType = CONTEXT_OTHER;
 
-        statement = getStatement(editor);
+        statement = getStatement(editor); //ok
+        Log.d(TAG, "findStart statement = " + statement);
         if (statement.matches("[.0-9A-Za-z_]\\s*$")) {
             boolean valid = true;
             if (statement.matches("\\.\\s*$")) {
@@ -569,21 +570,38 @@ public class AutoCompleteProvider {
     /**
      * " Search back from the cursor position till meeting '{' or ';'.
      * " '{' means statement start, ';' means end of a previous statement.
-     * " Return: statement before cursor
-     * " Note: It's the base for parsing. And It's OK for most cases.
      *
-     * @param editor
-     * @return
+     * @return statement before cursor
+     * " Note: It's the base for parsing. And It's OK for most cases.
      */
+    @NonNull
     private String getStatement(EditText editor) {
-        String currentLine = getCurrentLine();
-        if (currentLine.matches("^\\s*(import|package)\\s+")) {
+        String lineBeforeCursor = getCurrentLine(editor);
+        if (lineBeforeCursor.matches("^\\s*(import|package)\\s+")) {
+            return lineBeforeCursor;
         }
-        return null;
+        int oldCursor = editor.getSelectionStart();
+        int newCursor = oldCursor;
+        while (true) {
+            if (newCursor == 0) break;
+            char c = editor.getText().charAt(newCursor);
+            if (c == '{' || c == '}' || c == ';') {
+                break;
+            }
+            newCursor--;
+        }
+        newCursor++;
+        String statement = editor.getText().subSequence(newCursor, oldCursor).toString();
+        return mergeLine(statement);
     }
 
-    private String getCurrentLine() {
-        return null;
+    private String mergeLine(String statement) {
+        statement = prune(statement);
+        return statement;
+    }
+
+    private String getCurrentLine(EditText editText) {
+        return EditorUtil.getLineBeforeCursor(editText, editText.getSelectionStart());
     }
 
     private int findChar(EditText editor, String s) {
@@ -602,8 +620,9 @@ public class AutoCompleteProvider {
         if (code.matches("\\s*")) {
             return "";
         }
-        code = removeComment(code);
-        code = code.replaceAll(Patterns.STRINGS.toString(), "\"\"");
+        code = removeComment(code); //clear all comment
+        code = code.replaceAll(Patterns.STRINGS.toString(), "\"\""); //clear all string content
+        code = code.replaceAll("\\s", "");//clear all space
         return code;
     }
 
@@ -632,6 +651,12 @@ public class AutoCompleteProvider {
 
 
     public ArrayList<Description> getSuggestions(EditText editor, int position) {
+        try {
+            int start = findStart(editor);
+            Log.d(TAG, "getSuggestions start = " + start);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // text: 'package.Class.me', prefix: 'package.Class', suffix: 'me'
         // text: 'package.Cla', prefix: 'package', suffix: 'Cla'
         // text: 'Cla', prefix: '', suffix: 'Cla'

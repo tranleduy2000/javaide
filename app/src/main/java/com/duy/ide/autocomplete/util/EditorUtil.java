@@ -17,6 +17,8 @@ import java.util.regex.Matcher;
 
 public class EditorUtil {
 
+    private static final String TAG = "EditorUtil";
+
     public EditorUtil() {
     }
 
@@ -28,8 +30,6 @@ public class EditorUtil {
         }
         return null;
     }
-
-    private static final String TAG = "EditorUtil";
 
     public static String getCurrentClassName(EditText editor) {
         // TODO: 21-Jul-17
@@ -109,6 +109,11 @@ public class EditorUtil {
         return split.length >= 2 ? split[split.length - 2] : null;
     }
 
-
-
+    @NonNull
+    public static String getLineBeforeCursor(EditText editText, int pos) {
+        if (pos < 0 || pos > editText.length()) return "";
+        int line = LineUtils.getLineFromIndex(pos, editText.getLayout().getLineCount(), editText.getLayout());
+        int lineStart = editText.getLayout().getLineStart(line);
+        return editText.getText().subSequence(lineStart, pos).toString();
+    }
 }

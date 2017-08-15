@@ -23,7 +23,7 @@ public class JavaClassManager {
     private static final String TAG = "JavaClassManager";
 
     public static ArrayList<String> determineClassName(EditText editor, int pos, String text,
-                                                       @NonNull String prefix, String suffix) {
+                                                       @NonNull String prefix) {
 
         try {
             ArrayList<String> classNames = null;

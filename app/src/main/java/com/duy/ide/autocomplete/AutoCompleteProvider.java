@@ -31,9 +31,9 @@ import java.util.regex.Pattern;
 
 import javax.lang.model.SourceVersion;
 
+import static com.duy.ide.autocomplete.autocomplete.PatternFactory.lastMatchStr;
 import static com.duy.ide.autocomplete.dex.JavaClassManager.determineClassName;
 import static java.util.regex.Pattern.compile;
-import static javax.lang.model.SourceVersion.isKeyword;
 
 
 /**
@@ -209,7 +209,7 @@ public class AutoCompleteProvider {
 
         if (!dotExpr.matches("^\\s*$")) { //if not empty
             if (contextType == CONTEXT_AFTER_DOT) {
-                result = completeAfterDot(dotExpr);
+                result = completeAfterDot(editor, dotExpr);
             } else if (contextType == CONTEXT_IMPORT || contextType == CONTEXT_IMPORT_STATIC
                     || contextType == CONTEXT_PACKAGE_DECL || contextType == CONTEXT_NEED_TYPE) {
                 result = getMember(dotExpr);
@@ -217,7 +217,7 @@ public class AutoCompleteProvider {
                 if (incomplete.equals("+")) {
                     result = getConstructorList(dotExpr);
                 } else {
-                    result = completeAfterDot(dotExpr);
+                    result = completeAfterDot(editor, dotExpr);
                 }
             }
         }
@@ -310,7 +310,7 @@ public class AutoCompleteProvider {
      * " Precondition:	expr must end with '.'
      * " return members of the value of expression
      */
-    private ArrayList<? extends Description> completeAfterDot(String dotExpr) {
+    private ArrayList<? extends Description> completeAfterDot(EditText editor, String dotExpr) {
         ArrayList<String> items = parseExpr(dotExpr);
         if (items.size() == 0) {
             return new ArrayList<>();
@@ -329,8 +329,8 @@ public class AutoCompleteProvider {
          " optimized process
          " search the longest expr consisting of ident
          */
-        int i = 1, k = 1;
-        while (i < items.size() && items.get(i).matches("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*$")) {
+        int i = 0, k = 0;
+        while (i < items.size() && compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*$").matcher(items.get(i)).find()) {
             String ident = items.get(i).replaceAll("\\s", "");
             if (ident.equals("class") || ident.equals("this") || ident.equals("super")) {
                 k = i;
@@ -342,7 +342,7 @@ public class AutoCompleteProvider {
             items.set(i, items.get(i).replaceAll("\\s", ""));
             i++;
         }
-        if (i > 1) {
+        if (i > 0) {
             //  " cases: "this.|", "super.|", "ClassName.this.|", "ClassName.super.|", "TypeName.class.|"
             String itemAtK = items.get(k);
             if (!itemAtK.equals("class") || !itemAtK.equals("this") || !itemAtK.equals("super")) {
@@ -384,7 +384,7 @@ public class AutoCompleteProvider {
                     }
                 } else {
                     // 3)
-                    String typeName = getDelaredClassName(ident);
+                    String typeName = getDeclaredClassName(editor, ident);
                     if (!typeName.isEmpty()) {
                         if (typeName.charAt(0) == '[' && typeName.charAt(typeName.length() - 1) == ']') {
                             ti = doGetClassInfo(Object[].class.getName());
@@ -446,7 +446,7 @@ public class AutoCompleteProvider {
                 Matcher matcher = Patterns.RE_ARRAY_ACCESS.matcher(items.get(0));
                 matcher.find();
                 String typeName = matcher.group(1);
-                typeName = getDelaredClassName(typeName);
+                typeName = getDeclaredClassName(editor, typeName);
                 if (!typeName.isEmpty()) {
                     ti = arrayAcesss(typeName, items.get(0));
                 }
@@ -476,12 +476,44 @@ public class AutoCompleteProvider {
         return ti;
     }
 
-    private String getDelaredClassName(String ident) {
-        return null;
+    private String getDeclaredClassName(EditText editor, String ident) {
+        ident = ident.trim();
+        if (compile("this|super").matcher(ident).find()) {
+            return ident;
+        }
+        /*
+         " code sample:
+         " String tmp; java.
+         " 	lang.  String str, value;
+         " for (int i = 0, j = 0; i < 10; i++) {
+         "   j = 0;
+         " }
+         */
+        int pos = editor.getSelectionStart();
+        int start = Math.max(0, pos - 2500);
+        CharSequence range = editor.getText().subSequence(start, pos);
+
+        //BigInteger num = new BigInteger(); -> BigInteger num =
+        String instance = lastMatchStr(range, PatternFactory.makeInstance(ident));
+        if (instance != null) {
+            //BigInteger num =  -> BigInteger
+            instance = instance.replaceAll("(\\s?)(" + ident + ")(\\s?[,;=)])", "").trim(); //clear name
+            //generic ArrayList<String> -> ArrayList
+            ident = instance.replaceAll("<.*>", ""); //clear generic
+        }
+        return ident;
+    }
+
+    private ArrayList<Description> getVariableDeclaration() {
+        return new ArrayList<>();
     }
 
     private boolean isBuiltinType(String ident) {
-        return false;
+        return Patterns.PRIMITIVE_TYPES.matcher(ident).find();
+    }
+
+    private boolean isKeyword(String ident) {
+        return Patterns.RE_KEYWORDS.matcher(ident).find();
     }
 
     @NonNull
@@ -505,10 +537,15 @@ public class AutoCompleteProvider {
         return result;
     }
 
-    private ArrayList<Description> doGetClassInfo(String className) {
+    private ArrayList<Description> doGetClassInfo(String simpleOrFull) {
         ArrayList<Description> descriptions = new ArrayList<>();
-        ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(className, null);
-        descriptions.add(classDescription);
+        ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(simpleOrFull, null);
+        if (classDescription != null) {
+            descriptions.add(classDescription);
+        } else {
+            ArrayList<ClassDescription> aClass = mClassLoader.getClassReader().findClass(simpleOrFull);
+            descriptions.addAll(aClass);
+        }
         return descriptions;
     }
 
@@ -520,7 +557,6 @@ public class AutoCompleteProvider {
         }
         return result.toString();
     }
-
 
     private ArrayList<String> parseExpr(String expr) {
         ArrayList<String> items = new ArrayList<>();
@@ -662,8 +698,8 @@ public class AutoCompleteProvider {
 
     public ArrayList<Description> getSuggestions(EditText editor, int position) {
         try {
-            int start = findStart(editor);
-            Log.d(TAG, "getSuggestions start = " + start);
+            this.findStart(editor);
+            this.complete(editor);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -713,7 +749,7 @@ public class AutoCompleteProvider {
 
 
         if (result == null || result.size() == 0) {
-            ArrayList<String> classes = determineClassName(editor, position, current, prefix, suffix);
+            ArrayList<String> classes = determineClassName(editor, position, current, prefix);
             if (classes != null) {
                 for (String className : classes) {
                     JavaClassReader classReader = mClassLoader.getClassReader();

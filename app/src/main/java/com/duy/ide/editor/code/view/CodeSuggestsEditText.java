@@ -269,7 +269,6 @@ public abstract class CodeSuggestsEditText extends IndentEditText
     private class GenerateSuggestDataTask extends AsyncTask<Void, Void, ArrayList<Description>> {
         private final EditText editText;
         private final AutoCompleteProvider provider;
-        private int selection;
 
         GenerateSuggestDataTask(@NonNull EditText editText, @NonNull AutoCompleteProvider provider) {
             Log.d(TAG, "GenerateSuggestDataTask() called with: editText = [" + editText + "], provider = [" + provider + "]");
@@ -283,13 +282,12 @@ public abstract class CodeSuggestsEditText extends IndentEditText
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            this.selection = editText.getSelectionEnd();
         }
 
         @Override
         protected ArrayList<Description> doInBackground(Void... params) {
             try {
-                return provider.getSuggestions(editText).fst;
+                return provider.getSuggestions(editText);
             } catch (Exception e) {
                 e.printStackTrace();
             }

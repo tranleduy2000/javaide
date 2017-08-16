@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.android.annotations.NonNull;
+import com.android.annotations.Nullable;
 import com.duy.ide.autocomplete.autocomplete.AutoCompletePackage;
 import com.duy.ide.autocomplete.autocomplete.PackageImporter;
 import com.duy.ide.autocomplete.autocomplete.PatternFactory;
@@ -24,7 +25,6 @@ import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.google.common.collect.Lists;
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.util.Pair;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -40,8 +40,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.lang.model.SourceVersion;
-import javax.tools.Diagnostic;
-import javax.tools.JavaFileObject;
 
 import static com.duy.ide.autocomplete.autocomplete.PatternFactory.lastMatchStr;
 import static com.duy.ide.autocomplete.util.EditorUtil.getPossibleClassName;
@@ -79,6 +77,7 @@ public class AutoCompleteProvider {
     private AutoCompletePackage mPackageProvider;
     private JavaParser mJavaParser;
 
+    @Nullable
     private JCTree.JCCompilationUnit unit;
     private String source;
     private int cursor;
@@ -94,7 +93,6 @@ public class AutoCompleteProvider {
      * 5. method(
      */
     private String incomplete = "";
-    private String errorMsg;
     @ContextType
     private int contextType = CONTEXT_OTHER;
 
@@ -108,7 +106,11 @@ public class AutoCompleteProvider {
     private void initializer(EditText editor) {
         this.cursor = editor.getSelectionStart();
         this.source = editor.getText().toString();
-        this.unit = mJavaParser.parse(source);
+        try {
+            this.unit = mJavaParser.parse(source);
+        } catch (Exception e) {
+            this.unit = null;
+        }
 
         //reset environment
         dotExpr = "";
@@ -292,11 +294,6 @@ public class AutoCompleteProvider {
                     break;
             }
         }
-        if (result.size() > 0) {
-            if (incomplete.length() > 0) {
-                result = filter(result, incomplete);
-            }
-        }
         return result;
     }
 
@@ -304,7 +301,7 @@ public class AutoCompleteProvider {
         ArrayList<Description> result = new ArrayList<>();
         for (Description s : input) {
             // TODO: 14-Aug-17 improve
-            if (s.getName().startsWith(incomplete)) {
+            if (s.getName().contains(incomplete)) {
                 result.add(s);
             }
         }
@@ -316,6 +313,7 @@ public class AutoCompleteProvider {
      * " return all the matched, variables, fields, methods, types, packages
      */
     private ArrayList<Description> completeWord(EditText editor, String incomplete) {
+        incomplete = incomplete.trim();
         ArrayList<Description> result = new ArrayList<>();
         if (contextType != CONTEXT_PACKAGE_DECL) {
             //parse current file
@@ -631,8 +629,7 @@ public class AutoCompleteProvider {
                 }
             }
         }
-
-        return ti;
+        return filter(ti, incomplete);
     }
 
     private ArrayList<Description> arrayAcesss(String typeName, String s) {
@@ -744,16 +741,21 @@ public class AutoCompleteProvider {
         ArrayList<String> items = new ArrayList<>();
         // TODO: 16-Aug-17 improve
         if (true) {
+            expr = expr.trim();
             String[] split = expr.trim().split(".");
-            for (String s : split) {
-                items.add(s);
+            if (split.length > 0) {
+                for (String s : split) {
+                    items.add(s);
+                }
+            } else {
+                items.add(expr);
             }
             return items;
         }
 
         //recognize ClassInstanceCreationExpr as a whole
         //case: new String() , new int[]  , new char []
-        Matcher matcher = compile("^new\\s+" + Patterns.RE_QUALID + "\\s*[(\\]]").matcher(expr);
+        Matcher matcher = compile("^\\s*new\\s+" + Patterns.RE_QUALID + "\\s*[(\\]]").matcher(expr);
         int e = -1;
         if (matcher.find()) {
             e = matcher.end() - 1;
@@ -975,14 +977,15 @@ public class AutoCompleteProvider {
         return mClassLoader.getClassReader().isLoaded();
     }
 
-    public Pair<ArrayList<Description>, List<Diagnostic<? extends JavaFileObject>>> getSuggestions(EditText editor) {
+    public ArrayList<Description> getSuggestions(EditText editor) {
         try {
             this.initializer(editor);
-            return new Pair<>(complete(editor), mJavaParser.getDiagnostics());
+            ArrayList<Description> complete = complete(editor);
+            return complete;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
 

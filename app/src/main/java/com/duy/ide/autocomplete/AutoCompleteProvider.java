@@ -121,7 +121,7 @@ public class AutoCompleteProvider {
             boolean valid = true;
             if (compile("\\.\\s*$").matcher(statement).find()) {
                 valid = compile("[\")0-9A-Za-z_\\]]\\s*\\.\\s*$").matcher(statement).find()
-                        && compile("(" + Patterns.RE_KEYWORDS.toString() + ")\\.\\s*").matcher(statement).find();
+                        && !compile("(" + Patterns.RE_KEYWORDS.toString() + ")\\.\\s*").matcher(statement).find();
             }
             if (!valid) return;
 

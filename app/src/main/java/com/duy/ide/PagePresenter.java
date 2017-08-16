@@ -180,6 +180,9 @@ public class PagePresenter implements EditPageContract.Presenter {
 
     @Override
     public void removePage(int position) {
+        if (position >= mPageAdapter.getCount()) {
+            return;
+        }
         Fragment existingFragment = mPageAdapter.getExistingFragment(position);
         if (existingFragment == null) {
             if (DLog.DEBUG) DLog.d(TAG, "removePage: " + "null page " + position);

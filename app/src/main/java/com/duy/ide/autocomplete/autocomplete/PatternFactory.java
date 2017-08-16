@@ -34,7 +34,7 @@ public class PatternFactory {
     public static final String GENERIC_STR = "<[A-Z][a-zA-Z0-9_<>, ]*>";
 
     /*Match file*/
-    public static final Pattern JAVA_FILE = Pattern.compile(PatternFactory.IDENTIFIER_STR + "\\.java");
+    public static final Pattern JAVA_FILE = Pattern.compile(PatternFactory.IDENTIFIER_STR + "\\.java[^\\w]");
     public static final Pattern JAVA_FILE_LINE_COL = Pattern.compile(PatternFactory.IDENTIFIER_STR
             + "\\.java[0-9]+:[0-9]+");
 

@@ -93,27 +93,7 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
 
     @Override
     public void appendOut(final byte[] chars, final int start, final int end) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                CharSequence charSequence = new String(chars).subSequence(start, end);
-                SpannableString spannableString = new SpannableString(charSequence);
-                Matcher matcher = PatternFactory.JAVA_FILE.matcher(spannableString);
-                int color = ContextCompat.getColor(getContext(), R.color.dark_color_file_java);
-                while (matcher.find()) {
-                    spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
-                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-                matcher = PatternFactory.JAVA_FILE_LINE_COL.matcher(spannableString);
-                while (matcher.find()) {
-                    spannableString.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(),
-                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-                mCompileMsg.append(spannableString);
-                mScrollView.fullScroll(View.FOCUS_DOWN);
-            }
-        });
-
+        append(new String(chars, start, end));
     }
 
     @Override

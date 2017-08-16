@@ -16,12 +16,12 @@
 
 package com.duy.ide.editor.code;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -33,6 +33,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -505,16 +506,22 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
             return false;
         }
         try {
+            Uri uri;
+            if (Build.VERSION.SDK_INT >= 24) {
+                uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", file);
+            } else {
+                uri = Uri.fromFile(file);
+            }
             //create intent open file
             MimeTypeMap myMime = MimeTypeMap.getSingleton();
             Intent intent = new Intent(Intent.ACTION_VIEW);
             String ext = FileUtils.fileExt(file.getPath());
             String mimeType = myMime.getMimeTypeFromExtension(ext != null ? ext : "");
-            intent.setDataAndType(Uri.fromFile(file), mimeType);
+            intent.setDataAndType(uri, mimeType);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(intent);
-        } catch (ActivityNotFoundException e) {
+        } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
         return true;

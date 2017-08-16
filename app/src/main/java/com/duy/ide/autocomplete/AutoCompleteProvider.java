@@ -158,7 +158,7 @@ public class AutoCompleteProvider {
             //" all cases: " java.ut|" or " java.util.|" or "ja|"
             if (dotExpr.contains(".")) {
                 incomplete = dotExpr.substring(dotExpr.lastIndexOf(".") + 1);
-                dotExpr = dotExpr.substring(0, dotExpr.lastIndexOf("."));
+                dotExpr = dotExpr.substring(0, dotExpr.lastIndexOf(".") + 1); //include "." character
             } else {
                 incomplete = dotExpr;
                 dotExpr = "";
@@ -317,10 +317,11 @@ public class AutoCompleteProvider {
                                 }
                                 //if the cursor in method scope
                                 if (method.getStartPosition() <= editor.getSelectionStart()
-                                        && method.getBody().getEndPosition(unit.endPositions) >= editor.getSelectionStart()){
+                                        && method.getBody().getEndPosition(unit.endPositions) >= editor.getSelectionStart()) {
+                                    //add field from start position of method to the cursor
                                     com.sun.tools.javac.util.List<JCTree.JCStatement> statements = method.getBody().getStatements();
                                     for (JCTree.JCStatement jcStatement : statements) {
-                                        if (jcStatement instanceof JCTree.JCVariableDecl){
+                                        if (jcStatement instanceof JCTree.JCVariableDecl) {
                                             JCTree.JCVariableDecl field = (JCTree.JCVariableDecl) jcStatement;
                                             if (field.getName().toString().startsWith(incomplete)) {
                                                 result.add(new FieldDescription(
@@ -328,6 +329,17 @@ public class AutoCompleteProvider {
                                                         field.getType().toString(),
                                                         (int) field.getModifiers().flags));
                                             }
+                                        }
+                                    }
+                                    //add params
+                                    com.sun.tools.javac.util.List<JCTree.JCVariableDecl> parameters = method.getParameters();
+                                    for (JCTree.JCVariableDecl parameter : parameters) {
+                                        JCTree.JCVariableDecl field = parameter;
+                                        if (field.getName().toString().startsWith(incomplete)) {
+                                            result.add(new FieldDescription(
+                                                    field.getName().toString(),
+                                                    field.getType().toString(),
+                                                    (int) field.getModifiers().flags));
                                         }
                                     }
                                 }
@@ -533,6 +545,7 @@ public class AutoCompleteProvider {
         /**
          * next items
          */
+
         return ti;
     }
 
@@ -643,15 +656,24 @@ public class AutoCompleteProvider {
 
     private ArrayList<String> parseExpr(String expr) {
         ArrayList<String> items = new ArrayList<>();
-        int s = 0;
         //recognize ClassInstanceCreationExpr as a whole
-        int e = PatternFactory.lastMatch(expr, compile("^new\\s+" + Patterns.RE_QUALID + "\\s*[(\\]]")) - 1;
-        if (e < 0) {//not found
-            e = PatternFactory.firstMatch(expr, compile("[.(\\[]"));
+        //case: new String() , new int[]  , new char []
+        Matcher matcher = compile("^new\\s+" + Patterns.RE_QUALID + "\\s*[(\\]]").matcher(expr);
+        int e = -1;
+        if (matcher.find()) {
+            e = matcher.end() - 1;
         }
+        if (e < 0) {//not found
+            matcher = compile("[.(\\[]").matcher(expr); //case: str. , method(, arrayAccess[1]
+            if (matcher.find()) {
+                e = matcher.start();
+            }
+        }
+
+        int s = 0;
         boolean isParen = false;
-        while (e >= 0) {
-            if (expr.charAt(e) == '.') {
+        while (e >= 0) { //found . or ( or [
+            if (expr.charAt(e) == '.') { //found .
                 String subExpr = expr.substring(s, e);
                 items.addAll(isParen ? processParentheses(subExpr) : Lists.newArrayList(subExpr));
                 isParen = false;
@@ -687,8 +709,70 @@ public class AutoCompleteProvider {
         return 0;
     }
 
-    private ArrayList<String> processParentheses(String subExpr) {
+    //" Given optional argument, call s:ParseExpr() to parser the nonparentheses expr
+    private ArrayList<String> processParentheses(String expr) {
+        Pattern pattern = compile("^\\s*\\(");
+        Matcher matcher = pattern.matcher(expr);
+        int s;
+        if (matcher.find()) {
+            s = matcher.end();
+        } else {
+            s = -1;
+        }
+        if (s != -1) {
+            int e = getMatchedIndexEx(expr, s - 1, '(', ')');
+            if (e >= 0) {
+                String tail = expr.substring(e + 1);
+                if (compile("^\\s*\\[").matcher(tail).find()) {
+
+                }
+            }
+        }
         return null;
+    }
+
+    /**
+     * " TODO: search pair used in string, like
+     * " 	'create(ao.fox("("), new String).foo().'
+     */
+    private int getMatchedIndexEx(String str, int index, char open, char close) {
+        int count = 1;
+        if (str.charAt(index) != open) {
+            return -1;
+        }
+        int i = 0;
+        while (i < str.length()) {
+            if (str.charAt(i) == open) {
+                count++;
+            } else if (str.charAt(i) == close) {
+                count--;
+                if (count == 0) {
+                    return i;
+                }
+            }
+            i++;
+        }
+        return -1;
+    }
+
+    private int searchPairBackward(String str, int index, char open, char close) {
+        int count = 1;
+        if (str.charAt(index) != open) {
+            return -1;
+        }
+        int i = 0;
+        while (i >= 0) {
+            if (str.charAt(i) == open) {
+                count--;
+                if (count == 0) {
+                    return i;
+                }
+            } else if (str.charAt(i) == close) {
+                count++;
+            }
+            i--;
+        }
+        return -1;
     }
 
     private String extractCleanExpr(String statement) {

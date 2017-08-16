@@ -108,7 +108,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
 
         void onComplete(JavaProjectFolder projectFile, List<Diagnostic> diagnostics);
 
-        void onNewMessage(char[] chars, int start, int end);
+        void onNewMessage(byte[] chars, int start, int end);
 
         void onNewMessage(String msg);
     }

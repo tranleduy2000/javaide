@@ -43,9 +43,9 @@ public class ConsoleEditText extends AppCompatEditText {
     private int mLength = 0;
 
     //out, in and err stream
-    private PrintStream outputStream;
-    private InputStream inputStream;
-    private PrintStream errorStream;
+    private  PrintStream outputStream;
+    private  InputStream inputStream;
+    private  PrintStream errorStream;
 
     /**
      * uses for input
@@ -89,14 +89,12 @@ public class ConsoleEditText extends AppCompatEditText {
     public ConsoleEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
-
     }
 
     public ConsoleEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
-
 
     private void init(Context context) {
         if (!isInEditMode()) {

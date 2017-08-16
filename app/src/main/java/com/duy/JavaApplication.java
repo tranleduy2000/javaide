@@ -3,6 +3,7 @@ package com.duy;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 
 import com.duy.ide.BuildConfig;
 import com.google.firebase.crash.FirebaseCrash;
@@ -72,10 +73,14 @@ public class JavaApplication extends MultiDexApplication {
         }
 
         public void add(PrintStream out) {
+            Log.d(TAG, "add() called with: out = [" + out + "]");
+
             this.streams.add(out);
         }
 
         public void remove(PrintStream out) {
+            Log.d(TAG, "remove() called with: out = [" + out + "]");
+
             this.streams.remove(out);
         }
 

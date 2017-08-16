@@ -365,7 +365,7 @@ public class MainActivity extends ProjectManagerActivity implements
             }
 
             @Override
-            public void onNewMessage(char[] chars, int start, int end) {
+            public void onNewMessage(byte[] chars, int start, int end) {
                 onNewMessage(new String(chars, start, end));
             }
 

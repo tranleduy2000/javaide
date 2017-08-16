@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import com.duy.JavaApplication;
 import com.duy.compile.CompileManager;
@@ -120,6 +121,8 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop() called");
+
         mConsoleEditText.stop();
         JavaApplication application = (JavaApplication) getApplication();
         application.removeErr(mConsoleEditText.getErrorStream());

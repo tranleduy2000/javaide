@@ -20,8 +20,8 @@ public class MessagePresenter implements MessageContract.Presenter {
     private ProjectManagerActivity activity;
     private BottomPageAdapter adapter;
     private MessageContract.View view;
-    private PrintStream out;
-    private PrintStream err;
+    private final PrintStream out;
+    private final PrintStream err;
 
     public MessagePresenter(ProjectManagerActivity activity, BottomPageAdapter adapter) {
         this.activity = activity;
@@ -30,10 +30,6 @@ public class MessagePresenter implements MessageContract.Presenter {
         if (view != null) {
             view.setPresenter(this);
         }
-        initIO();
-    }
-
-    private void initIO() {
         err = new PrintStream(new OutputStream() {
             @Override
             public void write(int b) throws IOException {

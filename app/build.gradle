@@ -34,7 +34,7 @@ android {
 
     productFlavors {
         dev {
-            minSdkVersion 21
+            minSdkVersion 19
         }
         prod {
             minSdkVersion rootProject.ext.minSdkVersion as Integer

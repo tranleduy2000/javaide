@@ -6,26 +6,45 @@ import com.duy.ide.autocomplete.util.JavaUtil;
 import com.duy.ide.editor.code.view.IndentEditText;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.util.ArrayList;
+
+import static com.duy.ide.autocomplete.model.DescriptionImpl.METHOD_DESC;
 
 /**
  * Created by Duy on 20-Jul-17.
  */
 
 public class MethodDescription implements Member, Description {
-
-    private Method method;
+    private String name, type;
+    private int modifiers;
     private String simpleName;
+    private ArrayList<String> parameterTypes = new ArrayList<>();
+
+    public MethodDescription(String name, String type, long modifiers, ArrayList<String> parameterTypes) {
+        this.name = name;
+        this.type = type;
+        this.modifiers = (int) modifiers;
+        this.parameterTypes = parameterTypes;
+    }
 
     public MethodDescription(@NonNull Method method) {
-        this.method = method;
-        method.getClass(); //check null
-        this.simpleName = JavaUtil.getSimpleName(method.getName());
+        this.name = method.getName();
+        this.modifiers = method.getModifiers();
+        this.type = method.getReturnType().getName();
+        this.simpleName = JavaUtil.getSimpleName(name);
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        for (Class<?> parameterType : parameterTypes) {
+            this.parameterTypes.add(parameterType.getName());
+        }
+    }
+
+    public ArrayList<String> getParameterTypes() {
+        return parameterTypes;
     }
 
     @Override
     public String getName() {
-        return method.getName();
+        return name;
     }
 
     @Override
@@ -44,13 +63,13 @@ public class MethodDescription implements Member, Description {
     }
 
     @Override
-    public Class getType() {
-        return method.getReturnType();
+    public String getType() {
+        return type;
     }
 
     @Override
     public String getSnippet() {
-        if (method.getParameterTypes().length > 0) {
+        if (getParameterTypes().size() > 0) {
             return getSimpleName() + "(" + IndentEditText.CURSOR + ");";
         } else {
             return getSimpleName() + "();" + IndentEditText.CURSOR;
@@ -58,33 +77,37 @@ public class MethodDescription implements Member, Description {
     }
 
     @Override
+    public int getDescriptionType() {
+        return METHOD_DESC;
+    }
+
+    @Override
     public String getPrototype() {
-        return method.getName() + "(" + Arrays.toString(method.getParameterTypes()) + ")";
+        return null;
     }
 
     @Override
     public String toString() {
-        Class<?>[] parameterTypes = method.getParameterTypes();
         StringBuilder params = new StringBuilder();
-        for (int i = 0; i < parameterTypes.length; i++) {
-            Class<?> parameterType = parameterTypes[i];
-            if (i == parameterTypes.length - 1) {
-                params.append(parameterType.getSimpleName());
+        for (int i = 0; i < parameterTypes.size(); i++) {
+            String parameterType = parameterTypes.get(i);
+            if (i == parameterTypes.size() - 1) {
+                params.append(JavaUtil.getSimpleName(parameterType));
                 break;
             }
-            params.append(parameterType.getSimpleName()).append(",");
+            params.append(JavaUtil.getSimpleName(parameterType)).append(",");
         }
-        return method.getName() + "(" + params.toString() + ")";
+        return name + "(" + params.toString() + ")";
     }
 
     @Override
-    public Class getReturnType() {
-        return method.getReturnType();
+    public String getReturnType() {
+        return type;
     }
 
     @Override
     public int getModifiers() {
-        return method.getModifiers();
+        return modifiers;
     }
 
     public String getSimpleName() {

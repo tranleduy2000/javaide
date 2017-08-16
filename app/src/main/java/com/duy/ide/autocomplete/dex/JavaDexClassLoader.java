@@ -25,13 +25,13 @@ public class JavaDexClassLoader {
     }
 
     @NonNull
-    public ArrayList<ClassDescription> findClass(String simpleNamePrefix) {
+    public ArrayList<ClassDescription> findClassWithPrefix(String simpleNamePrefix) {
         return mClassReader.findClass(simpleNamePrefix);
     }
 
 
     public void touchClass(String className) {
-        ArrayList<ClassDescription> classDescriptions = findClass(className);
+        ArrayList<ClassDescription> classDescriptions = findClassWithPrefix(className);
         if (classDescriptions.size() > 0) {
             classDescriptions.get(0).setLastUsed(System.currentTimeMillis());
         }

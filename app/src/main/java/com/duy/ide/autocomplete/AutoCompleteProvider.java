@@ -17,15 +17,22 @@ import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.model.FieldDescription;
 import com.duy.ide.autocomplete.model.Member;
 import com.duy.ide.autocomplete.model.MethodDescription;
+import com.duy.ide.autocomplete.model.PackageDescription;
+import com.duy.ide.autocomplete.parser.JavaParser;
 import com.duy.ide.autocomplete.util.EditorUtil;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.google.common.collect.Lists;
+import com.sun.tools.javac.tree.JCTree;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +40,7 @@ import javax.lang.model.SourceVersion;
 
 import static com.duy.ide.autocomplete.autocomplete.PatternFactory.lastMatchStr;
 import static com.duy.ide.autocomplete.dex.JavaClassManager.determineClassName;
+import static com.duy.ide.autocomplete.util.EditorUtil.getPossibleClassName;
 import static java.util.regex.Pattern.compile;
 
 
@@ -52,7 +60,8 @@ public class AutoCompleteProvider {
     private static final String TAG = "AutoCompleteProvider";
     private JavaDexClassLoader mClassLoader;
     private PackageImporter packageImporter;
-    private AutoCompletePackage completePackage;
+    private AutoCompletePackage mPackageProvider;
+    private JavaParser mJavaParser;
 
     private String statement = ""; //statement before cursor
     private String dotExpr = ""; //expression end with .
@@ -74,6 +83,8 @@ public class AutoCompleteProvider {
     public AutoCompleteProvider(Context context) {
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
         mClassLoader = new JavaDexClassLoader(FileManager.getClasspathFile(context), outDir);
+        mPackageProvider = new AutoCompletePackage();
+        mJavaParser = new JavaParser();
     }
 
     /**
@@ -148,6 +159,9 @@ public class AutoCompleteProvider {
             if (dotExpr.contains(".")) {
                 incomplete = dotExpr.substring(dotExpr.lastIndexOf(".") + 1);
                 dotExpr = dotExpr.substring(0, dotExpr.lastIndexOf("."));
+            } else {
+                incomplete = dotExpr;
+                dotExpr = "";
             }
             //incomplete
             return selectionStart - incomplete.length();
@@ -198,16 +212,16 @@ public class AutoCompleteProvider {
         return -1;
     }
 
-    public ArrayList<? extends Description> complete(EditText editor) {
+    public ArrayList<Description> complete(EditText editor) {
         //" Return list of matches.
         //case: all is empty
         if (dotExpr.matches("^\\s*$") && incomplete.matches("^\\s*$")) {
             return new ArrayList<>();
         }
         //the result
-        ArrayList<? extends Description> result = new ArrayList<>();
+        ArrayList<Description> result = new ArrayList<>();
 
-        if (!dotExpr.matches("^\\s*$")) { //if not empty
+        if (!dotExpr.isEmpty()) { //if not empty
             if (contextType == CONTEXT_AFTER_DOT) {
                 result = completeAfterDot(editor, dotExpr);
             } else if (contextType == CONTEXT_IMPORT || contextType == CONTEXT_IMPORT_STATIC
@@ -224,7 +238,7 @@ public class AutoCompleteProvider {
 
 
         //only complete word
-        else if (!incomplete.matches("^\\s*$")) {
+        else if (!incomplete.isEmpty()) {
             //only need method
             if (contextType == CONTEXT_METHOD_PARAM) {
                 result = searchForName(incomplete);
@@ -242,7 +256,7 @@ public class AutoCompleteProvider {
         return result;
     }
 
-    private ArrayList<Description> filter(ArrayList<? extends Description> input, String incomplete) {
+    private ArrayList<Description> filter(ArrayList<Description> input, String incomplete) {
         ArrayList<Description> result = new ArrayList<>();
         for (Description s : input) {
             // TODO: 14-Aug-17 improve
@@ -257,39 +271,76 @@ public class AutoCompleteProvider {
      * " Precondition:	incomplete must be a word without '.'.
      * " return all the matched, variables, fields, methods, types, packages
      */
-    private ArrayList<? extends Description> completeAfterWord(EditText editor, String incomplete) {
+    private ArrayList<Description> completeAfterWord(EditText editor, String incomplete) {
         ArrayList<Description> result = new ArrayList<>();
         //todo all variable
         // TODO: 14-Aug-17 field
         // TODO: 14-Aug-17 method
         // TODO: 14-Aug-17 type
         // TODO: 14-Aug-17 package
-        if (contextType != CONTEXT_PACKAGE_DECL) {
-//            // TODO: 14-Aug-17 add import current file
-//
-//            //current file declare
-//            ArrayList<String> list = PatternFactory.allMatch(editor.getText().toString(),
-//                    Pattern.compile("(class|enum|interface)[\\s+\t\r\n]" + incomplete + "[a-zA-Z0-9_]*"));
-//            result.addAll(list);
-//
-//            // TODO: 14-Aug-17 uses java parser parse all file and get field, member, method public
-//
-//            // TODO find all class, get public meber
-//            ArrayList aClass = mClassLoader.findClass(incomplete);
 
+        if (contextType != CONTEXT_PACKAGE_DECL) {
+            //add import current file
+            JCTree.JCCompilationUnit unit = mJavaParser.parse(editor.getText().toString());
+            if (unit != null) {
+                com.sun.tools.javac.util.List<JCTree.JCImport> imports = unit.getImports();
+                for (JCTree.JCImport anImport : imports) {
+                    JavaClassReader classReader = mClassLoader.getClassReader();
+                    ClassDescription clazz = classReader.readClassByName(anImport.getQualifiedIdentifier().toString(), null);
+                    if (clazz != null && clazz.getSimpleName().startsWith(incomplete)) {
+                        result.add(clazz);
+                    }
+                }
+                //current file declare
+                com.sun.tools.javac.util.List<JCTree> typeDecls = unit.getTypeDecls();
+                if (!typeDecls.isEmpty()) {
+                    JCTree jcTree = typeDecls.get(0);
+                    if (jcTree instanceof JCTree.JCClassDecl) {
+                        com.sun.tools.javac.util.List<JCTree> members = ((JCTree.JCClassDecl) jcTree).getMembers();
+                        for (JCTree member : members) {
+                            if (member instanceof JCTree.JCVariableDecl) {
+                                JCTree.JCVariableDecl field = (JCTree.JCVariableDecl) member;
+                                result.add(new FieldDescription(
+                                        field.getName().toString(),
+                                        field.getType().toString(),
+                                        (int) field.getModifiers().flags));
+                            } else if (member instanceof JCTree.JCMethodDecl) {
+                                JCTree.JCMethodDecl method = (JCTree.JCMethodDecl) member;
+                                com.sun.tools.javac.util.List<JCTree.JCTypeParameter> typeParameters = method.getTypeParameters();
+                                ArrayList<String> paramsStr = new ArrayList<>();
+                                for (JCTree.JCTypeParameter typeParameter : typeParameters) {
+                                    paramsStr.add(typeParameter.toString());
+                                }
+                                result.add(new MethodDescription(
+                                        method.getName().toString(),
+                                        method.getReturnType().toString(),
+                                        method.getModifiers().flags,
+                                        paramsStr));
+                            }
+                        }
+                    }
+                }
+            }
+            ArrayList<ClassDescription> aClass = mClassLoader.findClassWithPrefix(incomplete);
+            result.addAll(aClass);
         }
-        // TODO: 14-Aug-17 sort by field -> method
+        Collections.sort(result, new Comparator<Description>() {
+            @Override
+            public int compare(Description o1, Description o2) {
+                return Integer.valueOf(o1.getDescriptionType()).compareTo(o2.getDescriptionType());
+            }
+        });
         return result;
     }
 
-    private ArrayList<? extends Description> searchForName(String incomplete) {
+    private ArrayList<Description> searchForName(String incomplete) {
         return new ArrayList<>();
     }
 
     @NonNull
-    private ArrayList<ConstructorDescription> getConstructorList(String className) {
-        ArrayList<ClassDescription> classes = mClassLoader.findClass(className);
-        ArrayList<ConstructorDescription> constructors = new ArrayList<>();
+    private ArrayList<Description> getConstructorList(String className) {
+        ArrayList<ClassDescription> classes = mClassLoader.findClassWithPrefix(className);
+        ArrayList<Description> constructors = new ArrayList<>();
         for (ClassDescription c : classes) {
             constructors.addAll(c.getConstructors());
         }
@@ -300,20 +351,28 @@ public class AutoCompleteProvider {
      * get member of class name, package ...
      */
     @NonNull
-    private ArrayList<Description> getMember(String className) {
-        ArrayList<ClassDescription> classes = mClassLoader.findClass(className);
-        ArrayList<Description> constructors = new ArrayList<>();
-        for (ClassDescription c : classes) {
-            constructors.addAll(c.getMember(""));
+    private ArrayList<Description> getMember(String name) {
+        //get class member
+        ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(name, null);
+        ArrayList<Description> members = new ArrayList<>();
+        if (classDescription != null) {
+            members.addAll(classDescription.getMember(""));
         }
-        return constructors;
+        PackageDescription packageDescription = mPackageProvider.trace(name);
+        if (packageDescription != null) {
+            HashMap<String, PackageDescription> child = packageDescription.getChild();
+            for (Map.Entry<String, PackageDescription> entry : child.entrySet()) {
+                members.add(entry.getValue());
+            }
+        }
+        return members;
     }
 
     /**
      * " Precondition:	expr must end with '.'
      * " return members of the value of expression
      */
-    private ArrayList<? extends Description> completeAfterDot(EditText editor, String dotExpr) {
+    private ArrayList<Description> completeAfterDot(EditText editor, String dotExpr) {
         ArrayList<String> items = parseExpr(dotExpr);
         if (items.size() == 0) {
             return new ArrayList<>();
@@ -324,7 +383,7 @@ public class AutoCompleteProvider {
             return getMember(String.class.getName());
         }
 
-        ArrayList<? extends Description> ti = new ArrayList<>();
+        ArrayList<Description> ti = new ArrayList<>();
         int ii = 1; //item index;
         int itemKind = 0;
 
@@ -394,12 +453,12 @@ public class AutoCompleteProvider {
                         } else if (!typeName.equals("void") && !isBuiltinType(typeName)) {
                             ti = doGetClassInfo(typeName);
                         }
-                    } else {
-                        // 4)
-                        ti = doGetClassInfo(typeName);
+                    } else { //typeName is empty
+                        // 4) TypeName.|
+                        ti = doGetClassInfo(ident);
                         itemKind = 11;
 
-                        // 5)
+                        // 5) package
                         if (ti.isEmpty()) {
                             ti = getMember(ident);
                             itemKind = 20;
@@ -461,7 +520,7 @@ public class AutoCompleteProvider {
         return ti;
     }
 
-    private ArrayList<? extends Description> arrayAcesss(String typeName, String s) {
+    private ArrayList<Description> arrayAcesss(String typeName, String s) {
         return null;
     }
 
@@ -474,14 +533,14 @@ public class AutoCompleteProvider {
         return null;
     }
 
-    private ArrayList<? extends Description> methodInvokecation(String s, ArrayList<? extends Description> ti, int itemKind) {
+    private ArrayList<Description> methodInvokecation(String s, ArrayList<Description> ti, int itemKind) {
         return ti;
     }
 
     private String getDeclaredClassName(EditText editor, String ident) {
         ident = ident.trim();
         if (compile("this|super").matcher(ident).find()) {
-            return ident;
+            return ident; //TODO Return current class
         }
         /*
          " code sample:
@@ -502,8 +561,16 @@ public class AutoCompleteProvider {
             instance = instance.replaceAll("(\\s?)(" + ident + ")(\\s?[,;=)])", "").trim(); //clear name
             //generic ArrayList<String> -> ArrayList
             ident = instance.replaceAll("<.*>", ""); //clear generic
+
+            ArrayList<String> possibleClassName = getPossibleClassName(editor, ident, "");
+            for (String className : possibleClassName) {
+                ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(className, null);
+                if (classDescription != null) {
+                    return className;
+                }
+            }
         }
-        return ident;
+        return "";
     }
 
     private ArrayList<Description> getVariableDeclaration() {
@@ -519,7 +586,7 @@ public class AutoCompleteProvider {
     }
 
     @NonNull
-    private ArrayList<? extends Description> getStaticAccess(String className) {
+    private ArrayList<Description> getStaticAccess(String className) {
         ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(className, null);
         ArrayList<Description> result = new ArrayList<>();
         if (classDescription != null) {
@@ -539,14 +606,12 @@ public class AutoCompleteProvider {
         return result;
     }
 
-    private ArrayList<Description> doGetClassInfo(String simpleOrFull) {
+    private ArrayList<Description> doGetClassInfo(String fullName) {
         ArrayList<Description> descriptions = new ArrayList<>();
-        ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(simpleOrFull, null);
+        ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(fullName, null);
         if (classDescription != null) {
-            descriptions.add(classDescription);
-        } else {
-            ArrayList<ClassDescription> aClass = mClassLoader.getClassReader().findClass(simpleOrFull);
-            descriptions.addAll(aClass);
+            ArrayList<Description> members = classDescription.getMember("");
+            descriptions.addAll(members);
         }
         return descriptions;
     }
@@ -691,6 +756,7 @@ public class AutoCompleteProvider {
 
     public void load(JavaProjectFolder projectFile) {
         mClassLoader.loadAllClasses(true, projectFile);
+        mPackageProvider.init(mClassLoader.getClassReader());
     }
 
     public boolean isLoaded() {
@@ -701,7 +767,8 @@ public class AutoCompleteProvider {
     public ArrayList<Description> getSuggestions(EditText editor, int position) {
         try {
             this.findStart(editor);
-            this.complete(editor);
+            ArrayList<Description> complete = this.complete(editor);
+            return complete;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -727,7 +794,7 @@ public class AutoCompleteProvider {
 
         if (couldBeClass) {
             Log.d(TAG, "getSuggestions couldBeClass = " + true);
-            ArrayList<ClassDescription> classes = this.mClassLoader.findClass(current);
+            ArrayList<ClassDescription> classes = this.mClassLoader.findClassWithPrefix(current);
 
             //Object o = new Object(); //handle new keyword
             if (preWord != null && preWord.equals("new")) {

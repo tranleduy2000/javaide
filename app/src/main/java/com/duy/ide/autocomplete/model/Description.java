@@ -13,7 +13,9 @@ public interface Description {
 
     void setLastUsed(long time);
 
-    Class getType();
+    String getType();
 
     String getSnippet();
+
+    int getDescriptionType();
 }

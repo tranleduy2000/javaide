@@ -33,7 +33,7 @@ public class ConstructorDescription extends DescriptionImpl {
     }
 
     @Override
-    public Class getType() {
+    public String getType() {
         return null;
     }
 
@@ -45,6 +45,8 @@ public class ConstructorDescription extends DescriptionImpl {
             return getSimpleName() + "();" + IndentEditText.CURSOR;
         }
     }
+
+
 
     @Override
     public String toString() {

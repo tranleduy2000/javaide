@@ -35,6 +35,8 @@ import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.Description;
 import com.duy.ide.autocomplete.model.FieldDescription;
 import com.duy.ide.autocomplete.model.MethodDescription;
+import com.duy.ide.autocomplete.model.PackageDescription;
+import com.duy.ide.autocomplete.util.JavaUtil;
 import com.duy.ide.setting.JavaPreferences;
 
 import java.util.ArrayList;
@@ -57,6 +59,43 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
     @Nullable
     private OnSuggestItemClickListener listener;
     private float editorTextSize;
+    private Filter codeFilter = new Filter() {
+        @Override
+        public CharSequence convertResultToString(Object value) {
+            if (value == null) {
+                return "";
+            }
+            return ((Description) value).getSnippet();
+        }
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults filterResults = new FilterResults();
+            suggestion.clear();
+            if (constraint != null) {
+                for (Description item : clone) {
+//                    if (item.compareTo(constraint.toString()) == 0) {
+                    suggestion.add(item);
+//                    }
+                }
+                filterResults.values = suggestion;
+                filterResults.count = suggestion.size();
+            }
+            return filterResults;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            ArrayList<Description> filteredList = (ArrayList<Description>) results.values;
+            clear();
+            if (filteredList != null && filteredList.size() > 0) {
+                addAll(filteredList);
+            }
+            notifyDataSetChanged();
+        }
+    };
 
     @SuppressWarnings("unchecked")
     public CodeSuggestAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<Description> objects) {
@@ -95,7 +134,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
                 txtName.setText(SpanUtil.formatClass(context, (ClassDescription) item));
             } else {
                 txtName.setText(item.toString());
-                txtType.setText(item.getType() != null ? item.getType().getSimpleName() : "");
+                txtType.setText(item.getType() != null ? JavaUtil.getSimpleName(item.getType()) : "");
             }
 
             if (item instanceof ClassDescription || item instanceof ConstructorDescription) {
@@ -104,11 +143,12 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
                 txtHeader.setText("f");
             } else if (item instanceof MethodDescription) {
                 txtHeader.setText("m");
+            } else if (item instanceof PackageDescription) {
+                txtHeader.setText("p");
             }
         }
         return convertView;
     }
-
 
     public void clearAllData() {
         super.clear();
@@ -125,44 +165,6 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
     public Filter getFilter() {
         return codeFilter;
     }
-
-    private Filter codeFilter = new Filter() {
-        @Override
-        public CharSequence convertResultToString(Object value) {
-            if (value == null) {
-                return "";
-            }
-            return ((Description) value).getSnippet();
-        }
-
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            FilterResults filterResults = new FilterResults();
-            suggestion.clear();
-            if (constraint != null) {
-                for (Description item : clone) {
-//                    if (item.compareTo(constraint.toString()) == 0) {
-                    suggestion.add(item);
-//                    }
-                }
-                filterResults.values = suggestion;
-                filterResults.count = suggestion.size();
-            }
-            return filterResults;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            ArrayList<Description> filteredList = (ArrayList<Description>) results.values;
-            clear();
-            if (filteredList != null && filteredList.size() > 0) {
-                addAll(filteredList);
-            }
-            notifyDataSetChanged();
-        }
-    };
 
     public void setListener(OnSuggestItemClickListener listener) {
         this.listener = listener;

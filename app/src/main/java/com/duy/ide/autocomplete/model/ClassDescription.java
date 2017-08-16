@@ -14,10 +14,9 @@ import java.util.ArrayList;
  * Created by Duy on 20-Jul-17.
  */
 
-public class ClassDescription implements Description {
+public class ClassDescription extends DescriptionImpl {
+    private static final String TAG = "ClassDescription";
     private String name, simpleName, className, extend, packageName;
-    private long lastUsed = 0;
-
     private ArrayList<ConstructorDescription> constructors;
     private ArrayList<FieldDescription> fields;
     private ArrayList<MethodDescription> methods;
@@ -69,7 +68,7 @@ public class ClassDescription implements Description {
         }
     }
 
-    public Class getType() {
+    public String getType() {
         return null;
     }
 
@@ -78,10 +77,17 @@ public class ClassDescription implements Description {
         return getSimpleName() + " " + CodeSuggestsEditText.CURSOR;
     }
 
-
+    @Override
+    public int getDescriptionType() {
+        return DescriptionImpl.CLASS_DESC;
+    }
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -89,14 +95,9 @@ public class ClassDescription implements Description {
         return null;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getSimpleName() {
         return simpleName;
     }
-
 
     public String getClassName() {
         return className;
@@ -114,14 +115,6 @@ public class ClassDescription implements Description {
         return packageName;
     }
 
-    public long getLastUsed() {
-        return lastUsed;
-    }
-
-    public void setLastUsed(long lastUsed) {
-        this.lastUsed = lastUsed;
-    }
-
     public ArrayList<ConstructorDescription> getConstructors() {
         return constructors;
     }
@@ -134,11 +127,10 @@ public class ClassDescription implements Description {
         return fields;
     }
 
-    private static final String TAG = "ClassDescription";
-
     public void addConstructor(ConstructorDescription constructorDescription) {
         this.constructors.add(constructorDescription);
     }
+
     public void addField(FieldDescription fieldDescription) {
         fields.add(fieldDescription);
     }

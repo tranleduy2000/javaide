@@ -6,16 +6,26 @@ import java.lang.reflect.Field;
  * Created by Duy on 20-Jul-17.
  */
 
-public class FieldDescription implements Member, Description {
-    private Field field;
+public class FieldDescription extends DescriptionImpl implements Member {
+    private String name, type;
+    private int modifiers;
+
+    public FieldDescription(String name, String type, int modifiers) {
+        this.name = name;
+        this.type = type;
+        this.modifiers = modifiers;
+    }
 
     public FieldDescription(Field field) {
-        this.field = field;
+        this.name = field.getName();
+        this.type = field.getType().getName();
+        this.modifiers = field.getModifiers();
     }
+
 
     @Override
     public String getName() {
-        return field.getName();
+        return name;
     }
 
     @Override
@@ -24,42 +34,37 @@ public class FieldDescription implements Member, Description {
     }
 
     @Override
-    public long getLastUsed() {
-        return 0;
-    }
-
-    @Override
-    public void setLastUsed(long time) {
-
-    }
-
-    @Override
-    public Class getType() {
-        return field.getType();
+    public String getType() {
+        return type;
     }
 
     @Override
     public String getSnippet() {
-        return field.getName();
+        return name;
+    }
+
+    @Override
+    public int getDescriptionType() {
+        return DescriptionImpl.FIELD_DESC;
     }
 
     @Override
     public String getPrototype() {
-        return field.getName();
+        return name;
     }
 
     @Override
-    public Class getReturnType() {
-        return field.getType();
+    public String getReturnType() {
+        return type;
     }
 
     @Override
     public int getModifiers() {
-        return field.getModifiers();
+        return modifiers;
     }
 
     @Override
     public String toString() {
-        return field.getName();
+        return name;
     }
 }

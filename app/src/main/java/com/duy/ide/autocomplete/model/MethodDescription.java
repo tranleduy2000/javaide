@@ -101,11 +101,6 @@ public class MethodDescription implements Member, Description {
     }
 
     @Override
-    public String getReturnType() {
-        return type;
-    }
-
-    @Override
     public int getModifiers() {
         return modifiers;
     }

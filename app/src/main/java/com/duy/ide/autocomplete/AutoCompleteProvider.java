@@ -24,6 +24,7 @@ import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.google.common.collect.Lists;
 import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.util.Pair;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -39,9 +40,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.lang.model.SourceVersion;
+import javax.tools.Diagnostic;
+import javax.tools.JavaFileObject;
 
 import static com.duy.ide.autocomplete.autocomplete.PatternFactory.lastMatchStr;
-import static com.duy.ide.autocomplete.dex.JavaClassManager.determineClassName;
 import static com.duy.ide.autocomplete.util.EditorUtil.getPossibleClassName;
 import static java.util.regex.Pattern.compile;
 
@@ -59,6 +61,8 @@ public class AutoCompleteProvider {
     public static final int KIND_THIS = KIND_MEMBER + 1;
     public static final int KIND_SUPER = KIND_THIS + 1;
     public static final int KIND_BUILTIN_TYPE = KIND_SUPER + 1;
+    public static final int KIND_STRING_TYPE = KIND_BUILTIN_TYPE + 1;
+    public static final int KIND_ARRAY_TYPE = KIND_STRING_TYPE + 1;
 
     public static final int CONTEXT_OTHER = 0;
     public static final int CONTEXT_AFTER_DOT = CONTEXT_OTHER + 1;
@@ -74,6 +78,11 @@ public class AutoCompleteProvider {
     private PackageImporter packageImporter;
     private AutoCompletePackage mPackageProvider;
     private JavaParser mJavaParser;
+
+    private JCTree.JCCompilationUnit unit;
+    private String source;
+    private int cursor;
+
     private String statement = ""; //statement before cursor
     private String dotExpr = ""; //expression end with .
     /**
@@ -88,7 +97,6 @@ public class AutoCompleteProvider {
     private String errorMsg;
     @ContextType
     private int contextType = CONTEXT_OTHER;
-    private String padding;
 
     public AutoCompleteProvider(Context context) {
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
@@ -97,60 +105,35 @@ public class AutoCompleteProvider {
         mJavaParser = new JavaParser();
     }
 
-    /**
-     * find start position incomplete
-     */
-    private int findStart(EditText editor) {
-        int selectionStart = editor.getSelectionStart();
-        Pattern pattern;
+    private void initializer(EditText editor) {
+        this.cursor = editor.getSelectionStart();
+        this.source = editor.getText().toString();
+        this.unit = mJavaParser.parse(source);
+
         //reset environment
         dotExpr = "";
         incomplete = "";
         contextType = CONTEXT_OTHER;
 
-        statement = getStatement(editor); //ok
+        statement = getStatement(editor);
         Log.d(TAG, "findStart statement = " + statement);
         if (compile("[.0-9A-Za-z_]\\s*$").matcher(statement).find()) {
             boolean valid = true;
-            if (statement.matches("\\.\\s*$")) {
-                valid = statement.matches("[\")0-9A-Za-z_\\]]\\s*\\.\\s*$")
-                        && !statement.matches("\\H\\w\\+\\.\\s*$")
-                        && !statement.matches("(" + Patterns.RE_KEYWORDS.toString() + ")\\.\\s*");
+            if (compile("\\.\\s*$").matcher(statement).find()) {
+                valid = compile("[\")0-9A-Za-z_\\]]\\s*\\.\\s*$").matcher(statement).find()
+                        && compile("(" + Patterns.RE_KEYWORDS.toString() + ")\\.\\s*").matcher(statement).find();
             }
-            if (!valid) {
-                return -1;
-            }
+            if (!valid) return;
+
             contextType = CONTEXT_AFTER_DOT;
             //import or package declaration
             if (compile("^\\s*(import|package)\\s+").matcher(statement).find()) {
-                statement = statement.replaceAll("\\s+\\.", ".");
-                statement = statement.replaceAll("\\.\\s+", ".");
-                if (compile("^\\s*(import)\\s+").matcher(statement).find()) {
-                    //static import
-                    if (compile("^\\s*(import)\\s+(static)\\s+").matcher(statement).find()) {
-                        contextType = CONTEXT_IMPORT_STATIC;
-                    } else { //normal import
-                        contextType = CONTEXT_IMPORT;
-                    }
-                    Pattern importStatic = compile("^\\s*(import)\\s+(static\\s+)?");
-                    Matcher matcher = importStatic.matcher(statement);
-                    if (matcher.find()) {
-                        dotExpr = statement.substring(matcher.end());
-                    }
-                } else {
-                    contextType = CONTEXT_PACKAGE_DECL;
-                    Pattern _package = compile("^\\s*(package)\\s+?");
-                    Matcher matcher = _package.matcher(statement);
-                    if (matcher.find()) {
-                        dotExpr = statement.substring(matcher.end());
-                    }
-                }
+                progressImportPackage();
             }
-
             //String literal
             else if (compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
                 dotExpr = statement.replaceAll("\\s*\\.\\s*$", ".");
-                return selectionStart - incomplete.length();
+                return;
             }
             //" type declaration		NOTE: not supported generic yet.
             else {
@@ -159,7 +142,8 @@ public class AutoCompleteProvider {
                     dotExpr = statement.substring(matcher.start());
                     if (!compile("^\\s*(extend|implements)\\s+").matcher(dotExpr).find()) {
                         // TODO: 13-Aug-17 suggest class
-                        return -1;
+                        return;
+
                     }
                     contextType = CONTEXT_NEED_TYPE;
                 }
@@ -175,25 +159,25 @@ public class AutoCompleteProvider {
                 dotExpr = "";
             }
             //incomplete
-            return selectionStart - incomplete.length();
+            return;
+
         }
         //	" method parameters, treat methodname or 'new' as an incomplete word
         else if (compile("\\(\\s*$").matcher(statement).find()) {
             //" TODO: Need to exclude method declaration?
             contextType = CONTEXT_METHOD_PARAM;
             int pos = statement.lastIndexOf("(");
-            padding = statement.substring(pos + 1);
-            selectionStart = selectionStart - (statement.length() - pos);
             statement = statement.replaceAll("\\s*\\(\\s*$", "");
             //" new ClassName?
 
-            if (compile("^\\s*new\\s+" + Patterns.RE_QUALID + "$").matcher(statement).find()) {
+            if (compile("\\s*new\\s+" + Patterns.RE_QUALID + "$").matcher(statement).find()) {
                 statement = statement.replaceAll("^\\s*new\\s+", "");
                 if (!Patterns.KEYWORDS.matcher(statement).find()) {
                     incomplete = "+";
                     dotExpr = statement;
                     contextType = CONTEXT_NEED_CONSTRUCTOR;
-                    return selectionStart - dotExpr.length();
+                    return;
+
                 }
             } else {
                 Matcher matcher = compile("\\s*" + Patterns.RE_IDENTIFIER + "$").matcher(statement);
@@ -206,10 +190,12 @@ public class AutoCompleteProvider {
                     if (statement.equals("this") || statement.equals("supper")) {
                         dotExpr = statement;
                         incomplete = "+";
-                        return selectionStart - dotExpr.length();
+                        return;
+
                     } else if (!Patterns.KEYWORDS.matcher(statement).find()) {
                         incomplete = statement;
-                        return selectionStart - incomplete.length();
+                        return;
+
                     }
                 }
                 //case expr.method(|)
@@ -217,53 +203,97 @@ public class AutoCompleteProvider {
                         !Patterns.KEYWORDS.matcher(statement.substring(0, statement.lastIndexOf("."))).find()) {
                     dotExpr = extractCleanExpr(statement.substring(0, statement.lastIndexOf(".")));
                     incomplete = statement.substring(statement.lastIndexOf(".") + 1);
-                    return selectionStart - incomplete.length();
+                    return;
                 }
             }
         }
-        return -1;
+    }
+
+    private void progressImportPackage() {
+        statement = statement.replaceAll("\\s+\\.", ".");
+        statement = statement.replaceAll("\\.\\s+", ".");
+        if (compile("^\\s*(import)\\s+").matcher(statement).find()) {
+            //static import
+            if (compile("^\\s*(import)\\s+(static)\\s+").matcher(statement).find()) {
+                contextType = CONTEXT_IMPORT_STATIC;
+            } else { //normal import
+                contextType = CONTEXT_IMPORT;
+            }
+            Pattern importStatic = compile("^\\s*(import)\\s+(static\\s+)?");
+            Matcher matcher = importStatic.matcher(statement);
+            if (matcher.find()) {
+                dotExpr = statement.substring(matcher.end());
+            }
+        } else {
+            contextType = CONTEXT_PACKAGE_DECL;
+            Pattern _package = compile("^\\s*(package)\\s+?");
+            Matcher matcher = _package.matcher(statement);
+            if (matcher.find()) {
+                dotExpr = statement.substring(matcher.end());
+            }
+        }
     }
 
     public ArrayList<Description> complete(EditText editor) {
         //" Return list of matches.
         //case: all is empty
-        if (dotExpr.matches("^\\s*$") && incomplete.matches("^\\s*$")) {
+        if (dotExpr.isEmpty() && incomplete.isEmpty()) {
             return new ArrayList<>();
         }
+
         //the result
         ArrayList<Description> result = new ArrayList<>();
 
-        if (!dotExpr.isEmpty()) { //if not empty
-            if (contextType == CONTEXT_AFTER_DOT) {
-                result = completeAfterDot(editor, dotExpr);
-            } else if (contextType == CONTEXT_IMPORT
-                    || contextType == CONTEXT_IMPORT_STATIC
-                    || contextType == CONTEXT_PACKAGE_DECL
-                    || contextType == CONTEXT_NEED_TYPE) {
-                result = getMember(dotExpr, incomplete);
-            } else if (contextType == CONTEXT_METHOD_PARAM) {
-                if (incomplete.equals("+")) {
+        if (!dotExpr.isEmpty()) {
+            switch (contextType) {
+                case CONTEXT_AFTER_DOT:
+                    result = completeAfterDot(editor, dotExpr, incomplete);
+                    break;
+                case CONTEXT_IMPORT:
+                case CONTEXT_IMPORT_STATIC:
+                case CONTEXT_PACKAGE_DECL:
+                case CONTEXT_NEED_TYPE:
+                    result = getMember(dotExpr, incomplete);
+                    break;
+                case CONTEXT_METHOD_PARAM:
+                    result = completeAfterDot(editor, dotExpr, incomplete);
+                    break;
+                case CONTEXT_NEED_CONSTRUCTOR:
                     result = getConstructorList(dotExpr);
-                } else {
-                    result = completeAfterDot(editor, dotExpr);
-                }
+                    break;
+                case CONTEXT_OTHER:
+                    result = new ArrayList<>();
+                    break;
             }
+//            if (contextType == CONTEXT_AFTER_DOT) {
+//                result = completeAfterDot(editor, dotExpr);
+//            } else if (contextType == CONTEXT_IMPORT
+//                    || contextType == CONTEXT_IMPORT_STATIC
+//                    || contextType == CONTEXT_PACKAGE_DECL
+//                    || contextType == CONTEXT_NEED_TYPE) {
+//                result = getMember(dotExpr, incomplete);
+//            } else if (contextType == CONTEXT_METHOD_PARAM) {
+//                if (incomplete.equals("+")) {
+//                    result = getConstructorList(dotExpr);
+//                } else {
+//                    result = completeAfterDot(editor, dotExpr);
+//                }
+//            }
         }
-
-
         //only complete word
         else if (!incomplete.isEmpty()) {
             //only need method
-            if (contextType == CONTEXT_METHOD_PARAM) {
-                result = searchForName(incomplete);
-            } else {
-                result = completeAfterWord(editor, incomplete);
+            switch (contextType) {
+                case CONTEXT_METHOD_PARAM:
+                    result = completeMethodParams(incomplete);
+                    break;
+                default:
+                    result = completeWord(editor, incomplete);
+                    break;
             }
         }
-        incomplete = "";
         if (result.size() > 0) {
-            //  " filter according to b:incomplete
-            if (incomplete.length() > 0 && !incomplete.equals("+")) {
+            if (incomplete.length() > 0) {
                 result = filter(result, incomplete);
             }
         }
@@ -285,11 +315,10 @@ public class AutoCompleteProvider {
      * " Precondition:	incomplete must be a word without '.'.
      * " return all the matched, variables, fields, methods, types, packages
      */
-    private ArrayList<Description> completeAfterWord(EditText editor, String incomplete) {
+    private ArrayList<Description> completeWord(EditText editor, String incomplete) {
         ArrayList<Description> result = new ArrayList<>();
         if (contextType != CONTEXT_PACKAGE_DECL) {
             //parse current file
-            JCTree.JCCompilationUnit unit = mJavaParser.parse(editor.getText().toString());
             if (unit != null) {
                 //add import current file
                 com.sun.tools.javac.util.List<JCTree.JCImport> imports = unit.getImports();
@@ -375,7 +404,7 @@ public class AutoCompleteProvider {
         return result;
     }
 
-    private ArrayList<Description> searchForName(String incomplete) {
+    private ArrayList<Description> completeMethodParams(String incomplete) {
         return new ArrayList<>();
     }
 
@@ -422,7 +451,7 @@ public class AutoCompleteProvider {
      * " Precondition:	expr must end with '.'
      * " return members of the value of expression
      */
-    private ArrayList<Description> completeAfterDot(EditText editor, String dotExpr) {
+    private ArrayList<Description> completeAfterDot(EditText editor, String dotExpr, String incomplete) {
         ArrayList<String> items = parseExpr(dotExpr);
         if (items.size() == 0) {
             return new ArrayList<>();
@@ -939,121 +968,32 @@ public class AutoCompleteProvider {
 
     public void load(JavaProjectFolder projectFile) {
         mClassLoader.loadAllClasses(true, projectFile);
-        mPackageProvider.init(mClassLoader.getClassReader());
+        mPackageProvider.init(projectFile, mClassLoader.getClassReader());
     }
 
     public boolean isLoaded() {
         return mClassLoader.getClassReader().isLoaded();
     }
 
-    public ArrayList<Description> getSuggestions(EditText editor, int position) {
+    public Pair<ArrayList<Description>, List<Diagnostic<? extends JavaFileObject>>> getSuggestions(EditText editor) {
         try {
-            this.findStart(editor);
-            ArrayList<Description> complete = this.complete(editor);
-            return complete;
+            this.initializer(editor);
+            return new Pair<>(complete(editor), mJavaParser.getDiagnostics());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // text: 'package.Class.me', prefix: 'package.Class', suffix: 'me'
-        // text: 'package.Cla', prefix: 'package', suffix: 'Cla'
-        // text: 'Cla', prefix: '', suffix: 'Cla'
-        // line: 'new Cla', text: 'Cla', prevWord: 'new'
-        String preWord = EditorUtil.getPreWord(editor, position);
-        String current = EditorUtil.getWord(editor, position).replace("@", "");
-        String prefix = "";
-        String suffix = "";
-        if (current.contains(".")) {
-            prefix = current.substring(0, current.lastIndexOf("."));
-            suffix = current.substring(current.lastIndexOf(".") + 1);
-        } else {
-            suffix = current;
-        }
-        Log.d(TAG, "getSuggestions suffix = " + suffix + " prefix = " + prefix + " current = " + current
-                + " preWord = " + preWord);
-        boolean couldBeClass = suffix.matches(PatternFactory.IDENTIFIER.toString());
-
-        ArrayList<Description> result = null;
-
-        if (couldBeClass) {
-            Log.d(TAG, "getSuggestions couldBeClass = " + true);
-            ArrayList<ClassDescription> classes = this.mClassLoader.findClassWithPrefix(current);
-
-            //Object o = new Object(); //handle new keyword
-            if (preWord != null && preWord.equals("new")) {
-                result = new ArrayList<>();
-                for (ClassDescription description : classes) {
-                    ArrayList<ConstructorDescription> constructors = description.getConstructors();
-                    for (ConstructorDescription constructor : constructors) {
-                        result.add(constructor);
-                    }
-                }
-                return result;
-            } else {
-                result = new ArrayList<>();
-                for (ClassDescription aClass : classes) {
-                    if (!aClass.getSimpleName().equals(current)) {
-                        result.add(aClass);
-                    }
-                }
-            }
-        }
-
-
-        if (result == null || result.size() == 0) {
-            ArrayList<String> classes = determineClassName(editor, position, current, prefix);
-            if (classes != null) {
-                for (String className : classes) {
-                    JavaClassReader classReader = mClassLoader.getClassReader();
-                    ClassDescription classDescription = classReader.readClassByName(className, null);
-                    Log.d(TAG, "getSuggestions classDescription = " + classDescription);
-                    if (classDescription != null) {
-                        result = new ArrayList<>();
-                        result.addAll(classDescription.getMember(suffix));
-                    }
-                }
-            }/* else {
-                if (prefix.isEmpty() && !suffix.isEmpty()) {
-                    if (JavaUtil.isValidClassName(suffix)) { //could be class
-                        ArrayList<ClassDescription> possibleClass = mClassLoader.findClass(suffix);
-                    }
-                }
-            }*/
-        }
-        return result;
-    }
-
-    public String getFormattedReturnType(Member member) {
-        // TODO: 20-Jul-17
         return null;
     }
 
-    private String createSnippet(Description desc, String line, String prefix, boolean addMemberClass) {
-//        boolean useFullClassName = desc.getType().equals("class")
-//                ? line.matches("^(import)") : prefix.contains(".");
-//        String text = useFullClassName ? desc.getClassName() : desc.getSimpleName();
-//        if (desc.getMember() != null) {
-//            text = (addMemberClass ? "${1:" + text + "}." : "")
-//                    + createMemberSnippet(desc.getMember(), desc.getType());
-//        }
-//        return text;
-        return "";
-    }
-
-    private String createMemberSnippet(Description member) {
-        return null;
-        // TODO: 20-Jul-17
-    }
 
     public void onInsertSuggestion(EditText editText, Description suggestion) {
         if (suggestion instanceof ClassDescription) {
-//            if (!suggestion.getSnippet().contains(".")) {
             PackageImporter.importClass(editText, ((ClassDescription) suggestion).getClassName());
-//            }/
         } else if (suggestion instanceof ConstructorDescription) {
             PackageImporter.importClass(editText, suggestion.getName());
         } else if (suggestion instanceof Member) {
+            mClassLoader.touchClass(suggestion.getType());
         }
-//        mClassLoader.touchClass(suggestion.getDescription());
     }
 
     public void dispose() {

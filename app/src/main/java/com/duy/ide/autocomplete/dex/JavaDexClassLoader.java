@@ -31,9 +31,9 @@ public class JavaDexClassLoader {
 
 
     public void touchClass(String className) {
-        ArrayList<ClassDescription> classDescriptions = findClassWithPrefix(className);
-        if (classDescriptions.size() > 0) {
-            classDescriptions.get(0).setLastUsed(System.currentTimeMillis());
+        ClassDescription classDescriptions = mClassReader.readClassByName(className, null);
+        if (classDescriptions != null){
+            classDescriptions.setLastUsed(System.currentTimeMillis());
         }
     }
 

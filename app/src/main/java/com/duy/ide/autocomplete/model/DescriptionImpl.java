@@ -26,4 +26,5 @@ public abstract class DescriptionImpl implements Description {
     public int getDescriptionType() {
         return OTHER_DESC;
     }
+
 }

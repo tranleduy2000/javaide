@@ -289,7 +289,7 @@ public abstract class CodeSuggestsEditText extends IndentEditText
         @Override
         protected ArrayList<Description> doInBackground(Void... params) {
             try {
-                return provider.getSuggestions(editText, selection);
+                return provider.getSuggestions(editText).fst;
             } catch (Exception e) {
                 e.printStackTrace();
             }

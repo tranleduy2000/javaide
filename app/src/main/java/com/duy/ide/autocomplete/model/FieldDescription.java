@@ -54,11 +54,6 @@ public class FieldDescription extends DescriptionImpl implements Member {
     }
 
     @Override
-    public String getReturnType() {
-        return type;
-    }
-
-    @Override
     public int getModifiers() {
         return modifiers;
     }

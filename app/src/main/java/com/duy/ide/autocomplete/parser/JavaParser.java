@@ -54,6 +54,7 @@ public class JavaParser {
     public JCTree.JCCompilationUnit parse(final String src) {
         if (!canParse) return null;
         long time = System.currentTimeMillis();
+
         SimpleJavaFileObject source = new SimpleJavaFileObject(URI.create("source"), JavaFileObject.Kind.SOURCE) {
             @Override
             public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
@@ -72,7 +73,9 @@ public class JavaParser {
         return unit;
     }
 
+    @Nullable
     public List<Diagnostic<? extends JavaFileObject>> getDiagnostics() {
+        if (!canParse) return null;
         return diagnostics.getDiagnostics();
     }
 }

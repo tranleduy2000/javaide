@@ -148,6 +148,17 @@ public class AutoCompleteProvider {
 
                     }
                     contextType = CONTEXT_NEED_TYPE;
+                } else {
+                    matcher = compile("(\\s*new\\s+)(" + Patterns.RE_QUALID + ")$").matcher(statement);
+                    if (matcher.find()) {
+                        statement = matcher.group(2);
+                        if (!Patterns.RE_KEYWORDS.matcher(statement).find()) {
+                            incomplete = statement;
+                            dotExpr = "";
+                            contextType = CONTEXT_NEED_CONSTRUCTOR;
+                            return;
+                        }
+                    }
                 }
                 dotExpr = extractCleanExpr(statement);
             }
@@ -289,6 +300,9 @@ public class AutoCompleteProvider {
                 case CONTEXT_METHOD_PARAM:
                     result = completeMethodParams(incomplete);
                     break;
+                case CONTEXT_NEED_CONSTRUCTOR:
+                    result = getConstructorList(incomplete);
+                    break;
                 default:
                     result = completeWord(editor, incomplete);
                     break;
@@ -408,6 +422,7 @@ public class AutoCompleteProvider {
 
     @NonNull
     private ArrayList<Description> getConstructorList(String className) {
+        if (className.isEmpty()) return new ArrayList<>();
         ArrayList<ClassDescription> classes = mClassLoader.findClassWithPrefix(className);
         ArrayList<Description> constructors = new ArrayList<>();
         for (ClassDescription c : classes) {

@@ -85,7 +85,8 @@ public class Patterns {
     public static final Pattern RE_BRACKETS = compile("(\\s*\\[\\s*\\])");
 
     public static final Pattern RE_IDENTIFIER = compile("[a-zA-Z_][a-zA-Z0-9_]*");
-    public static final Pattern RE_QUALID = compile(RE_IDENTIFIER + "(\\s*\\.\\s*" + RE_IDENTIFIER + ")*");
+    // case:   new JCTree.JCClassDecl();
+    public static final Pattern RE_QUALID = compile(RE_IDENTIFIER + "(\\s*\\.\\s*" + RE_IDENTIFIER + ")?");
     public static final Pattern RE_REFERENCE_TYPE = compile(RE_QUALID + RE_BRACKETS.toString() + "\\*");
     public static final Pattern RE_TYPE = RE_REFERENCE_TYPE;
 

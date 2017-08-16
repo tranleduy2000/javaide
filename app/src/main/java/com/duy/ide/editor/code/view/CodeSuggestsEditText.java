@@ -111,8 +111,6 @@ public abstract class CodeSuggestsEditText extends IndentEditText
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
-        Log.d(TAG, "onTextChanged() called with: start = [" + start + "], lengthBefore = [" + lengthBefore + "], lengthAfter = [" + lengthAfter + "]");
-
         if (mAutoCompleteProvider != null) {
             if (mGenerateSuggestDataTask != null) {
                 mGenerateSuggestDataTask.cancel(true);
@@ -120,22 +118,10 @@ public abstract class CodeSuggestsEditText extends IndentEditText
             mGenerateSuggestDataTask = new GenerateSuggestDataTask(this, mAutoCompleteProvider);
             mGenerateSuggestDataTask.execute();
         }
-
         onPopupChangePosition();
     }
 
     public abstract void onPopupChangePosition();
-
-    /**
-     * invalidate data for auto suggest
-     */
-    public void setSuggestData(String[] data) {
-//        ArrayList<InfoItem> items = new ArrayList<>();
-//        for (String s : data) {
-//            items.add(new InfoItem(StructureType.TYPE_KEY_WORD, s));
-//        }
-//        setSuggestData(items);
-    }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -225,18 +211,21 @@ public abstract class CodeSuggestsEditText extends IndentEditText
      * invalidate data for auto suggest
      */
     public void setSuggestData(ArrayList<Description> data) {
-        Log.d(TAG, "setSuggestData() called with: data = [" + data + "]");
+        Log.d(TAG, "setSuggestData() called with: data = [" + data.size() + "]");
 
         if (mAdapter != null) {
             mAdapter.clearAllData(); //gc
             mAdapter.setListener(null);
+            if (isPopupShowing()) {
+                dismissDropDown();
+            }
         }
         mAdapter = new CodeSuggestAdapter(getContext(), R.layout.list_item_suggest, data);
         mAdapter.setListener(this);
 
         setAdapter(mAdapter);
-        onDropdownChangeSize();
         if (data.size() > 0) {
+            onDropdownChangeSize();
             showDropDown();
         }
     }
@@ -270,9 +259,7 @@ public abstract class CodeSuggestsEditText extends IndentEditText
         private final EditText editText;
         private final AutoCompleteProvider provider;
 
-        GenerateSuggestDataTask(@NonNull EditText editText, @NonNull AutoCompleteProvider provider) {
-            Log.d(TAG, "GenerateSuggestDataTask() called with: editText = [" + editText + "], provider = [" + provider + "]");
-
+        private GenerateSuggestDataTask(@NonNull EditText editText, @NonNull AutoCompleteProvider provider) {
             this.editText = editText;
             this.provider = provider;
             provider.getClass();

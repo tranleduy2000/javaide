@@ -91,6 +91,7 @@ public class MainActivity extends ProjectManagerActivity implements
     private Dialog mDialog;
     private MenuItem mActionRun;
     private ProgressBar mCompileProgress;
+    private AutoCompleteProvider mAutoCompleteProvider;
 
     private void populateAutoCompleteService(AutoCompleteProvider provider) {
         mPagePresenter.setAutoCompleteProvider(provider);
@@ -108,14 +109,13 @@ public class MainActivity extends ProjectManagerActivity implements
 
     protected void startAutoCompleteService() {
         Log.d(TAG, "startAutoCompleteService() called");
-
         if (mProjectFile != null) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    AutoCompleteProvider provider = new AutoCompleteProvider(MainActivity.this);
-                    provider.load(mProjectFile);
-                    populateAutoCompleteService(provider);
+                    mAutoCompleteProvider = new AutoCompleteProvider(MainActivity.this);
+                    mAutoCompleteProvider.load(mProjectFile);
+                    populateAutoCompleteService(mAutoCompleteProvider);
                 }
             }).start();
         }

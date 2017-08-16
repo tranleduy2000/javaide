@@ -274,9 +274,10 @@ public class AutoCompleteProvider {
     private ArrayList<Description> completeAfterWord(EditText editor, String incomplete) {
         ArrayList<Description> result = new ArrayList<>();
         if (contextType != CONTEXT_PACKAGE_DECL) {
-            //add import current file
+            //parse current file
             JCTree.JCCompilationUnit unit = mJavaParser.parse(editor.getText().toString());
             if (unit != null) {
+                //add import current file
                 com.sun.tools.javac.util.List<JCTree.JCImport> imports = unit.getImports();
                 for (JCTree.JCImport anImport : imports) {
                     JavaClassReader classReader = mClassLoader.getClassReader();
@@ -314,6 +315,22 @@ public class AutoCompleteProvider {
                                             method.getModifiers().flags,
                                             paramsStr));
                                 }
+                                //if the cursor in method scope
+                                if (method.getStartPosition() <= editor.getSelectionStart()
+                                        && method.getBody().getEndPosition(unit.endPositions) >= editor.getSelectionStart()){
+                                    com.sun.tools.javac.util.List<JCTree.JCStatement> statements = method.getBody().getStatements();
+                                    for (JCTree.JCStatement jcStatement : statements) {
+                                        if (jcStatement instanceof JCTree.JCVariableDecl){
+                                            JCTree.JCVariableDecl field = (JCTree.JCVariableDecl) jcStatement;
+                                            if (field.getName().toString().startsWith(incomplete)) {
+                                                result.add(new FieldDescription(
+                                                        field.getName().toString(),
+                                                        field.getType().toString(),
+                                                        (int) field.getModifiers().flags));
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -321,6 +338,7 @@ public class AutoCompleteProvider {
             }
             ArrayList<ClassDescription> aClass = mClassLoader.findClassWithPrefix(incomplete);
             result.addAll(aClass);
+
         }
         Collections.sort(result, new Comparator<Description>() {
             @Override

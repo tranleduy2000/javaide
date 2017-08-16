@@ -13,7 +13,9 @@ import com.sun.tools.javac.util.Options;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
+import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileObject;
@@ -70,4 +72,7 @@ public class JavaParser {
         return unit;
     }
 
+    public List<Diagnostic<? extends JavaFileObject>> getDiagnostics() {
+        return diagnostics.getDiagnostics();
+    }
 }

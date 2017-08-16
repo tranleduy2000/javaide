@@ -273,12 +273,6 @@ public class AutoCompleteProvider {
      */
     private ArrayList<Description> completeAfterWord(EditText editor, String incomplete) {
         ArrayList<Description> result = new ArrayList<>();
-        //todo all variable
-        // TODO: 14-Aug-17 field
-        // TODO: 14-Aug-17 method
-        // TODO: 14-Aug-17 type
-        // TODO: 14-Aug-17 package
-
         if (contextType != CONTEXT_PACKAGE_DECL) {
             //add import current file
             JCTree.JCCompilationUnit unit = mJavaParser.parse(editor.getText().toString());
@@ -300,22 +294,26 @@ public class AutoCompleteProvider {
                         for (JCTree member : members) {
                             if (member instanceof JCTree.JCVariableDecl) {
                                 JCTree.JCVariableDecl field = (JCTree.JCVariableDecl) member;
-                                result.add(new FieldDescription(
-                                        field.getName().toString(),
-                                        field.getType().toString(),
-                                        (int) field.getModifiers().flags));
+                                if (field.getName().toString().startsWith(incomplete)) {
+                                    result.add(new FieldDescription(
+                                            field.getName().toString(),
+                                            field.getType().toString(),
+                                            (int) field.getModifiers().flags));
+                                }
                             } else if (member instanceof JCTree.JCMethodDecl) {
                                 JCTree.JCMethodDecl method = (JCTree.JCMethodDecl) member;
-                                com.sun.tools.javac.util.List<JCTree.JCTypeParameter> typeParameters = method.getTypeParameters();
-                                ArrayList<String> paramsStr = new ArrayList<>();
-                                for (JCTree.JCTypeParameter typeParameter : typeParameters) {
-                                    paramsStr.add(typeParameter.toString());
+                                if (((JCTree.JCMethodDecl) member).getName().toString().startsWith(incomplete)) {
+                                    com.sun.tools.javac.util.List<JCTree.JCTypeParameter> typeParameters = method.getTypeParameters();
+                                    ArrayList<String> paramsStr = new ArrayList<>();
+                                    for (JCTree.JCTypeParameter typeParameter : typeParameters) {
+                                        paramsStr.add(typeParameter.toString());
+                                    }
+                                    result.add(new MethodDescription(
+                                            method.getName().toString(),
+                                            method.getReturnType().toString(),
+                                            method.getModifiers().flags,
+                                            paramsStr));
                                 }
-                                result.add(new MethodDescription(
-                                        method.getName().toString(),
-                                        method.getReturnType().toString(),
-                                        method.getModifiers().flags,
-                                        paramsStr));
                             }
                         }
                     }

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.duy.ide">
+          package="com.duy.ide">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="com.android.vending.BILLING"/>
 
     <application
         android:name="com.duy.JavaApplication"
@@ -22,55 +24,41 @@
 
         <activity android:name="com.duy.ide.activities.ActivitySplashScreen">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <!--<activity-->
-        <!--android:name=".TestAutoCompleteActivity"-->
-        <!--android:windowSoftInputMode="adjustResize">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="android.intent.action.MAIN" />-->
-        <!--<category android:name="android.intent.category.LAUNCHER" />-->
-        <!--</intent-filter>-->
-        <!--</activity>-->
-        <activity android:name="com.duy.project.activities.FileManagerActivity" />
-        <activity android:name=".code_sample.activities.SampleActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-        <activity android:name=".activities.DonateActivity" />
+
+        <activity android:name="com.duy.project.activities.FileManagerActivity"/>
+        <activity android:name=".code_sample.activities.SampleActivity"/>
+        <activity android:name=".activities.DonateActivity"/>
         <activity
             android:name="com.duy.run.activities.ExecuteActivity"
             android:configChanges="orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:windowSoftInputMode="stateAlwaysVisible" />
+            android:windowSoftInputMode="stateAlwaysVisible"/>
 
         <activity
             android:name="com.duy.ide.editor.code.MainActivity"
-            android:launchMode="singleTask" />
-
-        <activity android:name="com.duy.ide.run.ExecuteActivity" />
-        <activity android:name="com.duy.ide.setting.SettingsActivity" />
-        <activity android:name="com.duy.ide.themefont.activities.ThemeFontActivity" />
+            android:launchMode="singleTask"/>
+        <activity android:name="com.duy.ide.setting.SettingsActivity"/>
+        <activity android:name="com.duy.ide.themefont.activities.ThemeFontActivity"/>
         <activity
             android:name="com.duy.ide.activities.InstallActivity"
-            android:configChanges="orientation|screenLayout" />
+            android:configChanges="orientation|screenLayout"/>
 
 
-        <activity android:name="com.spartacusrex.spartacuside.keyboard.KeyboardPrefs" />
+        <activity android:name="com.spartacusrex.spartacuside.keyboard.KeyboardPrefs"/>
 
 
         <service
             android:name="com.spartacusrex.spartacuside.keyboard.TerminalKeyboard"
             android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
-                <action android:name="android.view.InputMethod" />
+                <action android:name="android.view.InputMethod"/>
             </intent-filter>
             <meta-data
                 android:name="android.view.im"
-                android:resource="@xml/method" />
+                android:resource="@xml/method"/>
         </service>
 
     </application>

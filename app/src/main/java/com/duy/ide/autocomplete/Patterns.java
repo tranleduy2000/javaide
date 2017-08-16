@@ -83,6 +83,7 @@ public class Patterns {
             "interface|new|package|return|switch|throw|throws|try|while|true|false|null");
 
     public static final Pattern RE_BRACKETS = compile("(\\s*\\[\\s*\\])");
+
     public static final Pattern RE_IDENTIFIER = compile("[a-zA-Z_][a-zA-Z0-9_]*");
     public static final Pattern RE_QUALID = compile(RE_IDENTIFIER + "(\\s*\\.\\s*" + RE_IDENTIFIER + ")*");
     public static final Pattern RE_REFERENCE_TYPE = compile(RE_QUALID + RE_BRACKETS.toString() + "\\*");
@@ -93,6 +94,7 @@ public class Patterns {
     public static final Pattern RE_TYPE_DECL = compile("(" + RE_TYPE_MODS + "\\s+)*" + RE_TYPE_DECL_HEAD + RE_IDENTIFIER);
 
     public static final Pattern RE_ARRAY_TYPE = compile("^\\s*(" + RE_QUALID + ")(" + RE_BRACKETS + ")+\\s*");
+    public static final Pattern RE_SELECT_OR_ACCESS = compile("^\\s*(" + RE_IDENTIFIER + ")\\s*(\\[.*\\])?\\s*$");
     public static final Pattern RE_ARRAY_ACCESS = compile("^\\s*(" + RE_IDENTIFIER + ")" + "\\s*(\\[.*\\])+\\s*$");
     public static final Pattern RE_CASTING = compile("\\s*\\((" + RE_QUALID + "\\s*)\\)\\s*" + RE_IDENTIFIER);
     public static final Pattern RE_KEYWORDS = KEYWORDS;

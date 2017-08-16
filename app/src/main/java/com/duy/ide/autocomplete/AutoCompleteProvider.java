@@ -26,6 +26,8 @@ import com.google.common.collect.Lists;
 import com.sun.tools.javac.tree.JCTree;
 
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,20 +51,28 @@ import static java.util.regex.Pattern.compile;
  */
 
 public class AutoCompleteProvider {
-    private static final int CONTEXT_AFTER_DOT = 1;
-    private static final int CONTEXT_METHOD_PARAM = 2;
-    private static final int CONTEXT_IMPORT = 3;
-    private static final int CONTEXT_IMPORT_STATIC = 4;
-    private static final int CONTEXT_PACKAGE_DECL = 6;
-    private static final int CONTEXT_NEED_TYPE = 7;
-    private static final int CONTEXT_OTHER = 0;
+    public static final int KIND_NONE = 0;
+    public static final int KIND_PACKAGE = KIND_NONE + 1; //or import
+    public static final int KIND_METHOD = KIND_PACKAGE + 1;
+    public static final int KIND_IMPORT = KIND_METHOD + 1;
+    public static final int KIND_MEMBER = KIND_IMPORT + 1;
+    public static final int KIND_THIS = KIND_MEMBER + 1;
+    public static final int KIND_SUPER = KIND_THIS + 1;
+    public static final int KIND_BUILTIN_TYPE = KIND_SUPER + 1;
+
+    public static final int CONTEXT_OTHER = 0;
+    public static final int CONTEXT_AFTER_DOT = CONTEXT_OTHER + 1;
+    public static final int CONTEXT_METHOD_PARAM = CONTEXT_AFTER_DOT + 2;
+    public static final int CONTEXT_IMPORT = CONTEXT_METHOD_PARAM + 3;
+    public static final int CONTEXT_IMPORT_STATIC = CONTEXT_IMPORT + 4;
+    public static final int CONTEXT_PACKAGE_DECL = CONTEXT_IMPORT_STATIC + 6;
+    public static final int CONTEXT_NEED_TYPE = CONTEXT_PACKAGE_DECL + 7;
 
     private static final String TAG = "AutoCompleteProvider";
     private JavaDexClassLoader mClassLoader;
     private PackageImporter packageImporter;
     private AutoCompletePackage mPackageProvider;
     private JavaParser mJavaParser;
-
     private String statement = ""; //statement before cursor
     private String dotExpr = ""; //expression end with .
     /**
@@ -78,7 +88,6 @@ public class AutoCompleteProvider {
     @ContextType
     private int contextType = CONTEXT_OTHER;
     private String padding;
-
 
     public AutoCompleteProvider(Context context) {
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
@@ -183,7 +192,7 @@ public class AutoCompleteProvider {
                     dotExpr = statement;
                     return selectionStart - dotExpr.length();
                 }
-            } else { //in case \(\s*$
+            } else {
                 Matcher matcher = compile("\\s*" + Patterns.RE_IDENTIFIER + "$").matcher(statement);
                 matcher.find();
                 pos = matcher.start();
@@ -224,8 +233,10 @@ public class AutoCompleteProvider {
         if (!dotExpr.isEmpty()) { //if not empty
             if (contextType == CONTEXT_AFTER_DOT) {
                 result = completeAfterDot(editor, dotExpr);
-            } else if (contextType == CONTEXT_IMPORT || contextType == CONTEXT_IMPORT_STATIC
-                    || contextType == CONTEXT_PACKAGE_DECL || contextType == CONTEXT_NEED_TYPE) {
+            } else if (contextType == CONTEXT_IMPORT
+                    || contextType == CONTEXT_IMPORT_STATIC
+                    || contextType == CONTEXT_PACKAGE_DECL
+                    || contextType == CONTEXT_NEED_TYPE) {
                 result = getMember(dotExpr);
             } else if (contextType == CONTEXT_METHOD_PARAM) {
                 if (incomplete.equals("+")) {
@@ -413,6 +424,7 @@ public class AutoCompleteProvider {
 
         ArrayList<Description> ti = new ArrayList<>();
         int ii = 1; //item index;
+        @ItemKind
         int itemKind = 0;
 
         /**
@@ -432,13 +444,14 @@ public class AutoCompleteProvider {
             items.set(i, items.get(i).replaceAll("\\s", ""));
             i++;
         }
+
         if (i > 0) {
             //  " cases: "this.|", "super.|", "ClassName.this.|", "ClassName.super.|", "TypeName.class.|"
             String itemAtK = items.get(k);
             if (itemAtK.equals("class") || itemAtK.equals("this") || itemAtK.equals("super")) {
                 ti = doGetClassInfo(itemAtK.equals("class") ? "java.lang.Class" : join(items, 0, k, "."));
                 if (!ti.isEmpty()) {
-                    itemKind = !itemAtK.equals("this") ? 1 : !itemAtK.equals("super") ? 2 : 0;
+                    itemKind = !itemAtK.equals("this") ? KIND_THIS : !itemAtK.equals("super") ? KIND_SUPER : KIND_NONE;
                     ii = k + 1;
                 }
             }
@@ -465,11 +478,11 @@ public class AutoCompleteProvider {
                     // 1)
                     if (ident.equals("void") || isBuiltinType(ident)) {
                         ti = doGetClassInfo(int.class.getName());
-                        itemKind = 11;
+                        itemKind = KIND_BUILTIN_TYPE;
                     }
                     // 2)
                     else if (ident.equals("this") || ident.equals("super")) {
-                        itemKind = ident.equals("this") ? 1 : ident.equals("super") ? 2 : 0;
+                        itemKind = ident.equals("this") ? KIND_THIS : ident.equals("super") ? KIND_SUPER : KIND_NONE;
                         ti = doGetClassInfo(ident);
                     }
                 } else {
@@ -484,19 +497,19 @@ public class AutoCompleteProvider {
                     } else { //typeName is empty
                         // 4) TypeName.|
                         ti = doGetClassInfo(ident);
-                        itemKind = 11;
+                        itemKind = KIND_MEMBER;
 
                         // 5) package
                         if (ti.isEmpty()) {
                             ti = getMember(ident);
-                            itemKind = 20;
+                            itemKind = KIND_PACKAGE;
                         }
                     }
                 }
             }
             //" method invocation:	"method().|"	- "this.method().|"
             else if (compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*\\(").matcher(items.get(0)).find()) {
-                ti = methodInvokecation(items.get(0), ti, itemKind);
+                ti = methodInvocation(items.get(0), ti, itemKind);
             }
             //" array type, return `class`: "int[] [].|", "java.lang.String[].|", "NestedClass[].|"
             else if (items.get(0).matches(Patterns.RE_ARRAY_TYPE.toString())) {
@@ -505,7 +518,7 @@ public class AutoCompleteProvider {
                     String qid = matcher.group(1); //class name
                     if (isBuiltinType(qid) || (!isKeyword(qid) && !doGetClassInfo(qid).isEmpty())) {
                         ti = doGetClassInfo(int.class.getName());
-                        itemKind = 11;
+                        itemKind = KIND_MEMBER;
                     }
                 }
             }
@@ -542,9 +555,42 @@ public class AutoCompleteProvider {
                 }
             }
         }
-        /**
+
+
+        /*
          * next items
          */
+        while (!ti.isEmpty() && ii < items.size()) {
+            // method invocation:	"PrimaryExpr.method(parameters)[].|"
+            if (compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*\\(").matcher(items.get(ii)).find()) {
+                Log.d(TAG, "completeAfterDot: RE_IDENTIFIER ( ");
+                ti = methodInvocation(items.get(ii), ti, itemKind);
+                itemKind = KIND_NONE;
+                ii++;
+                continue;
+            }
+            //" expression of selection, field access, array access
+            else if (Patterns.RE_SELECT_OR_ACCESS.matcher(items.get(ii)).find()) {
+                Log.d(TAG, "completeAfterDot: RE_SELECT_OR_ACCESS ");
+                Matcher matcher = Patterns.RE_SELECT_OR_ACCESS.matcher(items.get(ii));
+                matcher.find();
+                String ident = matcher.group(1);
+                String bracket = matcher.group(2);
+                if (itemKind == KIND_PACKAGE && bracket.isEmpty() && !isKeyword(ident)) {
+
+                }
+                //" type members
+                else if (itemKind == KIND_MEMBER && bracket.isEmpty()) {
+                    if (ident.equals("class") || ident.equals("this") || ident.equals("super")) {
+                        ti = doGetClassInfo(ident.equals("class") ? "java.lang.Class" : join(items, 0, ii - 1, "."));
+                        itemKind = ident.equals("this") ? KIND_THIS : ident.equals("super") ? KIND_SUPER : KIND_NONE;
+                    } else if (!isKeyword(ident) /*&& type == class*/) {
+                        //accessible static field
+                        //ti = get info of stattic field
+                    }
+                }
+            }
+        }
 
         return ti;
     }
@@ -562,7 +608,7 @@ public class AutoCompleteProvider {
         return null;
     }
 
-    private ArrayList<Description> methodInvokecation(String s, ArrayList<Description> ti, int itemKind) {
+    private ArrayList<Description> methodInvocation(String s, ArrayList<Description> ti, int itemKind) {
         return ti;
     }
 
@@ -656,50 +702,77 @@ public class AutoCompleteProvider {
 
     private ArrayList<String> parseExpr(String expr) {
         ArrayList<String> items = new ArrayList<>();
+        // TODO: 16-Aug-17 improve
+        if (true) {
+            String[] split = expr.trim().split(".");
+            for (String s : split) {
+                items.add(s);
+            }
+            return items;
+        }
+
         //recognize ClassInstanceCreationExpr as a whole
         //case: new String() , new int[]  , new char []
         Matcher matcher = compile("^new\\s+" + Patterns.RE_QUALID + "\\s*[(\\]]").matcher(expr);
         int e = -1;
         if (matcher.find()) {
             e = matcher.end() - 1;
+            Log.i(TAG, "parseExpr: found instance at " + matcher.group());
         }
-        if (e < 0) {//not found
-            matcher = compile("[.(\\[]").matcher(expr); //case: str. , method(, arrayAccess[1]
+        if (e < 0) {//not found instance
+            matcher = compile("[.(\\[]").matcher(expr); //(String) str, ((Char) c)
             if (matcher.find()) {
                 e = matcher.start();
             }
+            Log.i(TAG, "parseExpr: not found instance, but found " + matcher.group());
         }
 
-        int s = 0;
+        int last = 0;
         boolean isParen = false;
         while (e >= 0) { //found . or ( or [
             if (expr.charAt(e) == '.') { //found .
-                String subExpr = expr.substring(s, e);
+                String subExpr = expr.substring(last, e);
+                Log.i(TAG, "parseExpr: found . with " + subExpr);
                 items.addAll(isParen ? processParentheses(subExpr) : Lists.newArrayList(subExpr));
                 isParen = false;
-                s = e + 1;
+                last = e + 1;
             } else if (expr.charAt(e) == '(') {
+                Log.i(TAG, "parseExpr: found ( with");
                 e = getMatchIndexEnd(expr, e, '(', ')');
                 isParen = true;
                 if (e < 0) {
                     break;
                 } else {
-                    e = PatternFactory.matchEnd(expr, compile("^\\s*[.\\[]"), e + 1) - 1;
-                    continue;
+                    Pattern pattern = compile("^\\s*[.\\[]");
+                    matcher = pattern.matcher(expr);
+                    if (matcher.find(e + 1)) {
+                        e = matcher.end() - 1;
+                        continue;
+                    }
                 }
             } else if (expr.charAt(e) == '[') {
+                Log.d(TAG, "parseExpr: end with [");
                 e = getMatchIndexEnd(expr, e, '[', ']');
                 if (e < 0) {
                     break;
                 } else {
-                    e = PatternFactory.matchEnd(expr, compile("^\\s*[.\\[]"), e + 1) - 1;
-                    continue;
+                    Pattern pattern = compile("^\\s*[.\\[]");
+                    matcher = pattern.matcher(expr);
+                    if (matcher.find(e + 1)) {
+                        e = matcher.end() - 1;
+                        continue;
+                    }
                 }
             }
-            e = PatternFactory.matchEnd(expr, compile("[.(\\[]"), s);
+            matcher = Pattern.compile("[.(\\[]").matcher(expr);
+            if (matcher.find(last)) {
+                e = PatternFactory.matchEnd(expr, compile("[.(\\[]"), last);
+            } else {
+                e = -1;
+            }
         }
-        String tail = expr.substring(s);
-        if (!tail.matches("^\\s*$")) {//is empty
+        String tail = expr.substring(last);
+        if (!tail.trim().isEmpty()) {//is empty
             items.addAll(isParen ? processParentheses(tail) : Lists.newArrayList(tail));
         }
         return items;
@@ -728,7 +801,7 @@ public class AutoCompleteProvider {
                 }
             }
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**
@@ -863,7 +936,6 @@ public class AutoCompleteProvider {
         return mClassLoader.getClassReader().isLoaded();
     }
 
-
     public ArrayList<Description> getSuggestions(EditText editor, int position) {
         try {
             this.findStart(editor);
@@ -978,8 +1050,15 @@ public class AutoCompleteProvider {
         mClassLoader.getClassReader().dispose();
     }
 
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({CONTEXT_AFTER_DOT, CONTEXT_METHOD_PARAM, CONTEXT_IMPORT, CONTEXT_IMPORT_STATIC,
             CONTEXT_PACKAGE_DECL, CONTEXT_NEED_TYPE, CONTEXT_OTHER})
     public @interface ContextType {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({KIND_PACKAGE, KIND_METHOD, KIND_IMPORT, KIND_MEMBER, KIND_THIS, KIND_SUPER,
+            KIND_BUILTIN_TYPE, KIND_NONE})
+    public @interface ItemKind {
     }
 }

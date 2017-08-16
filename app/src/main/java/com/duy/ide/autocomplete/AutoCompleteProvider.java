@@ -327,7 +327,6 @@ public class AutoCompleteProvider {
      * " return all the matched, variables, fields, methods, types, packages
      */
     private ArrayList<Description> completeWord(String source, String incomplete) {
-//        incomplete = incomplete.trim();
         if (incomplete.endsWith(" ")) {
             return new ArrayList<>();
         }

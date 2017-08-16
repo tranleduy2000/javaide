@@ -51,7 +51,6 @@ import android.widget.Toast;
 
 import com.commonsware.cwac.pager.PageDescriptor;
 import com.commonsware.cwac.pager.SimplePageDescriptor;
-import com.duy.JavaApplication;
 import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.compile.diagnostic.DiagnosticPresenter;
 import com.duy.compile.message.MessageFragment;
@@ -182,9 +181,6 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         TabLayout bottomTab = findViewById(R.id.bottom_tab);
         bottomTab.setupWithViewPager(mBottomPage);
 
-        if (getIntent().getBooleanExtra("new_project", false)) {
-            openDrawer(GravityCompat.START);
-        }
         //create project if need
         createProjectIfNeed();
     }
@@ -284,35 +280,12 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        mMessagePresenter.pause((JavaApplication) getApplication());
         mPagePresenter.pause();
         if (mProjectFile != null) {
             ProjectManager.saveProject(this, mProjectFile);
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mMessagePresenter.resume((JavaApplication) getApplication());
-    }
-
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-//        if (intent.getStringExtra(CompileManager.FILE_PATH) != null) {
-//            String filePath = intent.getStringExtra(CompileManager.FILE_PATH);
-//            File file = new File(filePath);
-//            if (!file.exists()) {
-//                Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//            addNewPageEditor(file, SELECT);
-//            //remove path
-//            intent.removeExtra(CompileManager.FILE_PATH);
-//        }
-    }
 
     protected abstract String getCode();
 
@@ -465,23 +438,18 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         }
 
         //show file structure of project
-//        mFilePresenter.show(projectFile, true);
-//        mBottomPage.setCurrentItem(0);
-//        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-//        mMessagePresenter.clear();
-//        mDiagnosticPresenter.clear();
-//        openDrawer(GravityCompat.START);
+        mFilePresenter.show(projectFile, true);
+        mBottomPage.setCurrentItem(0);
+        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        mMessagePresenter.clear();
+        mDiagnosticPresenter.clear();
+        openDrawer(GravityCompat.START);
 
         ClassFile mainClass = projectFile.getMainClass();
         if (mainClass != null && mainClass.exist(projectFile)) {
             //add to database
-            mFileManager.addNewPath(mainClass.getPath(projectFile));
-//            addNewPageEditor(new File(mainClass.getPath(projectFile)), true);
+            addNewPageEditor(new File(mainClass.getPath(projectFile)), true);
         }
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("new_project", true);
-        this.finish();
-        this.startActivity(intent);
     }
 
     protected abstract void startAutoCompleteService();

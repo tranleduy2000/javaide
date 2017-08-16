@@ -45,6 +45,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.duy.JavaApplication;
 import com.duy.compile.BuildApkTask;
 import com.duy.compile.BuildJarAchieveTask;
 import com.duy.compile.CompileJavaTask;
@@ -768,6 +769,8 @@ public class MainActivity extends ProjectManagerActivity implements
         if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
         hideKeyboard();
         openDrawer(GravityCompat.START);
+
+        mMessagePresenter.resume((JavaApplication) getApplication());
         mMessagePresenter.clear();
         mMessagePresenter.append("Compiling...\n");
 
@@ -775,9 +778,12 @@ public class MainActivity extends ProjectManagerActivity implements
         mDiagnosticPresenter.clear();
 
         mBottomPage.setCurrentItem(0);
+
     }
 
     private void updateUIFinish() {
+        mMessagePresenter.pause((JavaApplication) getApplication());
+
         if (mActionRun != null) mActionRun.setEnabled(true);
         if (mCompileProgress != null) {
             mHandler.postDelayed(new Runnable() {

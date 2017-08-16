@@ -112,7 +112,7 @@ public class UndoRedoHelper {
     public void storePersistentState(SharedPreferences.Editor editor, String prefix) {
         // Store hash code of text in the editor so that we can check if the
         // editor contents has changed.
-        editor.putString(prefix + ".hash", String.valueOf(mTextView.getText().toString().hashCode()));
+        editor.putString(prefix + ".hash", String.valueOf(prefix.hashCode()));
         editor.putInt(prefix + ".maxSize", mEditHistory.mmMaxHistorySize);
         editor.putInt(prefix + ".position", mEditHistory.mmPosition);
         editor.putInt(prefix + ".size", mEditHistory.mmHistory.size());
@@ -131,12 +131,10 @@ public class UndoRedoHelper {
 
     public boolean restorePersistentState(SharedPreferences sp, String prefix)
             throws IllegalStateException {
-
         boolean ok = doRestorePersistentState(sp, prefix);
         if (!ok) {
             mEditHistory.clear();
         }
-
         return ok;
     }
 
@@ -147,7 +145,7 @@ public class UndoRedoHelper {
             return true;
         }
 
-        if (Integer.valueOf(hash) != mTextView.getText().toString().hashCode()) {
+        if (Integer.valueOf(hash) != prefix.hashCode()) {
             return false;
         }
 

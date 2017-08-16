@@ -31,13 +31,13 @@ public class EditorUtil {
         return null;
     }
 
-    public static String getCurrentClassName(EditText editor) {
+    public static String getCurrentClassName(String editor) {
         // TODO: 21-Jul-17
         return "com.duy.Main";
     }
 
     @NonNull
-    public static String getCurrentClassSimpleName(EditText editor) {
+    public static String getCurrentClassSimpleName(String editor) {
         String className = getCurrentClassName(editor);
         int i = className.indexOf(".");
         if (i == -1) return className;
@@ -47,17 +47,17 @@ public class EditorUtil {
     }
 
 
-    public static ArrayList<String> getPossibleClassName(EditText editText, String simpleName, String prefix) {
+    public static ArrayList<String> getPossibleClassName(String source, String simpleName, String prefix) {
         Log.d(TAG, "getPossibleClassName() called with:  simpleName = [" + simpleName + "], prefix = [" + prefix + "]");
 
         ArrayList<String> classList = new ArrayList<>();
-        String importedClassName = PackageImporter.getImportedClassName(editText, simpleName);
+        String importedClassName = PackageImporter.getImportedClassName(source, simpleName);
         Log.d(TAG, "getPossibleClassName importedClassName = " + importedClassName);
         if (importedClassName != null) {
             classList.add(importedClassName);
         } else {
             if (!prefix.contains(".")) {
-                classList.add(getCurrentClassName(editText)); //current member
+                classList.add(getCurrentClassName(source)); //current member
                 if (simpleName != null && !simpleName.isEmpty()) {
                     classList.add("java.lang." + simpleName); //default java.lang package
                 } else if (!prefix.isEmpty()) {

@@ -37,14 +37,18 @@ public class PackageImporter {
     }
 
     public static String getImportedClassName(EditText editor, @Nullable String className) {
+        return getImportedClassName(editor.getText(), className);
+    }
+
+    public static String getImportedClassName(CharSequence src, @Nullable String className) {
         if (className == null) return null;
 
         Pattern pattern = PatternFactory.makeImport(className);
-        Matcher matcher = pattern.matcher(editor.getText());
+        Matcher matcher = pattern.matcher(src);
         if (matcher.find()) {
             return matcher.group(2);
         }
-        return PatternFactory.match(editor.getText(), pattern);
+        return PatternFactory.match(src, pattern);
     }
 
 

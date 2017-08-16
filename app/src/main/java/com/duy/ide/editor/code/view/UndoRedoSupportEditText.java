@@ -42,6 +42,7 @@ import com.google.firebase.crash.FirebaseCrash;
  */
 
 public class UndoRedoSupportEditText extends HighlightEditor {
+    private static final String PREF_HISTORY_EDIT = "pref_history_edit";
 
     private UndoRedoHelper mUndoRedoHelper;
     private KeySettings mSettings;
@@ -123,15 +124,15 @@ public class UndoRedoSupportEditText extends HighlightEditor {
     }
 
     public void saveHistory(@NonNull String key) {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+        SharedPreferences.Editor editor = getContext().getSharedPreferences(PREF_HISTORY_EDIT, Context.MODE_PRIVATE).edit();
         mUndoRedoHelper.storePersistentState(editor, key);
         editor.apply();
     }
 
     public void restoreHistory(String key) {
         try {
-            mUndoRedoHelper.restorePersistentState(
-                    PreferenceManager.getDefaultSharedPreferences(getContext()), key);
+            SharedPreferences pref = getContext().getSharedPreferences(PREF_HISTORY_EDIT, Context.MODE_PRIVATE);
+            mUndoRedoHelper.restorePersistentState(pref, key);
         } catch (Exception ignored) {
         }
     }

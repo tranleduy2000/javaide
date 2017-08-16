@@ -109,15 +109,17 @@ public class MainActivity extends ProjectManagerActivity implements
 
     protected void startAutoCompleteService() {
         Log.d(TAG, "startAutoCompleteService() called");
-        if (mProjectFile != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    mAutoCompleteProvider = new AutoCompleteProvider(MainActivity.this);
-                    mAutoCompleteProvider.load(mProjectFile);
-                    populateAutoCompleteService(mAutoCompleteProvider);
-                }
-            }).start();
+        if (mAutoCompleteProvider == null) {
+            if (mProjectFile != null) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAutoCompleteProvider = new AutoCompleteProvider(MainActivity.this);
+                        mAutoCompleteProvider.load(mProjectFile);
+                        populateAutoCompleteService(mAutoCompleteProvider);
+                    }
+                }).start();
+            }
         }
     }
 

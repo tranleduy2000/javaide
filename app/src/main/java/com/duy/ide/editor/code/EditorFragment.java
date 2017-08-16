@@ -114,13 +114,16 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 //                }
 //            });
 //        }
-//        ArrayList<InfoItem> items = PascalLibraryManager.getAllMethodDescription(SystemLibrary.class, IOLib.class, FileLib.class);
-//        for (String s : KeyWord.ALL_KEY_WORD) {
-//            items.add(new InfoItem(StructureType.TYPE_KEY_WORD, s));
-//        }
-//        mCodeEditor.setSuggestData(items);
-        if (autoCompleteProvider != null) mCodeEditor.setAutoCompleteProvider(autoCompleteProvider);
+
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (autoCompleteProvider != null) {
+            mCodeEditor.setAutoCompleteProvider(autoCompleteProvider);
+        }
     }
 
     @Override

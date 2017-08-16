@@ -300,9 +300,9 @@ public class JavaPreferences {
     }
 
     public int getMaxHistoryEdit() {
-        int max = getInt(context.getString(R.string.key_max_page), 100);
-        max = Math.min(10, max);
-        max = Math.max(1, max);
+        int max = getInt(context.getString(R.string.max_history_edit), 1000);
+        max = Math.min(1000, max);
+        max = Math.max(100, max);
         return max;
     }
 

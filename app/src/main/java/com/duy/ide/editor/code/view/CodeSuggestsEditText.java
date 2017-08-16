@@ -166,16 +166,10 @@ public abstract class CodeSuggestsEditText extends IndentEditText
         }
     }
 
-    public void setEnoughToFilter(boolean enoughToFilter) {
-        this.enoughToFilter = enoughToFilter;
-    }
 
     @Override
     public boolean enoughToFilter() {
-        if (enoughToFilter) {
-            return true;
-        }
-        return super.enoughToFilter();
+        return mAdapter != null;
     }
 
     public void restoreAfterClick(final String[] data) {
@@ -239,7 +233,6 @@ public abstract class CodeSuggestsEditText extends IndentEditText
         setDefaultKeyword();
         mTokenizer = new SymbolsTokenizer();
         setTokenizer(mTokenizer);
-        setThreshold(1);
         invalidateCharHeight();
 
         setDropDownBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_popup_suggest));

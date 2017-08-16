@@ -247,7 +247,7 @@ public class AutoCompleteProvider {
         }
     }
 
-    public ArrayList<Description> complete(EditText editor) {
+    public ArrayList<Description> complete() {
         //" Return list of matches.
         //case: all is empty
         if (dotExpr.isEmpty() && incomplete.isEmpty()) {
@@ -260,7 +260,7 @@ public class AutoCompleteProvider {
         if (!dotExpr.isEmpty()) {
             switch (contextType) {
                 case CONTEXT_AFTER_DOT:
-                    result = completeAfterDot(editor, dotExpr, incomplete);
+                    result = completeAfterDot(source, dotExpr, incomplete);
                     break;
                 case CONTEXT_IMPORT:
                 case CONTEXT_IMPORT_STATIC:
@@ -269,7 +269,7 @@ public class AutoCompleteProvider {
                     result = getMember(dotExpr, incomplete);
                     break;
                 case CONTEXT_METHOD_PARAM:
-                    result = completeAfterDot(editor, dotExpr, incomplete);
+                    result = completeAfterDot(source, dotExpr, incomplete);
                     break;
                 case CONTEXT_NEED_CONSTRUCTOR:
                     result = getConstructorList(dotExpr);
@@ -304,7 +304,7 @@ public class AutoCompleteProvider {
                     result = getConstructorList(incomplete);
                     break;
                 default:
-                    result = completeWord(editor, incomplete);
+                    result = completeWord(source, incomplete);
                     break;
             }
         }
@@ -326,7 +326,7 @@ public class AutoCompleteProvider {
      * " Precondition:	incomplete must be a word without '.'.
      * " return all the matched, variables, fields, methods, types, packages
      */
-    private ArrayList<Description> completeWord(EditText editor, String incomplete) {
+    private ArrayList<Description> completeWord(String source, String incomplete) {
         incomplete = incomplete.trim();
         ArrayList<Description> result = new ArrayList<>();
         if (contextType != CONTEXT_PACKAGE_DECL) {
@@ -371,8 +371,8 @@ public class AutoCompleteProvider {
                                             paramsStr));
                                 }
                                 //if the cursor in method scope
-                                if (method.getStartPosition() <= editor.getSelectionStart()
-                                        && method.getBody().getEndPosition(unit.endPositions) >= editor.getSelectionStart()) {
+                                if (method.getStartPosition() <= cursor
+                                        && method.getBody().getEndPosition(unit.endPositions) >= cursor) {
                                     //add field from start position of method to the cursor
                                     com.sun.tools.javac.util.List<JCTree.JCStatement> statements = method.getBody().getStatements();
                                     for (JCTree.JCStatement jcStatement : statements) {
@@ -464,7 +464,7 @@ public class AutoCompleteProvider {
      * " Precondition:	expr must end with '.'
      * " return members of the value of expression
      */
-    private ArrayList<Description> completeAfterDot(EditText editor, String dotExpr, String incomplete) {
+    private ArrayList<Description> completeAfterDot(String source, String dotExpr, String incomplete) {
         ArrayList<String> items = parseExpr(dotExpr);
         if (items.size() == 0) {
             return new ArrayList<>();
@@ -540,7 +540,7 @@ public class AutoCompleteProvider {
                     }
                 } else {
                     // 3)
-                    String typeName = getDeclaredClassName(editor, ident);
+                    String typeName = getDeclaredClassName(source, ident);
                     if (!typeName.isEmpty()) {
                         if (typeName.charAt(0) == '[' && typeName.charAt(typeName.length() - 1) == ']') {
                             ti = doGetClassInfo(Object[].class.getName());
@@ -602,9 +602,9 @@ public class AutoCompleteProvider {
                 Matcher matcher = Patterns.RE_ARRAY_ACCESS.matcher(items.get(0));
                 matcher.find();
                 String typeName = matcher.group(1);
-                typeName = getDeclaredClassName(editor, typeName);
+                typeName = getDeclaredClassName(source, typeName);
                 if (!typeName.isEmpty()) {
-                    ti = arrayAcesss(typeName, items.get(0));
+                    ti = arrayAccess(typeName, items.get(0));
                 }
             }
         }
@@ -647,7 +647,7 @@ public class AutoCompleteProvider {
         return filter(ti, incomplete);
     }
 
-    private ArrayList<Description> arrayAcesss(String typeName, String s) {
+    private ArrayList<Description> arrayAccess(String typeName, String s) {
         return null;
     }
 
@@ -664,7 +664,7 @@ public class AutoCompleteProvider {
         return ti;
     }
 
-    private String getDeclaredClassName(EditText editor, String ident) {
+    private String getDeclaredClassName(String src, String ident) {
         ident = ident.trim();
         if (compile("this|super").matcher(ident).find()) {
             return ident; //TODO Return current class
@@ -677,9 +677,9 @@ public class AutoCompleteProvider {
          "   j = 0;
          " }
          */
-        int pos = editor.getSelectionStart();
+        int pos = cursor;
         int start = Math.max(0, pos - 2500);
-        CharSequence range = editor.getText().subSequence(start, pos);
+        String range = src.substring(start, pos);
 
         //BigInteger num = new BigInteger(); -> BigInteger num =
         String instance = lastMatchStr(range, PatternFactory.makeInstance(ident));
@@ -689,7 +689,7 @@ public class AutoCompleteProvider {
             //generic ArrayList<String> -> ArrayList
             ident = instance.replaceAll("<.*>", ""); //clear generic
 
-            ArrayList<String> possibleClassName = getPossibleClassName(editor, ident, "");
+            ArrayList<String> possibleClassName = getPossibleClassName(src, ident, "");
             for (String className : possibleClassName) {
                 ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(className, null);
                 if (classDescription != null) {
@@ -995,7 +995,7 @@ public class AutoCompleteProvider {
     public ArrayList<Description> getSuggestions(EditText editor) {
         try {
             this.initializer(editor);
-            ArrayList<Description> complete = complete(editor);
+            ArrayList<Description> complete = complete();
             return complete;
         } catch (Exception e) {
             e.printStackTrace();

@@ -32,7 +32,7 @@ public class JavaClassManager {
             isInstance = prefix.matches("\\)$");
 
             if (prefix.isEmpty() || prefix.equals("this")) {
-                className = getCurrentClassSimpleName(editor);
+                className = getCurrentClassSimpleName(editor.getText().toString());
             } else {
                 String word = getWord(editor, pos);
                 if (word.contains("((")) {
@@ -58,7 +58,7 @@ public class JavaClassManager {
             }
 
             classNames = new ArrayList<>();
-            classNames.addAll(getPossibleClassName(editor, className, prefix));
+            classNames.addAll(getPossibleClassName(editor.getText().toString(), className, prefix));
 
             return classNames;
         } catch (Exception e) {

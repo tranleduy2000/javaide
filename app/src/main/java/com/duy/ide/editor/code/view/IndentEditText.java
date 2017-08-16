@@ -180,8 +180,6 @@ public class IndentEditText extends AppCompatMultiAutoCompleteTextView {
 
     private CharSequence indentLine(CharSequence source, int start, int end, Spanned dest,
                                     int dstart, int dend) {
-        Log.d(TAG, "indentLine() called with: source = [" + source + "], start = [" + start + "], end = [" + end + "], dest = [" + dest + "], dstart = [" + dstart + "], dend = [" + dend + "]");
-
         String indent = "";
         int indexStart = dstart - 1;
         int indexEnd;

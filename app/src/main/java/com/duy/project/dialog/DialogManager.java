@@ -42,7 +42,6 @@ public class DialogManager {
                     FileUtils.copyFile(new File(selectedFile), file);
                     callback.onSuccess(file);
                 } catch (IOException e) {
-                    e.printStackTrace();
                     callback.onFailed(e);
                 }
                 alertDialog.cancel();

@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -579,7 +580,8 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         } else if (type.equals(getString(R.string.xml_file))) {
             showDialogCreateNewXml(parent);
         } else if (type.equals(getString(R.string.from_storage))) {
-            FileExplorerActivity.startPickFileActivity(this, null, REQUEST_PICK_FILE, parent);
+            FileExplorerActivity.startPickFileActivity(this,
+                    Environment.getExternalStorageDirectory().getPath(), REQUEST_PICK_FILE, parent);
         }
     }
 
@@ -599,7 +601,9 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
 
                         @Override
                         public void onFailed(@Nullable Exception e) {
-                            Toast.makeText(ProjectManagerActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            if (e != null) {
+                                Toast.makeText(ProjectManagerActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                 }

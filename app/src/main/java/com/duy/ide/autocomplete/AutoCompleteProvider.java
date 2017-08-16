@@ -748,7 +748,7 @@ public class AutoCompleteProvider {
                     items.add(s);
                 }
             } else {
-                items.add(expr);
+                items.add(expr.contains(".") ? expr.substring(0, expr.indexOf(".")) : expr);
             }
             return items;
         }

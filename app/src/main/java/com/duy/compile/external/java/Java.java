@@ -2,6 +2,9 @@ package com.duy.compile.external.java;
 
 import android.support.annotation.Nullable;
 
+import com.android.utils.FileUtils;
+
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -126,6 +129,7 @@ public class Java {
             main.invoke(null, new Object[]{mainargs});
 
             //restore std
+            FileUtils.emptyFolder(new File(tempDir));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (Exception ex) {

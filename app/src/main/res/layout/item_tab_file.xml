@@ -15,13 +15,13 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container_tab"
-    android:layout_width="wrap_content"
-    android:layout_height="40dp"
-    android:background="@drawable/bg_tab"
-    android:orientation="horizontal">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/container_tab"
+              android:layout_width="wrap_content"
+              android:layout_height="40dp"
+              android:background="@drawable/bg_tab"
+              android:orientation="horizontal">
 
 
     <android.support.v7.widget.AppCompatImageView
@@ -32,7 +32,8 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:src="@drawable/ic_play_arrow_white_24dp"
         android:tint="?colorAccent"
-        android:visibility="gone" />
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/txt_title"
         android:layout_width="wrap_content"
@@ -45,7 +46,7 @@
         android:padding="4dp"
         android:singleLine="true"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-        tools:text="dasdaasda123213213123123fafsdsfadsf" />
+        tools:text="dasdaasda123213213123123fafsdsfadsf"/>
 
 
     <android.support.v7.widget.AppCompatImageView
@@ -58,6 +59,6 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
         android:padding="4dp"
-        app:srcCompat="@drawable/ic_close" />
+        app:srcCompat="@drawable/ic_close"/>
 
 </LinearLayout>

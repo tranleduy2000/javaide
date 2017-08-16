@@ -25,7 +25,7 @@ public class AutoCompletePackage {
 
         ArrayList<Class> classes = classReader.getAllClasses();
         for (Class aClass : classes) {
-            root.put(aClass.getPackage().getName());
+            root.put(aClass.getName());
         }
     }
 

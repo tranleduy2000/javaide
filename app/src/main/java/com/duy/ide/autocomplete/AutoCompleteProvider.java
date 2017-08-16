@@ -67,6 +67,7 @@ public class AutoCompleteProvider {
     public static final int CONTEXT_IMPORT_STATIC = CONTEXT_IMPORT + 4;
     public static final int CONTEXT_PACKAGE_DECL = CONTEXT_IMPORT_STATIC + 6;
     public static final int CONTEXT_NEED_TYPE = CONTEXT_PACKAGE_DECL + 7;
+    public static final int CONTEXT_NEED_CONSTRUCTOR = CONTEXT_NEED_TYPE + 1;
 
     private static final String TAG = "AutoCompleteProvider";
     private JavaDexClassLoader mClassLoader;
@@ -134,7 +135,7 @@ public class AutoCompleteProvider {
                     Pattern importStatic = compile("^\\s*(import)\\s+(static\\s+)?");
                     Matcher matcher = importStatic.matcher(statement);
                     if (matcher.find()) {
-                        dotExpr = statement.substring(matcher.end() + 1);
+                        dotExpr = statement.substring(matcher.end());
                     }
                 } else {
                     contextType = CONTEXT_PACKAGE_DECL;
@@ -145,6 +146,7 @@ public class AutoCompleteProvider {
                     }
                 }
             }
+
             //String literal
             else if (compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
                 dotExpr = statement.replaceAll("\\s*\\.\\s*$", ".");
@@ -190,6 +192,7 @@ public class AutoCompleteProvider {
                 if (!Patterns.KEYWORDS.matcher(statement).find()) {
                     incomplete = "+";
                     dotExpr = statement;
+                    contextType = CONTEXT_NEED_CONSTRUCTOR;
                     return selectionStart - dotExpr.length();
                 }
             } else {
@@ -237,7 +240,7 @@ public class AutoCompleteProvider {
                     || contextType == CONTEXT_IMPORT_STATIC
                     || contextType == CONTEXT_PACKAGE_DECL
                     || contextType == CONTEXT_NEED_TYPE) {
-                result = getMember(dotExpr);
+                result = getMember(dotExpr, incomplete);
             } else if (contextType == CONTEXT_METHOD_PARAM) {
                 if (incomplete.equals("+")) {
                     result = getConstructorList(dotExpr);
@@ -386,22 +389,30 @@ public class AutoCompleteProvider {
         return constructors;
     }
 
+
     /**
      * get member of class name, package ...
+     *
+     * @param prefix - end with "."
+     * @param suffix - incomplete word
+     * @return
      */
     @NonNull
-    private ArrayList<Description> getMember(String name) {
+    private ArrayList<Description> getMember(String prefix, String suffix) {
         //get class member
-        ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(name, null);
+        ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(prefix, null);
         ArrayList<Description> members = new ArrayList<>();
         if (classDescription != null) {
-            members.addAll(classDescription.getMember(""));
+            members.addAll(classDescription.getMember(suffix));
         }
-        PackageDescription packageDescription = mPackageProvider.trace(name);
+        PackageDescription packageDescription = mPackageProvider.trace(prefix.substring(0, prefix.lastIndexOf(".")));
         if (packageDescription != null) {
             HashMap<String, PackageDescription> child = packageDescription.getChild();
             for (Map.Entry<String, PackageDescription> entry : child.entrySet()) {
-                members.add(entry.getValue());
+                if (entry.getValue().getName().startsWith(suffix)) {
+                    members.add(entry.getValue());
+                }
+
             }
         }
         return members;
@@ -419,7 +430,7 @@ public class AutoCompleteProvider {
 
         //0. String literal
         if (items.get(items.size() - 1).matches("\"$")) {
-            return getMember(String.class.getName());
+            return getMember(dotExpr, String.class.getName());
         }
 
         ArrayList<Description> ti = new ArrayList<>();
@@ -501,7 +512,7 @@ public class AutoCompleteProvider {
 
                         // 5) package
                         if (ti.isEmpty()) {
-                            ti = getMember(ident);
+                            ti = getMember(dotExpr, ident);
                             itemKind = KIND_PACKAGE;
                         }
                     }
@@ -849,8 +860,7 @@ public class AutoCompleteProvider {
     }
 
     private String extractCleanExpr(String statement) {
-        // TODO: 13-Aug-17 impl
-        return statement.replaceAll("\\s", "");
+        return statement.replaceAll("[\n\t\r]", "");
     }
 
     /**
@@ -1052,7 +1062,7 @@ public class AutoCompleteProvider {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({CONTEXT_AFTER_DOT, CONTEXT_METHOD_PARAM, CONTEXT_IMPORT, CONTEXT_IMPORT_STATIC,
-            CONTEXT_PACKAGE_DECL, CONTEXT_NEED_TYPE, CONTEXT_OTHER})
+            CONTEXT_PACKAGE_DECL, CONTEXT_NEED_TYPE, CONTEXT_OTHER, CONTEXT_NEED_CONSTRUCTOR})
     public @interface ContextType {
     }
 

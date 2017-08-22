@@ -18,7 +18,6 @@
       <module fileurl="file://$PROJECT_DIR$/styles/styles.iml" filepath="$PROJECT_DIR$/styles/styles.iml" />
       <module fileurl="file://$PROJECT_DIR$/testapplication/testapplication.iml" filepath="$PROJECT_DIR$/testapplication/testapplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/treeview/treeview.iml" filepath="$PROJECT_DIR$/treeview/treeview.iml" />
-      <module fileurl="file://$PROJECT_DIR$/zipsigner/zipsigner.iml" filepath="$PROJECT_DIR$/zipsigner/zipsigner.iml" />
     </modules>
   </component>
 </project>

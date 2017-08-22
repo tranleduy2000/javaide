@@ -78,7 +78,6 @@ dependencies {
     compile project(':splitview')
     compile project(':treeview')
     compile project(':fileexplorer')
-    compile project(':zipsigner')
     compile project(':javacompiler')
     compile project(':javacodeformatter')
     compile project(':androidlogcat')

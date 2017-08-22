@@ -1,3 +1,3 @@
 include ':app', ':splitview', ':colorpicker', ':pager', ':sample', ':treeview', ':testapplication',
-        ':zipsigner', ':javacodeformatter', ':javacompiler', ':gitforandroid', ':androidlogcat',
+        ':javacodeformatter', ':javacompiler', ':gitforandroid', ':androidlogcat',
         ':fileexplorer', ':common', ':styles'

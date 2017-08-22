@@ -33,7 +33,7 @@ public class RootUtils {
         return false;
     }
 
-    private boolean openApk(Context context, File file) {
+    private static boolean openApk(Context context, File file) {
         try {
             Uri uri;
             if (Build.VERSION.SDK_INT >= 24) {
@@ -57,7 +57,7 @@ public class RootUtils {
     }
 
     //https://stackoverflow.com/questions/26926274/install-android-apk-without-prompt
-    private boolean installWithoutPrompt(File apk) {
+    private  static boolean installWithoutPrompt(File apk) {
         try {
             String filename = apk.getPath();
             String command;

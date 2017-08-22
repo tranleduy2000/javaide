@@ -483,5 +483,7 @@
     <string name="donate_for_project">Donate for project</string>
     <string name="thank_you_for_your_support_for_open_source_software">Thank you for your support for open source software.</string>
     <string name="classes_link">https://github.com/tranleduy2000/javaide/blob/master/system/classes/classes.zip</string>
+    <string name="create_keystore">Create store</string>
+    <string name="pref_key_install_root">pref_key_install_root</string>
 
 </resources>

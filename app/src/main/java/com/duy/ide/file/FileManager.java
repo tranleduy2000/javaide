@@ -26,7 +26,7 @@ import android.support.annotation.NonNull;
 import com.duy.compile.CompileManager;
 import com.duy.ide.R;
 import com.duy.ide.activities.ActivitySplashScreen;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 
 import org.apache.commons.io.FileUtils;
 
@@ -66,12 +66,12 @@ public class FileManager {
     private int mode = SAVE_MODE.EXTERNAL;
     private Context context;
     private Database mDatabase;
-    private JavaPreferences mPascalPreferences;
+    private AppSetting mPascalPreferences;
 
     public FileManager(Context context) {
         this.context = context;
         mDatabase = new Database(context);
-        mPascalPreferences = new JavaPreferences(context);
+        mPascalPreferences = new AppSetting(context);
     }
 
     /**
@@ -538,7 +538,7 @@ public class FileManager {
      * @param path
      */
     public void setWorkingFilePath(String path) {
-        mPascalPreferences.put(JavaPreferences.FILE_PATH, path);
+        mPascalPreferences.put(AppSetting.FILE_PATH, path);
     }
 
     public void removeTabFile(String path) {

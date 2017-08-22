@@ -92,7 +92,7 @@
     <item
         android:icon="@drawable/ic_build_white_24dp"
         android:title="@string/tool"
-        app:showAsAction="ifRoom">
+        >
         <menu>
             <item
                 android:id="@+id/action_find"
@@ -112,6 +112,12 @@
                 android:id="@+id/action_format"
                 android:icon="@drawable/ic_format_indent_increase_white_24dp"
                 android:title="@string/format_code"/>
+
+
+            <item
+                android:id="@+id/action_create_keystore"
+                android:icon="@drawable/ic_vpn_key_white_24dp"
+                android:title="@string/create_keystore"/>
         </menu>
     </item>
 
@@ -155,8 +161,7 @@
             <item
                 android:id="@+id/action_build_apk"
                 android:icon="@drawable/ic_jar_file_white"
-                android:title="@string/build_apk"
-                />
+                android:title="@string/build_apk"/>
         </menu>
     </item>
     <item

@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.duy.ide.R;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 
 /**
  * Created by duy on 18/07/2017.
@@ -17,16 +17,16 @@ import com.duy.ide.setting.JavaPreferences;
 
 public class AbstractAppCompatActivity extends AppCompatActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private JavaPreferences mPreferences;
+    private AppSetting mPreferences;
 
-    public JavaPreferences getPreferences() {
+    public AppSetting getPreferences() {
         return mPreferences;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPreferences = new JavaPreferences(this);
+        mPreferences = new AppSetting(this);
         mPreferences.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         if (mPreferences.useFullScreen()) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

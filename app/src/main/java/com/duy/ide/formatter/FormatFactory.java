@@ -3,7 +3,7 @@ package com.duy.ide.formatter;
 import android.content.Context;
 
 import com.android.annotations.Nullable;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;
 import com.google.googlejavaformat.java.JavaFormatterOptions;
@@ -61,7 +61,7 @@ public class FormatFactory {
     }
 
     private static String formatJava(Context context, String src) throws FormatterException {
-        JavaPreferences setting = new JavaPreferences(context);
+        AppSetting setting = new AppSetting(context);
         JavaFormatterOptions.Builder builder = JavaFormatterOptions.builder();
         builder.style(setting.getFormatType() == 0
                 ? JavaFormatterOptions.Style.GOOGLE : JavaFormatterOptions.Style.AOSP);
@@ -73,7 +73,7 @@ public class FormatFactory {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document doc = builder.parse(new InputSource(new StringReader(src)));
 
-        JavaPreferences setting = new JavaPreferences(context);
+        AppSetting setting = new AppSetting(context);
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", setting.getTab().length() + "");

@@ -19,7 +19,7 @@ import com.duy.ide.editor.code.EditorFragment;
 import com.duy.ide.editor.code.EditorPagerAdapter;
 import com.duy.ide.editor.code.MainActivity;
 import com.duy.ide.file.FileManager;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 
 import java.io.File;
 
@@ -33,7 +33,7 @@ public class PagePresenter implements EditPageContract.Presenter {
     private ViewPager mViewPager;
     private EditorPagerAdapter mPageAdapter;
     private TabLayout mTabLayout;
-    private JavaPreferences mPreferences;
+    private AppSetting mPreferences;
     private FileManager mFileManager;
     private MainActivity mContext;
     private Handler mHandler = new Handler();
@@ -45,7 +45,7 @@ public class PagePresenter implements EditPageContract.Presenter {
         this.mViewPager = mViewPager;
         this.mPageAdapter = mPageAdapter;
         this.mTabLayout = tabLayout;
-        this.mPreferences = new JavaPreferences(context);
+        this.mPreferences = new AppSetting(context);
         this.mFileManager = fileManager;
         this.mContext = context;
     }
@@ -224,7 +224,7 @@ public class PagePresenter implements EditPageContract.Presenter {
 
     @Override
     public void pause() {
-        mPreferences.put(JavaPreferences.TAB_POSITION_FILE, mTabLayout.getSelectedTabPosition());
+        mPreferences.put(AppSetting.TAB_POSITION_FILE, mTabLayout.getSelectedTabPosition());
     }
 
     public void setAutoCompleteProvider(@NonNull AutoCompleteProvider autoCompleteProvider) {

@@ -62,8 +62,9 @@ import com.duy.ide.code_sample.activities.SampleActivity;
 import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.editor.code.view.IndentEditText;
 import com.duy.ide.editor.uidesigner.inflate.DialogLayoutPreview;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
+import com.duy.ide.utils.RootUtils;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFolder;
@@ -143,7 +144,7 @@ public class MainActivity extends ProjectManagerActivity implements
                 }
             });
         }
-        mCompileProgress = (ProgressBar) findViewById(R.id.compile_progress);
+        mCompileProgress = findViewById(R.id.compile_progress);
     }
 
     @Override
@@ -193,12 +194,12 @@ public class MainActivity extends ProjectManagerActivity implements
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
 
-        final CheckBox ckbRegex = (CheckBox) alertDialog.findViewById(R.id.ckb_regex);
-        final CheckBox ckbMatch = (CheckBox) alertDialog.findViewById(R.id.ckb_match_key);
-        final EditText editFind = (EditText) alertDialog.findViewById(R.id.txt_find);
-        final EditText editReplace = (EditText) alertDialog.findViewById(R.id.edit_replace);
+        final CheckBox ckbRegex = alertDialog.findViewById(R.id.ckb_regex);
+        final CheckBox ckbMatch = alertDialog.findViewById(R.id.ckb_match_key);
+        final EditText editFind = alertDialog.findViewById(R.id.txt_find);
+        final EditText editReplace = alertDialog.findViewById(R.id.edit_replace);
         if (editFind != null) {
-            editFind.setText(getPreferences().getString(JavaPreferences.LAST_FIND));
+            editFind.setText(getPreferences().getString(AppSetting.LAST_FIND));
         }
         View find = alertDialog.findViewById(R.id.btn_replace);
         assert find != null;
@@ -218,7 +219,7 @@ public class MainActivity extends ProjectManagerActivity implements
                             ckbRegex.isChecked(),
                             ckbMatch.isChecked());
                 }
-                getPreferences().put(JavaPreferences.LAST_FIND, editFind.getText().toString());
+                getPreferences().put(AppSetting.LAST_FIND, editFind.getText().toString());
                 alertDialog.dismiss();
             }
         });
@@ -281,12 +282,12 @@ public class MainActivity extends ProjectManagerActivity implements
                 @Override
                 public void onComplete(File apk, List<Diagnostic> diagnostics) {
                     updateUIFinish();
-                    Toast.makeText(MainActivity.this, R.string.build_success + " " + apk.getPath(),
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.build_success + " " + apk.getPath(), Toast.LENGTH_SHORT).show();
                     mFilePresenter.refresh(mProjectFile);
                     mDiagnosticPresenter.display(diagnostics);
                     mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    onFileClick(apk, null);
+                    Toast.makeText(MainActivity.this, "Installing apk", Toast.LENGTH_SHORT).show();
+                    RootUtils.installApk(MainActivity.this, apk);
                 }
 
             }).execute((AndroidProjectFolder) mProjectFile);
@@ -426,11 +427,11 @@ public class MainActivity extends ProjectManagerActivity implements
         builder.setView(R.layout.dialog_find);
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
-        final CheckBox ckbRegex = (CheckBox) alertDialog.findViewById(R.id.ckb_regex);
-        final CheckBox ckbMatch = (CheckBox) alertDialog.findViewById(R.id.ckb_match_key);
-        final CheckBox ckbWordOnly = (CheckBox) alertDialog.findViewById(R.id.ckb_word_only);
-        final EditText editFind = (EditText) alertDialog.findViewById(R.id.txt_find);
-        editFind.setText(getPreferences().getString(JavaPreferences.LAST_FIND));
+        final CheckBox ckbRegex = alertDialog.findViewById(R.id.ckb_regex);
+        final CheckBox ckbMatch = alertDialog.findViewById(R.id.ckb_match_key);
+        final CheckBox ckbWordOnly = alertDialog.findViewById(R.id.ckb_word_only);
+        final EditText editFind = alertDialog.findViewById(R.id.txt_find);
+        editFind.setText(getPreferences().getString(AppSetting.LAST_FIND));
         alertDialog.findViewById(R.id.btn_replace).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -441,7 +442,7 @@ public class MainActivity extends ProjectManagerActivity implements
                             ckbWordOnly.isChecked(),
                             ckbMatch.isChecked());
                 }
-                getPreferences().put(JavaPreferences.LAST_FIND, editFind.getText().toString());
+                getPreferences().put(AppSetting.LAST_FIND, editFind.getText().toString());
                 alertDialog.dismiss();
             }
         });
@@ -693,6 +694,13 @@ public class MainActivity extends ProjectManagerActivity implements
         } else {
             Toast.makeText(this, "Can not find file", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void createKeyStore() {
+        // TODO: 22-Aug-17 support this feature
+//        Intent intent = new Intent(this, CreateKeyStoreActivity.class);
+//        intent.putExtra("project_path", mProjectFile.getProjectDir());
     }
 
     @Override

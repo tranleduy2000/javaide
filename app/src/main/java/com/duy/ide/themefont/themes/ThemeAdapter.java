@@ -29,7 +29,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.editor.code.view.EditorView;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 import com.duy.ide.themefont.themes.database.CodeTheme;
 import com.duy.ide.themefont.themes.database.ThemeDatabase;
 
@@ -42,7 +42,7 @@ import java.util.Map;
 public class ThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<CodeTheme> mThemes = new ArrayList<>();
     private LayoutInflater mInflater;
-    private JavaPreferences mPascalPreferences;
+    private AppSetting mPascalPreferences;
     private Activity mContext;
 
     @Nullable
@@ -52,7 +52,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public ThemeAdapter(Activity context) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
-        mPascalPreferences = new JavaPreferences(context);
+        mPascalPreferences = new AppSetting(context);
         loadTheme(context);
         mDatabase = new ThemeDatabase(context);
     }

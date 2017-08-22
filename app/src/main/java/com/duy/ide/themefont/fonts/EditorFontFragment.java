@@ -32,7 +32,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 import com.duy.ide.utils.DonateUtils;
 
 /**
@@ -41,7 +41,7 @@ import com.duy.ide.utils.DonateUtils;
 
 public class EditorFontFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener, OnFontSelectListener {
 
-    protected JavaPreferences mPref;
+    protected AppSetting mPref;
     private FontAdapter mFontAdapter;
     private RecyclerView mRecyclerView;
 
@@ -92,7 +92,7 @@ public class EditorFontFragment extends Fragment implements SharedPreferences.On
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mPref = new JavaPreferences(context);
+        mPref = new AppSetting(context);
     }
 
     @Override

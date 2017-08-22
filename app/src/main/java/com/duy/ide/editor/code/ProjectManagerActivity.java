@@ -65,7 +65,7 @@ import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.file.FileUtils;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 import com.duy.ide.view.SymbolListView;
 import com.duy.project.dialog.DialogManager;
 import com.duy.project.dialog.DialogNewAndroidProject;
@@ -135,7 +135,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
 
     protected void onShowKeyboard() {
         mTabLayout.setVisibility(View.GONE);
-        JavaPreferences preferences = getPreferences();
+        AppSetting preferences = getPreferences();
         if (preferences.isShowListSymbol()) {
             if (mContainerSymbol != null) {
                 mContainerSymbol.setVisibility(View.VISIBLE);
@@ -672,6 +672,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     public void closeDrawer(int start) {
         if (mDrawerLayout.isDrawerOpen(start)) mDrawerLayout.closeDrawer(start);
     }
+
 
 
     /**

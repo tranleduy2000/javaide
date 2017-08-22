@@ -19,13 +19,13 @@ package com.duy.ide;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 
 /**
  * Created by Duy on 02-Mar-17.
  */
 
-public class EditorSetting extends JavaPreferences {
+public class EditorSetting extends AppSetting {
     public EditorSetting(Context context) {
         super(context);
     }

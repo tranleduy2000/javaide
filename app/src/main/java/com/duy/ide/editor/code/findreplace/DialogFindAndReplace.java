@@ -26,7 +26,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.duy.ide.R;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 
 //import butterknife.BindView;
 
@@ -47,7 +47,7 @@ public class DialogFindAndReplace extends AppCompatDialogFragment {
     EditText editFind;
     //    @BindView(R.id.edit_replace)
     EditText editReplace;
-    private JavaPreferences mPascalPreferences;
+    private AppSetting mPascalPreferences;
     @Nullable
 
     private FindAndReplaceListener findAndReplaceListener;
@@ -62,7 +62,7 @@ public class DialogFindAndReplace extends AppCompatDialogFragment {
         } catch (Exception ignored) {
 
         }
-        mPascalPreferences = new JavaPreferences(getContext());
+        mPascalPreferences = new AppSetting(getContext());
     }
 
     @Nullable
@@ -125,8 +125,8 @@ public class DialogFindAndReplace extends AppCompatDialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        mPascalPreferences.put(JavaPreferences.LAST_REPLACE, editReplace.getText().toString());
-        mPascalPreferences.put(JavaPreferences.LAST_FIND, editFind.getText().toString());
+        mPascalPreferences.put(AppSetting.LAST_REPLACE, editReplace.getText().toString());
+        mPascalPreferences.put(AppSetting.LAST_FIND, editFind.getText().toString());
     }
 
     @Nullable

@@ -37,7 +37,7 @@ import com.duy.ide.autocomplete.model.FieldDescription;
 import com.duy.ide.autocomplete.model.MethodDescription;
 import com.duy.ide.autocomplete.model.PackageDescription;
 import com.duy.ide.autocomplete.util.JavaUtil;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -106,8 +106,8 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
         this.suggestion = new ArrayList<>();
         this.resourceID = resource;
 
-        JavaPreferences javaPreferences = new JavaPreferences(context);
-        editorTextSize = javaPreferences.getEditorTextSize();
+        AppSetting appSetting = new AppSetting(context);
+        editorTextSize = appSetting.getEditorTextSize();
     }
 
     public ArrayList<Description> getAllItems() {

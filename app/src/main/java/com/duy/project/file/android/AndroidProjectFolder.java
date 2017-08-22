@@ -18,7 +18,6 @@ import java.io.IOException;
 /**
  * Created by Duy on 05-Aug-17.
  */
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class AndroidProjectFolder extends JavaProjectFolder {
     /* Output */
     private final File apkUnsigned;
@@ -50,7 +49,7 @@ public class AndroidProjectFolder extends JavaProjectFolder {
 
         createClassR();
 
-        resourceFile = new File(dirBuild, "resources.res");
+        resourceFile = new File(dirBuild, "resources.ap_");
         dexedClassesFile = new File(dirBuild, "classes.dex");
         keystore = new KeyStore(new File(dirProject, "keystore.jks"),
                 "android".toCharArray(),
@@ -58,6 +57,7 @@ public class AndroidProjectFolder extends JavaProjectFolder {
                 "android".toCharArray());
     }
 
+    @Nullable
     public ManifestData.Activity getLauncherActivity() {
         try {
             ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(getXmlManifest()));
@@ -87,7 +87,7 @@ public class AndroidProjectFolder extends JavaProjectFolder {
         return keystore;
     }
 
-    public File getXmlManifest()  {
+    public File getXmlManifest() {
         return xmlManifest;
     }
 

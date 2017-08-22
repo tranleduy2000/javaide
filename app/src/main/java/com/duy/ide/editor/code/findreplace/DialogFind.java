@@ -26,7 +26,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.duy.ide.R;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 
 
 //import butterknife.BindView;
@@ -48,7 +48,7 @@ public class DialogFind extends AppCompatDialogFragment {
     EditText editFind;
     //    @BindView(R.id.ckb_word_only)
     CheckBox ckbWordOnly;
-    private JavaPreferences mPascalPreferences;
+    private AppSetting mPascalPreferences;
     @Nullable
 
     private FindAndReplaceListener findAndReplaceListener;
@@ -61,7 +61,7 @@ public class DialogFind extends AppCompatDialogFragment {
         } catch (Exception ignored) {
 
         }
-        mPascalPreferences = new JavaPreferences(getContext());
+        mPascalPreferences = new AppSetting(getContext());
     }
 
     @Nullable
@@ -87,7 +87,7 @@ public class DialogFind extends AppCompatDialogFragment {
             }
         });
 
-        editFind.setText(mPascalPreferences.getString(JavaPreferences.LAST_FIND));
+        editFind.setText(mPascalPreferences.getString(AppSetting.LAST_FIND));
         return view;
     }
 
@@ -122,7 +122,7 @@ public class DialogFind extends AppCompatDialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        mPascalPreferences.put(JavaPreferences.LAST_FIND, editFind.getText().toString());
+        mPascalPreferences.put(AppSetting.LAST_FIND, editFind.getText().toString());
     }
 
     @Nullable

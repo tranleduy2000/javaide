@@ -19,7 +19,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 import com.duy.run.utils.IntegerQueue;
 import com.spartacusrex.spartacuside.util.ByteQueue;
 
@@ -98,7 +98,7 @@ public class ConsoleEditText extends AppCompatEditText {
 
     private void init(Context context) {
         if (!isInEditMode()) {
-            JavaPreferences pref = new JavaPreferences(context);
+            AppSetting pref = new AppSetting(context);
             setTypeface(pref.getConsoleFont());
             setTextSize(pref.getConsoleTextSize());
         }

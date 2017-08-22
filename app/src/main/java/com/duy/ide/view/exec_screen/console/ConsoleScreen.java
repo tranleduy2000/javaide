@@ -21,7 +21,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 import com.duy.ide.view.exec_screen.ScreenObject;
 
 /**
@@ -46,7 +46,7 @@ public class ConsoleScreen implements ScreenObject {
     private int screenSize;
     private boolean fullScreen = false;
 
-    public ConsoleScreen(@NonNull JavaPreferences preferences) {
+    public ConsoleScreen(@NonNull AppSetting preferences) {
         this.maxLines = preferences.getMaxLineConsole();
     }
 

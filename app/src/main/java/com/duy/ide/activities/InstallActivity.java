@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.file.FileManager;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 import com.duy.ide.utils.MemoryUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,7 +50,7 @@ import static android.os.Environment.DIRECTORY_DOWNLOADS;
 public class InstallActivity extends AbstractAppCompatActivity implements View.OnClickListener {
     public static final String SYSTEM_VERSION = "System v3.0";
     private static final int REQUEST_CODE_SELECT_FILE = 1101;
-    private JavaPreferences mPreferences;
+    private AppSetting mPreferences;
     private ProgressBar mProgressBar;
     private TextView mInfo;
     private Button mInstallButton;
@@ -65,7 +65,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         setupToolbar();
         setTitle(R.string.install);
 
-        mPreferences = new JavaPreferences(this);
+        mPreferences = new AppSetting(this);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mInfo = (TextView) findViewById(R.id.txt_info);
         mInstallButton = (Button) findViewById(R.id.btn_install);

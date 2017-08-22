@@ -55,3 +55,4 @@ freeline_project_description.json
 /testfile/
 !/app/src/main/java/com/android/sdklib/internal/build/
 !/app/src/main/assets/templates/src/main/androiddebug.jks
+/appzz/

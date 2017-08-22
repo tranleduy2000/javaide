@@ -28,4 +28,5 @@ public interface Builder {
 
     void previewLayout(String path);
 
+    void createKeyStore();
 }

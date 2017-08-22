@@ -35,7 +35,7 @@ import com.duy.ide.utils.DonateUtils;
  * <p>
  * Created by Duy on 3/7/2016
  */
-public class JavaPreferences {
+public class AppSetting {
     public static final String FILE_PATH = "last_file";
     public static final String LAST_FIND = "LAST_FIND";
     public static final String LAST_REPLACE = "LAST_REPLACE";
@@ -49,14 +49,14 @@ public class JavaPreferences {
     private SharedPreferences sharedPreferences;
 
     @SuppressLint("CommitPrefEdits")
-    public JavaPreferences(@NonNull Context context) {
+    public AppSetting(@NonNull Context context) {
         this.context = context;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.editor = sharedPreferences.edit();
     }
 
     @SuppressLint("CommitPrefEdits")
-    public JavaPreferences(@NonNull SharedPreferences mPreferences, @NonNull Context context) {
+    public AppSetting(@NonNull SharedPreferences mPreferences, @NonNull Context context) {
         this.context = context;
         this.sharedPreferences = mPreferences;
         this.editor = sharedPreferences.edit();
@@ -69,7 +69,6 @@ public class JavaPreferences {
      */
     public static void setFirstOpen(Context context) {
         String key = "first_open";
-
     }
 
     @NonNull
@@ -358,5 +357,9 @@ public class JavaPreferences {
 
     public String getTab() {
         return "  ";
+    }
+
+    public boolean installViaRootAccess() {
+        return getBoolean(context.getString(R.string.pref_key_install_root), false);
     }
 }

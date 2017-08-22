@@ -28,7 +28,7 @@ import android.view.MenuItem;
 import com.duy.ide.activities.InstallActivity;
 import com.duy.ide.code_sample.activities.SampleActivity;
 import com.duy.ide.editor.code.MainActivity;
-import com.duy.ide.setting.JavaPreferences;
+import com.duy.ide.setting.AppSetting;
 import com.duy.ide.setting.SettingsActivity;
 import com.duy.ide.utils.DonateUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -45,7 +45,7 @@ public class MenuEditor {
     @Nullable
     private EditorControl listener;
     private Menu menu;
-    private JavaPreferences pascalPreferences;
+    private AppSetting pascalPreferences;
     private Builder builder;
 
     public MenuEditor(@NonNull MainActivity activity,
@@ -53,7 +53,7 @@ public class MenuEditor {
         this.activity = activity;
         this.builder = activity;
         this.listener = listener;
-        pascalPreferences = new JavaPreferences(this.activity);
+        pascalPreferences = new AppSetting(this.activity);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -184,6 +184,9 @@ public class MenuEditor {
                 break;
             case R.id.action_see_logcat:
                 activity.startActivity(new Intent(activity, LogcatActivity.class));
+                break;
+            case R.id.action_create_keystore:
+                activity.createKeyStore();
                 break;
         }
         return true;

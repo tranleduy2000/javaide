@@ -37,30 +37,6 @@ import java.util.Locale;
 public class RootUtils {
     private static final String TAG = "RootUtils";
 
-    public static class RootCommand extends Command {
-        private StringBuilder stringBuilder;
-
-        public RootCommand(String commandFormat, Object... args) {
-            super(0, true, String.format(commandFormat, args));
-            stringBuilder = new StringBuilder();
-        }
-
-        @Override
-        public void commandOutput(int id, String line) {
-            stringBuilder.append(line).append("\n");
-            super.commandOutput(id, line);
-        }
-
-        @Override
-        public void commandCompleted(int id, int exitcode) {
-            super.commandCompleted(id, exitcode);
-
-            onFinish(exitcode == 0, stringBuilder.toString());
-        }
-
-        public void onFinish(boolean success, String output) {}
-    }
-
     public static void commandWait(Shell shell, Command cmd) throws Exception {
         while (!cmd.isFinished()) {
 
@@ -260,9 +236,9 @@ public class RootUtils {
                 file.name = splitSl[0].trim();
                 String realPath = splitSl[1].trim();
                 if (realPath.charAt(0) != '/') {
-                    file.linkedPath  = new File(path).getParent() + "/" + realPath;
+                    file.linkedPath = new File(path).getParent() + "/" + realPath;
                 } else {
-                    file.linkedPath  = realPath;
+                    file.linkedPath = realPath;
                 }
             } else {
                 file.name = nameAndLink;
@@ -287,7 +263,7 @@ public class RootUtils {
         } else if (type == 'l') {
             file.isSymlink = true;
             String linkPath = file.linkedPath;
-            for (;;) {
+            for (; ; ) {
                 List<FileInfo> fileInfos = listFileInfo(linkPath);
                 if (fileInfos.isEmpty())
                     break;
@@ -301,5 +277,30 @@ public class RootUtils {
         }
 
         return file;
+    }
+
+    public static class RootCommand extends Command {
+        private StringBuilder stringBuilder;
+
+        public RootCommand(String commandFormat, Object... args) {
+            super(0, true, String.format(commandFormat, args));
+            stringBuilder = new StringBuilder();
+        }
+
+        @Override
+        public void commandOutput(int id, String line) {
+            stringBuilder.append(line).append("\n");
+            super.commandOutput(id, line);
+        }
+
+        @Override
+        public void commandCompleted(int id, int exitcode) {
+            super.commandCompleted(id, exitcode);
+
+            onFinish(exitcode == 0, stringBuilder.toString());
+        }
+
+        public void onFinish(boolean success, String output) {
+        }
     }
 }

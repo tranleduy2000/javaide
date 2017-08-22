@@ -15,8 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.sdklib.SdkManager;
-import com.android.sdklib.internal.project.ProjectCreator;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.Patterns;
 import com.duy.ide.code_sample.model.AssetUtil;
@@ -27,7 +25,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.regex.Pattern;
 
 /**
  * Created by Duy on 16-Jul-17.
@@ -200,29 +197,32 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             editPackage.setError("Invalid package name: The package name must be least one '.' separator");
             return false;
         }
-        Pattern pattern = Pattern.compile("[a-zA-Z0-9._]*");
-        for (int i = 0; i < packageName.length(); i++) {
-            if (!String.valueOf(packageName.charAt(i)).matches(pattern.toString())) {
-                editPackage.setError("Invalid character " + packageName.charAt(i));
-                return false;
-            }
-        }
-        if (activityName.getText().toString().isEmpty()) {
-            activityName.setError(getString(R.string.enter_name));
+        if (!Patterns.PACKAGE_NAME.matcher(packageName).find()) {
+            editPackage.setError("Invalid package name");
             return false;
         }
-        if (!activityName.getText().toString().matches(Patterns.RE_IDENTIFIER.toString())) {
-            activityName.setText("Invalid name");
+
+        //check activity name
+        String activityName = this.activityName.getText().toString();
+        if (activityName.isEmpty()) {
+            this.activityName.setError(getString(R.string.enter_name));
             return false;
         }
+        if (!Patterns.RE_IDENTIFIER.matcher(activityName).find()) {
+            this.activityName.setText("Invalid name");
+            return false;
+        }
+
+        //check layout name
         if (layoutName.getText().toString().isEmpty()) {
             layoutName.setError(getString(R.string.enter_name));
             return false;
         }
-        if (!layoutName.getText().toString().matches(pattern.toString())) {
+        if (!Patterns.RE_IDENTIFIER.matcher(layoutName.getText().toString()).find()) {
             layoutName.setText("Invalid name");
             return false;
         }
+
         return true;
     }
 

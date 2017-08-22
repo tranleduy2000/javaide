@@ -33,9 +33,8 @@ public class CreateKeystoreActivity extends AbstractAppCompatActivity {
             KeyStore keyStore = KeyStore.getInstance("JKS");
             if (file.exists()) {
                 keyStore.load(new FileInputStream(file), getPassword());
-            }else {
+            } else {
                 keyStore.load(null, null);
-                keyStore.setCertificateEntry("", new C);
                 keyStore.store(new FileOutputStream(file), getPassword());
             }
         } catch (KeyStoreException e) {
@@ -57,6 +56,6 @@ public class CreateKeystoreActivity extends AbstractAppCompatActivity {
     }
 
     public char[] getPassword() {
-        return password;
+        return "".toCharArray();
     }
 }

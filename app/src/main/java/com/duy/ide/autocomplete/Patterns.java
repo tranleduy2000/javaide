@@ -100,4 +100,5 @@ public class Patterns {
     public static final Pattern RE_CASTING = compile("\\s*\\((" + RE_QUALID + "\\s*)\\)\\s*" + RE_IDENTIFIER);
     public static final Pattern RE_KEYWORDS = KEYWORDS;
 
+    public static final Pattern PACKAGE_NAME = compile("([A-Za-z0-9_]([.][a-zA-Z0-9_])?)*");
 }

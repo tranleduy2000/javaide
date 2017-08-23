@@ -26,7 +26,6 @@
 package sun.security.tools;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,7 +38,6 @@ import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.math.BigInteger;
 import java.net.Socket;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSigner;
@@ -57,13 +55,11 @@ import java.security.Timestamp;
 import java.security.UnrecoverableEntryException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CRL;
-import java.security.cert.CertStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
-import java.security.cert.X509CRLSelector;
 import java.security.cert.X509Certificate;
 import java.text.Collator;
 import java.text.MessageFormat;
@@ -104,7 +100,6 @@ import sun.security.pkcs.PKCS10;
 import sun.security.pkcs.PKCS10Attribute;
 import sun.security.pkcs.PKCS9Attribute;
 import sun.security.provider.X509Factory;
-import sun.security.provider.certpath.ldap.LDAPCertStoreHelper;
 import sun.security.util.DerValue;
 import sun.security.util.ObjectIdentifier;
 import sun.security.util.Password;
@@ -372,59 +367,60 @@ public final class KeyTool {
      *            or a bare file path name
      */
     public static Collection<? extends CRL> loadCRLs(String src) throws Exception {
-        InputStream in = null;
-        URI uri = null;
-        if (src == null) {
-            in = System.in;
-        } else {
-            try {
-                uri = new URI(src);
-                if (uri.getScheme().equals("ldap")) {
-                    // No input stream for LDAP
-                } else {
-                    in = uri.toURL().openStream();
-                }
-            } catch (Exception e) {
-                try {
-                    in = new FileInputStream(src);
-                } catch (Exception e2) {
-                    if (uri == null || uri.getScheme() == null) {
-                        throw e2;   // More likely a bare file path
-                    } else {
-                        throw e;    // More likely a protocol or network problem
-                    }
-                }
-            }
-        }
-        if (in != null) {
-            try {
-                // Read the full stream before feeding to X509Factory,
-                // otherwise, keytool -gencrl | keytool -printcrl
-                // might not work properly, since -gencrl is slow
-                // and there's no data in the pipe at the beginning.
-                ByteArrayOutputStream bout = new ByteArrayOutputStream();
-                byte[] b = new byte[4096];
-                while (true) {
-                    int len = in.read(b);
-                    if (len < 0) break;
-                    bout.write(b, 0, len);
-                }
-                return CertificateFactory.getInstance("X509").generateCRLs(
-                        new ByteArrayInputStream(bout.toByteArray()));
-            } finally {
-                if (in != System.in) {
-                    in.close();
-                }
-            }
-        } else {    // must be LDAP, and uri is not null
-            String path = uri.getPath();
-            if (path.charAt(0) == '/') path = path.substring(1);
-            LDAPCertStoreHelper h = new LDAPCertStoreHelper();
-            CertStore s = h.getCertStore(uri);
-            X509CRLSelector sel =
-                    h.wrap(new X509CRLSelector(), null, path);
-            return s.getCRLs(sel);
-        }
+//        InputStream in = null;
+//        URI uri = null;
+//        if (src == null) {
+//            in = System.in;
+//        } else {
+//            try {
+//                uri = new URI(src);
+//                if (uri.getScheme().equals("ldap")) {
+//                    // No input stream for LDAP
+//                } else {
+//                    in = uri.toURL().openStream();
+//                }
+//            } catch (Exception e) {
+//                try {
+//                    in = new FileInputStream(src);
+//                } catch (Exception e2) {
+//                    if (uri == null || uri.getScheme() == null) {
+//                        throw e2;   // More likely a bare file path
+//                    } else {
+//                        throw e;    // More likely a protocol or network problem
+//                    }
+//                }
+//            }
+//        }
+//        if (in != null) {
+//            try {
+//                // Read the full stream before feeding to X509Factory,
+//                // otherwise, keytool -gencrl | keytool -printcrl
+//                // might not work properly, since -gencrl is slow
+//                // and there's no data in the pipe at the beginning.
+//                ByteArrayOutputStream bout = new ByteArrayOutputStream();
+//                byte[] b = new byte[4096];
+//                while (true) {
+//                    int len = in.read(b);
+//                    if (len < 0) break;
+//                    bout.write(b, 0, len);
+//                }
+//                return CertificateFactory.getInstance("X509").generateCRLs(
+//                        new ByteArrayInputStream(bout.toByteArray()));
+//            } finally {
+//                if (in != System.in) {
+//                    in.close();
+//                }
+//            }
+//        } else {    // must be LDAP, and uri is not null
+//            String path = uri.getPath();
+//            if (path.charAt(0) == '/') path = path.substring(1);
+//            LDAPCertStoreHelper h = new LDAPCertStoreHelper();
+//            CertStore s = h.getCertStore(uri);
+//            X509CRLSelector sel =
+//                    h.wrap(new X509CRLSelector(), null, path);
+//            return s.getCRLs(sel);
+//        }
+        return null;
     }
 
     /**
@@ -781,7 +777,6 @@ public final class KeyTool {
                 doCommands(out);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println(rb.getString("keytool.error.") + e);
             if (verbose) {
                 e.printStackTrace(System.out);
@@ -2423,29 +2418,29 @@ public final class KeyTool {
 
     private void doPrintCRL(String src, PrintStream out)
             throws Exception {
-        for (CRL crl : loadCRLs(src)) {
-            printCRL(crl, out);
-            String issuer = null;
-            if (caks != null) {
-                issuer = verifyCRL(caks, crl);
-                if (issuer != null) {
-                    System.out.println("Verified by " + issuer + " in cacerts");
-                }
-            }
-            if (issuer == null && keyStore != null) {
-                issuer = verifyCRL(keyStore, crl);
-                if (issuer != null) {
-                    System.out.println("Verified by " + issuer + " in keystore");
-                }
-            }
-            if (issuer == null) {
-                out.println(rb.getString
-                        ("STAR"));
-                out.println("WARNING: not verified. Make sure -keystore and -alias are correct.");
-                out.println(rb.getString
-                        ("STARNN"));
-            }
-        }
+//        for (CRL crl : loadCRLs(src)) {
+//            printCRL(crl, out);
+//            String issuer = null;
+//            if (caks != null) {
+//                issuer = verifyCRL(caks, crl);
+//                if (issuer != null) {
+//                    System.out.println("Verified by " + issuer + " in cacerts");
+//                }
+//            }
+//            if (issuer == null && keyStore != null) {
+//                issuer = verifyCRL(keyStore, crl);
+//                if (issuer != null) {
+//                    System.out.println("Verified by " + issuer + " in keystore");
+//                }
+//            }
+//            if (issuer == null) {
+//                out.println(rb.getString
+//                        ("STAR"));
+//                out.println("WARNING: not verified. Make sure -keystore and -alias are correct.");
+//                out.println(rb.getString
+//                        ("STARNN"));
+//            }
+//        }
     }
 
     private void printCRL(CRL crl, PrintStream out)

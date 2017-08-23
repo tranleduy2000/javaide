@@ -520,6 +520,15 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         return false;
     }
 
+    @Override
+    public void clickNewModule() {
+        if (mProjectFile != null) {
+//            showDialogSelectFileType(mPageAdapter);
+        }else {
+            Toast.makeText(this, "Please create new project", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /**
      * show dialog with file info
      * filePath, path, size, extension ...
@@ -672,7 +681,6 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     public void closeDrawer(int start) {
         if (mDrawerLayout.isDrawerOpen(start)) mDrawerLayout.closeDrawer(start);
     }
-
 
 
     /**

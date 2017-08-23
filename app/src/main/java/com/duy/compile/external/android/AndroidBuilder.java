@@ -1,5 +1,6 @@
 package com.duy.compile.external.android;
 
+import android.os.Environment;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
@@ -18,6 +19,8 @@ import kellinwood.security.zipsigner.ProgressEvent;
 import kellinwood.security.zipsigner.ZipSigner;
 import kellinwood.security.zipsigner.optional.CustomKeySigner;
 
+import static com.duy.compile.external.android.util.S.dirLibs;
+
 
 public class AndroidBuilder {
     private static final String TAG = "BuildTask";
@@ -34,6 +37,8 @@ public class AndroidBuilder {
 
     public static void build(AndroidProjectFolder projectFile,
                              @NonNull DiagnosticCollector diagnosticCollector) throws Exception {
+        AndroidBuilder.extractLibrary(projectFile);
+
         //create R.java
         System.out.println("Run aidl");
         AndroidBuilder.runAidl(projectFile);
@@ -67,6 +72,16 @@ public class AndroidBuilder {
         AndroidBuilder.publishApk();
     }
 
+    private static void extractLibrary(AndroidProjectFolder projectFolder) {
+        File[] files = dirLibs.listFiles();
+        if (files != null) {
+            for (File lib : files) {
+                if (lib.isFile() && lib.getPath().endsWith(".aar")) {
+                }
+            }
+        }
+    }
+
     private static void runAidl(AndroidProjectFolder projectFile) throws Exception {
         Log.d(TAG, "runAidl() called");
 
@@ -78,6 +93,9 @@ public class AndroidBuilder {
 
         Aapt aapt = new Aapt();
         String command = "aapt p -f -v" +
+                " --auto-add-overlay" +
+                " -I " + Environment.getExternalStorageDirectory() + "/com/github/clans/fab/1.6.4/fab-1.6.4.exploded.aar/classes.jar" +
+                " -S " + Environment.getExternalStorageDirectory() + "/com/github/clans/fab/1.6.4/fab-1.6.4.exploded.aar/res" +
                 " -M " + projectFile.xmlManifest.getPath() + //manifest file
                 " -F " + projectFile.getResourceFile().getPath() + //
                 " -I " + projectFile.bootClasspath.getPath() + //include

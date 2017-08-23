@@ -120,6 +120,13 @@ public class FolderStructureFragment extends Fragment
             String state = mPref.getString("tree_state", "");
             if (!state.isEmpty()) mTreeView.restoreState(state);
         }
+
+        view.findViewById(R.id.img_add_dependencies).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) listener.clickNewModule();
+            }
+        });
     }
 
     @Nullable
@@ -284,6 +291,7 @@ public class FolderStructureFragment extends Fragment
 
         boolean clickCreateNewFile(File file, Callback callBack);
 
+        void clickNewModule();
     }
 
     public interface Callback {

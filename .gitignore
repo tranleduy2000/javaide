@@ -2,6 +2,7 @@
 ### Android template
 # Built application files
 *.ap_
+*.apk
 
 # Files for the ART/Dalvik VM
 *.dex
@@ -56,3 +57,5 @@ freeline_project_description.json
 !/app/src/main/java/com/android/sdklib/internal/build/
 !/app/src/main/assets/templates/src/main/androiddebug.jks
 /appzz/
+/testapplication/
+/tools/

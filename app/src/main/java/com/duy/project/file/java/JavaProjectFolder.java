@@ -1,5 +1,6 @@
 package com.duy.project.file.java;
 
+import android.os.Environment;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -326,6 +327,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
                 }
             }
         }
+        classpath += Environment.getExternalStorageDirectory() + "/com/github/clans/fab/1.6.4/fab-1.6.4.exploded.aar/classes.jar";
         return classpath + File.pathSeparator + getJavaBootClassPath();
     }
 
@@ -334,7 +336,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         return dirJava;
     }
 
-    public String getJavaBootClassPath() {
+    private String getJavaBootClassPath() {
         return bootClasspath.getPath();
     }
 

@@ -2,7 +2,7 @@ package com.duy.compile;
 
 import android.os.AsyncTask;
 
-import com.duy.compile.external.CommandManager;
+import com.duy.compile.external.CompileHelper;
 import com.duy.project.file.java.JavaProjectFolder;
 
 import java.io.File;
@@ -36,7 +36,7 @@ public class BuildJarAchieveTask extends AsyncTask<JavaProjectFolder, Object, Fi
         }
         try {
             projectFile.clean();
-            return CommandManager.buildJarAchieve(projectFile, mDiagnosticCollector);
+            return CompileHelper.buildJarAchieve(projectFile, mDiagnosticCollector);
         } catch (Exception e) {
             this.error = e;
         }

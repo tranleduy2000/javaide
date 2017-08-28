@@ -4,7 +4,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
-import com.duy.compile.external.CommandManager;
+import com.duy.compile.external.CompileHelper;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.android.KeyStore;
 import com.spartacusrex.spartacuside.external.apkbuilder;
@@ -47,7 +47,7 @@ public class AndroidBuilder {
 
         //compile java
         System.out.println("Compile Java file");
-        int status = CommandManager.compileJava(projectFile, diagnosticCollector);
+        int status = CompileHelper.compileJava(projectFile, diagnosticCollector);
         System.gc();
         if (status != Main.EXIT_OK) {
             System.out.println("Compile error");
@@ -56,7 +56,7 @@ public class AndroidBuilder {
 
         //classes to dex
         System.out.println("Convert classes to dex");
-        CommandManager.convertToDexFormat(projectFile);
+        CompileHelper.convertToDexFormat(projectFile);
 
         //zip apk
         System.out.println("Build apk");
@@ -94,14 +94,13 @@ public class AndroidBuilder {
         Aapt aapt = new Aapt();
         String command = "aapt p -f -v" +
                 " --auto-add-overlay" +
-                " -I " + Environment.getExternalStorageDirectory() + "/com/github/clans/fab/1.6.4/fab-1.6.4.exploded.aar/classes.jar" +
-                " -S " + Environment.getExternalStorageDirectory() + "/com/github/clans/fab/1.6.4/fab-1.6.4.exploded.aar/res" +
                 " -M " + projectFile.xmlManifest.getPath() + //manifest file
                 " -F " + projectFile.getResourceFile().getPath() + //
                 " -I " + projectFile.bootClasspath.getPath() + //include
                 " -A " + projectFile.getDirAssets().getPath() + //assets dir
                 " -S " + projectFile.getDirRes().getPath() + //resource dir
                 " -J " + projectFile.getClassR().getParent();//out R.java dir
+
         File dirLibs = projectFile.getDirLibs();
         File[] files = dirLibs.listFiles();
         if (files != null) {

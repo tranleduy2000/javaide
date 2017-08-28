@@ -31,7 +31,7 @@ import javax.tools.DiagnosticListener;
  * Created by duy on 18/07/2017.
  */
 
-public class CommandManager {
+public class CompileHelper {
     private static final String TAG = "CommandManager";
 
     @Nullable
@@ -54,7 +54,6 @@ public class CommandManager {
         try {
             String[] args = new String[]{
                     "-verbose",
-//                    "-bootclasspath", projectFile.getJavaBootClassPath(),
                     "-cp", projectFile.getJavaClassPath(),
                     "-sourcepath", projectFile.getDirSrcJava().getPath(), //sourcepath
                     "-d", projectFile.getDirBuildClasses().getPath(), //output dir
@@ -77,7 +76,6 @@ public class CommandManager {
     }
 
     public static void dexLibs(@NonNull JavaProjectFolder projectFile) throws Exception {
-
         File dirLibs = projectFile.dirLibs;
         if (dirLibs.exists()) {
             File[] files = dirLibs.listFiles();

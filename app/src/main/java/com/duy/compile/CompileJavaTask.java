@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.android.annotations.Nullable;
-import com.duy.compile.external.CommandManager;
+import com.duy.compile.external.CompileHelper;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.sun.tools.javac.main.Main;
 
@@ -61,10 +61,10 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
         projectFile.clean();
         projectFile.createBuildDir();
 
-        int status = CommandManager.compileJava(projectFile, listener);
+        int status = CompileHelper.compileJava(projectFile, listener);
         if (status == Main.EXIT_OK) {
             try {
-                CommandManager.convertToDexFormat(projectFile);
+                CompileHelper.convertToDexFormat(projectFile);
             } catch (Exception e) {
                 this.error = e;
                 Log.e(TAG, "doInBackground: ", e);

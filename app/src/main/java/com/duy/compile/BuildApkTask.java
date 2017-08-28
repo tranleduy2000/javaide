@@ -2,7 +2,7 @@ package com.duy.compile;
 
 import android.os.AsyncTask;
 
-import com.duy.compile.external.CommandManager;
+import com.duy.compile.external.CompileHelper;
 import com.duy.project.file.android.AndroidProjectFolder;
 
 import java.io.File;
@@ -36,7 +36,7 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFolder, Object, File> 
         //clean
         projectFile.clean();
         try {
-            return CommandManager.buildApk(projectFile, mDiagnosticCollector);
+            return CompileHelper.buildApk(projectFile, mDiagnosticCollector);
         } catch (Exception e) {
             this.error = e;
         }

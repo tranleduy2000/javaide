@@ -12,7 +12,7 @@ import android.util.Log;
 
 import com.duy.JavaApplication;
 import com.duy.compile.CompileManager;
-import com.duy.compile.external.CommandManager;
+import com.duy.compile.external.CompileHelper;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.project.file.java.JavaProjectFolder;
@@ -103,15 +103,15 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
 
         File tempDir = getDir("dex", MODE_PRIVATE);
         switch (action) {
-            case CommandManager.Action.RUN: {
-                CommandManager.compileAndRun(in, tempDir, projectFile);
+            case CompileHelper.Action.RUN: {
+                CompileHelper.compileAndRun(in, tempDir, projectFile);
                 break;
             }
-            case CommandManager.Action.RUN_DEX: {
+            case CompileHelper.Action.RUN_DEX: {
                 File dex = (File) intent.getSerializableExtra(CompileManager.DEX_FILE);
                 if (dex != null) {
                     String mainClass = projectFile.getMainClass().getName();
-                    CommandManager.executeDex(in, dex, tempDir, mainClass);
+                    CompileHelper.executeDex(in, dex, tempDir, mainClass);
                 }
                 break;
             }

@@ -180,7 +180,7 @@ public class PagePresenter implements EditPageContract.Presenter {
 
     @Override
     public void removePage(int position) {
-        if (position >= mPageAdapter.getCount()) {
+        if (position >= mPageAdapter.getCount() || position < 0) {
             return;
         }
         Fragment existingFragment = mPageAdapter.getExistingFragment(position);

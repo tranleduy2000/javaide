@@ -275,9 +275,12 @@
         <item>@string/java_file</item>
         <item>@string/xml_file</item>
         <item>@string/from_storage</item>
+        <item>@string/new_folder</item>
     </string-array>
 
     <string name="java_file">Java file</string>
     <string name="xml_file">Xml file</string>
     <string name="from_storage">Select from storage</string>
+    <string name="new_folder">Create new folder</string>
+
 </resources>

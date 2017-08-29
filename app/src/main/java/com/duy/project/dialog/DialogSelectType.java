@@ -12,6 +12,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.duy.ide.R;
 
@@ -62,6 +63,8 @@ public class DialogSelectType extends AppCompatDialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        final File file = (File) getArguments().getSerializable("parent");
+        ((TextView) view.findViewById(R.id.txt_path)).setText(file.getPath());
         ListView listView = view.findViewById(R.id.file_types);
         final String[] fileTypes = getResources().getStringArray(R.array.select_type);
         listView.setAdapter(new ArrayAdapter<>(getActivity(),
@@ -69,10 +72,7 @@ public class DialogSelectType extends AppCompatDialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (listener != null) {
-                    listener.onFileTypeSelected((File) getArguments().getSerializable("parent"),
-                            fileTypes[position]);
-                }
+                if (listener != null) listener.onFileTypeSelected(file, fileTypes[position]);
                 dismiss();
             }
         });

@@ -156,12 +156,12 @@
 
 
     <PreferenceCategory android:title="@string/user_interface">
-        <ListPreference
-            android:defaultValue="@string/lang_default"
-            android:entries="@array/language_entry"
-            android:entryValues="@array/language_code"
-            android:key="@string/key_pref_lang"
-            android:title="@string/language" />
+        <!--<ListPreference-->
+            <!--android:defaultValue="@string/lang_default"-->
+            <!--android:entries="@array/language_entry"-->
+            <!--android:entryValues="@array/language_code"-->
+            <!--android:key="@string/key_pref_lang"-->
+            <!--android:title="@string/language" />-->
 
         <EditTextPreference
             android:contentDescription="@string/max_page_desc"

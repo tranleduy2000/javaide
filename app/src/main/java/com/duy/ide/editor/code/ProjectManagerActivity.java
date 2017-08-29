@@ -81,6 +81,7 @@ import com.duy.project.file.java.ProjectFilePresenter;
 import com.duy.project.file.java.ProjectManager;
 import com.duy.project.fragments.FolderStructureFragment;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
+import com.pluscubed.logcat.helper.DialogHelper;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -524,7 +525,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     public void clickNewModule() {
         if (mProjectFile != null) {
 //            showDialogSelectFileType(mPageAdapter);
-        }else {
+        } else {
             Toast.makeText(this, "Please create new project", Toast.LENGTH_SHORT).show();
         }
     }
@@ -574,8 +575,17 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         } else if (type.equals(getString(R.string.from_storage))) {
             FileExplorerActivity.startPickFileActivity(this,
                     Environment.getExternalStorageDirectory().getPath(), REQUEST_PICK_FILE, parent);
+        } else if (type.equals(getString(R.string.new_folder))) {
+            showDialogCreateNewFolder(parent);
         }
     }
+
+    private void showDialogCreateNewFolder(File file) {
+        if (mProjectFile != null && file != null) {
+            DialogHelper.showFilenameSuggestingDialog();
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

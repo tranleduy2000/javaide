@@ -26,7 +26,18 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:text="@string/create_new_file"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"/>
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+    <TextView
+        android:id="@+id/txt_path"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingStart="8dp"
+        android:text="path"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
 
     <ListView
         android:id="@+id/file_types"

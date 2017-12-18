@@ -33,7 +33,7 @@ ext {
     buildToolsVersion = '27.0.1'
     targetSdkVersion = 27
     minSdkVersion = 14
-    google_service_version = "11.0.2"
+    googleServiceVersion = "11.6.2"
 
     supportLibVersion = "27.0.2"
 }

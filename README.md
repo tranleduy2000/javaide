@@ -37,6 +37,14 @@ alt="IMAGE ALT TEXT HERE" width="200"/></a>
 4. Zip Signer
 5. Apk builder
 
+## How to build this source
+1. Required Android Studio 3.0 and above
+2. Android NDK r12b (Newer version doesn't work)
+https://stackoverflow.com/questions/6849981/where-do-i-find-old-versions-of-android-ndk
+3. Android Build Tools 27.0.1
+4. Android SDK 27
+
+
 ## Contribute
 I would absolutely love every possible kind of contributions. If you
 have a questions, ideas, need help or want to propose a change just open

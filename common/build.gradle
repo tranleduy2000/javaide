@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion as Integer
-    buildToolsVersion rootProject.ext.buildToolsVersion as String
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion as Integer
-        targetSdkVersion rootProject.ext.targetSdkVersion as Integer
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
@@ -26,7 +26,7 @@ dependencies {
     compile "com.android.support:support-v4:$supportLibVersion"
     compile "com.android.support:appcompat-v7:$supportLibVersion"
     compile 'com.rengwuxian.materialedittext:library:2.0.3'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.afollestad.material-dialogs:commons:0.9.4.6'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.afollestad.material-dialogs:commons:0.9.6.0'
 
 }

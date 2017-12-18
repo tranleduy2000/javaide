@@ -11,7 +11,6 @@
       <module fileurl="file://$PROJECT_DIR$/javacodeformatter/javacodeformatter.iml" filepath="$PROJECT_DIR$/javacodeformatter/javacodeformatter.iml" />
       <module fileurl="file://$PROJECT_DIR$/javacompiler/javacompiler.iml" filepath="$PROJECT_DIR$/javacompiler/javacompiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/javaide.iml" filepath="$PROJECT_DIR$/javaide.iml" />
-      <module fileurl="file://$PROJECT_DIR$/javaide2.iml" filepath="$PROJECT_DIR$/javaide2.iml" />
       <module fileurl="file://$PROJECT_DIR$/pager/pager.iml" filepath="$PROJECT_DIR$/pager/pager.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/splitview/splitview.iml" filepath="$PROJECT_DIR$/splitview/splitview.iml" />

@@ -1,3 +1,3 @@
-include ':app', ':splitview', ':colorpicker', ':pager', ':sample', ':treeview', ':testapplication',
+include ':app', ':splitview', ':colorpicker', ':pager', ':treeview', ':testapplication',
         ':javacodeformatter', ':javacompiler', ':gitforandroid', ':androidlogcat',
         ':fileexplorer', ':common', ':styles'

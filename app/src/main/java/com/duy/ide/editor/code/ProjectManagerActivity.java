@@ -81,7 +81,6 @@ import com.duy.project.file.java.ProjectFilePresenter;
 import com.duy.project.file.java.ProjectManager;
 import com.duy.project.fragments.FolderStructureFragment;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
-import com.pluscubed.logcat.helper.DialogHelper;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -581,9 +580,9 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     }
 
     private void showDialogCreateNewFolder(File file) {
-        if (mProjectFile != null && file != null) {
-            DialogHelper.showFilenameSuggestingDialog();
-        }
+//        if (mProjectFile != null && file != null) {
+//            DialogHelper.showFilenameSuggestingDialog();
+//        }
     }
 
 

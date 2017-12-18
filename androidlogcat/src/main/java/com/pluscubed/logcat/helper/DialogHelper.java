@@ -138,7 +138,8 @@ public class DialogHelper {
 
 
     public static void showFilenameSuggestingDialog(final Context context,
-                                                    final MaterialDialog.SingleButtonCallback callback, final MaterialDialog.InputCallback inputCallback, int titleResId) {
+                                                    final MaterialDialog.SingleButtonCallback callback,
+                                                    final MaterialDialog.InputCallback inputCallback, int titleResId) {
 
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(context);

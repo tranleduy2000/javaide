@@ -18,7 +18,8 @@ package com.duy.ide;
 
 import android.util.Log;
 
-import com.google.firebase.crash.FirebaseCrash;
+import com.crashlytics.android.Crashlytics;
+
 
 /**
  * Created by Duy on 27-Mar-17.
@@ -120,7 +121,7 @@ public class DLog {
     }
 
     public static void reportException(Throwable e) {
-        FirebaseCrash.report(e);
+        Crashlytics.logException(e);
     }
 
 }

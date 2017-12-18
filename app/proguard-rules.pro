@@ -84,8 +84,15 @@
 -dontwarn java.awt.**
 
 -keep class com.android.** { *; }
--keep class com.duy.** { *; }
+#-keep class com.duy.** { *; }
 -keep class com.spartacusrex.spartacuside.**
 -keep class proguard.**
 -keep class com.simplecityapps.**
+
+-dontwarn com.android.sdklib.**
+-dontwarn com.google.android.gms.**
+-dontwarn com.google.common.util.**
+-dontwarn com.sun.tools.javac.**
+-dontwarn kellinwood.security.**
+-dontwarn org.apache.log4j.**
 

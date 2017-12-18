@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
 import com.duy.ide.BuildConfig;
-import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -26,9 +25,6 @@ public class JavaApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (BuildConfig.DEBUG) {
-            FirebaseCrash.setCrashCollectionEnabled(false);
-        }
         systemOut = new InterceptorOutputStream(System.out, out);
         systemErr = new InterceptorOutputStream(System.err, err);
         System.setOut(systemOut);

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -87,8 +88,10 @@ dependencies {
 
     //firebase sdk
     compile "com.google.firebase:firebase-core:$googleServiceVersion"
-    compile "com.google.firebase:firebase-crash:$googleServiceVersion"
     compile "com.google.firebase:firebase-storage:$googleServiceVersion"
+    compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true
+    }
 
     compile 'io.github.kobakei:ratethisapp:1.2.0'
     compile 'commons-io:commons-io:2.4'

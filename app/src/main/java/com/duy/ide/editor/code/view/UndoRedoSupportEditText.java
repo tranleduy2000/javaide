@@ -36,7 +36,6 @@ import com.duy.ide.keyboard.KeyListener;
 import com.duy.ide.keyboard.KeySettings;
 import com.duy.ide.utils.clipboard.ClipboardManagerCompat;
 import com.duy.ide.utils.clipboard.ClipboardManagerCompatFactory;
-import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.LinkedList;
 
@@ -289,7 +288,6 @@ public class UndoRedoSupportEditText extends HighlightEditor {
             mClipboardManager.setText(getText().subSequence(selectionStart, selectionEnd));
             getEditableText().delete(selectionStart, selectionEnd);
         } catch (Exception e) {
-            FirebaseCrash.report(e);
         }
     }
 
@@ -326,7 +324,6 @@ public class UndoRedoSupportEditText extends HighlightEditor {
         try {
             mClipboardManager.setText(getText().subSequence(selectionStart, selectionEnd));
         } catch (Exception ignored) {
-            FirebaseCrash.report(ignored);
         }
     }
 

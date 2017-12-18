@@ -5,8 +5,6 @@ import android.support.multidex.MultiDexApplication;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
-import com.duy.ide.BuildConfig;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;

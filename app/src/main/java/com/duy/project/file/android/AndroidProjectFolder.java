@@ -207,7 +207,7 @@ public class AndroidProjectFolder extends JavaProjectFolder {
             try {
                 key.createNewFile();
                 FileOutputStream out = new FileOutputStream(key);
-                FileManager.copyFile(context.getAssets().open(Constants.KEY_STORE_ASSET_PATH), out);
+                FileManager.copyStream(context.getAssets().open(Constants.KEY_STORE_ASSET_PATH), out);
                 out.close();
                 setKeystore(new KeyStore(key, Constants.KEY_STORE_PASSWORD,
                         Constants.KEY_STORE_ALIAS, Constants.KEY_STORE_ALIAS_PASS));

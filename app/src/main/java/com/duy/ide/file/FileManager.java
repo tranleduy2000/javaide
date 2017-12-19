@@ -159,7 +159,7 @@ public class FileManager {
         return zFile.delete();
     }
 
-    public static void copyFile(InputStream in, OutputStream out) throws IOException {
+    public static void copyStream(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
         while ((read = in.read(buffer)) != -1) {
@@ -171,7 +171,7 @@ public class FileManager {
     public static void extractAsset(Context zContext, String zAssetFile, File zOuput) throws IOException {
         InputStream in = zContext.getAssets().open(zAssetFile);
         OutputStream os = new FileOutputStream(zOuput);
-        copyFile(in, os);
+        copyStream(in, os);
         in.close();
         os.close();
     }

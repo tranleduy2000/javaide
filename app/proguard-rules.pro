@@ -84,7 +84,7 @@
 -dontwarn java.awt.**
 
 -keep class com.android.** { *; }
-#-keep class com.duy.** { *; }
+-keep class com.duy.** { *; }
 -keep class com.spartacusrex.spartacuside.**
 -keep class proguard.**
 -keep class com.simplecityapps.**

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -36,6 +37,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
@@ -66,9 +68,9 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         setTitle(R.string.install);
 
         mPreferences = new AppSetting(this);
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        mInfo = (TextView) findViewById(R.id.txt_info);
-        mInstallButton = (Button) findViewById(R.id.btn_install);
+        mProgressBar = findViewById(R.id.progress_bar);
+        mInfo = findViewById(R.id.txt_info);
+        mInstallButton = findViewById(R.id.btn_install);
 
 //        mTxtVersion = (TextView) findViewById(R.id.txt_version);
 //        String version = getString(R.string.system_version) + mPreferences.getSystemVersion();
@@ -76,11 +78,14 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         findViewById(R.id.btn_install).setOnClickListener(this);
         findViewById(R.id.btn_select_file).setOnClickListener(this);
         findViewById(R.id.down_load_from_github).setOnClickListener(this);
+
+        extractFileFromAsset();
     }
+
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_install) {
+       /* if (v.getId() == R.id.btn_install) {
             if (isConnected()) {
                 downloadFile();
             } else {
@@ -90,7 +95,11 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             selectFile();
         } else if (v.getId() == R.id.down_load_from_github) {
             downloadFromGit();
-        }
+        }*/
+    }
+
+    private void extractFileFromAsset() {
+        new CopyFromAssetTask(this).execute();
     }
 
     private void downloadFromGit() {
@@ -226,6 +235,10 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         builder.setTitle("Download system");
     }
 
+    private void installFailed() {
+        Toast.makeText(this, "Install failed", Toast.LENGTH_SHORT).show();
+    }
+
     private class InstallTask extends AsyncTask<File, String, Boolean> {
         private Exception error = null;
         private Context context;
@@ -256,76 +269,9 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
                     throw new RuntimeException("Install failed, Not a classes.zip file");
                 }
 
-//                File tmp = new File(home, "tmp");
-//                if (!tmp.exists()) tmp.mkdirs();
-//
-//                File worker = new File(tmp, "WORK_" + System.currentTimeMillis());
-//                if (!worker.exists()) worker.mkdirs();
-//
-//                File busytar = new File(worker, "busybox");
-//                if (busytar.exists()) busytar.delete();
-//
-//                publishProgress("Extract busybox");
-//                FileManager.extractAsset(context, "busybox.mp3", busytar);
-//
-//                String[] env = new String[2];
-//                env[0] = "PATH=/sbin" + ":/vendor/bin" + ":/system/sbin" + ":/system/bin" +
-//                        ":/system/xbin";
-//
-//                env[1] = "LD_LIBRARY_PATH=" + "/vendor/lib" + ":/vendor/lib64" + ":/system/lib" +
-//                        ":/system/lib64";
-//
-//                busytar.setReadable(true, true);
-//                busytar.setWritable(true, true);
-//                busytar.setExecutable(true, false);
-//
-//                publishProgress("Extract system file");
-//                File systar = new File(worker, "system.tar.gz");
-//                org.apache.commons.io.FileUtils.copyFile(params[0], systar);
-//                publishProgress("Extracted system");
-//
-//                Process pp;
-//                publishProgress("Removing Old System");
-//
-//                File systemFolder = new File(home, "system");
-//                FileManager.deleteFolder(systemFolder);
-//
-//                publishProgress("Config system file");
-//                String busyboxCmd_ = busytar.getPath() + " ";
-//                pp = Runtime.getRuntime().exec(busyboxCmd_ + "tar -C " + home.getPath() + " -xzf " + systar.getPath(), env, home);
-//                pp.waitFor();
-//
-//                File bindir = new File(systemFolder, "bin");
-//                File bbindir = new File(bindir, "bbdir");
-//                if (!bbindir.exists()) bbindir.mkdirs();
-//
-//                File busybox = new File(bindir, "busybox");
-//                String command = busybox.getPath() + " --install -s " + bbindir.getPath();
-//                pp = Runtime.getRuntime().exec(command, env, home);
-//                pp.waitFor();
-//
-//                //Now delete the SU link.. too much confusion..
-//                File su = new File(bbindir, "su");
-//                su.delete();
-//
-//                publishProgress("Copy config file");
-//                copyFileConfig(home, systemFolder, busyboxCmd_, env);
-//
-//                publishProgress("Create local file");
-//                createLocalFile(home);
-//
-//                publishProgress("Cleaning up...");
-//                FileManager.deleteFolder(worker);
-//                FileManager.deleteFolder(params[0]);
-//
-//                mPreferences.put("system_installed", true);
-//                mPreferences.put("system_version", SYSTEM_VERSION);
 
             } catch (Exception e) {
                 publishProgress("Error when install system");
-
-//                mPreferences.put("system_installed", false);
-//                mPreferences.put("system_version", "");
 
                 e.printStackTrace();
                 error = e;
@@ -335,92 +281,6 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
 
             publishProgress("System install complete!");
             return true;
-        }
-
-        private void copyFileConfig(File home, File systemFolder, String busyboxCmd_, String[] env)
-                throws IOException, InterruptedException {
-            boolean override = true;
-            Process pp;
-            File bashrc = new File(systemFolder, "bashrc");
-            File bashrcu = new File(home, ".bashrc");
-            if (!bashrcu.exists() || override) {
-                pp = Runtime.getRuntime().exec(busyboxCmd_ + "cp -f " + bashrc.getPath() + " " + bashrcu.getPath(), env, home);
-                pp.waitFor();
-            }
-
-            File nanorc = new File(systemFolder, "nanorc");
-            File nanorcu = new File(home, ".nanorc");
-            if (!nanorcu.exists() || override) {
-                pp = Runtime.getRuntime().exec(busyboxCmd_ + "cp -f " + nanorc.getPath() + " " + nanorcu.getPath(), env, home);
-                pp.waitFor();
-            }
-
-            File tmuxrc = new File(systemFolder, "tmux.conf");
-            File tmuxrcu = new File(home, ".tmux.conf");
-            if (!tmuxrcu.exists() || override) {
-                pp = Runtime.getRuntime().exec(busyboxCmd_ + "cp -f " + tmuxrc.getPath() + " " + tmuxrcu.getPath(), env, home);
-                pp.waitFor();
-            }
-
-
-            File ini = new File(systemFolder, "mc.ini");
-            File conf = new File(home, ".config");
-            File confmc = new File(conf, "mc");
-            if (!confmc.exists()) confmc.mkdirs();
-            File mcini = new File(confmc, "ini");
-            if (!mcini.exists() || override) {
-                pp = Runtime.getRuntime().exec(busyboxCmd_ + "cp -f " + ini.getPath() + " " + mcini.getPath(), env, home);
-                pp.waitFor();
-            }
-
-            File inputrc = new File(systemFolder, "inputrc");
-            File inputrcu = new File(home, ".inputrc");
-            pp = Runtime.getRuntime().exec(busyboxCmd_ + "cp -f " + inputrc.getPath() + " " + inputrcu.getPath(), env, home);
-            pp.waitFor();
-
-            //config vim
-            File vimrc = new File(systemFolder, "vimrc");
-            File vimrcu = new File(home, ".vimrc");
-            pp = Runtime.getRuntime().exec(busyboxCmd_ + "cp -f " + vimrc.getPath() + " " + vimrcu.getPath(), env, home);
-            pp.waitFor();
-
-            //Check the home vim folder
-            File vimh = new File(systemFolder, "etc/default_vim");
-            File vimhu = new File(home, ".vim");
-            pp = Runtime.getRuntime().exec(busyboxCmd_ + "cp -rf " + vimh.getPath() + " " + vimhu.getPath(), env, home);
-            pp.waitFor();
-
-            //Create a link to the sdcard
-            File sdcard = Environment.getExternalStorageDirectory();
-            File lnsdcard = new File(home, "sdcard");
-            pp = Runtime.getRuntime().exec(busyboxCmd_ + "ln -s " + sdcard.getPath() + " " + lnsdcard.getPath(), env, home);
-            pp.waitFor();
-
-        }
-
-        /**
-         * create local dir
-         *
-         * @param home
-         */
-        private void createLocalFile(File home) {
-            File local = new File(home, "local");
-            if (!local.exists()) local.mkdirs();
-
-            File bin = new File(local, "bin");
-            if (!bin.exists()) bin.mkdirs();
-
-            bin = new File(local, "lib");
-            if (!bin.exists()) bin.mkdirs();
-
-            bin = new File(local, "include");
-            if (!bin.exists()) bin.mkdirs();
-
-            bin = new File(home, "tmp");
-            if (!bin.exists()) bin.mkdirs();
-
-            bin = new File(home, "projects");
-            if (!bin.exists()) bin.mkdirs();
         }
 
         @Override
@@ -481,6 +341,49 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             if (!dir.mkdirs()) throw new RuntimeException("Can not create dir " + dir);
         }
 
+    }
+
+    private class CopyFromAssetTask extends AsyncTask<File, String, File> {
+        private Context context;
+
+        public CopyFromAssetTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mInfo.setText(R.string.start_install_system);
+            mProgressBar.setIndeterminate(true);
+            mInstallButton.setEnabled(false);
+            installing = true;
+        }
+
+        @Override
+        protected File doInBackground(File... params) {
+            try {
+                AssetManager assets = context.getAssets();
+                InputStream open = assets.open("classes/classes.zip");
+                File outFile = new File(getFilesDir(), "classes.zip");
+                FileOutputStream fileOutputStream = new FileOutputStream(outFile);
+                FileManager.copyStream(open, fileOutputStream);
+                fileOutputStream.close();
+                return outFile;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(File file) {
+            super.onPostExecute(file);
+            if (file != null) {
+                new InstallTask(context).execute(file);
+            } else {
+                installFailed();
+            }
+        }
     }
 
 

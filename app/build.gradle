@@ -11,8 +11,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
-        versionCode 28
-        versionName "1.2.0 beta"
+        versionCode 29
+        versionName "1.2.1"
         vectorDrawables.useSupportLibrary = true
         ndk {
             moduleName "aapt"

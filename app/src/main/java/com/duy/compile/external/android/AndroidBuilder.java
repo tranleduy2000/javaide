@@ -1,6 +1,5 @@
 package com.duy.compile.external.android;
 
-import android.os.Environment;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
@@ -92,7 +91,8 @@ public class AndroidBuilder {
         Log.d(TAG, "runAapt() called");
 
         Aapt aapt = new Aapt();
-        String command = "aapt p -f -v" +
+        String command = "aapt p -f " +
+                //"-v" +
                 " --auto-add-overlay" +
                 " -M " + projectFile.xmlManifest.getPath() + //manifest file
                 " -F " + projectFile.getResourceFile().getPath() + //

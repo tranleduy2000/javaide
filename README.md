@@ -32,10 +32,11 @@ alt="IMAGE ALT TEXT HERE" width="200"/></a>
 
 ## What does tools the project include?
 1. Javac - Java compiler
-2. Aapt - Android asset package tool
+2. Aapt - Android asset package tool: This tool is very old, so you can't build android project with android support library
 3. Dx - Dex for dalvik vm
 4. Zip Signer
 5. Apk builder
+
 
 ## How to build this source
 1. Required Android Studio 3.0 and above

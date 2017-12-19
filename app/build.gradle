@@ -11,8 +11,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
-        versionCode 29
-        versionName "1.2.1"
+        versionCode 30
+        versionName "1.2.2"
         vectorDrawables.useSupportLibrary = true
         ndk {
             moduleName "aapt"
@@ -23,7 +23,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {

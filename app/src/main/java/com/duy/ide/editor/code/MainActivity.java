@@ -340,7 +340,7 @@ public class MainActivity extends ProjectManagerActivity implements
             }
 
             @Override
-            public void onError(Exception e, ArrayList<Diagnostic> diagnostics) {
+            public void onError(Throwable e, ArrayList<Diagnostic> diagnostics) {
                 Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                 openDrawer(GravityCompat.START);
                 mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);

@@ -120,10 +120,11 @@ public class CompileHelper {
             File[] files = projectFile.getDirDexedLibs().listFiles();
             if (files != null && files.length > 0) {
                 for (File dexedLib : files) {
-                    Dex merged = new DexMerger(
+                    DexMerger dexMerger = new DexMerger(
                             new Dex(projectFile.getDexedClassesFile()),
                             new Dex(dexedLib),
-                            CollisionPolicy.FAIL).merge();
+                            CollisionPolicy.FAIL);
+                    Dex merged = dexMerger.merge();
                     merged.writeTo(projectFile.getDexedClassesFile());
                 }
             }

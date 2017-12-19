@@ -1,7 +1,6 @@
 package com.duy.compile;
 
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.android.annotations.Nullable;
@@ -9,9 +8,6 @@ import com.duy.compile.external.CompileHelper;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.sun.tools.javac.main.Main;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +20,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
     private JavaProjectFolder projectFile;
     @Nullable
     private CompileListener compileListener;
-    private Exception error;
+    private Throwable error;
 
     public CompileJavaTask(CompileListener compileListener) {
         this.compileListener = compileListener;
@@ -40,17 +36,6 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
     protected Integer doInBackground(JavaProjectFolder... params) {
         if (params[0] == null) return null;
         this.projectFile = params[0];
-        PrintStream printStream = new PrintStream(new OutputStream() {
-            @Override
-            public void write(@NonNull byte[] b, int off, int len) throws IOException {
-                publishProgress(b, off, len);
-            }
-
-            @Override
-            public void write(int b) throws IOException {
-                write(new byte[]{(byte) b}, 0, 1);
-            }
-        });
         DiagnosticListener listener = new DiagnosticListener() {
             @Override
             public void report(Diagnostic diagnostic) {
@@ -65,7 +50,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
         if (status == Main.EXIT_OK) {
             try {
                 CompileHelper.convertToDexFormat(projectFile);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 this.error = e;
                 Log.e(TAG, "doInBackground: ", e);
                 publishProgress(e.getMessage().toCharArray(), 0, e.getMessage().length());
@@ -79,7 +64,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
     protected void onProgressUpdate(Object... values) {
         super.onProgressUpdate(values);
         try {
-            byte[] chars = (byte[]) values[0];
+            char[] chars = (char[]) values[0];
             int start = (int) values[1];
             int end = (int) values[2];
             if (compileListener != null) {
@@ -104,7 +89,7 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
     public interface CompileListener {
         void onStart();
 
-        void onError(Exception e, ArrayList<Diagnostic> diagnostics);
+        void onError(Throwable e, ArrayList<Diagnostic> diagnostics);
 
         void onComplete(JavaProjectFolder projectFile, List<Diagnostic> diagnostics);
 

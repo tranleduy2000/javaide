@@ -93,10 +93,17 @@
 -keep class com.android.dex.**
 -keep class com.android.dx.**
 -keep class com.android.multidex.**
--keep class kellinwood.sigblock.**
+-keep class kellinwood.**
 -keep class sun.security.**
 -keep class sys.util.**
 -keep class org.spongycastle.**
+-keep class sun.misc.**
+-keep class sun.nio.**
+-keep class sun.reflect.**
+-keep class sun.security.util.**
+-keep class javax.**
+-keep class com.sun.**
+-keep class com.spartacusrex.spartacuside.helper.**
 
 -dontwarn com.android.sdklib.**
 -dontwarn com.google.android.gms.**

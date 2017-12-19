@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.direct;
+package com.duy.dx .cf.direct;
 
-import com.duy.dx.cf.iface.AttributeList;
-import com.duy.dx.cf.iface.Member;
-import com.duy.dx.cf.iface.StdMethod;
-import com.duy.dx.cf.iface.StdMethodList;
-import com.duy.dx.rop.code.AccessFlags;
-import com.duy.dx.rop.cst.CstNat;
-import com.duy.dx.rop.cst.CstType;
+import com.duy.dx .cf.iface.AttributeList;
+import com.duy.dx .cf.iface.Member;
+import com.duy.dx .cf.iface.StdMethod;
+import com.duy.dx .cf.iface.StdMethodList;
+import com.duy.dx .rop.code.AccessFlags;
+import com.duy.dx .rop.cst.CstNat;
+import com.duy.dx .rop.cst.CstType;
 
 /**
  * Parser for lists of methods in a class file.

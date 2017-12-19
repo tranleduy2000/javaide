@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.merge;
+package com.duy.dx .merge;
 
 /**
  * What to do when two dex files define the same class.

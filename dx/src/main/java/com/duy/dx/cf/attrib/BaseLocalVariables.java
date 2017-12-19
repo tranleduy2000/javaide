@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.attrib;
+package com.duy.dx .cf.attrib;
 
-import com.duy.dx.cf.code.LocalVariableList;
-import com.duy.dx.util.MutabilityException;
+import com.duy.dx .cf.code.LocalVariableList;
+import com.duy.dx .util.MutabilityException;
 
 /**
  * Base attribute class for standard {@code LocalVariableTable}

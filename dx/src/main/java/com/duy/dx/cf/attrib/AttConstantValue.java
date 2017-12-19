@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.attrib;
+package com.duy.dx .cf.attrib;
 
-import com.duy.dx.rop.cst.CstDouble;
-import com.duy.dx.rop.cst.CstFloat;
-import com.duy.dx.rop.cst.CstInteger;
-import com.duy.dx.rop.cst.CstLong;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.cst.TypedConstant;
+import com.duy.dx .rop.cst.CstDouble;
+import com.duy.dx .rop.cst.CstFloat;
+import com.duy.dx .rop.cst.CstInteger;
+import com.duy.dx .rop.cst.CstLong;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.TypedConstant;
 
 /**
  * Attribute class for standard {@code ConstantValue} attributes.

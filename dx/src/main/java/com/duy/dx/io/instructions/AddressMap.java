@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.duy.dx.io.instructions;
+package com.duy.dx .io.instructions;
 
-import java.io.EOFException;
 import java.util.HashMap;
 
 /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.io.instructions;
+package com.duy.dx .io.instructions;
 
 /**
  * Implementation of {@code CodeOutput} that writes to a {@code short[]}.

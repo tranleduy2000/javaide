@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.io.Opcodes;
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.code.SourcePosition;
-import com.android.dx.rop.cst.*;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstLiteral32;
-import com.duy.dx.rop.cst.CstLiteral64;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.Hex;
-
+import com.duy.dx .io.Opcodes;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstLiteral32;
+import com.duy.dx .rop.cst.CstLiteral64;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
 import java.util.ArrayList;
 
 /**

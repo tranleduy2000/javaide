@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.code;
+package com.duy.dx .cf.code;
 
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.rop.code.LocalItem;
-import com.duy.dx.util.FixedSizeList;
+import com.duy.dx .rop.code.LocalItem;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .util.FixedSizeList;
 
 /**
  * List of "local variable" entries, which are the contents of
@@ -149,7 +149,7 @@ public final class LocalVariableList extends FixedSizeList {
 
     /**
      * Gets the local variable information in this instance which matches
-     * the given {@link Item}
+     * the given {@link com.duy.dx .cf.code.LocalVariableList.Item}
      * in all respects but the type descriptor and signature, if any.
      *
      * @param item {@code non-null;} local variable information to match

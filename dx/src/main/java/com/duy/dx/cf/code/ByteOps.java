@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.code;
+package com.duy.dx .cf.code;
 
-import com.duy.dx.util.Hex;
+import com.duy.dx .util.Hex;
 
 /**
  * Constants and utility methods for dealing with bytecode arrays at an
@@ -210,6 +210,7 @@ public class ByteOps {
     public static final int INVOKESPECIAL = 0xb7;
     public static final int INVOKESTATIC = 0xb8;
     public static final int INVOKEINTERFACE = 0xb9;
+    public static final int INVOKEDYNAMIC = 0xba;
     public static final int NEW = 0xbb;
     public static final int NEWARRAY = 0xbc;
     public static final int ANEWARRAY = 0xbd;

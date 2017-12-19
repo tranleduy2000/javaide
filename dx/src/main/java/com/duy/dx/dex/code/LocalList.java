@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.code.RegisterSpecSet;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.util.FixedSizeList;
-
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.RegisterSpecSet;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .util.FixedSizeList;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -354,9 +353,6 @@ public final class LocalList extends FixedSizeList {
             } else if (insn instanceof LocalStart) {
                 RegisterSpec local = ((LocalStart) insn).getLocal();
                 state.startLocal(insn.getAddress(), local);
-            } else if (insn instanceof LocalEnd) {
-                RegisterSpec local = ((LocalEnd) insn).getLocal();
-                state.endLocal(insn.getAddress(), local);
             }
         }
 

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.cst;
+package com.duy.dx .rop.cst;
 
-import com.duy.dx.rop.type.TypeBearer;
+import com.duy.dx .rop.type.TypeBearer;
 
 /**
  * Base class for constants which implement {@link TypeBearer}.

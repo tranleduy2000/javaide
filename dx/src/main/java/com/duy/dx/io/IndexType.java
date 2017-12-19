@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.io;
+package com.duy.dx .io;
 
 /**
  * The various types that an index in a Dalvik instruction might refer to.

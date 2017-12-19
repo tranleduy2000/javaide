@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package com.duy.dx.command.grep;
+package com.duy.dx .command.grep;
 
-import com.duy.dx.io.ClassData;
-import com.duy.dx.io.ClassDef;
-import com.duy.dx.io.CodeReader;
-import com.duy.dx.io.DexBuffer;
-import com.duy.dx.io.EncodedValueReader;
-import com.duy.dx.io.MethodId;
-import com.duy.dx.io.instructions.DecodedInstruction;
+import com.duy.dex.ClassData;
+import com.duy.dex.ClassDef;
+import com.duy.dex.Dex;
+import com.duy.dex.EncodedValueReader;
+import com.duy.dex.MethodId;
+import com.duy.dx .io.CodeReader;
+import com.duy.dx .io.instructions.DecodedInstruction;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 public final class Grep {
-    private final DexBuffer dex;
+    private final Dex dex;
     private final CodeReader codeReader = new CodeReader();
     private final Set<Integer> stringIds;
 
@@ -39,7 +39,7 @@ public final class Grep {
     private ClassDef currentClass;
     private ClassData.Method currentMethod;
 
-    public Grep(final DexBuffer dex, Pattern pattern, final PrintWriter out) {
+    public Grep(final Dex dex, Pattern pattern, final PrintWriter out) {
         this.dex = dex;
         this.out = out;
 
@@ -52,12 +52,17 @@ public final class Grep {
         });
     }
 
-    private EncodedValueReader newEncodedValueReader(DexBuffer.Section section) {
-        return new EncodedValueReader(section) {
-            @Override protected void visitString(int type, int index) {
-                encounterString(index);
+    private void readArray(EncodedValueReader reader) {
+        for (int i = 0, size = reader.readArray(); i < size; i++) {
+            switch (reader.peek()) {
+            case EncodedValueReader.ENCODED_STRING:
+                encounterString(reader.readString());
+                break;
+            case EncodedValueReader.ENCODED_ARRAY:
+                readArray(reader);
+                break;
             }
-        };
+        }
     }
 
     private void encounterString(int index) {
@@ -94,7 +99,7 @@ public final class Grep {
             // find the strings in encoded constants
             int staticValuesOffset = classDef.getStaticValuesOffset();
             if (staticValuesOffset != 0) {
-                newEncodedValueReader(dex.open(staticValuesOffset)).readArray();
+                readArray(new EncodedValueReader(dex.open(staticValuesOffset)));
             }
 
             // find the strings in method bodies
@@ -111,7 +116,7 @@ public final class Grep {
         return count;
     }
 
-    private Set<Integer> getStringIds(DexBuffer dex, Pattern pattern) {
+    private Set<Integer> getStringIds(Dex dex, Pattern pattern) {
         Set<Integer> stringIds = new HashSet<Integer>();
         int stringIndex = 0;
         for (String s : dex.strings()) {

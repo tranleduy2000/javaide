@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.attrib;
+package com.duy.dx .cf.attrib;
 
-import com.duy.dx.rop.cst.ConstantPool;
-import com.duy.dx.util.ByteArray;
+import com.duy.dx .rop.cst.ConstantPool;
+import com.duy.dx .util.ByteArray;
 
 /**
  * Raw attribute, for holding onto attributes that are unrecognized.

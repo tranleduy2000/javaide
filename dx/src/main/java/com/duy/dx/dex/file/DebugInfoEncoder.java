@@ -14,28 +14,38 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.dex.code.LocalList;
-import com.duy.dx.dex.code.PositionList;
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.code.SourcePosition;
-import com.duy.dx.rop.cst.CstMethodRef;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.type.Prototype;
-import com.duy.dx.rop.type.StdTypeList;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.util.ByteArrayAnnotatedOutput;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.ExceptionWithContext;
-
+import com.duy.dex.util.ExceptionWithContext;
+import com.duy.dx .dex.code.LocalList;
+import com.duy.dx .dex.code.PositionList;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_ADVANCE_LINE;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_ADVANCE_PC;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_END_LOCAL;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_END_SEQUENCE;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_FIRST_SPECIAL;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_LINE_BASE;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_LINE_RANGE;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_RESTART_LOCAL;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_SET_PROLOGUE_END;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_START_LOCAL;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_START_LOCAL_EXTENDED;
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx .rop.cst.CstMethodRef;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .rop.type.Prototype;
+import com.duy.dx .rop.type.StdTypeList;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.ByteArrayAnnotatedOutput;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.BitSet;
 
 /**
  * An encoder for the dex debug info state machine format. The format
@@ -195,7 +205,7 @@ public final class DebugInfoEncoder {
         emitHeader(sortedPositions, methodArgs);
 
         // TODO: Make this mark be the actual prologue end.
-        output.writeByte(DebugInfoConstants.DBG_SET_PROLOGUE_END);
+        output.writeByte(DBG_SET_PROLOGUE_END);
 
         if (annotateTo != null || debugPrint != null) {
             annotate(1, String.format("%04x: prologue end",address));
@@ -611,7 +621,7 @@ public final class DebugInfoEncoder {
 
         int mark = output.getCursor();
 
-        output.writeByte(DebugInfoConstants.DBG_RESTART_LOCAL);
+        output.writeByte(DBG_RESTART_LOCAL);
         emitUnsignedLeb128(entry.getRegister());
 
         if (annotateTo != null || debugPrint != null) {
@@ -687,7 +697,7 @@ public final class DebugInfoEncoder {
 
         int mark = output.getCursor();
 
-        output.writeByte(DebugInfoConstants.DBG_START_LOCAL);
+        output.writeByte(DBG_START_LOCAL);
 
         emitUnsignedLeb128(entry.getRegister());
         emitStringIndex(entry.getName());
@@ -716,7 +726,7 @@ public final class DebugInfoEncoder {
 
         int mark = output.getCursor();
 
-        output.writeByte(DebugInfoConstants.DBG_START_LOCAL_EXTENDED);
+        output.writeByte(DBG_START_LOCAL_EXTENDED);
 
         emitUnsignedLeb128(entry.getRegister());
         emitStringIndex(entry.getName());
@@ -745,7 +755,7 @@ public final class DebugInfoEncoder {
 
         int mark = output.getCursor();
 
-        output.writeByte(DebugInfoConstants.DBG_END_LOCAL);
+        output.writeByte(DBG_END_LOCAL);
         output.writeUleb128(entry.getRegister());
 
         if (annotateTo != null || debugPrint != null) {
@@ -784,8 +794,8 @@ public final class DebugInfoEncoder {
                     "Position entries must be in ascending address order");
         }
 
-        if ((deltaLines < DebugInfoConstants.DBG_LINE_BASE)
-                || (deltaLines > (DebugInfoConstants.DBG_LINE_BASE + DebugInfoConstants.DBG_LINE_RANGE -1))) {
+        if ((deltaLines < DBG_LINE_BASE)
+                || (deltaLines > (DBG_LINE_BASE + DBG_LINE_RANGE -1))) {
             emitAdvanceLine(deltaLines);
             deltaLines = 0;
         }
@@ -828,14 +838,14 @@ public final class DebugInfoEncoder {
      * of range
      */
     private static int computeOpcode(int deltaLines, int deltaAddress) {
-        if (deltaLines < DebugInfoConstants.DBG_LINE_BASE
-                || deltaLines > (DebugInfoConstants.DBG_LINE_BASE + DebugInfoConstants.DBG_LINE_RANGE -1)) {
+        if (deltaLines < DBG_LINE_BASE
+                || deltaLines > (DBG_LINE_BASE + DBG_LINE_RANGE -1)) {
 
             throw new RuntimeException("Parameter out of range");
         }
 
-        return (deltaLines - DebugInfoConstants.DBG_LINE_BASE)
-            + (DebugInfoConstants.DBG_LINE_RANGE * deltaAddress) + DebugInfoConstants.DBG_FIRST_SPECIAL;
+        return (deltaLines - DBG_LINE_BASE)
+            + (DBG_LINE_RANGE * deltaAddress) + DBG_FIRST_SPECIAL;
     }
 
     /**
@@ -848,7 +858,7 @@ public final class DebugInfoEncoder {
     private void emitAdvanceLine(int deltaLines) throws IOException {
         int mark = output.getCursor();
 
-        output.writeByte(DebugInfoConstants.DBG_ADVANCE_LINE);
+        output.writeByte(DBG_ADVANCE_LINE);
         output.writeSleb128(deltaLines);
         line += deltaLines;
 
@@ -872,7 +882,7 @@ public final class DebugInfoEncoder {
     private void emitAdvancePc(int deltaAddress) throws IOException {
         int mark = output.getCursor();
 
-        output.writeByte(DebugInfoConstants.DBG_ADVANCE_PC);
+        output.writeByte(DBG_ADVANCE_PC);
         output.writeUleb128(deltaAddress);
         address += deltaAddress;
 
@@ -909,7 +919,7 @@ public final class DebugInfoEncoder {
      * bytecode.
      */
     private void emitEndSequence() {
-        output.writeByte(DebugInfoConstants.DBG_END_SEQUENCE);
+        output.writeByte(DBG_END_SEQUENCE);
 
         if (annotateTo != null || debugPrint != null) {
             annotate(1, "end sequence");

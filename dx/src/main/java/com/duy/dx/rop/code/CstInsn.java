@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.code;
+package com.duy.dx .rop.code;
 
-import com.duy.dx.rop.cst.Constant;
+import com.duy.dx .rop.cst.Constant;
 
 /**
  * Instruction which contains an explicit reference to a constant.

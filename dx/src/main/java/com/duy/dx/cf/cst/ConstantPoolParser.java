@@ -14,25 +14,39 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.cst;
+package com.duy.dx .cf.cst;
 
-import com.duy.dx.cf.iface.ParseException;
-import com.duy.dx.cf.iface.ParseObserver;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstDouble;
-import com.duy.dx.rop.cst.CstFieldRef;
-import com.duy.dx.rop.cst.CstFloat;
-import com.duy.dx.rop.cst.CstInteger;
-import com.duy.dx.rop.cst.CstInterfaceMethodRef;
-import com.duy.dx.rop.cst.CstLong;
-import com.duy.dx.rop.cst.CstMethodRef;
-import com.duy.dx.rop.cst.CstNat;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.rop.cst.StdConstantPool;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.util.ByteArray;
-import com.duy.dx.util.Hex;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_Class;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_Double;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_Fieldref;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_Float;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_Integer;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_InterfaceMethodref;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_Long;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_Methodref;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_NameAndType;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_String;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_Utf8;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_MethodHandle;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_MethodType;
+import static com.duy.dx .cf.cst.ConstantTags.CONSTANT_InvokeDynamic;
+import com.duy.dx .cf.iface.ParseException;
+import com.duy.dx .cf.iface.ParseObserver;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstDouble;
+import com.duy.dx .rop.cst.CstFieldRef;
+import com.duy.dx .rop.cst.CstFloat;
+import com.duy.dx .rop.cst.CstInteger;
+import com.duy.dx .rop.cst.CstInterfaceMethodRef;
+import com.duy.dx .rop.cst.CstLong;
+import com.duy.dx .rop.cst.CstMethodRef;
+import com.duy.dx .rop.cst.CstNat;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .rop.cst.StdConstantPool;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .util.ByteArray;
+import com.duy.dx .util.Hex;
 import java.util.BitSet;
 
 /**
@@ -173,41 +187,51 @@ public final class ConstantPoolParser {
         for (int i = 1; i < offsets.length; i += lastCategory) {
             offsets[i] = at;
             int tag = bytes.getUnsignedByte(at);
-            switch (tag) {
-                case ConstantTags.CONSTANT_Integer:
-                case ConstantTags.CONSTANT_Float:
-                case ConstantTags.CONSTANT_Fieldref:
-                case ConstantTags.CONSTANT_Methodref:
-                case ConstantTags.CONSTANT_InterfaceMethodref:
-                case ConstantTags.CONSTANT_NameAndType: {
-                    lastCategory = 1;
-                    at += 5;
-                    break;
+            try {
+                switch (tag) {
+                    case CONSTANT_Integer:
+                    case CONSTANT_Float:
+                    case CONSTANT_Fieldref:
+                    case CONSTANT_Methodref:
+                    case CONSTANT_InterfaceMethodref:
+                    case CONSTANT_NameAndType: {
+                        lastCategory = 1;
+                        at += 5;
+                        break;
+                    }
+                    case CONSTANT_Long:
+                    case CONSTANT_Double: {
+                        lastCategory = 2;
+                        at += 9;
+                        break;
+                    }
+                    case CONSTANT_Class:
+                    case CONSTANT_String: {
+                        lastCategory = 1;
+                        at += 3;
+                        break;
+                    }
+                    case CONSTANT_Utf8: {
+                        lastCategory = 1;
+                        at += bytes.getUnsignedShort(at + 1) + 3;
+                        break;
+                    }
+                    case CONSTANT_MethodHandle: {
+                        throw new ParseException("MethodHandle not supported");
+                    }
+                    case CONSTANT_MethodType: {
+                        throw new ParseException("MethodType not supported");
+                    }
+                    case CONSTANT_InvokeDynamic: {
+                        throw new ParseException("InvokeDynamic not supported");
+                    }
+                    default: {
+                        throw new ParseException("unknown tag byte: " + Hex.u1(tag));
+                    }
                 }
-                case ConstantTags.CONSTANT_Long:
-                case ConstantTags.CONSTANT_Double: {
-                    lastCategory = 2;
-                    at += 9;
-                    break;
-                }
-                case ConstantTags.CONSTANT_Class:
-                case ConstantTags.CONSTANT_String: {
-                    lastCategory = 1;
-                    at += 3;
-                    break;
-                }
-                case ConstantTags.CONSTANT_Utf8: {
-                    lastCategory = 1;
-                    at += bytes.getUnsignedShort(at + 1) + 3;
-                    break;
-                }
-                default: {
-                    ParseException ex =
-                        new ParseException("unknown tag byte: " + Hex.u1(tag));
-                    ex.addContext("...while preparsing cst " + Hex.u2(i) +
-                                  " at offset " + Hex.u4(at));
-                    throw ex;
-                }
+            } catch (ParseException ex) {
+                ex.addContext("...while preparsing cst " + Hex.u2(i) + " at offset " + Hex.u4(at));
+                throw ex;
             }
         }
 
@@ -234,43 +258,43 @@ public final class ConstantPoolParser {
         try {
             int tag = bytes.getUnsignedByte(at);
             switch (tag) {
-                case ConstantTags.CONSTANT_Utf8: {
+                case CONSTANT_Utf8: {
                     cst = parseUtf8(at);
                     wasUtf8.set(idx);
                     break;
                 }
-                case ConstantTags.CONSTANT_Integer: {
+                case CONSTANT_Integer: {
                     int value = bytes.getInt(at + 1);
                     cst = CstInteger.make(value);
                     break;
                 }
-                case ConstantTags.CONSTANT_Float: {
+                case CONSTANT_Float: {
                     int bits = bytes.getInt(at + 1);
                     cst = CstFloat.make(bits);
                     break;
                 }
-                case ConstantTags.CONSTANT_Long: {
+                case CONSTANT_Long: {
                     long value = bytes.getLong(at + 1);
                     cst = CstLong.make(value);
                     break;
                 }
-                case ConstantTags.CONSTANT_Double: {
+                case CONSTANT_Double: {
                     long bits = bytes.getLong(at + 1);
                     cst = CstDouble.make(bits);
                     break;
                 }
-                case ConstantTags.CONSTANT_Class: {
+                case CONSTANT_Class: {
                     int nameIndex = bytes.getUnsignedShort(at + 1);
                     CstString name = (CstString) parse0(nameIndex, wasUtf8);
                     cst = new CstType(Type.internClassName(name.getString()));
                     break;
                 }
-                case ConstantTags.CONSTANT_String: {
+                case CONSTANT_String: {
                     int stringIndex = bytes.getUnsignedShort(at + 1);
                     cst = parse0(stringIndex, wasUtf8);
                     break;
                 }
-                case ConstantTags.CONSTANT_Fieldref: {
+                case CONSTANT_Fieldref: {
                     int classIndex = bytes.getUnsignedShort(at + 1);
                     CstType type = (CstType) parse0(classIndex, wasUtf8);
                     int natIndex = bytes.getUnsignedShort(at + 3);
@@ -278,7 +302,7 @@ public final class ConstantPoolParser {
                     cst = new CstFieldRef(type, nat);
                     break;
                 }
-                case ConstantTags.CONSTANT_Methodref: {
+                case CONSTANT_Methodref: {
                     int classIndex = bytes.getUnsignedShort(at + 1);
                     CstType type = (CstType) parse0(classIndex, wasUtf8);
                     int natIndex = bytes.getUnsignedShort(at + 3);
@@ -286,7 +310,7 @@ public final class ConstantPoolParser {
                     cst = new CstMethodRef(type, nat);
                     break;
                 }
-                case ConstantTags.CONSTANT_InterfaceMethodref: {
+                case CONSTANT_InterfaceMethodref: {
                     int classIndex = bytes.getUnsignedShort(at + 1);
                     CstType type = (CstType) parse0(classIndex, wasUtf8);
                     int natIndex = bytes.getUnsignedShort(at + 3);
@@ -294,13 +318,25 @@ public final class ConstantPoolParser {
                     cst = new CstInterfaceMethodRef(type, nat);
                     break;
                 }
-                case ConstantTags.CONSTANT_NameAndType: {
+                case CONSTANT_NameAndType: {
                     int nameIndex = bytes.getUnsignedShort(at + 1);
                     CstString name = (CstString) parse0(nameIndex, wasUtf8);
                     int descriptorIndex = bytes.getUnsignedShort(at + 3);
                     CstString descriptor = (CstString) parse0(descriptorIndex, wasUtf8);
                     cst = new CstNat(name, descriptor);
                     break;
+                }
+                case CONSTANT_MethodHandle: {
+                    throw new ParseException("MethodHandle not supported");
+                }
+                case CONSTANT_MethodType: {
+                    throw new ParseException("MethodType not supported");
+                }
+                case CONSTANT_InvokeDynamic: {
+                    throw new ParseException("InvokeDynamic not supported");
+                }
+                default: {
+                    throw new ParseException("unknown tag byte: " + Hex.u1(tag));
                 }
             }
         } catch (ParseException ex) {

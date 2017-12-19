@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.iface;
+package com.duy.dx .cf.iface;
 
-import com.duy.dx.util.FixedSizeList;
+import com.duy.dx .util.FixedSizeList;
 
 /**
  * Standard implementation of {@link MethodList}, which directly stores

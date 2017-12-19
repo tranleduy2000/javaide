@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.util;
+package com.duy.dx .util;
 
 /**
  * Simple interface for objects that can return a "human" (as opposed to

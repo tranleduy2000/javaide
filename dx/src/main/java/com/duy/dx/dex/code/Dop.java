@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.io.OpcodeInfo;
-import com.duy.dx.io.Opcodes;
+import com.duy.dx .io.OpcodeInfo;
+import com.duy.dx .io.Opcodes;
 
 /**
  * Representation of an opcode.

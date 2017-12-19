@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.merge;
+package com.duy.dx .merge;
 
-import com.duy.dx.io.ClassDef;
-import com.duy.dx.io.DexBuffer;
+import com.duy.dex.ClassDef;
+import com.duy.dex.Dex;
 import java.util.Comparator;
 
 /**
@@ -43,17 +43,23 @@ final class SortableType {
         }
     };
 
-    private final DexBuffer buffer;
+    private final Dex dex;
+    private final IndexMap indexMap;
     private ClassDef classDef;
     private int depth = -1;
 
-    public SortableType(DexBuffer buffer, ClassDef classDef) {
-        this.buffer = buffer;
+    public SortableType(Dex dex, IndexMap indexMap, ClassDef classDef) {
+        this.dex = dex;
+        this.indexMap = indexMap;
         this.classDef = classDef;
     }
 
-    public DexBuffer getBuffer() {
-        return buffer;
+    public Dex getDex() {
+        return dex;
+    }
+
+    public IndexMap getIndexMap() {
+        return indexMap;
     }
 
     public ClassDef getClassDef() {

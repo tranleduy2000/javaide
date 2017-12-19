@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.io.instructions;
+package com.duy.dx .io.instructions;
 
-import com.duy.dx.io.IndexType;
+import com.duy.dx .io.IndexType;
 
 /**
  * A decoded Dalvik instruction which has five register arguments.
@@ -41,8 +41,8 @@ public final class FiveRegisterDecodedInstruction extends DecodedInstruction {
      * Constructs an instance.
      */
     public FiveRegisterDecodedInstruction(InstructionCodec format, int opcode,
-                                          int index, IndexType indexType, int target, long literal,
-                                          int a, int b, int c, int d, int e) {
+            int index, IndexType indexType, int target, long literal,
+            int a, int b, int c, int d, int e) {
         super(format, opcode, index, indexType, target, literal);
 
         this.a = a;

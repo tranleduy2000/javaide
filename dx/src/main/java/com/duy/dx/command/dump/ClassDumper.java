@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx.command.dump;
+package com.duy.dx .command.dump;
 
-import com.duy.dx.cf.direct.DirectClassFile;
-import com.duy.dx.cf.direct.StdAttributeFactory;
-import com.duy.dx.util.ByteArray;
-
+import com.duy.dx .cf.direct.DirectClassFile;
+import com.duy.dx .cf.direct.StdAttributeFactory;
+import com.duy.dx .util.ByteArray;
 import java.io.PrintStream;
 
 /**

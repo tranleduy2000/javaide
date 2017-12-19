@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package com.duy.dx.command.dump;
+package com.duy.dx .command.dump;
 
-import com.duy.dx.cf.code.ConcreteMethod;
-import com.duy.dx.cf.code.Ropper;
-import com.duy.dx.cf.iface.Member;
-import com.duy.dx.cf.iface.Method;
-import com.duy.dx.rop.code.RopMethod;
-import com.duy.dx.rop.code.TranslationAdvice;
-import com.duy.dx.rop.code.DexTranslationAdvice;
-import com.duy.dx.rop.code.AccessFlags;
-import com.duy.dx.ssa.SsaBasicBlock;
-import com.duy.dx.ssa.SsaInsn;
-import com.duy.dx.ssa.SsaMethod;
-import com.duy.dx.ssa.Optimizer;
-import com.duy.dx.util.ByteArray;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.IntList;
-
+import com.duy.dx .cf.code.ConcreteMethod;
+import com.duy.dx .cf.code.Ropper;
+import com.duy.dx .cf.iface.Member;
+import com.duy.dx .cf.iface.Method;
+import com.duy.dx .rop.code.AccessFlags;
+import com.duy.dx .rop.code.DexTranslationAdvice;
+import com.duy.dx .rop.code.RopMethod;
+import com.duy.dx .rop.code.TranslationAdvice;
+import com.duy.dx .ssa.Optimizer;
+import com.duy.dx .ssa.SsaBasicBlock;
+import com.duy.dx .ssa.SsaInsn;
+import com.duy.dx .ssa.SsaMethod;
+import com.duy.dx .util.ByteArray;
+import com.duy.dx .util.Hex;
+import com.duy.dx .util.IntList;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -91,7 +90,7 @@ public class SsaDumper extends BlockDumper {
         ConcreteMethod meth =
             new ConcreteMethod((Method) member, classFile, true, true);
         TranslationAdvice advice = DexTranslationAdvice.THE_ONE;
-        RopMethod rmeth = Ropper.convert(meth, advice);
+        RopMethod rmeth = Ropper.convert(meth, advice, classFile.getMethods());
         SsaMethod ssaMeth = null;
         boolean isStatic = AccessFlags.isStatic(meth.getAccessFlags());
         int paramWidth = computeParamWidth(meth, isStatic);

@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx.util;
+package com.duy.dx .util;
 
+import com.duy.dex.util.ByteOutput;
+import com.duy.dex.util.ExceptionWithContext;
+import com.duy.dex.Leb128;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -238,7 +241,7 @@ public final class ByteArrayAnnotatedOutput
             ensureCapacity(cursor + 5); // pessimistic
         }
         int cursorBefore = cursor;
-        Leb128Utils.writeUnsignedLeb128(this, value);
+        Leb128.writeUnsignedLeb128(this, value);
         return (cursor - cursorBefore);
     }
 
@@ -248,7 +251,7 @@ public final class ByteArrayAnnotatedOutput
             ensureCapacity(cursor + 5); // pessimistic
         }
         int cursorBefore = cursor;
-        Leb128Utils.writeSignedLeb128(this, value);
+        Leb128.writeSignedLeb128(this, value);
         return (cursor - cursorBefore);
     }
 

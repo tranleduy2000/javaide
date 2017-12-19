@@ -14,38 +14,35 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.dex.DexOptions;
-import com.duy.dx.dex.code.form.Form10t;
-import com.duy.dx.dex.code.form.Form10x;
-import com.duy.dx.dex.code.form.Form11n;
-import com.duy.dx.dex.code.form.Form11x;
-import com.duy.dx.dex.code.form.Form12x;
-import com.duy.dx.dex.code.form.Form20t;
-import com.duy.dx.dex.code.form.Form21c;
-import com.duy.dx.dex.code.form.Form21h;
-import com.duy.dx.dex.code.form.Form21s;
-import com.duy.dx.dex.code.form.Form21t;
-import com.duy.dx.dex.code.form.Form22b;
-import com.duy.dx.dex.code.form.Form22c;
-import com.duy.dx.dex.code.form.Form22s;
-import com.duy.dx.dex.code.form.Form22t;
-import com.duy.dx.dex.code.form.Form22x;
-import com.duy.dx.dex.code.form.Form23x;
-import com.duy.dx.dex.code.form.Form30t;
-import com.duy.dx.dex.code.form.Form31c;
-import com.duy.dx.dex.code.form.Form31i;
-import com.duy.dx.dex.code.form.Form31t;
-import com.duy.dx.dex.code.form.Form32x;
-import com.duy.dx.dex.code.form.Form35c;
-import com.duy.dx.dex.code.form.Form3rc;
-import com.duy.dx.dex.code.form.Form41c;
-import com.duy.dx.dex.code.form.Form51l;
-import com.duy.dx.dex.code.form.Form52c;
-import com.duy.dx.dex.code.form.Form5rc;
-import com.duy.dx.dex.code.form.SpecialFormat;
-import com.duy.dx.io.Opcodes;
+import com.duy.dx .dex.DexOptions;
+import com.duy.dx .dex.code.form.Form10t;
+import com.duy.dx .dex.code.form.Form10x;
+import com.duy.dx .dex.code.form.Form11n;
+import com.duy.dx .dex.code.form.Form11x;
+import com.duy.dx .dex.code.form.Form12x;
+import com.duy.dx .dex.code.form.Form20t;
+import com.duy.dx .dex.code.form.Form21c;
+import com.duy.dx .dex.code.form.Form21h;
+import com.duy.dx .dex.code.form.Form21s;
+import com.duy.dx .dex.code.form.Form21t;
+import com.duy.dx .dex.code.form.Form22b;
+import com.duy.dx .dex.code.form.Form22c;
+import com.duy.dx .dex.code.form.Form22s;
+import com.duy.dx .dex.code.form.Form22t;
+import com.duy.dx .dex.code.form.Form22x;
+import com.duy.dx .dex.code.form.Form23x;
+import com.duy.dx .dex.code.form.Form30t;
+import com.duy.dx .dex.code.form.Form31c;
+import com.duy.dx .dex.code.form.Form31i;
+import com.duy.dx .dex.code.form.Form31t;
+import com.duy.dx .dex.code.form.Form32x;
+import com.duy.dx .dex.code.form.Form35c;
+import com.duy.dx .dex.code.form.Form3rc;
+import com.duy.dx .dex.code.form.Form51l;
+import com.duy.dx .dex.code.form.SpecialFormat;
+import com.duy.dx .io.Opcodes;
 
 /**
  * Standard instances of {@link Dop} and utility methods for getting
@@ -180,7 +177,7 @@ public final class Dops {
 
     public static final Dop CONST_CLASS =
         new Dop(Opcodes.CONST_CLASS, Opcodes.CONST_CLASS,
-            Opcodes.CONST_CLASS_JUMBO, Form21c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
 
     public static final Dop MONITOR_ENTER =
         new Dop(Opcodes.MONITOR_ENTER, Opcodes.MONITOR_ENTER,
@@ -192,11 +189,11 @@ public final class Dops {
 
     public static final Dop CHECK_CAST =
         new Dop(Opcodes.CHECK_CAST, Opcodes.CHECK_CAST,
-            Opcodes.CHECK_CAST_JUMBO, Form21c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
 
     public static final Dop INSTANCE_OF =
         new Dop(Opcodes.INSTANCE_OF, Opcodes.INSTANCE_OF,
-            Opcodes.INSTANCE_OF_JUMBO, Form22c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, true);
 
     public static final Dop ARRAY_LENGTH =
         new Dop(Opcodes.ARRAY_LENGTH, Opcodes.ARRAY_LENGTH,
@@ -204,11 +201,11 @@ public final class Dops {
 
     public static final Dop NEW_INSTANCE =
         new Dop(Opcodes.NEW_INSTANCE, Opcodes.NEW_INSTANCE,
-            Opcodes.NEW_INSTANCE_JUMBO, Form21c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
 
     public static final Dop NEW_ARRAY =
         new Dop(Opcodes.NEW_ARRAY, Opcodes.NEW_ARRAY,
-            Opcodes.NEW_ARRAY_JUMBO, Form22c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, true);
 
     public static final Dop FILLED_NEW_ARRAY =
         new Dop(Opcodes.FILLED_NEW_ARRAY, Opcodes.FILLED_NEW_ARRAY,
@@ -216,7 +213,7 @@ public final class Dops {
 
     public static final Dop FILLED_NEW_ARRAY_RANGE =
         new Dop(Opcodes.FILLED_NEW_ARRAY_RANGE, Opcodes.FILLED_NEW_ARRAY,
-            Opcodes.FILLED_NEW_ARRAY_JUMBO, Form3rc.THE_ONE, false);
+            Opcodes.NO_NEXT, Form3rc.THE_ONE, false);
 
     public static final Dop FILL_ARRAY_DATA =
         new Dop(Opcodes.FILL_ARRAY_DATA, Opcodes.FILL_ARRAY_DATA,
@@ -372,115 +369,115 @@ public final class Dops {
 
     public static final Dop IGET =
         new Dop(Opcodes.IGET, Opcodes.IGET,
-            Opcodes.IGET_JUMBO, Form22c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, true);
 
     public static final Dop IGET_WIDE =
         new Dop(Opcodes.IGET_WIDE, Opcodes.IGET_WIDE,
-            Opcodes.IGET_WIDE_JUMBO, Form22c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, true);
 
     public static final Dop IGET_OBJECT =
         new Dop(Opcodes.IGET_OBJECT, Opcodes.IGET_OBJECT,
-            Opcodes.IGET_OBJECT_JUMBO, Form22c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, true);
 
     public static final Dop IGET_BOOLEAN =
         new Dop(Opcodes.IGET_BOOLEAN, Opcodes.IGET_BOOLEAN,
-            Opcodes.IGET_BOOLEAN_JUMBO, Form22c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, true);
 
     public static final Dop IGET_BYTE =
         new Dop(Opcodes.IGET_BYTE, Opcodes.IGET_BYTE,
-            Opcodes.IGET_BYTE_JUMBO, Form22c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, true);
 
     public static final Dop IGET_CHAR =
         new Dop(Opcodes.IGET_CHAR, Opcodes.IGET_CHAR,
-            Opcodes.IGET_CHAR_JUMBO, Form22c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, true);
 
     public static final Dop IGET_SHORT =
         new Dop(Opcodes.IGET_SHORT, Opcodes.IGET_SHORT,
-            Opcodes.IGET_SHORT_JUMBO, Form22c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, true);
 
     public static final Dop IPUT =
         new Dop(Opcodes.IPUT, Opcodes.IPUT,
-            Opcodes.IPUT_JUMBO, Form22c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, false);
 
     public static final Dop IPUT_WIDE =
         new Dop(Opcodes.IPUT_WIDE, Opcodes.IPUT_WIDE,
-            Opcodes.IPUT_WIDE_JUMBO, Form22c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, false);
 
     public static final Dop IPUT_OBJECT =
         new Dop(Opcodes.IPUT_OBJECT, Opcodes.IPUT_OBJECT,
-            Opcodes.IPUT_OBJECT_JUMBO, Form22c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, false);
 
     public static final Dop IPUT_BOOLEAN =
         new Dop(Opcodes.IPUT_BOOLEAN, Opcodes.IPUT_BOOLEAN,
-            Opcodes.IPUT_BOOLEAN_JUMBO, Form22c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, false);
 
     public static final Dop IPUT_BYTE =
         new Dop(Opcodes.IPUT_BYTE, Opcodes.IPUT_BYTE,
-            Opcodes.IPUT_BYTE_JUMBO, Form22c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, false);
 
     public static final Dop IPUT_CHAR =
         new Dop(Opcodes.IPUT_CHAR, Opcodes.IPUT_CHAR,
-            Opcodes.IPUT_CHAR_JUMBO, Form22c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, false);
 
     public static final Dop IPUT_SHORT =
         new Dop(Opcodes.IPUT_SHORT, Opcodes.IPUT_SHORT,
-            Opcodes.IPUT_SHORT_JUMBO, Form22c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form22c.THE_ONE, false);
 
     public static final Dop SGET =
         new Dop(Opcodes.SGET, Opcodes.SGET,
-            Opcodes.SGET_JUMBO, Form21c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
 
     public static final Dop SGET_WIDE =
         new Dop(Opcodes.SGET_WIDE, Opcodes.SGET_WIDE,
-            Opcodes.SGET_WIDE_JUMBO, Form21c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
 
     public static final Dop SGET_OBJECT =
         new Dop(Opcodes.SGET_OBJECT, Opcodes.SGET_OBJECT,
-            Opcodes.SGET_OBJECT_JUMBO, Form21c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
 
     public static final Dop SGET_BOOLEAN =
         new Dop(Opcodes.SGET_BOOLEAN, Opcodes.SGET_BOOLEAN,
-            Opcodes.SGET_BOOLEAN_JUMBO, Form21c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
 
     public static final Dop SGET_BYTE =
         new Dop(Opcodes.SGET_BYTE, Opcodes.SGET_BYTE,
-            Opcodes.SGET_BYTE_JUMBO, Form21c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
 
     public static final Dop SGET_CHAR =
         new Dop(Opcodes.SGET_CHAR, Opcodes.SGET_CHAR,
-            Opcodes.SGET_CHAR_JUMBO, Form21c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
 
     public static final Dop SGET_SHORT =
         new Dop(Opcodes.SGET_SHORT, Opcodes.SGET_SHORT,
-            Opcodes.SGET_SHORT_JUMBO, Form21c.THE_ONE, true);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
 
     public static final Dop SPUT =
         new Dop(Opcodes.SPUT, Opcodes.SPUT,
-            Opcodes.SPUT_JUMBO, Form21c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, false);
 
     public static final Dop SPUT_WIDE =
         new Dop(Opcodes.SPUT_WIDE, Opcodes.SPUT_WIDE,
-            Opcodes.SPUT_WIDE_JUMBO, Form21c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, false);
 
     public static final Dop SPUT_OBJECT =
         new Dop(Opcodes.SPUT_OBJECT, Opcodes.SPUT_OBJECT,
-            Opcodes.SPUT_OBJECT_JUMBO, Form21c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, false);
 
     public static final Dop SPUT_BOOLEAN =
         new Dop(Opcodes.SPUT_BOOLEAN, Opcodes.SPUT_BOOLEAN,
-            Opcodes.SPUT_BOOLEAN_JUMBO, Form21c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, false);
 
     public static final Dop SPUT_BYTE =
         new Dop(Opcodes.SPUT_BYTE, Opcodes.SPUT_BYTE,
-            Opcodes.SPUT_BYTE_JUMBO, Form21c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, false);
 
     public static final Dop SPUT_CHAR =
         new Dop(Opcodes.SPUT_CHAR, Opcodes.SPUT_CHAR,
-            Opcodes.SPUT_CHAR_JUMBO, Form21c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, false);
 
     public static final Dop SPUT_SHORT =
         new Dop(Opcodes.SPUT_SHORT, Opcodes.SPUT_SHORT,
-            Opcodes.SPUT_SHORT_JUMBO, Form21c.THE_ONE, false);
+            Opcodes.NO_NEXT, Form21c.THE_ONE, false);
 
     public static final Dop INVOKE_VIRTUAL =
         new Dop(Opcodes.INVOKE_VIRTUAL, Opcodes.INVOKE_VIRTUAL,
@@ -504,23 +501,23 @@ public final class Dops {
 
     public static final Dop INVOKE_VIRTUAL_RANGE =
         new Dop(Opcodes.INVOKE_VIRTUAL_RANGE, Opcodes.INVOKE_VIRTUAL,
-            Opcodes.INVOKE_VIRTUAL_JUMBO, Form3rc.THE_ONE, false);
+            Opcodes.NO_NEXT, Form3rc.THE_ONE, false);
 
     public static final Dop INVOKE_SUPER_RANGE =
         new Dop(Opcodes.INVOKE_SUPER_RANGE, Opcodes.INVOKE_SUPER,
-            Opcodes.INVOKE_SUPER_JUMBO, Form3rc.THE_ONE, false);
+            Opcodes.NO_NEXT, Form3rc.THE_ONE, false);
 
     public static final Dop INVOKE_DIRECT_RANGE =
         new Dop(Opcodes.INVOKE_DIRECT_RANGE, Opcodes.INVOKE_DIRECT,
-            Opcodes.INVOKE_DIRECT_JUMBO, Form3rc.THE_ONE, false);
+            Opcodes.NO_NEXT, Form3rc.THE_ONE, false);
 
     public static final Dop INVOKE_STATIC_RANGE =
         new Dop(Opcodes.INVOKE_STATIC_RANGE, Opcodes.INVOKE_STATIC,
-            Opcodes.INVOKE_STATIC_JUMBO, Form3rc.THE_ONE, false);
+            Opcodes.NO_NEXT, Form3rc.THE_ONE, false);
 
     public static final Dop INVOKE_INTERFACE_RANGE =
         new Dop(Opcodes.INVOKE_INTERFACE_RANGE, Opcodes.INVOKE_INTERFACE,
-            Opcodes.INVOKE_INTERFACE_JUMBO, Form3rc.THE_ONE, false);
+            Opcodes.NO_NEXT, Form3rc.THE_ONE, false);
 
     public static final Dop NEG_INT =
         new Dop(Opcodes.NEG_INT, Opcodes.NEG_INT,
@@ -938,162 +935,6 @@ public final class Dops {
         new Dop(Opcodes.USHR_INT_LIT8, Opcodes.USHR_INT,
             Opcodes.NO_NEXT, Form22b.THE_ONE, true);
 
-    public static final Dop CONST_CLASS_JUMBO =
-        new Dop(Opcodes.CONST_CLASS_JUMBO, Opcodes.CONST_CLASS,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, true);
-
-    public static final Dop CHECK_CAST_JUMBO =
-        new Dop(Opcodes.CHECK_CAST_JUMBO, Opcodes.CHECK_CAST,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, false);
-
-    public static final Dop INSTANCE_OF_JUMBO =
-        new Dop(Opcodes.INSTANCE_OF_JUMBO, Opcodes.INSTANCE_OF,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, true);
-
-    public static final Dop NEW_INSTANCE_JUMBO =
-        new Dop(Opcodes.NEW_INSTANCE_JUMBO, Opcodes.NEW_INSTANCE,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, true);
-
-    public static final Dop NEW_ARRAY_JUMBO =
-        new Dop(Opcodes.NEW_ARRAY_JUMBO, Opcodes.NEW_ARRAY,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, true);
-
-    public static final Dop FILLED_NEW_ARRAY_JUMBO =
-        new Dop(Opcodes.FILLED_NEW_ARRAY_JUMBO, Opcodes.FILLED_NEW_ARRAY,
-            Opcodes.NO_NEXT, Form5rc.THE_ONE, false);
-
-    public static final Dop IGET_JUMBO =
-        new Dop(Opcodes.IGET_JUMBO, Opcodes.IGET,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, true);
-
-    public static final Dop IGET_WIDE_JUMBO =
-        new Dop(Opcodes.IGET_WIDE_JUMBO, Opcodes.IGET_WIDE,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, true);
-
-    public static final Dop IGET_OBJECT_JUMBO =
-        new Dop(Opcodes.IGET_OBJECT_JUMBO, Opcodes.IGET_OBJECT,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, true);
-
-    public static final Dop IGET_BOOLEAN_JUMBO =
-        new Dop(Opcodes.IGET_BOOLEAN_JUMBO, Opcodes.IGET_BOOLEAN,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, true);
-
-    public static final Dop IGET_BYTE_JUMBO =
-        new Dop(Opcodes.IGET_BYTE_JUMBO, Opcodes.IGET_BYTE,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, true);
-
-    public static final Dop IGET_CHAR_JUMBO =
-        new Dop(Opcodes.IGET_CHAR_JUMBO, Opcodes.IGET_CHAR,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, true);
-
-    public static final Dop IGET_SHORT_JUMBO =
-        new Dop(Opcodes.IGET_SHORT_JUMBO, Opcodes.IGET_SHORT,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, true);
-
-    public static final Dop IPUT_JUMBO =
-        new Dop(Opcodes.IPUT_JUMBO, Opcodes.IPUT,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, false);
-
-    public static final Dop IPUT_WIDE_JUMBO =
-        new Dop(Opcodes.IPUT_WIDE_JUMBO, Opcodes.IPUT_WIDE,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, false);
-
-    public static final Dop IPUT_OBJECT_JUMBO =
-        new Dop(Opcodes.IPUT_OBJECT_JUMBO, Opcodes.IPUT_OBJECT,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, false);
-
-    public static final Dop IPUT_BOOLEAN_JUMBO =
-        new Dop(Opcodes.IPUT_BOOLEAN_JUMBO, Opcodes.IPUT_BOOLEAN,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, false);
-
-    public static final Dop IPUT_BYTE_JUMBO =
-        new Dop(Opcodes.IPUT_BYTE_JUMBO, Opcodes.IPUT_BYTE,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, false);
-
-    public static final Dop IPUT_CHAR_JUMBO =
-        new Dop(Opcodes.IPUT_CHAR_JUMBO, Opcodes.IPUT_CHAR,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, false);
-
-    public static final Dop IPUT_SHORT_JUMBO =
-        new Dop(Opcodes.IPUT_SHORT_JUMBO, Opcodes.IPUT_SHORT,
-            Opcodes.NO_NEXT, Form52c.THE_ONE, false);
-
-    public static final Dop SGET_JUMBO =
-        new Dop(Opcodes.SGET_JUMBO, Opcodes.SGET,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, true);
-
-    public static final Dop SGET_WIDE_JUMBO =
-        new Dop(Opcodes.SGET_WIDE_JUMBO, Opcodes.SGET_WIDE,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, true);
-
-    public static final Dop SGET_OBJECT_JUMBO =
-        new Dop(Opcodes.SGET_OBJECT_JUMBO, Opcodes.SGET_OBJECT,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, true);
-
-    public static final Dop SGET_BOOLEAN_JUMBO =
-        new Dop(Opcodes.SGET_BOOLEAN_JUMBO, Opcodes.SGET_BOOLEAN,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, true);
-
-    public static final Dop SGET_BYTE_JUMBO =
-        new Dop(Opcodes.SGET_BYTE_JUMBO, Opcodes.SGET_BYTE,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, true);
-
-    public static final Dop SGET_CHAR_JUMBO =
-        new Dop(Opcodes.SGET_CHAR_JUMBO, Opcodes.SGET_CHAR,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, true);
-
-    public static final Dop SGET_SHORT_JUMBO =
-        new Dop(Opcodes.SGET_SHORT_JUMBO, Opcodes.SGET_SHORT,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, true);
-
-    public static final Dop SPUT_JUMBO =
-        new Dop(Opcodes.SPUT_JUMBO, Opcodes.SPUT,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, false);
-
-    public static final Dop SPUT_WIDE_JUMBO =
-        new Dop(Opcodes.SPUT_WIDE_JUMBO, Opcodes.SPUT_WIDE,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, false);
-
-    public static final Dop SPUT_OBJECT_JUMBO =
-        new Dop(Opcodes.SPUT_OBJECT_JUMBO, Opcodes.SPUT_OBJECT,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, false);
-
-    public static final Dop SPUT_BOOLEAN_JUMBO =
-        new Dop(Opcodes.SPUT_BOOLEAN_JUMBO, Opcodes.SPUT_BOOLEAN,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, false);
-
-    public static final Dop SPUT_BYTE_JUMBO =
-        new Dop(Opcodes.SPUT_BYTE_JUMBO, Opcodes.SPUT_BYTE,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, false);
-
-    public static final Dop SPUT_CHAR_JUMBO =
-        new Dop(Opcodes.SPUT_CHAR_JUMBO, Opcodes.SPUT_CHAR,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, false);
-
-    public static final Dop SPUT_SHORT_JUMBO =
-        new Dop(Opcodes.SPUT_SHORT_JUMBO, Opcodes.SPUT_SHORT,
-            Opcodes.NO_NEXT, Form41c.THE_ONE, false);
-
-    public static final Dop INVOKE_VIRTUAL_JUMBO =
-        new Dop(Opcodes.INVOKE_VIRTUAL_JUMBO, Opcodes.INVOKE_VIRTUAL,
-            Opcodes.NO_NEXT, Form5rc.THE_ONE, false);
-
-    public static final Dop INVOKE_SUPER_JUMBO =
-        new Dop(Opcodes.INVOKE_SUPER_JUMBO, Opcodes.INVOKE_SUPER,
-            Opcodes.NO_NEXT, Form5rc.THE_ONE, false);
-
-    public static final Dop INVOKE_DIRECT_JUMBO =
-        new Dop(Opcodes.INVOKE_DIRECT_JUMBO, Opcodes.INVOKE_DIRECT,
-            Opcodes.NO_NEXT, Form5rc.THE_ONE, false);
-
-    public static final Dop INVOKE_STATIC_JUMBO =
-        new Dop(Opcodes.INVOKE_STATIC_JUMBO, Opcodes.INVOKE_STATIC,
-            Opcodes.NO_NEXT, Form5rc.THE_ONE, false);
-
-    public static final Dop INVOKE_INTERFACE_JUMBO =
-        new Dop(Opcodes.INVOKE_INTERFACE_JUMBO, Opcodes.INVOKE_INTERFACE,
-            Opcodes.NO_NEXT, Form5rc.THE_ONE, false);
-
     // END(dops)
 
     // Static initialization.
@@ -1321,45 +1162,6 @@ public final class Dops {
         set(SHL_INT_LIT8);
         set(SHR_INT_LIT8);
         set(USHR_INT_LIT8);
-        set(CONST_CLASS_JUMBO);
-        set(CHECK_CAST_JUMBO);
-        set(INSTANCE_OF_JUMBO);
-        set(NEW_INSTANCE_JUMBO);
-        set(NEW_ARRAY_JUMBO);
-        set(FILLED_NEW_ARRAY_JUMBO);
-        set(IGET_JUMBO);
-        set(IGET_WIDE_JUMBO);
-        set(IGET_OBJECT_JUMBO);
-        set(IGET_BOOLEAN_JUMBO);
-        set(IGET_BYTE_JUMBO);
-        set(IGET_CHAR_JUMBO);
-        set(IGET_SHORT_JUMBO);
-        set(IPUT_JUMBO);
-        set(IPUT_WIDE_JUMBO);
-        set(IPUT_OBJECT_JUMBO);
-        set(IPUT_BOOLEAN_JUMBO);
-        set(IPUT_BYTE_JUMBO);
-        set(IPUT_CHAR_JUMBO);
-        set(IPUT_SHORT_JUMBO);
-        set(SGET_JUMBO);
-        set(SGET_WIDE_JUMBO);
-        set(SGET_OBJECT_JUMBO);
-        set(SGET_BOOLEAN_JUMBO);
-        set(SGET_BYTE_JUMBO);
-        set(SGET_CHAR_JUMBO);
-        set(SGET_SHORT_JUMBO);
-        set(SPUT_JUMBO);
-        set(SPUT_WIDE_JUMBO);
-        set(SPUT_OBJECT_JUMBO);
-        set(SPUT_BOOLEAN_JUMBO);
-        set(SPUT_BYTE_JUMBO);
-        set(SPUT_CHAR_JUMBO);
-        set(SPUT_SHORT_JUMBO);
-        set(INVOKE_VIRTUAL_JUMBO);
-        set(INVOKE_SUPER_JUMBO);
-        set(INVOKE_DIRECT_JUMBO);
-        set(INVOKE_STATIC_JUMBO);
-        set(INVOKE_INTERFACE_JUMBO);
         // END(dops-init)
     }
 
@@ -1404,29 +1206,15 @@ public final class Dops {
      * the last in its chain
      */
     public static Dop getNextOrNull(Dop opcode, DexOptions options) {
-        boolean suppressExtendedOpcodes = !options.canUseExtendedOpcodes();
+      int nextOpcode = opcode.getNextOpcode();
 
-        for (;;) {
-            int nextOpcode = opcode.getNextOpcode();
+      if (nextOpcode == Opcodes.NO_NEXT) {
+        return null;
+      }
 
-            if (nextOpcode == Opcodes.NO_NEXT) {
-                return null;
-            }
+      opcode = get(nextOpcode);
 
-            opcode = get(nextOpcode);
-
-            if (suppressExtendedOpcodes && Opcodes.isExtended(nextOpcode)) {
-                /*
-                 * Continuing rather than just returning null here
-                 * protects against the possibility that an
-                 * instruction fitting chain might list non-extended
-                 * opcodes after extended ones.
-                 */
-                continue;
-            }
-
-            return opcode;
-        }
+      return opcode;
     }
 
     /**

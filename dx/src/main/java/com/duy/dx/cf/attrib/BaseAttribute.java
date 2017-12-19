@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.attrib;
+package com.duy.dx .cf.attrib;
 
-import com.duy.dx.cf.iface.Attribute;
+import com.duy.dx .cf.iface.Attribute;
 
 /**
  * Base implementation of {@link Attribute}, which directly stores

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.code;
+package com.duy.dx .cf.code;
 
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.rop.type.TypeBearer;
-import com.duy.dx.util.ExceptionWithContext;
-import com.duy.dx.util.Hex;
-
+import com.duy.dex.util.ExceptionWithContext;
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx .util.Hex;
 import java.util.ArrayList;
 
 /**
@@ -30,8 +29,8 @@ import java.util.ArrayList;
  * have different locals sets for each caller.
  *
  * <p><b>Note:</b> For the most part, the documentation for this class
- * ignores the distinction between {@link Type} and {@link
- * TypeBearer}.</p>
+ * ignores the distinction between {@link com.duy.dx .rop.type.Type} and {@link
+ * com.duy.dx .rop.type.TypeBearer}.</p>
  */
 public class LocalsArraySet extends LocalsArray {
 

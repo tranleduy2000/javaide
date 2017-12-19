@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.dex.SizeOf;
-import com.duy.dx.rop.annotation.Annotations;
-import com.duy.dx.rop.annotation.AnnotationsList;
-import com.duy.dx.rop.code.AccessFlags;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstArray;
-import com.duy.dx.rop.cst.CstFieldRef;
-import com.duy.dx.rop.cst.CstMethodRef;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.rop.type.StdTypeList;
-import com.duy.dx.rop.type.TypeList;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.Writers;
+import com.duy.dex.SizeOf;
+import com.duy.dx .rop.annotation.Annotations;
+import com.duy.dx .rop.annotation.AnnotationsList;
+import com.duy.dx .rop.code.AccessFlags;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstArray;
+import com.duy.dx .rop.cst.CstFieldRef;
+import com.duy.dx .rop.cst.CstMethodRef;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .rop.type.StdTypeList;
+import com.duy.dx .rop.type.TypeList;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
+import com.duy.dx .util.Writers;
 
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -322,9 +322,10 @@ public final class ClassDefItem extends IndexedItem {
      * It is only valid to call this method at most once per instance.
      *
      * @param annotations {@code non-null;} annotations to set for this class
+     * @param dexFile {@code non-null;} dex output
      */
-    public void setClassAnnotations(Annotations annotations) {
-        annotationsDirectory.setClassAnnotations(annotations);
+    public void setClassAnnotations(Annotations annotations, DexFile dexFile) {
+        annotationsDirectory.setClassAnnotations(annotations, dexFile);
     }
 
     /**
@@ -332,10 +333,11 @@ public final class ClassDefItem extends IndexedItem {
      *
      * @param field {@code non-null;} field in question
      * @param annotations {@code non-null;} associated annotations to add
+     * @param dexFile {@code non-null;} dex output
      */
     public void addFieldAnnotations(CstFieldRef field,
-            Annotations annotations) {
-        annotationsDirectory.addFieldAnnotations(field, annotations);
+            Annotations annotations, DexFile dexFile) {
+        annotationsDirectory.addFieldAnnotations(field, annotations, dexFile);
     }
 
     /**
@@ -343,10 +345,11 @@ public final class ClassDefItem extends IndexedItem {
      *
      * @param method {@code non-null;} method in question
      * @param annotations {@code non-null;} associated annotations to add
+     * @param dexFile {@code non-null;} dex output
      */
     public void addMethodAnnotations(CstMethodRef method,
-            Annotations annotations) {
-        annotationsDirectory.addMethodAnnotations(method, annotations);
+            Annotations annotations, DexFile dexFile) {
+        annotationsDirectory.addMethodAnnotations(method, annotations, dexFile);
     }
 
     /**
@@ -354,10 +357,11 @@ public final class ClassDefItem extends IndexedItem {
      *
      * @param method {@code non-null;} method in question
      * @param list {@code non-null;} associated list of annotation sets to add
+     * @param dexFile {@code non-null;} dex output
      */
     public void addParameterAnnotations(CstMethodRef method,
-            AnnotationsList list) {
-        annotationsDirectory.addParameterAnnotations(method, list);
+            AnnotationsList list, DexFile dexFile) {
+        annotationsDirectory.addParameterAnnotations(method, list, dexFile);
     }
 
     /**

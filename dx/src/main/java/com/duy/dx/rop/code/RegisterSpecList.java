@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.code;
+package com.duy.dx .rop.code;
 
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.rop.type.TypeList;
-import com.duy.dx.util.FixedSizeList;
-
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .rop.type.TypeList;
+import com.duy.dx .util.FixedSizeList;
 import java.util.BitSet;
 
 /**
@@ -361,13 +360,13 @@ public final class RegisterSpecList
      * Returns an instance that is identical to this one, except that
      * all incompatible register numbers are renumbered sequentially from
      * the given base, with the first number duplicated if indicated. If
-     * a null BitSet is given, it indicates all registers are compatible.
+     * a null BitSet is given, it indicates all registers are incompatible.
      *
      * @param base the base register number
      * @param duplicateFirst whether to duplicate the first number
      * @param compatRegs {@code null-ok;} either a {@code non-null} set of
      * compatible registers, or {@code null} to indicate all registers are
-     * compatible
+     * incompatible
      * @return {@code non-null;} an appropriately-constructed instance
      */
     public RegisterSpecList withExpandedRegisters(int base,
@@ -380,30 +379,58 @@ public final class RegisterSpecList
             return this;
         }
 
-        RegisterSpecList result = new RegisterSpecList(sz);
+        Expander expander = new Expander(this, compatRegs, base, duplicateFirst);
 
-        for (int i = 0; i < sz; i++) {
-            RegisterSpec one = (RegisterSpec) get0(i);
-            boolean replace = (compatRegs == null) ? true : !compatRegs.get(i);
-
-            if (replace) {
-                result.set0(i, one.withReg(base));
-                if (!duplicateFirst) {
-                    base += one.getCategory();
-                }
-            } else {
-                result.set0(i, one);
-            }
-
-            if (duplicateFirst) {
-                duplicateFirst = false;
-            }
+        for (int regIdx = 0; regIdx < sz; regIdx++) {
+          expander.expandRegister(regIdx);
         }
 
-        if (isImmutable()) {
-            result.setImmutable();
+        return expander.getResult();
+    }
+
+    private static class Expander {
+      private BitSet compatRegs;
+      private RegisterSpecList regSpecList;
+      private int base;
+      private RegisterSpecList result;
+      private boolean duplicateFirst;
+
+      private Expander(RegisterSpecList regSpecList, BitSet compatRegs, int base,
+          boolean duplicateFirst) {
+        this.regSpecList = regSpecList;
+        this.compatRegs = compatRegs;
+        this.base = base;
+        this.result = new RegisterSpecList(regSpecList.size());
+        this.duplicateFirst = duplicateFirst;
+      }
+
+      private void expandRegister(int regIdx) {
+        expandRegister(regIdx, (RegisterSpec) regSpecList.get0(regIdx));
+      }
+
+      private void expandRegister(int regIdx, RegisterSpec registerToExpand) {
+        boolean replace = (compatRegs == null) ? true : !compatRegs.get(regIdx);
+        RegisterSpec expandedReg;
+
+        if (replace) {
+          expandedReg = registerToExpand.withReg(base);
+          if (!duplicateFirst) {
+            base += expandedReg.getCategory();
+          }
+          duplicateFirst = false;
+        } else {
+          expandedReg = registerToExpand;
+        }
+
+        result.set0(regIdx, expandedReg);
+      }
+
+      private RegisterSpecList getResult() {
+        if (regSpecList.isImmutable()) {
+          result.setImmutable();
         }
 
         return result;
+      }
     }
 }

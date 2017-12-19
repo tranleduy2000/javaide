@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.rop.code.AccessFlags;
-import com.duy.dx.rop.cst.CstFieldRef;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.Leb128Utils;
-
+import com.duy.dex.Leb128;
+import com.duy.dx .rop.code.AccessFlags;
+import com.duy.dx .rop.cst.CstFieldRef;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
 import java.io.PrintWriter;
 
 /**
@@ -139,9 +138,9 @@ public final class EncodedField extends EncodedMember
         if (out.annotates()) {
             out.annotate(0, String.format("  [%x] %s", dumpSeq,
                             field.toHuman()));
-            out.annotate(Leb128Utils.unsignedLeb128Size(diff),
+            out.annotate(Leb128.unsignedLeb128Size(diff),
                     "    field_idx:    " + Hex.u4(fieldIdx));
-            out.annotate(Leb128Utils.unsignedLeb128Size(accessFlags),
+            out.annotate(Leb128.unsignedLeb128Size(accessFlags),
                     "    access_flags: " +
                     AccessFlags.fieldString(accessFlags));
         }

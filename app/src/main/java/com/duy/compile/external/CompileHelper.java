@@ -4,15 +4,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.android.dex.Dex;
-import com.android.dx.merge.CollisionPolicy;
-import com.android.dx.merge.DexMerger;
 import com.duy.compile.external.android.AndroidBuilder;
 import com.duy.compile.external.android.util.Util;
 import com.duy.compile.external.dex.DexTool;
 import com.duy.compile.external.java.Jar;
 import com.duy.compile.external.java.Java;
 import com.duy.compile.external.java.Javac;
+import com.duy.dex.Dex;
+import com.duy.dx.merge.CollisionPolicy;
+import com.duy.dx.merge.DexMerger;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.java.JavaProjectFolder;
@@ -121,8 +121,9 @@ public class CompileHelper {
             if (files != null && files.length > 0) {
                 for (File dexedLib : files) {
                     DexMerger dexMerger = new DexMerger(
-                            new Dex(projectFile.getDexedClassesFile()),
-                            new Dex(dexedLib),
+                            new Dex[]{
+                                    new Dex(projectFile.getDexedClassesFile()),
+                                    new Dex(dexedLib)},
                             CollisionPolicy.FAIL);
                     Dex merged = dexMerger.merge();
                     merged.writeTo(projectFile.getDexedClassesFile());

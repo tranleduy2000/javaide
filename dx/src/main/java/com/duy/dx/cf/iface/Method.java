@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.iface;
+package com.duy.dx .cf.iface;
 
-import com.duy.dx.rop.type.Prototype;
+import com.duy.dx .rop.type.Prototype;
 
 /**
  * Interface representing methods of class files.

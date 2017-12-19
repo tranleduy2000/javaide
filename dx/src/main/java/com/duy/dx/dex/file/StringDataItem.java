@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.ByteArray;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.Leb128Utils;
+import com.duy.dex.Leb128;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.ByteArray;
+import com.duy.dx .util.Hex;
 
 /**
  * Representation of string data for a particular string, in a Dalvik file.
@@ -50,7 +50,7 @@ public final class StringDataItem extends OffsettedItem {
         int utf16Size = value.getUtf16Size();
 
         // The +1 is for the '\0' termination byte.
-        return Leb128Utils.unsignedLeb128Size(utf16Size)
+        return Leb128.unsignedLeb128Size(utf16Size)
             + value.getUtf8Size() + 1;
     }
 
@@ -73,7 +73,7 @@ public final class StringDataItem extends OffsettedItem {
         int utf16Size = value.getUtf16Size();
 
         if (out.annotates()) {
-            out.annotate(Leb128Utils.unsignedLeb128Size(utf16Size),
+            out.annotate(Leb128.unsignedLeb128Size(utf16Size),
                     "utf16_size: " + Hex.u4(utf16Size));
             out.annotate(bytes.size() + 1, value.toQuoted());
         }

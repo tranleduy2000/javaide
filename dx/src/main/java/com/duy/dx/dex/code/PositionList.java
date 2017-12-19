@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.rop.code.SourcePosition;
-import com.duy.dx.util.FixedSizeList;
+import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx .util.FixedSizeList;
 
 /**
  * List of source position entries. This class includes a utility
@@ -73,7 +73,7 @@ public final class PositionList extends FixedSizeList {
         SourcePosition noInfo = SourcePosition.NO_INFO;
         SourcePosition cur = noInfo;
         int sz = insns.size();
-        Entry[] arr = new Entry[sz];
+        PositionList.Entry[] arr = new PositionList.Entry[sz];
         boolean lastWasTarget = false;
         int at = 0;
 
@@ -96,7 +96,7 @@ public final class PositionList extends FixedSizeList {
             }
 
             cur = pos;
-            arr[at] = new Entry(insn.getAddress(), pos);
+            arr[at] = new PositionList.Entry(insn.getAddress(), pos);
             at++;
 
             lastWasTarget = false;

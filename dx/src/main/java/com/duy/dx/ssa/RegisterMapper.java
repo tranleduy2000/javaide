@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx.ssa;
+package com.duy.dx .ssa;
 
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.RegisterSpecSet;
 
 /**
  * Represents a mapping between two register numbering schemes.
@@ -50,6 +51,28 @@ public abstract class RegisterMapper {
 
         for (int i = 0; i < sz; i++) {
             newSources.set(i, map(sources.get(i)));
+        }
+
+        newSources.setImmutable();
+
+        // Return the old sources if nothing has changed.
+        return newSources.equals(sources) ? sources : newSources;
+    }
+
+    /**
+     *
+     * @param sources old register set
+     * @return new mapped register set, or old if nothing has changed.
+     */
+    public final RegisterSpecSet map(RegisterSpecSet sources) {
+        int sz = sources.getMaxSize();
+        RegisterSpecSet newSources = new RegisterSpecSet(getNewRegisterCount());
+
+        for (int i = 0; i < sz; i++) {
+            RegisterSpec registerSpec = sources.get(i);
+            if (registerSpec != null) {
+                newSources.put(map(registerSpec));
+            }
         }
 
         newSources.setImmutable();

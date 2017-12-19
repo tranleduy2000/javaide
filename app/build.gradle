@@ -46,7 +46,7 @@ android {
         enabled = true
     }
 
-    lintOptions{
+    lintOptions {
         disable 'MissingTranslation'
     }
 
@@ -75,6 +75,7 @@ dependencies {
     compile project(':treeview')
     compile project(':fileexplorer')
     compile project(':javacompiler')
+    compile project(':dx')
     compile project(':javacodeformatter')
     compile project(':androidlogcat')
 

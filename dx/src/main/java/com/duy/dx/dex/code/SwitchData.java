@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.io.Opcodes;
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.code.SourcePosition;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.IntList;
+import com.duy.dx .io.Opcodes;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
+import com.duy.dx .util.IntList;
 
 /**
  * Pseudo-instruction which holds switch data. The switch data is

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.io.instructions;
+package com.duy.dx .io.instructions;
 
 /**
  * A decoded Dalvik instruction which contains the payload for

@@ -14,22 +14,34 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.dex.code.DalvCode;
-import com.duy.dx.dex.code.DalvInsnList;
-import com.duy.dx.dex.code.LocalList;
-import com.duy.dx.dex.code.PositionList;
-import com.duy.dx.rop.cst.CstMethodRef;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.type.Prototype;
-import com.duy.dx.rop.type.StdTypeList;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.util.ByteArrayByteInput;
-import com.duy.dx.util.ByteInput;
-import com.duy.dx.util.ExceptionWithContext;
-
-import com.duy.dx.util.Leb128Utils;
+import com.duy.dex.util.ByteArrayByteInput;
+import com.duy.dex.util.ByteInput;
+import com.duy.dex.util.ExceptionWithContext;
+import com.duy.dex.Leb128;
+import com.duy.dx .dex.code.DalvCode;
+import com.duy.dx .dex.code.DalvInsnList;
+import com.duy.dx .dex.code.LocalList;
+import com.duy.dx .dex.code.PositionList;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_ADVANCE_LINE;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_ADVANCE_PC;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_END_LOCAL;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_END_SEQUENCE;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_FIRST_SPECIAL;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_LINE_BASE;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_LINE_RANGE;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_RESTART_LOCAL;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_SET_EPILOGUE_BEGIN;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_SET_FILE;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_SET_PROLOGUE_END;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_START_LOCAL;
+import static com.duy.dx .dex.file.DebugInfoConstants.DBG_START_LOCAL_EXTENDED;
+import com.duy.dx .rop.cst.CstMethodRef;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.type.Prototype;
+import com.duy.dx .rop.type.StdTypeList;
+import com.duy.dx .rop.type.Type;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -217,7 +229,7 @@ public class DebugInfoDecoder {
      * @throws IOException
      */
     private int readStringIndex(ByteInput bs) throws IOException {
-        int offsetIndex = Leb128Utils.readUnsignedLeb128(bs);
+        int offsetIndex = Leb128.readUnsignedLeb128(bs);
 
         return offsetIndex - 1;
     }
@@ -237,8 +249,8 @@ public class DebugInfoDecoder {
     private void decode0() throws IOException {
         ByteInput bs = new ByteArrayByteInput(encoded);
 
-        line = Leb128Utils.readUnsignedLeb128(bs);
-        int szParams = Leb128Utils.readUnsignedLeb128(bs);
+        line = Leb128.readUnsignedLeb128(bs);
+        int szParams = Leb128.readUnsignedLeb128(bs);
         StdTypeList params = desc.getParameterTypes();
         int curReg = getParamBase();
 
@@ -282,8 +294,8 @@ public class DebugInfoDecoder {
             int opcode = bs.readByte() & 0xff;
 
             switch (opcode) {
-                case DebugInfoConstants.DBG_START_LOCAL: {
-                    int reg = Leb128Utils.readUnsignedLeb128(bs);
+                case DBG_START_LOCAL: {
+                    int reg = Leb128.readUnsignedLeb128(bs);
                     int nameIdx = readStringIndex(bs);
                     int typeIdx = readStringIndex(bs);
                     LocalEntry le = new LocalEntry(
@@ -294,8 +306,8 @@ public class DebugInfoDecoder {
                 }
                 break;
 
-                case DebugInfoConstants.DBG_START_LOCAL_EXTENDED: {
-                    int reg = Leb128Utils.readUnsignedLeb128(bs);
+                case DBG_START_LOCAL_EXTENDED: {
+                    int reg = Leb128.readUnsignedLeb128(bs);
                     int nameIdx = readStringIndex(bs);
                     int typeIdx = readStringIndex(bs);
                     int sigIdx = readStringIndex(bs);
@@ -307,8 +319,8 @@ public class DebugInfoDecoder {
                 }
                 break;
 
-                case DebugInfoConstants.DBG_RESTART_LOCAL: {
-                    int reg = Leb128Utils.readUnsignedLeb128(bs);
+                case DBG_RESTART_LOCAL: {
+                    int reg = Leb128.readUnsignedLeb128(bs);
                     LocalEntry prevle;
                     LocalEntry le;
 
@@ -333,8 +345,8 @@ public class DebugInfoDecoder {
                 }
                 break;
 
-                case DebugInfoConstants.DBG_END_LOCAL: {
-                    int reg = Leb128Utils.readUnsignedLeb128(bs);
+                case DBG_END_LOCAL: {
+                    int reg = Leb128.readUnsignedLeb128(bs);
                     LocalEntry prevle;
                     LocalEntry le;
 
@@ -359,41 +371,41 @@ public class DebugInfoDecoder {
                 }
                 break;
 
-                case DebugInfoConstants.DBG_END_SEQUENCE:
+                case DBG_END_SEQUENCE:
                     // all done
                 return;
 
-                case DebugInfoConstants.DBG_ADVANCE_PC:
-                    address += Leb128Utils.readUnsignedLeb128(bs);
+                case DBG_ADVANCE_PC:
+                    address += Leb128.readUnsignedLeb128(bs);
                 break;
 
-                case DebugInfoConstants.DBG_ADVANCE_LINE:
-                    line += Leb128Utils.readSignedLeb128(bs);
+                case DBG_ADVANCE_LINE:
+                    line += Leb128.readSignedLeb128(bs);
                 break;
 
-                case DebugInfoConstants.DBG_SET_PROLOGUE_END:
+                case DBG_SET_PROLOGUE_END:
                     //TODO do something with this.
                 break;
 
-                case DebugInfoConstants.DBG_SET_EPILOGUE_BEGIN:
+                case DBG_SET_EPILOGUE_BEGIN:
                     //TODO do something with this.
                 break;
 
-                case DebugInfoConstants.DBG_SET_FILE:
+                case DBG_SET_FILE:
                     //TODO do something with this.
                 break;
 
                 default:
-                    if (opcode < DebugInfoConstants.DBG_FIRST_SPECIAL) {
+                    if (opcode < DBG_FIRST_SPECIAL) {
                         throw new RuntimeException(
                                 "Invalid extended opcode encountered "
                                         + opcode);
                     }
 
-                    int adjopcode = opcode - DebugInfoConstants.DBG_FIRST_SPECIAL;
+                    int adjopcode = opcode - DBG_FIRST_SPECIAL;
 
-                    address += adjopcode / DebugInfoConstants.DBG_LINE_RANGE;
-                    line += DebugInfoConstants.DBG_LINE_BASE + (adjopcode % DebugInfoConstants.DBG_LINE_RANGE);
+                    address += adjopcode / DBG_LINE_RANGE;
+                    line += DBG_LINE_BASE + (adjopcode % DBG_LINE_RANGE);
 
                     positions.add(new PositionEntry(address, line));
                 break;

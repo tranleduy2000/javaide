@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.util.FixedSizeList;
+import com.duy.dx .util.FixedSizeList;
 
 /**
  * Table of catch entries. Each entry includes a range of code

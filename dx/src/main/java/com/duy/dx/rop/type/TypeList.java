@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.type;
+package com.duy.dx .rop.type;
 
 /**
  * List of {@link Type} instances (or of things that contain types).

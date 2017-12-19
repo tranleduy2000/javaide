@@ -5,7 +5,8 @@
 
 package com.spartacusrex.spartacuside.external;
 
-import com.android.dx.command.Main;
+import com.duy.dx.command.Main;
+
 
 /**
  * @author Spartacus Rex

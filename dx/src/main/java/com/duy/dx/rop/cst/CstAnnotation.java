@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.cst;
+package com.duy.dx .rop.cst;
 
-import com.duy.dx.rop.annotation.Annotation;
+import com.duy.dx .rop.annotation.Annotation;
 
 /**
  * Constant type that represents an annotation.

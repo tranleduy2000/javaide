@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.io;
+package com.duy.dx .io;
 
-import com.duy.dx.io.instructions.DecodedInstruction;
-import com.duy.dx.util.DexException;
+import com.duy.dex.DexException;
+import com.duy.dx .io.instructions.DecodedInstruction;
 
 /**
  * Walks through a block of code and calls visitor call backs.

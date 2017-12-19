@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.code;
+package com.duy.dx .cf.code;
 
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.LabeledList;
+import com.duy.dx .util.Hex;
+import com.duy.dx .util.LabeledList;
 
 /**
  * List of {@link ByteBlock} instances.

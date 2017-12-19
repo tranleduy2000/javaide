@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package com.duy.dx.command.findusages;
+package com.duy.dx .command.findusages;
 
-import com.duy.dx.io.ClassData;
-import com.duy.dx.io.ClassDef;
-import com.duy.dx.io.CodeReader;
-import com.duy.dx.io.DexBuffer;
-import com.duy.dx.io.FieldId;
-import com.duy.dx.io.MethodId;
-import com.duy.dx.io.OpcodeInfo;
-import com.duy.dx.io.instructions.DecodedInstruction;
-
+import com.duy.dex.ClassData;
+import com.duy.dex.ClassDef;
+import com.duy.dex.Dex;
+import com.duy.dex.FieldId;
+import com.duy.dex.MethodId;
+import com.duy.dx .io.CodeReader;
+import com.duy.dx .io.OpcodeInfo;
+import com.duy.dx .io.instructions.DecodedInstruction;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,7 +32,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public final class FindUsages {
-    private final DexBuffer dex;
+    private final Dex dex;
     private final Set<Integer> methodIds;
     private final Set<Integer> fieldIds;
     private final CodeReader codeReader = new CodeReader();
@@ -42,7 +41,7 @@ public final class FindUsages {
     private ClassDef currentClass;
     private ClassData.Method currentMethod;
 
-    public FindUsages(final DexBuffer dex, String declaredBy, String memberName, final PrintWriter out) {
+    public FindUsages(final Dex dex, String declaredBy, String memberName, final PrintWriter out) {
         this.dex = dex;
         this.out = out;
 
@@ -152,7 +151,7 @@ public final class FindUsages {
      * Returns the fields with {@code memberNameIndex} declared by {@code
      * declaringType}.
      */
-    private Set<Integer> getFieldIds(DexBuffer dex, Set<Integer> memberNameIndexes, int declaringType) {
+    private Set<Integer> getFieldIds(Dex dex, Set<Integer> memberNameIndexes, int declaringType) {
         Set<Integer> fields = new HashSet<Integer>();
         int fieldIndex = 0;
         for (FieldId fieldId : dex.fieldIds()) {
@@ -169,7 +168,7 @@ public final class FindUsages {
      * Returns the methods with {@code memberNameIndex} declared by {@code
      * declaringType} and its subtypes.
      */
-    private Set<Integer> getMethodIds(DexBuffer dex, Set<Integer> memberNameIndexes, int declaringType) {
+    private Set<Integer> getMethodIds(Dex dex, Set<Integer> memberNameIndexes, int declaringType) {
         Set<Integer> subtypes = findAssignableTypes(dex, declaringType);
 
         Set<Integer> methods = new HashSet<Integer>();
@@ -187,7 +186,7 @@ public final class FindUsages {
     /**
      * Returns the set of types that can be assigned to {@code typeIndex}.
      */
-    private Set<Integer> findAssignableTypes(DexBuffer dex, int typeIndex) {
+    private Set<Integer> findAssignableTypes(Dex dex, int typeIndex) {
         Set<Integer> assignableTypes = new HashSet<Integer>();
         assignableTypes.add(typeIndex);
 

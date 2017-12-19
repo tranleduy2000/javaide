@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code.form;
+package com.duy.dx .dex.code.form;
 
-import com.duy.dx.dex.code.CstInsn;
-import com.duy.dx.dex.code.DalvInsn;
-import com.duy.dx.dex.code.InsnFormat;
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstFieldRef;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.util.AnnotatedOutput;
-
+import com.duy.dx .dex.code.CstInsn;
+import com.duy.dx .dex.code.DalvInsn;
+import com.duy.dx .dex.code.InsnFormat;
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstFieldRef;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .util.AnnotatedOutput;
 import java.util.BitSet;
 
 /**

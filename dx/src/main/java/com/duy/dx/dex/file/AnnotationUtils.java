@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.rop.annotation.Annotation;
-import com.duy.dx.rop.annotation.NameValuePair;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstAnnotation;
-import com.duy.dx.rop.cst.CstArray;
-import com.duy.dx.rop.cst.CstInteger;
-import com.duy.dx.rop.cst.CstKnownNull;
-import com.duy.dx.rop.cst.CstMethodRef;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.rop.type.TypeList;
+import static com.duy.dx .rop.annotation.AnnotationVisibility.SYSTEM;
+
+import com.duy.dx .rop.annotation.Annotation;
+import com.duy.dx .rop.annotation.NameValuePair;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstAnnotation;
+import com.duy.dx .rop.cst.CstArray;
+import com.duy.dx .rop.cst.CstInteger;
+import com.duy.dx .rop.cst.CstKnownNull;
+import com.duy.dx .rop.cst.CstMethodRef;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .rop.type.TypeList;
 
 import java.util.ArrayList;
-
-import static com.duy.dx.rop.annotation.AnnotationVisibility.*;
 
 /**
  * Utility class for dealing with annotations.
  */
 public final class AnnotationUtils {
+
     /** {@code non-null;} type for {@code AnnotationDefault} annotations */
     private static final CstType ANNOTATION_DEFAULT_TYPE =
         CstType.intern(Type.intern("Ldalvik/annotation/AnnotationDefault;"));

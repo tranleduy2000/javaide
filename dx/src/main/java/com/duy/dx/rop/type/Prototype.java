@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.type;
+package com.duy.dx .rop.type;
 
 import java.util.HashMap;
 

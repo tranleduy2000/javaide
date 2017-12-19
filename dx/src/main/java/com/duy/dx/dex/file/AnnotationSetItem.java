@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.rop.annotation.Annotations;
-import com.duy.dx.rop.annotation.Annotation;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.Hex;
+import com.duy.dx .rop.annotation.Annotation;
+import com.duy.dx .rop.annotation.Annotations;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
 
 /**
  * Set of annotations, where no annotation type appears more than once.
@@ -45,8 +45,9 @@ public final class AnnotationSetItem extends OffsettedItem {
      * Constructs an instance.
      *
      * @param annotations {@code non-null;} set of annotations
+     * @param dexFile {@code non-null;} dex output
      */
-    public AnnotationSetItem(Annotations annotations) {
+    public AnnotationSetItem(Annotations annotations, DexFile dexFile) {
         super(ALIGNMENT, writeSize(annotations));
 
         this.annotations = annotations;
@@ -54,7 +55,7 @@ public final class AnnotationSetItem extends OffsettedItem {
 
         int at = 0;
         for (Annotation a : annotations.getAnnotations()) {
-            items[at] = new AnnotationItem(a);
+            items[at] = new AnnotationItem(a, dexFile);
             at++;
         }
     }

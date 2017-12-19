@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.util.AnnotatedOutput;
-
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .util.AnnotatedOutput;
 import java.util.Collection;
 
 /**

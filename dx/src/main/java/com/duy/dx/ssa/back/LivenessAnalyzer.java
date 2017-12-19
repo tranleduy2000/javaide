@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package com.duy.dx.ssa.back;
+package com.duy.dx .ssa.back;
 
-import com.duy.dx.ssa.SsaMethod;
-import com.duy.dx.ssa.SsaBasicBlock;
-import com.duy.dx.ssa.SsaInsn;
-import com.duy.dx.ssa.PhiInsn;
-import com.duy.dx.rop.code.RegisterSpec;
-
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .ssa.PhiInsn;
+import com.duy.dx .ssa.SsaBasicBlock;
+import com.duy.dx .ssa.SsaInsn;
+import com.duy.dx .ssa.SsaMethod;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * From Appel "Modern Compiler Implementation in Java" algorithm 19.17

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.cst;
+package com.duy.dx .rop.cst;
 
-import com.duy.dx.util.ToHuman;
+import com.duy.dx .util.ToHuman;
 
 /**
  * Base class for constants of all sorts.

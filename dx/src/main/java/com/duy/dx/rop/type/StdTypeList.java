@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.type;
+package com.duy.dx .rop.type;
 
-import com.duy.dx.util.FixedSizeList;
+import com.duy.dx .util.FixedSizeList;
 
 /**
  * Standard implementation of {@link TypeList}.

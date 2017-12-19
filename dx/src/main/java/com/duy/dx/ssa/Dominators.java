@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.ssa;
+package com.duy.dx .ssa;
 
 import java.util.ArrayList;
 import java.util.BitSet;

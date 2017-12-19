@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.rop.annotation.Annotations;
-import com.duy.dx.rop.cst.CstFieldRef;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.ToHuman;
+import com.duy.dx .rop.annotation.Annotations;
+import com.duy.dx .rop.cst.CstFieldRef;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
+import com.duy.dx .util.ToHuman;
 
 /**
  * Association of a field and its annotations.

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.io;
+package com.duy.dx .io;
 
-import com.duy.dx.io.instructions.InstructionCodec;
-import com.duy.dx.util.Hex;
+import com.duy.dx .io.instructions.InstructionCodec;
+import com.duy.dx .util.Hex;
 
 /**
  * Information about each Dalvik opcode.
@@ -931,162 +931,6 @@ public final class OpcodeInfo {
         new Info(Opcodes.USHR_INT_LIT8, "ushr-int/lit8",
             InstructionCodec.FORMAT_22B, IndexType.NONE);
 
-    public static final Info CONST_CLASS_JUMBO =
-        new Info(Opcodes.CONST_CLASS_JUMBO, "const-class/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.TYPE_REF);
-
-    public static final Info CHECK_CAST_JUMBO =
-        new Info(Opcodes.CHECK_CAST_JUMBO, "check-cast/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.TYPE_REF);
-
-    public static final Info INSTANCE_OF_JUMBO =
-        new Info(Opcodes.INSTANCE_OF_JUMBO, "instance-of/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.TYPE_REF);
-
-    public static final Info NEW_INSTANCE_JUMBO =
-        new Info(Opcodes.NEW_INSTANCE_JUMBO, "new-instance/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.TYPE_REF);
-
-    public static final Info NEW_ARRAY_JUMBO =
-        new Info(Opcodes.NEW_ARRAY_JUMBO, "new-array/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.TYPE_REF);
-
-    public static final Info FILLED_NEW_ARRAY_JUMBO =
-        new Info(Opcodes.FILLED_NEW_ARRAY_JUMBO, "filled-new-array/jumbo",
-            InstructionCodec.FORMAT_5RC, IndexType.TYPE_REF);
-
-    public static final Info IGET_JUMBO =
-        new Info(Opcodes.IGET_JUMBO, "iget/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IGET_WIDE_JUMBO =
-        new Info(Opcodes.IGET_WIDE_JUMBO, "iget-wide/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IGET_OBJECT_JUMBO =
-        new Info(Opcodes.IGET_OBJECT_JUMBO, "iget-object/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IGET_BOOLEAN_JUMBO =
-        new Info(Opcodes.IGET_BOOLEAN_JUMBO, "iget-boolean/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IGET_BYTE_JUMBO =
-        new Info(Opcodes.IGET_BYTE_JUMBO, "iget-byte/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IGET_CHAR_JUMBO =
-        new Info(Opcodes.IGET_CHAR_JUMBO, "iget-char/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IGET_SHORT_JUMBO =
-        new Info(Opcodes.IGET_SHORT_JUMBO, "iget-short/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IPUT_JUMBO =
-        new Info(Opcodes.IPUT_JUMBO, "iput/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IPUT_WIDE_JUMBO =
-        new Info(Opcodes.IPUT_WIDE_JUMBO, "iput-wide/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IPUT_OBJECT_JUMBO =
-        new Info(Opcodes.IPUT_OBJECT_JUMBO, "iput-object/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IPUT_BOOLEAN_JUMBO =
-        new Info(Opcodes.IPUT_BOOLEAN_JUMBO, "iput-boolean/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IPUT_BYTE_JUMBO =
-        new Info(Opcodes.IPUT_BYTE_JUMBO, "iput-byte/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IPUT_CHAR_JUMBO =
-        new Info(Opcodes.IPUT_CHAR_JUMBO, "iput-char/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info IPUT_SHORT_JUMBO =
-        new Info(Opcodes.IPUT_SHORT_JUMBO, "iput-short/jumbo",
-            InstructionCodec.FORMAT_52C, IndexType.FIELD_REF);
-
-    public static final Info SGET_JUMBO =
-        new Info(Opcodes.SGET_JUMBO, "sget/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SGET_WIDE_JUMBO =
-        new Info(Opcodes.SGET_WIDE_JUMBO, "sget-wide/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SGET_OBJECT_JUMBO =
-        new Info(Opcodes.SGET_OBJECT_JUMBO, "sget-object/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SGET_BOOLEAN_JUMBO =
-        new Info(Opcodes.SGET_BOOLEAN_JUMBO, "sget-boolean/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SGET_BYTE_JUMBO =
-        new Info(Opcodes.SGET_BYTE_JUMBO, "sget-byte/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SGET_CHAR_JUMBO =
-        new Info(Opcodes.SGET_CHAR_JUMBO, "sget-char/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SGET_SHORT_JUMBO =
-        new Info(Opcodes.SGET_SHORT_JUMBO, "sget-short/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SPUT_JUMBO =
-        new Info(Opcodes.SPUT_JUMBO, "sput/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SPUT_WIDE_JUMBO =
-        new Info(Opcodes.SPUT_WIDE_JUMBO, "sput-wide/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SPUT_OBJECT_JUMBO =
-        new Info(Opcodes.SPUT_OBJECT_JUMBO, "sput-object/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SPUT_BOOLEAN_JUMBO =
-        new Info(Opcodes.SPUT_BOOLEAN_JUMBO, "sput-boolean/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SPUT_BYTE_JUMBO =
-        new Info(Opcodes.SPUT_BYTE_JUMBO, "sput-byte/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SPUT_CHAR_JUMBO =
-        new Info(Opcodes.SPUT_CHAR_JUMBO, "sput-char/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info SPUT_SHORT_JUMBO =
-        new Info(Opcodes.SPUT_SHORT_JUMBO, "sput-short/jumbo",
-            InstructionCodec.FORMAT_41C, IndexType.FIELD_REF);
-
-    public static final Info INVOKE_VIRTUAL_JUMBO =
-        new Info(Opcodes.INVOKE_VIRTUAL_JUMBO, "invoke-virtual/jumbo",
-            InstructionCodec.FORMAT_5RC, IndexType.METHOD_REF);
-
-    public static final Info INVOKE_SUPER_JUMBO =
-        new Info(Opcodes.INVOKE_SUPER_JUMBO, "invoke-super/jumbo",
-            InstructionCodec.FORMAT_5RC, IndexType.METHOD_REF);
-
-    public static final Info INVOKE_DIRECT_JUMBO =
-        new Info(Opcodes.INVOKE_DIRECT_JUMBO, "invoke-direct/jumbo",
-            InstructionCodec.FORMAT_5RC, IndexType.METHOD_REF);
-
-    public static final Info INVOKE_STATIC_JUMBO =
-        new Info(Opcodes.INVOKE_STATIC_JUMBO, "invoke-static/jumbo",
-            InstructionCodec.FORMAT_5RC, IndexType.METHOD_REF);
-
-    public static final Info INVOKE_INTERFACE_JUMBO =
-        new Info(Opcodes.INVOKE_INTERFACE_JUMBO, "invoke-interface/jumbo",
-            InstructionCodec.FORMAT_5RC, IndexType.METHOD_REF);
-
     // END(opcode-info-defs)
 
     // Static initialization.
@@ -1320,45 +1164,6 @@ public final class OpcodeInfo {
         set(SHL_INT_LIT8);
         set(SHR_INT_LIT8);
         set(USHR_INT_LIT8);
-        set(CONST_CLASS_JUMBO);
-        set(CHECK_CAST_JUMBO);
-        set(INSTANCE_OF_JUMBO);
-        set(NEW_INSTANCE_JUMBO);
-        set(NEW_ARRAY_JUMBO);
-        set(FILLED_NEW_ARRAY_JUMBO);
-        set(IGET_JUMBO);
-        set(IGET_WIDE_JUMBO);
-        set(IGET_OBJECT_JUMBO);
-        set(IGET_BOOLEAN_JUMBO);
-        set(IGET_BYTE_JUMBO);
-        set(IGET_CHAR_JUMBO);
-        set(IGET_SHORT_JUMBO);
-        set(IPUT_JUMBO);
-        set(IPUT_WIDE_JUMBO);
-        set(IPUT_OBJECT_JUMBO);
-        set(IPUT_BOOLEAN_JUMBO);
-        set(IPUT_BYTE_JUMBO);
-        set(IPUT_CHAR_JUMBO);
-        set(IPUT_SHORT_JUMBO);
-        set(SGET_JUMBO);
-        set(SGET_WIDE_JUMBO);
-        set(SGET_OBJECT_JUMBO);
-        set(SGET_BOOLEAN_JUMBO);
-        set(SGET_BYTE_JUMBO);
-        set(SGET_CHAR_JUMBO);
-        set(SGET_SHORT_JUMBO);
-        set(SPUT_JUMBO);
-        set(SPUT_WIDE_JUMBO);
-        set(SPUT_OBJECT_JUMBO);
-        set(SPUT_BOOLEAN_JUMBO);
-        set(SPUT_BYTE_JUMBO);
-        set(SPUT_CHAR_JUMBO);
-        set(SPUT_SHORT_JUMBO);
-        set(INVOKE_VIRTUAL_JUMBO);
-        set(INVOKE_SUPER_JUMBO);
-        set(INVOKE_DIRECT_JUMBO);
-        set(INVOKE_STATIC_JUMBO);
-        set(INVOKE_INTERFACE_JUMBO);
         // END(opcode-info-init)
     }
 

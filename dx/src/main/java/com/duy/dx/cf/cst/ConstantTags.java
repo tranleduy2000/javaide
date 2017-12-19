@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.cst;
+package com.duy.dx .cf.cst;
 
 /**
  * Tags for constant pool constants.
@@ -52,4 +52,13 @@ public interface ConstantTags {
 
     /** tag for a {@code CONSTANT_NameAndType_info} */
     int CONSTANT_NameAndType = 12;
+
+    /** tag for a {@code CONSTANT_MethodHandle} */
+    int CONSTANT_MethodHandle = 15;
+
+    /** tag for a {@code CONSTANT_MethodType} */
+    int CONSTANT_MethodType = 16;
+
+    /** tag for a {@code CONSTANT_InvokeDynamic} */
+    int CONSTANT_InvokeDynamic = 18;
 }

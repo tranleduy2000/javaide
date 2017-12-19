@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.code;
+package com.duy.dx .rop.code;
 
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.rop.type.TypeBearer;
-import com.duy.dx.util.ToHuman;
-
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx .util.ToHuman;
 import java.util.HashMap;
 
 /**
@@ -559,6 +558,12 @@ public final class RegisterSpec
         return makeLocalOptional(reg, type, local);
     }
 
+    /**
+     * @return boolean specifying if this instance is an even register or not.
+     */
+    public boolean isEvenRegister() {
+      return ((getReg() & 1) == 0);
+    }
 
     /**
      * Helper for {@link #toString} and {@link #toHuman}.

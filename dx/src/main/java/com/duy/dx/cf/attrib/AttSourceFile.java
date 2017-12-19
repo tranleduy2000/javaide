@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.attrib;
+package com.duy.dx .cf.attrib;
 
-import com.duy.dx.rop.cst.CstString;
+import com.duy.dx .rop.cst.CstString;
 
 /**
  * Attribute class for standard {@code SourceFile} attributes.

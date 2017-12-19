@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.code;
+package com.duy.dx .rop.code;
 
-import com.duy.dx.rop.type.StdTypeList;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.rop.type.TypeList;
-import com.duy.dx.rop.type.TypeBearer;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstInteger;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstInteger;
+import com.duy.dx .rop.type.StdTypeList;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx .rop.type.TypeList;
 
 /**
  * Plain instruction, which has no embedded data and which cannot possibly

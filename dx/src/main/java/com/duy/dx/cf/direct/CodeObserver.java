@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.direct;
+package com.duy.dx .cf.direct;
 
-import com.duy.dx.cf.code.ByteOps;
-import com.duy.dx.cf.code.BytecodeArray;
-import com.duy.dx.cf.code.SwitchList;
-import com.duy.dx.cf.iface.ParseObserver;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstDouble;
-import com.duy.dx.rop.cst.CstFloat;
-import com.duy.dx.rop.cst.CstInteger;
-import com.duy.dx.rop.cst.CstKnownNull;
-import com.duy.dx.rop.cst.CstLong;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.util.ByteArray;
-import com.duy.dx.util.Hex;
-
+import com.duy.dx .cf.code.ByteOps;
+import com.duy.dx .cf.code.BytecodeArray;
+import com.duy.dx .cf.code.SwitchList;
+import com.duy.dx .cf.iface.ParseObserver;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstDouble;
+import com.duy.dx .rop.cst.CstFloat;
+import com.duy.dx .rop.cst.CstInteger;
+import com.duy.dx .rop.cst.CstKnownNull;
+import com.duy.dx .rop.cst.CstLong;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .util.ByteArray;
+import com.duy.dx .util.Hex;
 import java.util.ArrayList;
 
 /**

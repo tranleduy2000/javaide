@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.code;
+package com.duy.dx .rop.code;
 
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstBaseMethodRef;
-import com.duy.dx.rop.cst.CstMethodRef;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.rop.type.Prototype;
-import com.duy.dx.rop.type.StdTypeList;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.rop.type.TypeBearer;
-import com.duy.dx.rop.type.TypeList;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstBaseMethodRef;
+import com.duy.dx .rop.cst.CstMethodRef;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .rop.type.Prototype;
+import com.duy.dx .rop.type.StdTypeList;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx .rop.type.TypeList;
 
 /**
  * Standard instances of {@link Rop}.
@@ -1120,7 +1120,7 @@ public final class Rops {
      * @return {@code non-null;} an appropriate instance
      */
     public static Rop ropFor(int opcode, TypeBearer dest, TypeList sources,
-                             Constant cst) {
+            Constant cst) {
         switch (opcode) {
             case RegOps.NOP: return NOP;
             case RegOps.MOVE: return opMove(dest);

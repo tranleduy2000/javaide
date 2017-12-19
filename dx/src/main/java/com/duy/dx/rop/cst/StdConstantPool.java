@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.cst;
+package com.duy.dx .rop.cst;
 
-import com.duy.dx.util.ExceptionWithContext;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.MutabilityControl;
+import com.duy.dex.util.ExceptionWithContext;
+import com.duy.dx .util.Hex;
+import com.duy.dx .util.MutabilityControl;
 
 /**
  * Standard implementation of {@link ConstantPool}, which directly stores
@@ -85,6 +85,15 @@ public final class StdConstantPool
             // Translate the exception.
             return throwInvalid(n);
         }
+    }
+
+    /**
+     * Get all entries in this constant pool.
+     *
+     * @return the returned array may contain null entries.
+     */
+    public Constant[] getEntries() {
+        return entries;
     }
 
     /**

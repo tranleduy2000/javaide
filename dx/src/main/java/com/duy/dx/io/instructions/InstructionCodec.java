@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx.io.instructions;
+package com.duy.dx .io.instructions;
 
-import com.duy.dx.io.IndexType;
-import com.duy.dx.io.OpcodeInfo;
-import com.duy.dx.io.Opcodes;
-import com.duy.dx.util.DexException;
-import com.duy.dx.util.Hex;
-
+import com.duy.dex.DexException;
+import com.duy.dx .io.IndexType;
+import com.duy.dx .io.OpcodeInfo;
+import com.duy.dx .io.Opcodes;
+import com.duy.dx .util.Hex;
 import java.io.EOFException;
 
 /**
@@ -602,139 +601,6 @@ public enum InstructionCodec {
                     unit1(literal),
                     unit2(literal),
                     unit3(literal));
-        }
-    },
-
-    FORMAT_33X() {
-        @Override public DecodedInstruction decode(int opcodeUnit,
-                CodeInput in) throws EOFException {
-            int ab = in.read();
-            int a = byte0(ab);
-            int b = byte1(ab);
-            int c = in.read();
-            return new ThreeRegisterDecodedInstruction(
-                    this, opcodeUnit, 0, null,
-                    0, 0L,
-                    a, b, c);
-        }
-
-        @Override public void encode(DecodedInstruction insn, CodeOutput out) {
-            out.write(
-                    insn.getOpcodeUnit(),
-                    codeUnit(insn.getA(), insn.getB()),
-                    insn.getCUnit());
-        }
-    },
-
-    FORMAT_32S() {
-        @Override public DecodedInstruction decode(int opcodeUnit,
-                CodeInput in) throws EOFException {
-            int ab = in.read();
-            int a = byte0(ab);
-            int b = byte1(ab);
-            int literal = (short) in.read(); // sign-extend
-            return new TwoRegisterDecodedInstruction(
-                    this, opcodeUnit, 0, null,
-                    0, literal,
-                    a, b);
-        }
-
-        @Override public void encode(DecodedInstruction insn, CodeOutput out) {
-            out.write(
-                    insn.getOpcodeUnit(),
-                    codeUnit(insn.getA(), insn.getB()),
-                    insn.getLiteralUnit());
-        }
-    },
-
-    FORMAT_40SC() {
-        @Override public DecodedInstruction decode(int opcodeUnit,
-                CodeInput in) throws EOFException {
-            // Note: We use the literal field to hold the decoded AA value.
-            int index = in.readInt();
-            int literal = in.read();
-            return new ZeroRegisterDecodedInstruction(
-                    this, opcodeUnit, index, IndexType.VARIES,
-                    0, literal);
-        }
-
-        @Override public void encode(DecodedInstruction insn, CodeOutput out) {
-            int index = insn.getIndex();
-            out.write(
-                    insn.getOpcodeUnit(),
-                    unit0(index),
-                    unit1(index),
-                    insn.getLiteralUnit());
-        }
-    },
-
-    FORMAT_41C() {
-        @Override public DecodedInstruction decode(int opcodeUnit,
-                CodeInput in) throws EOFException {
-            int index = in.readInt();
-            int a = in.read();
-            IndexType indexType = OpcodeInfo.getIndexType(opcodeUnit);
-            return new OneRegisterDecodedInstruction(
-                    this, opcodeUnit, index, indexType,
-                    0, 0L,
-                    a);
-        }
-
-        @Override public void encode(DecodedInstruction insn, CodeOutput out) {
-            int index = insn.getIndex();
-            out.write(
-                    insn.getOpcodeUnit(),
-                    unit0(index),
-                    unit1(index),
-                    insn.getAUnit());
-        }
-    },
-
-    FORMAT_52C() {
-        @Override public DecodedInstruction decode(int opcodeUnit,
-                CodeInput in) throws EOFException {
-            int index = in.readInt();
-            int a = in.read();
-            int b = in.read();
-            IndexType indexType = OpcodeInfo.getIndexType(opcodeUnit);
-            return new TwoRegisterDecodedInstruction(
-                    this, opcodeUnit, index, indexType,
-                    0, 0L,
-                    a, b);
-        }
-
-        @Override public void encode(DecodedInstruction insn, CodeOutput out) {
-            int index = insn.getIndex();
-            out.write(
-                    insn.getOpcodeUnit(),
-                    unit0(index),
-                    unit1(index),
-                    insn.getAUnit(),
-                    insn.getBUnit());
-        }
-    },
-
-    FORMAT_5RC() {
-        @Override public DecodedInstruction decode(int opcodeUnit,
-                CodeInput in) throws EOFException {
-            int index = in.readInt();
-            int registerCount = in.read();
-            int a = in.read();
-            IndexType indexType = OpcodeInfo.getIndexType(opcodeUnit);
-            return new RegisterRangeDecodedInstruction(
-                    this, opcodeUnit, index, indexType,
-                    0, 0L,
-                    a, registerCount);
-        }
-
-        @Override public void encode(DecodedInstruction insn, CodeOutput out) {
-            int index = insn.getIndex();
-            out.write(
-                    insn.getOpcodeUnit(),
-                    unit0(index),
-                    unit1(index),
-                    insn.getRegisterCountUnit(),
-                    insn.getAUnit());
         }
     },
 

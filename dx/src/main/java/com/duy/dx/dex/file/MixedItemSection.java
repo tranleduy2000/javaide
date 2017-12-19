@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.ExceptionWithContext;
-import com.duy.dx.util.Hex;
-
+import com.duy.dex.util.ExceptionWithContext;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -190,7 +189,7 @@ public final class MixedItemSection extends Section {
      * @param item {@code non-null;} the item to intern
      * @return {@code non-null;} the equivalent interned instance
      */
-    public <T extends OffsettedItem> T intern(T item) {
+    public synchronized <T extends OffsettedItem> T intern(T item) {
         throwIfPrepared();
 
         OffsettedItem result = interns.get(item);

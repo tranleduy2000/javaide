@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package com.duy.dx.merge;
+package com.duy.dx .merge;
 
-import com.duy.dx.io.CodeReader;
-import com.duy.dx.io.instructions.DecodedInstruction;
-import com.duy.dx.io.instructions.ShortArrayCodeOutput;
-import com.duy.dx.util.DexException;
+import com.duy.dex.DexException;
+import com.duy.dex.DexIndexOverflowException;
+import com.duy.dx .io.CodeReader;
+import com.duy.dx .io.Opcodes;
+import com.duy.dx .io.instructions.DecodedInstruction;
+import com.duy.dx .io.instructions.ShortArrayCodeOutput;
 
 final class InstructionTransformer {
-    private final IndexMap indexMap;
     private final CodeReader reader;
+
     private DecodedInstruction[] mappedInstructions;
     private int mappedAt;
+    private IndexMap indexMap;
 
-    public InstructionTransformer(IndexMap indexMap) {
-        this.indexMap = indexMap;
+    public InstructionTransformer() {
         this.reader = new CodeReader();
         this.reader.setAllVisitors(new GenericVisitor());
         this.reader.setStringVisitor(new StringVisitor());
@@ -37,11 +39,12 @@ final class InstructionTransformer {
         this.reader.setMethodVisitor(new MethodVisitor());
     }
 
-    public short[] transform(short[] encodedInstructions) throws DexException {
+    public short[] transform(IndexMap indexMap, short[] encodedInstructions) throws DexException {
         DecodedInstruction[] decodedInstructions =
             DecodedInstruction.decodeAll(encodedInstructions);
         int size = decodedInstructions.length;
 
+        this.indexMap = indexMap;
         mappedInstructions = new DecodedInstruction[size];
         mappedAt = 0;
         reader.visitAll(decodedInstructions);
@@ -53,6 +56,7 @@ final class InstructionTransformer {
             }
         }
 
+        this.indexMap = null;
         return out.getArray();
     }
 
@@ -66,7 +70,8 @@ final class InstructionTransformer {
         public void visit(DecodedInstruction[] all, DecodedInstruction one) {
             int stringId = one.getIndex();
             int mappedId = indexMap.adjustString(stringId);
-            jumboCheck(stringId, mappedId);
+            boolean isJumbo = (one.getOpcode() == Opcodes.CONST_STRING_JUMBO);
+            jumboCheck(isJumbo, mappedId);
             mappedInstructions[mappedAt++] = one.withIndex(mappedId);
         }
     }
@@ -75,7 +80,8 @@ final class InstructionTransformer {
         public void visit(DecodedInstruction[] all, DecodedInstruction one) {
             int fieldId = one.getIndex();
             int mappedId = indexMap.adjustField(fieldId);
-            jumboCheck(fieldId, mappedId);
+            boolean isJumbo = (one.getOpcode() == Opcodes.CONST_STRING_JUMBO);
+            jumboCheck(isJumbo, mappedId);
             mappedInstructions[mappedAt++] = one.withIndex(mappedId);
         }
     }
@@ -84,7 +90,8 @@ final class InstructionTransformer {
         public void visit(DecodedInstruction[] all, DecodedInstruction one) {
             int typeId = one.getIndex();
             int mappedId = indexMap.adjustType(typeId);
-            jumboCheck(typeId, mappedId);
+            boolean isJumbo = (one.getOpcode() == Opcodes.CONST_STRING_JUMBO);
+            jumboCheck(isJumbo, mappedId);
             mappedInstructions[mappedAt++] = one.withIndex(mappedId);
         }
     }
@@ -93,14 +100,16 @@ final class InstructionTransformer {
         public void visit(DecodedInstruction[] all, DecodedInstruction one) {
             int methodId = one.getIndex();
             int mappedId = indexMap.adjustMethod(methodId);
-            jumboCheck(methodId, mappedId);
+            boolean isJumbo = (one.getOpcode() == Opcodes.CONST_STRING_JUMBO);
+            jumboCheck(isJumbo, mappedId);
             mappedInstructions[mappedAt++] = one.withIndex(mappedId);
         }
     }
 
-    private static void jumboCheck(int oldIndex, int newIndex) {
-        if ((oldIndex <= 0xffff) && (newIndex > 0xffff)) {
-            throw new DexException("Cannot handle conversion to jumbo index!");
+    private static void jumboCheck(boolean isJumbo, int newIndex) {
+        if (!isJumbo && (newIndex > 0xffff)) {
+            throw new DexIndexOverflowException("Cannot merge new index " + newIndex +
+                                   " into a non-jumbo instruction!");
         }
     }
 }

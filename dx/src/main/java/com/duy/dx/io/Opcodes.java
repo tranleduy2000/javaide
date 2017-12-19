@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.io;
+package com.duy.dx .io;
 
 /**
  * All the Dalvik opcode value constants. See the related spec
@@ -259,45 +259,6 @@ public final class Opcodes {
     public static final int SHL_INT_LIT8 = 0xe0;
     public static final int SHR_INT_LIT8 = 0xe1;
     public static final int USHR_INT_LIT8 = 0xe2;
-    public static final int CONST_CLASS_JUMBO = 0x00ff;
-    public static final int CHECK_CAST_JUMBO = 0x01ff;
-    public static final int INSTANCE_OF_JUMBO = 0x02ff;
-    public static final int NEW_INSTANCE_JUMBO = 0x03ff;
-    public static final int NEW_ARRAY_JUMBO = 0x04ff;
-    public static final int FILLED_NEW_ARRAY_JUMBO = 0x05ff;
-    public static final int IGET_JUMBO = 0x06ff;
-    public static final int IGET_WIDE_JUMBO = 0x07ff;
-    public static final int IGET_OBJECT_JUMBO = 0x08ff;
-    public static final int IGET_BOOLEAN_JUMBO = 0x09ff;
-    public static final int IGET_BYTE_JUMBO = 0x0aff;
-    public static final int IGET_CHAR_JUMBO = 0x0bff;
-    public static final int IGET_SHORT_JUMBO = 0x0cff;
-    public static final int IPUT_JUMBO = 0x0dff;
-    public static final int IPUT_WIDE_JUMBO = 0x0eff;
-    public static final int IPUT_OBJECT_JUMBO = 0x0fff;
-    public static final int IPUT_BOOLEAN_JUMBO = 0x10ff;
-    public static final int IPUT_BYTE_JUMBO = 0x11ff;
-    public static final int IPUT_CHAR_JUMBO = 0x12ff;
-    public static final int IPUT_SHORT_JUMBO = 0x13ff;
-    public static final int SGET_JUMBO = 0x14ff;
-    public static final int SGET_WIDE_JUMBO = 0x15ff;
-    public static final int SGET_OBJECT_JUMBO = 0x16ff;
-    public static final int SGET_BOOLEAN_JUMBO = 0x17ff;
-    public static final int SGET_BYTE_JUMBO = 0x18ff;
-    public static final int SGET_CHAR_JUMBO = 0x19ff;
-    public static final int SGET_SHORT_JUMBO = 0x1aff;
-    public static final int SPUT_JUMBO = 0x1bff;
-    public static final int SPUT_WIDE_JUMBO = 0x1cff;
-    public static final int SPUT_OBJECT_JUMBO = 0x1dff;
-    public static final int SPUT_BOOLEAN_JUMBO = 0x1eff;
-    public static final int SPUT_BYTE_JUMBO = 0x1fff;
-    public static final int SPUT_CHAR_JUMBO = 0x20ff;
-    public static final int SPUT_SHORT_JUMBO = 0x21ff;
-    public static final int INVOKE_VIRTUAL_JUMBO = 0x22ff;
-    public static final int INVOKE_SUPER_JUMBO = 0x23ff;
-    public static final int INVOKE_DIRECT_JUMBO = 0x24ff;
-    public static final int INVOKE_STATIC_JUMBO = 0x25ff;
-    public static final int INVOKE_INTERFACE_JUMBO = 0x26ff;
     // END(opcodes)
 
     // TODO: Generate these payload opcodes with opcode-gen.
@@ -363,23 +324,6 @@ public final class Opcodes {
         }
 
         return (opcode & 0xff00) == 0;
-    }
-
-    /**
-     * Gets whether ({@code true}) or not ({@code false}) the given
-     * opcode value is an "extended" opcode (not counting the nop-like
-     * payload opcodes). Extended opcodes require a full 16-bit code
-     * unit to represent, without leaving space for an argument byte.
-     * 
-     * @param opcode the opcode value
-     * @return {@code true} iff the opcode is an "extended" opcode
-     */
-    public static boolean isExtended(int opcode) {
-        /*
-         * Note: Extended opcodes all have the form ((byteValue << 8)
-         * | 0xff).
-         */
-        return (opcode >= 0x00ff);
     }
 
     /**

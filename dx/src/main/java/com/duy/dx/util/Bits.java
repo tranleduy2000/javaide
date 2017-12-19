@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.util;
+package com.duy.dx .util;
 
 /**
  * Utilities for treating {@code int[]}s as bit sets.

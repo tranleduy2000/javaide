@@ -1,6 +1,7 @@
 package com.duy.compile.external.dex;
 
-import com.android.dx.command.Main;
+
+import com.duy.dx.command.Main;
 
 /**
  * Created by duy on 19/07/2017.

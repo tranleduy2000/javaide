@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.rop.cst.CstArray;
-import com.duy.dx.util.ByteArrayAnnotatedOutput;
-import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx .rop.cst.CstArray;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.ByteArrayAnnotatedOutput;
 
 /**
  * Encoded array of constant values.

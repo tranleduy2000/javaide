@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.code.SourcePosition;
-import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx .util.AnnotatedOutput;
 
 /**
  * Combination instruction which turns into a variable number of
@@ -89,9 +89,9 @@ public final class HighRegisterPrefix extends VariableSizeInsn {
         insns = new SimpleInsn[sz];
 
         for (int i = 0, outAt = 0; i < sz; i++) {
-            RegisterSpec src = registers.get(i);
-            insns[i] = moveInsnFor(src, outAt);
-            outAt += src.getCategory();
+          RegisterSpec src = registers.get(i);
+          insns[i] = moveInsnFor(src, outAt);
+          outAt += src.getCategory();
         }
     }
 
@@ -139,7 +139,7 @@ public final class HighRegisterPrefix extends VariableSizeInsn {
      * @return {@code non-null;} the appropriate move instruction
      */
     private static SimpleInsn moveInsnFor(RegisterSpec src, int destIndex) {
-        return makeMove(SourcePosition.NO_INFO,
+        return DalvInsn.makeMove(SourcePosition.NO_INFO,
                 RegisterSpec.make(destIndex, src.getType()),
                 src);
     }

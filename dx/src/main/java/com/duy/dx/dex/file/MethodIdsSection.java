@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstBaseMethodRef;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.Hex;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstBaseMethodRef;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
 
 import java.util.Collection;
 import java.util.TreeMap;
@@ -95,7 +95,7 @@ public final class MethodIdsSection extends MemberIdsSection {
      * @param method {@code non-null;} the reference to intern
      * @return {@code non-null;} the interned reference
      */
-    public MethodIdItem intern(CstBaseMethodRef method) {
+    public synchronized MethodIdItem intern(CstBaseMethodRef method) {
         if (method == null) {
             throw new NullPointerException("method == null");
         }

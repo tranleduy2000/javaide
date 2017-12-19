@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.code.SourcePosition;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.TwoColumnOutput;
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx .ssa.RegisterMapper;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
+import com.duy.dx .util.TwoColumnOutput;
 
 import java.util.BitSet;
 
@@ -379,6 +380,17 @@ public abstract class DalvInsn {
      */
     public final int getNextAddress() {
         return getAddress() + codeSize();
+    }
+
+    /**
+     * Returns an instance that is just like this one, except that the
+     * register list is mapped by using {@code mapper}.
+     *
+     * @param mapper {@code non-null;} used to map registers
+     * @return {@code non-null;} an appropriately-constructed instance
+     */
+    public DalvInsn withMapper(RegisterMapper mapper) {
+      return withRegisters(mapper.map(getRegisters()));
     }
 
     /**

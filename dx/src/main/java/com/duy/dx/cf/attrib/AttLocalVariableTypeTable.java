@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.attrib;
+package com.duy.dx .cf.attrib;
 
-import com.duy.dx.cf.code.LocalVariableList;
+import com.duy.dx .cf.code.LocalVariableList;
 
 /**
  * Attribute class for standard {@code LocalVariableTypeTable} attributes.

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.code;
+package com.duy.dx .rop.code;
 
-import com.duy.dx.rop.type.TypeList;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.IntList;
-import com.duy.dx.util.LabeledItem;
+import com.duy.dx .rop.type.TypeList;
+import com.duy.dx .util.Hex;
+import com.duy.dx .util.IntList;
+import com.duy.dx .util.LabeledItem;
 
 /**
  * Basic block of register-based instructions.
@@ -276,6 +276,6 @@ public final class BasicBlock implements LabeledItem {
          * Visits a basic block
          * @param b block visited
          */
-        public void visitBlock(BasicBlock b);
+        public void visitBlock (BasicBlock b);
     }
 }

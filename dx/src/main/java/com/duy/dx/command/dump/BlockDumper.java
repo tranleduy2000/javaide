@@ -14,34 +14,33 @@
  * limitations under the License.
  */
 
-package com.duy.dx.command.dump;
+package com.duy.dx .command.dump;
 
-import com.duy.dx.cf.code.BasicBlocker;
-import com.duy.dx.cf.code.ByteBlock;
-import com.duy.dx.cf.code.ByteBlockList;
-import com.duy.dx.cf.code.ByteCatchList;
-import com.duy.dx.cf.code.BytecodeArray;
-import com.duy.dx.cf.code.ConcreteMethod;
-import com.duy.dx.cf.code.Ropper;
-import com.duy.dx.cf.direct.CodeObserver;
-import com.duy.dx.cf.direct.DirectClassFile;
-import com.duy.dx.cf.direct.StdAttributeFactory;
-import com.duy.dx.cf.iface.Member;
-import com.duy.dx.cf.iface.Method;
-import com.duy.dx.rop.code.BasicBlock;
-import com.duy.dx.rop.code.BasicBlockList;
-import com.duy.dx.rop.code.Insn;
-import com.duy.dx.rop.code.InsnList;
-import com.duy.dx.rop.code.RopMethod;
-import com.duy.dx.rop.code.DexTranslationAdvice;
-import com.duy.dx.rop.code.TranslationAdvice;
-import com.duy.dx.rop.code.AccessFlags;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.ssa.Optimizer;
-import com.duy.dx.util.ByteArray;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.IntList;
-
+import com.duy.dx .cf.code.BasicBlocker;
+import com.duy.dx .cf.code.ByteBlock;
+import com.duy.dx .cf.code.ByteBlockList;
+import com.duy.dx .cf.code.ByteCatchList;
+import com.duy.dx .cf.code.BytecodeArray;
+import com.duy.dx .cf.code.ConcreteMethod;
+import com.duy.dx .cf.code.Ropper;
+import com.duy.dx .cf.direct.CodeObserver;
+import com.duy.dx .cf.direct.DirectClassFile;
+import com.duy.dx .cf.direct.StdAttributeFactory;
+import com.duy.dx .cf.iface.Member;
+import com.duy.dx .cf.iface.Method;
+import com.duy.dx .rop.code.AccessFlags;
+import com.duy.dx .rop.code.BasicBlock;
+import com.duy.dx .rop.code.BasicBlockList;
+import com.duy.dx .rop.code.DexTranslationAdvice;
+import com.duy.dx .rop.code.Insn;
+import com.duy.dx .rop.code.InsnList;
+import com.duy.dx .rop.code.RopMethod;
+import com.duy.dx .rop.code.TranslationAdvice;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .ssa.Optimizer;
+import com.duy.dx .util.ByteArray;
+import com.duy.dx .util.Hex;
+import com.duy.dx .util.IntList;
 import java.io.PrintStream;
 
 /**
@@ -286,7 +285,7 @@ public class BlockDumper
         TranslationAdvice advice = DexTranslationAdvice.THE_ONE;
         BytecodeArray code = meth.getCode();
         ByteArray bytes = code.getBytes();
-        RopMethod rmeth = Ropper.convert(meth, advice);
+        RopMethod rmeth = Ropper.convert(meth, advice, classFile.getMethods());
         StringBuffer sb = new StringBuffer(2000);
 
         if (optimize) {

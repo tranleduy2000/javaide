@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code.form;
+package com.duy.dx .dex.code.form;
 
-import com.duy.dx.dex.code.DalvInsn;
-import com.duy.dx.dex.code.InsnFormat;
-import com.duy.dx.dex.code.TargetInsn;
-import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx .dex.code.DalvInsn;
+import com.duy.dx .dex.code.InsnFormat;
+import com.duy.dx .dex.code.TargetInsn;
+import com.duy.dx .util.AnnotatedOutput;
 
 /**
  * Instruction format {@code 10t}. See the instruction format spec

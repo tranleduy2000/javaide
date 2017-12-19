@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx.command.dump;
+package com.duy.dx .command.dump;
 
-import com.duy.dx.cf.iface.ParseException;
-import com.duy.dx.util.FileUtils;
-import com.duy.dx.util.HexParser;
-
+import com.duy.dex.util.FileUtils;
+import com.duy.dx .cf.iface.ParseException;
+import com.duy.dx .util.HexParser;
 import java.io.UnsupportedEncodingException;
 
 /**

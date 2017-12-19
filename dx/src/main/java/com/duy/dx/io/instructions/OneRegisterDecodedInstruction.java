@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.io.instructions;
+package com.duy.dx .io.instructions;
 
-import com.duy.dx.io.IndexType;
+import com.duy.dx .io.IndexType;
 
 /**
  * A decoded Dalvik instruction which has one register argument.

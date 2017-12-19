@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.iface;
+package com.duy.dx .cf.iface;
 
-import com.duy.dx.rop.cst.ConstantPool;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.rop.type.TypeList;
+import com.duy.dx .rop.cst.ConstantPool;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .rop.type.TypeList;
 
 /**
  * Interface for things which purport to be class files or reasonable
@@ -28,7 +28,7 @@ import com.duy.dx.rop.type.TypeList;
  * <p><b>Note:</b> The fields referred to in this documentation are of the
  * {@code ClassFile} structure defined in vmspec-2 sec4.1.
  */
-public interface ClassFile {
+public interface ClassFile extends HasAttribute {
     /**
      * Gets the field {@code magic}.
      *

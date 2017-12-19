@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.direct;
+package com.duy.dx .cf.direct;
 
-import com.duy.dx.cf.attrib.AttSourceFile;
-import com.duy.dx.cf.cst.ConstantPoolParser;
-import com.duy.dx.cf.iface.Attribute;
-import com.duy.dx.cf.iface.AttributeList;
-import com.duy.dx.cf.iface.ClassFile;
-import com.duy.dx.cf.iface.FieldList;
-import com.duy.dx.cf.iface.MethodList;
-import com.duy.dx.cf.iface.ParseException;
-import com.duy.dx.cf.iface.ParseObserver;
-import com.duy.dx.cf.iface.StdAttributeList;
-import com.duy.dx.rop.code.AccessFlags;
-import com.duy.dx.rop.cst.ConstantPool;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.cst.StdConstantPool;
-import com.duy.dx.rop.type.StdTypeList;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.rop.type.TypeList;
-import com.duy.dx.util.ByteArray;
-import com.duy.dx.util.Hex;
+import com.duy.dx .cf.attrib.AttSourceFile;
+import com.duy.dx .cf.cst.ConstantPoolParser;
+import com.duy.dx .cf.iface.Attribute;
+import com.duy.dx .cf.iface.AttributeList;
+import com.duy.dx .cf.iface.ClassFile;
+import com.duy.dx .cf.iface.FieldList;
+import com.duy.dx .cf.iface.MethodList;
+import com.duy.dx .cf.iface.ParseException;
+import com.duy.dx .cf.iface.ParseObserver;
+import com.duy.dx .cf.iface.StdAttributeList;
+import com.duy.dx .rop.code.AccessFlags;
+import com.duy.dx .rop.cst.ConstantPool;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .rop.cst.StdConstantPool;
+import com.duy.dx .rop.type.StdTypeList;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .rop.type.TypeList;
+import com.duy.dx .util.ByteArray;
+import com.duy.dx .util.Hex;
 
 /**
  * Class file with info taken from a {@code byte[]} or slice thereof.
@@ -50,6 +50,7 @@ public class DirectClassFile implements ClassFile {
      * See http://en.wikipedia.org/wiki/Java_class_file for an up-to-date
      * list of version numbers. Currently known (taken from that table) are:
      *
+     *     J2SE 7.0 = 51 (0x33 hex),
      *     J2SE 6.0 = 50 (0x32 hex),
      *     J2SE 5.0 = 49 (0x31 hex),
      *     JDK 1.4 = 48 (0x30 hex),
@@ -68,7 +69,7 @@ public class DirectClassFile implements ClassFile {
      *
      * Note: if you change this, please change "java.class.version" in System.java.
      */
-    private static final int CLASS_FILE_MAX_MAJOR_VERSION = 50;
+    private static final int CLASS_FILE_MAX_MAJOR_VERSION = 51;
 
     /** maximum {@code .class} file minor version */
     private static final int CLASS_FILE_MAX_MINOR_VERSION = 0;
@@ -225,6 +226,15 @@ public class DirectClassFile implements ClassFile {
         }
 
         this.attributeFactory = attributeFactory;
+    }
+
+    /**
+     * Gets the path where this class file is located.
+     *
+     * @return {@code non-null;} the filePath
+     */
+    public String getFilePath() {
+      return filePath;
     }
 
     /**

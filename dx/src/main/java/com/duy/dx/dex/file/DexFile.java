@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.dex.DexOptions;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstBaseMethodRef;
-import com.duy.dx.rop.cst.CstEnumRef;
-import com.duy.dx.rop.cst.CstFieldRef;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.util.ByteArrayAnnotatedOutput;
-import com.duy.dx.util.ExceptionWithContext;
+import com.duy.dex.util.ExceptionWithContext;
+import com.duy.dx .dex.DexOptions;
+import com.duy.dx .dex.file.MixedItemSection.SortType;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstBaseMethodRef;
+import com.duy.dx .rop.cst.CstEnumRef;
+import com.duy.dx .rop.cst.CstFieldRef;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .util.ByteArrayAnnotatedOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,8 +35,6 @@ import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.zip.Adler32;
-
-import static com.duy.dx.dex.file.MixedItemSection.SortType;
 
 /**
  * Representation of an entire {@code .dex} (Dalvik EXecutable)
@@ -243,7 +242,7 @@ public final class DexFile {
      * @return {@code >= 0;} the total file size
      * @throws RuntimeException thrown if the file size is not yet known
      */
-    /*package*/ int getFileSize() {
+    public int getFileSize() {
         if (fileSize < 0) {
             throw new RuntimeException("file size not yet known");
         }
@@ -324,7 +323,7 @@ public final class DexFile {
      *
      * @return {@code non-null;} the class definitions section
      */
-    /*package*/ ClassDefsSection getClassDefs() {
+    public ClassDefsSection getClassDefs() {
         return classDefs;
     }
 
@@ -344,13 +343,13 @@ public final class DexFile {
     /**
      * Gets the type identifiers section.
      *
-     * <p>This is package-scope in order to allow
+     * <p>This is public in order to allow
      * the various {@link Item} instances to add items to the
-     * instance.</p>
+     * instance and help early counting of type ids.</p>
      *
      * @return {@code non-null;} the class identifiers section
      */
-    /*package*/ TypeIdsSection getTypeIds() {
+    public TypeIdsSection getTypeIds() {
         return typeIds;
     }
 
@@ -370,26 +369,26 @@ public final class DexFile {
     /**
      * Gets the field identifiers section.
      *
-     * <p>This is package-scope in order to allow
+     * <p>This is public in order to allow
      * the various {@link Item} instances to add items to the
-     * instance.</p>
+     * instance and help early counting of field ids.</p>
      *
      * @return {@code non-null;} the field identifiers section
      */
-    /*package*/ FieldIdsSection getFieldIds() {
+    public FieldIdsSection getFieldIds() {
         return fieldIds;
     }
 
     /**
      * Gets the method identifiers section.
      *
-     * <p>This is package-scope in order to allow
+     * <p>This is public in order to allow
      * the various {@link Item} instances to add items to the
-     * instance.</p>
+     * instance and help early counting of method ids.</p>
      *
      * @return {@code non-null;} the method identifiers section
      */
-    /*package*/ MethodIdsSection getMethodIds() {
+    public MethodIdsSection getMethodIds() {
         return methodIds;
     }
 

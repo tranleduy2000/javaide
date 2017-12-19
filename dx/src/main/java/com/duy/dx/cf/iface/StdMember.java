@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.iface;
+package com.duy.dx .cf.iface;
 
-import com.duy.dx.rop.cst.CstNat;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.cst.CstType;
+import com.duy.dx .rop.cst.CstNat;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.CstType;
 
 /**
  * Standard implementation of {@link Member}, which directly stores

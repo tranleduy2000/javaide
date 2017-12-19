@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package com.duy.dx.ssa;
+package com.duy.dx .ssa;
 
-import com.duy.dx.rop.code.BasicBlock;
-import com.duy.dx.rop.code.BasicBlockList;
-import com.duy.dx.rop.code.Insn;
-import com.duy.dx.rop.code.InsnList;
-import com.duy.dx.rop.code.PlainInsn;
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.code.Rop;
-import com.duy.dx.rop.code.RopMethod;
-import com.duy.dx.rop.code.Rops;
-import com.duy.dx.rop.code.SourcePosition;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.IntList;
-import com.duy.dx.util.IntSet;
-
+import com.duy.dx .rop.code.BasicBlock;
+import com.duy.dx .rop.code.BasicBlockList;
+import com.duy.dx .rop.code.Insn;
+import com.duy.dx .rop.code.InsnList;
+import com.duy.dx .rop.code.PlainInsn;
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.Rop;
+import com.duy.dx .rop.code.RopMethod;
+import com.duy.dx .rop.code.Rops;
+import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx .util.Hex;
+import com.duy.dx .util.IntList;
+import com.duy.dx .util.IntSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -542,7 +541,7 @@ public final class SsaBasicBlock {
     /**
      * Attaches block to an exit block if necessary. If this block
      * is not an exit predecessor or is the exit block, this block does
-     * nothing. For use by {@link SsaMethod#makeExitBlock}
+     * nothing. For use by {@link com.duy.dx .ssa.SsaMethod#makeExitBlock}
      *
      * @param exitBlock {@code non-null;} exit block
      */
@@ -1007,7 +1006,7 @@ public final class SsaBasicBlock {
          * @param v {@code non-null;} block visited
          * @param parent {@code null-ok;} parent node if applicable
          */
-        void visitBlock(SsaBasicBlock v, SsaBasicBlock parent);
+        void visitBlock (SsaBasicBlock v, SsaBasicBlock parent);
     }
 
     /**

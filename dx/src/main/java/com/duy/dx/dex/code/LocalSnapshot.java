@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.code.RegisterSpecSet;
-import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.RegisterSpecSet;
+import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx .ssa.RegisterMapper;
 
 /**
  * Pseudo-instruction which is used to hold a snapshot of the
@@ -92,5 +93,11 @@ public final class LocalSnapshot extends ZeroSizeInsn {
         }
 
         return sb.toString();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DalvInsn withMapper(RegisterMapper mapper) {
+      return new LocalSnapshot(getPosition(), mapper.map(locals));
     }
 }

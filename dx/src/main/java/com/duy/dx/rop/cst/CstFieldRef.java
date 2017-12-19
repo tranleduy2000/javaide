@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.cst;
+package com.duy.dx .rop.cst;
 
-import com.duy.dx.rop.type.Type;
+import com.duy.dx .rop.type.Type;
 
 /**
  * Constants of type {@code CONSTANT_Fieldref_info}.

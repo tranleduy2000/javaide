@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.Hex;
-
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
 import java.util.ArrayList;
 
 /**

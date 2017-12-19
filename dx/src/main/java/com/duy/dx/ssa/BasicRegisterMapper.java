@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.ssa;
+package com.duy.dx .ssa;
 
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.util.IntList;
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .util.IntList;
 
 /**
  * This class maps one register space into another, with

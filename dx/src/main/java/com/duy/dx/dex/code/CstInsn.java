@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.code.SourcePosition;
-import com.duy.dx.rop.cst.Constant;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx .rop.cst.Constant;
 
 /**
  * Instruction which has a single constant argument in addition

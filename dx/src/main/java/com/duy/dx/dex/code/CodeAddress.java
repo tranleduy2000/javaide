@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.SourcePosition;
 
 /**
  * Pseudo-instruction which is used to track an address within a code
@@ -27,6 +27,9 @@ import com.duy.dx.rop.code.SourcePosition;
  * human-oriented or binary file).
  */
 public final class CodeAddress extends ZeroSizeInsn {
+    /** If this address should bind closely to the following real instruction */
+    private final boolean bindsClosely;
+
     /**
      * Constructs an instance. The output address of this instance is initially
      * unknown ({@code -1}).
@@ -34,7 +37,20 @@ public final class CodeAddress extends ZeroSizeInsn {
      * @param position {@code non-null;} source position
      */
     public CodeAddress(SourcePosition position) {
+        this(position, false);
+    }
+
+    /**
+     * Constructs an instance. The output address of this instance is initially
+     * unknown ({@code -1}).
+     *
+     * @param position {@code non-null;} source position
+     * @param bindsClosely if the address should bind closely to the following
+     *                     real instruction.
+     */
+    public CodeAddress(SourcePosition position, boolean bindsClosely) {
         super(position);
+        this.bindsClosely = bindsClosely;
     }
 
     /** {@inheritDoc} */
@@ -53,5 +69,23 @@ public final class CodeAddress extends ZeroSizeInsn {
     @Override
     protected String listingString0(boolean noteIndices) {
         return "code-address";
+    }
+
+    /**
+     * Gets whether this address binds closely to the following "real"
+     * (non-zero-length) instruction.
+     *
+     * When a prefix is added to an instruction (for example, to move a value
+     * from a high register to a low register), this determines whether this
+     * {@code CodeAddress} will point to the prefix, or to the instruction
+     * itself.
+     *
+     * If bindsClosely is true, the address will point to the instruction
+     * itself, otherwise it will point to the prefix (if any)
+     *
+     * @return true if this address binds closely to the next real instruction
+     */
+    public boolean getBindsClosely() {
+        return bindsClosely;
     }
 }

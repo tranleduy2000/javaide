@@ -14,32 +14,31 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.dex.DexOptions;
-import com.duy.dx.io.Opcodes;
-import com.duy.dx.rop.code.BasicBlock;
-import com.duy.dx.rop.code.BasicBlockList;
-import com.duy.dx.rop.code.FillArrayDataInsn;
-import com.duy.dx.rop.code.Insn;
-import com.duy.dx.rop.code.LocalVariableInfo;
-import com.duy.dx.rop.code.PlainCstInsn;
-import com.duy.dx.rop.code.PlainInsn;
-import com.duy.dx.rop.code.RegOps;
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.code.RegisterSpecSet;
-import com.duy.dx.rop.code.Rop;
-import com.duy.dx.rop.code.RopMethod;
-import com.duy.dx.rop.code.SourcePosition;
-import com.duy.dx.rop.code.SwitchInsn;
-import com.duy.dx.rop.code.ThrowingCstInsn;
-import com.duy.dx.rop.code.ThrowingInsn;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstInteger;
-import com.duy.dx.util.Bits;
-import com.duy.dx.util.IntList;
-
+import com.duy.dx .dex.DexOptions;
+import com.duy.dx .io.Opcodes;
+import com.duy.dx .rop.code.BasicBlock;
+import com.duy.dx .rop.code.BasicBlockList;
+import com.duy.dx .rop.code.FillArrayDataInsn;
+import com.duy.dx .rop.code.Insn;
+import com.duy.dx .rop.code.LocalVariableInfo;
+import com.duy.dx .rop.code.PlainCstInsn;
+import com.duy.dx .rop.code.PlainInsn;
+import com.duy.dx .rop.code.RegOps;
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.RegisterSpecSet;
+import com.duy.dx .rop.code.Rop;
+import com.duy.dx .rop.code.RopMethod;
+import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx .rop.code.SwitchInsn;
+import com.duy.dx .rop.code.ThrowingCstInsn;
+import com.duy.dx .rop.code.ThrowingInsn;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstInteger;
+import com.duy.dx .util.Bits;
+import com.duy.dx .util.IntList;
 import java.util.ArrayList;
 
 /**
@@ -156,7 +155,7 @@ public final class RopTranslator {
         this.regCount = blocks.getRegCount()
                 + (paramsAreInOrder ? 0 : this.paramSize);
 
-        this.output = new OutputCollector(dexOptions, maxInsns, bsz * 3, regCount);
+        this.output = new OutputCollector(dexOptions, maxInsns, bsz * 3, regCount, paramSize);
 
         if (locals != null) {
             this.translationVisitor =
@@ -641,14 +640,17 @@ public final class RopTranslator {
             }
 
             CodeAddress dataAddress = new CodeAddress(pos);
+            // make a new address that binds closely to the switch instruction
+            CodeAddress switchAddress =
+                new CodeAddress(lastAddress.getPosition(), true);
             SwitchData dataInsn =
-                new SwitchData(pos, lastAddress, cases, switchTargets);
+                new SwitchData(pos, switchAddress, cases, switchTargets);
             Dop opcode = dataInsn.isPacked() ?
                 Dops.PACKED_SWITCH : Dops.SPARSE_SWITCH;
             TargetInsn switchInsn =
                 new TargetInsn(opcode, pos, getRegs(insn), dataAddress);
 
-            addOutput(lastAddress);
+            addOutput(switchAddress);
             addOutput(switchInsn);
 
             addOutputSuffix(new OddSpacer(pos));

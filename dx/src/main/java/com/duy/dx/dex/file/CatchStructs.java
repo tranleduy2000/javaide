@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.dex.code.CatchHandlerList;
-import com.duy.dx.dex.code.CatchTable;
-import com.duy.dx.dex.code.DalvCode;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.ByteArrayAnnotatedOutput;
-import com.duy.dx.util.Hex;
-
+import com.duy.dx .dex.code.CatchHandlerList;
+import com.duy.dx .dex.code.CatchTable;
+import com.duy.dx .dex.code.DalvCode;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.ByteArrayAnnotatedOutput;
+import com.duy.dx .util.Hex;
 import java.io.PrintWriter;
 import java.util.Map;
 import java.util.TreeMap;

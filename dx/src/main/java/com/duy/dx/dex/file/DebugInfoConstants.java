@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
 /**
  * Constants for the dex debug info state machine format.

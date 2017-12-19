@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstInteger;
-import com.duy.dx.rop.cst.CstKnownNull;
-import com.duy.dx.rop.cst.CstLiteral64;
-import com.duy.dx.rop.cst.CstLiteralBits;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.Hex;
-
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstInteger;
+import com.duy.dx .rop.cst.CstKnownNull;
+import com.duy.dx .rop.cst.CstLiteral64;
+import com.duy.dx .rop.cst.CstLiteralBits;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
 import java.util.BitSet;
 
 /**
@@ -507,9 +506,8 @@ public abstract class InsnFormat {
     protected static short opcodeUnit(DalvInsn insn) {
         int opcode = insn.getOpcode().getOpcode();
 
-        if ((opcode < 0xff) || (opcode > 0xffff)) {
-            throw new IllegalArgumentException(
-                "extended opcode out of range 255..65535");
+        if ((opcode < 0x100) || (opcode > 0xffff)) {
+            throw new IllegalArgumentException("opcode out of range 0..65535");
         }
 
         return (short) opcode;

@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package com.duy.dx.ssa;
+package com.duy.dx .ssa;
 
-import com.duy.dx.rop.type.TypeBearer;
-import com.duy.dx.util.MutabilityControl;
-import com.duy.dx.rop.code.RegisterSpecSet;
-import com.duy.dx.rop.code.RegisterSpec;
-
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.RegisterSpecSet;
+import com.duy.dx .util.MutabilityControl;
 import java.util.HashMap;
 import java.util.List;
 
 /**
  * Container for local variable information for a particular {@link
- * SsaMethod}.
- * Stolen from {@link com.duy.dx.rop.code.LocalVariableInfo}.
+ * com.duy.dx .ssa.SsaMethod}.
+ * Stolen from {@link com.duy.dx .rop.code.LocalVariableInfo}.
  */
 public class LocalVariableInfo         extends MutabilityControl {
     /** {@code >= 0;} the register count for the method */
     private final int regCount;
 
     /**
-     * {@code non-null;} {@link RegisterSpecSet} to use when indicating a block
+     * {@code non-null;} {@link com.duy.dx .rop.code.RegisterSpecSet} to use when indicating a block
      * that has no locals; it is empty and immutable but has an appropriate
      * max size for the method
      */
@@ -180,7 +178,7 @@ public class LocalVariableInfo         extends MutabilityControl {
      * the result, it still needs to be passed in explicitly to this
      * method, since the spec that is stored here should always have a
      * simple type and the one in the instruction can be an arbitrary
-     * {@link TypeBearer} (such as a constant value).
+     * {@link com.duy.dx .rop.type.TypeBearer} (such as a constant value).
      *
      * @param insn {@code non-null;} the instruction in question
      * @param spec {@code non-null;} the associated register spec

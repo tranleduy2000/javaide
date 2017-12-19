@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx.ssa;
+package com.duy.dx .ssa;
 
 /**
  * <h1>An introduction to SSA Form</h1>
@@ -43,7 +43,7 @@ package com.duy.dx.ssa;
  * <li> A {@link SsaMethod} instance represents a method.
  * <li> A {@link SsaBasicBlock} instance represents a basic block, whose
  * semantics are quite similar to basic blocks in
- * {@link com.android.dx.rop Rop form}.
+ * {@link com.duy.dx .rop Rop form}.
  * <li> {@link PhiInsn} instances represent "phi" operators defined in SSA
  * literature. They must be the first N instructions in a basic block.
  * <li> {@link NormalSsaInsn} instances represent instructions that directly

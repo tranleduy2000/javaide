@@ -14,34 +14,36 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.code;
+package com.duy.dx .cf.code;
 
-import com.duy.dx.rop.code.FillArrayDataInsn;
-import com.duy.dx.rop.code.Insn;
-import com.duy.dx.rop.code.PlainCstInsn;
-import com.duy.dx.rop.code.PlainInsn;
-import com.duy.dx.rop.code.RegOps;
-import com.duy.dx.rop.code.RegisterSpec;
-import com.duy.dx.rop.code.RegisterSpecList;
-import com.duy.dx.rop.code.Rop;
-import com.duy.dx.rop.code.Rops;
-import com.duy.dx.rop.code.SourcePosition;
-import com.duy.dx.rop.code.SwitchInsn;
-import com.duy.dx.rop.code.ThrowingCstInsn;
-import com.duy.dx.rop.code.ThrowingInsn;
-import com.duy.dx.rop.code.TranslationAdvice;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstFieldRef;
-import com.duy.dx.rop.cst.CstInteger;
-import com.duy.dx.rop.cst.CstMethodRef;
-import com.duy.dx.rop.cst.CstNat;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.cst.CstType;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.rop.type.TypeBearer;
-import com.duy.dx.rop.type.TypeList;
-import com.duy.dx.util.IntList;
-
+import com.duy.dx .cf.iface.Method;
+import com.duy.dx .cf.iface.MethodList;
+import com.duy.dx .rop.code.AccessFlags;
+import com.duy.dx .rop.code.FillArrayDataInsn;
+import com.duy.dx .rop.code.Insn;
+import com.duy.dx .rop.code.PlainCstInsn;
+import com.duy.dx .rop.code.PlainInsn;
+import com.duy.dx .rop.code.RegOps;
+import com.duy.dx .rop.code.RegisterSpec;
+import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx .rop.code.Rop;
+import com.duy.dx .rop.code.Rops;
+import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx .rop.code.SwitchInsn;
+import com.duy.dx .rop.code.ThrowingCstInsn;
+import com.duy.dx .rop.code.ThrowingInsn;
+import com.duy.dx .rop.code.TranslationAdvice;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstFieldRef;
+import com.duy.dx .rop.cst.CstInteger;
+import com.duy.dx .rop.cst.CstMethodRef;
+import com.duy.dx .rop.cst.CstNat;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.cst.CstType;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx .rop.type.TypeList;
+import com.duy.dx .util.IntList;
 import java.util.ArrayList;
 
 /**
@@ -67,6 +69,9 @@ import java.util.ArrayList;
 
     /** {@code non-null;} method being converted */
     private final ConcreteMethod method;
+
+    /** {@code non-null:} list of methods from the class whose method is being converted */
+    private final MethodList methods;
 
     /** {@code non-null;} translation advice */
     private final TranslationAdvice advice;
@@ -123,10 +128,16 @@ import java.util.ArrayList;
      * @param ropper {@code non-null;} ropper controlling this instance
      * @param method {@code non-null;} method being converted
      * @param advice {@code non-null;} translation advice to use
+     * @param methods {@code non-null;} list of methods defined by the class
+     *     that defines {@code method}.
      */
     public RopperMachine(Ropper ropper, ConcreteMethod method,
-            TranslationAdvice advice) {
+            TranslationAdvice advice, MethodList methods) {
         super(method.getEffectiveDescriptor());
+
+        if (methods == null) {
+            throw new NullPointerException("methods == null");
+        }
 
         if (ropper == null) {
             throw new NullPointerException("ropper == null");
@@ -138,6 +149,7 @@ import java.util.ArrayList;
 
         this.ropper = ropper;
         this.method = method;
+        this.methods = methods;
         this.advice = advice;
         this.maxLocals = method.getMaxLocals();
         this.insns = new ArrayList<Insn>(25);
@@ -908,6 +920,35 @@ import java.util.ArrayList;
                 return RegOps.PUT_FIELD;
             }
             case ByteOps.INVOKEVIRTUAL: {
+                CstMethodRef ref = (CstMethodRef) cst;
+                // The java bytecode specification does not explicitly disallow
+                // invokevirtual calls to any instance method, though it
+                // specifies that instance methods and private methods "should" be
+                // called using "invokespecial" instead of "invokevirtual".
+                // Several bytecode tools generate "invokevirtual" instructions for
+                // invocation of private methods.
+                //
+                // The dalvik opcode specification on the other hand allows
+                // invoke-virtual to be used only with "normal" virtual methods,
+                // i.e, ones that are not private, static, final or constructors.
+                // We therefore need to transform invoke-virtual calls to private
+                // instance methods to invoke-direct opcodes.
+                //
+                // Note that it assumes that all methods for a given class are
+                // defined in the same dex file.
+                //
+                // NOTE: This is a slow O(n) loop, and can be replaced with a
+                // faster implementation (at the cost of higher memory usage)
+                // if it proves to be a hot area of code.
+                if (ref.getDefiningClass().equals(method.getDefiningClass())) {
+                    for (int i = 0; i < methods.size(); ++i) {
+                        final Method m = methods.get(i);
+                        if (AccessFlags.isPrivate(m.getAccessFlags()) &&
+                                ref.getNat().equals(m.getNat())) {
+                            return RegOps.INVOKE_DIRECT;
+                        }
+                    }
+                }
                 return RegOps.INVOKE_VIRTUAL;
             }
             case ByteOps.INVOKESPECIAL: {
@@ -919,7 +960,7 @@ import java.util.ArrayList;
                  */
                 CstMethodRef ref = (CstMethodRef) cst;
                 if (ref.isInstanceInit() ||
-                    (ref.getDefiningClass() == method.getDefiningClass()) ||
+                    (ref.getDefiningClass().equals(method.getDefiningClass())) ||
                     !method.getAccSuper()) {
                     return RegOps.INVOKE_DIRECT;
                 }

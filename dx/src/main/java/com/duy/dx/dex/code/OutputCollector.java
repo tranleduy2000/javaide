@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.dex.DexOptions;
-
+import com.duy.dx .dex.DexOptions;
 import java.util.ArrayList;
 
 /**
@@ -49,10 +48,11 @@ public final class OutputCollector {
      * @param suffixInitialCapacity {@code >= 0;} initial capacity of the output
      * suffix
      * @param regCount {@code >= 0;} register count for the method
+     * @param paramSize size, in register units, of all the parameters for this method
      */
     public OutputCollector(DexOptions dexOptions, int initialCapacity, int suffixInitialCapacity,
-            int regCount) {
-        this.finisher = new OutputFinisher(dexOptions, initialCapacity, regCount);
+            int regCount, int paramSize) {
+        this.finisher = new OutputFinisher(dexOptions, initialCapacity, regCount, paramSize);
         this.suffix = new ArrayList<DalvInsn>(suffixInitialCapacity);
     }
 

@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package com.duy.dx.command.dump;
+package com.duy.dx .command.dump;
 
-import com.duy.dx.cf.code.ConcreteMethod;
-import com.duy.dx.cf.code.Ropper;
-import com.duy.dx.cf.direct.DirectClassFile;
-import com.duy.dx.cf.direct.StdAttributeFactory;
-import com.duy.dx.cf.iface.Member;
-import com.duy.dx.cf.iface.Method;
-import com.duy.dx.cf.iface.ParseObserver;
-import com.duy.dx.rop.code.BasicBlock;
-import com.duy.dx.rop.code.BasicBlockList;
-import com.duy.dx.rop.code.RopMethod;
-import com.duy.dx.rop.code.DexTranslationAdvice;
-import com.duy.dx.rop.code.TranslationAdvice;
-import com.duy.dx.rop.code.AccessFlags;
-import com.duy.dx.ssa.Optimizer;
-import com.duy.dx.util.ByteArray;
-import com.duy.dx.util.Hex;
-import com.duy.dx.util.IntList;
+import com.duy.dx .cf.code.ConcreteMethod;
+import com.duy.dx .cf.code.Ropper;
+import com.duy.dx .cf.direct.DirectClassFile;
+import com.duy.dx .cf.direct.StdAttributeFactory;
+import com.duy.dx .cf.iface.Member;
+import com.duy.dx .cf.iface.Method;
+import com.duy.dx .cf.iface.ParseObserver;
+import com.duy.dx .rop.code.AccessFlags;
+import com.duy.dx .rop.code.BasicBlock;
+import com.duy.dx .rop.code.BasicBlockList;
+import com.duy.dx .rop.code.DexTranslationAdvice;
+import com.duy.dx .rop.code.RopMethod;
+import com.duy.dx .rop.code.TranslationAdvice;
+import com.duy.dx .ssa.Optimizer;
+import com.duy.dx .util.ByteArray;
+import com.duy.dx .util.Hex;
+import com.duy.dx .util.IntList;
 
 /**
  * Dumps the pred/succ graph of methods into a format compatible
@@ -115,7 +115,7 @@ public class DotDumper implements ParseObserver {
 
         TranslationAdvice advice = DexTranslationAdvice.THE_ONE;
         RopMethod rmeth =
-            Ropper.convert(meth, advice);
+            Ropper.convert(meth, advice, classFile.getMethods());
 
         if (optimize) {
             boolean isStatic = AccessFlags.isStatic(meth.getAccessFlags());

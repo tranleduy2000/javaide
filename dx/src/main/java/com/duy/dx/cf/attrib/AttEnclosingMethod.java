@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.attrib;
+package com.duy.dx .cf.attrib;
 
-import com.duy.dx.rop.cst.CstNat;
-import com.duy.dx.rop.cst.CstType;
+import com.duy.dx .rop.cst.CstNat;
+import com.duy.dx .rop.cst.CstType;
 
 /**
  * Attribute class for standards-track {@code EnclosingMethod}

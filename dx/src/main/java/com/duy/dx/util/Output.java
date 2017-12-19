@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.util;
+package com.duy.dx .util;
+
+import com.duy.dex.util.ByteOutput;
 
 /**
  * Interface for a sink for binary output. This is similar to

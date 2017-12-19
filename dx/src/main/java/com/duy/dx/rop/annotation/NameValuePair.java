@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.rop.annotation;
+package com.duy.dx .rop.annotation;
 
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstString;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstString;
 
 /**
  * A (name, value) pair. These are used as the contents of an annotation.

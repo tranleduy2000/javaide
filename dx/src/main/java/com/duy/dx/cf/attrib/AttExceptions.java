@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.cf.attrib;
+package com.duy.dx .cf.attrib;
 
-import com.duy.dx.rop.type.TypeList;
-import com.duy.dx.util.MutabilityException;
+import com.duy.dx .rop.type.TypeList;
+import com.duy.dx .util.MutabilityException;
 
 /**
  * Attribute class for standard {@code Exceptions} attributes.

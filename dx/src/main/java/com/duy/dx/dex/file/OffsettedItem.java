@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.ExceptionWithContext;
+import com.duy.dex.util.ExceptionWithContext;
+import com.duy.dx .util.AnnotatedOutput;
 
 /**
  * An item in a Dalvik file which is referenced by absolute offset.

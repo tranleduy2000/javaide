@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.code;
+package com.duy.dx .dex.code;
 
-import com.duy.dx.io.Opcodes;
-import com.duy.dx.rop.cst.Constant;
-import com.duy.dx.rop.cst.CstBaseMethodRef;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.ExceptionWithContext;
-import com.duy.dx.util.FixedSizeList;
-import com.duy.dx.util.IndentingWriter;
-
+import com.duy.dex.util.ExceptionWithContext;
+import com.duy.dx .io.Opcodes;
+import com.duy.dx .rop.cst.Constant;
+import com.duy.dx .rop.cst.CstBaseMethodRef;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.FixedSizeList;
+import com.duy.dx .util.IndentingWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;

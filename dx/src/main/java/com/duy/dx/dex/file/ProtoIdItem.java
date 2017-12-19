@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.dx.dex.file;
+package com.duy.dx .dex.file;
 
-import com.duy.dx.dex.SizeOf;
-import com.duy.dx.rop.cst.CstString;
-import com.duy.dx.rop.type.Prototype;
-import com.duy.dx.rop.type.StdTypeList;
-import com.duy.dx.rop.type.Type;
-import com.duy.dx.util.AnnotatedOutput;
-import com.duy.dx.util.Hex;
+import com.duy.dex.SizeOf;
+import com.duy.dx .rop.cst.CstString;
+import com.duy.dx .rop.type.Prototype;
+import com.duy.dx .rop.type.StdTypeList;
+import com.duy.dx .rop.type.Type;
+import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx .util.Hex;
 
 /**
  * Representation of a method prototype reference inside a Dalvik file.

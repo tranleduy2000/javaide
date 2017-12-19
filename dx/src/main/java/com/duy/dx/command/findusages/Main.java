@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx.command.findusages;
+package com.duy.dx .command.findusages;
 
-import com.duy.dx.io.DexBuffer;
+import com.duy.dex.Dex;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,7 +27,7 @@ public final class Main {
         String declaredBy = args[1];
         String memberName = args[2];
 
-        DexBuffer dex = new DexBuffer(new File(dexFile));
+        Dex dex = new Dex(new File(dexFile));
         PrintWriter out = new PrintWriter(System.out);
         new FindUsages(dex, declaredBy, memberName, out).findUsages();
         out.flush();

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.dex.Dex;
+import com.android.dx.command.dexer.DxContext;
 import com.android.dx.merge.CollisionPolicy;
 import com.android.dx.merge.DexMerger;
 import com.duy.compile.external.android.AndroidBuilder;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import javax.tools.DiagnosticCollector;
@@ -120,10 +122,16 @@ public class CompileHelper {
             File[] files = projectFile.getDirDexedLibs().listFiles();
             if (files != null && files.length > 0) {
                 for (File dexedLib : files) {
+                    try {
+                        Class<?> aClass = Class.forName("com.android.dex.TableOfContents");
+                        Method[] declaredMethods = aClass.getDeclaredMethods();
+                        System.out.println(declaredMethods);
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
                     DexMerger dexMerger = new DexMerger(
-                            new Dex(projectFile.getDexedClassesFile()),
-                            new Dex(dexedLib),
-                            CollisionPolicy.FAIL);
+                            new Dex[]{new Dex(projectFile.getDexedClassesFile()), new Dex(dexedLib)},
+                            CollisionPolicy.FAIL, new DxContext(System.out, System.err));
                     Dex merged = dexMerger.merge();
                     merged.writeTo(projectFile.getDexedClassesFile());
                 }

@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class LatinEditText extends AppCompatEditText {
 
-    private static final Pattern ACCEPT_CHAR = Pattern.compile("[a-zA-Z0-9._ ]");
+    private static final Pattern ACCEPT_CHAR = Pattern.compile("[a-zA-Z0-9._\\- ]");
 
     public LatinEditText(Context context) {
         super(context);

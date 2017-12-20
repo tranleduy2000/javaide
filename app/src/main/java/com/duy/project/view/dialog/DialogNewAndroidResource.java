@@ -84,8 +84,6 @@ public class DialogNewAndroidResource extends AppCompatDialogFragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mEditName = view.findViewById(R.id.edit_class_name);
-//        mKind = view.findViewById(R.id.spinner_kind);
-
         view.findViewById(R.id.btn_create).setOnClickListener(this);
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
     }

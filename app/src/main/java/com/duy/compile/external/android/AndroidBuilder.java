@@ -97,8 +97,8 @@ public class AndroidBuilder {
                 " -M " + projectFile.xmlManifest.getPath()  //manifest file
                 + " -F " + projectFile.getResourceFile().getPath()  //output resources.ap_
                 + " -I " + projectFile.bootClasspath.getPath()  //include
-//                + " -A " + projectFile.getDirAssets().getPath()  //input assets dir
-//                + " -S " + projectFile.getDirRes().getPath()  //input resource dir
+                + " -A " + projectFile.getDirAssets().getPath()  //input assets dir
+                + " -S " + projectFile.getDirRes().getPath()  //input resource dir
                 + " -J " + projectFile.getClassR().getParent());//parent file of R.java file
 
         File dirLibs = projectFile.getDirLibs();

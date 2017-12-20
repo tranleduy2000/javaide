@@ -374,9 +374,9 @@ extern "C" {
  */
 #ifndef LOG_ALWAYS_FATAL_IF
 #define LOG_ALWAYS_FATAL_IF(cond, ...) \
-    ( (CONDITION(cond)) \
-    ? ((void)android_printAssert(#cond, LOG_TAG, ## __VA_ARGS__)) \
-    : (void)0 )
+//    ( (CONDITION(cond)) \
+//    ? ((void)android_printAssert(#cond, LOG_TAG, ## __VA_ARGS__)) \
+//    : (void)0 )
 #endif
 
 #ifndef LOG_ALWAYS_FATAL

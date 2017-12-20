@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F1344639-7794-4042-888B-EE13BD83C305}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeBuildCommandLine>D:\Android\android-ndk-r10d\ndk-build.cmd NDK_PROJECT_PATH=. NDK_APPLICATION_MK=./Application.mk APP_BUILD_SCRIPT=./Android.mk</NMakeBuildCommandLine>
+    <NMakeOutput>aapt</NMakeOutput>
+    <NMakeCleanCommandLine>D:\Android\android-ndk-r10d\ndk-build.cmd NDK_PROJECT_PATH=. NDK_APPLICATION_MK=./Application.mk APP_BUILD_SCRIPT=./Android.mk clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>D:\Android\android-ndk-r10d\ndk-build.cmd NDK_PROJECT_PATH=. NDK_APPLICATION_MK=./Application.mk APP_BUILD_SCRIPT=./Android.mk -B</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>HAVE_EXPAT_CONFIG_H;HAVE_PTHREADS;HAVE_ANDROID_OS;WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <IncludePath>.;E:\Android\android-ndk-r10d\platforms\android-19\arch-arm\usr\include;</IncludePath>
+    <NMakeIncludeSearchPath>.;E:\Android\android-ndk-r10d\platforms\android-19\arch-arm\usr\include;</NMakeIncludeSearchPath>
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeBuildCommandLine>D:\Android\android-ndk-r9b\ndk-build.cmd NDK_PROJECT_PATH=. NDK_APPLICATION_MK=./Application.mk APP_BUILD_SCRIPT=./Android.mk</NMakeBuildCommandLine>
+    <NMakeOutput>aapt</NMakeOutput>
+    <NMakeCleanCommandLine>D:\Android\android-ndk-r9b\ndk-build.cmd NDK_PROJECT_PATH=. NDK_APPLICATION_MK=./Application.mk APP_BUILD_SCRIPT=./Android.mk clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>D:\Android\android-ndk-r9b\ndk-build.cmd NDK_PROJECT_PATH=. NDK_APPLICATION_MK=./Application.mk APP_BUILD_SCRIPT=./Android.mk /B</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Android.mk" />
+    <None Include="Application.mk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AaptAssets.h" />
+    <ClInclude Include="AaptConfig.h" />
+    <ClInclude Include="AaptUtil.h" />
+    <ClInclude Include="AaptXml.h" />
+    <ClInclude Include="AndroidConfig.h" />
+    <ClInclude Include="ApkBuilder.h" />
+    <ClInclude Include="Bundle.h" />
+    <ClInclude Include="CacheUpdater.h" />
+    <ClInclude Include="ConfigDescription.h" />
+    <ClInclude Include="CrunchCache.h" />
+    <ClInclude Include="DirectoryWalker.h" />
+    <ClInclude Include="expat\files\lib\amigaconfig.h" />
+    <ClInclude Include="expat\files\lib\ascii.h" />
+    <ClInclude Include="expat\files\lib\asciitab.h" />
+    <ClInclude Include="expat\files\lib\expat.h" />
+    <ClInclude Include="expat\files\lib\expat_config.h" />
+    <ClInclude Include="expat\files\lib\expat_external.h" />
+    <ClInclude Include="expat\files\lib\iasciitab.h" />
+    <ClInclude Include="expat\files\lib\internal.h" />
+    <ClInclude Include="expat\files\lib\latin1tab.h" />
+    <ClInclude Include="expat\files\lib\macconfig.h" />
+    <ClInclude Include="expat\files\lib\nametab.h" />
+    <ClInclude Include="expat\files\lib\utf8tab.h" />
+    <ClInclude Include="expat\files\lib\winconfig.h" />
+    <ClInclude Include="expat\files\lib\xmlrole.h" />
+    <ClInclude Include="expat\files\lib\xmltok.h" />
+    <ClInclude Include="expat\files\lib\xmltok_impl.h" />
+    <ClInclude Include="FileFinder.h" />
+    <ClInclude Include="Images.h" />
+    <ClInclude Include="IndentPrinter.h" />
+    <ClInclude Include="libcutils\loghack.h" />
+    <ClInclude Include="libcutils\socket_local.h" />
+    <ClInclude Include="Main.h" />
+    <ClInclude Include="OutputSet.h" />
+    <ClInclude Include="pseudolocalize.h" />
+    <ClInclude Include="qsort_r_compat.h" />
+    <ClInclude Include="ResourceFilter.h" />
+    <ClInclude Include="ResourceIdCache.h" />
+    <ClInclude Include="ResourceTable.h" />
+    <ClInclude Include="SdkConstants.h" />
+    <ClInclude Include="SourcePos.h" />
+    <ClInclude Include="StringPool.h" />
+    <ClInclude Include="Symbol.h" />
+    <ClInclude Include="WorkQueue.h" />
+    <ClInclude Include="XMLNode.h" />
+    <ClInclude Include="ZipEntry.h" />
+    <ClInclude Include="ZipFile.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AaptAssets.cpp" />
+    <ClCompile Include="AaptConfig.cpp" />
+    <ClCompile Include="AaptUtil.cpp" />
+    <ClCompile Include="AaptXml.cpp" />
+    <ClCompile Include="androidfwsrc\Asset.cpp" />
+    <ClCompile Include="androidfwsrc\AssetDir.cpp" />
+    <ClCompile Include="androidfwsrc\AssetManager.cpp" />
+    <ClCompile Include="androidfwsrc\BackupData.cpp" />
+    <ClCompile Include="androidfwsrc\BackupHelpers.cpp" />
+    <ClCompile Include="androidfwsrc\CursorWindow.cpp" />
+    <ClCompile Include="androidfwsrc\misc.cpp" />
+    <ClCompile Include="androidfwsrc\ObbFile.cpp" />
+    <ClCompile Include="androidfwsrc\ResourceTypes.cpp" />
+    <ClCompile Include="androidfwsrc\StreamingZipInflater.cpp" />
+    <ClCompile Include="androidfwsrc\TypeWrappers.cpp" />
+    <ClCompile Include="androidfwsrc\ZipFileRO.cpp" />
+    <ClCompile Include="androidfwsrc\ZipUtils.cpp" />
+    <ClCompile Include="ApkBuilder.cpp" />
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CrunchCache.cpp" />
+    <ClCompile Include="expat\files\lib\xmlparse.c" />
+    <ClCompile Include="expat\files\lib\xmlrole.c" />
+    <ClCompile Include="expat\files\lib\xmltok.c" />
+    <ClCompile Include="expat\files\lib\xmltok_impl.c" />
+    <ClCompile Include="expat\files\lib\xmltok_ns.c" />
+    <ClCompile Include="FileFinder.cpp" />
+    <ClCompile Include="Images.cpp" />
+    <ClCompile Include="libcutils\android_reboot.c" />
+    <ClCompile Include="libcutils\ashmem-dev.c" />
+    <ClCompile Include="libcutils\ashmem-host.c" />
+    <ClCompile Include="libcutils\atomic.c" />
+    <ClCompile Include="libcutils\config_utils.c" />
+    <ClCompile Include="libcutils\cpu_info.c" />
+    <ClCompile Include="libcutils\debugger.c" />
+    <ClCompile Include="libcutils\dir_hash.c" />
+    <ClCompile Include="libcutils\dlmalloc_stubs.c" />
+    <ClCompile Include="libcutils\fs.c" />
+    <ClCompile Include="libcutils\hashmap.c" />
+    <ClCompile Include="libcutils\iosched_policy.c" />
+    <ClCompile Include="libcutils\klog.c" />
+    <ClCompile Include="libcutils\load_file.c" />
+    <ClCompile Include="libcutils\memory.c" />
+    <ClCompile Include="libcutils\multiuser.c" />
+    <ClCompile Include="libcutils\native_handle.c" />
+    <ClCompile Include="libcutils\open_memstream.c" />
+    <ClCompile Include="libcutils\partition_utils.c" />
+    <ClCompile Include="libcutils\process_name.c" />
+    <ClCompile Include="libcutils\properties.c" />
+    <ClCompile Include="libcutils\qtaguid.c" />
+    <ClCompile Include="libcutils\record_stream.c" />
+    <ClCompile Include="libcutils\sched_policy.c" />
+    <ClCompile Include="libcutils\sockets.c" />
+    <ClCompile Include="libcutils\socket_inaddr_any_server.c" />
+    <ClCompile Include="libcutils\socket_local_client.c" />
+    <ClCompile Include="libcutils\socket_local_server.c" />
+    <ClCompile Include="libcutils\socket_loopback_client.c" />
+    <ClCompile Include="libcutils\socket_loopback_server.c" />
+    <ClCompile Include="libcutils\socket_network_client.c" />
+    <ClCompile Include="libcutils\strdup16to8.c" />
+    <ClCompile Include="libcutils\strdup8to16.c" />
+    <ClCompile Include="libcutils\str_parms.c" />
+    <ClCompile Include="libcutils\threads.c" />
+    <ClCompile Include="libcutils\trace.c" />
+    <ClCompile Include="libcutils\uevent.c" />
+    <ClCompile Include="libutils\BasicHashtable.cpp" />
+    <ClCompile Include="libutils\BlobCache.cpp" />
+    <ClCompile Include="libutils\CallStack.cpp" />
+    <ClCompile Include="libutils\FileMap.cpp" />
+    <ClCompile Include="libutils\JenkinsHash.cpp" />
+    <ClCompile Include="libutils\LinearAllocator.cpp" />
+    <ClCompile Include="libutils\LinearTransform.cpp" />
+    <ClCompile Include="libutils\Log.cpp" />
+    <ClCompile Include="libutils\Looper.cpp" />
+    <ClCompile Include="libutils\misc.cpp" />
+    <ClCompile Include="libutils\NativeHandle.cpp" />
+    <ClCompile Include="libutils\Printer.cpp" />
+    <ClCompile Include="libutils\ProcessCallStack.cpp" />
+    <ClCompile Include="libutils\PropertyMap.cpp" />
+    <ClCompile Include="libutils\RefBase.cpp" />
+    <ClCompile Include="libutils\SharedBuffer.cpp" />
+    <ClCompile Include="libutils\Static.cpp" />
+    <ClCompile Include="libutils\StopWatch.cpp" />
+    <ClCompile Include="libutils\String16.cpp" />
+    <ClCompile Include="libutils\String8.cpp" />
+    <ClCompile Include="libutils\SystemClock.cpp" />
+    <ClCompile Include="libutils\Threads.cpp" />
+    <ClCompile Include="libutils\Timers.cpp" />
+    <ClCompile Include="libutils\Tokenizer.cpp" />
+    <ClCompile Include="libutils\Trace.cpp" />
+    <ClCompile Include="libutils\Unicode.cpp" />
+    <ClCompile Include="libutils\VectorImpl.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Package.cpp" />
+    <ClCompile Include="printapk.cpp" />
+    <ClCompile Include="pseudolocalize.cpp" />
+    <ClCompile Include="qsort_r_compat.cpp" />
+    <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="ResourceFilter.cpp" />
+    <ClCompile Include="ResourceIdCache.cpp" />
+    <ClCompile Include="ResourceTable.cpp" />
+    <ClCompile Include="SourcePos.cpp" />
+    <ClCompile Include="StringPool.cpp" />
+    <ClCompile Include="WorkQueue.cpp" />
+    <ClCompile Include="XMLNode.cpp" />
+    <ClCompile Include="ZipEntry.cpp" />
+    <ClCompile Include="ZipFile.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

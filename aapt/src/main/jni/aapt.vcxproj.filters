@@ -1,0 +1,500 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="libutils">
+      <UniqueIdentifier>{65ec338c-ac9b-4f1d-9a1a-ea3ab885efc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libcutils">
+      <UniqueIdentifier>{2bad5fd5-930c-4e10-b43b-28afa440ad07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="expat">
+      <UniqueIdentifier>{2fb7e4c1-3231-4d04-863a-378d4fbdd97d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Android.mk">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="Application.mk">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AaptAssets.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AaptConfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AaptUtil.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AaptXml.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ApkBuilder.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Bundle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CacheUpdater.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigDescription.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CrunchCache.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectoryWalker.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FileFinder.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Images.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IndentPrinter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Main.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputSet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="pseudolocalize.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="qsort_r_compat.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceFilter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceIdCache.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceTable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SdkConstants.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SourcePos.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="StringPool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLNode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ZipEntry.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ZipFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AndroidConfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libcutils\loghack.h">
+      <Filter>libcutils</Filter>
+    </ClInclude>
+    <ClInclude Include="libcutils\socket_local.h">
+      <Filter>libcutils</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\amigaconfig.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\ascii.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\asciitab.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\expat.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\expat_config.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\expat_external.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\iasciitab.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\internal.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\latin1tab.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\macconfig.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\nametab.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\utf8tab.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\winconfig.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\xmlrole.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\xmltok.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+    <ClInclude Include="expat\files\lib\xmltok_impl.h">
+      <Filter>expat</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AaptAssets.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AaptConfig.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AaptUtil.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AaptXml.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ApkBuilder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CrunchCache.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FileFinder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Images.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Package.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="printapk.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="pseudolocalize.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="qsort_r_compat.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceFilter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceIdCache.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceTable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SourcePos.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StringPool.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WorkQueue.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLNode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipEntry.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\Asset.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\AssetDir.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\AssetManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\BackupData.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\BackupHelpers.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\CursorWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\misc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\ObbFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\ResourceTypes.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\StreamingZipInflater.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\TypeWrappers.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\ZipFileRO.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="androidfwsrc\ZipUtils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\BasicHashtable.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\BlobCache.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\CallStack.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\FileMap.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\JenkinsHash.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\LinearAllocator.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\LinearTransform.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\Log.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\Looper.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\misc.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\NativeHandle.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\Printer.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\ProcessCallStack.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\PropertyMap.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\RefBase.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\SharedBuffer.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\Static.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\StopWatch.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\String8.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\String16.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\SystemClock.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\Threads.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\Timers.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\Tokenizer.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\Trace.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\Unicode.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libutils\VectorImpl.cpp">
+      <Filter>libutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\android_reboot.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\ashmem-dev.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\ashmem-host.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\atomic.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\config_utils.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\cpu_info.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\debugger.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\dir_hash.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\dlmalloc_stubs.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\fs.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\hashmap.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\iosched_policy.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\klog.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\load_file.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\memory.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\multiuser.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\native_handle.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\open_memstream.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\partition_utils.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\process_name.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\properties.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\qtaguid.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\record_stream.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\sched_policy.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\socket_inaddr_any_server.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\socket_local_client.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\socket_local_server.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\socket_loopback_client.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\socket_loopback_server.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\socket_network_client.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\sockets.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\str_parms.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\strdup8to16.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\strdup16to8.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\threads.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\trace.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="libcutils\uevent.c">
+      <Filter>libcutils</Filter>
+    </ClCompile>
+    <ClCompile Include="expat\files\lib\xmlparse.c">
+      <Filter>expat</Filter>
+    </ClCompile>
+    <ClCompile Include="expat\files\lib\xmlrole.c">
+      <Filter>expat</Filter>
+    </ClCompile>
+    <ClCompile Include="expat\files\lib\xmltok.c">
+      <Filter>expat</Filter>
+    </ClCompile>
+    <ClCompile Include="expat\files\lib\xmltok_impl.c">
+      <Filter>expat</Filter>
+    </ClCompile>
+    <ClCompile Include="expat\files\lib\xmltok_ns.c">
+      <Filter>expat</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

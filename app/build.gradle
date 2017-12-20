@@ -14,10 +14,6 @@ android {
         versionCode 30
         versionName "1.2.2"
         vectorDrawables.useSupportLibrary = true
-        ndk {
-            moduleName "aapt"
-            abiFilters 'armeabi-v7a', 'x86'//, 'x86_64'//, 'arm64-v8a'
-        }
 
     }
 
@@ -25,10 +21,18 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            ndk {
+                moduleName "aapt"
+                abiFilters 'armeabi-v7a', 'x86'
+            }
         }
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            ndk {
+                moduleName "aapt"
+                abiFilters 'armeabi-v7a'
+            }
         }
     }
 
@@ -78,7 +82,7 @@ dependencies {
     compile project(':dx')
     compile project(':javacodeformatter')
     compile project(':androidlogcat')
-    compile project(':aapt')
+//    compile project(':aapt')
 
     //android support
     compile 'com.android.support:multidex:1.0.2'

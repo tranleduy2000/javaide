@@ -24,6 +24,7 @@ import com.duy.project.file.android.AndroidProjectFolder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -103,71 +104,28 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             ///create new android project
             String packageName = editPackage.getText().toString();
             String activityName = this.activityName.getText().toString();
-            String activityClass = packageName + "." + activityName;
+            String activityClass = String.format("%s.%s", packageName, activityName);
             String mainLayoutName = layoutName.getText().toString();
             String appName = editAppName.getText().toString();
             String classpath = FileManager.getClasspathFile(getContext()).getPath();
-
             String projectName = appName.replaceAll("\\s+", "");
-            AndroidProjectFolder projectFile = new AndroidProjectFolder(
-                    new File(FileManager.EXTERNAL_DIR), activityClass, packageName, projectName, classpath);
+
             try {
+                AndroidProjectFolder projectFile = new AndroidProjectFolder(
+                        new File(FileManager.EXTERNAL_DIR), activityClass, packageName, projectName, classpath);
                 //create directory
                 projectFile.mkdirs();
-                //copy resource
+
                 AssetManager assets = getContext().getAssets();
-                AssetUtil.copyAssetFolder(assets,
-                        "templates/src/main/res", projectFile.getDirRes().getPath());
 
-                //modified strings.xml
-                File stringxml = new File(projectFile.getDirRes(), "values/strings.xml");
-                String strings = FileManager.streamToString(new FileInputStream(
-                        stringxml)).toString();
-                strings = strings.replace("{APP_NAME}", appName);
-                strings = strings.replace("{MAIN_ACTIVITY_NAME}", appName);
-                Log.d(TAG, "doCreateProject strings = " + strings);
-                FileManager.saveFile(stringxml, strings);
-
-                File manifest = projectFile.getXmlManifest();
-                InputStream manifestTemplate = assets.open("templates/src/main/AndroidManifest.xml");
-                String contentManifest = FileManager.streamToString(manifestTemplate).toString();
-                contentManifest = contentManifest.replace("{PACKAGE}", packageName);
-//                contentManifest = contentManifest.replace("{APP_NAME}", appName);
-                contentManifest = contentManifest.replace("{MAIN_ACTIVITY}", activityClass);
-                Log.d(TAG, "doCreateProject contentManifest = " + contentManifest);
-                FileManager.saveFile(manifest, contentManifest);
-
-                //main activity
-                File activityFile = FileManager.createFileIfNeed(new File(projectFile.dirJava,
-                        activityClass.replace(".", File.separator) + ".java"));
-                InputStream activityTemplate = assets.open("templates/src/main/MainActivity.java");
-                String contentClass = FileManager.streamToString(activityTemplate).toString();
-                contentClass = contentClass.replace("{PACKAGE}", packageName);
-                contentClass = contentClass.replace("{APP_NAME}", appName);
-                contentClass = contentClass.replace("{ACTIVITY_NAME}", activityName);
-                Log.d(TAG, "doCreateProject contentManifest = " + contentClass);
-                FileManager.saveFile(activityFile, contentClass);
-
-                if (!mainLayoutName.contains(".")) mainLayoutName += ".xml";
-                File layoutMain = new File(projectFile.getDirLayout(), mainLayoutName);
-                layoutMain.createNewFile();
-                InputStream layoutTemplate = assets.open("templates/src/main/activity_main.xml");
-                String contentLayout = FileManager.streamToString(layoutTemplate).toString();
-                FileManager.saveFile(layoutMain, contentLayout);
-
-                //copy keystore
-                File file = projectFile.getKeyStore().getFile();
-                FileOutputStream out = new FileOutputStream(file);
-                FileManager.copyStream(assets.open("templates/src/main/androiddebug.jks"), out);
-                out.close();
-
-                //copy android support library
-                AssetUtil.copyAssetFolder(assets, "templates/libs", projectFile.dirLibs.getPath());
-
-
-                if (listener != null) {
-                    listener.onProjectCreated(projectFile);
-                }
+                copyAsset(projectFile, assets);
+                createStringXml(projectFile, mainLayoutName, appName, activityName, activityClass, packageName, assets);
+                copyKeyStore(projectFile, assets);
+                createManifest(projectFile, activityClass, packageName, assets);
+                createMainActivity(projectFile, activityClass, packageName, activityName, appName, assets);
+                createMainXml(projectFile, mainLayoutName, assets);
+                copyLibrary(projectFile, assets);
+                if (listener != null) listener.onProjectCreated(projectFile);
                 this.dismiss();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -175,6 +133,73 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
                         Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void copyAsset(AndroidProjectFolder projectFile, AssetManager assets) {
+        String resourcePath = projectFile.getDirRes().getPath();
+        AssetUtil.copyAssetFolder(assets, "templates/src/main/res", resourcePath);
+    }
+
+    private void copyLibrary(AndroidProjectFolder projectFile, AssetManager assets) {
+        //copy android support library
+        AssetUtil.copyAssetFolder(assets, "templates/libs", projectFile.dirLibs.getPath());
+    }
+
+    private void copyKeyStore(AndroidProjectFolder projectFile, AssetManager assets) throws IOException {
+
+        //copy keystore
+        File file = projectFile.getKeyStore().getFile();
+        FileOutputStream out = new FileOutputStream(file);
+        FileManager.copyStream(assets.open("templates/src/main/androiddebug.jks"), out);
+        out.close();
+
+    }
+
+    private void createStringXml(AndroidProjectFolder projectFile, String appName, String mainLayoutName,
+                                 String activityName, String activityClass, String packageName,
+                                 AssetManager assets) throws Exception {
+        File stringxml = new File(projectFile.getDirRes(), "values/strings.xml");
+        String strings = FileManager.streamToString(new FileInputStream(
+                stringxml)).toString();
+        strings = strings.replace("{APP_NAME}", appName);
+        strings = strings.replace("{MAIN_ACTIVITY_NAME}", appName);
+        Log.d(TAG, "doCreateProject strings = " + strings);
+        FileManager.saveFile(stringxml, strings);
+
+    }
+
+    private void createManifest(AndroidProjectFolder projectFile, String activityClass, String packageName,
+                                AssetManager assets) throws IOException {
+        File manifest = projectFile.getXmlManifest();
+        InputStream manifestTemplate = assets.open("templates/src/main/AndroidManifest.xml");
+        String contentManifest = FileManager.streamToString(manifestTemplate).toString();
+        contentManifest = contentManifest.replace("{PACKAGE}", packageName);
+        contentManifest = contentManifest.replace("{MAIN_ACTIVITY}", activityClass);
+        Log.d(TAG, "doCreateProject contentManifest = " + contentManifest);
+        FileManager.saveFile(manifest, contentManifest);
+    }
+
+    private void createMainActivity(AndroidProjectFolder projectFile, String activityClass,
+                                    String packageName, String activityName, String appName,
+                                    AssetManager assets) throws IOException {
+        File activityFile = FileManager.createFileIfNeed(new File(projectFile.dirJava,
+                activityClass.replace(".", File.separator) + ".java"));
+        InputStream activityTemplate = assets.open("templates/src/main/MainActivity.java");
+        String contentClass = FileManager.streamToString(activityTemplate).toString();
+        contentClass = contentClass.replace("{PACKAGE}", packageName);
+        contentClass = contentClass.replace("{APP_NAME}", appName);
+        contentClass = contentClass.replace("{ACTIVITY_NAME}", activityName);
+        Log.d(TAG, "doCreateProject contentManifest = " + contentClass);
+        FileManager.saveFile(activityFile, contentClass);
+    }
+
+    private void createMainXml(AndroidProjectFolder projectFile, String mainLayoutName, AssetManager assets) throws IOException {
+        if (!mainLayoutName.contains(".")) mainLayoutName += ".xml";
+        File layoutMain = new File(projectFile.getDirLayout(), mainLayoutName);
+        layoutMain.createNewFile();
+        InputStream layoutTemplate = assets.open("templates/src/main/activity_main.xml");
+        String contentLayout = FileManager.streamToString(layoutTemplate).toString();
+        FileManager.saveFile(layoutMain, contentLayout);
     }
 
     /**

@@ -457,7 +457,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
 
     @Override
     public void onNewFileCreated(@NonNull File file) {
-        mFilePresenter.show(mProjectFile, true);
+        mFilePresenter.refresh(mProjectFile);
         if (file.isFile()) addNewPageEditor(file, true);
     }
 

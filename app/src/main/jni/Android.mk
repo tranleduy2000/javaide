@@ -1,238 +1,210 @@
+# 
+# Copyright 2006 The Android Open Source Project
 #
-# Build file to create one big executable / shared library
-# with aapt and all depending libs
+# Android Asset Packaging Tool
 #
+
+# This tool is prebuilt if we're doing an app-only build.
 
 LOCAL_PATH:= $(call my-dir)
 
-#############################################################################
-# libpng definitions
-#############################################################################
-libpng_SRC_FILES := \
-	libpng/jni/png.c \
-	libpng/jni/pngerror.c \
-	libpng/jni/pnggccrd.c \
-	libpng/jni/pngget.c \
-	libpng/jni/pngmem.c \
-	libpng/jni/pngpread.c \
-	libpng/jni/pngread.c \
-	libpng/jni/pngrio.c \
-	libpng/jni/pngrtran.c \
-	libpng/jni/pngrutil.c \
-	libpng/jni/pngset.c \
-	libpng/jni/pngtrans.c \
-	libpng/jni/pngvcrd.c \
-	libpng/jni/pngwio.c \
-	libpng/jni/pngwrite.c \
-	libpng/jni/pngwtran.c \
-	libpng/jni/pngwutil.c 
-
-libpng_C_INCLUDES := $(LOCAL_PATH)/libpng/jni
-
-#############################################################################
-# expat definitions
-#############################################################################
-expat_SRC_FILES := \
-	expat/jni/lib/xmlparse.c \
-	expat/jni/lib/xmlrole.c \
-	expat/jni/lib/xmltok.c
-
-expat_CFLAGS += -DHAVE_EXPAT_CONFIG_H
-expat_C_INCLUDES := $(LOCAL_PATH)/expat/jni/lib
-
-#############################################################################
-# liblog definitions
-#############################################################################
-liblog_SRC_FILES := liblog/jni/logd_write.c
-liblog_CFLAGS := -DHAVE_PTHREADS
-liblog_C_INCLUDES += $(LOCAL_PATH)/libcutils/jni/include
-
-#############################################################################
-# libcutils definitions
-#############################################################################
-libcutils_SRC_FILES := \
-	libcutils/jni/array.c \
-	libcutils/jni/hashmap.c \
-	libcutils/jni/atomic.c.arm \
-	libcutils/jni/native_handle.c \
-	libcutils/jni/buffer.c \
-	libcutils/jni/socket_inaddr_any_server.c \
-	libcutils/jni/socket_local_client.c \
-	libcutils/jni/socket_local_server.c \
-	libcutils/jni/socket_loopback_client.c \
-	libcutils/jni/socket_loopback_server.c \
-	libcutils/jni/socket_network_client.c \
-	libcutils/jni/config_utils.c \
-	libcutils/jni/cpu_info.c \
-	libcutils/jni/load_file.c \
-	libcutils/jni/open_memstream.c \
-	libcutils/jni/strdup16to8.c \
-	libcutils/jni/strdup8to16.c \
-	libcutils/jni/record_stream.c \
-	libcutils/jni/process_name.c \
-	libcutils/jni/properties.c \
-	libcutils/jni/threads.c \
-	libcutils/jni/sched_policy.c \
-	libcutils/jni/iosched_policy.c \
-	libcutils/jni/str_parms.c \
-	libcutils/jni/abort_socket.c \
-	libcutils/jni/selector.c \
-	libcutils/jni/tztime.c \
-	libcutils/jni/zygote.c \
-	libcutils/jni/ashmem-dev.c \
-	libcutils/jni/mq.c \
-	libcutils/jni/uevent.c
-  
-ifeq ($(TARGET_ARCH),arm)
-libcutils_SRC_FILES += libcutils/jni/arch-arm/memset32.S
-else  # !arm
-ifeq ($(TARGET_ARCH),sh)
-libcutils_SRC_FILES += libcutils/jni/memory.c libcutils/jni/atomic-android-sh.c
-else  # !sh
-ifeq ($(TARGET_ARCH_VARIANT),x86-atom)
-libcutils_CFLAGS += -DHAVE_MEMSET16 -DHAVE_MEMSET32
-libcutils_SRC_FILES += libcutils/jni/arch-x86/android_memset16.S libcutils/jni/arch-x86/android_memset32.S libcutils/jni/memory.c
-else # !x86-atom
-libcutils_SRC_FILES += libcutils/jni/memory.c
-endif # !x86-atom
-endif # !sh
-endif # !arm
+include $(CLEAR_VARS)
 
 ifeq ($(TARGET_CPU_SMP),true)
-    libcutils_targetSmpFlag := -DANDROID_SMP=1
+    targetSmpFlag := -DANDROID_SMP=1
 else
-    libcutils_targetSmpFlag := -DANDROID_SMP=0
+    targetSmpFlag := -DANDROID_SMP=0
 endif
 
-libcutils_CFLAGS += $(libcutils_targetSmpFlag)
-libcutils_CFLAGS += -DHAVE_PTHREADS -DHAVE_SCHED_H -DHAVE_SYS_UIO_H -DHAVE_ANDROID_OS -DHAVE_IOCTL -DHAVE_TM_GMTOFF
-libcutils_C_INCLUDES := $(LOCAL_PATH)/libcutils/jni/include
+####################################################
+## cutils
+####################################################
+LOCAL_MODULE := cutils_static
+LOCAL_SRC_FILES := libcutils/atomic.c.arm \
+		libcutils/hashmap.c \
+		libcutils/native_handle.c \
+		libcutils/config_utils.c \
+		libcutils/cpu_info.c \
+		libcutils/load_file.c \
+		libcutils/open_memstream.c \
+		libcutils/strdup16to8.c \
+		libcutils/strdup8to16.c \
+		libcutils/record_stream.c \
+		libcutils/process_name.c \
+		libcutils/iosched_policy.c \
+		libcutils/str_parms.c \
+        libcutils/android_reboot.c \
+        libcutils/ashmem-dev.c \
+        libcutils/debugger.c \
+        libcutils/klog.c \
+        libcutils/memory.c \
+        libcutils/partition_utils.c \
+        libcutils/properties.c \
+        libcutils/qtaguid.c \
+        libcutils/trace.c \
+        libcutils/uevent.c \
+		libcutils/sched_policy.c \
+		libcutils/threads.c \
+		libcutils/fs.c \
+        libcutils/multiuser.c \
+        libcutils/socket_inaddr_any_server.c \
+        libcutils/socket_local_client.c \
+        libcutils/socket_local_server.c \
+        libcutils/socket_loopback_client.c \
+        libcutils/socket_loopback_server.c \
+        libcutils/socket_network_client.c \
+		libcutils/sockets.c 
+		
+         
+LOCAL_SRC_FILES_arm += \
+        arch-arm/memset32.S \
+
+LOCAL_SRC_FILES_arm64 += \
+        arch-arm64/android_memset.S \
+
+LOCAL_SRC_FILES_mips += \
+        arch-mips/android_memset.c \
+
+LOCAL_SRC_FILES_x86 += \
+        arch-x86/android_memset16.S \
+        arch-x86/android_memset32.S \
+
+LOCAL_SRC_FILES_x86_64 += \
+        arch-x86_64/android_memset16_SSE2-atom.S \
+        arch-x86_64/android_memset32_SSE2-atom.S \
+
+LOCAL_CFLAGS_arm += -DHAVE_MEMSET16 -DHAVE_MEMSET32
+LOCAL_CFLAGS_arm64 += -DHAVE_MEMSET16 -DHAVE_MEMSET32
+LOCAL_CFLAGS_mips += -DHAVE_MEMSET16 -DHAVE_MEMSET32
+LOCAL_CFLAGS_x86 += -DHAVE_MEMSET16 -DHAVE_MEMSET32
+LOCAL_CFLAGS_x86_64 += -DHAVE_MEMSET16 -DHAVE_MEMSET32
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/
+LOCAL_CFLAGS += $(targetSmpFlag) -Werror
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
+include $(BUILD_STATIC_LIBRARY)
+
+
+#aaptMain := Main.cpp
+aaptSources := \
+    JNIMain.c \
+    Main.cpp \
+    AaptAssets.cpp \
+    AaptConfig.cpp \
+    AaptUtil.cpp \
+    AaptXml.cpp \
+    ApkBuilder.cpp \
+    Command.cpp \
+    CrunchCache.cpp \
+    FileFinder.cpp \
+    Images.cpp \
+    Package.cpp \
+    pseudolocalize.cpp \
+    qsort_r_compat.cpp \
+    Resource.cpp \
+    ResourceFilter.cpp \
+    ResourceIdCache.cpp \
+    ResourceTable.cpp \
+    SourcePos.cpp \
+    StringPool.cpp \
+    WorkQueue.cpp \
+    XMLNode.cpp \
+    ZipEntry.cpp \
+    ZipFile.cpp \
+	VectorImpl.cpp \
+	Threads.cpp \
+	RefBase.cpp
 	
-#############################################################################
-# libhost definitions
-#############################################################################
-libhost_SRC_FILES:= \
-	libhost/jni/CopyFile.c \
-	libhost/jni/pseudolocalize.cpp
-
-ifeq ($(HOST_OS),cygwin)
-libhost_CFLAGS += -DWIN32_EXE
-endif
-ifeq ($(HOST_OS),windows)
-  ifeq ($(USE_MINGW),)
-    # Case where we're building windows but not under linux (so it must be cygwin)
-    libhost_CFLAGS += -DUSE_MINGW
-  endif
-endif
-ifeq ($(HOST_OS),darwin)
-libhost_CFLAGS += -DMACOSX_RSRC
-endif
-
-libhost_C_INCLUDES := $(LOCAL_PATH)/libhost/jni/include
-
-#############################################################################
-# libutils definitions
-#############################################################################
-libutils_SRC_FILES := \
-	libutils/jni/Asset.cpp \
-	libutils/jni/AssetDir.cpp \
-	libutils/jni/AssetManager.cpp \
-	libutils/jni/BufferedTextOutput.cpp \
-	libutils/jni/CallStack.cpp \
-	libutils/jni/Debug.cpp \
-	libutils/jni/FileMap.cpp \
-	libutils/jni/Flattenable.cpp \
-	libutils/jni/ObbFile.cpp \
-	libutils/jni/Pool.cpp \
-	libutils/jni/RefBase.cpp \
-	libutils/jni/ResourceTypes.cpp \
-	libutils/jni/SharedBuffer.cpp \
-	libutils/jni/Static.cpp \
-	libutils/jni/StopWatch.cpp \
-	libutils/jni/StreamingZipInflater.cpp \
-	libutils/jni/String8.cpp \
-	libutils/jni/String16.cpp \
-	libutils/jni/StringArray.cpp \
-	libutils/jni/SystemClock.cpp \
-	libutils/jni/TextOutput.cpp \
-	libutils/jni/Threads.cpp \
-	libutils/jni/Timers.cpp \
-	libutils/jni/VectorImpl.cpp \
-	libutils/jni/ZipFileCRO.cpp \
-	libutils/jni/ZipFileRO.cpp \
-	libutils/jni/ZipUtils.cpp \
-	libutils/jni/misc.cpp \
-    libutils/jni/BackupData.cpp \
-	libutils/jni/BackupHelpers.cpp \
-	libutils/jni/Looper.cpp
-
-libutils_CFLAGS += -DHAVE_ENDIAN_H -DHAVE_ANDROID_OS -DHAVE_PTHREADS -DHAVE_SYS_UIO_H -DHAVE_POSIX_FILEMAP
-libutils_C_INCLUDES += $(LOCAL_PATH)/libutils/jni/include
-
-#############################################################################
-# aapt definitions
-#############################################################################
-aapt_SRC_FILES := \
-  JNImain.c 	\
-	aapt/jni/StringPool.cpp \
-    aapt/jni/ZipFile.cpp \
-    aapt/jni/ZipEntry.cpp \
-	aapt/jni/Images.cpp \
-    aapt/jni/SourcePos.cpp \
-	aapt/jni/ResourceTable.cpp \
-	aapt/jni/Resource.cpp \
-	aapt/jni/AaptAssets.cpp \
-	aapt/jni/Main.cpp \
-	aapt/jni/Package.cpp \
-	aapt/jni/Command.cpp \
-	aapt/jni/XMLNode.cpp
-
-aapt_CFLAGS += -Wno-format-y2k
-
-#############################################################################
-# put it all together
-#############################################################################
+####################################################
+## aapt
+####################################################
 include $(CLEAR_VARS)
-LOCAL_MODULE:= libaaptcomplete
+LOCAL_SRC_FILES := $(aaptSources)
+LOCAL_CFLAGS += -DANDROID
+LOCAL_MODULE := aapt_static
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/libpng
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/zlib
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/nativehelper
+include $(BUILD_STATIC_LIBRARY)
 
-LOCAL_SRC_FILES += $(libpng_SRC_FILES)
-LOCAL_SRC_FILES += $(expat_SRC_FILES)
-LOCAL_SRC_FILES += $(liblog_SRC_FILES)
-LOCAL_SRC_FILES += $(libcutils_SRC_FILES)
-LOCAL_SRC_FILES += $(libhost_SRC_FILES)
-LOCAL_SRC_FILES += $(libutils_SRC_FILES)
-LOCAL_SRC_FILES += $(aapt_SRC_FILES)
+####################################################
+## androidfw
+####################################################
 
-LOCAL_C_INCLUDES += $(libpng_C_INCLUDES)
-LOCAL_C_INCLUDES += $(expat_C_INCLUDES)
-LOCAL_C_INCLUDES += $(libcutils_C_INCLUDES)
-LOCAL_C_INCLUDES += $(libhost_C_INCLUDES)
-LOCAL_C_INCLUDES += $(libutils_C_INCLUDES)
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := $(wildcard $(LOCAL_PATH)/androidfwsrc/*.cpp) libziparchive/zip_archive.cc
+LOCAL_CFLAGS += -DANDROID
+LOCAL_MODULE := androidfw_static
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/androidfwsrc
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/androidfw
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/nativehelper
+LOCAL_STATIC_LIBRARIES := utils_static
+include $(BUILD_STATIC_LIBRARY)
 
-LOCAL_CFLAGS += $(expat_CFLAGS)
-LOCAL_CFLAGS += $(libcutils_CFLAGS)
-LOCAL_CFLAGS += $(libhost_CFLAGS)
-LOCAL_CFLAGS += $(libutils_CFLAGS)
-LOCAL_CFLAGS += $(aapt_CFLAGS)
+####################################################
+## utils
+####################################################
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := $(wildcard $(LOCAL_PATH)/libutils/*.cpp)
+LOCAL_CFLAGS += -DANDROID
+LOCAL_MODULE := utils_static
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/libutils
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/utils
+LOCAL_STATIC_LIBRARIES := cutils_static
+include $(BUILD_STATIC_LIBRARY)
 
-#To build binaries with PIE, uncomment folowing two lines and one line in Application.mk
-#LOCAL_CFLAGS += -fPIE  
-#LOCAL_LDFLAGS += -fPIE -pie 
+####################################################
+## png
+####################################################
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := $(wildcard $(LOCAL_PATH)/libpng/*.c)
+LOCAL_CFLAGS += -DANDROID
+LOCAL_MODULE := png_static
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/libpng
+include $(BUILD_STATIC_LIBRARY)
 
-LOCAL_LDLIBS += -lz -llog
+####################################################
+## expat
+####################################################
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := $(wildcard $(LOCAL_PATH)/expat/files/lib/*.c)
+LOCAL_CFLAGS += -DANDROID -DHAVE_EXPAT_CONFIG_H
+LOCAL_MODULE := expat_static
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/expat/files/lib
+include $(BUILD_STATIC_LIBRARY)
 
-# Building a commandline executable for Android
-# include $(BUILD_EXECUTABLE)
+STATIC_LIBRARIES		:= androidfw_static cutils_static expat_static png_static utils_static
 
-# Building a shared library for Android
+####################################################
+## aapt
+####################################################
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES         := $(aaptSources)
+LOCAL_STATIC_LIBRARIES	+= $(STATIC_LIBRARIES)
+LOCAL_CFLAGS			+= -DANDROID
+LOCAL_LDLIBS			+= -ldl -lm -llog -lz
+LOCAL_MODULE			:= aapt
+LOCAL_C_INCLUDES        += $(LOCAL_PATH)/
+LOCAL_C_INCLUDES        += $(LOCAL_PATH)/libpng
+LOCAL_C_INCLUDES        += $(LOCAL_PATH)/zlib
+LOCAL_C_INCLUDES        += $(LOCAL_PATH)/nativehelper
 include $(BUILD_SHARED_LIBRARY)
 
-######################################################################################
-
-#include $(CLEAR_VARS)
-#LOCAL_MODULE:= libjackpal-androidterm2
-#LOCAL_SRC_FILES:= \
-#  termExec.cpp
-#LOCAL_LDLIBS := -ldl -llog
-#include $(BUILD_SHARED_LIBRARY)
-
+####################################################
+## aapt_pie
+####################################################
+# include $(CLEAR_VARS)
+# LOCAL_SRC_FILES			:= $(aaptMain)
+# LOCAL_STATIC_LIBRARIES	+= $(STATIC_LIBRARIES)
+# LOCAL_CFLAGS			+= -DANDROID -pie -fPIE
+# LOCAL_LDFLAGS			+= -pie -fPIE
+# LOCAL_LDLIBS			+= -ldl -lm -llog -lz
+# LOCAL_MODULE			:= aapt_pie
+# LOCAL_C_INCLUDES		+= $(LOCAL_PATH)/
+# LOCAL_C_INCLUDES		+= $(LOCAL_PATH)/libpng
+# LOCAL_C_INCLUDES		+= $(LOCAL_PATH)/zlib
+# include $(BUILD_SHARED_LIBRARY)

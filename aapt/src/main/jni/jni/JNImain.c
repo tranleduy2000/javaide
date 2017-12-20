@@ -1,0 +1,55 @@
+#include <jni.h>
+#include <string.h>
+#include <stdio.h>
+#include <android/log.h>
+
+
+// any underscore you use in a package/method name must
+// be translated into _1 on the native side.
+// So, com.t_arn.JavaIDEdroid becomes com_t_1arn_JavaIDEdroid
+
+jint Java_com_duy_compile_external_android_Aapt_JNImain(JNIEnv *env, jobject this, jstring args) {
+    jboolean isCopy;
+    const char *szArgs = (*env)->GetStringUTFChars(env, args, &isCopy);
+    char *ptr1, *ptr2;
+    int i, idx, argc = 1, len;
+    jint rc = 99;
+
+    __android_log_print(ANDROID_LOG_DEBUG, "JNImain",
+                        "Native method call: JNImain (%s)", szArgs);
+    len = strlen(szArgs);
+    for (i = 0; i < len; i++)
+        if (szArgs[i] == '\t')
+            argc++;
+    char *argv[argc];
+    ptr1 = ptr2 = (char *) szArgs;
+    idx = 0;
+    for (i = 0; i < len; i++) {
+        if (*ptr2 == '\t') {
+            *ptr2 = 0;
+            argv[idx] = ptr1;
+            idx++;
+            ptr1 = ptr2 + 1;
+        }
+        ptr2++;
+    } // for
+    argv[idx] = ptr1;
+
+    // redirect stderr and stdout
+    freopen("/storage/emulated/0/.AaptJNI/native_stderr.txt", "w", stderr);
+    freopen("/storage/emulated/0/.AaptJNI/native_stdout.txt", "w", stdout);
+
+    fprintf(stdout, "Aapt arguments:\n");
+    for (i = 1; i < argc; i++) {
+        fprintf(stdout, "%s\n", argv[i]);
+    }
+
+    // call aapt
+    rc = main(argc, argv);
+
+    // stopping the redirection
+    fclose(stderr);
+    fclose(stdout);
+
+    return rc;
+}

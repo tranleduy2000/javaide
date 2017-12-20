@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .command.grep;
+package com.duy.dx.command.grep;
 
 import com.duy.dex.Dex;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,6 +30,8 @@ public final class Main {
 
         Dex dex = new Dex(new File(dexFile));
         int count = new Grep(dex, Pattern.compile(pattern), new PrintWriter(System.out)).grep();
-        System.exit((count > 0) ? 0 : 1);
+        int status = (count > 0) ? 0 : 1;
+        System.err.println("exit code " + status);
+//        System.exit(status);
     }
 }

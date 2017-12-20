@@ -78,13 +78,17 @@ public class MainDexListBuilder {
             } else {
                 System.err.println("Invalid option " + args[argIndex]);
                 printUsage();
-                System.exit(STATUS_ERROR);
+//                System.exit(STATUS_ERROR);
+                System.err.println("exit code " + STATUS_ERROR);
+
             }
             argIndex++;
         }
         if (args.length - argIndex != 2) {
             printUsage();
-            System.exit(STATUS_ERROR);
+//            System.exit(STATUS_ERROR);
+            System.err.println("exit code " + STATUS_ERROR);
+
         }
 
         try {
@@ -94,7 +98,9 @@ public class MainDexListBuilder {
             printList(toKeep);
         } catch (IOException e) {
             System.err.println("A fatal error occured: " + e.getMessage());
-            System.exit(STATUS_ERROR);
+//            System.exit(STATUS_ERROR);
+            System.err.println("exit code " + STATUS_ERROR);
+
             return;
         }
     }

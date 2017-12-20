@@ -13,6 +13,7 @@ import com.duy.compile.external.java.Javac;
 import com.duy.dex.Dex;
 import com.duy.dx.merge.CollisionPolicy;
 import com.duy.dx.merge.DexMerger;
+import com.duy.ide.DLog;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.java.JavaProjectFolder;
@@ -76,6 +77,7 @@ public class CompileHelper {
     }
 
     public static void dexLibs(@NonNull JavaProjectFolder projectFile) throws Exception {
+        DLog.d(TAG, "dexLibs() called with: projectFile = [" + projectFile + "]");
         File dirLibs = projectFile.dirLibs;
         if (dirLibs.exists()) {
             File[] files = dirLibs.listFiles();
@@ -102,7 +104,7 @@ public class CompileHelper {
     }
 
     public static File dexBuildClasses(@NonNull JavaProjectFolder projectFile) throws IOException {
-        Log.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
+        DLog.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
         String input = projectFile.dirBuildClasses.getPath();
         FileManager.ensureFileExist(new File(input));
         String[] args = new String[]{"--dex", "--verbose", "--no-strict",
@@ -113,7 +115,7 @@ public class CompileHelper {
     }
 
     public static File dexMerge(@NonNull JavaProjectFolder projectFile) throws IOException {
-        Log.d(TAG, "dexMerge() called with: projectFile = [" + projectFile + "]");
+        DLog.d(TAG, "dexMerge() called with: projectFile = [" + projectFile + "]");
         FileManager.ensureFileExist(projectFile.getDexedClassesFile());
 
         if (projectFile.getDirDexedLibs().exists()) {

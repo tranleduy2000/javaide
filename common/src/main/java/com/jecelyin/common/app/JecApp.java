@@ -21,16 +21,14 @@ package com.jecelyin.common.app;
 import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
-import android.util.Log;
 
-import com.jecelyin.common.app.crash.CrashUtils;
 import com.jecelyin.common.utils.L;
 import com.jecelyin.common.utils.SysUtils;
 
 /**
  * @author Jecelyin Peng <jecelyin@gmail.com>
  */
-public abstract class JecApp extends Application implements Thread.UncaughtExceptionHandler {
+public abstract class JecApp extends Application  {
     private static Context context;
     private static long startupTimestamp;
 
@@ -51,23 +49,10 @@ public abstract class JecApp extends Application implements Thread.UncaughtExcep
             builder.penaltyLog();
             StrictMode.setVmPolicy(builder.build());
         }
-        // 捕捉未知异常
-        Thread.setDefaultUncaughtExceptionHandler(this);
-        // 安装内存泄漏监控或UI卡顿监控
         installMonitor();
     }
 
-    @Override
-    public void uncaughtException(Thread thread, final Throwable ex)
-    {
-        Log.e("uncaughtException", "#ERROR: " + ex.getMessage(), ex);
 
-        CrashUtils.saveException(getApplicationContext(), ex, thread);
-        CrashReportDialogActivity.startActivity(this, ex);
-
-//        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
-    }
 
     public static Context getContext() {
         return context;

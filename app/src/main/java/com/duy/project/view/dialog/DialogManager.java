@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.duy.ide.R;
-import com.duy.project.view.fragments.FolderStructureFragment;
+import com.duy.project.ProjectFileContract;
 
 import org.apache.commons.io.FileUtils;
 
@@ -21,7 +21,7 @@ import java.io.IOException;
 
 public class DialogManager {
     public static void showDialogCopyFile(final String selectedFile, final File parentFile,
-                                          final Context context, final FolderStructureFragment.Callback callback) {
+                                          final Context context, final ProjectFileContract.Callback callback) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.copy_file);
         builder.setView(R.layout.dialog_new_file);

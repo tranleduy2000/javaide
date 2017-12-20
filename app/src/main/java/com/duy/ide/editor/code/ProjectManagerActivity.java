@@ -63,10 +63,14 @@ import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.ide.adapters.BottomPageAdapter;
 import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.file.FileManager;
-import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.AppSetting;
 import com.duy.ide.view.SymbolListView;
+import com.duy.project.ProjectFilePresenter;
+import com.duy.project.ProjectManager;
+import com.duy.project.file.android.AndroidProjectFolder;
+import com.duy.project.file.java.ClassFile;
+import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.project.view.dialog.DialogManager;
 import com.duy.project.view.dialog.DialogNewAndroidProject;
 import com.duy.project.view.dialog.DialogNewAndroidResource;
@@ -74,11 +78,6 @@ import com.duy.project.view.dialog.DialogNewClass;
 import com.duy.project.view.dialog.DialogNewFolder;
 import com.duy.project.view.dialog.DialogNewJavaProject;
 import com.duy.project.view.dialog.DialogSelectType;
-import com.duy.project.file.android.AndroidProjectFolder;
-import com.duy.project.file.java.ClassFile;
-import com.duy.project.file.java.JavaProjectFolder;
-import com.duy.project.ProjectFilePresenter;
-import com.duy.project.ProjectManager;
 import com.duy.project.view.fragments.FolderStructureFragment;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -89,18 +88,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
-import static com.duy.project.view.fragments.FolderStructureFragment.Callback;
-import static com.duy.project.view.fragments.FolderStructureFragment.FileActionListener;
+import static com.duy.project.ProjectFileContract.Callback;
+import static com.duy.project.ProjectFileContract.FileActionListener;
+import static com.duy.project.ProjectFileContract.Presenter;
 import static com.duy.project.view.fragments.FolderStructureFragment.newInstance;
 
 /**
  * Created by Duy on 09-Mar-17.
  */
 public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
-        implements SymbolListView.OnKeyListener, EditorControl,
+        implements SymbolListView.OnKeyListener,
+        EditorControl,
         FileActionListener,
-        DialogNewJavaProject.OnCreateProjectListener, DialogNewClass.OnCreateFileListener,
-        DialogSelectType.OnFileTypeSelectListener, FileSelectListener {
+        DialogNewJavaProject.OnCreateProjectListener,
+        DialogSelectType.OnFileTypeSelectListener {
     private static final String TAG = "BaseEditorActivity";
 
     /*Constants*/
@@ -116,7 +117,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     protected EditorPagerAdapter mPageAdapter;
     protected SlidingUpPanelLayout mContainerOutput;
     protected JavaProjectFolder mProjectFile;
-    protected ProjectFileContract.Presenter mFilePresenter;
+    protected Presenter mFilePresenter;
     protected ViewPager mBottomPage;
     protected PagePresenter mPagePresenter;
     protected DiagnosticPresenter mDiagnosticPresenter;
@@ -131,7 +132,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     @Nullable
     protected SymbolListView mKeyList;
     protected ViewPager mViewPager;
-    private KeyBoardEventListener keyBoardListener;
+    private KeyBoardEventListener mKeyBoardListener;
 
     protected void onShowKeyboard() {
         mTabLayout.setVisibility(View.GONE);
@@ -255,8 +256,8 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         }
 
         //attach listener hide/show keyboard
-        keyBoardListener = new KeyBoardEventListener(this);
-        mDrawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(keyBoardListener);
+        mKeyBoardListener = new KeyBoardEventListener(this);
+        mDrawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(mKeyBoardListener);
     }
 
     /**
@@ -387,7 +388,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         closeKeyBoard();
-        mDrawerLayout.getViewTreeObserver().removeGlobalOnLayoutListener(keyBoardListener);
+        mDrawerLayout.getViewTreeObserver().removeGlobalOnLayoutListener(mKeyBoardListener);
         mFileManager.destroy();
     }
 
@@ -666,33 +667,21 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         }
     }
 
-    private void toast(String message) {
+    protected void toast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     public void showDialogOpenJavaProject() {
-//        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
-//                REQUEST_OPEN_JAVA_PROJECT);
-//        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
-        FileExplorerActivity.startPickPathActivity(this, FileManager.EXTERNAL_DIR, null, REQUEST_OPEN_JAVA_PROJECT);
+        FileExplorerActivity.startPickPathActivity(this, FileManager.EXTERNAL_DIR,
+                null, REQUEST_OPEN_JAVA_PROJECT);
     }
 
     public void showDialogOpenAndroidProject() {
-//        DialogSelectDirectory dialog = DialogSelectDirectory.newInstance(FileManager.EXTERNAL_DIR,
-//                REQUEST_OPEN_ANDROID_PROJECT);
-//        dialog.show(getSupportFragmentManager(), DialogSelectDirectory.TAG);
-        FileExplorerActivity.startPickPathActivity(this, FileManager.EXTERNAL_DIR, null, REQUEST_OPEN_ANDROID_PROJECT);
+        FileExplorerActivity.startPickPathActivity(this, FileManager.EXTERNAL_DIR,
+                null, REQUEST_OPEN_ANDROID_PROJECT);
 
     }
 
-    @Override
-    public void onFileSelected(File file, int request) {
-        Log.d(TAG, "onFileSelected() called with: file = [" + file + "], request = [" + request + "]");
-        switch (request) {
-
-
-        }
-    }
 
     public void closeDrawer(int start) {
         if (mDrawerLayout.isDrawerOpen(start)) mDrawerLayout.closeDrawer(start);

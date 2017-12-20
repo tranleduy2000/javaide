@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.file.FileManager;
 import com.duy.project.ProjectFileContract;
 import com.duy.project.file.java.JavaProjectFolder;
 
@@ -45,7 +44,7 @@ public class DialogNewFolder extends AppCompatDialogFragment implements View.OnC
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_new_xml, container, false);
+        return inflater.inflate(R.layout.dialog_new_folder, container, false);
     }
 
     @Override
@@ -75,7 +74,7 @@ public class DialogNewFolder extends AppCompatDialogFragment implements View.OnC
                 this.dismiss();
                 break;
             case R.id.btn_create:
-                createNewFile();
+                createNewFolder();
                 break;
         }
     }
@@ -90,7 +89,7 @@ public class DialogNewFolder extends AppCompatDialogFragment implements View.OnC
     }
 
 
-    private void createNewFile() {
+    private void createNewFolder() {
         String fileName = mEditName.getText().toString();
         if (fileName.isEmpty()) {
             mEditName.setError(getString(R.string.enter_name));
@@ -98,14 +97,12 @@ public class DialogNewFolder extends AppCompatDialogFragment implements View.OnC
         }
         try {
             File parent = (File) getArguments().getSerializable(KEY_PARENT_FILE);
-            File xmlFile = new File(parent, fileName);
-            if (!parent.exists()) parent.mkdirs();
-            xmlFile.createNewFile();
-            String header = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-            FileManager.saveFile(xmlFile, header);
-            if (listener != null) {
-                listener.onNewFileCreated(xmlFile);
+            File folder = new File(parent, fileName);
+            if (!parent.exists()) {
+                parent.mkdirs();
             }
+            folder.mkdir();
+            listener.onNewFileCreated(folder);
             dismiss();
         } catch (Exception e) {
             Toast.makeText(getContext(), "Can not create new file", Toast.LENGTH_SHORT).show();

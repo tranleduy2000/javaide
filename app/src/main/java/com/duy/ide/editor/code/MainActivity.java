@@ -293,9 +293,9 @@ public class MainActivity extends ProjectManagerActivity implements
             }).execute((AndroidProjectFolder) mProjectFile);
         } else {
             if (mProjectFile != null) {
-                complain("This is Java project, please create new Android project");
+                toast("This is Java project, please create new Android project");
             } else {
-                complain("You need create project");
+                toast("You need create project");
             }
         }
     }
@@ -411,7 +411,7 @@ public class MainActivity extends ProjectManagerActivity implements
 
             }).execute(mProjectFile);
         } else {
-            complain("You need create project");
+            toast("You need create project");
         }
     }
 

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.file.FileManager;
+import com.duy.project.ProjectFileContract;
 import com.duy.project.file.java.JavaProjectFolder;
 
 import java.io.File;
@@ -31,7 +32,7 @@ public class DialogNewAndroidResource extends AppCompatDialogFragment implements
     private EditText mEditName;
     //    private Spinner mKind;
     @Nullable
-    private DialogNewClass.OnCreateFileListener listener;
+    private ProjectFileContract.FileActionListener listener;
 
     public static DialogNewAndroidResource newInstance(@NonNull JavaProjectFolder p, @Nullable File currentFolder) {
         Bundle args = new Bundle();
@@ -61,7 +62,7 @@ public class DialogNewAndroidResource extends AppCompatDialogFragment implements
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (DialogNewClass.OnCreateFileListener) getActivity();
+            listener = (ProjectFileContract.FileActionListener) getActivity();
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
@@ -99,13 +100,13 @@ public class DialogNewAndroidResource extends AppCompatDialogFragment implements
         try {
 
             File parent = (File) getArguments().getSerializable(KEY_PARENT_FILE);
-            File xml = new File(parent, fileName);
+            File xmlFile = new File(parent, fileName);
             if (!parent.exists()) parent.mkdirs();
-            xml.createNewFile();
+            xmlFile.createNewFile();
             String header = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-            FileManager.saveFile(xml, header);
-            if (listener != null){
-                listener.onFileCreated(xml);
+            FileManager.saveFile(xmlFile, header);
+            if (listener != null) {
+                listener.onNewFileCreated(xmlFile);
             }
             dismiss();
         } catch (Exception e) {

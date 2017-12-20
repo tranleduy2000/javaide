@@ -26,7 +26,7 @@ public class ProjectFileContract {
         void refresh(JavaProjectFolder projectFile);
     }
 
-    public static interface FileActionListener {
+    public interface FileActionListener {
         /**
          * This method will be call when user click file or folder
          */

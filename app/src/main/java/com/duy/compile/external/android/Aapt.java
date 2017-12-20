@@ -23,7 +23,7 @@ public class Aapt {
         try {
             dirLog.mkdirs();
             System.out.println("Loading native library aaptcomplete...");
-            System.loadLibrary("aaptcomplete");
+            System.loadLibrary("aapt");
             bInitialized = true;
             return true;
         } catch (Exception e) {

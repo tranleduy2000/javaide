@@ -90,16 +90,16 @@ public class AndroidBuilder {
     private static void runAapt(AndroidProjectFolder projectFile) throws Exception {
         Log.d(TAG, "runAapt() called");
 
-        Aapt aapt = new Aapt();
-        String command = "aapt p -f " +
-                //"-v" +
+        com.duy.aapt.Aapt aapt = new com.duy.aapt.Aapt();
+        StringBuilder command = new StringBuilder("aapt p -f" +
+                //"-v" + //print info
                 " --auto-add-overlay" +
-                " -M " + projectFile.xmlManifest.getPath() + //manifest file
-                " -F " + projectFile.getResourceFile().getPath() + //
-                " -I " + projectFile.bootClasspath.getPath() + //include
-                " -A " + projectFile.getDirAssets().getPath() + //assets dir
-                " -S " + projectFile.getDirRes().getPath() + //resource dir
-                " -J " + projectFile.getClassR().getParent();//out R.java dir
+                " -M " + projectFile.xmlManifest.getPath()  //manifest file
+                + " -F " + projectFile.getResourceFile().getPath()  //output resources.ap_
+                + " -I " + projectFile.bootClasspath.getPath()  //include
+//                + " -A " + projectFile.getDirAssets().getPath()  //input assets dir
+//                + " -S " + projectFile.getDirRes().getPath()  //input resource dir
+                + " -J " + projectFile.getClassR().getParent());//parent file of R.java file
 
         File dirLibs = projectFile.getDirLibs();
         File[] files = dirLibs.listFiles();
@@ -107,15 +107,15 @@ public class AndroidBuilder {
             for (File lib : files) {
                 if (lib.isFile()) {
                     if (lib.getPath().endsWith(".jar")) {
-                        command += " -I " + lib.getPath();
+                        command.append(" -I ").append(lib.getPath());
                     } else if (lib.getPath().endsWith(".aar")) {
-                        command += " -I " + lib.getPath() + File.separator + "res";
+                        command.append(" -I ").append(lib.getPath()).append(File.separator).append("res");
                     }
                 }
             }
         }
         Log.d(TAG, "runAapt command = " + command);
-        int exitCode = aapt.fnExecute(command);
+        int exitCode = aapt.fnExecute(command.toString());
         if (exitCode != 0) {
             throw new Exception("AAPT exit(" + exitCode + ")");
         }

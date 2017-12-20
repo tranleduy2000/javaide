@@ -1,5 +1,7 @@
 package com.duy.ide;
 
+import com.android.annotations.NonNull;
+
 import java.io.File;
 
 /**
@@ -42,7 +44,7 @@ public class EditPageContract {
 
         void addPage(String path, boolean select);
 
-        void addPage(File path, boolean select);
+        void addPage(@NonNull File path, boolean select);
 
         void invalidateTab();
 

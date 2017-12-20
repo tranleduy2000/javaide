@@ -67,19 +67,19 @@ import com.duy.ide.file.FileSelectListener;
 import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.AppSetting;
 import com.duy.ide.view.SymbolListView;
-import com.duy.project.dialog.DialogManager;
-import com.duy.project.dialog.DialogNewAndroidProject;
-import com.duy.project.dialog.DialogNewAndroidResource;
-import com.duy.project.dialog.DialogNewClass;
-import com.duy.project.dialog.DialogNewJavaProject;
-import com.duy.project.dialog.DialogSelectType;
+import com.duy.project.view.dialog.DialogManager;
+import com.duy.project.view.dialog.DialogNewAndroidProject;
+import com.duy.project.view.dialog.DialogNewAndroidResource;
+import com.duy.project.view.dialog.DialogNewClass;
+import com.duy.project.view.dialog.DialogNewFolder;
+import com.duy.project.view.dialog.DialogNewJavaProject;
+import com.duy.project.view.dialog.DialogSelectType;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFolder;
-import com.duy.project.file.java.ProjectFileContract;
-import com.duy.project.file.java.ProjectFilePresenter;
-import com.duy.project.file.java.ProjectManager;
-import com.duy.project.fragments.FolderStructureFragment;
+import com.duy.project.ProjectFilePresenter;
+import com.duy.project.ProjectManager;
+import com.duy.project.view.fragments.FolderStructureFragment;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -89,9 +89,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
-import static com.duy.project.fragments.FolderStructureFragment.Callback;
-import static com.duy.project.fragments.FolderStructureFragment.FileActionListener;
-import static com.duy.project.fragments.FolderStructureFragment.newInstance;
+import static com.duy.project.view.fragments.FolderStructureFragment.Callback;
+import static com.duy.project.view.fragments.FolderStructureFragment.FileActionListener;
+import static com.duy.project.view.fragments.FolderStructureFragment.newInstance;
 
 /**
  * Created by Duy on 09-Mar-17.
@@ -455,13 +455,13 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     protected abstract void startAutoCompleteService();
 
     @Override
-    public void onFileCreated(File classF) {
+    public void onNewFileCreated(@NonNull File file) {
         mFilePresenter.show(mProjectFile, true);
-        addNewPageEditor(classF, true);
+        if (file.isFile()) addNewPageEditor(file, true);
     }
 
     @Override
-    public void onFileClick(File file, Callback callBack) {
+    public void onFileClick(@NonNull File file, Callback callBack) {
         if (FileUtils.canEdit(file)) {
             //save current file
             addNewPageEditor(file, SELECT);
@@ -504,7 +504,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     }
 
     @Override
-    public void onFileLongClick(File file, Callback callBack) {
+    public void onFileLongClick(@NonNull File file, Callback callBack) {
         if (FileUtils.canRead(file)) {
             showFileInfo(file);
         } else {
@@ -572,17 +572,25 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         } else if (type.equals(getString(R.string.xml_file))) {
             showDialogCreateNewXml(parent);
         } else if (type.equals(getString(R.string.from_storage))) {
-            FileExplorerActivity.startPickFileActivity(this,
-                    Environment.getExternalStorageDirectory().getPath(), REQUEST_PICK_FILE, parent);
+            String path = Environment.getExternalStorageDirectory().getPath();
+            FileExplorerActivity.startPickFileActivity(this, path, REQUEST_PICK_FILE, parent);
         } else if (type.equals(getString(R.string.new_folder))) {
             showDialogCreateNewFolder(parent);
         }
     }
 
-    private void showDialogCreateNewFolder(File file) {
-//        if (mProjectFile != null && file != null) {
-//            DialogHelper.showFilenameSuggestingDialog();
-//        }
+    /**
+     * Show dialog create new folder
+     *
+     * @param file - current file, uses for determine current directory, it can be null
+     */
+    private void showDialogCreateNewFolder(@Nullable File file) {
+        if (mProjectFile != null && file != null) {
+            DialogNewFolder newFolder = DialogNewFolder.newInstance(mProjectFile, file);
+            newFolder.show(getSupportFragmentManager(), DialogNewClass.TAG);
+        } else {
+            toast("Can not create new folder");
+        }
     }
 
 
@@ -635,11 +643,10 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
 
     private void showDialogCreateNewXml(File file) {
         if (mProjectFile != null && file != null) {
-            DialogNewAndroidResource dialogNewClass;
-            dialogNewClass = DialogNewAndroidResource.newInstance(mProjectFile, file);
-            dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
+            DialogNewAndroidResource dialog = DialogNewAndroidResource.newInstance(mProjectFile, file);
+            dialog.show(getSupportFragmentManager(), DialogNewClass.TAG);
         } else {
-            complain("Can not create Android resource file");
+            toast("Can not create Android resource file");
         }
     }
 
@@ -655,12 +662,12 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
             dialogNewClass = DialogNewClass.newInstance(mProjectFile, null, file);
             dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
         } else {
-            complain("Can not create new class");
+            toast("Can not create new class");
         }
     }
 
-    void complain(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    private void toast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     public void showDialogOpenJavaProject() {

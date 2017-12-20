@@ -1,4 +1,4 @@
-package com.duy.project.file.java;
+package com.duy.project;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,6 +9,8 @@ import com.android.sdklib.xml.AndroidManifestParser;
 import com.android.sdklib.xml.ManifestData;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProjectFolder;
+import com.duy.project.file.java.ClassFile;
+import com.duy.project.file.java.JavaProjectFolder;
 
 import java.io.File;
 import java.io.FileInputStream;

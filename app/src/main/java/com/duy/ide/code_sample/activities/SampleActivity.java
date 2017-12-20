@@ -20,7 +20,7 @@ import com.duy.ide.code_sample.model.CodeCategory;
 import com.duy.ide.code_sample.model.CodeProjectSample;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.JavaProjectFolder;
-import com.duy.project.file.java.ProjectManager;
+import com.duy.project.ProjectManager;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

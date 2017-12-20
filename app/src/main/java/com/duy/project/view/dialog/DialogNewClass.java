@@ -1,4 +1,4 @@
-package com.duy.project.dialog;
+package com.duy.project.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.Template;
+import com.duy.project.ProjectFileContract;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.project.utils.ProjectFileUtil;
 
@@ -30,17 +31,27 @@ import static android.view.ViewGroup.LayoutParams;
 
 public class DialogNewClass extends AppCompatDialogFragment implements View.OnClickListener {
     public static final String TAG = "DialogNewClass";
+    private static final String KEY_PROJECT_FILE = "project_file";
+    private static final String KEY_PARENT_FILE = "parent_file";
+    private static final String KEY_PACKAGE = "current_package";
     private EditText mEditName;
     private Spinner mKind;
     private RadioGroup mModifiers, mVisibility;
     @Nullable
-    private OnCreateFileListener listener;
-
+    private ProjectFileContract.FileActionListener listener;
     private EditText mPackage;
 
-    private static final String KEY_PROJECT_FILE = "project_file";
-    private static final String KEY_PARENT_FILE = "parent_file";
-    private static final String KEY_PACKAGE = "current_package";
+    public static DialogNewClass newInstance(@NonNull JavaProjectFolder p,
+                                             @Nullable String currentPackage,
+                                             @Nullable File currentFolder) {
+        Bundle args = new Bundle();
+        args.putSerializable(KEY_PROJECT_FILE, p);
+        args.putString(KEY_PACKAGE, currentPackage);
+        args.putSerializable(KEY_PARENT_FILE, currentFolder);
+        DialogNewClass fragment = new DialogNewClass();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -61,22 +72,10 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (OnCreateFileListener) getActivity();
+            listener = (ProjectFileContract.FileActionListener) getActivity();
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
-    }
-
-    public static DialogNewClass newInstance(@NonNull JavaProjectFolder p,
-                                             @Nullable String currentPackage,
-                                             @Nullable File currentFolder) {
-        Bundle args = new Bundle();
-        args.putSerializable(KEY_PROJECT_FILE, p);
-        args.putString(KEY_PACKAGE, currentPackage);
-        args.putSerializable(KEY_PARENT_FILE, currentFolder);
-        DialogNewClass fragment = new DialogNewClass();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -150,14 +149,11 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         if (projectFile != null) {
             File classf = JavaProjectFolder.createClass(projectFile, currentPackage, className, content);
             if (listener != null) {
-                listener.onFileCreated(classf);
+                listener.onNewFileCreated(classf);
                 Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();
                 this.dismiss();
             }
         }
     }
 
-    public interface OnCreateFileListener {
-        void onFileCreated(File classF);
-    }
 }

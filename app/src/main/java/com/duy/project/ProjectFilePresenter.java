@@ -1,4 +1,6 @@
-package com.duy.project.file.java;
+package com.duy.project;
+
+import com.duy.project.file.java.JavaProjectFolder;
 
 /**
  * Created by Duy on 17-Jul-17.

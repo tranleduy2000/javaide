@@ -1,4 +1,4 @@
-package com.duy.project.fragments;
+package com.duy.project.view.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,9 +15,8 @@ import android.view.ViewGroup;
 
 import com.duy.compile.CompileManager;
 import com.duy.ide.R;
+import com.duy.project.ProjectFileContract;
 import com.duy.project.file.java.JavaProjectFolder;
-import com.duy.project.file.java.ProjectFileContract;
-import com.duy.project.holder.FolderHolder;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
@@ -32,13 +31,12 @@ import static android.widget.FrameLayout.LayoutParams;
  * Created by Duy on 17-Jul-17.
  */
 
-public class FolderStructureFragment extends Fragment
-        implements ProjectFileContract.View {
+public class FolderStructureFragment extends Fragment implements ProjectFileContract.View {
     public static final String TAG = "FolderStructureFragment";
     private final android.os.Handler mHandler = new android.os.Handler();
     private JavaProjectFolder mProjectFile;
     @Nullable
-    private FileActionListener listener;
+    private com.duy.project.ProjectFileContract.FileActionListener listener;
     private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
         @Override
         public void onClick(TreeNode node, Object value) {
@@ -260,7 +258,7 @@ public class FolderStructureFragment extends Fragment
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            this.listener = (FileActionListener) getActivity();
+            this.listener = (com.duy.project.ProjectFileContract.FileActionListener) getActivity();
         } catch (ClassCastException ignored) {
         }
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
@@ -276,27 +274,6 @@ public class FolderStructureFragment extends Fragment
     }
 
 
-    public interface FileActionListener {
-        /**
-         * This method will be call when user click file or folder
-         *
-         * @param file
-         * @param callBack
-         */
-        void onFileClick(File file, @Nullable Callback callBack);
 
-        void onFileLongClick(File file, @Nullable Callback callBack);
 
-        boolean clickRemoveFile(File file, Callback callBack);
-
-        boolean clickCreateNewFile(File file, Callback callBack);
-
-        void clickNewModule();
-    }
-
-    public interface Callback {
-        void onSuccess(File file);
-
-        void onFailed(@Nullable Exception e);
-    }
 }

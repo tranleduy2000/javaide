@@ -78,7 +78,7 @@ public class PagePresenter implements EditPageContract.Presenter {
 
     @Override
     public void addPage(File file, boolean select) {
-        if (file == null || !file.exists()) return;
+        if (file == null || !file.exists() && !file.isFile() && file.canRead()) return;
 
         int position = mPageAdapter.getPositionForTag(file.getPath());
         if (position != -1) { //existed in list file

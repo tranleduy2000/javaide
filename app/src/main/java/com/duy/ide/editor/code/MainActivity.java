@@ -68,7 +68,7 @@ import com.duy.ide.utils.RootUtils;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFolder;
-import com.duy.project.file.java.ProjectManager;
+import com.duy.project.ProjectManager;
 import com.duy.project.utils.ClassUtil;
 import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;

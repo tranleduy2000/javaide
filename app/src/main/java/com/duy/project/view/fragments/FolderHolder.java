@@ -1,4 +1,4 @@
-package com.duy.project.holder;
+package com.duy.project.view.fragments;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -15,8 +15,8 @@ import com.unnamed.b.atv.model.TreeNode;
 
 import java.io.File;
 
-import static com.duy.project.fragments.FolderStructureFragment.Callback;
-import static com.duy.project.fragments.FolderStructureFragment.FileActionListener;
+import static com.duy.project.ProjectFileContract.Callback;
+import static com.duy.project.ProjectFileContract.FileActionListener;
 
 
 public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeItem> {

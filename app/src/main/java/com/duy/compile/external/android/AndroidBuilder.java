@@ -105,7 +105,7 @@ public class AndroidBuilder {
         File[] files = dirLibs.listFiles();
         if (files != null) {
             for (File lib : files) {
-                if (lib.isFile()) {
+                if (lib.isFile() && false) {
                     if (lib.getPath().endsWith(".jar")) {
                         command.append(" -I ").append(lib.getPath());
                     } else if (lib.getPath().endsWith(".aar")) {

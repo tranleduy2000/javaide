@@ -1,4 +1,4 @@
-package com.duy.project.dialog;
+package com.duy.project.view.dialog;
 
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.duy.ide.R;
-import com.duy.project.fragments.FolderStructureFragment;
+import com.duy.project.view.fragments.FolderStructureFragment;
 
 import org.apache.commons.io.FileUtils;
 

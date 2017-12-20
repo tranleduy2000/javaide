@@ -28,7 +28,7 @@ import static com.google.common.base.Charsets.UTF_8;
  * Created by Duy on 15-Aug-17.
  */
 public class TestJavacParser extends TestCase {
-    private String src = "package com.duy.project.dialog;\n" +
+    private String src = "package com.duy.project.view.dialog;\n" +
             "\n" +
             "import android.app.Activity;\n" +
             "import android.app.Dialog;\n" +

@@ -42,6 +42,6 @@ public class JavaDexClassLoader {
     }
 
     public void loadAllClasses(boolean fullRefresh, JavaProjectFolder projectFile) {
-        mClassReader.load(projectFile);
+//        mClassReader.load(projectFile);
     }
 }

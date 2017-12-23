@@ -1,5 +1,6 @@
 package com.duy.project.file.java;
 
+import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -22,20 +23,19 @@ import java.io.Serializable;
 public class JavaProjectFolder implements Serializable, Cloneable {
     private static final String TAG = "ProjectFile";
 
-    public final File dirLibs;
-    public final File dirSrcMain;
-    public final File dirJava;
-    public final File dirBuildClasses;
+    public File dirLibs;
+    public File dirSrcMain;
+    public File dirJava;
+    public File dirBuildClasses;
 
     /* Project */
-    protected final File dirRoot;
-    protected final File dirProject;
+    protected File dirRoot;
+    protected File dirProject;
 
     /* Build */
-    protected final File dirBuild;
-    protected final File dirOutput;
-    protected final File dirOutputJar;
-    public File bootClasspath;
+    protected File dirBuild;
+    protected File dirOutput;
+    protected File dirOutputJar;
     protected File dirDexedLibs;
     protected File dirDexedClass;
     protected File dexedClassesFile;
@@ -46,17 +46,46 @@ public class JavaProjectFolder implements Serializable, Cloneable {
     private String projectName;
     private File jarArchive;
 
-    public JavaProjectFolder(File root, String mainClassName, String packageName, String projectName,
-                             String classpath) {
-        Log.d(TAG, "JavaProjectFile() called with: root = [" + root + "], mainClassName = ["
-                + mainClassName + "], packageName = [" + packageName + "], projectName = ["
-                + projectName + "], classpath = [" + classpath + "]");
-
+    public JavaProjectFolder(File root, String mainClassName, String packageName, String projectName) {
         this.mainClass = new ClassFile(mainClassName);
         this.projectName = projectName;
         this.packageName = packageName;
         this.dirRoot = root;
+        initJavaProject();
+    }
 
+    @Nullable
+    public static JavaProjectFolder restore(@Nullable JSONObject json) throws JSONException {
+        if (json == null) return null;
+        ClassFile mainClass = new ClassFile("");
+        if (json.has("main_class_mame")) {
+            mainClass = new ClassFile(json.getString("main_class_mame"));
+        }
+        File dirRoot = null;
+        String packageName = null;
+        String projectName = null;
+        String classpath = null;
+        if (json.has("root_dir")) dirRoot = new File(json.getString("root_dir"));
+        if (json.has("package_name")) packageName = json.getString("package_name");
+        if (json.has("project_name")) projectName = json.getString("project_name");
+        if (json.has("classpath")) classpath = json.getString("classpath");
+        if (dirRoot == null || packageName == null || projectName == null || classpath == null) {
+            return null;
+        }
+        return new JavaProjectFolder(dirRoot, mainClass.getName(), packageName, projectName);
+    }
+
+    public File createClass(String currentPackage, String className, String content) {
+        File file = new File(dirJava, currentPackage.replace(".", File.separator));
+        if (!file.exists()) file.mkdirs();
+        File classf = new File(file, className + ".java");
+        FileManager.saveFile(classf, content);
+
+        Log.d(TAG, "createClass() returned: " + classf);
+        return classf;
+    }
+
+    private void initJavaProject() {
         dirProject = new File(dirRoot, projectName);
         dirLibs = new File(dirProject, "libs");
         dirSrcMain = new File(dirProject, "src" + File.separator + "main");
@@ -70,7 +99,8 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         dirDexedClass = new File(dirBuild, "dexedClasses");
 
         dexedClassesFile = new File(dirDexedClass, projectName + ".dex");
-        bootClasspath = new File(classpath);
+        jarArchive = new File(dirOutputJar, projectName + ".jar");
+
 
         if (!dirRoot.exists()) {
             dirRoot.mkdirs();
@@ -97,40 +127,6 @@ public class JavaProjectFolder implements Serializable, Cloneable {
             dirBuildClasses.setReadable(true);
         }
 
-        jarArchive = new File(dirOutputJar, projectName + ".jar");
-    }
-
-    public static File createClass(JavaProjectFolder projectFile,
-                                   String currentPackage, String className,
-                                   String content) {
-        File file = new File(projectFile.dirJava, currentPackage.replace(".", File.separator));
-        if (!file.exists()) file.mkdirs();
-        File classf = new File(file, className + ".java");
-        FileManager.saveFile(classf, content);
-
-        Log.d(TAG, "createClass() returned: " + classf);
-        return classf;
-    }
-
-    @Nullable
-    public static JavaProjectFolder restore(@Nullable JSONObject json) throws JSONException {
-        if (json == null) return null;
-        ClassFile mainClass = new ClassFile("");
-        if (json.has("main_class_mame")) {
-            mainClass = new ClassFile(json.getString("main_class_mame"));
-        }
-        File dirRoot = null;
-        String packageName = null;
-        String projectName = null;
-        String classpath = null;
-        if (json.has("root_dir")) dirRoot = new File(json.getString("root_dir"));
-        if (json.has("package_name")) packageName = json.getString("package_name");
-        if (json.has("project_name")) projectName = json.getString("project_name");
-        if (json.has("classpath")) classpath = json.getString("classpath");
-        if (dirRoot == null || packageName == null || projectName == null || classpath == null) {
-            return null;
-        }
-        return new JavaProjectFolder(dirRoot, mainClass.getName(), packageName, projectName, classpath);
     }
 
     public File getOutJarArchive() throws IOException {
@@ -142,11 +138,6 @@ public class JavaProjectFolder implements Serializable, Cloneable {
 
     }
 
-    public File getBootClasspath() {
-        if (bootClasspath.exists()) {
-        }
-        return bootClasspath;
-    }
 
     public File getDexedClassesFile() throws IOException {
         if (!dexedClassesFile.exists()) {
@@ -288,7 +279,6 @@ public class JavaProjectFolder implements Serializable, Cloneable {
             json.put("root_dir", dirRoot);
             json.put("package_name", packageName);
             json.put("project_name", projectName);
-            json.put("classpath", bootClasspath.getPath());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -306,19 +296,20 @@ public class JavaProjectFolder implements Serializable, Cloneable {
     }
 
     /**
+     * @param context
      * @return the string contains all file *.jar in dirLibs
      */
-    public String getJavaClassPath() {
-        String classpath = ".";
+    public String getJavaClassPath(Context context) {
+        StringBuilder classpath = new StringBuilder(".");
         File[] files = getDirLibs().listFiles();
         if (files != null) {
             for (File jarLib : files) {
                 if (jarLib.isFile() && jarLib.getName().endsWith(".jar")) {
-                    classpath += File.pathSeparator + jarLib.getPath();
+                    classpath.append(File.pathSeparator).append(jarLib.getPath());
                 }
             }
         }
-        return classpath + File.pathSeparator + getJavaBootClassPath();
+        return classpath.append(File.pathSeparator) + getJavaBootClassPath(context);
     }
 
     public File getDirSrcJava() {
@@ -326,8 +317,8 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         return dirJava;
     }
 
-    private String getJavaBootClassPath() {
-        return bootClasspath.getPath();
+    private String getJavaBootClassPath(Context context) {
+        return FileManager.getClasspathFile(context).getPath();
     }
 
 }

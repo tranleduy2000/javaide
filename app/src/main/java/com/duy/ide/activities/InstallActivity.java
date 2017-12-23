@@ -360,7 +360,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         protected File doInBackground(File... params) {
             try {
                 AssetManager assets = context.getAssets();
-                InputStream open = assets.open("android-23/android-23.zip");
+                InputStream open = assets.open("android-25/android-25.zip");
                 File outFile = new File(getFilesDir(), "classes.zip");
                 FileOutputStream fileOutputStream = new FileOutputStream(outFile);
                 FileManager.copyStream(open, fileOutputStream);

@@ -49,14 +49,11 @@ import java.util.Collection;
  * File Manager
  * Created by Duy on 10-Feb-17.
  */
-
 public class FileManager {
-    /**
-     * storage path for saveFile code
-     */
     public static final String EXTERNAL_DIR_SRC;
     public static final String EXTERNAL_DIR;
     private static final String ANDROID_CLASSPATH = "android.jar";
+    private static final String SDK_DIR = "android-21";
 
     static {
         EXTERNAL_DIR_SRC = Environment.getExternalStorageDirectory() + "/JavaNIDE/src/";
@@ -210,21 +207,20 @@ public class FileManager {
 
     @NonNull
     public static File getClasspathFile(Context context) {
-        File classesDir = new File(context.getFilesDir(), "classes");
+        File classesDir = new File(context.getFilesDir(), SDK_DIR);
         if (!classesDir.exists()) classesDir.mkdir();
         return new File(classesDir, ANDROID_CLASSPATH);
     }
 
     @NonNull
     public static File getSdkDir(Context context) {
-        File classesDir = new File(context.getFilesDir(), "classes");
+        File classesDir = new File(context.getFilesDir(), SDK_DIR);
         if (!classesDir.exists()) classesDir.mkdir();
         return classesDir;
     }
 
     public static boolean isSdkInstalled(Context context) {
-        File classesDir = new File(context.getFilesDir(), "classes");
-        if (!classesDir.exists()) classesDir.mkdir();
+        File classesDir = new File(context.getFilesDir(), SDK_DIR);
         File classpath = new File(classesDir, ANDROID_CLASSPATH);
         return classpath.exists() && classpath.length() > 0;
     }

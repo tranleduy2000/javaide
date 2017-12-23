@@ -1,5 +1,6 @@
 package com.duy.compile.external;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -36,9 +37,9 @@ public class CompileHelper {
     private static final String TAG = "CommandManager";
 
     @Nullable
-    public static File buildJarAchieve(JavaProjectFolder projectFile,
+    public static File buildJarAchieve(Context context, JavaProjectFolder projectFile,
                                        DiagnosticListener listener) throws IOException {
-        int status = compileJava(projectFile, listener);
+        int status = compileJava(context, projectFile, listener);
         if (status != Main.EXIT_OK) {
             throw new RuntimeException("Compile time error... Exit code(" + status + ")");
         }
@@ -47,15 +48,15 @@ public class CompileHelper {
         return projectFile.getOutJarArchive();
     }
 
-    public static int compileJava(JavaProjectFolder pf) {
-        return compileJava(pf, null);
+    public static int compileJava(Context context, JavaProjectFolder pf) {
+        return compileJava(context, pf, null);
     }
 
-    public static int compileJava(JavaProjectFolder projectFile, @Nullable DiagnosticListener listener) {
+    public static int compileJava(Context context, JavaProjectFolder projectFile, @Nullable DiagnosticListener listener) {
         try {
             String[] args = new String[]{
                     "-verbose",
-                    "-cp", projectFile.getJavaClassPath(),
+                    "-cp", projectFile.getJavaClassPath(context),
                     "-sourcepath", projectFile.getDirSrcJava().getPath(), //sourcepath
                     "-d", projectFile.getDirBuildClasses().getPath(), //output dir
                     projectFile.getMainClass().getPath(projectFile) //main class
@@ -70,10 +71,10 @@ public class CompileHelper {
         return Main.EXIT_ERROR;
     }
 
-    public static void compileAndRun(InputStream in, File tempDir, JavaProjectFolder projectFile) throws Exception {
-        compileJava(projectFile);
-        convertToDexFormat(projectFile);
-        executeDex(in, projectFile.getDexedClassesFile(), tempDir, projectFile.getMainClass().getName());
+    public static void compileAndRun(Context context, InputStream in, File tempDir, JavaProjectFolder projectFile) throws Exception {
+        compileJava(context, projectFile);
+        convertToDexFormat(context, projectFile);
+        executeDex(context, in, projectFile.getDexedClassesFile(), tempDir, projectFile.getMainClass().getName());
     }
 
     public static void dexLibs(@NonNull JavaProjectFolder projectFile) throws Exception {
@@ -135,7 +136,7 @@ public class CompileHelper {
         return projectFile.getDexedClassesFile();
     }
 
-    public static void executeDex(InputStream in, @NonNull File outDex, @NonNull File tempDir, String mainClass)
+    public static void executeDex(Context context, InputStream in, @NonNull File outDex, @NonNull File tempDir, String mainClass)
             throws FileNotFoundException {
         FileManager.ensureFileExist(outDex);
 
@@ -143,16 +144,16 @@ public class CompileHelper {
         Java.run(args, tempDir.getPath(), in);
     }
 
-    public static void convertToDexFormat(@NonNull JavaProjectFolder projectFile) throws Exception {
+    public static void convertToDexFormat(Context context, @NonNull JavaProjectFolder projectFile) throws Exception {
         Log.d(TAG, "convertToDexFormat() called with: projectFile = [" + projectFile + "]");
         dexLibs(projectFile);
         dexBuildClasses(projectFile);
         dexMerge(projectFile);
     }
 
-    public static File buildApk(AndroidProjectFolder projectFile,
+    public static File buildApk(Context context, AndroidProjectFolder projectFile,
                                 DiagnosticCollector diagnosticCollector) throws Exception {
-        AndroidBuilder.build(projectFile, diagnosticCollector);
+        AndroidBuilder.build(context, projectFile, diagnosticCollector);
         return projectFile.getApkUnaligned();
     }
 

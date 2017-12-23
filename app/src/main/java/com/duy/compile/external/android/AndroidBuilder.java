@@ -1,9 +1,11 @@
 package com.duy.compile.external.android;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
 import com.duy.compile.external.CompileHelper;
+import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.android.KeyStore;
 import com.spartacusrex.spartacuside.external.apkbuilder;
@@ -34,7 +36,7 @@ public class AndroidBuilder {
         apkbuilder.main(args);
     }
 
-    public static void build(AndroidProjectFolder projectFile,
+    public static void build(Context context, AndroidProjectFolder projectFile,
                              @NonNull DiagnosticCollector diagnosticCollector) throws Exception {
         AndroidBuilder.extractLibrary(projectFile);
 
@@ -42,11 +44,11 @@ public class AndroidBuilder {
         System.out.println("Run aidl");
         AndroidBuilder.runAidl(projectFile);
         System.out.println("Run aapt");
-        AndroidBuilder.runAapt(projectFile);
+        AndroidBuilder.runAapt(context, projectFile);
 
         //compile java
         System.out.println("Compile Java file");
-        int status = CompileHelper.compileJava(projectFile, diagnosticCollector);
+        int status = CompileHelper.compileJava(context, projectFile, diagnosticCollector);
         System.gc();
         if (status != Main.EXIT_OK) {
             System.out.println("Compile error");
@@ -55,7 +57,7 @@ public class AndroidBuilder {
 
         //classes to dex
         System.out.println("Convert classes to dex");
-        CompileHelper.convertToDexFormat(projectFile);
+        CompileHelper.convertToDexFormat(context, projectFile);
 
         //zip apk
         System.out.println("Build apk");
@@ -87,7 +89,7 @@ public class AndroidBuilder {
         // TODO make aidl.so
     }
 
-    private static void runAapt(AndroidProjectFolder projectFile) throws Exception {
+    private static void runAapt(Context context, AndroidProjectFolder projectFile) throws Exception {
         Log.d(TAG, "runAapt() called");
 
         com.duy.aapt.Aapt aapt = new com.duy.aapt.Aapt();
@@ -96,7 +98,7 @@ public class AndroidBuilder {
                 " --auto-add-overlay" +
                 " -M " + projectFile.xmlManifest.getPath()  //manifest file
                 + " -F " + projectFile.getResourceFile().getPath()  //output resources.ap_
-                + " -I " + projectFile.bootClasspath.getPath()  //include
+                + " -I " + FileManager.getClasspathFile(context).getPath()  //include
                 + " -A " + projectFile.getDirAssets().getPath()  //input assets dir
                 + " -S " + projectFile.getDirRes().getPath()  //input resource dir
                 + " -J " + projectFile.getClassR().getParent());//parent file of R.java file

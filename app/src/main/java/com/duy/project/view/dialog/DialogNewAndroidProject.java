@@ -112,7 +112,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
             try {
                 AndroidProjectFolder projectFile = new AndroidProjectFolder(
-                        new File(FileManager.EXTERNAL_DIR), activityClass, packageName, projectName, classpath);
+                        new File(FileManager.EXTERNAL_DIR), activityClass, packageName, projectName);
                 //create directory
                 projectFile.mkdirs();
 

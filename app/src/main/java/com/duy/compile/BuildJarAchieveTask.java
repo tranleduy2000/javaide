@@ -1,5 +1,6 @@
 package com.duy.compile;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.duy.compile.external.CompileHelper;
@@ -13,12 +14,14 @@ import javax.tools.DiagnosticCollector;
 
 public class BuildJarAchieveTask extends AsyncTask<JavaProjectFolder, Object, File> {
     private static final String TAG = "BuildJarAchieveTask";
+    private Context context;
     private BuildJarAchieveTask.CompileListener listener;
     private DiagnosticCollector mDiagnosticCollector;
     private Exception error;
 
-    public BuildJarAchieveTask(CompileListener context) {
-        this.listener = context;
+    public BuildJarAchieveTask(Context context, CompileListener listener) {
+        this.context = context;
+        this.listener = listener;
         mDiagnosticCollector = new DiagnosticCollector();
     }
 
@@ -36,7 +39,7 @@ public class BuildJarAchieveTask extends AsyncTask<JavaProjectFolder, Object, Fi
         }
         try {
             projectFile.clean();
-            return CompileHelper.buildJarAchieve(projectFile, mDiagnosticCollector);
+            return CompileHelper.buildJarAchieve(context, projectFile, mDiagnosticCollector);
         } catch (Exception e) {
             this.error = e;
         }

@@ -1,5 +1,6 @@
 package com.duy.run.activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -75,7 +76,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
                 @Override
                 public void run() {
                     try {
-                        runProgram(projectFile, action, intent);
+                        runProgram(ExecuteActivity.this, projectFile, action, intent);
                     } catch (Error error) {
                         error.printStackTrace(mConsoleEditText.getErrorStream());
                     } catch (Exception e) {
@@ -98,20 +99,20 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
     }
 
     @WorkerThread
-    private void runProgram(JavaProjectFolder projectFile, int action, Intent intent) throws Exception {
+    private void runProgram(Context context, JavaProjectFolder projectFile, int action, Intent intent) throws Exception {
         InputStream in = mConsoleEditText.getInputStream();
 
         File tempDir = getDir("dex", MODE_PRIVATE);
         switch (action) {
             case CompileHelper.Action.RUN: {
-                CompileHelper.compileAndRun(in, tempDir, projectFile);
+                CompileHelper.compileAndRun(context, in, tempDir, projectFile);
                 break;
             }
             case CompileHelper.Action.RUN_DEX: {
                 File dex = (File) intent.getSerializableExtra(CompileManager.DEX_FILE);
                 if (dex != null) {
                     String mainClass = projectFile.getMainClass().getName();
-                    CompileHelper.executeDex(in, dex, tempDir, mainClass);
+                    CompileHelper.executeDex(context, in, dex, tempDir, mainClass);
                 }
                 break;
             }

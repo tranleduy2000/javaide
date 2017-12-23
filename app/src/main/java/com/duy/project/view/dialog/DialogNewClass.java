@@ -147,7 +147,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         JavaProjectFolder projectFile = (JavaProjectFolder) arguments.getSerializable(KEY_PROJECT_FILE);
 
         if (projectFile != null) {
-            File classf = JavaProjectFolder.createClass(projectFile, currentPackage, className, content);
+            File classf = projectFile.createClass( currentPackage, className, content);
             if (listener != null) {
                 listener.onNewFileCreated(classf);
                 Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();

@@ -92,11 +92,11 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
 
     private void doCreateProject() {
         if (isOk()) {
-            JavaProjectFolder projectFile = new JavaProjectFolder(
-                    new File(FileManager.EXTERNAL_DIR),
-                    editPackage.getText().toString() + "." + editMainClass.getText().toString(),
-                    editPackage.getText().toString(), editAppName.getText().toString(),
-                    new File(getContext().getFilesDir(), "system/classes/android.jar").getPath());
+            File root = new File(FileManager.EXTERNAL_DIR);
+            String mainClassName = editPackage.getText() + "." + editMainClass.getText();
+            String projectName = editAppName.getText().toString();
+            String packageName = editPackage.getText().toString();
+            JavaProjectFolder projectFile = new JavaProjectFolder(root, mainClassName, packageName, projectName);
             try {
                 projectFile.createMainClass();
                 if (listener != null) {

@@ -265,7 +265,7 @@ public class MainActivity extends ProjectManagerActivity implements
                 return;
             }
             ((AndroidProjectFolder) mProjectFile).checkKeyStoreExits(this);
-            new BuildApkTask(new BuildApkTask.CompileListener() {
+            new BuildApkTask(this, new BuildApkTask.CompileListener() {
                 @Override
                 public void onStart() {
                     updateUiStartCompile();
@@ -376,14 +376,14 @@ public class MainActivity extends ProjectManagerActivity implements
                 mMessagePresenter.append(msg);
             }
         };
-        new CompileJavaTask(compileListener).execute(mProjectFile);
+        new CompileJavaTask(this, compileListener).execute(mProjectFile);
     }
 
     @Override
     public void buildJar() {
         saveAllFile();
         if (mProjectFile != null) {
-            new BuildJarAchieveTask(new BuildJarAchieveTask.CompileListener() {
+            new BuildJarAchieveTask(this, new BuildJarAchieveTask.CompileListener() {
                 @Override
                 public void onStart() {
                     updateUiStartCompile();

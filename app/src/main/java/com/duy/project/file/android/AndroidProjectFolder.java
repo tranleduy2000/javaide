@@ -19,11 +19,11 @@ import java.io.IOException;
  * Created by Duy on 05-Aug-17.
  */
 public class AndroidProjectFolder extends JavaProjectFolder {
-    /* Output */
-    private final File apkUnsigned;
-    private final File apkUnaligned;
     public File xmlManifest;
-    public File resourceFile;
+    private File resourceFile;
+    /* Output */
+    private File apkUnsigned;
+    private File apkUnaligned;
     private KeyStore keystore;
     /* PROJECT */
     private File dirRes;
@@ -35,10 +35,12 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     public AndroidProjectFolder(File dirRoot,
                                 @Nullable String mainClassName,
                                 @Nullable String packageName,
-                                String projectName,
-                                String classpath) {
-        super(dirRoot, mainClassName, packageName, projectName, classpath);
+                                String projectName) {
+        super(dirRoot, mainClassName, packageName, projectName);
+        initAndroidProject();
+    }
 
+    private void initAndroidProject() {
         dirRes = new File(dirSrcMain, "res");
         dirAssets = new File(dirSrcMain, "assets");
         xmlManifest = new File(dirSrcMain, "AndroidManifest.xml");

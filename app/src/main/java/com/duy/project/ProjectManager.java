@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.android.sdklib.xml.AndroidManifestParser;
 import com.android.sdklib.xml.ManifestData;
-import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFolder;
@@ -62,8 +61,8 @@ public class ProjectManager {
             return null;
         }
         // TODO: 05-Aug-17 dynamic change classpath
-        JavaProjectFolder projectFile = new JavaProjectFolder(file.getParentFile(), null, null, file.getName(),
-                FileManager.getClasspathFile(context).getPath());
+        JavaProjectFolder projectFile = new JavaProjectFolder(file.getParentFile(), null,
+                null, file.getName());
         projectFile.setProjectName(file.getName());
         try {
             projectFile.createMainClass();
@@ -78,7 +77,7 @@ public class ProjectManager {
         Log.d(TAG, "importAndroidProject() called with: context = [" + context + "], file = [" + file + "]");
 
         AndroidProjectFolder project = new AndroidProjectFolder(file.getParentFile(),
-                null, null, file.getName(), FileManager.getClasspathFile(context).getPath());
+                null, null, file.getName());
         try {
             if (project.getXmlManifest().exists()) {
                 ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(project.getXmlManifest()));

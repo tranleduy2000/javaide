@@ -1,5 +1,6 @@
 package com.duy.compile;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -18,11 +19,13 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
     private static final String TAG = "CompileJavaTask";
     private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
     private JavaProjectFolder projectFile;
+    private Context context;
     @Nullable
     private CompileListener compileListener;
     private Throwable error;
 
-    public CompileJavaTask(CompileListener compileListener) {
+    public CompileJavaTask(Context context, CompileListener compileListener) {
+        this.context = context;
         this.compileListener = compileListener;
     }
 
@@ -46,10 +49,10 @@ public class CompileJavaTask extends AsyncTask<JavaProjectFolder, Object, Intege
         projectFile.clean();
         projectFile.createBuildDir();
 
-        int status = CompileHelper.compileJava(projectFile, listener);
+        int status = CompileHelper.compileJava(context, projectFile, listener);
         if (status == Main.EXIT_OK) {
             try {
-                CompileHelper.convertToDexFormat(projectFile);
+                CompileHelper.convertToDexFormat(context, projectFile);
             } catch (Throwable e) {
                 this.error = e;
                 Log.e(TAG, "doInBackground: ", e);

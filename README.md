@@ -31,9 +31,9 @@ alt="IMAGE ALT TEXT HERE" width="200"/></a>
 14. Android debugger
 
 ## What does tools the project include?
-1. Javac - Java compiler
-2. Aapt - Android asset package tool: This tool is very old, so you can't build android project with android support library
-3. Dx - Dex for dalvik vm
+1. Javac - Java compiler (module javacompiler)
+2. Aapt - Android asset package tool
+3. Dx - Dex for dalvik VM (module dx)
 4. Zip Signer
 5. Apk builder
 

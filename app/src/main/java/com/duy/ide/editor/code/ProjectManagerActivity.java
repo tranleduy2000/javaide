@@ -86,6 +86,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 import static com.duy.project.ProjectFileContract.Callback;
@@ -212,7 +213,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     }
 
     private void setupEditor() {
-        ArrayList<File> editorFiles = mFileManager.getEditorFiles();
+        Set<File> editorFiles = mFileManager.getEditorFiles();
         ArrayList<PageDescriptor> descriptors = new ArrayList<>();
         if (mProjectFile != null) {
             for (File editorFile : editorFiles) {

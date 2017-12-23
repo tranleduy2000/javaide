@@ -44,6 +44,7 @@ import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * File Manager
@@ -354,12 +355,12 @@ public class FileManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ArrayList<File> listFile = mDatabase.getListFile();
+        Set<File> listFile = mDatabase.getListFile();
         list.addAll(listFile);
         return list;
     }
 
-    public ArrayList<File> getEditorFiles() {
+    public Set<File> getEditorFiles() {
         return mDatabase.getListFile();
     }
 

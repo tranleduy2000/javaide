@@ -22,10 +22,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
+import android.support.v4.util.ArraySet;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * SQ lite database for pascal compiler
@@ -68,8 +69,8 @@ public class Database extends SQLiteOpenHelper implements Serializable {
         onCreate(db);
     }
 
-    public ArrayList<File> getListFile() {
-        ArrayList<File> files = new ArrayList<>();
+    public Set<File> getListFile() {
+        ArraySet<File> files = new android.support.v4.util.ArraySet<>();
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
             String query = "SELECT * FROM " + TABLE_FILE_TAB;

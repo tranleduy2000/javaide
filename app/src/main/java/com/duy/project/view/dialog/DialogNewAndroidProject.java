@@ -119,7 +119,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
                 AssetManager assets = getContext().getAssets();
 
                 copyAsset(projectFile, assets);
-                createStringXml(projectFile, mainLayoutName, appName, activityName, activityClass, packageName, assets);
+                createStringXml(projectFile, appName);
                 copyKeyStore(projectFile, assets);
                 createManifest(projectFile, activityClass, packageName, assets);
                 createMainActivity(projectFile, activityClass, packageName, activityName, appName, assets);
@@ -155,9 +155,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
     }
 
-    private void createStringXml(AndroidProjectFolder projectFile, String appName, String mainLayoutName,
-                                 String activityName, String activityClass, String packageName,
-                                 AssetManager assets) throws Exception {
+    private void createStringXml(AndroidProjectFolder projectFile, String appName) throws Exception {
         File stringxml = new File(projectFile.getDirRes(), "values/strings.xml");
         String strings = FileManager.streamToString(new FileInputStream(
                 stringxml)).toString();

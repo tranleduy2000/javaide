@@ -32,7 +32,7 @@ public class JavaDexClassLoader {
 
     public void touchClass(String className) {
         ClassDescription classDescriptions = mClassReader.readClassByName(className, null);
-        if (classDescriptions != null){
+        if (classDescriptions != null) {
             classDescriptions.setLastUsed(System.currentTimeMillis());
         }
     }
@@ -41,7 +41,7 @@ public class JavaDexClassLoader {
         return mClassReader.readClassByName(className, null);
     }
 
-    public void loadAllClasses(boolean fullRefresh, JavaProjectFolder projectFile) {
-//        mClassReader.load(projectFile);
+    public void loadAllClasses(JavaProjectFolder projectFile) {
+        mClassReader.load(projectFile);
     }
 }

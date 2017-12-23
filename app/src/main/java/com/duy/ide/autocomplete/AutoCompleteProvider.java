@@ -987,7 +987,7 @@ public class AutoCompleteProvider {
     }
 
     public void load(JavaProjectFolder projectFile) {
-        mClassLoader.loadAllClasses(true, projectFile);
+        mClassLoader.loadAllClasses(projectFile);
         mPackageProvider.init(projectFile, mClassLoader.getClassReader());
     }
 

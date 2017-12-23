@@ -37,10 +37,10 @@ public class AndroidProjectFolder extends JavaProjectFolder {
                                 @Nullable String packageName,
                                 String projectName) {
         super(dirRoot, mainClassName, packageName, projectName);
-        initAndroidProject();
     }
 
-    public void initAndroidProject() {
+    public void init() {
+        super.init();
         dirRes = new File(dirSrcMain, "res");
         dirAssets = new File(dirSrcMain, "assets");
         xmlManifest = new File(dirSrcMain, "AndroidManifest.xml");

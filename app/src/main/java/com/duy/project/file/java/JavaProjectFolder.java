@@ -2,7 +2,6 @@ package com.duy.project.file.java;
 
 import android.content.Context;
 import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.duy.ide.autocomplete.Template;
@@ -53,28 +52,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         this.projectName = projectName;
         this.packageName = packageName;
         this.dirRoot = root;
-        initJavaProject();
-    }
-
-    @Nullable
-    public static JavaProjectFolder restore(@Nullable JSONObject json) throws JSONException {
-        if (json == null) return null;
-        ClassFile mainClass = new ClassFile("");
-        if (json.has("main_class_mame")) {
-            mainClass = new ClassFile(json.getString("main_class_mame"));
-        }
-        File dirRoot = null;
-        String packageName = null;
-        String projectName = null;
-        String classpath = null;
-        if (json.has("root_dir")) dirRoot = new File(json.getString("root_dir"));
-        if (json.has("package_name")) packageName = json.getString("package_name");
-        if (json.has("project_name")) projectName = json.getString("project_name");
-        if (json.has("classpath")) classpath = json.getString("classpath");
-        if (dirRoot == null || packageName == null || projectName == null || classpath == null) {
-            return null;
-        }
-        return new JavaProjectFolder(dirRoot, mainClass.getName(), packageName, projectName);
+        init();
     }
 
     public File createClass(String currentPackage, String className, String content) {
@@ -87,7 +65,8 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         return classf;
     }
 
-    public void initJavaProject() {
+    @CallSuper
+    public void init() {
         dirProject = new File(dirRoot, projectName);
         dirLibs = new File(dirProject, "libs");
         dirSrcMain = new File(dirProject, "src" + File.separator + "main");

@@ -1,6 +1,7 @@
 package com.duy.project;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -13,10 +14,6 @@ import com.duy.project.file.java.JavaProjectFolder;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 /**
  * Created by Duy on 16-Jul-17.
@@ -27,35 +24,38 @@ public class ProjectManager {
     private static final String CURRENT_PROJECT = "file_project.nide";
     private static final String TAG = "ProjectManager";
 
-    public static void saveProject(@NonNull Context context, @NonNull JavaProjectFolder projectFile) {
-        try {
-            File file = new File(context.getFilesDir(), CURRENT_PROJECT);
-            ObjectOutputStream inputStream = new ObjectOutputStream(new FileOutputStream(file));
-            inputStream.writeObject(projectFile);
-            inputStream.flush();
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private static final String ANDROID_PROJECT = "ANDROID_PROJECT";
+    private static final String ROOT_DIR = "ROOT_DIR";
+    private static final String MAIN_CLASS_NAME = "MAIN_CLASS_NAME";
+    private static final String PACKAGE_NAME = "packageName";
+    private static final String PROJECT_NAME = "projectName";
+
+
+    public static void saveProject(@NonNull Context context, @NonNull JavaProjectFolder folder) {
+        SharedPreferences preferences = context.getSharedPreferences(CURRENT_PROJECT, Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putBoolean(ANDROID_PROJECT, folder instanceof AndroidProjectFolder);
+        edit.putString(ROOT_DIR, folder.getRootDir().getPath());
+        edit.putString(MAIN_CLASS_NAME, folder.getMainClass().getName());
+        edit.putString(PACKAGE_NAME, folder.getPackageName());
+        edit.putString(PROJECT_NAME, folder.getProjectName());
+        edit.apply();
     }
 
     @Nullable
     public static JavaProjectFolder getLastProject(@NonNull Context context) {
-        try {
-            File file = new File(context.getFilesDir(), CURRENT_PROJECT);
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file));
-            Object o = objectInputStream.readObject();
-            objectInputStream.close();
-            JavaProjectFolder folder = (JavaProjectFolder) o;
-            folder.initJavaProject();
-            if (folder instanceof AndroidProjectFolder){
-                ((AndroidProjectFolder) folder).initAndroidProject();
-            }
-            return folder;
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+        SharedPreferences preferences = context.getSharedPreferences(CURRENT_PROJECT, Context.MODE_PRIVATE);
+        boolean androidProject = preferences.getBoolean(ANDROID_PROJECT, false);
+        String rootDir = preferences.getString(ROOT_DIR, null);
+        if (rootDir == null || !(new File(rootDir).exists())) return null;
+        String mainClassName = preferences.getString(MAIN_CLASS_NAME, null);
+        String packageName = preferences.getString(PACKAGE_NAME, null);
+        String projectName = preferences.getString(PROJECT_NAME, null);
+        if (androidProject) {
+            return new AndroidProjectFolder(new File(rootDir), mainClassName, packageName, projectName);
+        } else {
+            return new JavaProjectFolder(new File(rootDir), mainClassName, packageName, projectName);
         }
-        return null;
     }
 
     @Nullable

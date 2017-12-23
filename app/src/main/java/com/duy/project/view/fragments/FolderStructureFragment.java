@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import static android.widget.FrameLayout.LayoutParams;
 
@@ -78,12 +79,12 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_folder_structure, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mProjectFile = (JavaProjectFolder) getArguments().getSerializable(CompileManager.PROJECT_FILE);
         mContainerView = view.findViewById(R.id.container);
@@ -128,7 +129,8 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     }
 
     @Nullable
-    private TreeNode createFileStructure(JavaProjectFolder projectFile) {
+    private TreeNode createFileStructure(@Nullable JavaProjectFolder projectFile) {
+        if (projectFile == null) return null;
         File rootDir = projectFile.getProjectDir();
         TreeNode root = new TreeNode(new FolderHolder.TreeItem(rootDir, rootDir, listener));
         try {
@@ -216,13 +218,26 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     @Override
     public void display(JavaProjectFolder projectFile, boolean expand) {
         this.mProjectFile = projectFile;
-        refresh();
-        if (expand && mTreeView != null) mTreeView.expandAll();
+        TreeNode root = refresh();
+        if (expand && mTreeView != null) expandSrcDir(root);
+    }
+
+    private void expandSrcDir(TreeNode root) {
+        if (mTreeView == null || mProjectFile == null) return;
+        List<TreeNode> children = root.getChildren();
+        for (TreeNode child : children) {
+            FolderHolder.TreeItem value = (FolderHolder.TreeItem) child.getValue();
+            File file = value.getFile();
+            if (file.getName().equals("src")) {
+                mTreeView.expandNode(child);
+                return;
+            }
+        }
     }
 
     @Override
-    public void refresh() {
-        if (mProjectFile == null) return;
+    public TreeNode refresh() {
+        if (mProjectFile == null) return null;
         TreeNode root = TreeNode.root();
         TreeNode fileStructure = createFileStructure(mProjectFile);
         if (fileStructure != null) {
@@ -247,6 +262,8 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
         View view = mTreeView.getView();
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mContainerView.addView(view, params);
+
+        return root;
     }
 
     @Override
@@ -272,8 +289,6 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
         }
         super.onDestroyView();
     }
-
-
 
 
 }

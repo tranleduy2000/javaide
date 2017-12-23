@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.duy.project.file.java.JavaProjectFolder;
+import com.unnamed.b.atv.model.TreeNode;
 
 import java.io.File;
 
@@ -15,7 +16,7 @@ public class ProjectFileContract {
     public interface View {
         void display(JavaProjectFolder projectFile, boolean expand);
 
-        void refresh();
+        TreeNode refresh();
 
         void setPresenter(ProjectFileContract.Presenter presenter);
     }

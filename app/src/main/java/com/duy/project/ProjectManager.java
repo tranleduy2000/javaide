@@ -27,8 +27,8 @@ public class ProjectManager {
     private static final String ANDROID_PROJECT = "ANDROID_PROJECT";
     private static final String ROOT_DIR = "ROOT_DIR";
     private static final String MAIN_CLASS_NAME = "MAIN_CLASS_NAME";
-    private static final String PACKAGE_NAME = "packageName";
-    private static final String PROJECT_NAME = "projectName";
+    private static final String PACKAGE_NAME = "PACKAGE_NAME";
+    private static final String PROJECT_NAME = "PROJECT_NAME";
 
 
     public static void saveProject(@NonNull Context context, @NonNull JavaProjectFolder folder) {

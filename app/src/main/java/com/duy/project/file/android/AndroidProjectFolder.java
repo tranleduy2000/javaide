@@ -39,6 +39,7 @@ public class AndroidProjectFolder extends JavaProjectFolder {
         super(dirRoot, mainClassName, packageName, projectName);
     }
 
+    @Override
     public void init() {
         super.init();
         dirRes = new File(dirSrcMain, "res");

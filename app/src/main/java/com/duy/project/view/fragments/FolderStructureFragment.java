@@ -224,7 +224,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
 
     private void expandSrcDir(TreeNode root) {
         if (mTreeView == null || mProjectFile == null) return;
-        List<TreeNode> children = root.getChildren();
+        List<TreeNode> children = root.getChildren().get(0).getChildren();
         for (TreeNode child : children) {
             FolderHolder.TreeItem value = (FolderHolder.TreeItem) child.getValue();
             File file = value.getFile();

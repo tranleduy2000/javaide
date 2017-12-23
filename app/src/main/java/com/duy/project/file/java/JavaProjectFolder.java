@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 
+import com.android.annotations.Nullable;
 import com.duy.ide.autocomplete.Template;
 import com.duy.ide.file.FileManager;
 
@@ -40,14 +41,16 @@ public class JavaProjectFolder implements Serializable, Cloneable {
     protected File dirDexedLibs;
     protected File dirDexedClass;
     protected File dexedClassesFile;
+    @Nullable
     protected String packageName;
 
     /*Main class*/
     private ClassFile mainClass;
+    @Nullable
     private String projectName;
     private File jarArchive;
 
-    public JavaProjectFolder(File root, String mainClassName, String packageName, String projectName) {
+    public JavaProjectFolder(File root, @Nullable String mainClassName, @Nullable String packageName, String projectName) {
         this.mainClass = new ClassFile(mainClassName);
         this.projectName = projectName;
         this.packageName = packageName;

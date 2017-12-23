@@ -27,18 +27,16 @@ public class ProjectManager {
     private static final String CURRENT_PROJECT = "file_project.nide";
     private static final String TAG = "ProjectManager";
 
-    public static boolean saveProject(@NonNull Context context, @NonNull JavaProjectFolder projectFile) {
+    public static void saveProject(@NonNull Context context, @NonNull JavaProjectFolder projectFile) {
         try {
             File file = new File(context.getFilesDir(), CURRENT_PROJECT);
             ObjectOutputStream inputStream = new ObjectOutputStream(new FileOutputStream(file));
             inputStream.writeObject(projectFile);
             inputStream.flush();
             inputStream.close();
-            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return false;
     }
 
     @Nullable
@@ -48,7 +46,12 @@ public class ProjectManager {
             ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file));
             Object o = objectInputStream.readObject();
             objectInputStream.close();
-            return (JavaProjectFolder) o;
+            JavaProjectFolder folder = (JavaProjectFolder) o;
+            folder.initJavaProject();
+            if (folder instanceof AndroidProjectFolder){
+                ((AndroidProjectFolder) folder).initAndroidProject();
+            }
+            return folder;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

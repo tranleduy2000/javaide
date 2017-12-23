@@ -40,7 +40,7 @@ public class AndroidProjectFolder extends JavaProjectFolder {
         initAndroidProject();
     }
 
-    private void initAndroidProject() {
+    public void initAndroidProject() {
         dirRes = new File(dirSrcMain, "res");
         dirAssets = new File(dirSrcMain, "assets");
         xmlManifest = new File(dirSrcMain, "AndroidManifest.xml");
@@ -71,13 +71,11 @@ public class AndroidProjectFolder extends JavaProjectFolder {
         }
     }
 
-    public void setLauncherActivity(ManifestData.Activity launcherActivity) {
-        this.launcherActivity = launcherActivity;
-    }
 
     private void createClassR() {
         if (packageName != null) {
-            classR = new File(dirJava, packageName.replace(".", File.separator) + File.separator + "R.java");
+            String path = packageName.replace(".", File.separator) + File.separator + "R.java";
+            classR = new File(dirGeneratedSource, path);
         }
     }
 
@@ -94,10 +92,6 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     }
 
     public File getApkUnaligned() throws IOException {
-//        if (!apkUnaligned.exists()) {
-//            apkUnaligned.getParentFile().mkdirs();
-//            apkUnaligned.createNewFile();
-//        }
         return apkUnaligned;
     }
 
@@ -109,13 +103,14 @@ public class AndroidProjectFolder extends JavaProjectFolder {
         return resourceFile;
     }
 
+    @Override
     public void clean() {
         super.clean();
         apkUnsigned.delete();
         apkUnaligned.delete();
     }
 
-
+    @Override
     public void mkdirs() {
         super.mkdirs();
         getDirRes();
@@ -129,9 +124,11 @@ public class AndroidProjectFolder extends JavaProjectFolder {
         if (!drawable.exists()) drawable.mkdirs();
         drawable = new File(dirRes, "drawable-hdpi");
         if (!drawable.exists()) drawable.mkdirs();
-        drawable = new File(dirRes, "drawable-mdpi");
-        if (!drawable.exists()) drawable.mkdirs();
         drawable = new File(dirRes, "drawable-xhdpi");
+        if (!drawable.exists()) drawable.mkdirs();
+        drawable = new File(dirRes, "drawable-xxhdpi");
+        if (!drawable.exists()) drawable.mkdirs();
+        drawable = new File(dirRes, "drawable-xxxhdpi");
         if (!drawable.exists()) drawable.mkdirs();
         File value = new File(dirRes, "values");
         if (!value.exists()) value.mkdirs();
@@ -142,6 +139,14 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .toString();
+    }
+
+    @Override
+    public String getSourcePath() {
+        String sourcePath = super.getSourcePath();
+        File generatedSource = new File(dirGenerated, "source");
+        sourcePath += File.pathSeparator + generatedSource.getPath();
+        return sourcePath;
     }
 
     public File getApkUnsigned() throws IOException {

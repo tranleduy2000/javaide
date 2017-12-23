@@ -214,8 +214,10 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     private void setupEditor() {
         ArrayList<File> editorFiles = mFileManager.getEditorFiles();
         ArrayList<PageDescriptor> descriptors = new ArrayList<>();
-        for (File editorFile : editorFiles) {
-            descriptors.add(new SimplePageDescriptor(editorFile.getPath(), editorFile.getName()));
+        if (mProjectFile != null) {
+            for (File editorFile : editorFiles) {
+                descriptors.add(new SimplePageDescriptor(editorFile.getPath(), editorFile.getName()));
+            }
         }
         mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), descriptors);
         mViewPager.setAdapter(mPageAdapter);

@@ -54,14 +54,15 @@ public class CompileHelper {
 
     public static int compileJava(Context context, JavaProjectFolder projectFile, @Nullable DiagnosticListener listener) {
         try {
+
             String[] args = new String[]{
                     "-verbose",
                     "-cp", projectFile.getJavaClassPath(context),
-                    "-sourcepath", projectFile.getDirSrcJava().getPath(), //sourcepath
+                    "-sourcepath", projectFile.getSourcePath(), //sourcepath
                     "-d", projectFile.getDirBuildClasses().getPath(), //output dir
                     projectFile.getMainClass().getPath(projectFile) //main class
             };
-            Log.d(TAG, "compileJava args = " + Arrays.toString(args));
+            DLog.d(TAG, "compileJava args = " + Arrays.toString(args));
             int compileStatus;
             compileStatus = Javac.compile(args, listener);
             return compileStatus;

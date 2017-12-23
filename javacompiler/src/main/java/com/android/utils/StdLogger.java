@@ -18,6 +18,7 @@ package com.android.utils;
 
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
+import com.android.annotations.Nullable;
 
 import java.io.PrintStream;
 import java.util.Formatter;
@@ -82,7 +83,7 @@ public class StdLogger implements ILogger {
      * @param args provides the arguments for errorFormat.
      */
     @Override
-    public void error(Throwable t, String errorFormat, Object... args) {
+    public void error(@Nullable Throwable t, @Nullable String errorFormat, Object... args) {
         if (errorFormat != null) {
             String msg = String.format("Error: " + errorFormat, args);
 

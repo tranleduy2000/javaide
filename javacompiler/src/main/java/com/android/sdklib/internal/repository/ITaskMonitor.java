@@ -16,8 +16,7 @@
 
 package com.android.sdklib.internal.repository;
 
-import com.android.sdklib.ISdkLog;
-import com.android.util.Pair;
+import com.android.utils.ILogger;
 
 
 /**
@@ -46,34 +45,34 @@ import com.android.util.Pair;
  *   logged and/or might hide the verbose text unless a flag is checked by the user.
  *   This is set using {@link #log}, {@link #logError} and {@link #logVerbose}.
  * <p/>
- * A monitor is also an {@link ISdkLog} implementation.
+ * A monitor is also an {@link ILogger} implementation.
  */
-public interface ITaskMonitor extends ISdkLog {
+public interface ITaskMonitor extends ILogger {
 
     /**
      * Sets the description in the current task dialog.
      * This method can be invoked from a non-UI thread.
      */
-    public void setDescription(String format, Object... args);
+    public void setDescription(String format, Object...args);
 
     /**
      * Logs a "normal" information line.
      * This method can be invoked from a non-UI thread.
      */
-    public void log(String format, Object... args);
+    public void log(String format, Object...args);
 
     /**
      * Logs an "error" information line.
      * This method can be invoked from a non-UI thread.
      */
-    public void logError(String format, Object... args);
+    public void logError(String format, Object...args);
 
     /**
      * Logs a "verbose" information line, that is extra details which are typically
      * not that useful for the end-user and might be hidden until explicitly shown.
      * This method can be invoked from a non-UI thread.
      */
-    public void logVerbose(String format, Object... args);
+    public void logVerbose(String format, Object...args);
 
     /**
      * Sets the max value of the progress bar.
@@ -87,7 +86,7 @@ public interface ITaskMonitor extends ISdkLog {
     public void setProgressMax(int max);
 
     /**
-     * Returns the max valie of the progress bar, as last set by {@link #setProgressMax(int)}.
+     * Returns the max value of the progress bar, as last set by {@link #setProgressMax(int)}.
      * Returns 0 if the max has never been set yet.
      */
     public int getProgressMax();
@@ -134,18 +133,15 @@ public interface ITaskMonitor extends ISdkLog {
     public boolean displayPrompt(final String title, final String message);
 
     /**
-     * Launch an interface which asks for login and password. Implementations
+     * Launch an interface which asks for user credentials. Implementations
      * MUST allow this to be called from any thread, e.g. by making sure the
      * dialog is opened synchronously in the UI thread.
      *
      * @param title The title of the dialog box.
      * @param message The message to be displayed as an instruction.
-     * @return Returns a {@link Pair} holding the entered login and password.
-     *         The information must always be in the following order:
-     *         Login,Password. So in order to retrieve the <b>login</b> callers
-     *         should retrieve the first element, and the second value for the
-     *         <b>password</b>.
+     * @return Returns the user provided credentials. Some fields may be blank if the user
+     *         did not provide any input.
                If operation is <b>canceled</b> by user the return value must be <b>null</b>.
      */
-    public Pair<String, String> displayLoginPasswordPrompt(String title, String message);
+    public UserCredentials displayLoginCredentialsPrompt(String title, String message);
 }

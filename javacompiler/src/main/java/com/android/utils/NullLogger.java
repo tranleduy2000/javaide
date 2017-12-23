@@ -17,6 +17,7 @@
 package com.android.utils;
 
 import com.android.annotations.NonNull;
+import com.android.annotations.Nullable;
 
 /**
  * Dummy implementation of an {@link ILogger}.
@@ -32,7 +33,7 @@ public class NullLogger implements ILogger {
     }
 
     @Override
-    public void error(Throwable t, String errorFormat, Object... args) {
+    public void error(@Nullable Throwable t, @Nullable String errorFormat, Object... args) {
         // ignore
     }
 

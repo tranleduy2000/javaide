@@ -3,8 +3,8 @@ package com.duy.project.file.android;
 import android.content.Context;
 
 import com.android.annotations.Nullable;
-import com.android.sdklib.xml.AndroidManifestParser;
-import com.android.sdklib.xml.ManifestData;
+import com.android.ide.common.xml.AndroidManifestParser;
+import com.android.ide.common.xml.ManifestData;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFolder;

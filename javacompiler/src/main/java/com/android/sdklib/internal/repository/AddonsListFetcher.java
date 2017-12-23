@@ -18,16 +18,19 @@ package com.android.sdklib.internal.repository;
 
 import com.android.annotations.VisibleForTesting;
 import com.android.annotations.VisibleForTesting.Visibility;
+import com.android.io.NonClosingInputStream;
+import com.android.io.NonClosingInputStream.CloseBehavior;
 import com.android.sdklib.repository.SdkAddonsListConstants;
+import com.android.sdklib.repository.SdkRepoConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,14 +59,21 @@ import javax.xml.validation.Validator;
  */
 public class AddonsListFetcher {
 
+    public enum SiteType {
+        ADDON_SITE,
+        SYS_IMG_SITE
+    }
+
     /**
      * An immutable structure representing an add-on site.
      */
     public static class Site {
         private final String mUrl;
         private final String mUiName;
+        private final SiteType mType;
 
-        private Site(String url, String uiName) {
+        private Site(String url, String uiName, SiteType type) {
+            mType = type;
             mUrl = url.trim();
             mUiName = uiName;
         }
@@ -75,22 +85,34 @@ public class AddonsListFetcher {
         public String getUiName() {
             return mUiName;
         }
+
+        public SiteType getType() {
+            return mType;
+        }
+
+        /** Returns a debug string representation of this object. Not for user display. */
+        @Override
+        public String toString() {
+            return String.format("<%1$s URL='%2$s' Name='%3$s'>",   //$NON-NLS-1$
+                                 mType, mUrl, mUiName);
+        }
     }
 
     /**
      * Fetches the addons list from the given URL.
      *
-     * @param monitor A monitor to report errors. Cannot be null.
      * @param url The URL of an XML file resource that conforms to the latest sdk-addons-list-N.xsd.
      *   For the default operation, use {@link SdkAddonsListConstants#URL_ADDON_LIST}.
      *   Cannot be null.
+     * @param cache The {@link DownloadCache} instance to use. Cannot be null.
+     * @param monitor A monitor to report errors. Cannot be null.
      * @return An array of {@link Site} on success (possibly empty), or null on error.
      */
-    public Site[] fetch(ITaskMonitor monitor, String url) {
+    public Site[] fetch(String url, DownloadCache cache, ITaskMonitor monitor) {
 
         url = url == null ? "" : url.trim();
 
-        monitor.setProgressMax(5);
+        monitor.setProgressMax(6);
         monitor.setDescription("Fetching %1$s", url);
         monitor.incProgress(1);
 
@@ -100,7 +122,57 @@ public class AddonsListFetcher {
         Document validatedDoc = null;
         String validatedUri = null;
 
-        ByteArrayInputStream xml = fetchUrl(url, monitor.createSubMonitor(1), exception);
+        String[] defaultNames = new String[SdkAddonsListConstants.NS_LATEST_VERSION];
+        for (int version = SdkAddonsListConstants.NS_LATEST_VERSION, i = 0;
+                version >= 1;
+                version--, i++) {
+            defaultNames[i] = SdkAddonsListConstants.getDefaultName(version);
+        }
+
+        InputStream xml = fetchXmlUrl(url, cache, monitor.createSubMonitor(1), exception);
+        if (xml != null) {
+            int version = getXmlSchemaVersion(xml);
+            if (version == 0) {
+                closeStream(xml);
+                xml = null;
+            }
+        }
+
+        String baseUrl = url;
+        if (!baseUrl.endsWith("/")) {                       //$NON-NLS-1$
+            int pos = baseUrl.lastIndexOf('/');
+            if (pos > 0) {
+                baseUrl = baseUrl.substring(0, pos + 1);
+            }
+        }
+
+        // If we can't find the latest version, try earlier schema versions.
+        if (xml == null && defaultNames.length > 0) {
+            ITaskMonitor subMonitor = monitor.createSubMonitor(1);
+            subMonitor.setProgressMax(defaultNames.length);
+
+            for (String name : defaultNames) {
+                String newUrl = baseUrl + name;
+                if (newUrl.equals(url)) {
+                    continue;
+                }
+                xml = fetchXmlUrl(newUrl, cache, subMonitor.createSubMonitor(1), exception);
+                if (xml != null) {
+                    int version = getXmlSchemaVersion(xml);
+                    if (version == 0) {
+                        closeStream(xml);
+                        xml = null;
+                    } else {
+                        url = newUrl;
+                        subMonitor.incProgress(
+                                subMonitor.getProgressMax() - subMonitor.getProgress());
+                        break;
+                    }
+                }
+            }
+        } else {
+            monitor.incProgress(1);
+        }
 
         if (xml != null) {
             monitor.setDescription("Validate XML");
@@ -122,6 +194,7 @@ public class AddonsListFetcher {
             } else if (version > SdkAddonsListConstants.NS_LATEST_VERSION) {
                 // The schema used is more recent than what is supported by this tool.
                 // We don't have an upgrade-path support yet, so simply ignore the document.
+                closeStream(xml);
                 return null;
             }
         }
@@ -155,6 +228,7 @@ public class AddonsListFetcher {
 
         // Stop here if we failed to validate the XML. We don't want to load it.
         if (validatedDoc == null) {
+            closeStream(xml);
             return null;
         }
 
@@ -165,19 +239,19 @@ public class AddonsListFetcher {
         if (xml != null) {
             monitor.setDescription("Parse XML");
             monitor.incProgress(1);
-            result = parseAddonsList(validatedDoc, validatedUri, monitor);
+            result = parseAddonsList(validatedDoc, validatedUri, baseUrl, monitor);
         }
 
         // done
         monitor.incProgress(1);
 
+        closeStream(xml);
         return result;
     }
 
     /**
      * Fetches the document at the given URL and returns it as a stream. Returns
-     * null if anything wrong happens. References: <br/>
-     * URL Connection:
+     * null if anything wrong happens.
      *
      * @param urlString The URL to load, as a string.
      * @param monitor {@link ITaskMonitor} related to this URL.
@@ -185,41 +259,18 @@ public class AddonsListFetcher {
      *            happens during the fetch.
      * @see UrlOpener UrlOpener, which handles all URL logic.
      */
-    private ByteArrayInputStream fetchUrl(String urlString, ITaskMonitor monitor,
+    private InputStream fetchXmlUrl(String urlString,
+            DownloadCache cache,
+            ITaskMonitor monitor,
             Exception[] outException) {
         try {
-
-            InputStream is = null;
-
-            int inc = 65536;
-            int curr = 0;
-            byte[] result = new byte[inc];
-
-            try {
-                is = UrlOpener.openUrl(urlString, monitor);
-
-                int n;
-                while ((n = is.read(result, curr, result.length - curr)) != -1) {
-                    curr += n;
-                    if (curr == result.length) {
-                        byte[] temp = new byte[curr + inc];
-                        System.arraycopy(result, 0, temp, 0, curr);
-                        result = temp;
-                    }
-                }
-
-                return new ByteArrayInputStream(result, 0, curr);
-
-            } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        // pass
-                    }
-                }
+            InputStream xml = cache.openCachedUrl(urlString, monitor);
+            if (xml != null) {
+                xml.mark(500000);
+                xml = new NonClosingInputStream(xml);
+                ((NonClosingInputStream) xml).setCloseBehavior(CloseBehavior.RESET);
             }
-
+            return xml;
         } catch (Exception e) {
             if (outException != null) {
                 outException[0] = e;
@@ -227,6 +278,21 @@ public class AddonsListFetcher {
         }
 
         return null;
+    }
+
+    /**
+     * Closes the stream, ignore any exception from InputStream.close().
+     * If the stream is a NonClosingInputStream, sets it to CloseBehavior.CLOSE first.
+     */
+    private void closeStream(InputStream is) {
+        if (is != null) {
+            if (is instanceof NonClosingInputStream) {
+                ((NonClosingInputStream) is).setCloseBehavior(CloseBehavior.CLOSE);
+            }
+            try {
+                is.close();
+            } catch (IOException ignore) {}
+        }
     }
 
     /**
@@ -246,6 +312,7 @@ public class AddonsListFetcher {
         // Get an XML document
         Document doc = null;
         try {
+            assert xml.markSupported();
             xml.reset();
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -255,6 +322,23 @@ public class AddonsListFetcher {
             // Parse the old document using a non namespace aware builder
             factory.setNamespaceAware(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
+
+            // We don't want the default handler which prints errors to stderr.
+            builder.setErrorHandler(new ErrorHandler() {
+                @Override
+                public void warning(SAXParseException e) throws SAXException {
+                // pass
+                }
+                @Override
+                public void fatalError(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+                @Override
+                public void error(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+            });
+
             doc = builder.parse(xml);
 
             // Prepare a new document using a namespace aware builder
@@ -267,6 +351,7 @@ public class AddonsListFetcher {
             // Failed to create XML document builder
             // Failed to parse XML document
             // Failed to read XML document
+            //--For debug--System.err.println("getXmlSchemaVersion exception: " + e.toString());
         }
 
         if (doc == null) {
@@ -347,6 +432,7 @@ public class AddonsListFetcher {
             validatorFound[0] = Boolean.TRUE;
 
             // Reset the stream if it supports that operation.
+            assert xml.markSupported();
             xml.reset();
 
             // Validation throws a bunch of possible Exceptions on failure.
@@ -406,6 +492,7 @@ public class AddonsListFetcher {
             factory.setNamespaceAware(true);
 
             DocumentBuilder builder = factory.newDocumentBuilder();
+            assert xml.markSupported();
             xml.reset();
             Document doc = builder.parse(new InputSource(xml));
 
@@ -424,10 +511,26 @@ public class AddonsListFetcher {
     }
 
     /**
-     * Parse all sites defined in the Addaons list XML and returns an array of sites.
+     * Parse all sites defined in the Addons list XML and returns an array of sites.
+     *
+     * @param doc The XML DOM to parse.
+     * @param nsUri The addons-list schema URI of the document.
+     * @param baseUrl The base URL of the caller (e.g. where addons-list-N.xml was fetched from.)
+     * @param monitor A non-null monitor to print to.
      */
     @VisibleForTesting(visibility=Visibility.PRIVATE)
-    protected Site[] parseAddonsList(Document doc, String nsUri, ITaskMonitor monitor) {
+    protected Site[] parseAddonsList(
+            Document doc,
+            String nsUri,
+            String baseUrl,
+            ITaskMonitor monitor) {
+
+        String testBaseUrl = System.getenv("SDK_TEST_BASE_URL");                //$NON-NLS-1$
+        if (testBaseUrl != null) {
+            if (testBaseUrl.length() <= 0 || !testBaseUrl.endsWith("/")) {      //$NON-NLS-1$
+                testBaseUrl = null;
+            }
+        }
 
         Node root = getFirstChild(doc, nsUri, SdkAddonsListConstants.NODE_SDK_ADDONS_LIST);
         if (root != null) {
@@ -437,8 +540,22 @@ public class AddonsListFetcher {
                  child != null;
                  child = child.getNextSibling()) {
                 if (child.getNodeType() == Node.ELEMENT_NODE &&
-                        nsUri.equals(child.getNamespaceURI()) &&
-                        child.getLocalName().equals(SdkAddonsListConstants.NODE_ADDON_SITE)) {
+                        nsUri.equals(child.getNamespaceURI())) {
+
+                    String elementName = child.getLocalName();
+                    SiteType type = null;
+
+                    if (SdkAddonsListConstants.NODE_SYS_IMG_SITE.equals(elementName)) {
+                        type = SiteType.SYS_IMG_SITE;
+
+                    } else if (SdkAddonsListConstants.NODE_ADDON_SITE.equals(elementName)) {
+                        type = SiteType.ADDON_SITE;
+                    }
+
+                    // Not an addon-site nor a sys-img-site, don't process this.
+                    if (type == null) {
+                        continue;
+                    }
 
                     Node url = getFirstChild(child, nsUri, SdkAddonsListConstants.NODE_URL);
                     Node name = getFirstChild(child, nsUri, SdkAddonsListConstants.NODE_NAME);
@@ -447,8 +564,18 @@ public class AddonsListFetcher {
                         String strUrl  = url.getTextContent().trim();
                         String strName = name.getTextContent().trim();
 
+                        if (testBaseUrl != null &&
+                                strUrl.startsWith(SdkRepoConstants.URL_GOOGLE_SDK_SITE)) {
+                            strUrl = testBaseUrl +
+                                   strUrl.substring(SdkRepoConstants.URL_GOOGLE_SDK_SITE.length());
+                        } else if (!strUrl.startsWith("http://") &&             //$NON-NLS-1$
+                                !strUrl.startsWith("https://")) {               //$NON-NLS-1$
+                            // This looks like a relative URL, add the fetcher's base URL to it.
+                            strUrl = baseUrl + strUrl;
+                        }
+
                         if (strUrl.length() > 0 && strName.length() > 0) {
-                            sites.add(new Site(strUrl, strName));
+                            sites.add(new Site(strUrl, strName, type));
                         }
                     }
                 }

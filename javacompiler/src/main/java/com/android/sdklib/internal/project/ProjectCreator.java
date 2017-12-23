@@ -16,16 +16,15 @@
 
 package com.android.sdklib.internal.project;
 
-import com.android.AndroidConstants;
+import com.android.SdkConstants;
 import com.android.io.FileWrapper;
 import com.android.io.FolderWrapper;
 import com.android.sdklib.IAndroidTarget;
-import com.android.sdklib.ISdkLog;
-import com.android.sdklib.SdkConstants;
 import com.android.sdklib.SdkManager;
 import com.android.sdklib.internal.project.ProjectProperties.PropertyType;
-import com.android.sdklib.xml.AndroidManifest;
-import com.android.sdklib.xml.AndroidXPathFactory;
+import com.android.utils.ILogger;
+import com.android.xml.AndroidManifest;
+import com.android.xml.AndroidXPathFactory;
 
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -51,38 +50,44 @@ import javax.xml.xpath.XPathFactory;
 
 /**
  * Creates the basic files needed to get an Android project up and running.
- *
- * @hide
  */
 public class ProjectCreator {
 
     /** Version of the build.xml. Stored in version-tag */
-    private final static int MIN_BUILD_VERSION_TAG = 1;
+    private static final int MIN_BUILD_VERSION_TAG = 1;
 
     /** Package path substitution string used in template files, i.e. "PACKAGE_PATH" */
-    private final static String PH_JAVA_FOLDER = "PACKAGE_PATH";
+    private static final String PH_PACKAGE_PATH = "PACKAGE_PATH";
     /** Package name substitution string used in template files, i.e. "PACKAGE" */
-    private final static String PH_PACKAGE = "PACKAGE";
+    private static final String PH_PACKAGE = "PACKAGE";
     /** Activity name substitution string used in template files, i.e. "ACTIVITY_NAME".
      * @deprecated This is only used for older templates. For new ones see
      * {@link #PH_ACTIVITY_ENTRY_NAME}, and {@link #PH_ACTIVITY_CLASS_NAME}. */
     @Deprecated
-    private final static String PH_ACTIVITY_NAME = "ACTIVITY_NAME";
+    private static final String PH_ACTIVITY_NAME = "ACTIVITY_NAME";
     /** Activity name substitution string used in manifest templates, i.e. "ACTIVITY_ENTRY_NAME".*/
-    private final static String PH_ACTIVITY_ENTRY_NAME = "ACTIVITY_ENTRY_NAME";
+    private static final String PH_ACTIVITY_ENTRY_NAME = "ACTIVITY_ENTRY_NAME";
     /** Activity name substitution string used in class templates, i.e. "ACTIVITY_CLASS_NAME".*/
-    private final static String PH_ACTIVITY_CLASS_NAME = "ACTIVITY_CLASS_NAME";
+    private static final String PH_ACTIVITY_CLASS_NAME = "ACTIVITY_CLASS_NAME";
     /** Activity FQ-name substitution string used in class templates, i.e. "ACTIVITY_FQ_NAME".*/
-    private final static String PH_ACTIVITY_FQ_NAME = "ACTIVITY_FQ_NAME";
+    private static final String PH_ACTIVITY_FQ_NAME = "ACTIVITY_FQ_NAME";
     /** Original Activity class name substitution string used in class templates, i.e.
      * "ACTIVITY_TESTED_CLASS_NAME".*/
-    private final static String PH_ACTIVITY_TESTED_CLASS_NAME = "ACTIVITY_TESTED_CLASS_NAME";
+    private static final String PH_ACTIVITY_TESTED_CLASS_NAME = "ACTIVITY_TESTED_CLASS_NAME";
     /** Project name substitution string used in template files, i.e. "PROJECT_NAME". */
-    private final static String PH_PROJECT_NAME = "PROJECT_NAME";
+    public static final String PH_PROJECT_NAME = "PROJECT_NAME";
     /** Application icon substitution string used in the manifest template */
-    private final static String PH_ICON = "ICON";
+    private static final String PH_ICON = "ICON";
     /** Version tag name substitution string used in template files, i.e. "VERSION_TAG". */
-    private final static String PH_VERSION_TAG = "VERSION_TAG";
+    private static final String PH_VERSION_TAG = "VERSION_TAG";
+    /** Target name substitution string used in template files, i.e. "TARGET". */
+    private static final String PH_TARGET = "TARGET";
+    /** Gradle plugin substitution string used in the build.gradle template */
+    private static final String PH_PLUGIN = "PLUGIN";
+    /** Gradle artifact version substitution string used in the build.gradle template */
+    private static final String PH_ARTIFACT_VERSION = "ARTIFACT_VERSION";
+    /** Build tool revision substitution string used in the build.gradle template */
+    private static final String PH_BUILD_TOOL_REV = "BUILD_TOOL_REV";
 
     /** The xpath to find a project name in an Ant build file. */
     private static final String XPATH_PROJECT_NAME = "/project/@name";
@@ -91,7 +96,7 @@ public class ProjectCreator {
      * directory name, we're being a bit conservative on purpose: dot and space cannot be used. */
     public static final Pattern RE_PROJECT_NAME = Pattern.compile("[a-zA-Z0-9_]+");
     /** List of valid characters for a project name. Used for display purposes. */
-    public final static String CHARS_PROJECT_NAME = "a-z A-Z 0-9 _";
+    public static final String CHARS_PROJECT_NAME = "a-z A-Z 0-9 _";
 
     /** Pattern for characters accepted in a package name. A package is list of Java identifier
      * separated by a dot. We need to have at least one dot (e.g. a two-level package name).
@@ -99,13 +104,18 @@ public class ProjectCreator {
     public static final Pattern RE_PACKAGE_NAME =
         Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z_][a-zA-Z0-9_]*)+");
     /** List of valid characters for a project name. Used for display purposes. */
-    public final static String CHARS_PACKAGE_NAME = "a-z A-Z 0-9 _";
+    public static final String CHARS_PACKAGE_NAME = "a-z A-Z 0-9 _";
 
     /** Pattern for characters accepted in an activity name, which is a Java identifier. */
     public static final Pattern RE_ACTIVITY_NAME =
         Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*");
     /** List of valid characters for a project name. Used for display purposes. */
-    public final static String CHARS_ACTIVITY_NAME = "a-z A-Z 0-9 _";
+    public static final String CHARS_ACTIVITY_NAME = "a-z A-Z 0-9 _";
+
+    /** Gradle plugin to use with standard projects */
+    private static final String PLUGIN_PROJECT = "android";
+    /** Gradle plugin to use with library projects */
+    private static final String PLUGIN_LIB_PROJECT = "android-library";
 
 
     public enum OutputLevel {
@@ -115,7 +125,7 @@ public class ProjectCreator {
          * error but not warnings. */
         NORMAL,
         /** Verbose mode. Project creation will display what's being done, errors and warnings. */
-        VERBOSE;
+        VERBOSE
     }
 
     /**
@@ -143,7 +153,7 @@ public class ProjectCreator {
     /** The {@link OutputLevel} verbosity. */
     private final OutputLevel mLevel;
     /** Logger for errors and output. Cannot be null. */
-    private final ISdkLog mLog;
+    private final ILogger mLog;
     /** The OS path of the SDK folder. */
     private final String mSdkFolder;
     /** The {@link SdkManager} instance. */
@@ -157,7 +167,7 @@ public class ProjectCreator {
      * @param level The {@link OutputLevel} verbosity.
      * @param log Logger for errors and output. Cannot be null.
      */
-    public ProjectCreator(SdkManager sdkManager, String sdkFolder, OutputLevel level, ISdkLog log) {
+    public ProjectCreator(SdkManager sdkManager, String sdkFolder, OutputLevel level, ILogger log) {
         mSdkManager = sdkManager;
         mSdkFolder = sdkFolder;
         mLevel = level;
@@ -165,7 +175,7 @@ public class ProjectCreator {
     }
 
     /**
-     * Creates a new project.
+     * Creates a new (ant) project.
      * <p/>
      * The caller should have already checked and sanitized the parameters.
      *
@@ -203,25 +213,25 @@ public class ProjectCreator {
             localProperties.setProperty(ProjectProperties.PROPERTY_SDK, mSdkFolder);
             localProperties.save();
 
-            // target goes in default properties
-            ProjectPropertiesWorkingCopy defaultProperties = ProjectProperties.create(folderPath,
+            // target goes in project properties
+            ProjectPropertiesWorkingCopy projectProperties = ProjectProperties.create(folderPath,
                     PropertyType.PROJECT);
-            defaultProperties.setProperty(ProjectProperties.PROPERTY_TARGET, target.hashString());
+            projectProperties.setProperty(ProjectProperties.PROPERTY_TARGET, target.hashString());
             if (library) {
-                defaultProperties.setProperty(ProjectProperties.PROPERTY_LIBRARY, "true");
+                projectProperties.setProperty(ProjectProperties.PROPERTY_LIBRARY, "true");
             }
-            defaultProperties.save();
+            projectProperties.save();
 
-            // create a build.properties file with just the application package
-            ProjectPropertiesWorkingCopy buildProperties = ProjectProperties.create(folderPath,
+            // create a ant.properties file with just the application package
+            ProjectPropertiesWorkingCopy antProperties = ProjectProperties.create(folderPath,
                     PropertyType.ANT);
 
             if (isTestProject) {
-                buildProperties.setProperty(ProjectProperties.PROPERTY_TESTED_PROJECT,
+                antProperties.setProperty(ProjectProperties.PROPERTY_TESTED_PROJECT,
                         pathToMainProject);
             }
 
-            buildProperties.save();
+            antProperties.save();
 
             // create the map for place-holders of values to replace in the templates
             final HashMap<String, String> keywords = new HashMap<String, String>();
@@ -234,7 +244,7 @@ public class ProjectCreator {
 
             // put this path in the place-holder map for project files that needs to list
             // files manually.
-            keywords.put(PH_JAVA_FOLDER, packagePath);
+            keywords.put(PH_PACKAGE_PATH, packagePath);
             keywords.put(PH_PACKAGE, packageName);
             keywords.put(PH_VERSION_TAG, Integer.toString(MIN_BUILD_VERSION_TAG));
 
@@ -338,11 +348,11 @@ public class ProjectCreator {
 
             if (isTestProject == false) {
                 /* Make res files only for non test projects */
-                File valueFolder = createDirs(resourceFolder, AndroidConstants.FD_RES_VALUES);
+                File valueFolder = createDirs(resourceFolder, SdkConstants.FD_RES_VALUES);
                 installTargetTemplate("strings.template", new File(valueFolder, "strings.xml"),
                         keywords, target);
 
-                File layoutFolder = createDirs(resourceFolder, AndroidConstants.FD_RES_LAYOUT);
+                File layoutFolder = createDirs(resourceFolder, SdkConstants.FD_RES_LAYOUT);
                 installTargetTemplate("layout.template", new File(layoutFolder, "main.xml"),
                         keywords, target);
 
@@ -369,9 +379,229 @@ public class ProjectCreator {
                     keywords);
 
             // install the proguard config file.
-            installTemplate(SdkConstants.FN_PROGUARD_CFG,
-                    new File(projectFolder, SdkConstants.FN_PROGUARD_CFG),
+            installTemplate(SdkConstants.FN_PROJECT_PROGUARD_FILE,
+                    new File(projectFolder, SdkConstants.FN_PROJECT_PROGUARD_FILE),
                     null /*keywords*/);
+        } catch (Exception e) {
+            mLog.error(e, null);
+        }
+    }
+
+    /**
+     * Creates a new (gradle) project.
+     * <p/>
+     * The caller should have already checked and sanitized the parameters.
+     *
+     * @param folderPath the folder of the project to create.
+     * @param projectName the name of the project. The name must match the
+     *          {@link #RE_PROJECT_NAME} regex.
+     * @param packageName the package of the project. The name must match the
+     *          {@link #RE_PACKAGE_NAME} regex.
+     * @param activityEntry the activity of the project as it will appear in the manifest. Can be
+     *          null if no activity should be created. The name must match the
+     *          {@link #RE_ACTIVITY_NAME} regex.
+     * @param target the project target.
+     * @param library whether the project is a library.
+     * @param artifactVersion the version of the gradle artifact in maven.
+     */
+    public void createGradleProject(String folderPath, String projectName,
+            String packageName, String activityEntry, IAndroidTarget target, boolean library,
+            String artifactVersion) {
+
+        // create project folder if it does not exist
+        File projectFolder = checkNewProjectLocation(folderPath);
+        if (projectFolder == null) {
+            return;
+        }
+
+        try {
+            // first create the project properties.
+
+            // location of the SDK goes in localProperty
+            ProjectPropertiesWorkingCopy localProperties = ProjectProperties.create(folderPath,
+                    PropertyType.LOCAL);
+            localProperties.setProperty(ProjectProperties.PROPERTY_SDK, mSdkFolder);
+            localProperties.save();
+
+            // create the map for place-holders of values to replace in the templates
+            final HashMap<String, String> keywords = new HashMap<String, String>();
+            final HashMap<String, String> testKeywords = new HashMap<String, String>();
+
+            // create the required folders.
+            // compute src folder path
+            final String packagePath =
+                stripString(packageName.replace(".", File.separator),
+                        File.separatorChar);
+
+            // put this path in the place-holder map for project files that needs to list
+            // files manually.
+            keywords.put(PH_PACKAGE_PATH, packagePath);
+            keywords.put(PH_PACKAGE, packageName);
+
+            testKeywords.put(PH_PACKAGE_PATH, packagePath);
+            testKeywords.put(PH_PACKAGE, packageName);
+
+            // compute some activity related information
+            String activityPath = null, activityClassName = null;
+            String testActivityPath = null, testActivityClassName = null;
+            if (activityEntry != null) {
+                // get the fully qualified name of the activity
+                String fqActivityName = AndroidManifest.combinePackageAndClassName(packageName,
+                        activityEntry);
+
+                // get the activity path (replace the . to /)
+                activityPath = stripString(fqActivityName.replace(".", File.separator),
+                        File.separatorChar);
+
+                // remove the last segment, so that we only have the path to the activity, but
+                // not the activity filename itself.
+                activityPath = activityPath.substring(0,
+                        activityPath.lastIndexOf(File.separatorChar));
+
+                // finally, get the class name for the activity
+                activityClassName = fqActivityName.substring(fqActivityName.lastIndexOf('.') + 1);
+
+                // at this point we have the following for the activity:
+                // activityEntry: this is the manifest entry. For instance .MyActivity
+                // fqActivityName: full-qualified class name: com.foo.MyActivity
+                // activityClassName: only the classname: MyActivity
+
+                // append Test so that it doesn't collide with the main project activity.
+                String testActivityEntry = activityEntry + "Test";
+
+                // get the fully qualified name of the test
+                String testFqActivityName = AndroidManifest.combinePackageAndClassName(packageName,
+                        testActivityEntry);
+
+                // get the test path (replace the . to /)
+                testActivityPath = stripString(testFqActivityName.replace(".", File.separator),
+                        File.separatorChar);
+
+                // remove the last segment, so that we only have the path to the test, but
+                // not the test filename itself.
+                testActivityPath = testActivityPath.substring(0,
+                        testActivityPath.lastIndexOf(File.separatorChar));
+
+                // finally, get the class name for the test
+                testActivityClassName = testFqActivityName.substring(testFqActivityName.lastIndexOf('.') + 1);
+
+                // at this point we have the following for the test:
+                // testActivityEntry: this is the manifest entry. For instance .MyActivityTest
+                // testFqActivityName: full-qualified class name: com.foo.MyActivityTest
+                // testActivityClassName: only the classname: MyActivityTest
+
+                // Add whatever activity info is needed in the place-holder map.
+                // Older templates only expect ACTIVITY_NAME to be the same (and unmodified for tests).
+                if (target.getVersion().getApiLevel() < 4) { // legacy
+                    keywords.put(PH_ACTIVITY_NAME, activityEntry);
+                    testKeywords.put(PH_ACTIVITY_NAME, activityEntry);
+                } else {
+                    // newer templates make a difference between the manifest entries, classnames,
+                    // as well as the main and test classes.
+                    keywords.put(PH_ACTIVITY_ENTRY_NAME, activityEntry);
+                    keywords.put(PH_ACTIVITY_CLASS_NAME, activityClassName);
+                    keywords.put(PH_ACTIVITY_FQ_NAME, fqActivityName);
+
+                    testKeywords.put(PH_ACTIVITY_ENTRY_NAME, testActivityEntry);
+                    testKeywords.put(PH_ACTIVITY_CLASS_NAME, testActivityClassName);
+                    testKeywords.put(PH_ACTIVITY_FQ_NAME, testFqActivityName);
+                    testKeywords.put(PH_ACTIVITY_TESTED_CLASS_NAME, activityClassName);
+                }
+            }
+
+            // Take the project name from the command line if there's one
+            if (projectName != null) {
+                keywords.put(PH_PROJECT_NAME, projectName);
+                testKeywords.put(PH_PROJECT_NAME, projectName);
+            } else {
+                // Use the activity class name as project name, else just
+                // pick up the basename of the project directory.
+                keywords.put(PH_PROJECT_NAME, (activityClassName != null) ?
+                             activityClassName : projectFolder.getName());
+                testKeywords.put(PH_PROJECT_NAME, (testActivityClassName != null) ?
+                                 testActivityClassName : projectFolder.getName());
+            }
+
+            String srcMainPath = SdkConstants.FD_SOURCES + File.separator +
+                    SdkConstants.FD_MAIN;
+            String srcTestPath = SdkConstants.FD_SOURCES + File.separator +
+                    SdkConstants.FD_TEST;
+
+            // create the source folders for the activity
+            String srcMainCodePath = srcMainPath + File.separator + SdkConstants.FD_JAVA;
+            createDirs(projectFolder, srcMainCodePath);
+            if (activityClassName != null) {
+                String srcActivityFolderPath =
+                        srcMainCodePath + File.separator + activityPath;
+                File sourceFolder = createDirs(projectFolder, srcActivityFolderPath);
+
+                String activityFileName = activityClassName + ".java";
+
+                installTargetTemplate("java_file.template",
+                        new File(sourceFolder, activityFileName), keywords, target);
+            }
+
+            // create the source folders for the test
+            String srcTestCodePath = srcTestPath + File.separator + SdkConstants.FD_JAVA;
+            createDirs(projectFolder, srcTestCodePath);
+            if (testActivityClassName != null) {
+                String srcActivityFolderPath =
+                        srcTestCodePath + File.separator + testActivityPath;
+                File sourceFolder = createDirs(projectFolder, srcActivityFolderPath);
+
+                String activityFileName = testActivityClassName + ".java";
+
+                installTargetTemplate("java_tests_file.template",
+                        new File(sourceFolder, activityFileName), testKeywords, target);
+            }
+
+            // create the res xml files
+            String srcMainResPath = srcMainPath + File.separator + SdkConstants.FD_RES;
+            File resourceFolder = createDirs(projectFolder, srcMainResPath);
+
+            File valueFolder = createDirs(resourceFolder, SdkConstants.FD_RES_VALUES);
+            installTargetTemplate("strings.template", new File(valueFolder, "strings.xml"),
+                    keywords, target);
+
+            File layoutFolder = createDirs(resourceFolder, SdkConstants.FD_RES_LAYOUT);
+            installTargetTemplate("layout.template", new File(layoutFolder, "main.xml"),
+                    keywords, target);
+
+            // create the icons
+            if (installIcons(resourceFolder, target)) {
+                keywords.put(PH_ICON, "android:icon=\"@drawable/ic_launcher\"");
+            } else {
+                keywords.put(PH_ICON, "");
+            }
+
+            // Create the AndroidManifest.xml and build.gradle files
+            installTargetTemplate("AndroidManifest.template",
+                    new File(projectFolder, srcMainPath + File.separator +
+                            SdkConstants.FN_ANDROID_MANIFEST_XML),
+                    keywords, target);
+
+            String buildToolRev = mSdkManager.getLatestBuildTool().getRevision().toString();
+
+            keywords.put(PH_BUILD_TOOL_REV, buildToolRev);
+            keywords.put(PH_ARTIFACT_VERSION, artifactVersion);
+            keywords.put(PH_TARGET, target.hashString());
+            keywords.put(PH_PLUGIN, (library) ? PLUGIN_LIB_PROJECT : PLUGIN_PROJECT);
+
+            installTemplate("build_gradle.template",
+                    new File(projectFolder, SdkConstants.FN_BUILD_GRADLE),
+                    keywords);
+
+            // Create the gradle wrapper files
+            createDirs(projectFolder, SdkConstants.FD_GRADLE_WRAPPER);
+            installGradleWrapperFile(SdkConstants.FD_GRADLE_WRAPPER + File.separator
+                    + SdkConstants.FN_GRADLE_WRAPPER_JAR,
+                    projectFolder);
+            installGradleWrapperFile(SdkConstants.FD_GRADLE_WRAPPER + File.separator
+                    + SdkConstants.FN_GRADLE_WRAPPER_PROPERTIES,
+                    projectFolder);
+            installGradleWrapperFile(SdkConstants.FN_GRADLE_WRAPPER_WIN, projectFolder);
+            installGradleWrapperFile(SdkConstants.FN_GRADLE_WRAPPER_UNIX, projectFolder);
+            new File(projectFolder, SdkConstants.FN_GRADLE_WRAPPER_UNIX).setExecutable(true, false);
         } catch (Exception e) {
             mLog.error(e, null);
         }
@@ -535,6 +765,10 @@ public class ProjectCreator {
             while (true) {
                 String propName = ProjectProperties.PROPERTY_LIB_REF + Integer.toString(index);
                 assert props != null;
+                if (props == null) {
+                    // This should not happen yet SDK bug 20535 says it can, not sure how.
+                    break;
+                }
                 String ref = props.getProperty(propName);
                 if (ref == null) {
                     break;
@@ -747,8 +981,10 @@ public class ProjectCreator {
 
         if (hasProguard == false) {
             try {
-                installTemplate(SdkConstants.FN_PROGUARD_CFG,
-                        new File(projectFolder, SdkConstants.FN_PROGUARD_CFG),
+                installTemplate(SdkConstants.FN_PROJECT_PROGUARD_FILE,
+                        // Write ProGuard config files with the extension .pro which
+                        // is what is used in the ProGuard documentation and samples
+                        new File(projectFolder, SdkConstants.FN_PROJECT_PROGUARD_FILE),
                         null /*placeholderMap*/);
             } catch (ProjectCreateException e) {
                 mLog.error(e, null);
@@ -923,8 +1159,9 @@ public class ProjectCreator {
     private Matcher checkFileContainsRegexp(File file, String regexp) {
         Pattern p = Pattern.compile(regexp);
 
+        BufferedReader in = null;
         try {
-            BufferedReader in = new BufferedReader(new FileReader(file));
+            in = new BufferedReader(new FileReader(file));
             String line;
 
             while ((line = in.readLine()) != null) {
@@ -937,6 +1174,14 @@ public class ProjectCreator {
             in.close();
         } catch (Exception e) {
             // ignore
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
         }
 
         return null;
@@ -1072,6 +1317,22 @@ public class ProjectCreator {
     }
 
     /**
+     * Installs a new file from the gradle wrapper template.
+     *
+     * @param templateName the name of the template file
+     * @param projectFolder the path to the project folder
+     * @throws ProjectCreateException
+     */
+    public void installGradleWrapperFile(String templateName, File projectFolder)
+            throws ProjectCreateException {
+        String templateFolder = mSdkFolder + File.separator +
+                SdkConstants.OS_SDK_TOOLS_TEMPLATES_GRADLE_WRAPPER_FOLDER;
+
+        installBinaryFile(new File(templateFolder, templateName),
+                new File(projectFolder, templateName));
+    }
+
+    /**
      * Installs a new file that is based on a template file provided by the tools folder.
      * Each match of each key from the place-holder map in the template will be replaced with its
      * corresponding value in the created file.
@@ -1081,7 +1342,7 @@ public class ProjectCreator {
      * @param placeholderMap a map of (place-holder, value) to create the file from the template.
      * @throws ProjectCreateException
      */
-    private void installTemplate(String templateName, File destFile,
+    public void installTemplate(String templateName, File destFile,
             Map<String, String> placeholderMap)
             throws ProjectCreateException {
         // query the target for its template directory
@@ -1147,6 +1408,8 @@ public class ProjectCreator {
 
         boolean installedIcon = false;
 
+        installedIcon |= installIcon(templateFolder, "ic_launcher_xhdpi.png", resourceFolder,
+                "drawable-xhdpi");
         installedIcon |= installIcon(templateFolder, "ic_launcher_hdpi.png", resourceFolder,
                 "drawable-hdpi");
         installedIcon |= installIcon(templateFolder, "ic_launcher_mdpi.png", resourceFolder,
@@ -1220,8 +1483,8 @@ public class ProjectCreator {
     /**
      * Prints a message unless silence is enabled.
      * <p/>
-     * This is just a convenience wrapper around {@link ISdkLog#printf(String, Object...)} from
-     * {@link #mLog} after testing if ouput level is {@link OutputLevel#VERBOSE}.
+     * This is just a convenience wrapper around {@link ILogger#info(String, Object...)} from
+     * {@link #mLog} after testing if output level is {@link OutputLevel#VERBOSE}.
      *
      * @param format Format for String.format
      * @param args Arguments for String.format
@@ -1231,7 +1494,7 @@ public class ProjectCreator {
             if (!format.endsWith("\n")) {
                 format += "\n";
             }
-            mLog.printf(format, args);
+            mLog.info(format, args);
         }
     }
 

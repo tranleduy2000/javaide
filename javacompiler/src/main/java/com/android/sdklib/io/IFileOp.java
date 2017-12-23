@@ -16,11 +16,14 @@
 
 package com.android.sdklib.io;
 
+import com.android.annotations.NonNull;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Properties;
 
 
 /**
@@ -34,9 +37,10 @@ public interface IFileOp {
      * Helper to delete a file or a directory.
      * For a directory, recursively deletes all of its content.
      * Files that cannot be deleted right away are marked for deletion on exit.
+     * It's ok for the file or folder to not exist at all.
      * The argument can be null.
      */
-    public abstract void deleteFileOrFolder(File fileOrFolder);
+    public abstract void deleteFileOrFolder(@NonNull File fileOrFolder);
 
     /**
      * Sets the executable Unix permission (+x) on a file or folder.
@@ -51,7 +55,14 @@ public interface IFileOp {
      * @param file The file to set permissions on.
      * @throws IOException If an I/O error occurs
      */
-    public abstract void setExecutablePermission(File file) throws IOException;
+    public abstract void setExecutablePermission(@NonNull File file) throws IOException;
+
+    /**
+     * Sets the file or directory as read-only.
+     *
+     * @param file The file or directory to set permissions on.
+     */
+    public abstract void setReadOnly(@NonNull File file);
 
     /**
      * Copies a binary file.
@@ -61,47 +72,90 @@ public interface IFileOp {
      * @throws FileNotFoundException if the source file doesn't exist.
      * @throws IOException if there's a problem reading or writing the file.
      */
-    public abstract void copyFile(File source, File dest) throws IOException;
+    public abstract void copyFile(@NonNull File source, @NonNull File dest) throws IOException;
 
     /**
      * Checks whether 2 binary files are the same.
      *
-     * @param source the source file to copy
-     * @param destination the destination file to write
+     * @param file1 the source file to copy
+     * @param file2 the destination file to write
      * @throws FileNotFoundException if the source files don't exist.
      * @throws IOException if there's a problem reading the files.
      */
-    public abstract boolean isSameFile(File source, File destination)
+    public abstract boolean isSameFile(@NonNull File file1, @NonNull File file2)
             throws IOException;
 
     /** Invokes {@link File#exists()} on the given {@code file}. */
-    public abstract boolean exists(File file);
+    public abstract boolean exists(@NonNull File file);
 
     /** Invokes {@link File#isFile()} on the given {@code file}. */
-    public abstract boolean isFile(File file);
+    public abstract boolean isFile(@NonNull File file);
 
     /** Invokes {@link File#isDirectory()} on the given {@code file}. */
-    public abstract boolean isDirectory(File file);
+    public abstract boolean isDirectory(@NonNull File file);
 
     /** Invokes {@link File#length()} on the given {@code file}. */
-    public abstract long length(File file);
+    public abstract long length(@NonNull File file);
 
     /**
      * Invokes {@link File#delete()} on the given {@code file}.
      * Note: for a recursive folder version, consider {@link #deleteFileOrFolder(File)}.
      */
-    public abstract boolean delete(File file);
+    public abstract boolean delete(@NonNull File file);
 
     /** Invokes {@link File#mkdirs()} on the given {@code file}. */
-    public abstract boolean mkdirs(File file);
+    public abstract boolean mkdirs(@NonNull File file);
 
-    /** Invokes {@link File#listFiles()} on the given {@code file}. */
-    public abstract File[] listFiles(File file);
+    /**
+     * Invokes {@link File#listFiles()} on the given {@code file}.
+     * Contrary to the Java API, this returns an empty array instead of null when the
+     * directory does not exist.
+     */
+    @NonNull
+    public abstract File[] listFiles(@NonNull File file);
 
     /** Invokes {@link File#renameTo(File)} on the given files. */
-    public abstract boolean renameTo(File oldDir, File newDir);
+    public abstract boolean renameTo(@NonNull File oldDir, @NonNull File newDir);
 
-    /** Creates a new {@link FileOutputStream} for the given {@code file}. */
-    public abstract OutputStream newFileOutputStream(File file) throws FileNotFoundException;
+    /** Creates a new {@link OutputStream} for the given {@code file}. */
+    @NonNull
+    public abstract OutputStream newFileOutputStream(@NonNull File file)
+            throws FileNotFoundException;
 
+    /** Creates a new {@link InputStream} for the given {@code file}. */
+    @NonNull
+    public abstract InputStream newFileInputStream(@NonNull File file)
+            throws FileNotFoundException;
+
+    /**
+     * Load {@link Properties} from a file. Returns an empty property set on error.
+     *
+     * @param file A non-null file to load from. File may not exist.
+     * @return A new {@link Properties} with the properties loaded from the file,
+     *          or an empty property set in case of error.
+     */
+    @NonNull
+    public Properties loadProperties(@NonNull File file);
+
+    /**
+     * Saves (write, store) the given {@link Properties} into the given {@link File}.
+     *
+     * @param file A non-null file to write to.
+     * @param props The properties to write.
+     * @param comments A non-null description of the properly list, written in the file.
+     * @throws IOException if the write operation failed.
+     */
+    public void saveProperties(
+            @NonNull File file,
+            @NonNull Properties props,
+            @NonNull String comments) throws IOException;
+
+    /**
+     * Returns the lastModified attribute of the file.
+     *
+     * @see File#lastModified()
+     * @param file The non-null file of which to retrieve the lastModified attribute.
+     * @return The last-modified attribute of the file, in milliseconds since The Epoch.
+     */
+    long lastModified(@NonNull File file);
 }

@@ -23,7 +23,7 @@
     version="1">
 
     <!--
-        A simple list of add-ons site that is loaded by default by the SDK Manager.
+        A simple list of add-ons sites that is loaded by default by the SDK Manager.
     -->
 
     <xsd:element name="sdk-addons-list" type="sa1:addonsListType" />

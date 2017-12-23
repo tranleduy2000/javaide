@@ -65,14 +65,14 @@ public class HtmlBuilder {
     }
 
     public HtmlBuilder newline() {
-        mStringBuilder.append("<BR/>");
+        mStringBuilder.append("<BR/>\n");
 
         return this;
     }
 
     public HtmlBuilder newlineIfNecessary() {
-        if (!SdkUtils.endsWith(mStringBuilder, "<BR/>")) {
-            mStringBuilder.append("<BR/>");
+        if (!SdkUtils.endsWith(mStringBuilder, "<BR/>\n")) {
+            mStringBuilder.append("<BR/>\n");
         }
 
         return this;
@@ -155,26 +155,6 @@ public class HtmlBuilder {
         return this;
     }
 
-    public HtmlBuilder beginItalic() {
-        mStringBuilder.append("<I>");
-
-        return this;
-    }
-
-    public HtmlBuilder endItalic() {
-        mStringBuilder.append("</I>");
-
-        return this;
-    }
-
-    public HtmlBuilder addItalic(String text) {
-        beginItalic();
-        add(text);
-        endItalic();
-
-        return this;
-    }
-
     public HtmlBuilder beginDiv() {
         return beginDiv(null);
     }
@@ -223,9 +203,9 @@ public class HtmlBuilder {
 
     public HtmlBuilder endList() {
         if (USE_DD_LISTS) {
-            mStringBuilder.append("</DL>");
+            mStringBuilder.append("\n</DL>");
         } else {
-            mStringBuilder.append("</UL>");
+            mStringBuilder.append("\n</UL>");
         }
 
         return this;
@@ -233,10 +213,10 @@ public class HtmlBuilder {
 
     public HtmlBuilder listItem() {
         if (USE_DD_LISTS) {
-            mStringBuilder.append("<DD>");
+            mStringBuilder.append("\n<DD>");
             mStringBuilder.append("-&NBSP;");
         } else {
-            mStringBuilder.append("<LI>");
+            mStringBuilder.append("\n<LI>");
         }
 
         return this;

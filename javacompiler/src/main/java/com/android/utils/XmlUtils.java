@@ -20,15 +20,22 @@ import static com.android.SdkConstants.ANDROID_NS_NAME;
 import static com.android.SdkConstants.ANDROID_URI;
 import static com.android.SdkConstants.APOS_ENTITY;
 import static com.android.SdkConstants.APP_PREFIX;
+import static com.android.SdkConstants.GT_ENTITY;
 import static com.android.SdkConstants.LT_ENTITY;
 import static com.android.SdkConstants.QUOT_ENTITY;
 import static com.android.SdkConstants.XMLNS;
 import static com.android.SdkConstants.XMLNS_PREFIX;
 import static com.android.SdkConstants.XMLNS_URI;
+import static com.google.common.base.Charsets.UTF_16BE;
+import static com.google.common.base.Charsets.UTF_16LE;
+import static com.google.common.base.Charsets.UTF_8;
 
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
+import com.google.common.base.CaseFormat;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -37,13 +44,24 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /** XML Utilities */
 public class XmlUtils {
@@ -51,6 +69,11 @@ public class XmlUtils {
     public static final String XML_COMMENT_END = "-->";    //$NON-NLS-1$
     public static final String XML_PROLOG =
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";  //$NON-NLS-1$
+
+    /**
+     * Separator for xml namespace and localname
+     */
+    public static final char NS_SEPARATOR = ':';                  //$NON-NLS-1$
 
     /**
      * Returns the namespace prefix matching the requested namespace URI.
@@ -220,6 +243,23 @@ public class XmlUtils {
     }
 
     /**
+     * Converts the given XML-attribute-safe value to a java string
+     *
+     * @param escapedAttrValue the escaped value
+     * @return the unescaped value
+     */
+    @NonNull
+    public static String fromXmlAttributeValue(@NonNull String escapedAttrValue) {
+        String workingString = escapedAttrValue.replace(QUOT_ENTITY, "\"");
+        workingString = workingString.replace(LT_ENTITY, "<");
+        workingString = workingString.replace(APOS_ENTITY, "'");
+        workingString = workingString.replace(AMP_ENTITY, "&");
+        workingString = workingString.replace(GT_ENTITY, ">");
+
+        return workingString;
+    }
+
+    /**
      * Converts the given attribute value to an XML-text-safe value, meaning that
      * less than and ampersand characters are escaped.
      *
@@ -307,8 +347,130 @@ public class XmlUtils {
     }
 
     /**
+     * Returns a character reader for the given file, which must be a UTF encoded file.
+     * <p>
+     * The reader does not need to be closed by the caller (because the file is read in
+     * full in one shot and the resulting array is then wrapped in a byte array input stream,
+     * which does not need to be closed.)
+     */
+    public static Reader getUtfReader(@NonNull File file) throws IOException {
+        byte[] bytes = Files.toByteArray(file);
+        int length = bytes.length;
+        if (length == 0) {
+            return new StringReader("");
+        }
+
+        switch (bytes[0]) {
+            case (byte)0xEF: {
+                if (length >= 3
+                        && bytes[1] == (byte)0xBB
+                        && bytes[2] == (byte)0xBF) {
+                    // UTF-8 BOM: EF BB BF: Skip it
+                    return new InputStreamReader(new ByteArrayInputStream(bytes, 3, length - 3),
+                            UTF_8);
+                }
+                break;
+            }
+            case (byte)0xFE: {
+                if (length >= 2
+                        && bytes[1] == (byte)0xFF) {
+                    // UTF-16 Big Endian BOM: FE FF
+                    return new InputStreamReader(new ByteArrayInputStream(bytes, 2, length - 2),
+                            UTF_16BE);
+                }
+                break;
+            }
+            case (byte)0xFF: {
+                if (length >= 2
+                        && bytes[1] == (byte)0xFE) {
+                    if (length >= 4
+                            && bytes[2] == (byte)0x00
+                            && bytes[3] == (byte)0x00) {
+                        // UTF-32 Little Endian BOM: FF FE 00 00
+                        return new InputStreamReader(new ByteArrayInputStream(bytes, 4,
+                                length - 4), "UTF-32LE");
+                    }
+
+                    // UTF-16 Little Endian BOM: FF FE
+                    return new InputStreamReader(new ByteArrayInputStream(bytes, 2, length - 2),
+                            UTF_16LE);
+                }
+                break;
+            }
+            case (byte)0x00: {
+                if (length >= 4
+                        && bytes[0] == (byte)0x00
+                        && bytes[1] == (byte)0x00
+                        && bytes[2] == (byte)0xFE
+                        && bytes[3] == (byte)0xFF) {
+                    // UTF-32 Big Endian BOM: 00 00 FE FF
+                    return new InputStreamReader(new ByteArrayInputStream(bytes, 4, length - 4),
+                            "UTF-32BE");
+                }
+                break;
+            }
+        }
+
+        // No byte order mark: Assume UTF-8 (where the BOM is optional).
+        return new InputStreamReader(new ByteArrayInputStream(bytes), UTF_8);
+    }
+
+    /**
      * Parses the given XML string as a DOM document, using the JDK parser. The parser does not
-     * validate, and is namespace aware.
+     * validate, and is optionally namespace aware.
+     *
+     * @param xml            the XML content to be parsed (must be well formed)
+     * @param namespaceAware whether the parser is namespace aware
+     * @return the DOM document
+     */
+    @NonNull
+    public static Document parseDocument(@NonNull String xml, boolean namespaceAware)
+            throws ParserConfigurationException, IOException, SAXException {
+        xml = stripBom(xml);
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        InputSource is = new InputSource(new StringReader(xml));
+        factory.setNamespaceAware(namespaceAware);
+        factory.setValidating(false);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        return builder.parse(is);
+    }
+
+    /**
+     * Parses the given UTF file as a DOM document, using the JDK parser. The parser does not
+     * validate, and is optionally namespace aware.
+     *
+     * @param file           the UTF encoded file to parse
+     * @param namespaceAware whether the parser is namespace aware
+     * @return the DOM document
+     */
+    @NonNull
+    public static Document parseUtfXmlFile(@NonNull File file, boolean namespaceAware)
+            throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        Reader reader = getUtfReader(file);
+        try {
+            InputSource is = new InputSource(reader);
+            factory.setNamespaceAware(namespaceAware);
+            factory.setValidating(false);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            return builder.parse(is);
+        } finally {
+            reader.close();
+        }
+    }
+
+    /** Strips out a leading UTF byte order mark, if present */
+    @NonNull
+    public static String stripBom(@NonNull String xml) {
+        if (!xml.isEmpty() && xml.charAt(0) == '\uFEFF') {
+            return xml.substring(1);
+        }
+        return xml;
+    }
+
+    /**
+     * Parses the given XML string as a DOM document, using the JDK parser. The parser does not
+     * validate, and is optionally namespace aware. Any parsing errors are silently ignored.
      *
      * @param xml            the XML content to be parsed (must be well formed)
      * @param namespaceAware whether the parser is namespace aware
@@ -316,13 +478,8 @@ public class XmlUtils {
      */
     @Nullable
     public static Document parseDocumentSilently(@NonNull String xml, boolean namespaceAware) {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        InputSource is = new InputSource(new StringReader(xml));
-        factory.setNamespaceAware(namespaceAware);
-        factory.setValidating(false);
         try {
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            return builder.parse(is);
+            return parseDocument(xml, namespaceAware);
         } catch (Exception e) {
             // pass
             // This method is deliberately silent; will return null
@@ -334,7 +491,7 @@ public class XmlUtils {
     /**
      * Dump an XML tree to string. This does not perform any pretty printing.
      * To perform pretty printing, use {@code XmlPrettyPrinter.prettyPrint(node)} in
-     * {@code sdk_common}.
+     * {@code sdk-common}.
      */
     public static String toXml(Node node, boolean preserveWhitespace) {
         StringBuilder sb = new StringBuilder(1000);
@@ -359,15 +516,18 @@ public class XmlUtils {
                 break;
             }
             case Node.COMMENT_NODE:
+                sb.append(XML_COMMENT_BEGIN);
+                sb.append(node.getNodeValue());
+                sb.append(XML_COMMENT_END);
+                break;
             case Node.TEXT_NODE: {
-                if (nodeType == Node.COMMENT_NODE) {
-                    sb.append(XML_COMMENT_BEGIN);
-                }
-                String text = node.getNodeValue();
-                sb.append(toXmlTextValue(text));
-                if (nodeType == Node.COMMENT_NODE) {
-                    sb.append(XML_COMMENT_END);
-                }
+                sb.append(toXmlTextValue(node.getNodeValue()));
+                break;
+            }
+            case Node.CDATA_SECTION_NODE: {
+                sb.append("<![CDATA["); //$NON-NLS-1$
+                sb.append(node.getNodeValue());
+                sb.append("]]>");       //$NON-NLS-1$
                 break;
             }
             case Node.ELEMENT_NODE: {

@@ -16,9 +16,25 @@
 
 package com.android.utils;
 
+import static com.android.SdkConstants.DOT_XML;
+
+import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
+import com.android.annotations.VisibleForTesting;
+import com.google.common.base.CaseFormat;
+import com.google.common.base.Charsets;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
@@ -32,7 +48,7 @@ public class SdkUtils {
      * @param suffix the suffix to be checked for
      * @return true if the string case-insensitively ends with the given suffix
      */
-    public static boolean endsWithIgnoreCase(String string, String suffix) {
+    public static boolean endsWithIgnoreCase(@NonNull String string, @NonNull String suffix) {
         return string.regionMatches(true /* ignoreCase */, string.length() - suffix.length(),
                 suffix, 0, suffix.length());
     }
@@ -45,7 +61,7 @@ public class SdkUtils {
      * @param suffix the suffix to look for
      * @return true if the given sequence ends with the given suffix
      */
-    public static boolean endsWith(CharSequence sequence, CharSequence suffix) {
+    public static boolean endsWith(@NonNull CharSequence sequence, @NonNull CharSequence suffix) {
         return endsWith(sequence, sequence.length(), suffix);
     }
 
@@ -58,7 +74,8 @@ public class SdkUtils {
      * @param suffix the suffix to look for
      * @return true if the given sequence ends with the given suffix
      */
-    public static boolean endsWith(CharSequence sequence, int endOffset, CharSequence suffix) {
+    public static boolean endsWith(@NonNull CharSequence sequence, int endOffset,
+            @NonNull CharSequence suffix) {
         if (endOffset < suffix.length()) {
             return false;
         }
@@ -80,7 +97,7 @@ public class SdkUtils {
      * @param prefix the prefix to be checked for
      * @return true if the string case-insensitively starts with the given prefix
      */
-    public static boolean startsWithIgnoreCase(String string, String prefix) {
+    public static boolean startsWithIgnoreCase(@NonNull String string, @NonNull String prefix) {
         return string.regionMatches(true /* ignoreCase */, 0, prefix, 0, prefix.length());
     }
 
@@ -94,7 +111,7 @@ public class SdkUtils {
      * @return true if the string case-insensitively starts at the given offset
      *         with the given prefix
      */
-    public static boolean startsWith(String string, int offset, String prefix) {
+    public static boolean startsWith(@NonNull String string, int offset, @NonNull String prefix) {
         return string.regionMatches(true /* ignoreCase */, offset, prefix, 0, prefix.length());
     }
 
@@ -104,7 +121,7 @@ public class SdkUtils {
      * @param string the string to be cleaned up
      * @return the string, without whitespace
      */
-    public static String stripWhitespace(String string) {
+    public static String stripWhitespace(@NonNull String string) {
         StringBuilder sb = new StringBuilder(string.length());
         for (int i = 0, n = string.length(); i < n; i++) {
             char c = string.charAt(i);
@@ -122,7 +139,7 @@ public class SdkUtils {
      * @param s the string to check
      * @return true if it contains uppercase characters
      */
-    public static boolean hasUpperCaseCharacter(String s) {
+    public static boolean hasUpperCaseCharacter(@NonNull String s) {
         for (int i = 0; i < s.length(); i++) {
             if (Character.isUpperCase(s.charAt(i))) {
                 return true;
@@ -288,5 +305,159 @@ public class SdkUtils {
         } catch (ParseException e) {
             return defaultValue;
         }
+    }
+
+    /**
+     * Returns the corresponding {@link File} for the given file:// url
+     *
+     * @param url the URL string, e.g. file://foo/bar
+     * @return the corresponding {@link File} (which may or may not exist)
+     * @throws MalformedURLException if the URL string is malformed or is not a file: URL
+     */
+    @NonNull
+    public static File urlToFile(@NonNull String url) throws MalformedURLException {
+        return urlToFile(new URL(url));
+    }
+
+    @NonNull
+    public static File urlToFile(@NonNull URL url) throws MalformedURLException {
+        try {
+            return new File(url.toURI());
+        }
+        catch (IllegalArgumentException e) {
+            MalformedURLException ex = new MalformedURLException(e.getLocalizedMessage());
+            ex.initCause(e);
+            throw ex;
+        }
+        catch (URISyntaxException e) {
+            return new File(url.getPath());
+        }
+    }
+
+    /**
+     * Returns the corresponding URL string for the given {@link File}
+     *
+     * @param file the file to look up the URL for
+     * @return the corresponding URL
+     * @throws MalformedURLException in very unexpected cases
+     */
+    public static String fileToUrlString(@NonNull File file) throws MalformedURLException {
+        return fileToUrl(file).toExternalForm();
+    }
+
+    /**
+     * Returns the corresponding URL for the given {@link File}
+     *
+     * @param file the file to look up the URL for
+     * @return the corresponding URL
+     * @throws MalformedURLException in very unexpected cases
+     */
+    public static URL fileToUrl(@NonNull File file) throws MalformedURLException {
+        return file.toURI().toURL();
+    }
+
+    /** Prefix in comments which mark the source locations for merge results */
+    public static final String FILENAME_PREFIX = "From: ";
+
+    /**
+     * Creates the path comment XML string. Note that it does not escape characters
+     * such as &amp; and &lt;; those are expected to be escaped by the caller (for
+     * example, handled by a call to {@link org.w3c.dom.Document#createComment(String)})
+     *
+     *
+     * @param file the file to create a path comment for
+     * @param includePadding whether to include padding. The final comment recognized by
+     *                       error recognizers expect padding between the {@code <!--} and
+     *                       the start marker (From:); you can disable padding if the caller
+     *                       already is in a context where the padding has been added.
+     * @return the corresponding XML contents of the string
+     */
+    public static String createPathComment(@NonNull File file, boolean includePadding)
+            throws MalformedURLException {
+        String url = fileToUrlString(file);
+        int dashes = url.indexOf("--");
+        if (dashes != -1) { // Not allowed inside XML comments - for SGML compatibility. Sigh.
+            url = url.replace("--", "%2D%2D");
+        }
+
+        if (includePadding) {
+            return ' ' + FILENAME_PREFIX + url + ' ';
+        } else {
+            return FILENAME_PREFIX + url;
+        }
+    }
+
+    /**
+     * Copies the given XML file to the given new path. It also inserts a comment at
+     * the end of the file which points to the original source location. This is intended
+     * for use with error parsers which can rewrite for example AAPT error messages in
+     * say layout or manifest files, which occur in the merged (copied) output, and present
+     * it as an error pointing to one of the user's original source files.
+     */
+    public static void copyXmlWithSourceReference(@NonNull File from, @NonNull File to)
+            throws IOException {
+        copyXmlWithComment(from, to, createPathComment(from, true));
+    }
+
+    /** Copies a given XML file, and appends a given comment to the end */
+    private static void copyXmlWithComment(@NonNull File from, @NonNull File to,
+            @Nullable String comment) throws IOException {
+        assert endsWithIgnoreCase(from.getPath(), DOT_XML) : from;
+
+        int successfulOps = 0;
+        InputStream in = new FileInputStream(from);
+        try {
+            FileOutputStream out = new FileOutputStream(to, false);
+            try {
+                ByteStreams.copy(in, out);
+                successfulOps++;
+                if (comment != null) {
+                    String commentText = "<!--" + XmlUtils.toXmlTextValue(comment) + "-->";
+                    byte[] suffix = commentText.getBytes(Charsets.UTF_8);
+                    out.write(suffix);
+                }
+            } finally {
+                Closeables.close(out, successfulOps < 1);
+                successfulOps++;
+            }
+        } finally {
+            Closeables.close(in, successfulOps < 2);
+        }
+    }
+
+    /**
+     * Translates an XML name (e.g. xml-name) into a Java / C++ constant name (e.g. XML_NAME)
+     * @param xmlName the hyphen separated lower case xml name.
+     * @return the equivalent constant name.
+     */
+    public static String xmlNameToConstantName(String xmlName) {
+        return CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_UNDERSCORE, xmlName);
+    }
+
+    /**
+     * Translates a camel case name (e.g. xmlName) into a Java / C++ constant name (e.g. XML_NAME)
+     * @param camelCaseName the camel case name.
+     * @return the equivalent constant name.
+     */
+    public static String camelCaseToConstantName(String camelCaseName) {
+        return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, camelCaseName);
+    }
+
+    /**
+     * Translates a Java / C++ constant name (e.g. XML_NAME) into camel case name (e.g. xmlName)
+     * @param constantName the constant name.
+     * @return the equivalent camel case name.
+     */
+    public static String constantNameToCamelCase(String constantName) {
+        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, constantName);
+    }
+
+    /**
+     * Translates a Java / C++ constant name (e.g. XML_NAME) into a XML case name (e.g. xml-name)
+     * @param constantName the constant name.
+     * @return the equivalent XML name.
+     */
+    public static String constantNameToXmlName(String constantName) {
+        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_HYPHEN, constantName);
     }
 }

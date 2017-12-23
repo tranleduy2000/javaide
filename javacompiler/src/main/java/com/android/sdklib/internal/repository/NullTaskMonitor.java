@@ -16,9 +16,10 @@
 
 package com.android.sdklib.internal.repository;
 
-import com.android.sdklib.ISdkLog;
-import com.android.sdklib.NullSdkLog;
-import com.android.util.Pair;
+import com.android.annotations.NonNull;
+import com.android.annotations.Nullable;
+import com.android.utils.ILogger;
+import com.android.utils.NullLogger;
 
 
 /**
@@ -26,12 +27,12 @@ import com.android.util.Pair;
  * <p/>
  * This can be passed to methods that require a monitor when the caller doesn't
  * have any UI to update or means to report tracked progress.
- * A custom {@link ISdkLog} is used. Clients could use {@link NullSdkLog} if
+ * A custom {@link ILogger} is used. Clients could use {@link NullLogger} if
  * they really don't care about the logging either.
  */
 public class NullTaskMonitor implements ITaskMonitor {
 
-    private final ISdkLog mLog;
+    private final ILogger mLog;
 
     /**
      * Creates a no-op {@link ITaskMonitor} that defers logging to the specified
@@ -40,76 +41,95 @@ public class NullTaskMonitor implements ITaskMonitor {
      * This can be passed to methods that require a monitor when the caller doesn't
      * have any UI to update or means to report tracked progress.
      *
-     * @param log An {@link ISdkLog}. Must not be null. Consider using {@link NullSdkLog}.
+     * @param log An {@link ILogger}. Must not be null. Consider using {@link NullLogger}.
      */
-    public NullTaskMonitor(ISdkLog log) {
+    public NullTaskMonitor(ILogger log) {
         mLog = log;
     }
 
+    @Override
     public void setDescription(String format, Object...args) {
         // pass
     }
 
+    @Override
     public void log(String format, Object...args) {
-        mLog.printf(format, args);
+        mLog.info(format, args);
     }
 
+    @Override
     public void logError(String format, Object...args) {
         mLog.error(null /*throwable*/, format, args);
     }
 
+    @Override
     public void logVerbose(String format, Object...args) {
-        mLog.printf(format, args);
+        mLog.verbose(format, args);
     }
 
+    @Override
     public void setProgressMax(int max) {
         // pass
     }
 
+    @Override
     public int getProgressMax() {
         return 0;
     }
 
+    @Override
     public void incProgress(int delta) {
         // pass
     }
 
     /** Always return 1. */
+    @Override
     public int getProgress() {
         return 1;
     }
 
     /** Always return false. */
+    @Override
     public boolean isCancelRequested() {
         return false;
     }
 
+    @Override
     public ITaskMonitor createSubMonitor(int tickCount) {
         return this;
     }
 
     /** Always return false. */
+    @Override
     public boolean displayPrompt(final String title, final String message) {
         return false;
     }
 
     /** Always return null. */
-    public Pair<String, String> displayLoginPasswordPrompt(String title, String message) {
+    @Override
+    public UserCredentials displayLoginCredentialsPrompt(String title, String message) {
         return null;
     }
 
-    // --- ISdkLog ---
+    // --- ILogger ---
 
-    public void error(Throwable t, String errorFormat, Object... args) {
+    @Override
+    public void error(@Nullable Throwable t, @Nullable String errorFormat, Object... args) {
         mLog.error(t, errorFormat, args);
     }
 
-    public void warning(String warningFormat, Object... args) {
+    @Override
+    public void warning(@NonNull String warningFormat, Object... args) {
         mLog.warning(warningFormat, args);
     }
 
-    public void printf(String msgFormat, Object... args) {
-        mLog.printf(msgFormat, args);
+    @Override
+    public void info(@NonNull String msgFormat, Object... args) {
+        mLog.info(msgFormat, args);
     }
 
+    @Override
+    public void verbose(@NonNull String msgFormat, Object... args) {
+        mLog.verbose(msgFormat, args);
+    }
 }

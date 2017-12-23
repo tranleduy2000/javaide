@@ -23,14 +23,18 @@ package com.android.resources;
  * as well as other places needing to know the density values.
  */
 public enum Density implements ResourceEnum {
-    XHIGH("xhdpi", "X-High Density", 320, 8), //$NON-NLS-1$
-    HIGH("hdpi", "High Density", 240, 4), //$NON-NLS-1$
-    TV("tvdpi", "TV Density", 213, 13), //$NON-NLS-1$
-    MEDIUM("mdpi", "Medium Density", 160, 4), //$NON-NLS-1$
-    LOW("ldpi", "Low Density", 120, 4), //$NON-NLS-1$
-    NODPI("nodpi", "No Density", 0, 4); //$NON-NLS-1$
+    XXXHIGH("xxxhdpi", "XXX-High Density", 640, 18), //$NON-NLS-1$
+    DPI_560("560dpi",  "560 DPI Density",  560,  1), //$NON-NLS-1$
+    XXHIGH( "xxhdpi",  "XX-High Density",  480, 16), //$NON-NLS-1$
+    DPI_400("400dpi",  "400 DPI Density",  400,  1), //$NON-NLS-1$
+    XHIGH(  "xhdpi",   "X-High Density",   320,  8), //$NON-NLS-1$
+    HIGH(   "hdpi",    "High Density",     240,  4), //$NON-NLS-1$
+    TV(     "tvdpi",   "TV Density",       213, 13), //$NON-NLS-1$
+    MEDIUM( "mdpi",    "Medium Density",   160,  4), //$NON-NLS-1$
+    LOW(    "ldpi",    "Low Density",      120,  4), //$NON-NLS-1$
+    NODPI(  "nodpi",   "No Density",         0,  4); //$NON-NLS-1$
 
-    public final static int DEFAULT_DENSITY = 160;
+    public static final int DEFAULT_DENSITY = 160;
 
     private final String mValue;
     private final String mDisplayValue;
@@ -119,14 +123,19 @@ public enum Density implements ResourceEnum {
     }
 
     public static Density getByIndex(int index) {
-        int i = 0;
-        for (Density value : values()) {
-            if (i == index) {
-                return value;
-            }
-            i++;
+        Density[] values = values();
+        if (index >=0 && index < values.length) {
+            return values[index];
         }
         return null;
+    }
+
+    /**
+     * Returns true if this density is relevant for app developers (e.g.
+     * a density you should consider providing resources for)
+     */
+    public boolean isRecommended() {
+        return this != TV && this != DPI_400 && this != DPI_560;
     }
 
     @Override

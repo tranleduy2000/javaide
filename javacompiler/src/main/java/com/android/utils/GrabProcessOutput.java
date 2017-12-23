@@ -61,12 +61,12 @@ public class GrabProcessOutput {
          * Processes an stdout message line.
          * @param line The stdout message line. Null when the reader reached the end of stdout.
          */
-        void out(@Nullable String line);
+        public void out(@Nullable String line);
         /**
          * Processes an stderr message line.
          * @param line The stderr message line. Null when the reader reached the end of stderr.
          */
-        void err(@Nullable String line);
+        public void err(@Nullable String line);
     }
 
     /**

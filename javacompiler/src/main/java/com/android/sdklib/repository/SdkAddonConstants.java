@@ -17,7 +17,7 @@
 package com.android.sdklib.repository;
 
 
-import com.android.sdklib.internal.repository.SdkSource;
+import com.android.sdklib.internal.repository.sources.SdkSource;
 
 import java.io.InputStream;
 
@@ -26,8 +26,16 @@ import java.io.InputStream;
  */
 public class SdkAddonConstants extends RepoConstants {
 
-    /** The default name looked for by {@link SdkSource} when trying to load an
-     * sdk-addon XML if the URL doesn't match an existing resource. */
+    /**
+     * The latest version of the sdk-addon XML Schema.
+     * Valid version numbers are between 1 and this number, included.
+     */
+    public static final int NS_LATEST_VERSION = 7;
+
+    /**
+     * The default name looked for by {@link SdkSource} when trying to load an
+     * sdk-addon XML if the URL doesn't match an existing resource.
+     */
     public static final String URL_DEFAULT_FILENAME = "addon.xml";         //$NON-NLS-1$
 
     /** The base of our sdk-addon XML namespace. */
@@ -38,11 +46,7 @@ public class SdkAddonConstants extends RepoConstants {
      * The pattern of our sdk-addon XML namespace.
      * Matcher's group(1) is the schema version (integer).
      */
-    public static final String NS_PATTERN = NS_BASE + "([1-9][0-9]*)";     //$NON-NLS-1$
-
-    /** The latest version of the sdk-addon XML Schema.
-     *  Valid version numbers are between 1 and this number, included. */
-    public static final int NS_LATEST_VERSION = 3;
+    public static final String NS_PATTERN = NS_BASE + "([0-9]+)";     //$NON-NLS-1$
 
     /** The XML namespace of the latest sdk-addon XML. */
     public static final String NS_URI = getSchemaUri(NS_LATEST_VERSION);
@@ -52,6 +56,9 @@ public class SdkAddonConstants extends RepoConstants {
 
     /** An add-on package. */
     public static final String NODE_ADD_ON          = "add-on";            //$NON-NLS-1$
+
+    /** An extra package. */
+    public static final String NODE_EXTRA           = "extra";             //$NON-NLS-1$
 
     /**
      * List of possible nodes in a repository XML. Used to populate options automatically

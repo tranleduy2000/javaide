@@ -27,7 +27,7 @@ public enum ResourceType {
     ATTR("attr", "Attr"), //$NON-NLS-1$
     BOOL("bool", "Boolean"), //$NON-NLS-1$
     COLOR("color", "Color"), //$NON-NLS-1$
-    DECLARE_STYLEABLE("declare-styleable", "Declare Stylable"), //$NON-NLS-1$
+    DECLARE_STYLEABLE("declare-styleable", "Declare Styleable"), //$NON-NLS-1$
     DIMEN("dimen", "Dimension"), //$NON-NLS-1$
     DRAWABLE("drawable", "Drawable"), //$NON-NLS-1$
     FRACTION("fraction", "Fraction"), //$NON-NLS-1$
@@ -42,6 +42,7 @@ public enum ResourceType {
     STRING("string", "String"), //$NON-NLS-1$
     STYLE("style", "Style"), //$NON-NLS-1$
     STYLEABLE("styleable", "Styleable"), //$NON-NLS-1$
+    TRANSITION("transition", "Transition"), //$NON-NLS-1$
     XML("xml", "XML"), //$NON-NLS-1$
     // this is not actually used. Only there because they get parsed and since we want to
     // detect new resource type, we need to have this one exist.

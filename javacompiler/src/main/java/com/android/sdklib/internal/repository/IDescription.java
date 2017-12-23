@@ -25,7 +25,7 @@ public interface IDescription {
      * Returns a description of the given element. Cannot be null.
      * <p/>
      * A description is a multi-line of text, typically much more
-     * elaborate than what {@link #toString()} would provide.
+     * elaborate than what {@link Object#toString()} would provide.
      */
     public abstract String getShortDescription();
 
@@ -33,7 +33,7 @@ public interface IDescription {
      * Returns a description of the given element. Cannot be null.
      * <p/>
      * A description is a multi-line of text, typically much more
-     * elaborate than what {@link #toString()} would provide.
+     * elaborate than what {@link Object#toString()} would provide.
      */
     public abstract String getLongDescription();
 

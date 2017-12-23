@@ -30,4 +30,5 @@ dependencies {
     compile 'com.google.guava:guava:22.0-android'
     implementation files('libs/commons-compress-1.5.jar')
     implementation files('libs/commons-codec-1.10.jar')
+    implementation files('libs/kxml2-2.2.3.jar')
 }

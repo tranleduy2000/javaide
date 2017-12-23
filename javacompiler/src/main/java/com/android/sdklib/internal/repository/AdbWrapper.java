@@ -16,7 +16,7 @@
 
 package com.android.sdklib.internal.repository;
 
-import com.android.sdklib.SdkConstants;
+import com.android.SdkConstants;
 
 import java.io.File;
 import java.io.IOException;

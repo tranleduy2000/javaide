@@ -16,14 +16,17 @@
 
 package com.android.sdklib.internal.project;
 
+import com.android.SdkConstants;
+import com.android.annotations.NonNull;
 import com.android.io.IAbstractFile;
 import com.android.io.IAbstractFolder;
 import com.android.io.StreamException;
-import com.android.sdklib.SdkConstants;
+import com.google.common.io.Closeables;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -31,10 +34,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 /**
- * A modifyable and saveable copy of a {@link ProjectProperties}.
+ * A modifiable and savable copy of a {@link ProjectProperties}.
  * <p/>This copy gives access to modification method such as {@link #setProperty(String, String)}
  * and {@link #removeProperty(String)}.
  *
@@ -43,7 +47,7 @@ import java.util.regex.Matcher;
  */
 public class ProjectPropertiesWorkingCopy extends ProjectProperties {
 
-    private final static Map<String, String> COMMENT_MAP = new HashMap<String, String>();
+    private static final Map<String, String> COMMENT_MAP = new HashMap<String, String>();
     static {
 //               1-------10--------20--------30--------40--------50--------60--------70--------80
         COMMENT_MAP.put(PROPERTY_TARGET,
@@ -90,18 +94,15 @@ public class ProjectPropertiesWorkingCopy extends ProjectProperties {
      * <p/>
      * Typical usage:
      * <ul>
-     * <li>Create a ProjectProperties with {@code PropertyType#BUILD}
-     * <li>Merge in values using {@code PropertyType#DEFAULT}
+     * <li>Create a ProjectProperties with {@code PropertyType#ANT}
+     * <li>Merge in values using {@code PropertyType#PROJECT}
      * <li>The result is that this contains all the properties from default plus those
      *     overridden by the build.properties file.
      * </ul>
      *
-     * @param type One the possible {@link PropertyType}s.
+     * @param type One the possible {@link ProjectProperties.PropertyType}s.
      * @return this object, for chaining.
-     *
-     * @deprecated FIXME this method is not referenced anywhere.
      */
-    @Deprecated
     public synchronized ProjectPropertiesWorkingCopy merge(PropertyType type) {
         if (mProjectFolder.exists() && mType != type) {
             IAbstractFile propFile = mProjectFolder.getFile(type.getFilename());
@@ -136,62 +137,87 @@ public class ProjectPropertiesWorkingCopy extends ProjectProperties {
         OutputStreamWriter writer = new OutputStreamWriter(baos, SdkConstants.INI_CHARSET);
 
         if (toSave.exists()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(toSave.getContents(),
-                    SdkConstants.INI_CHARSET));
+            InputStream contentStream = toSave.getContents();
+            InputStreamReader isr = null;
+            BufferedReader reader = null;
 
-            // since we're reading the existing file and replacing values with new ones, or skipping
-            // removed values, we need to record what properties have been visited, so that
-            // we can figure later what new properties need to be added at the end of the file.
-            HashSet<String> visitedProps = new HashSet<String>();
+            try {
+                contentStream = toSave.getContents();
+                //noinspection IOResourceOpenedButNotSafelyClosed
+                isr = new InputStreamReader(contentStream, SdkConstants.INI_CHARSET);
+                //noinspection IOResourceOpenedButNotSafelyClosed
+                reader = new BufferedReader(isr);
 
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                // check if this is a line containing a property.
-                if (line.length() > 0 && line.charAt(0) != '#') {
+                // since we're reading the existing file and replacing values with new ones, or skipping
+                // removed values, we need to record what properties have been visited, so that
+                // we can figure later what new properties need to be added at the end of the file.
+                Set<String> visitedProps = new HashSet<String>();
 
-                    Matcher m = PATTERN_PROP.matcher(line);
-                    if (m.matches()) {
-                        String key = m.group(1);
-                        String value = m.group(2);
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    // check if this is a line containing a property.
+                    if (!line.isEmpty() && line.charAt(0) != '#') {
 
-                        // record the prop
-                        visitedProps.add(key);
+                        Matcher m = PATTERN_PROP.matcher(line);
+                        if (m.matches()) {
+                            String key = m.group(1);
+                            String value = m.group(2);
 
-                        // check if this property must be removed.
-                        if (mType.isRemovedProperty(key)) {
-                            value = null;
-                        } else if (mProperties.containsKey(key)) { // if the property still exists.
-                            // put the new value.
-                            value = mProperties.get(key);
-                        } else {
-                            // property doesn't exist. Check if it's a known property.
-                            // if it's a known one, we'll remove it, otherwise, leave it untouched.
-                            if (mType.isKnownProperty(key)) {
+                            // record the prop
+                            visitedProps.add(key);
+
+                            // check if this property must be removed.
+                            if (mType.isRemovedProperty(key)) {
                                 value = null;
+                            } else if (mProperties.containsKey(key)) { // if the property still exists.
+                                // put the new value.
+                                value = mProperties.get(key);
+                            } else {
+                                // property doesn't exist. Check if it's a known property.
+                                // if it's a known one, we'll remove it, otherwise, leave it untouched.
+                                if (mType.isKnownProperty(key)) {
+                                    value = null;
+                                }
                             }
-                        }
 
-                        // if the value is still valid, write it down.
-                        if (value != null) {
-                            writeValue(writer, key, value, false /*addComment*/);
+                            // if the value is still valid, write it down.
+                            if (value != null) {
+                                writeValue(writer, key, value, false /*addComment*/);
+                            }
+                        } else  {
+                            // the line was wrong, let's just ignore it so that it's removed from the
+                            // file.
                         }
-                    } else  {
-                        // the line was wrong, let's just ignore it so that it's removed from the
-                        // file.
+                    } else {
+                        // non-property line: just write the line in the output as-is.
+                        writer.append(line).append('\n');
                     }
-                } else {
-                    // non-property line: just write the line in the output as-is.
-                    writer.append(line).append('\n');
                 }
-            }
 
-            // now add the new properties.
-            for (Entry<String, String> entry : mProperties.entrySet()) {
-                if (visitedProps.contains(entry.getKey()) == false) {
-                    String value = entry.getValue();
-                    if (value != null) {
-                        writeValue(writer, entry.getKey(), value, true /*addComment*/);
+                // now add the new properties.
+                for (Entry<String, String> entry : mProperties.entrySet()) {
+                    if (!visitedProps.contains(entry.getKey())) {
+                        String value = entry.getValue();
+                        if (value != null) {
+                            writeValue(writer, entry.getKey(), value, true /*addComment*/);
+                        }
                     }
+                }
+            } finally {
+                try {
+                    Closeables.close(reader, true /* swallowIOException */);
+                } catch (IOException e) {
+                    // cannot happen
+                }
+                try {
+                    Closeables.close(isr, true /* swallowIOException */);
+                } catch (IOException e) {
+                    // cannot happen
+                }
+                try {
+                    Closeables.close(contentStream, true /* swallowIOException */);
+                } catch (IOException e) {
+                    // cannot happen
                 }
             }
 
@@ -218,6 +244,7 @@ public class ProjectPropertiesWorkingCopy extends ProjectProperties {
         OutputStream filestream = toSave.getOutputStream();
         filestream.write(baos.toByteArray());
         filestream.flush();
+        filestream.close();
     }
 
     private void writeValue(OutputStreamWriter writer, String key, String value,
@@ -229,8 +256,7 @@ public class ProjectPropertiesWorkingCopy extends ProjectProperties {
             }
         }
 
-        value = value.replaceAll("\\\\", "\\\\\\\\");
-        writer.write(String.format("%s=%s\n", key, value));
+        writer.write(String.format("%s=%s\n", key, escape(value)));
     }
 
     /**
@@ -244,4 +270,11 @@ public class ProjectPropertiesWorkingCopy extends ProjectProperties {
         super(projectFolder, map, type);
     }
 
+    @NonNull
+    public ProjectProperties makeReadOnlyCopy() {
+        // copy the current properties in a new map
+        Map<String, String> propList = new HashMap<String, String>(mProperties);
+
+        return new ProjectProperties(mProjectFolder, propList, mType);
+    }
 }

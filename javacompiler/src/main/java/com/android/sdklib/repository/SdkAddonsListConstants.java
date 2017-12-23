@@ -24,13 +24,6 @@ import java.io.InputStream;
  */
 public class SdkAddonsListConstants {
 
-    /** The URL where to find the official addons list fle. */
-    public static final String URL_ADDON_LIST =
-        "https://dl-ssl.google.com/android/repository/addons_list.xml";     //$NON-NLS-1$
-
-    /** The canonical URL filename for addons-list XML files. */
-    public static final String URL_DEFAULT_FILENAME = "addons_list.xml";    //$NON-NLS-1$
-
     /** The base of our sdk-addons-list XML namespace. */
     private static final String NS_BASE =
         "http://schemas.android.com/sdk/android/addons-list/";              //$NON-NLS-1$
@@ -43,16 +36,29 @@ public class SdkAddonsListConstants {
 
     /** The latest version of the sdk-addons-list XML Schema.
      *  Valid version numbers are between 1 and this number, included. */
-    public static final int NS_LATEST_VERSION = 1;
+    public static final int NS_LATEST_VERSION = 2;
 
     /** The XML namespace of the latest sdk-addons-list XML. */
     public static final String NS_URI = getSchemaUri(NS_LATEST_VERSION);
+
+
+    /** The canonical URL filename for addons-list XML files. */
+    public static final String URL_DEFAULT_FILENAME = getDefaultName(NS_LATEST_VERSION);
+
+    /** The URL where to find the official addons list fle. */
+    public static final String URL_ADDON_LIST =
+        SdkRepoConstants.URL_GOOGLE_SDK_SITE + URL_DEFAULT_FILENAME;
+
+
 
     /** The root sdk-addons-list element */
     public static final String NODE_SDK_ADDONS_LIST = "sdk-addons-list";    //$NON-NLS-1$
 
     /** An add-on site. */
     public static final String NODE_ADDON_SITE = "addon-site";              //$NON-NLS-1$
+
+    /** A system image site. */
+    public static final String NODE_SYS_IMG_SITE = "sys-img-site";          //$NON-NLS-1$
 
     /** The UI-visible name of the add-on site. */
     public static final String NODE_NAME = "name";                          //$NON-NLS-1$
@@ -84,7 +90,7 @@ public class SdkAddonsListConstants {
      *         null if there is no schema for the requested version.
      */
     public static InputStream getXsdStream(int version) {
-        String filename = String.format("sdk-addons-list-%d.xsd", version);       //$NON-NLS-1$
+        String filename = String.format("sdk-addons-list-%d.xsd", version); //$NON-NLS-1$
         return SdkAddonsListConstants.class.getResourceAsStream(filename);
     }
 
@@ -94,5 +100,9 @@ public class SdkAddonsListConstants {
      */
     public static String getSchemaUri(int version) {
         return String.format(NS_BASE + "%d", version);                      //$NON-NLS-1$
+    }
+
+    public static String getDefaultName(int version) {
+        return String.format("addons_list-%1$d.xml", version);              //$NON-NLS-1$
     }
 }

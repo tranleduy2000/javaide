@@ -34,24 +34,61 @@ public final class AndroidLocation {
      * Virtual Device folder inside the path returned by {@link #getFolder()}
      */
     public static final String FOLDER_AVD = "avd";
+
+    /**
+     * Throw when the location of the android folder couldn't be found.
+     */
+    public static final class AndroidLocationException extends Exception {
+        private static final long serialVersionUID = 1L;
+
+        public AndroidLocationException(String string) {
+            super(string);
+        }
+    }
+
     private static String sPrefsLocation = null;
 
     /**
+     * Enum describing which variables to check and whether they should
+     * be checked via {@link System#getProperty(String)} or {@link System#getenv()} or both.
+     */
+    public enum EnvVar {
+        ANDROID_SDK_HOME("ANDROID_SDK_HOME", true,  true),  // both sys prop and env var
+        USER_HOME       ("user.home",        true,  false), // sys prop only
+        HOME            ("HOME",             false, true);  // env var only
+
+        final String mName;
+        final boolean mIsSysProp;
+        final boolean mIsEnvVar;
+
+        private EnvVar(String name, boolean isSysProp, boolean isEnvVar) {
+            mName = name;
+            mIsSysProp = isSysProp;
+            mIsEnvVar = isEnvVar;
+        }
+
+        public String getName() {
+            return mName;
+        }
+    }
+
+    /**
      * Returns the folder used to store android related files.
-     *
      * @return an OS specific path, terminated by a separator.
      * @throws AndroidLocationException
      */
     @NonNull
     public static final String getFolder() throws AndroidLocationException {
         if (sPrefsLocation == null) {
-            String home = findValidPath("ANDROID_SDK_HOME", "user.home", "HOME");
+            String home = findValidPath(new EnvVar[] { EnvVar.ANDROID_SDK_HOME,
+                                                       EnvVar.USER_HOME,
+                                                       EnvVar.HOME });
 
             // if the above failed, we throw an exception.
             if (home == null) {
                 throw new AndroidLocationException(
                         "Unable to get the Android SDK home directory.\n" +
-                                "Make sure the environment variable ANDROID_SDK_HOME is set up.");
+                        "Make sure the environment variable ANDROID_SDK_HOME is set up.");
             } else {
                 sPrefsLocation = home;
                 if (!sPrefsLocation.endsWith(File.separator)) {
@@ -69,7 +106,7 @@ public final class AndroidLocation {
             } catch (SecurityException e) {
                 AndroidLocationException e2 = new AndroidLocationException(String.format(
                         "Unable to create folder '%1$s'. " +
-                                "This is the path of preference folder expected by the Android tools.",
+                        "This is the path of preference folder expected by the Android tools.",
                         sPrefsLocation));
                 e2.initCause(e);
                 throw e2;
@@ -93,22 +130,22 @@ public final class AndroidLocation {
     /**
      * Checks a list of system properties and/or system environment variables for validity, and
      * existing director, and returns the first one.
-     *
-     * @param names
-     * @return the content of the first property/variable.
+     * @param vars The variables to check. Order does matter.
+     * @return the content of the first property/variable that is a valid directory.
      */
-    private static String findValidPath(String... names) {
-        for (String name : names) {
+    private static String findValidPath(EnvVar... vars) {
+        for (EnvVar var : vars) {
             String path;
-            if (name.indexOf('.') != -1) {
-                path = System.getProperty(name);
-            } else {
-                path = System.getenv(name);
+            if (var.mIsSysProp) {
+                path = checkPath(System.getProperty(var.mName));
+                if (path != null) {
+                    return path;
+                }
             }
 
-            if (path != null) {
-                File f = new File(path);
-                if (f.isDirectory()) {
+            if (var.mIsEnvVar) {
+                path = checkPath(System.getenv(var.mName));
+                if (path != null) {
                     return path;
                 }
             }
@@ -117,14 +154,13 @@ public final class AndroidLocation {
         return null;
     }
 
-    /**
-     * Throw when the location of the android folder couldn't be found.
-     */
-    public static final class AndroidLocationException extends Exception {
-        private static final long serialVersionUID = 1L;
-
-        public AndroidLocationException(String string) {
-            super(string);
+    private static String checkPath(String path) {
+        if (path != null) {
+            File f = new File(path);
+            if (f.isDirectory()) {
+                return path;
+            }
         }
+        return null;
     }
 }

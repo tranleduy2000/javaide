@@ -16,6 +16,12 @@
 
 package com.android.sdklib;
 
+import com.android.annotations.NonNull;
+import com.android.annotations.Nullable;
+import com.android.sdklib.repository.descriptors.IdDisplay;
+
+import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 
@@ -26,69 +32,52 @@ import java.util.Map;
 public interface IAndroidTarget extends Comparable<IAndroidTarget> {
 
     /** OS Path to the "android.jar" file. */
-    public final static int ANDROID_JAR         = 1;
+    public static final int ANDROID_JAR         = 1;
     /** OS Path to the "framework.aidl" file. */
-    public final static int ANDROID_AIDL        = 2;
+    public static final int ANDROID_AIDL        = 2;
     /** OS Path to the "samples" folder which contains sample projects. */
-    public final static int SAMPLES             = 4;
+    public static final int SAMPLES             = 4;
     /** OS Path to the "skins" folder which contains the emulator skins. */
-    public final static int SKINS               = 5;
+    public static final int SKINS               = 5;
     /** OS Path to the "templates" folder which contains the templates for new projects. */
-    public final static int TEMPLATES           = 6;
+    public static final int TEMPLATES           = 6;
     /** OS Path to the "data" folder which contains data & libraries for the SDK tools. */
-    public final static int DATA                = 7;
+    public static final int DATA                = 7;
     /** OS Path to the "attrs.xml" file. */
-    public final static int ATTRIBUTES          = 8;
+    public static final int ATTRIBUTES          = 8;
     /** OS Path to the "attrs_manifest.xml" file. */
-    public final static int MANIFEST_ATTRIBUTES = 9;
+    public static final int MANIFEST_ATTRIBUTES = 9;
     /** OS Path to the "data/layoutlib.jar" library. */
-    public final static int LAYOUT_LIB          = 10;
+    public static final int LAYOUT_LIB          = 10;
     /** OS Path to the "data/res" folder. */
-    public final static int RESOURCES           = 11;
+    public static final int RESOURCES           = 11;
     /** OS Path to the "data/fonts" folder. */
-    public final static int FONTS               = 12;
+    public static final int FONTS               = 12;
     /** OS Path to the "data/widgets.txt" file. */
-    public final static int WIDGETS             = 13;
+    public static final int WIDGETS             = 13;
     /** OS Path to the "data/activity_actions.txt" file. */
-    public final static int ACTIONS_ACTIVITY    = 14;
+    public static final int ACTIONS_ACTIVITY    = 14;
     /** OS Path to the "data/broadcast_actions.txt" file. */
-    public final static int ACTIONS_BROADCAST   = 15;
+    public static final int ACTIONS_BROADCAST   = 15;
     /** OS Path to the "data/service_actions.txt" file. */
-    public final static int ACTIONS_SERVICE     = 16;
+    public static final int ACTIONS_SERVICE     = 16;
     /** OS Path to the "data/categories.txt" file. */
-    public final static int CATEGORIES          = 17;
+    public static final int CATEGORIES          = 17;
     /** OS Path to the "sources" folder. */
-    public final static int SOURCES             = 18;
+    public static final int SOURCES             = 18;
     /** OS Path to the target specific docs */
-    public final static int DOCS                = 19;
-    /** OS Path to the target's version of the aapt tool.
-      * This is deprecated as aapt is now in the platform tools and not in the platform. */
-    @Deprecated
-    public final static int AAPT                = 20;
-    /** OS Path to the target's version of the aidl tool.
-      * This is deprecated as aidl is now in the platform tools and not in the platform. */
-    @Deprecated
-    public final static int AIDL                = 21;
-    /** OS Path to the target's version of the dx too.<br>
-     * This is deprecated as dx is now in the platform tools and not in the platform. */
-    @Deprecated
-    public final static int DX                  = 22;
-    /** OS Path to the target's version of the dx.jar file.<br>
-     * This is deprecated as dx.jar is now in the platform tools and not in the platform.. */
-    @Deprecated
-    public final static int DX_JAR              = 23;
+    public static final int DOCS                = 19;
     /** OS Path to the "ant" folder which contains the ant build rules (ver 2 and above) */
-    public final static int ANT                 = 24;
-    /** OS Path to the Renderscript include folder. */
-    public final static int ANDROID_RS          = 25;
-    /** OS Path to the Renderscript(clang) include folder. */
-    public final static int ANDROID_RS_CLANG    = 26;
+    public static final int ANT                 = 24;
+    /** OS Path to the "uiautomator.jar" file. */
+    public static final int UI_AUTOMATOR_JAR    = 27;
+
 
     /**
      * Return value for {@link #getUsbVendorId()} meaning no USB vendor IDs are defined by the
      * Android target.
      */
-    public final static int NO_USB_ID = 0;
+    public static final int NO_USB_ID = 0;
 
     /** An optional library provided by an Android Target */
     public interface IOptionalLibrary {
@@ -140,6 +129,7 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
     /**
      * Returns the version of the target. This is guaranteed to be non-null.
      */
+    @NonNull
     AndroidVersion getVersion();
 
     /**
@@ -163,10 +153,38 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
 
     /**
      * Returns the path of a platform component.
-     * @param pathId the id representing the path to return. Any of the constants defined in the
-     * {@link IAndroidTarget} interface can be used.
+     * @param pathId the id representing the path to return.
+     *        Any of the constants defined in the {@link IAndroidTarget} interface can be used.
      */
     String getPath(int pathId);
+
+    /**
+     * Returns the path of a platform component.
+     * <p/>
+     * This is like the legacy {@link #getPath(int)} method except it returns a {@link File}.
+     *
+     * @param pathId the id representing the path to return.
+     *        Any of the constants defined in the {@link IAndroidTarget} interface can be used.
+     */
+    File getFile(int pathId);
+
+    /**
+     * Returns a BuildToolInfo for backward compatibility. If an older SDK is used this will return
+     * paths located in the platform-tools, otherwise it'll return paths located in the latest
+     * build-tools.
+     * @return a BuildToolInfo or null if none are available.
+     */
+    BuildToolInfo getBuildToolInfo();
+
+    /**
+     * Returns the boot classpath for this target.
+     * In most case, this is similar to calling {@link #getPath(int)} with
+     * {@link IAndroidTarget#ANDROID_JAR}.
+     *
+     * @return a non null list of the boot classpath.
+     */
+    @NonNull
+    List<String> getBootClasspath();
 
     /**
      * Returns whether the target is able to render layouts.
@@ -174,14 +192,27 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
     boolean hasRenderingLibrary();
 
     /**
-     * Returns the available skins for this target.
+     * Returns the available skin folders for this target.
+     * <p/>
+     * To get the skin names, use {@link File#getName()}. <br/>
+     * Skins come either from:
+     * <ul>
+     * <li>a platform ({@code sdk/platforms/N/skins/name})</li>
+     * <li>an add-on ({@code sdk/addons/name/skins/name})</li>
+     * <li>a tagged system-image ({@code sdk/system-images/platform-N/tag/abi/skins/name}.)</li>
+     * </ul>
+     * The array can be empty but not null.
      */
-    String[] getSkins();
+    @NonNull
+    File[] getSkins();
 
     /**
-     * Returns the default skin for this target.
+     * Returns the default skin folder for this target.
+     * <p/>
+     * To get the skin name, use {@link File#getName()}.
      */
-    String getDefaultSkin();
+    @Nullable
+    File getDefaultSkin();
 
     /**
      * Returns the available optional libraries for this target.
@@ -245,13 +276,15 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
     public ISystemImage[] getSystemImages();
 
     /**
-     * Returns the system image information for the given {@code abiType}.
+     * Returns the system image information for the given {@code tag} and {@code abiType}.
      *
+     * @param tag A tag id-display.
      * @param abiType An ABI type string.
      * @return An existing {@link ISystemImage} for the requested {@code abiType}
      *         or null if none exists for this type.
      */
-    public ISystemImage getSystemImage(String abiType);
+    @Nullable
+    public ISystemImage getSystemImage(@NonNull IdDisplay tag, @NonNull String abiType);
 
     /**
      * Returns whether the given target is compatible with the receiver.
@@ -271,6 +304,8 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
      * Returns a string able to uniquely identify a target.
      * Typically the target will encode information such as api level, whether it's a platform
      * or add-on, and if it's an add-on vendor and add-on name.
+     * <p/>
+     * See {@link AndroidTargetHash} for helper methods to manipulate hash strings.
      */
     String hashString();
 }

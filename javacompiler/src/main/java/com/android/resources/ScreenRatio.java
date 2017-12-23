@@ -78,14 +78,10 @@ public enum ScreenRatio implements ResourceEnum {
     }
 
     public static ScreenRatio getByIndex(int index) {
-        int i = 0;
-        for (ScreenRatio orient : values()) {
-            if (i == index) {
-                return orient;
-            }
-            i++;
+        ScreenRatio[] values = values();
+        if (index >= 0 && index < values.length) {
+            return values[index];
         }
-
         return null;
     }
 

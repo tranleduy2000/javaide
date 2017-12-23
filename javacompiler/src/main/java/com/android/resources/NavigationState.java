@@ -78,12 +78,9 @@ public enum NavigationState implements ResourceEnum {
     }
 
     public static NavigationState getByIndex(int index) {
-        int i = 0;
-        for (NavigationState value : values()) {
-            if (i == index) {
-                return value;
-            }
-            i++;
+        NavigationState[] values = values();
+        if (index >= 0 && index < values.length) {
+            return values[index];
         }
         return null;
     }

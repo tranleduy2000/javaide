@@ -78,12 +78,9 @@ public enum NightMode implements ResourceEnum {
     }
 
     public static NightMode getByIndex(int index) {
-        int i = 0;
-        for (NightMode value : values()) {
-            if (i == index) {
-                return value;
-            }
-            i++;
+        NightMode[] values = values();
+        if (index >= 0 && index < values.length) {
+            return values[index];
         }
         return null;
     }

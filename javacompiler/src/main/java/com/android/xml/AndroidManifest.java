@@ -17,12 +17,18 @@
 package com.android.xml;
 
 import com.android.SdkConstants;
+import com.android.annotations.NonNull;
+import com.android.annotations.Nullable;
 import com.android.io.IAbstractFile;
 import com.android.io.IAbstractFolder;
 import com.android.io.StreamException;
+import com.google.common.io.Closeables;
 
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -89,6 +95,11 @@ public final class AndroidManifest {
     public static final String ATTRIBUTE_THEME = "theme";
     public static final String ATTRIBUTE_BACKUP_AGENT = "backupAgent";
     public static final String ATTRIBUTE_PARENT_ACTIVITY_NAME = "parentActivityName";
+    public static final String ATTRIBUTE_SUPPORTS_RTL = "supportsRtl";
+    public static final String ATTRIBUTE_UI_OPTIONS = "uiOptions";
+    public static final String ATTRIBUTE_VALUE = "value";
+
+    public static final String VALUE_PARENT_ACTIVITY = SdkConstants.ANDROID_SUPPORT_PKG_PREFIX + "PARENT_ACTIVITY";
 
     /**
      * Returns an {@link IAbstractFile} object representing the manifest for the given project.
@@ -99,7 +110,7 @@ public final class AndroidManifest {
      */
     public static IAbstractFile getManifest(IAbstractFolder projectFolder) {
         IAbstractFile file = projectFolder.getFile(SdkConstants.FN_ANDROID_MANIFEST_XML);
-        if (file.exists()) {
+        if (file != null && file.exists()) {
             return file;
         }
 
@@ -132,12 +143,9 @@ public final class AndroidManifest {
      */
     public static String getPackage(IAbstractFile manifestFile)
             throws XPathExpressionException, StreamException {
-        XPath xPath = AndroidXPathFactory.newXPath();
-
-        return xPath.evaluate(
-                "/"  + NODE_MANIFEST +
-                "/@" + ATTRIBUTE_PACKAGE,
-                new InputSource(manifestFile.getContents()));
+        return getStringValue(manifestFile,
+                "/" + NODE_MANIFEST +
+                "/@" + ATTRIBUTE_PACKAGE);
     }
 
     /**
@@ -153,14 +161,11 @@ public final class AndroidManifest {
      */
     public static boolean getDebuggable(IAbstractFile manifestFile)
             throws XPathExpressionException, StreamException {
-        XPath xPath = AndroidXPathFactory.newXPath();
-
-        String value = xPath.evaluate(
+        String value = getStringValue(manifestFile,
                 "/"  + NODE_MANIFEST +
                 "/"  + NODE_APPLICATION +
                 "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
-                ":"  + ATTRIBUTE_DEBUGGABLE,
-                new InputSource(manifestFile.getContents()));
+                ":"  + ATTRIBUTE_DEBUGGABLE);
 
         // default is not debuggable, which is the same behavior as parseBoolean
         return Boolean.parseBoolean(value);
@@ -175,13 +180,10 @@ public final class AndroidManifest {
      */
     public static int getVersionCode(IAbstractFile manifestFile)
             throws XPathExpressionException, StreamException {
-        XPath xPath = AndroidXPathFactory.newXPath();
-
-        String result = xPath.evaluate(
-                "/"  + NODE_MANIFEST +
+        String result = getStringValue(manifestFile,
+                "/" + NODE_MANIFEST +
                 "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
-                ":"  + ATTRIBUTE_VERSIONCODE,
-                new InputSource(manifestFile.getContents()));
+                ":" + ATTRIBUTE_VERSIONCODE);
 
         try {
             return Integer.parseInt(result);
@@ -201,17 +203,27 @@ public final class AndroidManifest {
             throws XPathExpressionException, StreamException {
         XPath xPath = AndroidXPathFactory.newXPath();
 
-        Object result = xPath.evaluate(
-                "/"  + NODE_MANIFEST +
-                "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
-                ":"  + ATTRIBUTE_VERSIONCODE,
-                new InputSource(manifestFile.getContents()),
-                XPathConstants.NODE);
+        InputStream is = null;
+        try {
+            is = manifestFile.getContents();
+            Object result = xPath.evaluate(
+                    "/"  + NODE_MANIFEST +
+                    "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
+                    ":"  + ATTRIBUTE_VERSIONCODE,
+                    new InputSource(is),
+                    XPathConstants.NODE);
 
-        if (result != null) {
-            Node node  = (Node)result;
-            if (node.getNodeValue().length() > 0) {
-                return true;
+            if (result != null) {
+                Node node  = (Node)result;
+                if (!node.getNodeValue().isEmpty()) {
+                    return true;
+                }
+            }
+        } finally {
+            try {
+                Closeables.close(is, true /* swallowIOException */);
+            } catch (IOException e) {
+                // cannot happen
             }
         }
 
@@ -232,47 +244,48 @@ public final class AndroidManifest {
      * @throws XPathExpressionException
      * @throws StreamException If any error happens when reading the manifest.
      */
+    @Nullable
     public static Object getMinSdkVersion(IAbstractFile manifestFile)
             throws XPathExpressionException, StreamException {
-        XPath xPath = AndroidXPathFactory.newXPath();
-
-        String result = xPath.evaluate(
-                "/"  + NODE_MANIFEST +
-                "/"  + NODE_USES_SDK +
+        String result = getStringValue(manifestFile,
+                "/" + NODE_MANIFEST +
+                "/" + NODE_USES_SDK +
                 "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
-                ":"  + ATTRIBUTE_MIN_SDK_VERSION,
-                new InputSource(manifestFile.getContents()));
+                ":" + ATTRIBUTE_MIN_SDK_VERSION);
 
         try {
             return Integer.valueOf(result);
         } catch (NumberFormatException e) {
-            return result.length() > 0 ? result : null;
+            return !result.isEmpty() ? result : null;
         }
     }
 
     /**
-     * Returns the value of the targetSdkVersion attribute (defaults to 1 if the attribute is
-     * not set), or -1 if the value is a codename.
+     * Returns the value of the targetSdkVersion attribute.
+     * <p/>
+     * If the attribute is set with an int value, the method returns an Integer object.
+     * <p/>
+     * If the attribute is set with a codename, it returns the codename as a String object.
+     * <p/>
+     * If the attribute is not set, it returns null.
+     *
      * @param manifestFile the manifest file to read the attribute from.
      * @return the integer value or -1 if not set.
      * @throws XPathExpressionException
      * @throws StreamException If any error happens when reading the manifest.
      */
-    public static Integer getTargetSdkVersion(IAbstractFile manifestFile)
+    @Nullable
+    public static Object getTargetSdkVersion(IAbstractFile manifestFile)
             throws XPathExpressionException, StreamException {
-        XPath xPath = AndroidXPathFactory.newXPath();
-
-        String result = xPath.evaluate(
-                "/"  + NODE_MANIFEST +
-                "/"  + NODE_USES_SDK +
+        String result = getStringValue(manifestFile,
+                "/" + NODE_MANIFEST +
+                "/" + NODE_USES_SDK +
                 "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
-                ":"  + ATTRIBUTE_TARGET_SDK_VERSION,
-                new InputSource(manifestFile.getContents()));
-
+                ":" + ATTRIBUTE_TARGET_SDK_VERSION);
         try {
             return Integer.valueOf(result);
         } catch (NumberFormatException e) {
-            return result.length() > 0 ? -1 : null;
+            return !result.isEmpty() ? result : null;
         }
     }
 
@@ -285,14 +298,11 @@ public final class AndroidManifest {
      */
     public static String getApplicationIcon(IAbstractFile manifestFile)
             throws XPathExpressionException, StreamException {
-        XPath xPath = AndroidXPathFactory.newXPath();
-
-        return xPath.evaluate(
-                "/"  + NODE_MANIFEST +
-                "/"  + NODE_APPLICATION +
+        return getStringValue(manifestFile,
+                "/" + NODE_MANIFEST +
+                "/" + NODE_APPLICATION +
                 "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
-                ":"  + ATTRIBUTE_ICON,
-                new InputSource(manifestFile.getContents()));
+                ":" + ATTRIBUTE_ICON);
     }
 
     /**
@@ -304,15 +314,36 @@ public final class AndroidManifest {
      */
     public static String getApplicationLabel(IAbstractFile manifestFile)
             throws XPathExpressionException, StreamException {
-        XPath xPath = AndroidXPathFactory.newXPath();
-
-        return xPath.evaluate(
-                "/"  + NODE_MANIFEST +
-                "/"  + NODE_APPLICATION +
+        return getStringValue(manifestFile,
+                "/" + NODE_MANIFEST +
+                "/" + NODE_APPLICATION +
                 "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
-                ":"  + ATTRIBUTE_LABEL,
-                new InputSource(manifestFile.getContents()));
+                ":" + ATTRIBUTE_LABEL);
     }
+
+  /**
+   * Returns whether the manifest is set to make the application RTL aware.
+   *
+   * If the give manifest does not contain the supportsRtl attribute then the application
+   * is considered to not be not supporting RTL (there will be no layout mirroring).
+   *
+   * @param manifestFile the manifest to parse.
+   * @return true if the application is supporting RTL.
+   * @throws XPathExpressionException
+   * @throws StreamException If any error happens when reading the manifest.
+   */
+  public static boolean getSupportsRtl(IAbstractFile manifestFile)
+      throws XPathExpressionException, StreamException {
+
+      String value = getStringValue(manifestFile,
+              "/"  + NODE_MANIFEST +
+              "/"  + NODE_APPLICATION +
+              "/@" + AndroidXPathFactory.DEFAULT_NS_PREFIX +
+              ":"  + ATTRIBUTE_SUPPORTS_RTL);
+
+      // default is not debuggable, which is the same behavior as parseBoolean
+      return Boolean.parseBoolean(value);
+  }
 
     /**
      * Combines a java package, with a class value from the manifest to make a fully qualified
@@ -322,10 +353,10 @@ public final class AndroidManifest {
      * @return the fully qualified class name.
      */
     public static String combinePackageAndClassName(String javaPackage, String className) {
-        if (className == null || className.length() == 0) {
+        if (className == null || className.isEmpty()) {
             return javaPackage;
         }
-        if (javaPackage == null || javaPackage.length() == 0) {
+        if (javaPackage == null || javaPackage.isEmpty()) {
             return className;
         }
 
@@ -333,7 +364,7 @@ public final class AndroidManifest {
         // char), a simple class name (no dot), or a full java package
         boolean startWithDot = (className.charAt(0) == '.');
         boolean hasDot = (className.indexOf('.') != -1);
-        if (startWithDot || hasDot == false) {
+        if (startWithDot || !hasDot) {
 
             // add the concatenation of the package and class name
             if (startWithDot) {
@@ -358,14 +389,32 @@ public final class AndroidManifest {
      */
     public static String extractActivityName(String fullActivityName, String packageName) {
         if (packageName != null && fullActivityName != null) {
-            if (packageName.length() > 0 && fullActivityName.startsWith(packageName)) {
+            if (!packageName.isEmpty() && fullActivityName.startsWith(packageName)) {
                 String name = fullActivityName.substring(packageName.length());
-                if (name.length() > 0 && name.charAt(0) == '.') {
+                if (!name.isEmpty() && name.charAt(0) == '.') {
                     return name;
                 }
             }
         }
 
         return fullActivityName;
+    }
+
+
+    private static String getStringValue(@NonNull IAbstractFile file, @NonNull String xPath)
+            throws StreamException, XPathExpressionException {
+        XPath xpath = AndroidXPathFactory.newXPath();
+
+        InputStream is = null;
+        try {
+            is = file.getContents();
+            return xpath.evaluate(xPath, new InputSource(is));
+        } finally {
+            try {
+                Closeables.close(is, true /* swallowIOException */);
+            } catch (IOException e) {
+                // cannot happen
+            }
+        }
     }
 }

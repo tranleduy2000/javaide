@@ -16,23 +16,22 @@
 
 package com.android.resources;
 
-import com.android.AndroidConstants;
-
 /**
  * Enum representing a type of resource folder.
  */
 public enum ResourceFolderType {
-    ANIM(AndroidConstants.FD_RES_ANIM),
-    ANIMATOR(AndroidConstants.FD_RES_ANIMATOR),
-    COLOR(AndroidConstants.FD_RES_COLOR),
-    DRAWABLE(AndroidConstants.FD_RES_DRAWABLE),
-    INTERPOLATOR(AndroidConstants.FD_RES_INTERPOLATOR),
-    LAYOUT(AndroidConstants.FD_RES_LAYOUT),
-    MENU(AndroidConstants.FD_RES_MENU),
-    MIPMAP(AndroidConstants.FD_RES_MIPMAP),
-    RAW(AndroidConstants.FD_RES_RAW),
-    VALUES(AndroidConstants.FD_RES_VALUES),
-    XML(AndroidConstants.FD_RES_XML);
+    ANIM(ResourceConstants.FD_RES_ANIM),
+    ANIMATOR(ResourceConstants.FD_RES_ANIMATOR),
+    COLOR(ResourceConstants.FD_RES_COLOR),
+    DRAWABLE(ResourceConstants.FD_RES_DRAWABLE),
+    INTERPOLATOR(ResourceConstants.FD_RES_INTERPOLATOR),
+    LAYOUT(ResourceConstants.FD_RES_LAYOUT),
+    MENU(ResourceConstants.FD_RES_MENU),
+    MIPMAP(ResourceConstants.FD_RES_MIPMAP),
+    RAW(ResourceConstants.FD_RES_RAW),
+    TRANSITION(ResourceConstants.FD_RES_TRANSITION),
+    VALUES(ResourceConstants.FD_RES_VALUES),
+    XML(ResourceConstants.FD_RES_XML);
 
     private final String mName;
 
@@ -53,6 +52,7 @@ public enum ResourceFolderType {
      * @return the enum or null if not found.
      */
     public static ResourceFolderType getTypeByName(String name) {
+        assert name.indexOf('-') == -1 : name; // use #getFolderType instead
         for (ResourceFolderType rType : values()) {
             if (rType.mName.equals(name)) {
                 return rType;
@@ -69,10 +69,10 @@ public enum ResourceFolderType {
      * <code>null</code> if no matching type was found.
      */
     public static ResourceFolderType getFolderType(String folderName) {
-        // split the name of the folder in segments.
-        String[] folderSegments = folderName.split(AndroidConstants.RES_QUALIFIER_SEP);
-
-        // get the enum for the resource type.
-        return getTypeByName(folderSegments[0]);
+        int index = folderName.indexOf(ResourceConstants.RES_QUALIFIER_SEP);
+        if (index != -1) {
+            folderName = folderName.substring(0, index);
+        }
+        return getTypeByName(folderName);
     }
 }

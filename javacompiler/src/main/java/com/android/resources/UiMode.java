@@ -21,17 +21,20 @@ package com.android.resources;
  * <p/>This is used in the resource folder names.
  */
 public enum UiMode implements ResourceEnum {
-    NORMAL("", "Normal"),
-    CAR("car", "Car Dock"),
-    DESK("desk", "Desk Dock"),
-    TELEVISION("television", "Television");
+    NORMAL("", "Normal", 1),
+    CAR("car", "Car Dock", 8),
+    DESK("desk", "Desk Dock", 8),
+    TELEVISION("television", "Television", 13),
+    APPLIANCE("appliance", "Appliance", 16);
 
     private final String mValue;
     private final String mDisplayValue;
+    private final int mSince;
 
-    private UiMode(String value, String display) {
+    private UiMode(String value, String display, int since) {
         mValue = value;
         mDisplayValue = display;
+        mSince = since;
     }
 
     /**
@@ -52,6 +55,10 @@ public enum UiMode implements ResourceEnum {
     @Override
     public String getResourceValue() {
         return mValue;
+    }
+
+    public int since() {
+        return mSince;
     }
 
     @Override
@@ -78,12 +85,9 @@ public enum UiMode implements ResourceEnum {
     }
 
     public static UiMode getByIndex(int index) {
-        int i = 0;
-        for (UiMode value : values()) {
-            if (i == index) {
-                return value;
-            }
-            i++;
+        UiMode[] values = values();
+        if (index >= 0 && index < values.length) {
+            return values[index];
         }
         return null;
     }

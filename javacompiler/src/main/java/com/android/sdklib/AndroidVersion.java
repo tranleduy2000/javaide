@@ -16,9 +16,13 @@
 
 package com.android.sdklib;
 
+import com.android.SdkConstants;
+import com.android.annotations.NonNull;
+import com.android.annotations.Nullable;
 import com.android.sdklib.repository.PkgProps;
 
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 /**
  * Represents the version of a target or device.
@@ -43,11 +47,14 @@ public final class AndroidVersion implements Comparable<AndroidVersion> {
     private final int mApiLevel;
     private final String mCodename;
 
+    /** The default AndroidVersion for minSdkVersion and targetSdkVersion if not specified */
+    public static final AndroidVersion DEFAULT = new AndroidVersion(1, null);
+
     /**
      * Thrown when an {@link AndroidVersion} object could not be created.
      * @see AndroidVersion#AndroidVersion(Properties)
      */
-    public final static class AndroidVersionException extends Exception {
+    public static final class AndroidVersionException extends Exception {
         private static final long serialVersionUID = 1L;
 
         AndroidVersionException(String message, Throwable cause) {
@@ -59,9 +66,9 @@ public final class AndroidVersion implements Comparable<AndroidVersion> {
      * Creates an {@link AndroidVersion} with the given api level and codename.
      * Codename should be null for a release version, otherwise it's a preview codename.
      */
-    public AndroidVersion(int apiLevel, String codename) {
+    public AndroidVersion(int apiLevel, @Nullable String codename) {
         mApiLevel = apiLevel;
-        mCodename = codename;
+        mCodename = sanitizeCodename(codename);
     }
 
     /**
@@ -70,14 +77,17 @@ public final class AndroidVersion implements Comparable<AndroidVersion> {
      * <p/>The {@link Properties} is expected to have been filled with
      * {@link #saveProperties(Properties)}.
      */
-    public AndroidVersion(Properties properties, int defaultApiLevel, String defaultCodeName) {
+    public AndroidVersion(@Nullable Properties properties,
+                                    int        defaultApiLevel,
+                          @Nullable String     defaultCodeName) {
         if (properties == null) {
             mApiLevel = defaultApiLevel;
-            mCodename = defaultCodeName;
+            mCodename = sanitizeCodename(defaultCodeName);
         } else {
             mApiLevel = Integer.parseInt(properties.getProperty(PkgProps.VERSION_API_LEVEL,
-                    Integer.toString(defaultApiLevel)));
-            mCodename = properties.getProperty(PkgProps.VERSION_CODENAME, defaultCodeName);
+                                                                Integer.toString(defaultApiLevel)));
+            mCodename = sanitizeCodename(
+                            properties.getProperty(PkgProps.VERSION_CODENAME, defaultCodeName));
         }
     }
 
@@ -88,14 +98,15 @@ public final class AndroidVersion implements Comparable<AndroidVersion> {
      *
      * @see #saveProperties(Properties)
      */
-    public AndroidVersion(Properties properties) throws AndroidVersionException {
+    public AndroidVersion(@NonNull Properties properties) throws AndroidVersionException {
         Exception error = null;
 
         String apiLevel = properties.getProperty(PkgProps.VERSION_API_LEVEL, null/*defaultValue*/);
         if (apiLevel != null) {
             try {
                 mApiLevel = Integer.parseInt(apiLevel);
-                mCodename = properties.getProperty(PkgProps.VERSION_CODENAME, null/*defaultValue*/);
+                mCodename = sanitizeCodename(properties.getProperty(PkgProps.VERSION_CODENAME,
+                                                                    null/*defaultValue*/));
                 return;
             } catch (NumberFormatException e) {
                 error = e;
@@ -106,7 +117,48 @@ public final class AndroidVersion implements Comparable<AndroidVersion> {
         throw new AndroidVersionException(PkgProps.VERSION_API_LEVEL + " not found!", error);
     }
 
-    public void saveProperties(Properties props) {
+    /**
+     * Creates an {@link AndroidVersion} from a string that may be an integer API
+     * level or a string codename.
+     * <p/>
+     * <Em>Important</em>: An important limitation of this method is that cannot possible
+     * recreate the API level integer from a pure string codename. This is only OK to use
+     * if the caller can guarantee that only {@link #getApiString()} will be used later.
+     * Wrong things will happen if the caller then tries to resolve the numeric
+     * {@link #getApiLevel()}.
+     *
+     * @param apiOrCodename A non-null API integer or a codename in its "ALL_CAPS" format.
+     *                      "REL" is notable not a valid codename.
+     * @throws AndroidVersionException if the input isn't a pure integer or doesn't look like
+     *                      a valid string codename.
+     */
+    public AndroidVersion(@NonNull String apiOrCodename) throws AndroidVersionException {
+        int apiLevel = 0;
+        String codename = null;
+        try {
+            apiLevel = Integer.parseInt(apiOrCodename);
+        } catch (NumberFormatException ignore) {
+            // We don't know the API level. Android platform codenames are all caps.
+            // REL is a release-reserved keyword which we can use here.
+
+            if (!SdkConstants.CODENAME_RELEASE.equals(apiOrCodename)) {
+                if (Pattern.matches("[A-Z_]+", apiOrCodename)) {
+                    codename = apiOrCodename;
+                }
+            }
+        }
+
+        mApiLevel = apiLevel;
+        mCodename = sanitizeCodename(codename);
+
+        if (mApiLevel <= 0 && codename == null) {
+            throw new AndroidVersionException(
+                    "Invalid android API or codename " + apiOrCodename,     //$NON-NLS-1$
+                    null);
+        }
+    }
+
+    public void saveProperties(@NonNull Properties props) {
         props.setProperty(PkgProps.VERSION_API_LEVEL, Integer.toString(mApiLevel));
         if (mCodename != null) {
             props.setProperty(PkgProps.VERSION_CODENAME, mCodename);
@@ -127,10 +179,26 @@ public final class AndroidVersion implements Comparable<AndroidVersion> {
     }
 
     /**
+     * Returns the API level as an integer. If this is a preview platform, it
+     * will return the expected final version of the API rather than the current API
+     * level. This is the "feature level" as opposed to the "release level" returned by
+     * {@link #getApiLevel()} in the sense that it is useful when you want
+     * to check the presence of a given feature from an API, and we consider the feature
+     * present in preview platforms as well.
+     *
+     * @return the API level of this version, +1 for preview platforms
+     */
+    public int getFeatureLevel() {
+        //noinspection VariableNotUsedInsideIf
+        return mCodename != null ? mApiLevel + 1 : mApiLevel;
+    }
+
+    /**
      * Returns the version code name if applicable, null otherwise.
      * <p/>If the codename is non null, then the API level should be ignored, and this should be
      * used as a unique identifier of the target instead.
      */
+    @Nullable
     public String getCodename() {
         return mCodename;
     }
@@ -138,6 +206,7 @@ public final class AndroidVersion implements Comparable<AndroidVersion> {
     /**
      * Returns a string representing the API level and/or the code name.
      */
+    @NonNull
     public String getApiString() {
         if (mCodename != null) {
             return mCodename;
@@ -165,7 +234,7 @@ public final class AndroidVersion implements Comparable<AndroidVersion> {
      * access to the list of optional libraries), this method can give a good indication of whether
      * there is a chance the application could run, or if there's a direct incompatibility.
      */
-    public boolean canRun(AndroidVersion appVersion) {
+    public boolean canRun(@NonNull AndroidVersion appVersion) {
         // if the application is compiled for a preview version, the device must be running exactly
         // the same.
         if (appVersion.mCodename != null) {
@@ -259,11 +328,12 @@ public final class AndroidVersion implements Comparable<AndroidVersion> {
      * @return a negative integer, zero, or a positive integer as this object is
      *         less than, equal to, or greater than the specified object.
      */
-    public int compareTo(AndroidVersion o) {
+    @Override
+    public int compareTo(@NonNull AndroidVersion o) {
         return compareTo(o.mApiLevel, o.mCodename);
     }
 
-    private int compareTo(int apiLevel, String codename) {
+    public int compareTo(int apiLevel, @Nullable String codename) {
         if (mCodename == null) {
             if (codename == null) {
                 return mApiLevel - apiLevel;
@@ -296,5 +366,27 @@ public final class AndroidVersion implements Comparable<AndroidVersion> {
      */
     public boolean isGreaterOrEqualThan(int api) {
         return compareTo(api, null /*codename*/) >= 0;
+    }
+
+    /**
+     * Sanitizes the codename string according to the following rules:
+     * - A codename should be {@code null} for a release version or it should be a non-empty
+     *   string for an actual preview.
+     * - In input, spacing is trimmed since it is irrelevant.
+     * - An empty string or the special codename "REL" means a release version
+     *   and is converted to {@code null}.
+     *
+     * @param codename A possible-null codename.
+     * @return Null for a release version or a non-empty codename.
+     */
+    @Nullable
+    private static String sanitizeCodename(@Nullable String codename) {
+        if (codename != null) {
+            codename = codename.trim();
+            if (codename.isEmpty() || SdkConstants.CODENAME_RELEASE.equals(codename)) {
+                codename = null;
+            }
+        }
+        return codename;
     }
 }

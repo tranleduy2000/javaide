@@ -80,12 +80,9 @@ public enum Navigation implements ResourceEnum {
     }
 
     public static Navigation getByIndex(int index) {
-        int i = 0;
-        for (Navigation value : values()) {
-            if (i == index) {
-                return value;
-            }
-            i++;
+        Navigation[] values = values();
+        if (index >= 0 && index < values.length) {
+            return values[index];
         }
         return null;
     }

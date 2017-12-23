@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
@@ -21,13 +20,6 @@ import android.widget.Toast;
 import com.duy.ide.R;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.setting.AppSetting;
-import com.duy.ide.utils.MemoryUtils;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 
 import org.apache.commons.io.IOUtils;
@@ -39,7 +31,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -129,48 +120,6 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
                 }
                 break;
         }
-    }
-
-    private void downloadFile() {
-        progressDialog = new ProgressDialog(InstallActivity.this);
-        progressDialog.setCancelable(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle("Downloading system, please wait...");
-        progressDialog.setProgress(0);
-        progressDialog.show();
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        String systemURL = "gs://calculator-a283d.appspot.com/java_nide/system/classes.zip";
-        StorageReference systemFile = storage.getReferenceFromUrl(systemURL);
-
-        final File file = new File(getFilesDir(), "temp");
-        systemFile.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                if (progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
-                new InstallTask(InstallActivity.this).execute(file);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                showDialogError(e);
-            }
-        }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                long totalByteCount = taskSnapshot.getTotalByteCount();
-                long bytesTransferred = taskSnapshot.getBytesTransferred();
-                if (bytesTransferred != 0 && totalByteCount != 0) {
-                    String msg = String.format(Locale.ENGLISH,
-                            "%.2f MB / %.2f MB",
-                            MemoryUtils.toMB(bytesTransferred),
-                            MemoryUtils.toMB(totalByteCount));
-                    progressDialog.setMessage(msg);
-                }
-            }
-        });
     }
 
     private void showDialogError(Exception e) {

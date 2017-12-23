@@ -79,12 +79,9 @@ public enum KeyboardState implements ResourceEnum {
     }
 
     public static KeyboardState getByIndex(int index) {
-        int i = 0;
-        for (KeyboardState value : values()) {
-            if (i == index) {
-                return value;
-            }
-            i++;
+        KeyboardState[] values = values();
+        if (index >= 0 && index < values.length) {
+            return values[index];
         }
         return null;
     }

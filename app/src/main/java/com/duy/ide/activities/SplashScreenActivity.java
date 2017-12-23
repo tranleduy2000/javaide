@@ -30,13 +30,12 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.ide.editor.code.MainActivity;
+import com.duy.ide.file.FileManager;
 
-import java.io.File;
 
-
-public class ActivitySplashScreen extends AppCompatActivity {
+public class SplashScreenActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST = 11;
-    private static final String TAG = "ActivitySplashScreen";
+    private static final String TAG = "SplashScreenActivity";
     private static final int REQUEST_INSTALL_SYSTEM = 12;
 
     @Override
@@ -45,14 +44,8 @@ public class ActivitySplashScreen extends AppCompatActivity {
         setContentView(R.layout.splash);
         // Here, this is the current activity
         PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST);
+        if (!permissionGranted()) {
+            requestPermissions();
         } else {
             if (systemInstalled()) {
                 startMainActivity();
@@ -62,18 +55,27 @@ public class ActivitySplashScreen extends AppCompatActivity {
         }
     }
 
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE},
+                MY_PERMISSIONS_REQUEST);
+    }
+
+    private boolean permissionGranted() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED;
+    }
+
     private void installSystem() {
         Intent intent = new Intent(this, InstallActivity.class);
         startActivityForResult(intent, REQUEST_INSTALL_SYSTEM);
     }
 
     private boolean systemInstalled() {
-//        JavaPreferences preferences = new JavaPreferences(this);
-//        return preferences.hasSystemInstalled()
-//                && preferences.getSystemVersion().equalsIgnoreCase(InstallActivity.SYSTEM_VERSION);
-        File file = new File(getFilesDir(), "system" + File.separator + "classes"
-                + File.separator + "android.jar");
-        return file.exists() && file.isFile();
+        return FileManager.isSdkInstalled(this);
     }
 
     @Override
@@ -124,7 +126,7 @@ public class ActivitySplashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(ActivitySplashScreen.this, MainActivity.class);
+                Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 overridePendingTransition(0, 0);
                 startActivity(intent);

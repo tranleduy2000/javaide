@@ -25,7 +25,7 @@ import android.support.annotation.NonNull;
 
 import com.duy.compile.CompileManager;
 import com.duy.ide.R;
-import com.duy.ide.activities.ActivitySplashScreen;
+import com.duy.ide.activities.SplashScreenActivity;
 import com.duy.ide.setting.AppSetting;
 
 import org.apache.commons.io.FileUtils;
@@ -56,6 +56,7 @@ public class FileManager {
      */
     public static final String EXTERNAL_DIR_SRC;
     public static final String EXTERNAL_DIR;
+    private static final String ANDROID_CLASSPATH = "android.jar";
 
     static {
         EXTERNAL_DIR_SRC = Environment.getExternalStorageDirectory() + "/JavaNIDE/src/";
@@ -207,11 +208,27 @@ public class FileManager {
         return file;
     }
 
+    @NonNull
     public static File getClasspathFile(Context context) {
-        File file = new File(context.getFilesDir(),
-                "system" + File.separator + "classes" + File.separator + "android.jar");
-        return file;
+        File classesDir = new File(context.getFilesDir(), "classes");
+        if (!classesDir.exists()) classesDir.mkdir();
+        return new File(classesDir, ANDROID_CLASSPATH);
     }
+
+    @NonNull
+    public static File getSdkDir(Context context) {
+        File classesDir = new File(context.getFilesDir(), "classes");
+        if (!classesDir.exists()) classesDir.mkdir();
+        return classesDir;
+    }
+
+    public static boolean isSdkInstalled(Context context) {
+        File classesDir = new File(context.getFilesDir(), "classes");
+        if (!classesDir.exists()) classesDir.mkdir();
+        File classpath = new File(classesDir, ANDROID_CLASSPATH);
+        return classpath.exists() && classpath.length() > 0;
+    }
+
 
     /**
      * get path from uri
@@ -593,7 +610,7 @@ public class FileManager {
 
         Intent intent = new Intent();
 
-        Intent launchIntent = new Intent(context, ActivitySplashScreen.class);
+        Intent launchIntent = new Intent(context, SplashScreenActivity.class);
         launchIntent.putExtra(CompileManager.FILE_PATH, file.getPath());
         launchIntent.setAction("run_from_shortcut");
 

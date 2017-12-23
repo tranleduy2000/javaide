@@ -22,7 +22,7 @@
         android:largeHeap="true"
         android:theme="@style/AppThemeDark.NoActionBar">
 
-        <activity android:name="com.duy.ide.activities.ActivitySplashScreen">
+        <activity android:name="com.duy.ide.activities.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

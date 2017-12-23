@@ -58,7 +58,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
     private Button mInstallButton;
     //    private TextView mTxtVersion;
     private ProgressDialog progressDialog;
-    private boolean installing = false;
+    private boolean mIsInstalling = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,7 +225,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
 
     @Override
     public void onBackPressed() {
-        if (!installing) {
+        if (!mIsInstalling) {
             super.onBackPressed();
         }
     }
@@ -253,23 +253,20 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             mInfo.setText(R.string.start_install_system);
             mProgressBar.setIndeterminate(true);
             mInstallButton.setEnabled(false);
-            installing = true;
+            mIsInstalling = true;
         }
 
         @Override
         protected Boolean doInBackground(File... params) {
             try {
-                File download = params[0];
-                File outputDir = new File(context.getFilesDir(), "system" + File.separator + "classes");
-                unzipArchive(download, outputDir);
-                download.delete();
+                File zip = params[0];
+                File outputDir = FileManager.getSdkDir(context);
+                unzipArchive(zip, outputDir);
+                zip.delete();
 
-                File classpath = FileManager.getClasspathFile(context);
-                if (!(classpath.exists() && classpath.length() > 0)) {
+                if (!(FileManager.isSdkInstalled(context))) {
                     throw new RuntimeException("Install failed, Not a classes.zip file");
                 }
-
-
             } catch (Exception e) {
                 publishProgress("Error when install system");
 
@@ -299,7 +296,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             }
             mInstallButton.setEnabled(true);
             mProgressBar.setIndeterminate(false);
-            installing = false;
+            mIsInstalling = false;
         }
 
         public void unzipArchive(File archive, File outputDir) {
@@ -356,14 +353,14 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             mInfo.setText(R.string.start_install_system);
             mProgressBar.setIndeterminate(true);
             mInstallButton.setEnabled(false);
-            installing = true;
+            mIsInstalling = true;
         }
 
         @Override
         protected File doInBackground(File... params) {
             try {
                 AssetManager assets = context.getAssets();
-                InputStream open = assets.open("classes/classes.zip");
+                InputStream open = assets.open("android-23/android-23.zip");
                 File outFile = new File(getFilesDir(), "classes.zip");
                 FileOutputStream fileOutputStream = new FileOutputStream(outFile);
                 FileManager.copyStream(open, fileOutputStream);

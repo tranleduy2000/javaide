@@ -350,7 +350,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mInfo.setText(R.string.start_install_system);
+            mInfo.setText(R.string.copy_from_asset);
             mProgressBar.setIndeterminate(true);
             mInstallButton.setEnabled(false);
             mIsInstalling = true;
@@ -360,7 +360,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         protected File doInBackground(File... params) {
             try {
                 AssetManager assets = context.getAssets();
-                InputStream open = assets.open("android-25/android-25.zip");
+                InputStream open = assets.open("android-21/android-21.zip");
                 File outFile = new File(getFilesDir(), "classes.zip");
                 FileOutputStream fileOutputStream = new FileOutputStream(outFile);
                 FileManager.copyStream(open, fileOutputStream);

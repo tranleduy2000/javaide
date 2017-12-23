@@ -82,7 +82,7 @@ dependencies {
     compile project(':dx')
     compile project(':javacodeformatter')
     compile project(':androidlogcat')
-//    compile project(':aapt')
+    compile project(':manifest_merger')
 
     //android support
     compile 'com.android.support:multidex:1.0.2'
@@ -95,7 +95,6 @@ dependencies {
 
     //firebase sdk
     compile "com.google.firebase:firebase-core:$googleServiceVersion"
-    compile "com.google.firebase:firebase-storage:$googleServiceVersion"
     compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
         transitive = true
     }

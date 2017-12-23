@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.manifestmerger;
+package com.android.manifmerger;
 
 import com.android.utils.ILogger;
 import com.android.utils.StdLogger;

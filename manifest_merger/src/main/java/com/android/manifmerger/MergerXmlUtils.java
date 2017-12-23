@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.manifestmerger;
+package com.android.manifmerger;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
+import com.android.annotations.VisibleForTesting;
+import com.android.manifmerger.IMergerLog.FileAndLine;
+import com.android.manifmerger.IMergerLog.Severity;
 import com.android.utils.ILogger;
 import com.android.utils.XmlUtils;
 
@@ -30,12 +33,9 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,13 +74,15 @@ class MergerXmlUtils {
      *
      * @param xmlFile The XML {@link File} to parse. Must not be null.
      * @param log An {@link ILogger} for reporting errors. Must not be null.
+     * @param merger The {@link ManifestMerger} this document is intended for
      * @return A new DOM {@link Document}, or null.
      */
     @Nullable
-    static Document parseDocument(@NonNull final File xmlFile, @NonNull final IMergerLog log) {
+    static Document parseDocument(@NonNull final File xmlFile, @NonNull final IMergerLog log,
+            @NonNull ManifestMerger merger) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            Reader reader = new BufferedReader(new FileReader(xmlFile));
+            Reader reader = XmlUtils.getUtfReader(xmlFile);
             InputSource is = new InputSource(reader);
             factory.setNamespaceAware(true);
             factory.setValidating(false);
@@ -90,22 +92,22 @@ class MergerXmlUtils {
             builder.setErrorHandler(new ErrorHandler() {
                 @Override
                 public void warning(SAXParseException e) {
-                    log.error(IMergerLog.Severity.WARNING,
-                            new IMergerLog.FileAndLine(xmlFile.getAbsolutePath(), 0),
+                    log.error(Severity.WARNING,
+                            new FileAndLine(xmlFile.getAbsolutePath(), 0),
                             "Warning when parsing: %1$s",
                             e.toString());
                 }
                 @Override
                 public void fatalError(SAXParseException e) {
-                    log.error(IMergerLog.Severity.ERROR,
-                            new IMergerLog.FileAndLine(xmlFile.getAbsolutePath(), 0),
+                    log.error(Severity.ERROR,
+                            new FileAndLine(xmlFile.getAbsolutePath(), 0),
                             "Fatal error when parsing: %1$s",
                             xmlFile.getName(), e.toString());
                 }
                 @Override
                 public void error(SAXParseException e) {
-                    log.error(IMergerLog.Severity.ERROR,
-                            new IMergerLog.FileAndLine(xmlFile.getAbsolutePath(), 0),
+                    log.error(Severity.ERROR,
+                            new FileAndLine(xmlFile.getAbsolutePath(), 0),
                             "Error when parsing: %1$s",
                             e.toString());
                 }
@@ -115,16 +117,20 @@ class MergerXmlUtils {
             doc.setUserData(DATA_ORIGIN_FILE, xmlFile, null /*handler*/);
             findLineNumbers(doc, 1);
 
+            if (merger.isInsertSourceMarkers()) {
+                setSource(doc, xmlFile);
+            }
+
             return doc;
 
         } catch (FileNotFoundException e) {
-            log.error(IMergerLog.Severity.ERROR,
-                    new IMergerLog.FileAndLine(xmlFile.getAbsolutePath(), 0),
+            log.error(Severity.ERROR,
+                    new FileAndLine(xmlFile.getAbsolutePath(), 0),
                     "XML file not found");
 
         } catch (Exception e) {
-            log.error(IMergerLog.Severity.ERROR,
-                    new IMergerLog.FileAndLine(xmlFile.getAbsolutePath(), 0),
+            log.error(Severity.ERROR,
+                    new FileAndLine(xmlFile.getAbsolutePath(), 0),
                     "Failed to parse XML file: %1$s",
                     e.toString());
         }
@@ -141,21 +147,20 @@ class MergerXmlUtils {
      * @param log An {@link ILogger} for reporting errors. Must not be null.
      * @return A new DOM {@link Document}, or null.
      */
+    @VisibleForTesting
     @Nullable
     static Document parseDocument(@NonNull String xml,
             @NonNull IMergerLog log,
-            @NonNull IMergerLog.FileAndLine errorContext) {
+            @NonNull FileAndLine errorContext) {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            InputSource is = new InputSource(new StringReader(xml));
-            factory.setNamespaceAware(true);
-            factory.setValidating(false);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(is);
+            Document doc = XmlUtils.parseDocument(xml, true);
             findLineNumbers(doc, 1);
+            if (errorContext.getFileName() != null) {
+                setSource(doc, new File(errorContext.getFileName()));
+            }
             return doc;
         } catch (Exception e) {
-            log.error(IMergerLog.Severity.ERROR, errorContext, "Failed to parse XML string");
+            log.error(Severity.ERROR, errorContext, "Failed to parse XML string");
         }
 
         return null;
@@ -180,27 +185,28 @@ class MergerXmlUtils {
     }
 
     /**
-     * Returns a new {@link IMergerLog.FileAndLine} structure that identifies
+     * Returns a new {@link FileAndLine} structure that identifies
      * the base filename & line number from which the XML node was parsed.
      * <p/>
      * When the line number is unknown (e.g. if a {@link Document} instance is given)
      * then line number 0 will be used.
      *
      * @param node The node or document where the error occurs. Must not be null.
-     * @return A new non-null {@link IMergerLog.FileAndLine} combining the file name and line number.
+     * @return A new non-null {@link FileAndLine} combining the file name and line number.
      */
     @NonNull
-    static IMergerLog.FileAndLine xmlFileAndLine(@NonNull Node node) {
+    static FileAndLine xmlFileAndLine(@NonNull Node node) {
         String name = extractXmlFilename(node);
         int line = extractLineNumber(node); // 0 in case of error or unknown
-        return new IMergerLog.FileAndLine(name, line);
+        return new FileAndLine(name, line);
     }
 
     /**
-     * Extracts the origin {@link File} that {@link #parseDocument(File, IMergerLog)}
-     * added to the XML document or the string added by
+     * Extracts the origin {@link File} that {@link #parseDocument(File, IMergerLog,
+     * ManifestMerger)} added to the XML document or the string added by
      *
-     * @param xmlNode Any node from a document returned by {@link #parseDocument(File, IMergerLog)}.
+     * @param xmlNode Any node from a document returned by {@link #parseDocument(File, IMergerLog,
+     *              ManifestMerger)}.
      * @return The {@link File} object used to create the document or null.
      */
     @Nullable
@@ -211,7 +217,7 @@ class MergerXmlUtils {
         if (xmlNode != null) {
             Object data = xmlNode.getUserData(DATA_ORIGIN_FILE);
             if (data instanceof File) {
-                return ((File) data).getName();
+                return ((File) data).getPath();
             }
             data = xmlNode.getUserData(DATA_FILE_NAME);
             if (data instanceof String) {
@@ -220,6 +226,21 @@ class MergerXmlUtils {
         }
 
         return null;
+    }
+
+    public static void setSource(@NonNull Node node, @NonNull File source) {
+        //noinspection ConstantConditions
+        for (; node != null; node = node.getNextSibling()) {
+            short nodeType = node.getNodeType();
+            if (nodeType == Node.ELEMENT_NODE
+                    || nodeType == Node.COMMENT_NODE
+                    || nodeType == Node.DOCUMENT_NODE
+                    || nodeType == Node.CDATA_SECTION_NODE) {
+                node.setUserData(DATA_ORIGIN_FILE, source, null);
+            }
+            Node child = node.getFirstChild();
+            setSource(child, source);
+        }
     }
 
     /**
@@ -257,7 +278,8 @@ class MergerXmlUtils {
     /**
      * Extracts the line number that {@link #findLineNumbers} added to the XML nodes.
      *
-     * @param xmlNode Any node from a document returned by {@link #parseDocument(File, IMergerLog)}.
+     * @param xmlNode Any node from a document returned by {@link #parseDocument(File, IMergerLog,
+     *                ManifestMerger)}.
      * @return The line number if found or 0.
      */
     static int extractLineNumber(@Nullable Node xmlNode) {
@@ -296,8 +318,8 @@ class MergerXmlUtils {
             tf.transform(new DOMSource(doc), new StreamResult(outFile));
             return true;
         } catch (TransformerException e) {
-            log.error(IMergerLog.Severity.ERROR,
-                    new IMergerLog.FileAndLine(outFile.getName(), 0),
+            log.error(Severity.ERROR,
+                    new FileAndLine(outFile.getName(), 0),
                     "Failed to write XML file: %1$s",
                     e.toString());
             return false;
@@ -327,8 +349,8 @@ class MergerXmlUtils {
             tf.transform(new DOMSource(doc), new StreamResult(sw));
             return sw.toString();
         } catch (TransformerException e) {
-            log.error(IMergerLog.Severity.ERROR,
-                    new IMergerLog.FileAndLine(extractXmlFilename(doc), 0),
+            log.error(Severity.ERROR,
+                    new FileAndLine(extractXmlFilename(doc), 0),
                     "Failed to write XML file: %1$s",
                     e.toString());
             return null;
@@ -537,7 +559,7 @@ class MergerXmlUtils {
 
         //                                        1=path  2=URI    3=local name
         final Pattern keyRx = Pattern.compile("^/([^\\|]+)\\|([^ ]*) +(.+)$");      //$NON-NLS-1$
-        final IMergerLog.FileAndLine docInfo = xmlFileAndLine(doc);
+        final FileAndLine docInfo = xmlFileAndLine(doc);
 
         nextAttribute: for (Entry<String, String> entry : attributeMap.entrySet()) {
             String key = entry.getKey();
@@ -548,7 +570,7 @@ class MergerXmlUtils {
 
             Matcher m = keyRx.matcher(key);
             if (!m.matches()) {
-                log.error(IMergerLog.Severity.WARNING, docInfo, "Invalid injected attribute key: %s", key);
+                log.error(Severity.WARNING, docInfo, "Invalid injected attribute key: %s", key);
                 continue;
             }
             String path = m.group(1);
@@ -585,7 +607,7 @@ class MergerXmlUtils {
             }
 
             if (element == null) {
-                log.error(IMergerLog.Severity.WARNING, docInfo, "Invalid injected attribute path: %s", path);
+                log.error(Severity.WARNING, docInfo, "Invalid injected attribute path: %s", path);
                 return;
             }
 
@@ -910,4 +932,20 @@ class MergerXmlUtils {
         return str;
     }
 
+    /**
+     * Returns the file associated with the given specific node, if any.
+     * Note that this will not search upwards for parent nodes; it returns a
+     * file associated with this specific node, if any.
+     */
+    @Nullable
+    public static File getFileFor(@NonNull Node node) {
+        return (File) node.getUserData(DATA_ORIGIN_FILE);
+    }
+
+    /**
+     * Sets the file associated with the given node, if any
+     */
+    public static void setFileFor(Node node, File file) {
+        node.setUserData(MergerXmlUtils.DATA_ORIGIN_FILE, file, null);
+    }
 }

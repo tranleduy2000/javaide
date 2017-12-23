@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.manifestmerger;
+package com.android.manifmerger;
 
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
+import com.android.manifmerger.IMergerLog.FileAndLine;
+import com.android.manifmerger.IMergerLog.Severity;
+import com.android.utils.SdkUtils;
 import com.android.utils.XmlUtils;
 import com.android.xml.AndroidXPathFactory;
 
@@ -30,6 +33,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,7 +50,7 @@ import javax.xml.xpath.XPathExpressionException;
  * Merges a library manifest into a main application manifest.
  * <p/>
  * To use, create with {@link ManifestMerger#ManifestMerger(IMergerLog, ICallback)} then
- * call {@link ManifestMerger#process(File, File, File[], Map)}.
+ * call {@link ManifestMerger#process(File, File, File[], Map, String)}.
  * <p/>
  * <pre> Merge operations:
  * - root manifest: attributes ignored, warn if defined.
@@ -134,6 +138,8 @@ public class ManifestMerger {
     private Document mMainDoc;
     /** Option to extract the package prefixes from the merged manifest. */
     private boolean mExtractPackagePrefix;
+    /** Whether the merger should insert comments pointing to the merge source files */
+    private boolean mInsertSourceMarkers;
 
     /** Namespace for Android attributes in an AndroidManifest.xml */
     private static final String NS_URI    = SdkConstants.NS_RESOURCES;
@@ -159,7 +165,9 @@ public class ManifestMerger {
             "application/name",
             "application/backupAgent",
             "activity/name",
+            "activity/parentActivityName",
             "activity-alias/name",
+            "activity-alias/targetActivity",
             "receiver/name",
             "service/name",
             "provider/name",
@@ -220,16 +228,21 @@ public class ManifestMerger {
             File[] libraryFiles,
             Map<String, String> injectAttributes,
             String packageOverride) {
-        Document mainDoc = MergerXmlUtils.parseDocument(mainFile, mLog);
+        Document mainDoc = MergerXmlUtils.parseDocument(mainFile, mLog, this);
         if (mainDoc == null) {
+            mLog.error(Severity.ERROR, new FileAndLine(mainFile.getAbsolutePath(), 0),
+                    "Failed to read manifest file.");
             return false;
         }
 
         boolean success = process(mainDoc, libraryFiles, injectAttributes, packageOverride);
 
         if (!MergerXmlUtils.printXmlFile(mainDoc, outputFile, mLog)) {
+            mLog.error(Severity.ERROR, new FileAndLine(outputFile.getAbsolutePath(), 0),
+                    "Failed to write manifest file.");
             success = false;
         }
+
         return success;
     }
 
@@ -270,7 +283,7 @@ public class ManifestMerger {
 
         expandFqcns(mainDoc);
         for (File libFile : libraryFiles) {
-            Document libDoc = MergerXmlUtils.parseDocument(libFile, mLog);
+            Document libDoc = MergerXmlUtils.parseDocument(libFile, mLog, this);
             if (libDoc == null || !mergeLibDoc(cleanupToolsAttributes(libDoc))) {
                 success = false;
             }
@@ -286,6 +299,10 @@ public class ManifestMerger {
 
         if (mExtractPackagePrefix) {
             extractFqcns(mainDoc);
+        }
+
+        if (mInsertSourceMarkers) {
+            insertSourceMarkers(mainDoc);
         }
 
         mXPath = null;
@@ -324,6 +341,15 @@ public class ManifestMerger {
         }
 
         cleanupToolsAttributes(mainDoc);
+
+        if (mExtractPackagePrefix) {
+            extractFqcns(mainDoc);
+        }
+
+        if (mInsertSourceMarkers) {
+            insertSourceMarkers(mainDoc);
+        }
+
         mXPath = null;
         mMainDoc = null;
         return success;
@@ -460,7 +486,7 @@ public class ManifestMerger {
             // We can't adjust FQCNs if we don't know the root package name.
             // It's not a proper manifest if this is missing anyway.
             assert manifest != null;
-            mLog.error(IMergerLog.Severity.WARNING,
+            mLog.error(Severity.WARNING,
                        xmlFileAndLine(manifest),
                        "Missing 'package' attribute in manifest.");
             return;
@@ -584,7 +610,7 @@ public class ManifestMerger {
             String mainValue = mainApp == null ? "" : getAttributeValue(mainApp, attrName);
             if (!libValue.equals(mainValue)) {
                 assert mainApp != null;
-                mLog.conflict(IMergerLog.Severity.WARNING,
+                mLog.conflict(Severity.WARNING,
                         xmlFileAndLine(mainApp),
                         xmlFileAndLine(libApp),
                         mainApp == null ?
@@ -634,7 +660,7 @@ public class ManifestMerger {
             }
 
             if (!found) {
-                mLog.conflict(IMergerLog.Severity.WARNING,
+                mLog.conflict(Severity.WARNING,
                         xmlFileAndLine(mMainDoc),
                         xmlFileAndLine(src),
                         "%1$s defined in library, missing from main manifest:\n%2$s",
@@ -675,7 +701,7 @@ public class ManifestMerger {
         Element parent = findFirstElement(mMainDoc, parentPath);
         assert parent != null;
         if (parent == null) {
-            mLog.error(IMergerLog.Severity.ERROR,
+            mLog.error(Severity.ERROR,
                     xmlFileAndLine(mMainDoc),
                     "Could not find element %1$s.",
                     parentPath);
@@ -687,7 +713,7 @@ public class ManifestMerger {
         nextSource: for (Element src : findElements(libDoc, path)) {
             String name = getAttributeValue(src, keyAttr);
             if (name.length() == 0) {
-                mLog.error(IMergerLog.Severity.ERROR,
+                mLog.error(Severity.ERROR,
                         xmlFileAndLine(src),
                         "Undefined '%1$s' attribute in %2$s.",
                         keyAttr, path);
@@ -699,7 +725,7 @@ public class ManifestMerger {
             List<Element> dests = findElements(mMainDoc, path, keyAttr, name);
             if (dests.size() > 1) {
                 // This should not be happening. We'll just use the first one found in this case.
-                mLog.error(IMergerLog.Severity.WARNING,
+                mLog.error(Severity.WARNING,
                         xmlFileAndLine(dests.get(0)),
                         "Manifest has more than one %1$s[@%2$s=%3$s] element.",
                         path, keyAttr, name);
@@ -716,7 +742,7 @@ public class ManifestMerger {
                 if (compareElements(dest, src, false, diff, keyAttr)) {
                     // Same element. Skip.
                     if (warnDups) {
-                        mLog.conflict(IMergerLog.Severity.INFO,
+                        mLog.conflict(Severity.INFO,
                                 xmlFileAndLine(dest),
                                 xmlFileAndLine(src),
                                 "Skipping identical %1$s[@%2$s=%3$s] element.",
@@ -725,7 +751,7 @@ public class ManifestMerger {
                     continue nextSource;
                 } else {
                     // Print the diff we got from the comparison.
-                    mLog.conflict(IMergerLog.Severity.ERROR,
+                    mLog.conflict(Severity.ERROR,
                             xmlFileAndLine(dest),
                             xmlFileAndLine(src),
                             "Trying to merge incompatible %1$s[@%2$s=%3$s] element:\n%4$s",
@@ -794,7 +820,7 @@ public class ManifestMerger {
         Element parent = findFirstElement(mMainDoc, parentPath);
         assert parent != null;
         if (parent == null) {
-            mLog.error(IMergerLog.Severity.ERROR,
+            mLog.error(Severity.ERROR,
                     xmlFileAndLine(mMainDoc),
                     "Could not find element %1$s.",
                     parentPath);
@@ -816,7 +842,7 @@ public class ManifestMerger {
                     }
                 }
 
-                mLog.error(IMergerLog.Severity.ERROR,
+                mLog.error(Severity.ERROR,
                         xmlFileAndLine(src),
                         "Undefined '%1$s' attribute in %2$s.",
                         keyAttr, path);
@@ -828,7 +854,7 @@ public class ManifestMerger {
             List<Element> dests = findElements(mMainDoc, path, keyAttr, name);
             if (dests.size() > 1) {
                 // This should not be happening. We'll just use the first one found in this case.
-                mLog.error(IMergerLog.Severity.WARNING,
+                mLog.error(Severity.WARNING,
                         xmlFileAndLine(dests.get(0)),
                         "Manifest has more than one %1$s[@%2$s=%3$s] element.",
                         path, keyAttr, name);
@@ -838,7 +864,7 @@ public class ManifestMerger {
                 attr = src.getAttributeNodeNS(NS_URI, requiredAttr);
                 String value = attr == null ? "true" : attr.getNodeValue();    //$NON-NLS-1$
                 if (value == null || !(value.equals("true") || value.equals("false"))) {
-                    mLog.error(IMergerLog.Severity.WARNING,
+                    mLog.error(Severity.WARNING,
                             xmlFileAndLine(src),
                             "Invalid attribute '%1$s' in %2$s[@%3$s=%4$s] element:\nExpected 'true' or 'false' but found '%5$s'.",
                             requiredAttr, path, keyAttr, name, value);
@@ -856,7 +882,7 @@ public class ManifestMerger {
                     attr = dest.getAttributeNodeNS(NS_URI, requiredAttr);
                     value = attr == null ? "true" : attr.getNodeValue();    //$NON-NLS-1$
                     if (value == null || !(value.equals("true") || value.equals("false"))) {
-                        mLog.error(IMergerLog.Severity.WARNING,
+                        mLog.error(Severity.WARNING,
                                 xmlFileAndLine(dest),
                                 "Invalid attribute '%1$s' in %2$s[@%3$s=%4$s] element:\nExpected 'true' or 'false' but found '%5$s'.",
                                 requiredAttr, path, keyAttr, name, value);
@@ -945,7 +971,7 @@ public class ManifestMerger {
         Element parent = findFirstElement(mMainDoc, parentPath);
         assert parent != null;
         if (parent == null) {
-            mLog.error(IMergerLog.Severity.ERROR,
+            mLog.error(Severity.ERROR,
                     xmlFileAndLine(mMainDoc),
                     "Could not find element %1$s.",
                     parentPath);
@@ -974,7 +1000,7 @@ public class ManifestMerger {
                         destGlEsVersion = version;
                         destNode = dest;
                     } else if (version < 0x00010000) {
-                        mLog.error(IMergerLog.Severity.WARNING,
+                        mLog.error(Severity.WARNING,
                                 xmlFileAndLine(dest),
                                 "Ignoring <uses-feature android:glEsVersion='%1$s'> because it's smaller than 1.0.",
                                 value);
@@ -982,7 +1008,7 @@ public class ManifestMerger {
                 } catch (NumberFormatException e) {
                     // Note: NumberFormatException.toString() has no interesting information
                     // so we don't output it.
-                    mLog.error(IMergerLog.Severity.ERROR,
+                    mLog.error(Severity.ERROR,
                             xmlFileAndLine(dest),
                             "Failed to parse <uses-feature android:glEsVersion='%1$s'>: must be an integer in the form 0x00020001.",
                             value);
@@ -1012,7 +1038,7 @@ public class ManifestMerger {
                         srcGlEsVersion = version;
                         srcNode = src;
                     } else if (version < 0x00010000) {
-                        mLog.error(IMergerLog.Severity.WARNING,
+                        mLog.error(Severity.WARNING,
                                 xmlFileAndLine(src),
                                 "Ignoring <uses-feature android:glEsVersion='%1$s'> because it's smaller than 1.0.",
                                 value);
@@ -1020,7 +1046,7 @@ public class ManifestMerger {
                 } catch (NumberFormatException e) {
                     // Note: NumberFormatException.toString() has no interesting information
                     // so we don't output it.
-                    mLog.error(IMergerLog.Severity.ERROR,
+                    mLog.error(Severity.ERROR,
                             xmlFileAndLine(src),
                             "Failed to parse <uses-feature android:glEsVersion='%1$s'>: must be an integer in the form 0x00020001.",
                             value);
@@ -1030,7 +1056,7 @@ public class ManifestMerger {
         }
 
         if (srcNode != null && destGlEsVersion < srcGlEsVersion) {
-            mLog.conflict(IMergerLog.Severity.WARNING,
+            mLog.conflict(Severity.WARNING,
                     xmlFileAndLine(destNode == null ? mMainDoc : destNode),
                     xmlFileAndLine(srcNode),
                     "Main manifest has <uses-feature android:glEsVersion='0x%1$08x'> but library uses glEsVersion='0x%2$08x'%3$s",
@@ -1093,7 +1119,7 @@ public class ManifestMerger {
             destMinSdk = destValue.get();
 
             if (destMinSdk < srcValue.get()) {
-                mLog.conflict(IMergerLog.Severity.ERROR,
+                mLog.conflict(Severity.ERROR,
                         xmlFileAndLine(destUsesSdk == null ? mMainDoc : destUsesSdk),
                         xmlFileAndLine(srcUsesSdk == null ? libDoc : srcUsesSdk),
                         "Main manifest has <uses-sdk android:minSdkVersion='%1$d'> but library uses minSdkVersion='%2$d'%3$s",
@@ -1128,7 +1154,7 @@ public class ManifestMerger {
             int destTargetSdk = destImplied.get() ? destMinSdk : destValue.get();
 
             if (destTargetSdk < srcValue.get()) {
-                mLog.conflict(IMergerLog.Severity.WARNING,
+                mLog.conflict(Severity.WARNING,
                         xmlFileAndLine(destUsesSdk == null ? mMainDoc : destUsesSdk),
                         xmlFileAndLine(srcUsesSdk == null ? libDoc : srcUsesSdk),
                         "Main manifest has <uses-sdk android:targetSdkVersion='%1$d'> but library uses targetSdkVersion='%2$d'%3$s",
@@ -1188,7 +1214,7 @@ public class ManifestMerger {
             if (error) {
                 // Note: NumberFormatException.toString() has no interesting information
                 // so we don't output it.
-                mLog.error(IMergerLog.Severity.ERROR,
+                mLog.error(Severity.ERROR,
                     xmlFileAndLine(destUsesSdk == null ? mMainDoc : destUsesSdk),
                     "Failed to parse <uses-sdk %1$sSdkVersion='%2$s'>: must be an integer number or codename.",
                     attr,
@@ -1219,7 +1245,7 @@ public class ManifestMerger {
                 }
             }
             if (error) {
-                mLog.error(IMergerLog.Severity.ERROR,
+                mLog.error(Severity.ERROR,
                     xmlFileAndLine(srcUsesSdk == null ? libDoc : srcUsesSdk),
                     "Failed to parse <uses-sdk %1$sSdkVersion='%2$s'>: must be an integer number or codename.",
                     attr,
@@ -1322,6 +1348,15 @@ public class ManifestMerger {
             if (needPrefixChange) {
                 changePrefix(node, srcPrefix, destPrefix);
             }
+
+            if (mInsertSourceMarkers) {
+                // Duplicate source node attribute
+                File file = MergerXmlUtils.getFileFor(start);
+                if (file != null) {
+                    MergerXmlUtils.setFileFor(node, file);
+                }
+            }
+
             dest.insertBefore(node, target);
 
             if (start == end) {
@@ -1404,13 +1439,13 @@ public class ManifestMerger {
             }
 
             if (result != null) {
-                mLog.error(IMergerLog.Severity.ERROR,
+                mLog.error(Severity.ERROR,
                         xmlFileAndLine(doc),
                         "Unexpected Node type %s when evaluating %s",   //$NON-NLS-1$
                         result.getClass().getName(), path);
             }
         } catch (XPathExpressionException e) {
-            mLog.error(IMergerLog.Severity.ERROR,
+            mLog.error(Severity.ERROR,
                     xmlFileAndLine(doc),
                     "XPath error on expr %s: %s",                       //$NON-NLS-1$
                     path, e.toString());
@@ -1474,7 +1509,7 @@ public class ManifestMerger {
                     if (n instanceof Element) {
                         elements.add((Element) n);
                     } else {
-                        mLog.error(IMergerLog.Severity.ERROR,
+                        mLog.error(Severity.ERROR,
                                 xmlFileAndLine(doc),
                                 "Unexpected Node type %s when evaluating %s",   //$NON-NLS-1$
                                 n.getClass().getName(), path);
@@ -1483,7 +1518,7 @@ public class ManifestMerger {
             }
 
         } catch (XPathExpressionException e) {
-            mLog.error(IMergerLog.Severity.ERROR,
+            mLog.error(Severity.ERROR,
                     xmlFileAndLine(doc),
                     "XPath error on expr %s: %s",                       //$NON-NLS-1$
                     path, e.toString());
@@ -1493,17 +1528,17 @@ public class ManifestMerger {
     }
 
     /**
-     * Returns a new {@link IMergerLog.FileAndLine} structure that identifies
+     * Returns a new {@link FileAndLine} structure that identifies
      * the base filename & line number from which the XML node was parsed.
      * <p/>
      * When the line number is unknown (e.g. if a {@link Document} instance is given)
      * then line number 0 will be used.
      *
      * @param node The node or document where the error occurs. Must not be null.
-     * @return A new non-null {@link IMergerLog.FileAndLine} combining the file name and line number.
+     * @return A new non-null {@link FileAndLine} combining the file name and line number.
      */
     @NonNull
-    private IMergerLog.FileAndLine xmlFileAndLine(@NonNull Node node) {
+    private FileAndLine xmlFileAndLine(@NonNull Node node) {
         return MergerXmlUtils.xmlFileAndLine(node);
     }
 
@@ -1585,5 +1620,114 @@ public class ManifestMerger {
     private Document cleanupToolsAttributes(@NonNull Document doc) {
         cleanupToolsAttributes(doc.getFirstChild());
         return doc;
+    }
+
+    /**
+     * Sets whether this manifest merger will insert source markers into the merged source
+     *
+     * @param insertSourceMarkers if true, insert source markers
+     */
+    public void setInsertSourceMarkers(boolean insertSourceMarkers) {
+        mInsertSourceMarkers = insertSourceMarkers;
+    }
+
+    /**
+     * Returns whether this manifest merger will insert source markers into the merged source
+     *
+     * @return whether this manifest merger will insert source markers into the merged source
+     */
+    public boolean isInsertSourceMarkers() {
+        return mInsertSourceMarkers;
+    }
+
+    /** Inserts source markers in the given document */
+    private static void insertSourceMarkers(@NonNull Document mainDoc) {
+        Element root = mainDoc.getDocumentElement();
+        if (root != null) {
+            File file = MergerXmlUtils.getFileFor(root);
+            if (file != null) {
+                insertSourceMarker(mainDoc, root, file, false);
+            }
+
+            insertSourceMarkers(root, file);
+        }
+    }
+
+    private static File insertSourceMarkers(@NonNull Node node, @Nullable File currentFile) {
+        for (int i = 0; i < node.getChildNodes().getLength(); i++) {
+            Node child = node.getChildNodes().item(i);
+            short nodeType = child.getNodeType();
+            if (nodeType == Node.ELEMENT_NODE
+                    || nodeType == Node.COMMENT_NODE
+                    || nodeType == Node.DOCUMENT_NODE
+                    || nodeType == Node.CDATA_SECTION_NODE) {
+                File file = MergerXmlUtils.getFileFor(child);
+                if (file != null && !file.equals(currentFile)) {
+                    i += insertSourceMarker(node, child, file, false);
+                    currentFile = file;
+                }
+
+                currentFile = insertSourceMarkers(child, currentFile);
+            }
+        }
+
+        Node lastElement = node.getLastChild();
+        while (lastElement != null && lastElement.getNodeType() == Node.TEXT_NODE) {
+            lastElement = lastElement.getPreviousSibling();
+        }
+        if (lastElement != null && lastElement.getNodeType() == Node.ELEMENT_NODE) {
+            File parentFile = MergerXmlUtils.getFileFor(node);
+            File lastFile = MergerXmlUtils.getFileFor(lastElement);
+            if (lastFile != null && parentFile != null && !parentFile.equals(lastFile)) {
+                insertSourceMarker(node, lastElement, parentFile, true);
+                currentFile = parentFile;
+            }
+        }
+
+        return currentFile;
+    }
+
+    private static int insertSourceMarker(@NonNull Node parent, @NonNull Node node,
+            @NonNull File file, boolean after) {
+        int insertCount = 0;
+        Document doc = parent.getNodeType() ==
+                Node.DOCUMENT_NODE ? (Document) parent : parent.getOwnerDocument();
+
+        String comment;
+        try {
+            comment = SdkUtils.createPathComment(file, true);
+        } catch (MalformedURLException e) {
+            return insertCount;
+        }
+
+        Node prev = node.getPreviousSibling();
+        String newline;
+        if (prev != null && prev.getNodeType() == Node.TEXT_NODE) {
+            // Duplicate indentation from previous line. Once we switch the merger
+            // over to using the XmlPrettyPrinter, we won't need this.
+            newline = prev.getNodeValue();
+            int index = newline.lastIndexOf('\n');
+            if (index != -1) {
+                newline = newline.substring(index);
+            }
+        } else {
+            newline = "\n";
+        }
+
+        if (after) {
+            node = node.getNextSibling();
+        }
+
+        parent.insertBefore(doc.createComment(comment), node);
+        insertCount++;
+
+        // Can't add text nodes at the document level in Xerces, even though
+        // it will happily parse these
+        if (parent.getNodeType() != Node.DOCUMENT_NODE) {
+            parent.insertBefore(doc.createTextNode(newline), node);
+            insertCount++;
+        }
+
+        return insertCount;
     }
 }

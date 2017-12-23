@@ -34,6 +34,6 @@ ext {
     minSdkVersion = 14
     googleServiceVersion = "11.6.2"
 
-    supportLibVersion = "27.0.2"
+    supportLibVersion = "25.0.0"
 }
 

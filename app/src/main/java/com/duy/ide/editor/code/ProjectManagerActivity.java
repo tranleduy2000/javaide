@@ -218,6 +218,10 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
             for (File editorFile : editorFiles) {
                 descriptors.add(new SimplePageDescriptor(editorFile.getPath(), editorFile.getName()));
             }
+        } else {
+            for (File editorFile : editorFiles) {
+                mFileManager.removeTabFile(editorFile.getPath());
+            }
         }
         mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), descriptors);
         mViewPager.setAdapter(mPageAdapter);

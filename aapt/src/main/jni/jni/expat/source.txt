@@ -1,3 +1,0 @@
-http://android.git.kernel.org/
-
-[platform/external/expat.git] / Android.mk

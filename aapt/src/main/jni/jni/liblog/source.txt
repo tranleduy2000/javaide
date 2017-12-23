@@ -1,5 +1,0 @@
-http://android.git.kernel.org/
-
-[platform/system/core.git] / liblog / 
-
-

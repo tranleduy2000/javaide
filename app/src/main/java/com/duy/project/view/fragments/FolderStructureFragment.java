@@ -99,7 +99,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
         view.findViewById(R.id.img_expand_all).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mTreeView != null) mTreeView.expandAll();
+                if (mTreeView != null) expandSrcDir(mTreeView.getRoot());
             }
         });
         view.findViewById(R.id.img_collapse).setOnClickListener(new View.OnClickListener() {
@@ -224,12 +224,14 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
 
     private void expandSrcDir(TreeNode root) {
         if (mTreeView == null || mProjectFile == null) return;
-        List<TreeNode> children = root.getChildren().get(0).getChildren();
+        TreeNode treeNode = root.getChildren().get(0);
+        mTreeView.expandNode(treeNode, false);
+        List<TreeNode> children = treeNode.getChildren();
         for (TreeNode child : children) {
             FolderHolder.TreeItem value = (FolderHolder.TreeItem) child.getValue();
             File file = value.getFile();
             if (file.getName().equals("src")) {
-                mTreeView.expandNode(child);
+                mTreeView.expandNode(child, true);
                 return;
             }
         }

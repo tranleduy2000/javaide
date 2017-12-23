@@ -86,8 +86,8 @@ public class MessagePresenter implements MessageContract.Presenter {
     public void pause(JavaApplication application) {
         Log.d(TAG, "pause() called with: application = [" + application + "]");
 
-        application.removeOut(out);
-        application.removeErr(err);
+        application.removeOutStream(out);
+        application.removeErrStream(err);
     }
 
 }

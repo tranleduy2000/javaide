@@ -40,11 +40,11 @@ public class JavaApplication extends MultiDexApplication {
         systemErr.add(err);
     }
 
-    public void removeOut(PrintStream out) {
+    public void removeOutStream(PrintStream out) {
         systemOut.remove(out);
     }
 
-    public void removeErr(PrintStream err) {
+    public void removeErrStream(PrintStream err) {
         systemErr.remove(err);
     }
 

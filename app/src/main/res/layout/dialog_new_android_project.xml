@@ -35,9 +35,9 @@
             <com.duy.ide.view.LatinEditText
                 android:id="@+id/edit_package_name"
                 android:layout_width="match_parent"
-                android:text="com.example.myapplication"
                 android:layout_height="wrap_content"
-                android:hint="@string/java_package_name_com_example" />
+                android:hint="@string/java_package_name_com_example"
+                android:text="com.example.myapplication" />
         </android.support.design.widget.TextInputLayout>
 
 
@@ -71,6 +71,13 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="Launcher activity" />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/backwards_compatibility"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Backwards Compatibility (Not recommend, If you want to using AppCompat, check it)" />
 
         <LinearLayout
             android:layout_width="match_parent"

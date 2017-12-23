@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import com.duy.project.file.android.AndroidProjectFolder;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +39,8 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
     private Button btnCreate, btnCancel;
     @Nullable
     private DialogNewJavaProject.OnCreateProjectListener listener;
-    private EditText activityName, layoutName;
+    private EditText mActivityName, layoutName;
+    private CheckBox mAppCompat;
 
     public static DialogNewAndroidProject newInstance() {
 
@@ -82,8 +85,9 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
         btnCancel = view.findViewById(R.id.btn_cancel);
         btnCreate.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
-        activityName = view.findViewById(R.id.edit_activity_name);
+        mActivityName = view.findViewById(R.id.edit_activity_name);
         layoutName = view.findViewById(R.id.edit_layout_name);
+        mAppCompat = view.findViewById(R.id.backwards_compatibility);
     }
 
     @Override
@@ -103,13 +107,13 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
             ///create new android project
             String packageName = editPackage.getText().toString();
-            String activityName = this.activityName.getText().toString();
+            String activityName = mActivityName.getText().toString();
             String activityClass = String.format("%s.%s", packageName, activityName);
             String mainLayoutName = layoutName.getText().toString();
             String appName = editAppName.getText().toString();
             String classpath = FileManager.getClasspathFile(getContext()).getPath();
             String projectName = appName.replaceAll("\\s+", "");
-
+            boolean useAppCompat = mAppCompat.isChecked();
             try {
                 AndroidProjectFolder projectFile = new AndroidProjectFolder(
                         new File(FileManager.EXTERNAL_DIR), activityClass, packageName, projectName);
@@ -118,11 +122,12 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
                 AssetManager assets = getContext().getAssets();
 
-                copyAsset(projectFile, assets);
+                copyResources(projectFile, useAppCompat, assets);
                 createStringXml(projectFile, appName);
                 copyKeyStore(projectFile, assets);
                 createManifest(projectFile, activityClass, packageName, assets);
-                createMainActivity(projectFile, activityClass, packageName, activityName, appName, assets);
+                createMainActivity(projectFile, activityClass, packageName, activityName,
+                        appName, useAppCompat, assets);
                 createMainXml(projectFile, mainLayoutName, assets);
                 copyLibrary(projectFile, assets);
                 if (listener != null) listener.onProjectCreated(projectFile);
@@ -135,9 +140,13 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
         }
     }
 
-    private void copyAsset(AndroidProjectFolder projectFile, AssetManager assets) {
+    private void copyResources(AndroidProjectFolder projectFile, boolean useAppCompat, AssetManager assets) throws FileNotFoundException {
         String resourcePath = projectFile.getDirRes().getPath();
         AssetUtil.copyAssetFolder(assets, "templates/src/main/res", resourcePath);
+        File file = new File(resourcePath, "values/styles.xml");
+        String content = FileManager.streamToString(new FileInputStream(file)).toString();
+        content = content.replace("{APP_STYLE}", useAppCompat ? "Theme.AppCompat.Light" : "@android:style/Theme.Holo.Light");
+        FileManager.saveFile(file, content);
     }
 
     private void copyLibrary(AndroidProjectFolder projectFile, AssetManager assets) {
@@ -179,10 +188,11 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
     private void createMainActivity(AndroidProjectFolder projectFile, String activityClass,
                                     String packageName, String activityName, String appName,
-                                    AssetManager assets) throws IOException {
+                                    boolean useAppCompat, AssetManager assets) throws IOException {
         File activityFile = FileManager.createFileIfNeed(new File(projectFile.dirJava,
                 activityClass.replace(".", File.separator) + ".java"));
-        InputStream activityTemplate = assets.open("templates/src/main/MainActivity.java");
+        String name = useAppCompat ? "templates/src/main/MainActivityAppCompat.java" : "templates/src/main/MainActivity.java";
+        InputStream activityTemplate = assets.open(name);
         String contentClass = FileManager.streamToString(activityTemplate).toString();
         contentClass = contentClass.replace("{PACKAGE}", packageName);
         contentClass = contentClass.replace("{APP_NAME}", appName);
@@ -226,13 +236,13 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
         }
 
         //check activity name
-        String activityName = this.activityName.getText().toString();
+        String activityName = this.mActivityName.getText().toString();
         if (activityName.isEmpty()) {
-            this.activityName.setError(getString(R.string.enter_name));
+            this.mActivityName.setError(getString(R.string.enter_name));
             return false;
         }
         if (!Patterns.RE_IDENTIFIER.matcher(activityName).find()) {
-            this.activityName.setText("Invalid name");
+            this.mActivityName.setText("Invalid name");
             return false;
         }
 

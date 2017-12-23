@@ -126,8 +126,8 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
 
         mConsoleEditText.stop();
         JavaApplication application = (JavaApplication) getApplication();
-        application.removeErr(mConsoleEditText.getErrorStream());
-        application.removeOut(mConsoleEditText.getOutputStream());
+        application.removeErrStream(mConsoleEditText.getErrorStream());
+        application.removeOutStream(mConsoleEditText.getOutputStream());
     }
 
     @Override

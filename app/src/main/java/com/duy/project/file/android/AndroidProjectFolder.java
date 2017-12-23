@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Duy on 05-Aug-17.
@@ -31,6 +32,7 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     private File classR;
     private File dirOutApk;
     private ManifestData.Activity launcherActivity;
+    private ArrayList<String> modules = new ArrayList<>();
 
     public AndroidProjectFolder(File dirRoot,
                                 @Nullable String mainClassName,

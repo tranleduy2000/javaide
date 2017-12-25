@@ -24,11 +24,11 @@ public class JavaProjectFolder implements Serializable, Cloneable {
     private static final String TAG = "ProjectFile";
 
     public File dirLibs;
-    public File dirSrcMain;
+    protected File dirSrcMain;
     public File dirJava;
     public File dirBuildClasses;
-    public File dirGenerated;
-    public File dirGeneratedSource;
+    protected File dirGenerated;
+    protected File dirGeneratedSource;
 
     /* Project */
     protected File dirRoot;
@@ -45,10 +45,10 @@ public class JavaProjectFolder implements Serializable, Cloneable {
     protected String packageName;
 
     /*Main class*/
-    private ClassFile mainClass;
+    protected ClassFile mainClass;
     @Nullable
-    private String projectName;
-    private File jarArchive;
+    protected String projectName;
+    protected File jarArchive;
 
     public JavaProjectFolder(File root, @Nullable String mainClassName, @Nullable String packageName, String projectName) {
         this.mainClass = new ClassFile(mainClassName);

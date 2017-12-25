@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Created by Duy on 05-Aug-17.
  */
 public class AndroidProjectFolder extends JavaProjectFolder {
-    public File xmlManifest;
+    private File xmlManifest;
     private File resourceFile;
     /* Output */
     private File apkUnsigned;

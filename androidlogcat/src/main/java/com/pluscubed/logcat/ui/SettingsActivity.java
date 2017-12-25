@@ -97,7 +97,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.settings);
+            addPreferencesFromResource(R.xml.logcat_settings);
 
             setUpPreferences();
         }

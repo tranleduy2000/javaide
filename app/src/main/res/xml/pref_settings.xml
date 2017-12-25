@@ -137,10 +137,10 @@
             android:title="@string/enable_ime_keyboard" />
 
         <!--<SwitchPreference-->
-            <!--android:defaultValue="false"-->
-            <!--android:key="@string/key_back_undo"-->
-            <!--android:visibility="gone"-->
-            <!--android:title="@string/back_to_undo" />-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_back_undo"-->
+        <!--android:visibility="gone"-->
+        <!--android:title="@string/back_to_undo" />-->
 
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/notifications">
@@ -157,11 +157,11 @@
 
     <PreferenceCategory android:title="@string/user_interface">
         <!--<ListPreference-->
-            <!--android:defaultValue="@string/lang_default"-->
-            <!--android:entries="@array/language_entry"-->
-            <!--android:entryValues="@array/language_code"-->
-            <!--android:key="@string/key_pref_lang"-->
-            <!--android:title="@string/language" />-->
+        <!--android:defaultValue="@string/lang_default"-->
+        <!--android:entries="@array/language_entry"-->
+        <!--android:entryValues="@array/language_code"-->
+        <!--android:key="@string/key_pref_lang"-->
+        <!--android:title="@string/language" />-->
 
         <EditTextPreference
             android:contentDescription="@string/max_page_desc"
@@ -178,14 +178,13 @@
 
     </PreferenceCategory>
 
-    <!--<PreferenceCategory android:title="System">-->
-        <!--<EditTextPreference-->
-            <!--android:defaultValue="@string/default_classpath"-->
-            <!--android:key="@string/key_classpath"-->
-            <!--android:visibility="gone"-->
-            <!--android:summary="@string/classpath_desc"-->
-            <!--android:title="Classpath">-->
+    <PreferenceCategory android:title="System">
+        <EditTextPreference
+            android:defaultValue="@string/default_classpath"
+            android:key="@string/key_classpath"
+            android:summary="@string/classpath_desc"
+            android:title="Classpath (android.jar)">
 
-        <!--</EditTextPreference>-->
-    <!--</PreferenceCategory>-->
+        </EditTextPreference>
+    </PreferenceCategory>
 </PreferenceScreen>

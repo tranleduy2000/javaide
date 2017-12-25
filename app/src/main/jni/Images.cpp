@@ -17,9 +17,8 @@
 #define NOISY(x) //x
 
 static void
-png_write_aapt_file(png_structp png_ptr, png_bytep data, png_size_t length)
-{
-    AaptFile* aaptfile = (AaptFile*) png_get_io_ptr(png_ptr);
+png_write_aapt_file(png_structp png_ptr, png_bytep data, png_size_t length) {
+    AaptFile *aaptfile = (AaptFile *) png_get_io_ptr(png_ptr);
     status_t err = aaptfile->writeData(data, length);
     if (err != NO_ERROR) {
         png_error(png_ptr, "Write Error");
@@ -28,22 +27,20 @@ png_write_aapt_file(png_structp png_ptr, png_bytep data, png_size_t length)
 
 
 static void
-png_flush_aapt_file(png_structp png_ptr)
-{
+png_flush_aapt_file(png_structp png_ptr) {
 }
 
 // This holds an image as 8bpp RGBA.
-struct image_info
-{
+struct image_info {
     image_info() : rows(NULL), is9Patch(false),
-        xDivs(NULL), yDivs(NULL), colors(NULL), allocRows(NULL) { }
+                   xDivs(NULL), yDivs(NULL), colors(NULL), allocRows(NULL) {}
 
     ~image_info() {
         if (rows && rows != allocRows) {
             free(rows);
         }
         if (allocRows) {
-            for (int i=0; i<(int)allocHeight; i++) {
+            for (int i = 0; i < (int) allocHeight; i++) {
                 free(allocRows[i]);
             }
             free(allocRows);
@@ -53,9 +50,9 @@ struct image_info
         free(colors);
     }
 
-    void* serialize9patch() {
-        void* serialized = Res_png_9patch::serialize(info9Patch, xDivs, yDivs, colors);
-        reinterpret_cast<Res_png_9patch*>(serialized)->deviceToFile();
+    void *serialize9patch() {
+        void *serialized = Res_png_9patch::serialize(info9Patch, xDivs, yDivs, colors);
+        reinterpret_cast<Res_png_9patch *>(serialized)->deviceToFile();
         return serialized;
     }
 
@@ -66,9 +63,9 @@ struct image_info
     // 9-patch info.
     bool is9Patch;
     Res_png_9patch info9Patch;
-    int32_t* xDivs;
-    int32_t* yDivs;
-    uint32_t* colors;
+    int32_t *xDivs;
+    int32_t *yDivs;
+    uint32_t *colors;
 
     // Layout padding, if relevant
     bool haveLayoutBounds;
@@ -89,27 +86,25 @@ struct image_info
     png_bytepp allocRows;
 };
 
-static void log_warning(png_structp png_ptr, png_const_charp warning_message)
-{
-    const char* imageName = (const char*) png_get_error_ptr(png_ptr);
+static void log_warning(png_structp png_ptr, png_const_charp warning_message) {
+    const char *imageName = (const char *) png_get_error_ptr(png_ptr);
     fprintf(stderr, "%s: libpng warning: %s\n", imageName, warning_message);
 }
 
-static void read_png(const char* imageName,
+static void read_png(const char *imageName,
                      png_structp read_ptr, png_infop read_info,
-                     image_info* outImageInfo)
-{
+                     image_info *outImageInfo) {
     int color_type;
     int bit_depth, interlace_type, compression_type;
     int i;
 
-    png_set_error_fn(read_ptr, const_cast<char*>(imageName),
-            NULL /* use default errorfn */, log_warning);
+    png_set_error_fn(read_ptr, const_cast<char *>(imageName),
+                     NULL /* use default errorfn */, log_warning);
     png_read_info(read_ptr, read_info);
 
     png_get_IHDR(read_ptr, read_info, &outImageInfo->width,
-       &outImageInfo->height, &bit_depth, &color_type,
-       &interlace_type, &compression_type, NULL);
+                 &outImageInfo->height, &bit_depth, &color_type,
+                 &interlace_type, &compression_type, NULL);
 
     //printf("Image %s:\n", imageName);
     //printf("color_type=%d, bit_depth=%d, interlace_type=%d, compression_type=%d\n",
@@ -129,7 +124,7 @@ static void read_png(const char* imageName,
     if (bit_depth == 16)
         png_set_strip_16(read_ptr);
 
-    if ((color_type&PNG_COLOR_MASK_ALPHA) == 0)
+    if ((color_type & PNG_COLOR_MASK_ALPHA) == 0)
         png_set_add_alpha(read_ptr, 0xFF, PNG_FILLER_AFTER);
 
     if (color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
@@ -139,17 +134,16 @@ static void read_png(const char* imageName,
 
     png_read_update_info(read_ptr, read_info);
 
-    outImageInfo->rows = (png_bytepp)malloc(
-        outImageInfo->height * sizeof(png_bytep));
+    outImageInfo->rows = (png_bytepp) malloc(
+            outImageInfo->height * sizeof(png_bytep));
     outImageInfo->allocHeight = outImageInfo->height;
     outImageInfo->allocRows = outImageInfo->rows;
 
     png_set_rows(read_ptr, read_info, outImageInfo->rows);
 
-    for (i = 0; i < (int)outImageInfo->height; i++)
-    {
+    for (i = 0; i < (int) outImageInfo->height; i++) {
         outImageInfo->rows[i] = (png_bytep)
-            malloc(png_get_rowbytes(read_ptr, read_info));
+                malloc(png_get_rowbytes(read_ptr, read_info));
     }
 
     png_read_image(read_ptr, outImageInfo->rows);
@@ -158,13 +152,13 @@ static void read_png(const char* imageName,
 
     NOISY(printf("Image %s: w=%d, h=%d, d=%d, colors=%d, inter=%d, comp=%d\n",
                  imageName,
-                 (int)outImageInfo->width, (int)outImageInfo->height,
+                 (int) outImageInfo->width, (int) outImageInfo->height,
                  bit_depth, color_type,
                  interlace_type, compression_type));
 
     png_get_IHDR(read_ptr, read_info, &outImageInfo->width,
-       &outImageInfo->height, &bit_depth, &color_type,
-       &interlace_type, &compression_type, NULL);
+                 &outImageInfo->height, &bit_depth, &color_type,
+                 &interlace_type, &compression_type, NULL);
 }
 
 #define COLOR_TRANSPARENT 0
@@ -179,8 +173,7 @@ enum {
     TICK_TYPE_BOTH
 };
 
-static int tick_type(png_bytep p, bool transparent, const char** outError)
-{
+static int tick_type(png_bytep p, bool transparent, const char **outError) {
     png_uint_32 color = p[0] | (p[1] << 8) | (p[2] << 16) | (p[3] << 24);
 
     if (transparent) {
@@ -233,20 +226,19 @@ enum {
 
 static status_t get_horizontal_ticks(
         png_bytep row, int width, bool transparent, bool required,
-        int32_t* outLeft, int32_t* outRight, const char** outError,
-        uint8_t* outDivs, bool multipleAllowed)
-{
+        int32_t *outLeft, int32_t *outRight, const char **outError,
+        uint8_t *outDivs, bool multipleAllowed) {
     int i;
     *outLeft = *outRight = -1;
     int state = TICK_START;
     bool found = false;
 
-    for (i=1; i<width-1; i++) {
-        if (TICK_TYPE_TICK == tick_type(row+i*4, transparent, outError)) {
+    for (i = 1; i < width - 1; i++) {
+        if (TICK_TYPE_TICK == tick_type(row + i * 4, transparent, outError)) {
             if (state == TICK_START ||
                 (state == TICK_OUTSIDE_1 && multipleAllowed)) {
-                *outLeft = i-1;
-                *outRight = width-2;
+                *outLeft = i - 1;
+                *outRight = width - 2;
                 found = true;
                 if (outDivs != NULL) {
                     *outDivs += 2;
@@ -260,7 +252,7 @@ static status_t get_horizontal_ticks(
         } else if (*outError == NULL) {
             if (state == TICK_INSIDE_1) {
                 // We're done with this div.  Move on to the next.
-                *outRight = i-1;
+                *outRight = i - 1;
                 outRight += 2;
                 outLeft += 2;
                 state = TICK_OUTSIDE_1;
@@ -282,20 +274,19 @@ static status_t get_horizontal_ticks(
 
 static status_t get_vertical_ticks(
         png_bytepp rows, int offset, int height, bool transparent, bool required,
-        int32_t* outTop, int32_t* outBottom, const char** outError,
-        uint8_t* outDivs, bool multipleAllowed)
-{
+        int32_t *outTop, int32_t *outBottom, const char **outError,
+        uint8_t *outDivs, bool multipleAllowed) {
     int i;
     *outTop = *outBottom = -1;
     int state = TICK_START;
     bool found = false;
 
-    for (i=1; i<height-1; i++) {
-        if (TICK_TYPE_TICK == tick_type(rows[i]+offset, transparent, outError)) {
+    for (i = 1; i < height - 1; i++) {
+        if (TICK_TYPE_TICK == tick_type(rows[i] + offset, transparent, outError)) {
             if (state == TICK_START ||
                 (state == TICK_OUTSIDE_1 && multipleAllowed)) {
-                *outTop = i-1;
-                *outBottom = height-2;
+                *outTop = i - 1;
+                *outBottom = height - 2;
                 found = true;
                 if (outDivs != NULL) {
                     *outDivs += 2;
@@ -309,7 +300,7 @@ static status_t get_vertical_ticks(
         } else if (*outError == NULL) {
             if (state == TICK_INSIDE_1) {
                 // We're done with this div.  Move on to the next.
-                *outBottom = i-1;
+                *outBottom = i - 1;
                 outTop += 2;
                 outBottom += 2;
                 state = TICK_OUTSIDE_1;
@@ -331,8 +322,7 @@ static status_t get_vertical_ticks(
 
 static status_t get_horizontal_layout_bounds_ticks(
         png_bytep row, int width, bool transparent, bool required,
-        int32_t* outLeft, int32_t* outRight, const char** outError)
-{
+        int32_t *outLeft, int32_t *outRight, const char **outError) {
     int i;
     *outLeft = *outRight = 0;
 
@@ -357,7 +347,7 @@ static status_t get_horizontal_layout_bounds_ticks(
         while (i > 1) {
             (*outRight)++;
             i--;
-            int tick = tick_type(row+i*4, transparent, outError);
+            int tick = tick_type(row + i * 4, transparent, outError);
             if (tick != TICK_TYPE_LAYOUT_BOUNDS) {
                 break;
             }
@@ -369,8 +359,7 @@ static status_t get_horizontal_layout_bounds_ticks(
 
 static status_t get_vertical_layout_bounds_ticks(
         png_bytepp rows, int offset, int height, bool transparent, bool required,
-        int32_t* outTop, int32_t* outBottom, const char** outError)
-{
+        int32_t *outTop, int32_t *outBottom, const char **outError) {
     int i;
     *outTop = *outBottom = 0;
 
@@ -405,16 +394,15 @@ static status_t get_vertical_layout_bounds_ticks(
     return NO_ERROR;
 }
 
-static void find_max_opacity(png_byte** rows,
+static void find_max_opacity(png_byte **rows,
                              int startX, int startY, int endX, int endY, int dX, int dY,
-                             int* out_inset)
-{
+                             int *out_inset) {
     bool opaque_within_inset = true;
     uint8_t max_opacity = 0;
     int inset = 0;
     *out_inset = 0;
     for (int x = startX, y = startY; x != endX && y != endY; x += dX, y += dY, inset++) {
-        png_byte* color = rows[y] + x * 4;
+        png_byte *color = rows[y] + x * 4;
         uint8_t opacity = color[3];
         if (opacity > max_opacity) {
             max_opacity = opacity;
@@ -424,8 +412,7 @@ static void find_max_opacity(png_byte** rows,
     }
 }
 
-static uint8_t max_alpha_over_row(png_byte* row, int startX, int endX)
-{
+static uint8_t max_alpha_over_row(png_byte *row, int startX, int endX) {
     uint8_t max_alpha = 0;
     for (int x = startX; x < endX; x++) {
         uint8_t alpha = (row + x * 4)[3];
@@ -434,8 +421,7 @@ static uint8_t max_alpha_over_row(png_byte* row, int startX, int endX)
     return max_alpha;
 }
 
-static uint8_t max_alpha_over_col(png_byte** rows, int offsetX, int startY, int endY)
-{
+static uint8_t max_alpha_over_col(png_byte **rows, int offsetX, int startY, int endY) {
     uint8_t max_alpha = 0;
     for (int y = startY; y < endY; y++) {
         uint8_t alpha = (rows[y] + offsetX * 4)[3];
@@ -444,8 +430,7 @@ static uint8_t max_alpha_over_col(png_byte** rows, int offsetX, int startY, int 
     return max_alpha;
 }
 
-static void get_outline(image_info* image)
-{
+static void get_outline(image_info *image) {
     int midX = image->width / 2;
     int midY = image->height / 2;
     int endX = image->width - 2;
@@ -479,11 +464,11 @@ static void get_outline(image_info* image)
     // assuming the image is a round rect, compute the radius by marching
     // diagonally from the top left corner towards the center
     image->outlineAlpha = max(max_alpha_over_row(image->rows[innerMidY], innerStartX, innerEndX),
-            max_alpha_over_col(image->rows, innerMidX, innerStartY, innerStartY));
+                              max_alpha_over_col(image->rows, innerMidX, innerStartY, innerStartY));
 
     int diagonalInset = 0;
     find_max_opacity(image->rows, innerStartX, innerStartY, innerMidX, innerMidY, 1, 1,
-            &diagonalInset);
+                     &diagonalInset);
 
     /* Determine source radius based upon inset:
      *     sqrt(r^2 + r^2) = sqrt(i^2 + i^2) + r
@@ -494,19 +479,18 @@ static void get_outline(image_info* image)
     image->outlineRadius = 3.4142f * diagonalInset;
 
     NOISY(printf("outline insets %d %d %d %d, rad %f, alpha %x\n",
-            image->outlineInsetsLeft,
-            image->outlineInsetsTop,
-            image->outlineInsetsRight,
-            image->outlineInsetsBottom,
-            image->outlineRadius,
-            image->outlineAlpha));
+                 image->outlineInsetsLeft,
+                 image->outlineInsetsTop,
+                 image->outlineInsetsRight,
+                 image->outlineInsetsBottom,
+                 image->outlineRadius,
+                 image->outlineAlpha));
 }
 
 
 static uint32_t get_color(
-    png_bytepp rows, int left, int top, int right, int bottom)
-{
-    png_bytep color = rows[top] + left*4;
+        png_bytepp rows, int left, int top, int right, int bottom) {
+    png_bytep color = rows[top] + left * 4;
 
     if (left > right || top > bottom) {
         return Res_png_9patch::TRANSPARENT_COLOR;
@@ -514,7 +498,7 @@ static uint32_t get_color(
 
     while (top <= bottom) {
         for (int i = left; i <= right; i++) {
-            png_bytep p = rows[top]+i*4;
+            png_bytep p = rows[top] + i * 4;
             if (color[3] == 0) {
                 if (p[3] != 0) {
                     return Res_png_9patch::NO_COLOR;
@@ -530,37 +514,35 @@ static uint32_t get_color(
     if (color[3] == 0) {
         return Res_png_9patch::TRANSPARENT_COLOR;
     }
-    return (color[3]<<24) | (color[0]<<16) | (color[1]<<8) | color[2];
+    return (color[3] << 24) | (color[0] << 16) | (color[1] << 8) | color[2];
 }
 
 static void select_patch(
-    int which, int front, int back, int size, int* start, int* end)
-{
+        int which, int front, int back, int size, int *start, int *end) {
     switch (which) {
-    case 0:
-        *start = 0;
-        *end = front-1;
-        break;
-    case 1:
-        *start = front;
-        *end = back-1;
-        break;
-    case 2:
-        *start = back;
-        *end = size-1;
-        break;
+        case 0:
+            *start = 0;
+            *end = front - 1;
+            break;
+        case 1:
+            *start = front;
+            *end = back - 1;
+            break;
+        case 2:
+            *start = back;
+            *end = size - 1;
+            break;
     }
 }
 
-static uint32_t get_color(image_info* image, int hpatch, int vpatch)
-{
+static uint32_t get_color(image_info *image, int hpatch, int vpatch) {
     int left, right, top, bottom;
     select_patch(
-        hpatch, image->xDivs[0], image->xDivs[1],
-        image->width, &left, &right);
+            hpatch, image->xDivs[0], image->xDivs[1],
+            image->width, &left, &right);
     select_patch(
-        vpatch, image->yDivs[0], image->yDivs[1],
-        image->height, &top, &bottom);
+            vpatch, image->yDivs[0], image->yDivs[1],
+            image->height, &top, &bottom);
     //printf("Selecting h=%d v=%d: (%d,%d)-(%d,%d)\n",
     //       hpatch, vpatch, left, top, right, bottom);
     const uint32_t c = get_color(image->rows, left, top, right, bottom);
@@ -568,8 +550,7 @@ static uint32_t get_color(image_info* image, int hpatch, int vpatch)
     return c;
 }
 
-static status_t do_9patch(const char* imageName, image_info* image)
-{
+static status_t do_9patch(const char *imageName, image_info *image) {
     image->is9Patch = true;
 
     int W = image->width;
@@ -578,8 +559,8 @@ static status_t do_9patch(const char* imageName, image_info* image)
 
     int maxSizeXDivs = W * sizeof(int32_t);
     int maxSizeYDivs = H * sizeof(int32_t);
-    int32_t* xDivs = image->xDivs = (int32_t*) malloc(maxSizeXDivs);
-    int32_t* yDivs = image->yDivs = (int32_t*) malloc(maxSizeYDivs);
+    int32_t *xDivs = image->xDivs = (int32_t *) malloc(maxSizeXDivs);
+    int32_t *yDivs = image->yDivs = (int32_t *) malloc(maxSizeYDivs);
     uint8_t numXDivs = 0;
     uint8_t numYDivs = 0;
 
@@ -593,18 +574,18 @@ static status_t do_9patch(const char* imageName, image_info* image)
     memset(xDivs, -1, maxSizeXDivs);
     memset(yDivs, -1, maxSizeYDivs);
     image->info9Patch.paddingLeft = image->info9Patch.paddingRight =
-        image->info9Patch.paddingTop = image->info9Patch.paddingBottom = -1;
+    image->info9Patch.paddingTop = image->info9Patch.paddingBottom = -1;
 
     image->layoutBoundsLeft = image->layoutBoundsRight =
-        image->layoutBoundsTop = image->layoutBoundsBottom = 0;
+    image->layoutBoundsTop = image->layoutBoundsBottom = 0;
 
     png_bytep p = image->rows[0];
     bool transparent = p[3] == 0;
     bool hasColor = false;
 
-    const char* errorMsg = NULL;
+    const char *errorMsg = NULL;
     int errorPixel = -1;
-    const char* errorEdge = NULL;
+    const char *errorEdge = NULL;
 
     int colorIndex = 0;
 
@@ -642,7 +623,8 @@ static status_t do_9patch(const char* imageName, image_info* image)
     image->info9Patch.numYDivs = numYDivs;
 
     // Find left and right of padding area...
-    if (get_horizontal_ticks(image->rows[H-1], W, transparent, false, &image->info9Patch.paddingLeft,
+    if (get_horizontal_ticks(image->rows[H - 1], W, transparent, false,
+                             &image->info9Patch.paddingLeft,
                              &image->info9Patch.paddingRight, &errorMsg, NULL, false) != NO_ERROR) {
         errorPixel = image->info9Patch.paddingLeft;
         errorEdge = "bottom";
@@ -650,7 +632,8 @@ static status_t do_9patch(const char* imageName, image_info* image)
     }
 
     // Find top and bottom of padding area...
-    if (get_vertical_ticks(image->rows, (W-1)*4, H, transparent, false, &image->info9Patch.paddingTop,
+    if (get_vertical_ticks(image->rows, (W - 1) * 4, H, transparent, false,
+                           &image->info9Patch.paddingTop,
                            &image->info9Patch.paddingBottom, &errorMsg, NULL, false) != NO_ERROR) {
         errorPixel = image->info9Patch.paddingTop;
         errorEdge = "right";
@@ -658,22 +641,22 @@ static status_t do_9patch(const char* imageName, image_info* image)
     }
 
     // Find left and right of layout padding...
-    get_horizontal_layout_bounds_ticks(image->rows[H-1], W, transparent, false,
-                                        &image->layoutBoundsLeft,
-                                        &image->layoutBoundsRight, &errorMsg);
+    get_horizontal_layout_bounds_ticks(image->rows[H - 1], W, transparent, false,
+                                       &image->layoutBoundsLeft,
+                                       &image->layoutBoundsRight, &errorMsg);
 
-    get_vertical_layout_bounds_ticks(image->rows, (W-1)*4, H, transparent, false,
-                                        &image->layoutBoundsTop,
-                                        &image->layoutBoundsBottom, &errorMsg);
+    get_vertical_layout_bounds_ticks(image->rows, (W - 1) * 4, H, transparent, false,
+                                     &image->layoutBoundsTop,
+                                     &image->layoutBoundsBottom, &errorMsg);
 
     image->haveLayoutBounds = image->layoutBoundsLeft != 0
-                               || image->layoutBoundsRight != 0
-                               || image->layoutBoundsTop != 0
-                               || image->layoutBoundsBottom != 0;
+                              || image->layoutBoundsRight != 0
+                              || image->layoutBoundsTop != 0
+                              || image->layoutBoundsBottom != 0;
 
     if (image->haveLayoutBounds) {
         NOISY(printf("layoutBounds=%d %d %d %d\n", image->layoutBoundsLeft, image->layoutBoundsTop,
-                image->layoutBoundsRight, image->layoutBoundsBottom));
+                     image->layoutBoundsRight, image->layoutBoundsBottom));
     }
 
     // use opacity of pixels to estimate the round rect outline
@@ -703,10 +686,10 @@ static status_t do_9patch(const char* imageName, image_info* image)
                  image->info9Patch.paddingTop, image->info9Patch.paddingBottom));
 
     // Remove frame from image.
-    image->rows = (png_bytepp)malloc((H-2) * sizeof(png_bytep));
-    for (i=0; i<(H-2); i++) {
-        image->rows[i] = image->allocRows[i+1];
-        memmove(image->rows[i], image->rows[i]+4, (W-2)*4);
+    image->rows = (png_bytepp) malloc((H - 2) * sizeof(png_bytep));
+    for (i = 0; i < (H - 2); i++) {
+        image->rows[i] = image->allocRows[i + 1];
+        memmove(image->rows[i], image->rows[i] + 4, (W - 2) * 4);
     }
     image->width -= 2;
     W = image->width;
@@ -738,7 +721,7 @@ static status_t do_9patch(const char* imageName, image_info* image)
 
     numColors = numRows * numCols;
     image->info9Patch.numColors = numColors;
-    image->colors = (uint32_t*)malloc(numColors * sizeof(uint32_t));
+    image->colors = (uint32_t *) malloc(numColors * sizeof(uint32_t));
 
     // Fill in color information for each patch.
 
@@ -762,8 +745,8 @@ static status_t do_9patch(const char* imageName, image_info* image)
     // The initial yDiv and whether the first row is considered stretchable or
     // not depends on whether yDiv[0] was zero or not.
     for (j = (yDivs[0] == 0 ? 1 : 0);
-          j <= numYDivs && top < H;
-          j++) {
+         j <= numYDivs && top < H;
+         j++) {
         if (j == numYDivs) {
             bottom = H;
         } else {
@@ -773,8 +756,8 @@ static status_t do_9patch(const char* imageName, image_info* image)
         // The initial xDiv and whether the first column is considered
         // stretchable or not depends on whether xDiv[0] was zero or not.
         for (i = xDivs[0] == 0 ? 1 : 0;
-              i <= numXDivs && left < W;
-              i++) {
+             i <= numXDivs && left < W;
+             i++) {
             if (i == numXDivs) {
                 right = W;
             } else {
@@ -790,25 +773,25 @@ static status_t do_9patch(const char* imageName, image_info* image)
 
     assert(colorIndex == numColors);
 
-    for (i=0; i<numColors; i++) {
+    for (i = 0; i < numColors; i++) {
         if (hasColor) {
             if (i == 0) printf("Colors in %s:\n ", imageName);
             printf(" #%08x", image->colors[i]);
             if (i == numColors - 1) printf("\n");
         }
     }
-getout:
+    getout:
     if (errorMsg) {
         fprintf(stderr,
-            "ERROR: 9-patch image %s malformed.\n"
-            "       %s.\n", imageName, errorMsg);
+                "ERROR: 9-patch image %s malformed.\n"
+                        "       %s.\n", imageName, errorMsg);
         if (errorEdge != NULL) {
             if (errorPixel >= 0) {
                 fprintf(stderr,
-                    "       Found at pixel #%d along %s edge.\n", errorPixel, errorEdge);
+                        "       Found at pixel #%d along %s edge.\n", errorPixel, errorEdge);
             } else {
                 fprintf(stderr,
-                    "       Found along %s edge.\n", errorEdge);
+                        "       Found along %s edge.\n", errorEdge);
             }
         }
         return UNKNOWN_ERROR;
@@ -816,12 +799,11 @@ getout:
     return NO_ERROR;
 }
 
-static void checkNinePatchSerialization(Res_png_9patch* inPatch,  void* data)
-{
+static void checkNinePatchSerialization(Res_png_9patch *inPatch, void *data) {
     size_t patchSize = inPatch->serializedSize();
-    void* newData = malloc(patchSize);
+    void *newData = malloc(patchSize);
     memcpy(newData, data, patchSize);
-    Res_png_9patch* outPatch = inPatch->deserialize(newData);
+    Res_png_9patch *outPatch = inPatch->deserialize(newData);
     // deserialization is done in place, so outPatch == newData
     assert(outPatch == newData);
     assert(outPatch->numXDivs == inPatch->numXDivs);
@@ -831,20 +813,19 @@ static void checkNinePatchSerialization(Res_png_9patch* inPatch,  void* data)
     assert(outPatch->paddingTop == inPatch->paddingTop);
     assert(outPatch->paddingBottom == inPatch->paddingBottom);
     //todo uncomment and fix
-   /* for (int i = 0; i < outPatch->numXDivs; i++) {
-        assert(outPatch->xDivs[i] == inPatch->xDivs[i]);
+    for (int i = 0; i < outPatch->numXDivs; i++) {
+        assert(outPatch->getXDivs()[i] == inPatch->getXDivs()[i]);
     }
     for (int i = 0; i < outPatch->numYDivs; i++) {
-        assert(outPatch->yDivs[i] == inPatch->yDivs[i]);
+        assert(outPatch->getYDivs()[i] == inPatch->getYDivs()[i]);
     }
     for (int i = 0; i < outPatch->numColors; i++) {
-        assert(outPatch->colors[i] == inPatch->colors[i]);
-    }*/
+        assert(outPatch->getColors()[i] == inPatch->getColors()[i]);
+    }
     free(newData);
 }
 
-static void dump_image(int w, int h, png_bytepp rows, int color_type)
-{
+static void dump_image(int w, int h, png_bytepp rows, int color_type) {
     int i, j, rr, gg, bb, aa;
 
     int bpp;
@@ -872,18 +853,18 @@ static void dump_image(int w, int h, png_bytepp rows, int color_type)
                 printf("Row %d:", j);
             }
             switch (bpp) {
-            case 1:
-                printf(" (%d)", rr);
-                break;
-            case 2:
-                printf(" (%d %d", rr, gg);
-                break;
-            case 3:
-                printf(" (%d %d %d)", rr, gg, bb);
-                break;
-            case 4:
-                printf(" (%d %d %d %d)", rr, gg, bb, aa);
-                break;
+                case 1:
+                    printf(" (%d)", rr);
+                    break;
+                case 2:
+                    printf(" (%d %d", rr, gg);
+                    break;
+                case 3:
+                    printf(" (%d %d %d)", rr, gg, bb);
+                    break;
+                case 4:
+                    printf(" (%d %d %d %d)", rr, gg, bb, aa);
+                    break;
             }
             if (i == (w - 1)) {
                 NOISY(printf("\n"));
@@ -892,14 +873,13 @@ static void dump_image(int w, int h, png_bytepp rows, int color_type)
     }
 }
 
-#define MAX(a,b) ((a)>(b)?(a):(b))
+#define MAX(a, b) ((a)>(b)?(a):(b))
 #define ABS(a)   ((a)<0?-(a):(a))
 
 static void analyze_image(const char *imageName, image_info &imageInfo, int grayscaleTolerance,
                           png_colorp rgbPalette, png_bytep alphaPalette,
                           int *paletteEntries, bool *hasTransparency, int *colorType,
-                          png_bytepp outRows)
-{
+                          png_bytepp outRows) {
     int w = imageInfo.width;
     int h = imageInfo.height;
     int i, j, rr, gg, bb, aa, idx;
@@ -940,8 +920,8 @@ static void analyze_image(const char *imageName, image_info &imageInfo, int gray
             // Check if image is really grayscale
             if (isGrayscale) {
                 if (rr != gg || rr != bb) {
-                     NOISY(printf("Found a non-gray pixel at %d, %d = (%d %d %d %d)\n",
-                                  i, j, rr, gg, bb, aa));
+                    NOISY(printf("Found a non-gray pixel at %d, %d = (%d %d %d %d)\n",
+                                 i, j, rr, gg, bb, aa));
                     isGrayscale = false;
                 }
             }
@@ -992,7 +972,8 @@ static void analyze_image(const char *imageName, image_info &imageInfo, int gray
     NOISY(printf("isPalette = %s\n", isPalette ? "true" : "false"));
     NOISY(printf("Size w/ palette = %d, gray+alpha = %d, rgb(a) = %d\n",
                  paletteSize, 2 * w * h, bpp * w * h));
-    NOISY(printf("Max gray deviation = %d, tolerance = %d\n", maxGrayDeviation, grayscaleTolerance));
+    NOISY(printf("Max gray deviation = %d, tolerance = %d\n", maxGrayDeviation,
+                 grayscaleTolerance));
 
     // Choose the best color type for the image.
     // 1. Opaque gray - use COLOR_TYPE_GRAY at 1 byte/pixel
@@ -1035,10 +1016,10 @@ static void analyze_image(const char *imageName, image_info &imageInfo, int gray
         // Create the RGB and alpha palettes
         for (int idx = 0; idx < num_colors; idx++) {
             col = colors[idx];
-            rgbPalette[idx].red   = (png_byte) ((col >> 24) & 0xff);
+            rgbPalette[idx].red = (png_byte) ((col >> 24) & 0xff);
             rgbPalette[idx].green = (png_byte) ((col >> 16) & 0xff);
-            rgbPalette[idx].blue  = (png_byte) ((col >>  8) & 0xff);
-            alphaPalette[idx]     = (png_byte)  (col        & 0xff);
+            rgbPalette[idx].blue = (png_byte) ((col >> 8) & 0xff);
+            alphaPalette[idx] = (png_byte) (col & 0xff);
         }
     } else if (*colorType == PNG_COLOR_TYPE_GRAY || *colorType == PNG_COLOR_TYPE_GRAY_ALPHA) {
         // If the image is gray or gray + alpha, compact the pixels into outRows
@@ -1050,7 +1031,7 @@ static void analyze_image(const char *imageName, image_info &imageInfo, int gray
                 gg = *row++;
                 bb = *row++;
                 aa = *row++;
-                
+
                 if (isGrayscale) {
                     *out++ = rr;
                 } else {
@@ -1059,16 +1040,15 @@ static void analyze_image(const char *imageName, image_info &imageInfo, int gray
                 if (!isOpaque) {
                     *out++ = aa;
                 }
-           }
+            }
         }
     }
 }
 
 
-static void write_png(const char* imageName,
+static void write_png(const char *imageName,
                       png_structp write_ptr, png_infop write_info,
-                      image_info& imageInfo, int grayscaleTolerance)
-{
+                      image_info &imageInfo, int grayscaleTolerance) {
     bool optimize = true;
     png_uint_32 width, height;
     int color_type;
@@ -1096,7 +1076,7 @@ static void write_png(const char* imageName,
     png_set_compression_level(write_ptr, Z_BEST_COMPRESSION);
 
     NOISY(printf("Writing image %s: w = %d, h = %d\n", imageName,
-          (int) imageInfo.width, (int) imageInfo.height));
+                 (int) imageInfo.width, (int) imageInfo.height));
 
     png_color rgbPalette[256];
     png_byte alphaPalette[256];
@@ -1109,28 +1089,29 @@ static void write_png(const char* imageName,
     // If the image is a 9-patch, we need to preserve it as a ARGB file to make
     // sure the pixels will not be pre-dithered/clamped until we decide they are
     if (imageInfo.is9Patch && (color_type == PNG_COLOR_TYPE_RGB ||
-            color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_PALETTE)) {
+                               color_type == PNG_COLOR_TYPE_GRAY ||
+                               color_type == PNG_COLOR_TYPE_PALETTE)) {
         color_type = PNG_COLOR_TYPE_RGB_ALPHA;
     }
 
     switch (color_type) {
-    case PNG_COLOR_TYPE_PALETTE:
-        NOISY(printf("Image %s has %d colors%s, using PNG_COLOR_TYPE_PALETTE\n",
-                     imageName, paletteEntries,
-                     hasTransparency ? " (with alpha)" : ""));
-        break;
-    case PNG_COLOR_TYPE_GRAY:
-        NOISY(printf("Image %s is opaque gray, using PNG_COLOR_TYPE_GRAY\n", imageName));
-        break;
-    case PNG_COLOR_TYPE_GRAY_ALPHA:
-        NOISY(printf("Image %s is gray + alpha, using PNG_COLOR_TYPE_GRAY_ALPHA\n", imageName));
-        break;
-    case PNG_COLOR_TYPE_RGB:
-        NOISY(printf("Image %s is opaque RGB, using PNG_COLOR_TYPE_RGB\n", imageName));
-        break;
-    case PNG_COLOR_TYPE_RGB_ALPHA:
-        NOISY(printf("Image %s is RGB + alpha, using PNG_COLOR_TYPE_RGB_ALPHA\n", imageName));
-        break;
+        case PNG_COLOR_TYPE_PALETTE:
+            NOISY(printf("Image %s has %d colors%s, using PNG_COLOR_TYPE_PALETTE\n",
+                         imageName, paletteEntries,
+                         hasTransparency ? " (with alpha)" : ""));
+            break;
+        case PNG_COLOR_TYPE_GRAY:
+            NOISY(printf("Image %s is opaque gray, using PNG_COLOR_TYPE_GRAY\n", imageName));
+            break;
+        case PNG_COLOR_TYPE_GRAY_ALPHA:
+            NOISY(printf("Image %s is gray + alpha, using PNG_COLOR_TYPE_GRAY_ALPHA\n", imageName));
+            break;
+        case PNG_COLOR_TYPE_RGB:
+            NOISY(printf("Image %s is opaque RGB, using PNG_COLOR_TYPE_RGB\n", imageName));
+            break;
+        case PNG_COLOR_TYPE_RGB_ALPHA:
+            NOISY(printf("Image %s is RGB + alpha, using PNG_COLOR_TYPE_RGB_ALPHA\n", imageName));
+            break;
     }
 
     png_set_IHDR(write_ptr, write_info, imageInfo.width, imageInfo.height,
@@ -1142,9 +1123,9 @@ static void write_png(const char* imageName,
         if (hasTransparency) {
             png_set_tRNS(write_ptr, write_info, alphaPalette, paletteEntries, (png_color_16p) 0);
         }
-       png_set_filter(write_ptr, 0, PNG_NO_FILTERS);
+        png_set_filter(write_ptr, 0, PNG_NO_FILTERS);
     } else {
-       png_set_filter(write_ptr, 0, PNG_ALL_FILTERS);
+        png_set_filter(write_ptr, 0, PNG_ALL_FILTERS);
     }
 
     if (imageInfo.is9Patch) {
@@ -1155,33 +1136,33 @@ static void write_png(const char* imageName,
 
         // Chunks ordered thusly because older platforms depend on the base 9 patch data being last
         png_byte *chunk_names = imageInfo.haveLayoutBounds
-                ? (png_byte*)"npOl\0npLb\0npTc\0"
-                : (png_byte*)"npOl\0npTc";
+                                ? (png_byte *) "npOl\0npLb\0npTc\0"
+                                : (png_byte *) "npOl\0npTc";
 
         // base 9 patch data
         NOISY(printf("Adding 9-patch info...\n"));
-        strcpy((char*)unknowns[p_index].name, "npTc");
-        unknowns[p_index].data = (png_byte*)imageInfo.serialize9patch();
+        strcpy((char *) unknowns[p_index].name, "npTc");
+        unknowns[p_index].data = (png_byte *) imageInfo.serialize9patch();
         unknowns[p_index].size = imageInfo.info9Patch.serializedSize();
         // TODO: remove the check below when everything works
         checkNinePatchSerialization(&imageInfo.info9Patch, unknowns[p_index].data);
 
         // automatically generated 9 patch outline data
         int chunk_size = sizeof(png_uint_32) * 6;
-        strcpy((char*)unknowns[o_index].name, "npOl");
-        unknowns[o_index].data = (png_byte*) calloc(chunk_size, 1);
+        strcpy((char *) unknowns[o_index].name, "npOl");
+        unknowns[o_index].data = (png_byte *) calloc(chunk_size, 1);
         png_byte outputData[chunk_size];
         memcpy(&outputData, &imageInfo.outlineInsetsLeft, 4 * sizeof(png_uint_32));
-        ((float*) outputData)[4] = imageInfo.outlineRadius;
-        ((png_uint_32*) outputData)[5] = imageInfo.outlineAlpha;
+        ((float *) outputData)[4] = imageInfo.outlineRadius;
+        ((png_uint_32 *) outputData)[5] = imageInfo.outlineAlpha;
         memcpy(unknowns[o_index].data, &outputData, chunk_size);
         unknowns[o_index].size = chunk_size;
 
         // optional optical inset / layout bounds data
         if (imageInfo.haveLayoutBounds) {
             int chunk_size = sizeof(png_uint_32) * 4;
-            strcpy((char*)unknowns[b_index].name, "npLb");
-            unknowns[b_index].data = (png_byte*) calloc(chunk_size, 1);
+            strcpy((char *) unknowns[b_index].name, "npLb");
+            unknowns[b_index].data = (png_byte *) calloc(chunk_size, 1);
             memcpy(unknowns[b_index].data, &imageInfo.layoutBoundsLeft, chunk_size);
             unknowns[b_index].size = chunk_size;
         }
@@ -1229,17 +1210,16 @@ static void write_png(const char* imageName,
     free(unknowns[2].data);
 
     png_get_IHDR(write_ptr, write_info, &width, &height,
-       &bit_depth, &color_type, &interlace_type,
-       &compression_type, NULL);
+                 &bit_depth, &color_type, &interlace_type,
+                 &compression_type, NULL);
 
     NOISY(printf("Image written: w=%d, h=%d, d=%d, colors=%d, inter=%d, comp=%d\n",
-                 (int)width, (int)height, bit_depth, color_type, interlace_type,
+                 (int) width, (int) height, bit_depth, color_type, interlace_type,
                  compression_type));
 }
 
-status_t preProcessImage(const Bundle* bundle, const sp<AaptAssets>& assets,
-                         const sp<AaptFile>& file, String8* outNewLeafName)
-{
+status_t preProcessImage(const Bundle *bundle, const sp<AaptAssets> &assets,
+                         const sp<AaptFile> &file, String8 *outNewLeafName) {
     String8 ext(file->getPath().getPathExtension());
 
     // We currently only process PNG images.
@@ -1259,7 +1239,7 @@ status_t preProcessImage(const Bundle* bundle, const sp<AaptAssets>& assets,
 
     png_structp read_ptr = NULL;
     png_infop read_info = NULL;
-    FILE* fp;
+    FILE *fp;
 
     image_info imageInfo;
 
@@ -1276,8 +1256,8 @@ status_t preProcessImage(const Bundle* bundle, const sp<AaptAssets>& assets,
         goto bail;
     }
 
-    read_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, (png_error_ptr)NULL,
-                                        (png_error_ptr)NULL);
+    read_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, (png_error_ptr) NULL,
+                                      (png_error_ptr) NULL);
     if (!read_ptr) {
         goto bail;
     }
@@ -1296,32 +1276,29 @@ status_t preProcessImage(const Bundle* bundle, const sp<AaptAssets>& assets,
     read_png(printableName.string(), read_ptr, read_info, &imageInfo);
 
     if (nameLen > 6) {
-        const char* name = file->getPath().string();
-        if (name[nameLen-5] == '9' && name[nameLen-6] == '.') {
+        const char *name = file->getPath().string();
+        if (name[nameLen - 5] == '9' && name[nameLen - 6] == '.') {
             if (do_9patch(printableName.string(), &imageInfo) != NO_ERROR) {
                 goto bail;
             }
         }
     }
 
-    write_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, (png_error_ptr)NULL,
-                                        (png_error_ptr)NULL);
-    if (!write_ptr)
-    {
+    write_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, (png_error_ptr) NULL,
+                                        (png_error_ptr) NULL);
+    if (!write_ptr) {
         goto bail;
     }
 
     write_info = png_create_info_struct(write_ptr);
-    if (!write_info)
-    {
+    if (!write_info) {
         goto bail;
     }
 
-    png_set_write_fn(write_ptr, (void*)file.get(),
+    png_set_write_fn(write_ptr, (void *) file.get(),
                      png_write_aapt_file, png_flush_aapt_file);
 
-    if (setjmp(png_jmpbuf(write_ptr)))
-    {
+    if (setjmp(png_jmpbuf(write_ptr))) {
         goto bail;
     }
 
@@ -1332,16 +1309,16 @@ status_t preProcessImage(const Bundle* bundle, const sp<AaptAssets>& assets,
 
     if (bundle->getVerbose()) {
         fseek(fp, 0, SEEK_END);
-        size_t oldSize = (size_t)ftell(fp);
+        size_t oldSize = (size_t) ftell(fp);
         size_t newSize = file->getSize();
-        float factor = ((float)newSize)/oldSize;
-        int percent = (int)(factor*100);
+        float factor = ((float) newSize) / oldSize;
+        int percent = (int) (factor * 100);
         printf("    (processed image %s: %d%% size of source)\n", printableName.string(), percent);
     }
 
-bail:
+    bail:
     if (read_ptr) {
-        png_destroy_read_struct(&read_ptr, &read_info, (png_infopp)NULL);
+        png_destroy_read_struct(&read_ptr, &read_info, (png_infopp) NULL);
     }
     if (fp) {
         fclose(fp);
@@ -1357,12 +1334,11 @@ bail:
     return error;
 }
 
-status_t preProcessImageToCache(const Bundle* bundle, const String8& source, const String8& dest)
-{
+status_t preProcessImageToCache(const Bundle *bundle, const String8 &source, const String8 &dest) {
     png_structp read_ptr = NULL;
     png_infop read_info = NULL;
 
-    FILE* fp;
+    FILE *fp;
 
     image_info imageInfo;
 
@@ -1376,7 +1352,7 @@ status_t preProcessImageToCache(const Bundle* bundle, const String8& source, con
     }
 
     // Get a file handler to read from
-    fp = fopen(source.string(),"rb");
+    fp = fopen(source.string(), "rb");
     if (fp == NULL) {
         fprintf(stderr, "%s ERROR: Unable to open PNG file\n", source.string());
         return error;
@@ -1386,7 +1362,7 @@ status_t preProcessImageToCache(const Bundle* bundle, const String8& source, con
     read_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (!read_ptr) {
         fclose(fp);
-        png_destroy_read_struct(&read_ptr, &read_info,NULL);
+        png_destroy_read_struct(&read_ptr, &read_info, NULL);
         return error;
     }
 
@@ -1394,19 +1370,19 @@ status_t preProcessImageToCache(const Bundle* bundle, const String8& source, con
     read_info = png_create_info_struct(read_ptr);
     if (!read_info) {
         fclose(fp);
-        png_destroy_read_struct(&read_ptr, &read_info,NULL);
+        png_destroy_read_struct(&read_ptr, &read_info, NULL);
         return error;
     }
 
     // Set a jump point for libpng to long jump back to on error
     if (setjmp(png_jmpbuf(read_ptr))) {
         fclose(fp);
-        png_destroy_read_struct(&read_ptr, &read_info,NULL);
+        png_destroy_read_struct(&read_ptr, &read_info, NULL);
         return error;
     }
 
     // Set up libpng to read from our file.
-    png_init_io(read_ptr,fp);
+    png_init_io(read_ptr, fp);
 
     // Actually read data from the file
     read_png(source.string(), read_ptr, read_info, &imageInfo);
@@ -1414,13 +1390,13 @@ status_t preProcessImageToCache(const Bundle* bundle, const String8& source, con
     // We're done reading so we can clean up
     // Find old file size before releasing handle
     fseek(fp, 0, SEEK_END);
-    size_t oldSize = (size_t)ftell(fp);
+    size_t oldSize = (size_t) ftell(fp);
     fclose(fp);
-    png_destroy_read_struct(&read_ptr, &read_info,NULL);
+    png_destroy_read_struct(&read_ptr, &read_info, NULL);
 
     // Check to see if we're dealing with a 9-patch
     // If we are, process appropriately
-    if (source.getBasePath().getPathExtension() == ".9")  {
+    if (source.getBasePath().getPathExtension() == ".9") {
         if (do_9patch(source.string(), &imageInfo) != NO_ERROR) {
             return error;
         }
@@ -1466,13 +1442,13 @@ status_t preProcessImageToCache(const Bundle* bundle, const String8& source, con
 
     if (bundle->getVerbose()) {
         // Find the size of our new file
-        FILE* reader = fopen(dest.string(), "rb");
+        FILE *reader = fopen(dest.string(), "rb");
         fseek(reader, 0, SEEK_END);
-        size_t newSize = (size_t)ftell(reader);
+        size_t newSize = (size_t) ftell(reader);
         fclose(reader);
 
-        float factor = ((float)newSize)/oldSize;
-        int percent = (int)(factor*100);
+        float factor = ((float) newSize) / oldSize;
+        int percent = (int) (factor * 100);
         printf("  (processed image to cache entry %s: %d%% size of source)\n",
                dest.string(), percent);
     }
@@ -1484,9 +1460,8 @@ status_t preProcessImageToCache(const Bundle* bundle, const String8& source, con
     return NO_ERROR;
 }
 
-status_t postProcessImage(const Bundle* bundle, const sp<AaptAssets>& assets,
-                          ResourceTable* table, const sp<AaptFile>& file)
-{
+status_t postProcessImage(const Bundle *bundle, const sp<AaptAssets> &assets,
+                          ResourceTable *table, const sp<AaptFile> &file) {
     String8 ext(file->getPath().getPathExtension());
 
     // At this point, now that we have all the resource data, all we need to

@@ -18,9 +18,11 @@ package com.duy.ide.file;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import com.duy.compile.CompileManager;
@@ -208,9 +210,17 @@ public class FileManager {
 
     @NonNull
     public static File getClasspathFile(Context context) {
-        File classesDir = new File(context.getFilesDir(), SDK_DIR);
-        if (!classesDir.exists()) classesDir.mkdir();
-        return new File(classesDir, ANDROID_CLASSPATH);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        String classpathFile = pref.getString(context.getString(R.string.key_classpath), "");
+        File file = new File(classpathFile);
+        if (!file.exists() || classpathFile.equals("default")) {
+            File classesDir = new File(context.getFilesDir(), SDK_DIR);
+            if (!classesDir.exists()) classesDir.mkdir();
+            file = new File(classesDir, ANDROID_CLASSPATH);
+        } else {
+            System.out.printf("Classpath file %s not exist%n", classpathFile);
+        }
+        return file;
     }
 
     @NonNull

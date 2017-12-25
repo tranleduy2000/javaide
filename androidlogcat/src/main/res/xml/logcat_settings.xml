@@ -29,7 +29,6 @@
 
     <PreferenceCategory android:title="@string/pref_cat_configuration">
 
-        <!-- TODO: Switch to MultiSelectListPreference-->
         <com.pluscubed.logcat.widget.MultipleChoicePreference
             android:defaultValue="@string/pref_buffer_choice_main_value"
             android:entries="@array/pref_buffer_choices"

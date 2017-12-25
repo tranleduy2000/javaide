@@ -93,15 +93,21 @@ public class AndroidBuilder {
         Log.d(TAG, "runAapt() called");
 
         com.duy.aapt.Aapt aapt = new com.duy.aapt.Aapt();
-        StringBuilder command = new StringBuilder("aapt p -f" +
+        StringBuilder command = new StringBuilder("aapt p -f --auto-add-overlay"
                 //"-v" + //print info
-                " --auto-add-overlay" +
-                " -M " + projectFile.xmlManifest.getPath()  //manifest file
+                + " -M " + projectFile.getXmlManifest().getPath()  //manifest file
                 + " -F " + projectFile.getResourceFile().getPath()  //output resources.ap_
                 + " -I " + FileManager.getClasspathFile(context).getPath()  //include
                 + " -A " + projectFile.getDirAssets().getPath()  //input assets dir
                 + " -S " + projectFile.getDirRes().getPath()  //input resource dir
                 + " -J " + projectFile.getClassR().getParent());//parent file of R.java file
+
+        //test
+//        File appcompatDir = new File(Environment.getExternalStorageDirectory(), ".JavaNIDE/appcompat-v7-21.0.0");
+//        File appcompatRes = new File(appcompatDir, "res");
+//        File appcompatAsset = new File(appcompatDir, "assets");
+//        command.append(" -S ").append(appcompatRes.getPath());
+//        command.append(" -A ").append(appcompatAsset.getPath());
 
         File dirLibs = projectFile.getDirLibs();
         File[] files = dirLibs.listFiles();

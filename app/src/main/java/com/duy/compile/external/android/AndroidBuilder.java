@@ -4,11 +4,12 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
+import com.android.sdklib.build.ApkBuilderMain;
 import com.duy.compile.external.CompileHelper;
+import com.duy.ide.DLog;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProjectFolder;
 import com.duy.project.file.android.KeyStore;
-import com.spartacusrex.spartacuside.external.apkbuilder;
 import com.sun.tools.javac.main.Main;
 
 import java.io.File;
@@ -29,11 +30,13 @@ public class AndroidBuilder {
     private static void buildApk(AndroidProjectFolder projectFile) throws Exception {
         String[] args = {
                 projectFile.getApkUnsigned().getPath(),
-                "-v", "-u", "-z", projectFile.getResourceFile().getPath(),
+                "-v",
+                "-u",
+                "-z", projectFile.getResourceFile().getPath(),
                 "-f", projectFile.getDexedClassesFile().getPath()
         };
-        Log.d(TAG, "buildApk args = " + Arrays.toString(args));
-        apkbuilder.main(args);
+        DLog.d(TAG, "buildApk args = " + Arrays.toString(args));
+        ApkBuilderMain.main(args);
     }
 
     public static void build(Context context, AndroidProjectFolder projectFile,

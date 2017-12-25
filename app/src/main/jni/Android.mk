@@ -122,7 +122,7 @@ LOCAL_SRC_FILES := $(aaptSources)
 LOCAL_CFLAGS += -DANDROID
 LOCAL_MODULE := aapt_static
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/libpng
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/libpng_new/jni
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/zlib
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/nativehelper
 include $(BUILD_STATIC_LIBRARY)
@@ -159,11 +159,11 @@ include $(BUILD_STATIC_LIBRARY)
 ## png
 ####################################################
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := $(wildcard $(LOCAL_PATH)/libpng/*.c)
+LOCAL_SRC_FILES := $(wildcard $(LOCAL_PATH)/libpng_new/jni/*.c)
 LOCAL_CFLAGS += -DANDROID
 LOCAL_MODULE := png_static
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/libpng
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/libpng_new/jni
 include $(BUILD_STATIC_LIBRARY)
 
 ####################################################
@@ -189,7 +189,7 @@ LOCAL_CFLAGS			+= -DANDROID
 LOCAL_LDLIBS			+= -ldl -lm -llog -lz
 LOCAL_MODULE			:= aapt
 LOCAL_C_INCLUDES        += $(LOCAL_PATH)/
-LOCAL_C_INCLUDES        += $(LOCAL_PATH)/libpng
+LOCAL_C_INCLUDES        += $(LOCAL_PATH)/libpng_new/jni
 LOCAL_C_INCLUDES        += $(LOCAL_PATH)/zlib
 LOCAL_C_INCLUDES        += $(LOCAL_PATH)/nativehelper
 include $(BUILD_SHARED_LIBRARY)
@@ -205,6 +205,6 @@ include $(BUILD_SHARED_LIBRARY)
 # LOCAL_LDLIBS			+= -ldl -lm -llog -lz
 # LOCAL_MODULE			:= aapt_pie
 # LOCAL_C_INCLUDES		+= $(LOCAL_PATH)/
-# LOCAL_C_INCLUDES		+= $(LOCAL_PATH)/libpng
+# LOCAL_C_INCLUDES		+= $(LOCAL_PATH)/libpng_new/jni
 # LOCAL_C_INCLUDES		+= $(LOCAL_PATH)/zlib
 # include $(BUILD_SHARED_LIBRARY)

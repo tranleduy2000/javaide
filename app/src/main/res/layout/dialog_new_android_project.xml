@@ -77,7 +77,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="Backwards Compatibility (Not recommend, If you want to using AppCompat, check it)" />
+            android:text="Backwards Compatibility (Not recommend, If you want to using AppCompat, check it)"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"

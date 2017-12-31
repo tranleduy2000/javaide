@@ -5,18 +5,30 @@
       <module fileurl="file://$PROJECT_DIR$/androidlogcat/androidlogcat.iml" filepath="$PROJECT_DIR$/androidlogcat/androidlogcat.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/colorpicker/colorpicker.iml" filepath="$PROJECT_DIR$/colorpicker/colorpicker.iml" />
+      <module fileurl="file://G:\github\javaide\colorpicker\colorpicker.iml" filepath="G:\github\javaide\colorpicker\colorpicker.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://G:\github\javaide\common\common.iml" filepath="G:\github\javaide\common\common.iml" />
       <module fileurl="file://$PROJECT_DIR$/dx/dx.iml" filepath="$PROJECT_DIR$/dx/dx.iml" />
+      <module fileurl="file://G:\github\javaide\dx\dx.iml" filepath="G:\github\javaide\dx\dx.iml" />
       <module fileurl="file://$PROJECT_DIR$/fileexplorer/fileexplorer.iml" filepath="$PROJECT_DIR$/fileexplorer/fileexplorer.iml" />
+      <module fileurl="file://G:\github\javaide\fileexplorer\fileexplorer.iml" filepath="G:\github\javaide\fileexplorer\fileexplorer.iml" />
       <module fileurl="file://$PROJECT_DIR$/gitforandroid/gitforandroid.iml" filepath="$PROJECT_DIR$/gitforandroid/gitforandroid.iml" />
+      <module fileurl="file://G:\github\javaide\gitforandroid\gitforandroid.iml" filepath="G:\github\javaide\gitforandroid\gitforandroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/javacodeformatter/javacodeformatter.iml" filepath="$PROJECT_DIR$/javacodeformatter/javacodeformatter.iml" />
+      <module fileurl="file://G:\github\javaide\javacodeformatter\javacodeformatter.iml" filepath="G:\github\javaide\javacodeformatter\javacodeformatter.iml" />
       <module fileurl="file://$PROJECT_DIR$/javacompiler/javacompiler.iml" filepath="$PROJECT_DIR$/javacompiler/javacompiler.iml" />
+      <module fileurl="file://G:\github\javaide\javacompiler\javacompiler.iml" filepath="G:\github\javaide\javacompiler\javacompiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/javaide.iml" filepath="$PROJECT_DIR$/javaide.iml" />
       <module fileurl="file://$PROJECT_DIR$/manifest_merger/manifest_merger.iml" filepath="$PROJECT_DIR$/manifest_merger/manifest_merger.iml" />
+      <module fileurl="file://G:\github\javaide\manifest_merger\manifest_merger.iml" filepath="G:\github\javaide\manifest_merger\manifest_merger.iml" />
       <module fileurl="file://$PROJECT_DIR$/pager/pager.iml" filepath="$PROJECT_DIR$/pager/pager.iml" />
+      <module fileurl="file://G:\github\javaide\pager\pager.iml" filepath="G:\github\javaide\pager\pager.iml" />
       <module fileurl="file://$PROJECT_DIR$/splitview/splitview.iml" filepath="$PROJECT_DIR$/splitview/splitview.iml" />
+      <module fileurl="file://G:\github\javaide\splitview\splitview.iml" filepath="G:\github\javaide\splitview\splitview.iml" />
       <module fileurl="file://$PROJECT_DIR$/styles/styles.iml" filepath="$PROJECT_DIR$/styles/styles.iml" />
+      <module fileurl="file://G:\github\javaide\styles\styles.iml" filepath="G:\github\javaide\styles\styles.iml" />
       <module fileurl="file://$PROJECT_DIR$/treeview/treeview.iml" filepath="$PROJECT_DIR$/treeview/treeview.iml" />
+      <module fileurl="file://G:\github\javaide\treeview\treeview.iml" filepath="G:\github\javaide\treeview\treeview.iml" />
     </modules>
   </component>
 </project>

@@ -59,3 +59,5 @@ freeline_project_description.json
 /appzz/
 /testapplication/
 /tools/
+!/javacompiler/src/main/java/com/android/sdklib/internal/build/
+!/javacompiler/src/main/java/com/android/sdklib/build/

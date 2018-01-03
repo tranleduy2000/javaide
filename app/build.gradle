@@ -67,6 +67,8 @@ repositories {
 }
 dependencies {
     testCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test:runner:1.0.1'
+    androidTestCompile 'com.android.support.test:rules:1.0.1'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
 //    compile files('libs/commons-codec-1.10.jar')

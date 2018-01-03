@@ -20,6 +20,9 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test:runner:1.0.1'
+    androidTestCompile 'com.android.support.test:rules:1.0.1'
     compile "com.android.support:support-v4:$supportLibVersion"
     compile "com.android.support:appcompat-v7:$supportLibVersion"
 }

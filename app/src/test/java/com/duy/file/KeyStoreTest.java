@@ -9,8 +9,6 @@ import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import sun.security.tools.KeyTool;
-
 /**
  * Created by Duy on 22-Aug-17.
  */
@@ -24,7 +22,7 @@ public class KeyStoreTest extends TestCase {
     }
 
     public void testKeytool() throws Exception {
-        KeyTool.main(new String[]{});
+//        KeyTool.main(new String[]{});
     }
 
     public void testReadResource() {

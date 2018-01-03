@@ -20,4 +20,6 @@ android {
 
 dependencies {
     compile project(':javacompiler')
+    androidTestCompile 'com.android.support.test:runner:1.0.1'
+    androidTestCompile 'com.android.support.test:rules:1.0.1'
 }

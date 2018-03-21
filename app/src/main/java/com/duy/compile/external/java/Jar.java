@@ -57,8 +57,13 @@ public class Jar {
 
         // Open archive file
         FileOutputStream stream = new FileOutputStream(archiveFile);
+        
         Manifest manifest = new Manifest();
-        manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+        File manifestFile = new File(projectFolder, "MANIFEST.MF");
+        if(manifestFile.exists()){
+          FileInputStream manifestStream = new FileInputStream(manifestFile);
+          manifest.read(manifestStream);
+        } else manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 
         //Create the jar file
         JarOutputStream out = new JarOutputStream(stream, manifest);

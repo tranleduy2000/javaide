@@ -285,7 +285,6 @@ public class MainActivity extends ProjectManagerActivity implements
                     mFilePresenter.refresh(mProjectFile);
                     mDiagnosticPresenter.display(diagnostics);
                     mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    Toast.makeText(MainActivity.this, "Installing apk", Toast.LENGTH_SHORT).show();
                     RootUtils.installApk(MainActivity.this, apk);
                 }
 

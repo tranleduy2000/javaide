@@ -3,6 +3,8 @@ package com.duy.ide.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.duy.ide.setting.AppSetting;
@@ -31,28 +33,19 @@ public class RootUtils {
 
     private static boolean openApk(Context context, File file) {
         try {
-//            Uri uri;
-//            if (Build.VERSION.SDK_INT >= 24) {
-//                uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
-//            } else {
-//                uri = Uri.fromFile(file);
-//            }
-//
-//            //create intent open file
-//            MimeTypeMap myMime = MimeTypeMap.getSingleton();
-//            Intent intent = new Intent(Intent.ACTION_VIEW);
-//            String ext = FileUtils.fileExt(file.getPath());
-//            String mimeType = myMime.getMimeTypeFromExtension(ext != null ? ext : "");
-//            intent.setDataAndType(uri, mimeType);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            context.startActivity(intent);
+            Uri uri;
+            if (Build.VERSION.SDK_INT >= 24) {
+                uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
+            } else {
+                uri = Uri.fromFile(file);
+            }
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(file),
-                    "application/vnd.android.package-archive");
+            intent.setDataAndType(uri, "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             context.startActivity(intent);
         } catch (Exception e) {
+            e.printStackTrace();
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
         return true;

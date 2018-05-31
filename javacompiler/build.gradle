@@ -31,4 +31,9 @@ dependencies {
     api files('libs/commons-compress-1.5.jar')
     api files('libs/commons-codec-1.10.jar')
     api files('libs/kxml2-2.2.3.jar')
+    api files('libs/zipio-lib-1.8.jar')
+    api files('libs/zipsigner-lib-1.17.jar')
+    api files('libs/zipsigner-lib-optional-1.17.jar')
+    api files('libs/kellinwood-logging-android-1.4.jar')
+    api files('libs/kellinwood-logging-lib-1.1.jar')
 }

@@ -24,7 +24,7 @@ public class SignApkTask extends BuildTask {
     @Override
     public boolean run() throws Exception {
         if (type == BuildType.DEBUG) {
-            signDebug();
+            return signDebug();
         } else {
             signRelease();
         }
@@ -35,7 +35,7 @@ public class SignApkTask extends BuildTask {
         // TODO: 31-May-18  signRelease
     }
 
-    private void signDebug() throws IOException, GeneralSecurityException, IllegalAccessException,
+    private boolean signDebug() throws IOException, GeneralSecurityException, IllegalAccessException,
             InstantiationException, ClassNotFoundException {
         builder.stdout("Sign debug apk");
 
@@ -49,5 +49,7 @@ public class SignApkTask extends BuildTask {
         signer.signZip(in, out);
 
         builder.stdout("Signed debug apk " + project.getApkUnsigned().getName() + " => " + project.getApkSigned().getName());
+
+        return true;
     }
 }

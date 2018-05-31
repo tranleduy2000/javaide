@@ -74,7 +74,7 @@ dependencies {
 
     implementation project(':treeview')
     implementation project(':fileexplorer')
-    implementation project(':javacompiler')
+    implementation project(':lib-android-compiler')
     implementation project(':dx')
     implementation project(':lib-google-java-format')
     implementation project(':androidlogcat')

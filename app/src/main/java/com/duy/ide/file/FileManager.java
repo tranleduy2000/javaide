@@ -214,9 +214,7 @@ public class FileManager {
         String classpathFile = pref.getString(context.getString(R.string.key_classpath), "");
         File file = new File(classpathFile);
         if (!file.exists() || classpathFile.equals("default")) {
-            File classesDir = new File(context.getFilesDir(), SDK_DIR);
-            if (!classesDir.exists()) classesDir.mkdir();
-            file = new File(classesDir, ANDROID_CLASSPATH);
+            file = com.duy.android.compiler.env.Environment.getClasspathFile(context);
         } else {
             System.out.printf("Classpath file %s not exist%n", classpathFile);
         }

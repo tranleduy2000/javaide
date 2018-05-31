@@ -22,7 +22,7 @@ import android.content.Intent;
 import com.duy.compile.external.android.builder.CompileHelper;
 import com.duy.ide.debug.activities.DebugActivity;
 import com.duy.ide.editor.code.MainActivity;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 import com.duy.run.activities.ExecuteActivity;
 
 import java.io.File;
@@ -67,7 +67,7 @@ public class CompileManager {
     }
 
 
-    public void executeDex(JavaProjectFolder projectFile, File dex) {
+    public void executeDex(JavaProject projectFile, File dex) {
         Intent intent = new Intent(mActivity, ExecuteActivity.class);
         intent.putExtra(ACTION, CompileHelper.Action.RUN_DEX);
         intent.putExtra(PROJECT_FILE, projectFile);

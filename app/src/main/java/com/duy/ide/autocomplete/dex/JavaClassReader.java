@@ -10,7 +10,7 @@ import com.duy.ide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.autocomplete.model.FieldDescription;
 import com.duy.ide.autocomplete.model.MethodDescription;
 import com.duy.project.file.android.AndroidProject;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class JavaClassReader {
         return mClasses;
     }
 
-    public ArrayList<Class> getAllClassesFromProject(@NonNull JavaProjectFolder projectFolder) {
+    public ArrayList<Class> getAllClassesFromProject(@NonNull JavaProject projectFolder) {
         ArrayList<Class> classes = new ArrayList<>();
         boolean android = projectFolder instanceof AndroidProject;
         //load all class from classpath
@@ -137,7 +137,7 @@ public class JavaClassReader {
         return classes;
     }
 
-    public void load(JavaProjectFolder projectFolder) {
+    public void load(JavaProject projectFolder) {
         mClasses.clear();
         mClasses.addAll(getAllClassesFromProject(projectFolder));
         long time = System.currentTimeMillis();

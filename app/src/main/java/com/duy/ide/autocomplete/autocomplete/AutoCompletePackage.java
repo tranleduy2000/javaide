@@ -6,7 +6,7 @@ import android.util.Log;
 import com.android.annotations.Nullable;
 import com.duy.ide.autocomplete.dex.JavaClassReader;
 import com.duy.ide.autocomplete.model.PackageDescription;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class AutoCompletePackage {
         root = PackageDescription.root();
     }
 
-    public void init(JavaProjectFolder projectFile, JavaClassReader classReader) {
+    public void init(JavaProject projectFile, JavaClassReader classReader) {
         Log.d(TAG, "init() called with: classReader = [" + classReader + "]");
 
         ArrayList<Class> classes = classReader.getAllClasses();

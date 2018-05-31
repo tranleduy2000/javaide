@@ -1,6 +1,6 @@
 package com.duy.project;
 
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 
 /**
  * Created by Duy on 17-Jul-17.
@@ -15,12 +15,12 @@ public class ProjectFilePresenter implements ProjectFileContract.Presenter {
     }
 
     @Override
-    public void show(JavaProjectFolder projectFile, boolean expand) {
+    public void show(JavaProject projectFile, boolean expand) {
         view.display(projectFile, expand);
     }
 
     @Override
-    public void refresh(JavaProjectFolder projectFile) {
+    public void refresh(JavaProject projectFile) {
         view.refresh();
     }
 }

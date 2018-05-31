@@ -68,7 +68,7 @@ import com.duy.ide.utils.RootUtils;
 import com.duy.project.ProjectManager;
 import com.duy.project.file.android.AndroidProject;
 import com.duy.project.file.java.ClassFile;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 import com.duy.project.utils.ClassUtil;
 import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -347,7 +347,7 @@ public class MainActivity extends ProjectManagerActivity implements
             }
 
             @Override
-            public void onComplete(final JavaProjectFolder projectFile,
+            public void onComplete(final JavaProject projectFile,
                                    final List<Diagnostic> diagnostics) {
                 updateUIFinish();
                 Toast.makeText(MainActivity.this, R.string.compile_success, Toast.LENGTH_SHORT).show();
@@ -610,7 +610,7 @@ public class MainActivity extends ProjectManagerActivity implements
         switch (requestCode) {
             case REQUEST_CODE_SAMPLE:
                 if (resultCode == RESULT_OK) {
-                    final JavaProjectFolder projectFile = (JavaProjectFolder)
+                    final JavaProject projectFile = (JavaProject)
                             data.getSerializableExtra(SampleActivity.PROJECT_FILE);
                     if (projectFile != null) {
                         mHandler.postDelayed(new Runnable() {
@@ -751,7 +751,7 @@ public class MainActivity extends ProjectManagerActivity implements
     }
 
     @Override
-    public void onConfigChange(JavaProjectFolder projectFile) {
+    public void onConfigChange(JavaProject projectFile) {
         this.mProjectFile = projectFile;
         if (projectFile != null) {
             ProjectManager.saveProject(this, projectFile);

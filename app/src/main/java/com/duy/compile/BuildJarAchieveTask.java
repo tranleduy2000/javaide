@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.duy.compile.external.android.builder.CompileHelper;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 
 import java.io.File;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 
-public class BuildJarAchieveTask extends AsyncTask<JavaProjectFolder, Object, File> {
+public class BuildJarAchieveTask extends AsyncTask<JavaProject, Object, File> {
     private static final String TAG = "BuildJarAchieveTask";
     private Context context;
     private BuildJarAchieveTask.CompileListener listener;
@@ -32,8 +32,8 @@ public class BuildJarAchieveTask extends AsyncTask<JavaProjectFolder, Object, Fi
     }
 
     @Override
-    protected File doInBackground(JavaProjectFolder... params) {
-        JavaProjectFolder projectFile = params[0];
+    protected File doInBackground(JavaProject... params) {
+        JavaProject projectFile = params[0];
         if (params[0] == null) {
             return null;
         }

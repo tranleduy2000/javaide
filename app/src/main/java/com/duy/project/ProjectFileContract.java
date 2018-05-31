@@ -3,7 +3,7 @@ package com.duy.project;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 import com.unnamed.b.atv.model.TreeNode;
 
 import java.io.File;
@@ -14,7 +14,7 @@ import java.io.File;
 
 public class ProjectFileContract {
     public interface View {
-        void display(JavaProjectFolder projectFile, boolean expand);
+        void display(JavaProject projectFile, boolean expand);
 
         TreeNode refresh();
 
@@ -22,9 +22,9 @@ public class ProjectFileContract {
     }
 
     public interface Presenter {
-        void show(JavaProjectFolder projectFile, boolean expand);
+        void show(JavaProject projectFile, boolean expand);
 
-        void refresh(JavaProjectFolder projectFile);
+        void refresh(JavaProject projectFile);
     }
 
     public interface FileActionListener {

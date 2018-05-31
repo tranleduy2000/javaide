@@ -10,7 +10,7 @@ import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
 import com.duy.project.file.android.AndroidProject;
 import com.duy.project.file.java.ClassFile;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +31,7 @@ public class ProjectManager {
     private static final String PROJECT_NAME = "PROJECT_NAME";
 
 
-    public static void saveProject(@NonNull Context context, @NonNull JavaProjectFolder folder) {
+    public static void saveProject(@NonNull Context context, @NonNull JavaProject folder) {
         SharedPreferences preferences = context.getSharedPreferences(CURRENT_PROJECT, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = preferences.edit();
         edit.putBoolean(ANDROID_PROJECT, folder instanceof AndroidProject);
@@ -43,7 +43,7 @@ public class ProjectManager {
     }
 
     @Nullable
-    public static JavaProjectFolder getLastProject(@NonNull Context context) {
+    public static JavaProject getLastProject(@NonNull Context context) {
         SharedPreferences preferences = context.getSharedPreferences(CURRENT_PROJECT, Context.MODE_PRIVATE);
         boolean androidProject = preferences.getBoolean(ANDROID_PROJECT, false);
         String rootDir = preferences.getString(ROOT_DIR, null);
@@ -54,17 +54,17 @@ public class ProjectManager {
         if (androidProject) {
             return new AndroidProject(new File(rootDir), mainClassName, packageName, projectName);
         } else {
-            return new JavaProjectFolder(new File(rootDir), mainClassName, packageName, projectName);
+            return new JavaProject(new File(rootDir), mainClassName, packageName, projectName);
         }
     }
 
     @Nullable
-    public static JavaProjectFolder createProjectIfNeed(Context context, File file) {
+    public static JavaProject createProjectIfNeed(Context context, File file) {
         if (file.isFile() || !file.canWrite() || !file.canRead()) {
             return null;
         }
         // TODO: 05-Aug-17 dynamic change classpath
-        JavaProjectFolder projectFile = new JavaProjectFolder(file.getParentFile(), null,
+        JavaProject projectFile = new JavaProject(file.getParentFile(), null,
                 null, file.getName());
         projectFile.setProjectName(file.getName());
         try {

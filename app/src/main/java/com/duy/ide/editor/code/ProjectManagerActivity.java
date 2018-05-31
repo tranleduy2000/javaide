@@ -70,7 +70,7 @@ import com.duy.project.ProjectFilePresenter;
 import com.duy.project.ProjectManager;
 import com.duy.project.file.android.AndroidProject;
 import com.duy.project.file.java.ClassFile;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 import com.duy.project.view.dialog.DialogManager;
 import com.duy.project.view.dialog.DialogNewAndroidProject;
 import com.duy.project.view.dialog.DialogNewAndroidResource;
@@ -117,7 +117,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     protected FileManager mFileManager;
     protected EditorPagerAdapter mPageAdapter;
     protected SlidingUpPanelLayout mContainerOutput;
-    protected JavaProjectFolder mProjectFile;
+    protected JavaProject mProjectFile;
     protected Presenter mFilePresenter;
     protected ViewPager mBottomPage;
     protected PagePresenter mPagePresenter;
@@ -158,7 +158,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState != null) {
-            this.mProjectFile = (JavaProjectFolder) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
+            this.mProjectFile = (JavaProject) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
         } else {
             this.mProjectFile = ProjectManager.getLastProject(this);
         }
@@ -433,7 +433,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     }
 
     @Override
-    public void onProjectCreated(@NonNull JavaProjectFolder projectFile) {
+    public void onProjectCreated(@NonNull JavaProject projectFile) {
         Log.d(TAG, "onProjectCreated() called with: projectFile = [" + projectFile + "]");
 
         //save project
@@ -628,7 +628,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
             case REQUEST_OPEN_JAVA_PROJECT: {
                 if (resultCode == RESULT_OK) {
                     String file = FileExplorerActivity.getFile(data);
-                    JavaProjectFolder pf = ProjectManager.createProjectIfNeed(getApplicationContext(),
+                    JavaProject pf = ProjectManager.createProjectIfNeed(getApplicationContext(),
                             new File(file));
                     if (pf != null) onProjectCreated(pf);
                     else

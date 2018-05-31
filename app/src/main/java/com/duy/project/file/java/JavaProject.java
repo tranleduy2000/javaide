@@ -21,7 +21,7 @@ import java.util.ArrayList;
  */
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class JavaProjectFolder implements Serializable, Cloneable {
+public class JavaProject implements Serializable, Cloneable {
     private static final String TAG = "ProjectFile";
 
     protected ArrayList<File> javaSrcDirs = new ArrayList<>();
@@ -63,7 +63,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
     protected String projectName;
     protected File jarArchive;
 
-    public JavaProjectFolder(File root, @Nullable String mainClassName, @Nullable String packageName, String projectName) {
+    public JavaProject(File root, @Nullable String mainClassName, @Nullable String packageName, String projectName) {
         this.mainClass = new ClassFile(mainClassName);
         this.projectName = projectName;
         this.packageName = packageName;
@@ -204,7 +204,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         }
     }
 
-    public JavaProjectFolder createMainClass() throws IOException {
+    public JavaProject createMainClass() throws IOException {
         this.mkdirs();
         if (packageName != null) {
             //create package file

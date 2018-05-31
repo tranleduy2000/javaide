@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.duy.compile.CompileManager;
 import com.duy.ide.R;
 import com.duy.project.ProjectFileContract;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
@@ -35,7 +35,7 @@ import static android.widget.FrameLayout.LayoutParams;
 public class FolderStructureFragment extends Fragment implements ProjectFileContract.View {
     public static final String TAG = "FolderStructureFragment";
     private final android.os.Handler mHandler = new android.os.Handler();
-    private JavaProjectFolder mProjectFile;
+    private JavaProject mProjectFile;
     @Nullable
     private com.duy.project.ProjectFileContract.FileActionListener listener;
     private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
@@ -63,7 +63,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     private AndroidTreeView mTreeView;
     private SharedPreferences mPref;
 
-    public static FolderStructureFragment newInstance(@NonNull JavaProjectFolder projectFile) {
+    public static FolderStructureFragment newInstance(@NonNull JavaProject projectFile) {
 
         Bundle args = new Bundle();
         args.putSerializable(CompileManager.PROJECT_FILE, projectFile);
@@ -86,7 +86,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mProjectFile = (JavaProjectFolder) getArguments().getSerializable(CompileManager.PROJECT_FILE);
+        mProjectFile = (JavaProject) getArguments().getSerializable(CompileManager.PROJECT_FILE);
         mContainerView = view.findViewById(R.id.container);
         view.findViewById(R.id.img_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,7 +129,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     }
 
     @Nullable
-    private TreeNode createFileStructure(@Nullable JavaProjectFolder projectFile) {
+    private TreeNode createFileStructure(@Nullable JavaProject projectFile) {
         if (projectFile == null) return null;
         File rootDir = projectFile.getProjectDir();
         TreeNode root = new TreeNode(new FolderHolder.TreeItem(rootDir, rootDir, listener));
@@ -216,7 +216,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
 
 
     @Override
-    public void display(JavaProjectFolder projectFile, boolean expand) {
+    public void display(JavaProject projectFile, boolean expand) {
         this.mProjectFile = projectFile;
         TreeNode root = refresh();
         if (expand && mTreeView != null) expandSrcDir(root);

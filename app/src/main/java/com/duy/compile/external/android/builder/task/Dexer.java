@@ -9,7 +9,7 @@ import com.duy.dex.Dex;
 import com.duy.dx.merge.CollisionPolicy;
 import com.duy.dx.merge.DexMerger;
 import com.duy.ide.DLog;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -45,7 +45,7 @@ public class Dexer extends BuildTask {
         return true;
     }
 
-    private boolean dexLibs(@NonNull JavaProjectFolder project) throws Exception {
+    private boolean dexLibs(@NonNull JavaProject project) throws Exception {
         builder.stdout("Dex libs");
 
         if (DLog.DEBUG) DLog.d(TAG, "dexLibs() called with: project = [" + project + "]");
@@ -86,7 +86,7 @@ public class Dexer extends BuildTask {
     /**
      * Merge all classed has been build by {@link JavaCompiler} to a single file .dex
      */
-    private boolean dexBuildClasses(@NonNull JavaProjectFolder project) throws IOException {
+    private boolean dexBuildClasses(@NonNull JavaProject project) throws IOException {
         builder.stdout("Merge build classes");
 
         if (DLog.DEBUG) DLog.d(TAG, "dexBuildClasses() called with: project = [" + project + "]");
@@ -102,7 +102,7 @@ public class Dexer extends BuildTask {
         return resultCode == 0;
     }
 
-    private boolean dexMerge(@NonNull JavaProjectFolder projectFile) throws IOException {
+    private boolean dexMerge(@NonNull JavaProject projectFile) throws IOException {
         builder.stdout("Merge dex files");
         File[] dexedLibs = projectFile.getDirBuildDexedLibs().listFiles(new FileFilter() {
             @Override

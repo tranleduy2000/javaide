@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.Patterns;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +96,7 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
             String mainClassName = editPackage.getText() + "." + editMainClass.getText();
             String projectName = editAppName.getText().toString();
             String packageName = editPackage.getText().toString();
-            JavaProjectFolder projectFile = new JavaProjectFolder(root, mainClassName, packageName, projectName);
+            JavaProject projectFile = new JavaProject(root, mainClassName, packageName, projectName);
             try {
                 projectFile.createMainClass();
                 if (listener != null) {
@@ -150,6 +150,6 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
 
 
     public interface OnCreateProjectListener {
-        void onProjectCreated(JavaProjectFolder projectFile);
+        void onProjectCreated(JavaProject projectFile);
     }
 }

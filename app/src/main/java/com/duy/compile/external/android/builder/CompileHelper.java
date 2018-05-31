@@ -16,7 +16,7 @@ import com.duy.dx.merge.DexMerger;
 import com.duy.ide.DLog;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProject;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 import com.sun.tools.javac.main.Main;
 
 import java.io.File;
@@ -37,7 +37,7 @@ public class CompileHelper {
     private static final String TAG = "CommandManager";
 
     @Nullable
-    public static File buildJarAchieve(Context context, JavaProjectFolder projectFile,
+    public static File buildJarAchieve(Context context, JavaProject projectFile,
                                        DiagnosticListener listener) throws IOException {
         int status = compileJava(context, projectFile, listener);
         if (status != Main.EXIT_OK) {
@@ -48,11 +48,11 @@ public class CompileHelper {
         return projectFile.getOutJarArchive();
     }
 
-    public static int compileJava(Context context, JavaProjectFolder pf) {
+    public static int compileJava(Context context, JavaProject pf) {
         return compileJava(context, pf, null);
     }
 
-    public static int compileJava(Context context, JavaProjectFolder projectFile, @Nullable DiagnosticListener listener) {
+    public static int compileJava(Context context, JavaProject projectFile, @Nullable DiagnosticListener listener) {
         try {
 
             String[] args = new String[]{
@@ -72,13 +72,13 @@ public class CompileHelper {
         return Main.EXIT_ERROR;
     }
 
-    public static void compileAndRun(Context context, InputStream in, File tempDir, JavaProjectFolder projectFile) throws Exception {
+    public static void compileAndRun(Context context, InputStream in, File tempDir, JavaProject projectFile) throws Exception {
         compileJava(context, projectFile);
         convertToDexFormat(context, projectFile);
         executeDex(context, in, projectFile.getDexFile(), tempDir, projectFile.getMainClass().getName());
     }
 
-    public static void dexLibs(@NonNull JavaProjectFolder projectFile) throws Exception {
+    public static void dexLibs(@NonNull JavaProject projectFile) throws Exception {
         DLog.d(TAG, "dexLibs() called with: projectFile = [" + projectFile + "]");
         File dirLibs = projectFile.getDirLibs();
         File[] files = dirLibs.listFiles(new FileFilter() {
@@ -105,7 +105,7 @@ public class CompileHelper {
         }
     }
 
-    public static File dexBuildClasses(@NonNull JavaProjectFolder projectFile) throws IOException {
+    public static File dexBuildClasses(@NonNull JavaProject projectFile) throws IOException {
         DLog.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
         String input = projectFile.getDirBuildClasses().getPath();
         FileManager.ensureFileExist(new File(input));
@@ -116,7 +116,7 @@ public class CompileHelper {
         return projectFile.getDexFile();
     }
 
-    public static File dexMerge(@NonNull JavaProjectFolder projectFile) throws IOException {
+    public static File dexMerge(@NonNull JavaProject projectFile) throws IOException {
         DLog.d(TAG, "dexMerge() called with: projectFile = [" + projectFile + "]");
         FileManager.ensureFileExist(projectFile.getDexFile());
 
@@ -145,7 +145,7 @@ public class CompileHelper {
         Java.run(args, tempDir.getPath(), in);
     }
 
-    public static void convertToDexFormat(Context context, @NonNull JavaProjectFolder projectFile) throws Exception {
+    public static void convertToDexFormat(Context context, @NonNull JavaProject projectFile) throws Exception {
         Log.d(TAG, "convertToDexFormat() called with: projectFile = [" + projectFile + "]");
         dexLibs(projectFile);
         dexBuildClasses(projectFile);

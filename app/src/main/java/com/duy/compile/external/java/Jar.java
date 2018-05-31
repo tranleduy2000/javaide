@@ -5,7 +5,7 @@
 
 package com.duy.compile.external.java;
 
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -49,7 +49,7 @@ public class Jar {
         }
     }
 
-    public static void createJarArchive(JavaProjectFolder projectFolder) throws IOException {
+    public static void createJarArchive(JavaProject projectFolder) throws IOException {
         //input file
         File dirBuildClasses = projectFolder.getDirBuildClasses();
         File archiveFile = projectFolder.getOutJarArchive();

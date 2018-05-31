@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.Template;
 import com.duy.project.ProjectFileContract;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 import com.duy.project.utils.ProjectFileUtil;
 
 import java.io.File;
@@ -41,7 +41,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     private ProjectFileContract.FileActionListener listener;
     private EditText mPackage;
 
-    public static DialogNewClass newInstance(@NonNull JavaProjectFolder p,
+    public static DialogNewClass newInstance(@NonNull JavaProject p,
                                              @Nullable String currentPackage,
                                              @Nullable File currentFolder) {
         Bundle args = new Bundle();
@@ -110,7 +110,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         String packageName = getArguments().getString(KEY_PACKAGE);
         if (packageName == null || packageName.isEmpty()) {
             File currentFolder = (File) getArguments().getSerializable(KEY_PARENT_FILE);
-            JavaProjectFolder projectFile = (JavaProjectFolder) getArguments().getSerializable(KEY_PROJECT_FILE);
+            JavaProject projectFile = (JavaProject) getArguments().getSerializable(KEY_PROJECT_FILE);
             if (currentFolder != null && projectFile != null) {
                 packageName = ProjectFileUtil.findPackage(projectFile.getJavaSrcDirs().get(0), currentFolder);
             }
@@ -144,7 +144,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
 
 
         Bundle arguments = getArguments();
-        JavaProjectFolder projectFile = (JavaProjectFolder) arguments.getSerializable(KEY_PROJECT_FILE);
+        JavaProject projectFile = (JavaProject) arguments.getSerializable(KEY_PROJECT_FILE);
 
         if (projectFile != null) {
             File classf = projectFile.createClass( currentPackage, className, content);

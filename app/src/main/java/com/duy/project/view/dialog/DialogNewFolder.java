@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.project.ProjectFileContract;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 
 import java.io.File;
 
@@ -32,7 +32,7 @@ public class DialogNewFolder extends AppCompatDialogFragment implements View.OnC
     @Nullable
     private ProjectFileContract.FileActionListener listener;
 
-    public static DialogNewFolder newInstance(@NonNull JavaProjectFolder p, @Nullable File currentFolder) {
+    public static DialogNewFolder newInstance(@NonNull JavaProject p, @Nullable File currentFolder) {
         Bundle args = new Bundle();
         args.putSerializable(KEY_PROJECT_FILE, p);
         args.putSerializable(KEY_PARENT_FILE, currentFolder);

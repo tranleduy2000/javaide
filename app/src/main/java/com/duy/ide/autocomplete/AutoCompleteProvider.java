@@ -22,7 +22,7 @@ import com.duy.ide.autocomplete.model.PackageDescription;
 import com.duy.ide.autocomplete.parser.JavaParser;
 import com.duy.ide.autocomplete.util.EditorUtil;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 import com.google.common.collect.Lists;
 import com.sun.tools.javac.tree.JCTree;
 
@@ -986,7 +986,7 @@ public class AutoCompleteProvider {
         return false;
     }
 
-    public void load(JavaProjectFolder projectFile) {
+    public void load(JavaProject projectFile) {
         mClassLoader.loadAllClasses(projectFile);
         mPackageProvider.init(projectFile, mClassLoader.getClassReader());
     }

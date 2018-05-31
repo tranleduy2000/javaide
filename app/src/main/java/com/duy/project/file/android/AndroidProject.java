@@ -7,7 +7,7 @@ import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.ClassFile;
-import com.duy.project.file.java.JavaProjectFolder;
+import com.duy.project.file.java.JavaProject;
 import com.google.common.base.MoreObjects;
 
 import java.io.File;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 /**
  * Created by Duy on 05-Aug-17.
  */
-public class AndroidProject extends JavaProjectFolder {
+public class AndroidProject extends JavaProject {
     private KeyStore keystore;
 
     private File xmlManifest;

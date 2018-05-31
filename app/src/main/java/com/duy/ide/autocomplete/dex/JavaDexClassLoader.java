@@ -3,7 +3,7 @@ package com.duy.ide.autocomplete.dex;
 import android.support.annotation.NonNull;
 
 import com.duy.ide.autocomplete.model.ClassDescription;
-import com.duy.project.file.java.JavaProject;
+import com.duy.android.compiler.file.java.JavaProject;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.duy.project;
 
-import com.duy.project.file.java.JavaProject;
+import com.duy.android.compiler.file.java.JavaProject;
 
 /**
  * Created by Duy on 17-Jul-17.

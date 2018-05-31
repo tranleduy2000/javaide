@@ -18,11 +18,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.compile.CompileManager;
+import com.duy.ide.CompileManager;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.java.ClassFile;
-import com.duy.project.file.java.JavaProject;
-import com.duy.project.file.java.ClassUtil;
+import com.duy.android.compiler.file.java.ClassFile;
+import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.android.compiler.file.java.ClassUtil;
 
 import java.io.File;
 import java.util.ArrayList;

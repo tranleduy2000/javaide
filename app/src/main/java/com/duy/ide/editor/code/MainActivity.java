@@ -46,13 +46,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.duy.JavaApplication;
-import com.duy.compile.BuildJar;
-import com.duy.compile.BuildTask;
-import com.duy.compile.CompileManager;
-import com.duy.compile.builder.AndroidProjectBuilder;
-import com.duy.compile.builder.IBuilder;
-import com.duy.compile.builder.JavaProjectBuilder;
-import com.duy.compile.diagnostic.DiagnosticFragment;
+import com.duy.android.compiler.BuildJar;
+import com.duy.android.compiler.BuildTask;
+import com.duy.ide.CompileManager;
+import com.duy.android.compiler.builder.AndroidProjectBuilder;
+import com.duy.android.compiler.builder.IBuilder;
+import com.duy.android.compiler.builder.JavaProjectBuilder;
+import com.duy.ide.diagnostic.DiagnosticFragment;
 import com.duy.ide.Builder;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
@@ -68,10 +68,10 @@ import com.duy.ide.setting.AppSetting;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
 import com.duy.ide.utils.RootUtils;
 import com.duy.project.ProjectManager;
-import com.duy.project.file.android.AndroidProject;
-import com.duy.project.file.java.ClassFile;
-import com.duy.project.file.java.ClassUtil;
-import com.duy.project.file.java.JavaProject;
+import com.duy.android.compiler.file.android.AndroidProject;
+import com.duy.android.compiler.file.java.ClassFile;
+import com.duy.android.compiler.file.java.ClassUtil;
+import com.duy.android.compiler.file.java.JavaProject;
 import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -341,7 +341,7 @@ public class MainActivity extends ProjectManagerActivity implements
 
         final DiagnosticCollector mDiagnosticCollector = new DiagnosticCollector();
         final IBuilder<JavaProject> builder = new JavaProjectBuilder(this, mProject, mDiagnosticCollector);
-        final BuildTask.CompileListener listener = new BuildTask.CompileListener() {
+        final BuildTask.CompileListener<JavaProject> listener = new BuildTask.CompileListener<JavaProject>() {
             @Override
             public void onStart() {
                 updateUiStartCompile();

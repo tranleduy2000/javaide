@@ -28,7 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
-import com.duy.compile.diagnostic.SpanUtil;
+import com.duy.ide.diagnostic.SpanUtil;
 import com.duy.ide.R;
 import com.duy.ide.autocomplete.model.ClassDescription;
 import com.duy.ide.autocomplete.model.ConstructorDescription;

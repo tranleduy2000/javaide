@@ -19,7 +19,7 @@ import com.duy.ide.code_sample.model.AssetUtil;
 import com.duy.ide.code_sample.model.CodeCategory;
 import com.duy.ide.code_sample.model.CodeProjectSample;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.java.JavaProject;
+import com.duy.android.compiler.file.java.JavaProject;
 import com.duy.project.ProjectManager;
 
 import org.w3c.dom.Document;

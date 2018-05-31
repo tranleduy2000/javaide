@@ -25,7 +25,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
-import com.duy.compile.CompileManager;
+import com.duy.ide.CompileManager;
 import com.duy.ide.R;
 import com.duy.ide.activities.SplashScreenActivity;
 import com.duy.ide.setting.AppSetting;

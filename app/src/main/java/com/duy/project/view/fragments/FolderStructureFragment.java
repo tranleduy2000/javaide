@@ -13,10 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.duy.compile.CompileManager;
+import com.duy.ide.CompileManager;
 import com.duy.ide.R;
 import com.duy.project.ProjectFileContract;
-import com.duy.project.file.java.JavaProject;
+import com.duy.android.compiler.file.java.JavaProject;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 

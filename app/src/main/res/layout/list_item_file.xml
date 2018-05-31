@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/buttonsContainer"
         android:layout_toStartOf="@+id/buttonsContainer"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -28,11 +31,11 @@
 
         <TextView
             android:id="@+id/node_value"
-            tools:text="sample"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/dark.color_folder"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:text="sample" />
     </LinearLayout>
 
 
@@ -42,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/linearLayout"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:orientation="horizontal">
 

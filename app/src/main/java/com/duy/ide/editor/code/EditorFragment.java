@@ -31,7 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.duy.compile.CompileManager;
+import com.duy.ide.CompileManager;
 import com.duy.ide.EditPageContract;
 import com.duy.ide.EditorControl;
 import com.duy.ide.R;

@@ -28,7 +28,7 @@ import com.duy.ide.themefont.themes.database.CodeTheme;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 
-import static com.duy.ide.java.autocomplete.Patterns.JAVA_COMMENTS;
+import static com.duy.ide.javaide.autocomplete.Patterns.JAVA_COMMENTS;
 
 /**
  * Created by Duy on 18-Jun-17.

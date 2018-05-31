@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.duy.android.compiler.file.java.JavaProject;
 import com.duy.ide.R;
 import com.duy.projectview.ProjectFileContract;
-import com.duy.ide.java.run.activities.ExecuteActivity;
+import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 

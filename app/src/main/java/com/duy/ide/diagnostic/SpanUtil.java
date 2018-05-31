@@ -11,7 +11,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 
 import com.duy.ide.R;
-import com.duy.ide.java.autocomplete.model.ClassDescription;
+import com.duy.ide.javaide.autocomplete.model.ClassDescription;
 
 import java.io.File;
 

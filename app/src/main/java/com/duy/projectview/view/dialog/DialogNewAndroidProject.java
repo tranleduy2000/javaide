@@ -17,8 +17,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.java.autocomplete.Patterns;
-import com.duy.ide.java.sample.model.AssetUtil;
+import com.duy.ide.javaide.autocomplete.Patterns;
+import com.duy.ide.javaide.sample.model.AssetUtil;
 import com.duy.ide.file.FileManager;
 import com.duy.android.compiler.file.android.AndroidProject;
 

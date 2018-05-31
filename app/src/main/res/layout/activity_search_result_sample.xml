@@ -19,6 +19,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".java.sample.activities.SearchResultSampleActivity">
+    tools:context=".javaide.sample.activities.SearchResultSampleActivity">
 
 </FrameLayout>

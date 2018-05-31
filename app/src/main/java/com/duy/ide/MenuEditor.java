@@ -25,7 +25,7 @@ import android.support.v4.view.GravityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.duy.ide.java.sample.activities.SampleActivity;
+import com.duy.ide.javaide.sample.activities.SampleActivity;
 import com.duy.ide.editor.code.MainActivity;
 import com.duy.ide.setting.SettingsActivity;
 import com.duy.ide.utils.DonateUtils;

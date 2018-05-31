@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.FileProvider;
-import android.widget.Toast;
 
+import com.duy.ide.BuildConfig;
 import com.duy.ide.setting.AppSetting;
 
 import java.io.File;
@@ -31,24 +31,20 @@ public class RootUtils {
         return false;
     }
 
-    private static boolean openApk(Context context, File file) {
-        try {
-            Uri uri;
-            if (Build.VERSION.SDK_INT >= 24) {
-                uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
-            } else {
-                uri = Uri.fromFile(file);
-            }
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "application/vnd.android.package-archive");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    private static void openApk(Context context, File file) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Uri apkUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
+            Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+            intent.setData(apkUri);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        } else {
+            Uri apkUri = Uri.fromFile(file);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         }
-        return true;
     }
 
     //https://stackoverflow.com/questions/26926274/install-android-apk-without-prompt

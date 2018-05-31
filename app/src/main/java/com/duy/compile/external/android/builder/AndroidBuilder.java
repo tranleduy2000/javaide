@@ -58,6 +58,12 @@ public class AndroidBuilder implements IAndroidBuilder {
                 return;
             }
         }
+
+        cleanAfterBuild();
+    }
+
+    private void cleanAfterBuild() {
+        mProject.getApkUnsigned().delete();
     }
 
     public void stdout(String message) {

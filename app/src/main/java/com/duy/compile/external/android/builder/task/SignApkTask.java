@@ -3,6 +3,7 @@ package com.duy.compile.external.android.builder.task;
 import com.duy.compile.external.android.builder.AndroidBuilder;
 import com.duy.compile.external.android.builder.BuildType;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -44,12 +45,16 @@ public class SignApkTask extends BuildTask {
         ZipSigner signer = new ZipSigner();
         signer.setKeymode(mode);
 
-        String in = project.getApkUnsigned().getAbsolutePath();
-        String out = project.getApkSigned().getAbsolutePath();
+        File apkUnsigned = project.getApkUnsigned();
+        String in = apkUnsigned.getAbsolutePath();
+        File apkSigned = project.getApkSigned();
+        apkSigned.delete();
+        String out = apkSigned.getAbsolutePath();
         signer.signZip(in, out);
 
         builder.stdout("Signed debug apk " + project.getApkUnsigned().getName() + " => " + project.getApkSigned().getName());
 
-        return true;
+
+        return apkSigned.exists();
     }
 }

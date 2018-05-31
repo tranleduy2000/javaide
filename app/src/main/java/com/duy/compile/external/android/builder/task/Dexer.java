@@ -9,7 +9,6 @@ import com.duy.dex.Dex;
 import com.duy.dx.merge.CollisionPolicy;
 import com.duy.dx.merge.DexMerger;
 import com.duy.ide.DLog;
-import com.duy.project.file.android.AndroidProject;
 import com.duy.project.file.java.JavaProjectFolder;
 
 import java.io.File;
@@ -19,8 +18,13 @@ import java.io.IOException;
 public class Dexer extends BuildTask {
     private static final String TAG = "Dexer";
 
-    public Dexer(AndroidBuilder2 builder, AndroidProject project) {
-        super(builder, project);
+    public Dexer(AndroidBuilder2 builder) {
+        super(builder);
+    }
+
+    @Override
+    public String getTaskName() {
+        return "Dx";
     }
 
     @Override
@@ -114,7 +118,7 @@ public class Dexer extends BuildTask {
                 merged.writeTo(projectFile.getDexFile());
             }
         }
-        builder.stdout("Merge complete");
+        builder.stdout("Merge all dexed files completed");
         return true;
     }
 

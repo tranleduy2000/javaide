@@ -148,7 +148,7 @@ public class AndroidBuilder {
         CustomKeySigner.signZip(zipsigner, keystorePath, keystorePw, certAlias,
                 certPw, signatureAlgorithm,
                 projectFile.getApkUnsigned().getPath(),
-                projectFile.getApkUnaligned().getPath());
+                projectFile.getApkSigned().getPath());
     }
 
 

@@ -31,14 +31,18 @@ public final class ApkBuilderMain {
     private static final Pattern PATTERN_JAR_EXT = Pattern.compile("^.+\\.jar$",
             Pattern.CASE_INSENSITIVE);
 
+    private ApkBuilderMain() {
+    }
+
     /**
      * Main method. This is meant to be called from the command line through an exec.
      * <p/>WARNING: this will call {@link System#exit(int)} if anything goes wrong.
+     *
      * @param args command line arguments.
      */
-    public static void main(String[] args) {
+    public static int main(String[] args) {
         if (args.length < 1) {
-            printUsageAndQuit();
+            return printUsageAndQuit();
         }
 
         System.err.println("\nTHIS TOOL IS DEPRECATED. See --help for more information.\n");
@@ -71,57 +75,57 @@ public final class ApkBuilderMain {
 
                 } else if ("-z".equals(argument)) {
                     // quick check on the next argument.
-                    if (index == args.length)  {
-                        printAndExit("Missing value for -z");
+                    if (index == args.length) {
+                        return printAndExit("Missing value for -z");
                     }
 
                     zipArchives.add(new File(args[index++]));
-                } else if ("-f". equals(argument)) {
+                } else if ("-f".equals(argument)) {
                     if (dexFile != null) {
                         // can't have more than one dex file.
-                        printAndExit("Can't have more than one dex file (-f)");
+                        return printAndExit("Can't have more than one dex file (-f)");
                     }
                     // quick check on the next argument.
                     if (index == args.length) {
-                        printAndExit("Missing value for -f");
+                        return printAndExit("Missing value for -f");
                     }
 
                     dexFile = new File(args[index++]);
-                } else if ("-rf". equals(argument)) {
+                } else if ("-rf".equals(argument)) {
                     // quick check on the next argument.
                     if (index == args.length) {
-                        printAndExit("Missing value for -rf");
+                        return printAndExit("Missing value for -rf");
                     }
 
                     sourceFolders.add(new File(args[index++]));
-                } else if ("-rj". equals(argument)) {
+                } else if ("-rj".equals(argument)) {
                     // quick check on the next argument.
                     if (index == args.length) {
-                        printAndExit("Missing value for -rj");
+                        return printAndExit("Missing value for -rj");
                     }
 
                     jarFiles.add(new File(args[index++]));
                 } else if ("-nf".equals(argument)) {
                     // quick check on the next argument.
                     if (index == args.length) {
-                        printAndExit("Missing value for -nf");
+                        return printAndExit("Missing value for -nf");
                     }
 
                     nativeFolders.add(new File(args[index++]));
                 } else if ("-storetype".equals(argument)) {
                     // quick check on the next argument.
                     if (index == args.length) {
-                        printAndExit("Missing value for -storetype");
+                        return printAndExit("Missing value for -storetype");
                     }
 
                     // FIXME
                 } else {
-                    printAndExit("Unknown argument: " + argument);
+                    return printAndExit("Unknown argument: " + argument);
                 }
             } while (index < args.length);
 
             if (zipArchives.size() == 0) {
-                printAndExit("No zip archive, there must be one for the resources");
+                return printAndExit("No zip archive, there must be one for the resources");
             }
 
             // create the builder with the basic files.
@@ -132,7 +136,7 @@ public final class ApkBuilderMain {
 
             // add the rest of the files.
             // first zip Archive was used in the constructor.
-            for (int i = 1 ; i < zipArchives.size() ; i++) {
+            for (int i = 1; i < zipArchives.size(); i++) {
                 builder.addZipFile(zipArchives.get(i));
             }
 
@@ -164,21 +168,22 @@ public final class ApkBuilderMain {
             // seal the apk
             builder.sealApk();
 
-
+            return 0;
         } catch (ApkCreationException e) {
-            printAndExit(e.getMessage());
+            return printAndExit(e.getMessage());
         } catch (DuplicateFileException e) {
-            printAndExit(String.format(
+            return printAndExit(String.format(
                     "Found duplicate file for APK: %1$s\nOrigin 1: %2$s\nOrigin 2: %3$s",
                     e.getArchivePath(), e.getFile1(), e.getFile2()));
         } catch (SealedApkException e) {
-            printAndExit(e.getMessage());
+            return printAndExit(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+            return -1;
         }
     }
 
-    private static void printUsageAndQuit() {
+    private static int printUsageAndQuit() {
         // 80 cols marker:  01234567890123456789012345678901234567890123456789012345678901234567890123456789
         System.err.println("\n\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         System.err.println("THIS TOOL IS DEPRECATED and may stop working at any time!\n");
@@ -213,16 +218,13 @@ public final class ApkBuilderMain {
         System.err.println("    -nf     Followed by the root folder containing native libraries to");
         System.err.println("            include in the application package.");
 
-        System.exit(1);
+        return (1);
     }
 
-    private static void printAndExit(String... messages) {
+    private static int printAndExit(String... messages) {
         for (String message : messages) {
             System.err.println(message);
         }
-        System.exit(1);
-    }
-
-    private ApkBuilderMain() {
+        return (1);
     }
 }

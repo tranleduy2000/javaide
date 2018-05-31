@@ -2,7 +2,6 @@ package com.duy.compile.external.android.builder.task;
 
 import com.duy.compile.external.android.builder.AndroidBuilder2;
 import com.duy.compile.external.java.Javac;
-import com.duy.project.file.android.AndroidProject;
 
 import java.util.Arrays;
 
@@ -11,8 +10,13 @@ import javax.tools.DiagnosticListener;
 
 public class JavaCompiler extends BuildTask {
 
-    public JavaCompiler(AndroidBuilder2 builder, AndroidProject project) {
-        super(builder, project);
+    public JavaCompiler(AndroidBuilder2 builder) {
+        super(builder);
+    }
+
+    @Override
+    public String getTaskName() {
+        return "Compile java source";
     }
 
     public boolean run() {

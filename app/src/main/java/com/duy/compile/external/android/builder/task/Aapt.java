@@ -5,7 +5,6 @@ import android.os.Build;
 import com.duy.compile.external.android.builder.AndroidBuilder2;
 import com.duy.ide.activities.Environment;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.android.AndroidProject;
 
 import org.apache.commons.io.IOUtils;
 
@@ -109,8 +108,13 @@ import java.util.regex.Pattern;
  */
 public class Aapt extends BuildTask {
 
-    public Aapt(AndroidBuilder2 builder, AndroidProject project) {
-        super(builder, project);
+    public Aapt(AndroidBuilder2 builder) {
+        super(builder);
+    }
+
+    @Override
+    public String getTaskName() {
+        return "AAPT";
     }
 
     public boolean run() throws IOException, InterruptedException {

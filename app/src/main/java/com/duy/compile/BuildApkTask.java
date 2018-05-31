@@ -35,9 +35,6 @@ public class BuildApkTask extends AsyncTask<AndroidProject, Object, File> {
     protected File doInBackground(AndroidProject... params) {
         AndroidProject projectFile = params[0];
         if (params[0] == null) return null;
-
-        //clean
-        projectFile.clean();
         try {
             return CompileHelper.buildApk(context, projectFile, mDiagnosticCollector);
         } catch (Exception e) {

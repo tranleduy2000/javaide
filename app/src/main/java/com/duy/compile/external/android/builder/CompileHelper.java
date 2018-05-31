@@ -155,9 +155,9 @@ public class CompileHelper {
     public static File buildApk(Context context, AndroidProject projectFile,
                                 DiagnosticCollector diagnosticCollector) throws Exception {
 //        AndroidBuilder.build(context, projectFile, diagnosticCollector);
-        AndroidBuilder2 builder = new AndroidBuilder2(context);
-        builder.build(projectFile, BuildType.DEBUG);
-        return projectFile.getApkUnaligned();
+        AndroidBuilder2 builder = new AndroidBuilder2(context, projectFile);
+        builder.build(BuildType.DEBUG);
+        return projectFile.getApkSigned();
     }
 
     public class Action {

@@ -26,7 +26,7 @@ public class AndroidProject extends JavaProjectFolder {
     /* Output */
     private File outResourceFile;
     private File apkUnsigned;
-    private File apkUnaligned;
+    private File apkSigned;
 
     /* PROJECT */
     private ArrayList<File> resDirs;
@@ -54,7 +54,7 @@ public class AndroidProject extends JavaProjectFolder {
         xmlManifest = new File(dirSrcMain, "AndroidManifest.xml");
 
         apkUnsigned = new File(dirBuildOutput, "app-unsigned-debug.apk");
-        apkUnaligned = new File(dirBuildOutput, "app-unaligned-debug.apk");
+        apkSigned = new File(dirBuildOutput, "app-debug.apk");
 
         createClassR();
 
@@ -97,8 +97,8 @@ public class AndroidProject extends JavaProjectFolder {
         return xmlManifest;
     }
 
-    public File getApkUnaligned() throws IOException {
-        return apkUnaligned;
+    public File getApkSigned() throws IOException {
+        return apkSigned;
     }
 
     public File getOutResourceFile() {
@@ -110,7 +110,7 @@ public class AndroidProject extends JavaProjectFolder {
     public void clean() {
         super.clean();
         apkUnsigned.delete();
-        apkUnaligned.delete();
+        apkSigned.delete();
     }
 
     @Override
@@ -145,10 +145,8 @@ public class AndroidProject extends JavaProjectFolder {
         return sourcePath;
     }
 
-    public File getApkUnsigned() throws IOException {
-        if (!apkUnsigned.exists()) {
-            apkUnsigned.getParentFile().mkdirs();
-        }
+    public File getApkUnsigned() {
+        apkUnsigned.getParentFile().mkdirs();
         return apkUnsigned;
     }
 

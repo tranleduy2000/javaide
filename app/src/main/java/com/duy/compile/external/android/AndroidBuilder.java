@@ -8,7 +8,7 @@ import com.android.sdklib.build.ApkBuilderMain;
 import com.duy.compile.external.CompileHelper;
 import com.duy.ide.DLog;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.android.AndroidProjectFolder;
+import com.duy.project.file.android.AndroidProject;
 import com.duy.project.file.android.KeyStore;
 import com.sun.tools.javac.main.Main;
 
@@ -26,7 +26,7 @@ import kellinwood.security.zipsigner.optional.CustomKeySigner;
 public class AndroidBuilder {
     private static final String TAG = "BuildTask";
 
-    private static void buildApk(AndroidProjectFolder projectFile) throws Exception {
+    private static void buildApk(AndroidProject projectFile) throws Exception {
         String[] args = {
                 projectFile.getApkUnsigned().getPath(),
                 "-v",
@@ -38,7 +38,7 @@ public class AndroidBuilder {
         ApkBuilderMain.main(args);
     }
 
-    public static void build(Context context, AndroidProjectFolder projectFile,
+    public static void build(Context context, AndroidProject projectFile,
                              @NonNull DiagnosticCollector diagnosticCollector) throws Exception {
         AndroidBuilder.extractLibrary(projectFile);
 
@@ -75,7 +75,7 @@ public class AndroidBuilder {
         AndroidBuilder.publishApk();
     }
 
-    private static void extractLibrary(AndroidProjectFolder projectFolder) {
+    private static void extractLibrary(AndroidProject projectFolder) {
 //        File[] files = dirLibs.listFiles();
 //        if (files != null) {
 //            for (File lib : files) {
@@ -85,13 +85,13 @@ public class AndroidBuilder {
 //        }
     }
 
-    private static void runAidl(AndroidProjectFolder projectFile) throws Exception {
+    private static void runAidl(AndroidProject projectFile) throws Exception {
         Log.d(TAG, "runAidl() called");
 
         // TODO make aidl.so
     }
 
-    private static void runAapt(Context context, AndroidProjectFolder projectFile) throws Exception {
+    private static void runAapt(Context context, AndroidProject projectFile) throws Exception {
         Log.d(TAG, "runAapt() called");
 
         com.duy.aapt.Aapt aapt = new com.duy.aapt.Aapt();
@@ -132,7 +132,7 @@ public class AndroidBuilder {
 
     }
 
-    private static void zipSign(AndroidProjectFolder projectFile) throws Exception {
+    private static void zipSign(AndroidProject projectFile) throws Exception {
 //        if (!appContext.getString(R.string.keystore).contentEquals(projectFile.jksEmbedded.getName())) {
 //             TODO use user defined certificate
 //        }

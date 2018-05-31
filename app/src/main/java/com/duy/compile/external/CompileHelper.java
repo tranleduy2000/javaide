@@ -16,7 +16,7 @@ import com.duy.dx.merge.CollisionPolicy;
 import com.duy.dx.merge.DexMerger;
 import com.duy.ide.DLog;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.android.AndroidProjectFolder;
+import com.duy.project.file.android.AndroidProject;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.sun.tools.javac.main.Main;
 
@@ -152,7 +152,7 @@ public class CompileHelper {
         dexMerge(projectFile);
     }
 
-    public static File buildApk(Context context, AndroidProjectFolder projectFile,
+    public static File buildApk(Context context, AndroidProject projectFile,
                                 DiagnosticCollector diagnosticCollector) throws Exception {
         AndroidBuilder.build(context, projectFile, diagnosticCollector);
         return projectFile.getApkUnaligned();

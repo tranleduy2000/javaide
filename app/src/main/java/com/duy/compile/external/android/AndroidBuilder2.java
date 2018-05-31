@@ -1,7 +1,7 @@
 package com.duy.compile.external.android;
 
 import com.android.annotations.Nullable;
-import com.duy.project.file.android.AndroidProjectFolder;
+import com.duy.project.file.android.AndroidProject;
 import com.sun.tools.javac.util.Context;
 
 import java.io.PrintStream;
@@ -14,7 +14,7 @@ public class AndroidBuilder2 implements IAndroidBuilder {
     @Nullable
     private KeyStore mKeyStore;
 
-    private AndroidProjectFolder mAndroidProject;
+    private AndroidProject mAndroidProject;
 
     public AndroidBuilder2(Context context) {
         mContext = context;
@@ -24,7 +24,7 @@ public class AndroidBuilder2 implements IAndroidBuilder {
     }
 
     @Override
-    public void build(AndroidProjectFolder projectFolder, BuildType buildType) {
+    public void build(AndroidProject projectFolder, BuildType buildType) {
         setProject(projectFolder);
 
         if (mVerbose) {
@@ -66,7 +66,7 @@ public class AndroidBuilder2 implements IAndroidBuilder {
         return true;
     }
 
-    public void setProject(AndroidProjectFolder project) {
+    public void setProject(AndroidProject project) {
         this.mAndroidProject = project;
     }
 }

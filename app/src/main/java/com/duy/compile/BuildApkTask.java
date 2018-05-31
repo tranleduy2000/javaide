@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.duy.compile.external.CompileHelper;
-import com.duy.project.file.android.AndroidProjectFolder;
+import com.duy.project.file.android.AndroidProject;
 
 import java.io.File;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 
-public class BuildApkTask extends AsyncTask<AndroidProjectFolder, Object, File> {
+public class BuildApkTask extends AsyncTask<AndroidProject, Object, File> {
     private static final String TAG = "BuildApkTask";
     private Context context;
     private BuildApkTask.CompileListener listener;
@@ -32,8 +32,8 @@ public class BuildApkTask extends AsyncTask<AndroidProjectFolder, Object, File> 
     }
 
     @Override
-    protected File doInBackground(AndroidProjectFolder... params) {
-        AndroidProjectFolder projectFile = params[0];
+    protected File doInBackground(AndroidProject... params) {
+        AndroidProject projectFile = params[0];
         if (params[0] == null) return null;
 
         //clean

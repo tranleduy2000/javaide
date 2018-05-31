@@ -66,7 +66,7 @@ import com.duy.ide.setting.AppSetting;
 import com.duy.ide.themefont.activities.ThemeFontActivity;
 import com.duy.ide.utils.RootUtils;
 import com.duy.project.ProjectManager;
-import com.duy.project.file.android.AndroidProjectFolder;
+import com.duy.project.file.android.AndroidProject;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.project.utils.ClassUtil;
@@ -237,7 +237,7 @@ public class MainActivity extends ProjectManagerActivity implements
     public void runProject() {
         saveAllFile();
         if (mProjectFile != null) {
-            if (mProjectFile instanceof AndroidProjectFolder) {
+            if (mProjectFile instanceof AndroidProject) {
                 compileAndroidProject();
             } else {
                 compileJavaProject();
@@ -248,13 +248,13 @@ public class MainActivity extends ProjectManagerActivity implements
     }
 
     private void compileAndroidProject() {
-        if (mProjectFile instanceof AndroidProjectFolder) {
-            if (!((AndroidProjectFolder) mProjectFile).getXmlManifest().exists()) {
+        if (mProjectFile instanceof AndroidProject) {
+            if (!((AndroidProject) mProjectFile).getXmlManifest().exists()) {
                 Toast.makeText(this, "Can not find AndroidManifest.xml", Toast.LENGTH_SHORT).show();
                 return;
             }
             //check launcher activity
-            if (((AndroidProjectFolder) mProjectFile).getLauncherActivity() == null) {
+            if (((AndroidProject) mProjectFile).getLauncherActivity() == null) {
                 String msg = getString(R.string.can_not_find_launcher_activity);
                 Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
                         .setAction(R.string.config, new View.OnClickListener() {
@@ -264,7 +264,7 @@ public class MainActivity extends ProjectManagerActivity implements
                         }).show();
                 return;
             }
-            ((AndroidProjectFolder) mProjectFile).checkKeyStoreExits(this);
+            ((AndroidProject) mProjectFile).checkKeyStoreExits(this);
             new BuildApkTask(this, new BuildApkTask.CompileListener() {
                 @Override
                 public void onStart() {
@@ -290,7 +290,7 @@ public class MainActivity extends ProjectManagerActivity implements
                     RootUtils.installApk(MainActivity.this, apk);
                 }
 
-            }).execute((AndroidProjectFolder) mProjectFile);
+            }).execute((AndroidProject) mProjectFile);
         } else {
             if (mProjectFile != null) {
                 toast("This is Java project, please create new Android project");

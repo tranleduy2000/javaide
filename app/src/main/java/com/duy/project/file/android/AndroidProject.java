@@ -19,7 +19,7 @@ import java.util.ArrayList;
 /**
  * Created by Duy on 05-Aug-17.
  */
-public class AndroidProjectFolder extends JavaProjectFolder {
+public class AndroidProject extends JavaProjectFolder {
     private KeyStore keystore;
 
     private File xmlManifest;
@@ -35,10 +35,10 @@ public class AndroidProjectFolder extends JavaProjectFolder {
 
     private ManifestData.Activity launcherActivity;
 
-    public AndroidProjectFolder(File dirRoot,
-                                @Nullable String mainClassName,
-                                @Nullable String packageName,
-                                String projectName) {
+    public AndroidProject(File dirRoot,
+                          @Nullable String mainClassName,
+                          @Nullable String packageName,
+                          String projectName) {
         super(dirRoot, mainClassName, packageName, projectName);
     }
 

@@ -68,7 +68,7 @@ import com.duy.ide.setting.AppSetting;
 import com.duy.ide.view.SymbolListView;
 import com.duy.project.ProjectFilePresenter;
 import com.duy.project.ProjectManager;
-import com.duy.project.file.android.AndroidProjectFolder;
+import com.duy.project.file.android.AndroidProject;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.duy.project.view.dialog.DialogManager;
@@ -639,7 +639,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
             case REQUEST_OPEN_ANDROID_PROJECT: {
                 if (resultCode == RESULT_OK) {
                     String file = FileExplorerActivity.getFile(data);
-                    AndroidProjectFolder pf = ProjectManager.importAndroidProject(getApplicationContext(),
+                    AndroidProject pf = ProjectManager.importAndroidProject(getApplicationContext(),
                             new File(file));
                     if (pf != null) onProjectCreated(pf);
                     else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();

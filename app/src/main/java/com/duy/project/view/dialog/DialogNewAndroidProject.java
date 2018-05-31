@@ -20,7 +20,7 @@ import com.duy.ide.R;
 import com.duy.ide.autocomplete.Patterns;
 import com.duy.ide.code_sample.model.AssetUtil;
 import com.duy.ide.file.FileManager;
-import com.duy.project.file.android.AndroidProjectFolder;
+import com.duy.project.file.android.AndroidProject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -115,7 +115,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             String projectName = appName.replaceAll("\\s+", "");
             boolean useAppCompat = mAppCompat.isChecked();
             try {
-                AndroidProjectFolder projectFile = new AndroidProjectFolder(
+                AndroidProject projectFile = new AndroidProject(
                         new File(FileManager.EXTERNAL_DIR), activityClass, packageName, projectName);
                 //create directory
                 projectFile.mkdirs();
@@ -140,7 +140,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
         }
     }
 
-    private void copyResources(AndroidProjectFolder projectFile, boolean useAppCompat, AssetManager assets) throws FileNotFoundException {
+    private void copyResources(AndroidProject projectFile, boolean useAppCompat, AssetManager assets) throws FileNotFoundException {
         String resourcePath = projectFile.getResDirs().getPath();
         AssetUtil.copyAssetFolder(assets, "templates/src/main/res", resourcePath);
         File file = new File(resourcePath, "values/styles.xml");
@@ -149,12 +149,12 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
         FileManager.saveFile(file, content);
     }
 
-    private void copyLibrary(AndroidProjectFolder projectFile, AssetManager assets) {
+    private void copyLibrary(AndroidProject projectFile, AssetManager assets) {
         //copy android support library
         AssetUtil.copyAssetFolder(assets, "templates/libs", projectFile.getDirLibs().getPath());
     }
 
-    private void copyKeyStore(AndroidProjectFolder projectFile, AssetManager assets) throws IOException {
+    private void copyKeyStore(AndroidProject projectFile, AssetManager assets) throws IOException {
 
         //copy keystore
         File file = projectFile.getKeyStore().getFile();
@@ -164,7 +164,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
     }
 
-    private void createStringXml(AndroidProjectFolder projectFile, String appName) throws Exception {
+    private void createStringXml(AndroidProject projectFile, String appName) throws Exception {
         File stringxml = new File(projectFile.getResDirs(), "values/strings.xml");
         String strings = FileManager.streamToString(new FileInputStream(
                 stringxml)).toString();
@@ -175,7 +175,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
     }
 
-    private void createManifest(AndroidProjectFolder projectFile, String activityClass, String packageName,
+    private void createManifest(AndroidProject projectFile, String activityClass, String packageName,
                                 AssetManager assets) throws IOException {
         File manifest = projectFile.getXmlManifest();
         InputStream manifestTemplate = assets.open("templates/src/main/AndroidManifest.xml");
@@ -186,7 +186,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
         FileManager.saveFile(manifest, contentManifest);
     }
 
-    private void createMainActivity(AndroidProjectFolder projectFile, String activityClass,
+    private void createMainActivity(AndroidProject projectFile, String activityClass,
                                     String packageName, String activityName, String appName,
                                     boolean useAppCompat, AssetManager assets) throws IOException {
         File activityFile = FileManager.createFileIfNeed(new File(projectFile.getJavaSrcDirs().get(0),
@@ -201,7 +201,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
         FileManager.saveFile(activityFile, contentClass);
     }
 
-    private void createMainXml(AndroidProjectFolder projectFile, String mainLayoutName, AssetManager assets) throws IOException {
+    private void createMainXml(AndroidProject projectFile, String mainLayoutName, AssetManager assets) throws IOException {
         if (!mainLayoutName.contains(".")) mainLayoutName += ".xml";
         File layoutMain = new File(projectFile.getDirLayout(), mainLayoutName);
         layoutMain.createNewFile();

@@ -1,6 +1,6 @@
 package com.duy.compile.external.android.builder.task;
 
-import com.duy.compile.external.android.builder.AndroidBuilder2;
+import com.duy.compile.external.android.builder.AndroidBuilder;
 import com.duy.compile.external.android.builder.BuildType;
 
 import java.io.IOException;
@@ -11,7 +11,7 @@ import kellinwood.security.zipsigner.ZipSigner;
 public class SignApkTask extends BuildTask {
     private final BuildType type;
 
-    public SignApkTask(AndroidBuilder2 builder, BuildType type) {
+    public SignApkTask(AndroidBuilder builder, BuildType type) {
         super(builder);
         this.type = type;
     }

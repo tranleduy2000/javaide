@@ -1,6 +1,6 @@
 package com.duy.compile.external.android.builder.task;
 
-import com.duy.compile.external.android.builder.AndroidBuilder2;
+import com.duy.compile.external.android.builder.AndroidBuilder;
 import com.duy.compile.external.java.Javac;
 
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import javax.tools.DiagnosticListener;
 
 public class JavaCompiler extends BuildTask {
 
-    public JavaCompiler(AndroidBuilder2 builder) {
+    public JavaCompiler(AndroidBuilder builder) {
         super(builder);
     }
 

@@ -3,8 +3,8 @@ package com.duy.compile.external.android.builder.task;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.duy.compile.external.android.builder.AndroidBuilder2;
-import com.duy.compile.external.android.builder.util.Util;
+import com.duy.compile.external.android.builder.AndroidBuilder;
+import com.duy.compile.external.android.builder.util.MD5Hash;
 import com.duy.dex.Dex;
 import com.duy.dx.merge.CollisionPolicy;
 import com.duy.dx.merge.DexMerger;
@@ -18,7 +18,7 @@ import java.io.IOException;
 public class Dexer extends BuildTask {
     private static final String TAG = "Dexer";
 
-    public Dexer(AndroidBuilder2 builder) {
+    public Dexer(AndroidBuilder builder) {
         super(builder);
     }
 
@@ -58,7 +58,7 @@ public class Dexer extends BuildTask {
         });
         for (File jarLib : files) {
             // compare hash of jar contents to name of dexed version
-            String md5 = Util.getMD5Checksum(jarLib);
+            String md5 = MD5Hash.getMD5Checksum(jarLib);
 
             File dexLib = new File(project.getDirBuildDexedLibs(), jarLib.getName().replace(".jar", "-" + md5 + ".dex"));
             if (dexLib.exists()) {

@@ -2,7 +2,7 @@ package com.duy.compile.external.android.builder.task;
 
 import android.os.Build;
 
-import com.duy.compile.external.android.builder.AndroidBuilder2;
+import com.duy.compile.external.android.builder.AndroidBuilder;
 import com.duy.ide.activities.Environment;
 import com.duy.ide.file.FileManager;
 
@@ -108,7 +108,7 @@ import java.util.regex.Pattern;
  */
 public class Aapt extends BuildTask {
 
-    public Aapt(AndroidBuilder2 builder) {
+    public Aapt(AndroidBuilder builder) {
         super(builder);
     }
 

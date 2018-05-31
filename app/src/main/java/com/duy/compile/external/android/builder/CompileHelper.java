@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.duy.compile.external.android.builder.util.Util;
+import com.duy.compile.external.android.builder.util.MD5Hash;
 import com.duy.compile.external.dex.DexTool;
 import com.duy.compile.external.java.Jar;
 import com.duy.compile.external.java.Java;
@@ -89,7 +89,7 @@ public class CompileHelper {
         });
         for (File jarLib : files) {
             // compare hash of jar contents to name of dexed version
-            String md5 = Util.getMD5Checksum(jarLib);
+            String md5 = MD5Hash.getMD5Checksum(jarLib);
 
             String dexName = jarLib.getName().replace(".jar", "-" + md5 + ".dex");
             File dexLib = new File(projectFile.getDirBuildDexedLibs(), dexName);
@@ -154,8 +154,7 @@ public class CompileHelper {
 
     public static File buildApk(Context context, AndroidProject projectFile,
                                 DiagnosticCollector diagnosticCollector) throws Exception {
-//        AndroidBuilder.build(context, projectFile, diagnosticCollector);
-        AndroidBuilder2 builder = new AndroidBuilder2(context, projectFile);
+        AndroidBuilder builder = new AndroidBuilder(context, projectFile);
         builder.build(BuildType.DEBUG);
         return projectFile.getApkSigned();
     }
@@ -163,6 +162,5 @@ public class CompileHelper {
     public class Action {
         public static final int RUN = 0;
         public static final int RUN_DEX = 1;
-        public static final int BUILD_JAR = 2;
     }
 }

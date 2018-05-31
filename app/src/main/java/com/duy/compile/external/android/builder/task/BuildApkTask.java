@@ -1,13 +1,13 @@
 package com.duy.compile.external.android.builder.task;
 
 import com.android.sdklib.build.ApkBuilder;
-import com.duy.compile.external.android.builder.AndroidBuilder2;
+import com.duy.compile.external.android.builder.AndroidBuilder;
 
 import java.io.File;
 
 public class BuildApkTask extends BuildTask {
 
-    public BuildApkTask(AndroidBuilder2 builder) {
+    public BuildApkTask(AndroidBuilder builder) {
         super(builder);
     }
 

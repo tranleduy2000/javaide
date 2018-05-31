@@ -1,7 +1,0 @@
-
-#Set bash to recognize these correctly
-"\e[3~": delete-char
-"\e[1~": beginning-of-line
-"\e[4~": end-of-line
-
-

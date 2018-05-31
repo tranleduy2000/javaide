@@ -1,2 +1,0 @@
-#Run  proguard
-dalvikvm -cp $APK com.spartacusrex.spartacuside.external.proguardlink $@

@@ -1,7 +1,0 @@
-#Script to run the default utelnetd server
-
-#Tell bash
-export TELNET_ON=yes
-
-#Now start the telnetd server
-utelnetd -p $TELNET_PORT -l $HOME/system/bin/bash

@@ -17,6 +17,9 @@ android {
 
     }
 
+    sourceSets{
+        main.res.srcDirs += "src/main/res-color-picker"
+    }
     buildTypes {
         release {
             minifyEnabled false

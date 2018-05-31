@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.duy.compile.external.android.builder.AndroidBuilder2;
 import com.duy.compile.external.android.builder.util.Util;
-import com.duy.compile.external.dex.DexTool;
 import com.duy.dex.Dex;
 import com.duy.dx.merge.CollisionPolicy;
 import com.duy.dx.merge.DexMerger;
@@ -31,50 +30,60 @@ public class Dexer extends BuildTask {
 
         builder.stdout("Android dx");
 
-        dexLibs(project);
-        dexBuildClasses(project);
+        if (!dexLibs(project)) {
+            return false;
+        }
+        if (dexBuildClasses(project)) {
+            return false;
+        }
         dexMerge(project);
 
         return false;
     }
 
-    private void dexLibs(@NonNull JavaProjectFolder project) throws Exception {
+    private boolean dexLibs(@NonNull JavaProjectFolder project) throws Exception {
         if (DLog.DEBUG) DLog.d(TAG, "dexLibs() called with: project = [" + project + "]");
-
         File dirLibs = project.getDirLibs();
-        if (dirLibs.exists()) {
-            File[] files = dirLibs.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return pathname.isFile() && pathname.getName().toLowerCase().endsWith(".jar");
-                }
-            });
-            if (files != null && files.length > 0) {
-                for (File jarLib : files) {
-                    // compare hash of jar contents to name of dexed version
-                    String md5 = Util.getMD5Checksum(jarLib);
+        File[] files = dirLibs.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.isFile() && pathname.getName().toLowerCase().endsWith(".jar");
+            }
+        });
+        for (File jarLib : files) {
+            // compare hash of jar contents to name of dexed version
+            String md5 = Util.getMD5Checksum(jarLib);
 
-                    File dexLib = new File(project.getDirBuildDexedLibs(), jarLib.getName().replace(".jar", "-" + md5 + ".dex"));
-                    if (dexLib.exists()) {
-                        continue;
-                    }
-                    String[] args = new String[]{"--dex", "--verbose", "--no-strict",
-                            "--output=" + dexLib.getPath(), jarLib.getPath()};
-                    com.duy.dx.command.Main.main(args);
-                }
+            File dexLib = new File(project.getDirBuildDexedLibs(), jarLib.getName().replace(".jar", "-" + md5 + ".dex"));
+            if (dexLib.exists()) {
+                continue;
+            }
+            String[] args = {"--verbose",
+                    "--no-strict",
+                    "--output=" + dexLib.getAbsolutePath(), //output
+                    jarLib.getAbsolutePath() //input
+            };
+            int resultCode = com.duy.dx.command.dexer.Main.main(args);
+            if (resultCode != 0) {
+                return false;
             }
         }
+        return true;
     }
 
-    private File dexBuildClasses(@NonNull JavaProjectFolder projectFile) throws IOException {
-        DLog.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
-        String input = projectFile.getDirBuildClasses().getPath();
+    /**
+     * Merge all classed has been build by {@link JavaCompiler} to a single file .dex
+     */
+    private boolean dexBuildClasses(@NonNull JavaProjectFolder project) throws IOException {
+        if (DLog.DEBUG) DLog.d(TAG, "dexBuildClasses() called with: project = [" + project + "]");
+
+        String input = project.getDirBuildClasses().getPath();
         FileManager.ensureFileExist(new File(input));
         String[] args = new String[]{"--dex", "--verbose", "--no-strict",
-                "--output=" + projectFile.getDexedClassesFile().getPath(), //output dex file
+                "--output=" + project.getDexedClassesFile().getPath(), //output dex file
                 input}; //input file
-        DexTool.main(args);
-        return projectFile.getDexedClassesFile();
+        int resultCode = com.duy.dx.command.dexer.Main.main(args);
+        return resultCode == 0;
     }
 
     private File dexMerge(@NonNull JavaProjectFolder projectFile) throws IOException {

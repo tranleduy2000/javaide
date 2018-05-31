@@ -34,17 +34,17 @@ public class AndroidBuilder2 implements IAndroidBuilder {
         }
 
         if (!cleanupBuild()) {
-            mStdout.println("Aborted");
+            mStdout.println("cleanupBuild failed");
             return;
         }
 
         if (!runAAPT()) {
-            mStdout.println("Aborted");
+            mStdout.println("runAAPT failed");
             return;
         }
 
         if (!compileJavaSource()) {
-            mStdout.println("Aborted");
+            mStdout.println("compileJavaSource failed");
             return;
         }
 
@@ -53,7 +53,7 @@ public class AndroidBuilder2 implements IAndroidBuilder {
     private boolean compileJavaSource() {
         try {
             JavaCompiler javaCompiler = new JavaCompiler(this, mAndroidProject);
-            javaCompiler.run();
+            return javaCompiler.run();
         } catch (Exception e) {
             e.printStackTrace();
         }

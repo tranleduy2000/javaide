@@ -31,6 +31,7 @@ public class JavaCompiler extends BuildTask {
                 System.out.println("diagnostic = " + diagnostic);
             }
         });
+        System.out.println("compileStatus = " + compileStatus);
         return compileStatus == 0;
     }
 }

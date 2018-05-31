@@ -260,15 +260,16 @@ public class Main {
      *
      * @param argArray the command line arguments
      */
-    public static void main(String[] argArray) throws IOException {
+    public static int main(String[] argArray) throws IOException {
         Arguments arguments = new Arguments();
         arguments.parse(argArray);
 
         int result = run(arguments);
         if (result != 0) {
-//            System.exit(result);
+            System.exit(result);
             System.err.println("Exit code " + result);
         }
+        return result;
     }
 
     /**

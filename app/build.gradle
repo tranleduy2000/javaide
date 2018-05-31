@@ -76,7 +76,7 @@ dependencies {
     implementation project(':fileexplorer')
     implementation project(':javacompiler')
     implementation project(':dx')
-    implementation project(':javacodeformatter')
+    implementation project(':lib-google-java-format')
     implementation project(':androidlogcat')
 
     //android support

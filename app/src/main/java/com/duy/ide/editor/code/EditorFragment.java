@@ -21,7 +21,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -35,13 +34,12 @@ import com.duy.ide.CompileManager;
 import com.duy.ide.EditPageContract;
 import com.duy.ide.EditorControl;
 import com.duy.ide.R;
-import com.duy.ide.java.autocomplete.AutoCompleteProvider;
 import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
 import com.duy.ide.formatter.FormatFactory;
+import com.duy.ide.java.autocomplete.AutoCompleteProvider;
 import com.duy.ide.view.LockableScrollView;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,12 +55,10 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     @Nullable
     private LockableScrollView mScrollView;
     private FileManager mFileManager;
-    private Handler handler = new Handler();
     private Dialog dialog;
     private EditPageContract.Presenter mPresenter;
     private AutoCompleteProvider autoCompleteProvider;
 
-//    private LockableHorizontalScrollView mHorizontalScrollView;
 
     public static EditorFragment newInstance(String filePath) {
         EditorFragment editorFragment = new EditorFragment();
@@ -105,16 +101,6 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
                 }
             });
         }
-//        if (mHorizontalScrollView != null) {
-//            mCodeEditor.setHorizontalScroll(mHorizontalScrollView);
-//            mHorizontalScrollView.setScrollListener(new LockableHorizontalScrollView.ScrollListener() {
-//                @Override
-//                public void onScroll(int x, int y) {
-//                    mCodeEditor.updateTextHighlight();
-//                }
-//            });
-//        }
-
         return view;
     }
 
@@ -134,9 +120,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
             mCodeEditor.saveHistory(getFilePath());
         } else {
             Log.e(TAG, "can not save edit history");
-            FirebaseAnalytics.getInstance(getContext()).logEvent("can_not_save_edit_history", new Bundle());
         }
-
         super.onStop();
     }
 

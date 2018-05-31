@@ -66,19 +66,19 @@ import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.AppSetting;
 import com.duy.ide.view.SymbolListView;
-import com.duy.project.ProjectFilePresenter;
-import com.duy.project.ProjectManager;
+import com.duy.projectview.ProjectFilePresenter;
+import com.duy.projectview.ProjectManager;
 import com.duy.android.compiler.file.android.AndroidProject;
 import com.duy.android.compiler.file.java.ClassFile;
 import com.duy.android.compiler.file.java.JavaProject;
-import com.duy.project.view.dialog.DialogManager;
-import com.duy.project.view.dialog.DialogNewAndroidProject;
-import com.duy.project.view.dialog.DialogNewAndroidResource;
-import com.duy.project.view.dialog.DialogNewClass;
-import com.duy.project.view.dialog.DialogNewFolder;
-import com.duy.project.view.dialog.DialogNewJavaProject;
-import com.duy.project.view.dialog.DialogSelectType;
-import com.duy.project.view.fragments.FolderStructureFragment;
+import com.duy.projectview.view.dialog.DialogManager;
+import com.duy.projectview.view.dialog.DialogNewAndroidProject;
+import com.duy.projectview.view.dialog.DialogNewAndroidResource;
+import com.duy.projectview.view.dialog.DialogNewClass;
+import com.duy.projectview.view.dialog.DialogNewFolder;
+import com.duy.projectview.view.dialog.DialogNewJavaProject;
+import com.duy.projectview.view.dialog.DialogSelectType;
+import com.duy.projectview.view.fragments.FolderStructureFragment;
 import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -89,10 +89,10 @@ import java.util.List;
 import java.util.Set;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
-import static com.duy.project.ProjectFileContract.Callback;
-import static com.duy.project.ProjectFileContract.FileActionListener;
-import static com.duy.project.ProjectFileContract.Presenter;
-import static com.duy.project.view.fragments.FolderStructureFragment.newInstance;
+import static com.duy.projectview.ProjectFileContract.Callback;
+import static com.duy.projectview.ProjectFileContract.FileActionListener;
+import static com.duy.projectview.ProjectFileContract.Presenter;
+import static com.duy.projectview.view.fragments.FolderStructureFragment.newInstance;
 
 /**
  * Created by Duy on 09-Mar-17.

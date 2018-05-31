@@ -30,10 +30,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".java.code_sample.activities.SampleActivity" />
+        <activity android:name=".java.sample.activities.SampleActivity" />
         <activity android:name=".activities.DonateActivity" />
         <activity
-            android:name="com.duy.run.activities.ExecuteActivity"
+            android:name=".java.run.activities.ExecuteActivity"
             android:configChanges="orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="stateAlwaysVisible" />
 

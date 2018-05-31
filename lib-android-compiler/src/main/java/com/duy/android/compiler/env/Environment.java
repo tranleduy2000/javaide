@@ -12,6 +12,10 @@ public class Environment {
     public static void install(Context context) throws IOException {
         Assets.copyAssets(context.getAssets(), "sdk", getRootDir(context));
         Assets.copyAssets(context.getAssets(), "bin", getRootDir(context));
+        File[] binFiles = getBinDir(context).listFiles();
+        for (File binFile : binFiles) {
+            binFile.setExecutable(true, true);
+        }
     }
 
     public static File getBinDir(Context context) {
@@ -20,8 +24,7 @@ public class Environment {
     }
 
     public static File getRootDir(Context context) {
-        File root = new File(context.getFilesDir(), APP_NAME);
-        return mkdirsIfNotExist(root);
+        return context.getFilesDir();
     }
 
     private static File mkdirsIfNotExist(File f) {
@@ -32,7 +35,7 @@ public class Environment {
     }
 
     public static File getSdkDir(Context context) {
-        File sdkDir = new File(getRootDir(context), "Sdk");
+        File sdkDir = new File(getRootDir(context), "sdk");
         return mkdirsIfNotExist(sdkDir);
     }
 

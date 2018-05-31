@@ -1,37 +1,24 @@
 package com.duy.ide.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.android.annotations.Nullable;
 import com.duy.ide.R;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.setting.AppSetting;
-import com.jecelyin.android.file_explorer.FileExplorerActivity;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
-import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 /**
  * Created by Duy on 16-Jul-17.
@@ -64,50 +51,9 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         findViewById(R.id.btn_select_file).setOnClickListener(this);
         findViewById(R.id.down_load_from_github).setOnClickListener(this);
 
-        extractFileFromAsset();
+        new InstallTask(this).execute();
     }
 
-
-    private void extractFileFromAsset() {
-        new CopyFromAssetTask(this).execute();
-    }
-
-    private void selectFile() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        FileExplorerActivity.startPickFileActivity(this,
-                Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS).getPath(), REQUEST_CODE_SELECT_FILE, null);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_CODE_SELECT_FILE:
-                if (resultCode == RESULT_OK) {
-                    File file = new File(FileExplorerActivity.getFile(data));
-                    new InstallTask(this).execute(file);
-                }
-                break;
-        }
-    }
-
-    private void showDialogError(Exception e) {
-        if (isFinishing()) return;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.error);
-        builder.setMessage(e == null ? " " : e.getMessage());
-        builder.create().show();
-    }
-
-    private boolean isConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null;
-    }
-
-    private void showDialogNotConnect() {
-
-    }
 
     private void showDialogSuccess() {
         if (isFinishing()) {
@@ -126,13 +72,15 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         builder.create().show();
     }
 
-    private void showDialogFailed(Exception error) {
+    private void showDialogFailed(@Nullable Exception error) {
         if (isFinishing()) {
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.error);
-        builder.setMessage(error.getMessage());
+        if (error != null) {
+            builder.setMessage(error.getMessage());
+        }
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -149,23 +97,15 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         }
     }
 
-    private void showDialogDownload() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Download system");
-    }
-
-    private void installFailed() {
-        Toast.makeText(this, "Install failed", Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public void onClick(View v) {
 
     }
 
-    private class InstallTask extends AsyncTask<File, String, Boolean> {
-        private Exception error = null;
+    @SuppressLint("StaticFieldLeak")
+    private class InstallTask extends AsyncTask<File, String, Void> {
         private Context context;
+        private Exception error = null;
 
         public InstallTask(Context context) {
             this.context = context;
@@ -181,39 +121,20 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         }
 
         @Override
-        protected Boolean doInBackground(File... params) {
+        protected Void doInBackground(File... params) {
             try {
-                File zip = params[0];
-                File outputDir = FileManager.getSdkDir(context);
-                unzipArchive(zip, outputDir);
-                zip.delete();
-
-                if (!(FileManager.isSdkInstalled(context))) {
-                    throw new RuntimeException("Install failed, Not a classes.zip file");
-                }
-            } catch (Exception e) {
-                publishProgress("Error when install system");
-
+                com.duy.android.compiler.env.Environment.install(context);
+            } catch (IOException e) {
                 e.printStackTrace();
                 error = e;
-                return false;
             }
-
-
-            publishProgress("System install complete!");
-            return true;
+            return null;
         }
 
         @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-            mInfo.setText(values[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            if (result) {
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if ((FileManager.isSdkInstalled(context))) {
                 showDialogSuccess();
             } else {
                 showDialogFailed(error);
@@ -222,84 +143,6 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
             mProgressBar.setIndeterminate(false);
             mIsInstalling = false;
         }
-
-        public void unzipArchive(File archive, File outputDir) {
-            try {
-                ZipFile zipfile = new ZipFile(archive);
-                for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
-                    ZipEntry entry = (ZipEntry) e.nextElement();
-                    unzipEntry(zipfile, entry, outputDir);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        private void unzipEntry(ZipFile zipfile, ZipEntry entry, File outputDir) throws IOException {
-
-            if (entry.isDirectory()) {
-                createDir(new File(outputDir, entry.getName()));
-                return;
-            }
-
-            File outputFile = new File(outputDir, entry.getName());
-            if (!outputFile.getParentFile().exists()) {
-                createDir(outputFile.getParentFile());
-            }
-
-            BufferedInputStream inputStream = new BufferedInputStream(zipfile.getInputStream(entry));
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
-
-            try {
-                IOUtils.copy(inputStream, outputStream);
-            } finally {
-                outputStream.close();
-                inputStream.close();
-            }
-        }
-
-        private void createDir(File dir) {
-            if (!dir.mkdirs()) throw new RuntimeException("Can not create dir " + dir);
-        }
-
     }
-
-    private class CopyFromAssetTask extends AsyncTask<File, String, File> {
-        private Context context;
-
-        public CopyFromAssetTask(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mInfo.setText(R.string.copy_from_asset);
-            mProgressBar.setIndeterminate(true);
-            mInstallButton.setEnabled(false);
-            mIsInstalling = true;
-        }
-
-        @Override
-        protected File doInBackground(File... params) {
-            try {
-                com.duy.android.compiler.env.Environment.install(context);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(File file) {
-            super.onPostExecute(file);
-            if (file != null) {
-                new InstallTask(context).execute(file);
-            } else {
-                installFailed();
-            }
-        }
-    }
-
 
 }

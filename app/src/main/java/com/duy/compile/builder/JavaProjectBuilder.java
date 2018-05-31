@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.duy.compile.builder.model.BuildType;
 import com.duy.compile.task.ABuildTask;
-import com.duy.compile.task.java.BuildJarTask;
 import com.duy.compile.task.java.CleanTask;
 import com.duy.compile.task.java.CompileJavaTask;
 import com.duy.compile.task.java.DxTask;
@@ -36,8 +35,8 @@ public class JavaProjectBuilder extends BuilderImpl<JavaProject> {
         ArrayList<ABuildTask> tasks = new ArrayList<>();
         tasks.add(new CleanTask(this));
         tasks.add(new CompileJavaTask(this, mDiagnosticListener));
+//        tasks.add(new BuildJarTask(this));
         tasks.add(new DxTask(this));
-        tasks.add(new BuildJarTask(this));
 
         return runTasks(tasks);
     }

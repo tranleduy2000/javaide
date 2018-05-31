@@ -46,10 +46,12 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.duy.JavaApplication;
-import com.duy.compile.BuildAndroid;
 import com.duy.compile.BuildJar;
-import com.duy.compile.BuildJava;
+import com.duy.compile.BuildTask;
 import com.duy.compile.CompileManager;
+import com.duy.compile.builder.AndroidProjectBuilder;
+import com.duy.compile.builder.IBuilder;
+import com.duy.compile.builder.JavaProjectBuilder;
 import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.ide.Builder;
 import com.duy.ide.MenuEditor;
@@ -68,8 +70,8 @@ import com.duy.ide.utils.RootUtils;
 import com.duy.project.ProjectManager;
 import com.duy.project.file.android.AndroidProject;
 import com.duy.project.file.java.ClassFile;
-import com.duy.project.file.java.JavaProject;
 import com.duy.project.file.java.ClassUtil;
+import com.duy.project.file.java.JavaProject;
 import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -78,6 +80,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
 
 public class MainActivity extends ProjectManagerActivity implements
         DrawerLayout.DrawerListener,
@@ -111,12 +114,12 @@ public class MainActivity extends ProjectManagerActivity implements
     protected void startAutoCompleteService() {
         Log.d(TAG, "startAutoCompleteService() called");
         if (mAutoCompleteProvider == null) {
-            if (mProjectFile != null) {
+            if (mProject != null) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         mAutoCompleteProvider = new AutoCompleteProvider(MainActivity.this);
-                        mAutoCompleteProvider.load(mProjectFile);
+                        mAutoCompleteProvider.load(mProject);
                         populateAutoCompleteService(mAutoCompleteProvider);
                     }
                 }).start();
@@ -235,8 +238,8 @@ public class MainActivity extends ProjectManagerActivity implements
     @Override
     public void runProject() {
         saveAllFile();
-        if (mProjectFile != null) {
-            if (mProjectFile instanceof AndroidProject) {
+        if (mProject != null) {
+            if (mProject instanceof AndroidProject) {
                 compileAndroidProject();
             } else {
                 compileJavaProject();
@@ -247,13 +250,13 @@ public class MainActivity extends ProjectManagerActivity implements
     }
 
     private void compileAndroidProject() {
-        if (mProjectFile instanceof AndroidProject) {
-            if (!((AndroidProject) mProjectFile).getXmlManifest().exists()) {
+        if (mProject instanceof AndroidProject) {
+            if (!((AndroidProject) mProject).getXmlManifest().exists()) {
                 Toast.makeText(this, "Can not find AndroidManifest.xml", Toast.LENGTH_SHORT).show();
                 return;
             }
             //check launcher activity
-            if (((AndroidProject) mProjectFile).getLauncherActivity() == null) {
+            if (((AndroidProject) mProject).getLauncherActivity() == null) {
                 String msg = getString(R.string.can_not_find_launcher_activity);
                 Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
                         .setAction(R.string.config, new View.OnClickListener() {
@@ -263,33 +266,38 @@ public class MainActivity extends ProjectManagerActivity implements
                         }).show();
                 return;
             }
-            new BuildAndroid(this, new BuildAndroid.CompileListener() {
+
+
+            final DiagnosticCollector mDiagnosticCollector = new DiagnosticCollector();
+            final IBuilder<AndroidProject> builder = new AndroidProjectBuilder(this, (AndroidProject) mProject, mDiagnosticCollector);
+            final BuildTask<AndroidProject> buildTask = new BuildTask<>(builder, new BuildTask.CompileListener<AndroidProject>() {
                 @Override
                 public void onStart() {
                     updateUiStartCompile();
                 }
 
                 @Override
-                public void onError(Exception e, List<Diagnostic> diagnostics) {
+                public void onError(Exception e) {
                     Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                     openDrawer(GravityCompat.START);
-                    mDiagnosticPresenter.display(diagnostics);
+                    mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
                     updateUIFinish();
                 }
 
                 @Override
-                public void onComplete(File apk, List<Diagnostic> diagnostics) {
+                public void onComplete() {
                     updateUIFinish();
-                    Toast.makeText(MainActivity.this, R.string.build_success + " " + apk.getPath(), Toast.LENGTH_SHORT).show();
-                    mFilePresenter.refresh(mProjectFile);
-                    mDiagnosticPresenter.display(diagnostics);
+                    Toast.makeText(MainActivity.this, R.string.build_success, Toast.LENGTH_SHORT).show();
+                    mFilePresenter.refresh(mProject);
+                    mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
                     mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    RootUtils.installApk(MainActivity.this, apk);
+                    RootUtils.installApk(MainActivity.this, ((AndroidProject) mProject).getApkSigned());
                 }
 
-            }).execute((AndroidProject) mProjectFile);
+            });
+            buildTask.execute();
         } else {
-            if (mProjectFile != null) {
+            if (mProject != null) {
                 toast("This is Java project, please create new Android project");
             } else {
                 toast("You need create project");
@@ -300,13 +308,13 @@ public class MainActivity extends ProjectManagerActivity implements
 
     private void compileJavaProject() {
         //check main class exist
-        if (mProjectFile.getMainClass() == null
-                || mProjectFile.getPackageName() == null
-                || mProjectFile.getPackageName().isEmpty()
-                || !mProjectFile.getMainClass().exist(mProjectFile)) {
+        if (mProject.getMainClass() == null
+                || mProject.getPackageName() == null
+                || mProject.getPackageName().isEmpty()
+                || !mProject.getMainClass().exist(mProject)) {
             String msg = getString(R.string.main_class_not_define);
             Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.config, new View.OnClickListener() {
+                    .setAction(R.string.select, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             showDialogRunConfig();
@@ -315,9 +323,9 @@ public class MainActivity extends ProjectManagerActivity implements
             return;
         }
         //check main function exist
-        if (!ClassUtil.hasMainFunction(new File(mProjectFile.getMainClass().getPath(mProjectFile)))) {
+        if (!ClassUtil.hasMainFunction(new File(mProject.getMainClass().getPath(mProject)))) {
             SpannableStringBuilder msg = new SpannableStringBuilder(getString(R.string.can_not_find_main_func));
-            Spannable clasz = new SpannableString(mProjectFile.getMainClass().getName());
+            Spannable clasz = new SpannableString(mProject.getMainClass().getName());
             clasz.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.dark_color_accent))
                     , 0, clasz.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             msg.append(clasz);
@@ -330,53 +338,46 @@ public class MainActivity extends ProjectManagerActivity implements
                     }).show();
             return;
         }
-        BuildJava.CompileListener compileListener = new BuildJava.CompileListener() {
+
+        final DiagnosticCollector mDiagnosticCollector = new DiagnosticCollector();
+        final IBuilder<JavaProject> builder = new JavaProjectBuilder(this, mProject, mDiagnosticCollector);
+        final BuildTask.CompileListener listener = new BuildTask.CompileListener() {
             @Override
             public void onStart() {
                 updateUiStartCompile();
             }
 
             @Override
-            public void onError(Throwable e, ArrayList<Diagnostic> diagnostics) {
+            public void onError(Exception e) {
                 Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                 openDrawer(GravityCompat.START);
                 mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
-                mDiagnosticPresenter.display(diagnostics);
+                mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
                 updateUIFinish();
             }
 
             @Override
-            public void onComplete(final JavaProject projectFile,
-                                   final List<Diagnostic> diagnostics) {
+            public void onComplete() {
                 updateUIFinish();
                 Toast.makeText(MainActivity.this, R.string.compile_success, Toast.LENGTH_SHORT).show();
-                mDiagnosticPresenter.display(diagnostics);
+                mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                            mCompileManager.executeDex(projectFile, mProjectFile.getDexFile());
+                        mCompileManager.executeDex(mProject, mProject.getDexFile());
 
                     }
                 }, 200);
             }
-
-            @Override
-            public void onNewMessage(byte[] chars, int start, int end) {
-                onNewMessage(new String(chars, start, end));
-            }
-
-            @Override
-            public void onNewMessage(String msg) {
-                mMessagePresenter.append(msg);
-            }
         };
-        new BuildJava(this, compileListener).execute(mProjectFile);
+        BuildTask<JavaProject> buildTask = new BuildTask<>(builder, listener);
+        buildTask.execute();
     }
 
     @Override
     public void buildJar() {
         saveAllFile();
-        if (mProjectFile != null) {
+        if (mProject != null) {
             new BuildJar(this, new BuildJar.CompileListener() {
                 @Override
                 public void onStart() {
@@ -397,13 +398,13 @@ public class MainActivity extends ProjectManagerActivity implements
                 public void onComplete(File jarfile, List<Diagnostic> diagnostics) {
                     Toast.makeText(MainActivity.this, R.string.build_success + " " + jarfile.getPath(),
                             Toast.LENGTH_SHORT).show();
-                    mFilePresenter.refresh(mProjectFile);
+                    mFilePresenter.refresh(mProject);
                     mDiagnosticPresenter.display(diagnostics);
                     mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                     updateUIFinish();
                 }
 
-            }).execute(mProjectFile);
+            }).execute(mProject);
         } else {
             toast("You need create project");
         }
@@ -663,18 +664,18 @@ public class MainActivity extends ProjectManagerActivity implements
     @Override
     public void runFile(String filePath) {
         saveCurrentFile();
-        if (mProjectFile == null) return;
+        if (mProject == null) return;
         boolean canRun = ClassUtil.hasMainFunction(new File(filePath));
         if (!canRun) {
             Toast.makeText(this, (getString(R.string.main_not_found)), Toast.LENGTH_SHORT).show();
             return;
         }
-        String className = JavaUtil.getClassName(mProjectFile.getJavaSrcDirs().get(0), filePath);
+        String className = JavaUtil.getClassName(mProject.getJavaSrcDirs().get(0), filePath);
         if (className == null) {
             Toast.makeText(this, ("Class \"" + filePath + "\"" + "invalid"), Toast.LENGTH_SHORT).show();
             return;
         }
-        mProjectFile.setMainClass(new ClassFile(className));
+        mProject.setMainClass(new ClassFile(className));
         runProject();
     }
 
@@ -741,8 +742,8 @@ public class MainActivity extends ProjectManagerActivity implements
     }
 
     public void showDialogRunConfig() {
-        if (mProjectFile != null) {
-            DialogRunConfig dialogRunConfig = DialogRunConfig.newInstance(mProjectFile);
+        if (mProject != null) {
+            DialogRunConfig dialogRunConfig = DialogRunConfig.newInstance(mProject);
             dialogRunConfig.show(getSupportFragmentManager(), DialogRunConfig.TAG);
         } else {
             Toast.makeText(this, "Please create project", Toast.LENGTH_SHORT).show();
@@ -751,7 +752,7 @@ public class MainActivity extends ProjectManagerActivity implements
 
     @Override
     public void onConfigChange(JavaProject projectFile) {
-        this.mProjectFile = projectFile;
+        this.mProject = projectFile;
         if (projectFile != null) {
             ProjectManager.saveProject(this, projectFile);
         }

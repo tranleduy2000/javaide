@@ -117,7 +117,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     protected FileManager mFileManager;
     protected EditorPagerAdapter mPageAdapter;
     protected SlidingUpPanelLayout mContainerOutput;
-    protected JavaProject mProjectFile;
+    protected JavaProject mProject;
     protected Presenter mFilePresenter;
     protected ViewPager mBottomPage;
     protected PagePresenter mPagePresenter;
@@ -158,9 +158,9 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState != null) {
-            this.mProjectFile = (JavaProject) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
+            this.mProject = (JavaProject) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
         } else {
-            this.mProjectFile = ProjectManager.getLastProject(this);
+            this.mProject = ProjectManager.getLastProject(this);
         }
         bindView();
         setupToolbar();
@@ -188,7 +188,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     }
 
     private void createProjectIfNeed() {
-        if (mProjectFile == null) {
+        if (mProject == null) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -205,7 +205,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
                     getSupportFragmentManager().findFragmentByTag(FolderStructureFragment.TAG);
         }
         if (folderStructureFragment == null) {
-            folderStructureFragment = newInstance(mProjectFile);
+            folderStructureFragment = newInstance(mProject);
         }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.container_file, folderStructureFragment, FolderStructureFragment.TAG).commit();
@@ -215,7 +215,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     private void setupEditor() {
         Set<File> editorFiles = mFileManager.getEditorFiles();
         ArrayList<PageDescriptor> descriptors = new ArrayList<>();
-        if (mProjectFile != null) {
+        if (mProject != null) {
             for (File editorFile : editorFiles) {
                 descriptors.add(new SimplePageDescriptor(editorFile.getPath(), editorFile.getName()));
             }
@@ -289,8 +289,8 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     protected void onPause() {
         super.onPause();
         mPagePresenter.pause();
-        if (mProjectFile != null) {
-            ProjectManager.saveProject(this, mProjectFile);
+        if (mProject != null) {
+            ProjectManager.saveProject(this, mProject);
         }
     }
 
@@ -421,7 +421,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(KEY_PROJECT_FILE, mProjectFile);
+        outState.putSerializable(KEY_PROJECT_FILE, mProject);
     }
 
     public void openDrawer(int gravity) {
@@ -437,7 +437,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
         Log.d(TAG, "onProjectCreated() called with: projectFile = [" + projectFile + "]");
 
         //save project
-        this.mProjectFile = projectFile;
+        this.mProject = projectFile;
         ProjectManager.saveProject(this, projectFile);
 
         //remove all edit page
@@ -464,7 +464,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
 
     @Override
     public void onNewFileCreated(@NonNull File file) {
-        mFilePresenter.refresh(mProjectFile);
+        mFilePresenter.refresh(mProject);
         if (file.isFile()) addNewPageEditor(file, true);
     }
 
@@ -530,7 +530,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
 
     @Override
     public void clickNewModule() {
-        if (mProjectFile != null) {
+        if (mProject != null) {
 //            showDialogSelectFileType(mPageAdapter);
         } else {
             Toast.makeText(this, "Please create new project", Toast.LENGTH_SHORT).show();
@@ -593,8 +593,8 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
      * @param file - current file, uses for determine current directory, it can be null
      */
     private void showDialogCreateNewFolder(@Nullable File file) {
-        if (mProjectFile != null && file != null) {
-            DialogNewFolder newFolder = DialogNewFolder.newInstance(mProjectFile, file);
+        if (mProject != null && file != null) {
+            DialogNewFolder newFolder = DialogNewFolder.newInstance(mProject, file);
             newFolder.show(getSupportFragmentManager(), DialogNewClass.TAG);
         } else {
             toast("Can not create new folder");
@@ -613,7 +613,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
                     DialogManager.showDialogCopyFile(selectedFile, parentFile, this, new Callback() {
                         @Override
                         public void onSuccess(File file) {
-                            mFilePresenter.refresh(mProjectFile);
+                            mFilePresenter.refresh(mProject);
                         }
 
                         @Override
@@ -650,8 +650,8 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     }
 
     private void showDialogCreateNewXml(File file) {
-        if (mProjectFile != null && file != null) {
-            DialogNewAndroidResource dialog = DialogNewAndroidResource.newInstance(mProjectFile, file);
+        if (mProject != null && file != null) {
+            DialogNewAndroidResource dialog = DialogNewAndroidResource.newInstance(mProject, file);
             dialog.show(getSupportFragmentManager(), DialogNewClass.TAG);
         } else {
             toast("Can not create Android resource file");
@@ -665,9 +665,9 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
                 file = currentPage.getCurrentFile().getParentFile();
             }
         }
-        if (mProjectFile != null && file != null) {
+        if (mProject != null && file != null) {
             DialogNewClass dialogNewClass;
-            dialogNewClass = DialogNewClass.newInstance(mProjectFile, null, file);
+            dialogNewClass = DialogNewClass.newInstance(mProject, null, file);
             dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
         } else {
             toast("Can not create new class");

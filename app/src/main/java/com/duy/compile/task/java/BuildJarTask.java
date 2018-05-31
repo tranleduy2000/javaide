@@ -12,7 +12,7 @@ public class BuildJarTask extends ABuildTask<JavaProject> {
 
     @Override
     public String getTaskName() {
-        return null;
+        return "Create jar file";
     }
 
     @Override

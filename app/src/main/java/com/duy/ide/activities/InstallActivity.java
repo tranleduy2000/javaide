@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -285,26 +283,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         @Override
         protected File doInBackground(File... params) {
             try {
-                AssetManager assets = context.getAssets();
-                InputStream open = assets.open("android-21/android-21.zip");
-                File outFile = new File(getFilesDir(), "classes.zip");
-                FileOutputStream output = new FileOutputStream(outFile);
-                FileManager.copyStream(open, output);
-                output.close();
-
-                File binDir = com.duy.ide.activities.Environment.getBinDir(context);
-                String[] aapts = assets.list("aapt-binaries");
-                for (String aapt : aapts) {
-                    InputStream input = assets.open("aapt-binaries/" + aapt);
-                    outFile = new File(binDir, aapt);
-                    output = new FileOutputStream(outFile);
-                    IOUtils.copy(input, output);
-                    input.close();
-                    output.close();
-                    outFile.setExecutable(true, true);
-                }
-
-                return outFile;
+                com.duy.android.compiler.env.Environment.install(context);
             } catch (IOException e) {
                 e.printStackTrace();
             }

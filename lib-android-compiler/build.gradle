@@ -21,19 +21,9 @@ android {
 
 
 dependencies {
-    api files('libs/bcpg-jdk15on-1.56.0.0.jar')
-    api files('libs/bcpkix-jdk15on-1.56.0.0.jar')
-    api files('libs/core-1.56.0.0.jar')
-    api files('libs/log4j-1.2.17.jar')
-    api files('libs/prov-1.56.0.0.jar')
-    api files('libs/android-sun-jarsign-support-1.1.jar')
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api project(':dx')
+    api "com.android.support:support-annotations:$supportLibVersion"
     api 'com.google.guava:guava:22.0-android'
-    api files('libs/commons-compress-1.5.jar')
-    api files('libs/commons-codec-1.10.jar')
-    api files('libs/kxml2-2.2.3.jar')
-    api files('libs/zipio-lib-1.8.jar')
-    api files('libs/zipsigner-lib-1.17.jar')
-    api files('libs/zipsigner-lib-optional-1.17.jar')
-    api files('libs/kellinwood-logging-android-1.4.jar')
-    api files('libs/kellinwood-logging-lib-1.1.jar')
+    api 'commons-io:commons-io:2.4'
 }

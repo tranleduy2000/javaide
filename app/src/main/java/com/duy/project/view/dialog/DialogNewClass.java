@@ -15,7 +15,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.autocomplete.Template;
+import com.duy.android.compiler.file.java.Template;
 import com.duy.project.ProjectFileContract;
 import com.duy.android.compiler.file.java.JavaProject;
 import com.duy.project.utils.ProjectFileUtil;

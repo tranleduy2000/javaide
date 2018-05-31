@@ -231,9 +231,8 @@ public class FileManager {
     }
 
     public static boolean isSdkInstalled(Context context) {
-        File classesDir = new File(context.getFilesDir(), SDK_DIR);
-        File classpath = new File(classesDir, ANDROID_CLASSPATH);
-        return classpath.exists() && classpath.length() > 0;
+        File classpathFile = com.duy.android.compiler.env.Environment.getClasspathFile(context);
+        return classpathFile.exists();
     }
 
 

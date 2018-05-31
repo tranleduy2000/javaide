@@ -1,6 +1,6 @@
 package com.duy.ide.editor.code.completion;
 
-import com.duy.ide.autocomplete.Template;
+import com.duy.android.compiler.file.java.Template;
 
 import junit.framework.TestCase;
 

@@ -30,7 +30,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.duy.project.activities.FileManagerActivity" />
         <activity android:name=".code_sample.activities.SampleActivity" />
         <activity android:name=".activities.DonateActivity" />
         <activity
@@ -63,7 +62,7 @@
                 android:resource="@xml/method" />
         </service>
         <provider
-            android:name="com.duy.project.file.JavaFileProvider"
+            android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">

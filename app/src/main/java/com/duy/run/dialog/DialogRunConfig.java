@@ -22,7 +22,7 @@ import com.duy.compile.CompileManager;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProject;
-import com.duy.project.utils.ClassUtil;
+import com.duy.project.file.java.ClassUtil;
 
 import java.io.File;
 import java.util.ArrayList;

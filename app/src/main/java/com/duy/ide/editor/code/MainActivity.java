@@ -69,7 +69,7 @@ import com.duy.project.ProjectManager;
 import com.duy.project.file.android.AndroidProject;
 import com.duy.project.file.java.ClassFile;
 import com.duy.project.file.java.JavaProject;
-import com.duy.project.utils.ClassUtil;
+import com.duy.project.file.java.ClassUtil;
 import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -263,7 +263,6 @@ public class MainActivity extends ProjectManagerActivity implements
                         }).show();
                 return;
             }
-            ((AndroidProject) mProjectFile).checkKeyStoreExits(this);
             new BuildApkTask(this, new BuildApkTask.CompileListener() {
                 @Override
                 public void onStart() {

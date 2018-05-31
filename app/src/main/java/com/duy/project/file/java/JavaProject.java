@@ -45,6 +45,10 @@ public class JavaProject implements Serializable, Cloneable {
      * ------------dexedLibs <- contains dexed java library, it can be cached for build faster
      * ------------generated <- generate source, such as aapt generate class R
      * ------------output <- apk, jar file output
+     * --------src
+     * ------------main
+     * ----------------java
+     * ----------------res
      */
     protected File dirBuild;
     protected File dirBuildOutput;

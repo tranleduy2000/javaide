@@ -93,9 +93,6 @@ public class ProjectManager {
             } else {
                 return null;
             }
-            if (project.getKeyStore().getFile().exists()) {
-                project.checkKeyStoreExits(context);
-            }
             return project;
         } catch (Exception e) {
 

@@ -9,15 +9,6 @@ import java.io.File;
  */
 
 public class ProjectFileUtil {
-    public static boolean inSrcDir(File projectF, File current) {
-        try {
-            String path = projectF.getPath();
-            path += "/src/main/java";
-            return current.getPath().startsWith(path);
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
 
     public static boolean isRoot(File root, File current) {

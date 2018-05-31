@@ -25,7 +25,6 @@ import com.duy.project.file.android.AndroidProject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -124,7 +123,6 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
                 copyResources(projectFile, useAppCompat, assets);
                 createStringXml(projectFile, appName);
-                copyKeyStore(projectFile, assets);
                 createManifest(projectFile, activityClass, packageName, assets);
                 createMainActivity(projectFile, activityClass, packageName, activityName,
                         appName, useAppCompat, assets);
@@ -152,16 +150,6 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
     private void copyLibrary(AndroidProject projectFile, AssetManager assets) {
         //copy android support library
         AssetUtil.copyAssetFolder(assets, "templates/libs", projectFile.getDirLibs().getPath());
-    }
-
-    private void copyKeyStore(AndroidProject projectFile, AssetManager assets) throws IOException {
-
-        //copy keystore
-        File file = projectFile.getKeyStore().getFile();
-        FileOutputStream out = new FileOutputStream(file);
-        FileManager.copyStream(assets.open("templates/src/main/androiddebug.jks"), out);
-        out.close();
-
     }
 
     private void createStringXml(AndroidProject projectFile, String appName) throws Exception {

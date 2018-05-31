@@ -1,1 +1,1 @@
-[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":33},"path":"app-release.apk","properties":{"packageId":"com.duy.compiler.javanide","split":"","minSdkVersion":"14"}}]
+[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":34,"versionName":"1.3.4","enabled":true,"outputFile":"app-release.apk","fullName":"release","baseName":"release"},"path":"app-release.apk","properties":{}}]

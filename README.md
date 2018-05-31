@@ -56,7 +56,7 @@ an issue. Pull request are greatly appreciated.
 1. Build java file with library https://youtu.be/fUFqR8ZlChg
 3. Build simple Android app https://youtu.be/euZilR8-EhA
 
-## Licence
+## GNU GPL 3.0 Licence
 
     Copyright (c) 2017 by Tran Le Duy
 

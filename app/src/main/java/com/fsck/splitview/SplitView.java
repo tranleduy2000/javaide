@@ -26,6 +26,8 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.LinearLayout;
 
+import com.duy.ide.R;
+
 public class SplitView extends LinearLayout implements OnTouchListener {
 
     final static private int MAXIMIZED_VIEW_TOLERANCE_DIP = 30;

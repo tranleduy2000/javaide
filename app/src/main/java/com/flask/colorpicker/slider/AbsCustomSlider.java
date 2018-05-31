@@ -9,7 +9,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.flask.colorpicker.R;
+import com.duy.ide.R;
+
 
 public abstract class AbsCustomSlider extends View {
 	protected Bitmap bitmap;

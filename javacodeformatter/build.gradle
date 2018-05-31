@@ -19,5 +19,5 @@ android {
 }
 
 dependencies {
-    compile project(':javacompiler')
+    api project(':javacompiler')
 }

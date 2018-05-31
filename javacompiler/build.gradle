@@ -21,14 +21,14 @@ android {
 
 
 dependencies {
-    compile files('libs/bcpg-jdk15on-1.56.0.0.jar')
-    compile files('libs/bcpkix-jdk15on-1.56.0.0.jar')
-    compile files('libs/core-1.56.0.0.jar')
-    compile files('libs/log4j-1.2.17.jar')
-    compile files('libs/prov-1.56.0.0.jar')
-    compile files('libs/android-sun-jarsign-support-1.1.jar')
-    compile 'com.google.guava:guava:23.0'
-    implementation files('libs/commons-compress-1.5.jar')
-    implementation files('libs/commons-codec-1.10.jar')
-    implementation files('libs/kxml2-2.2.3.jar')
+    api files('libs/bcpg-jdk15on-1.56.0.0.jar')
+    api files('libs/bcpkix-jdk15on-1.56.0.0.jar')
+    api files('libs/core-1.56.0.0.jar')
+    api files('libs/log4j-1.2.17.jar')
+    api files('libs/prov-1.56.0.0.jar')
+    api files('libs/android-sun-jarsign-support-1.1.jar')
+    api 'com.google.guava:guava:22.0-android'
+    api files('libs/commons-compress-1.5.jar')
+    api files('libs/commons-codec-1.10.jar')
+    api files('libs/kxml2-2.2.3.jar')
 }

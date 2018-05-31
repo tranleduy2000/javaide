@@ -88,6 +88,7 @@ public class ProjectManager {
                 if (launcherActivity != null) {
                     project.setMainClass(new ClassFile(launcherActivity.getName()));
                     project.setPackageName(manifestData.getPackage());
+                    project.createClassR();
                 }
                 Log.d(TAG, "importAndroidProject launcherActivity = " + launcherActivity);
             } else {

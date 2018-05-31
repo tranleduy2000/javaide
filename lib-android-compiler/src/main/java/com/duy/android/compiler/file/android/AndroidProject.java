@@ -68,7 +68,7 @@ public class AndroidProject extends JavaProject {
     }
 
 
-    private void createClassR() {
+    public void createClassR() {
         if (packageName != null) {
             String path = packageName.replace(".", File.separator) + File.separator + "R.java";
             classR = new File(dirGeneratedSource, path);

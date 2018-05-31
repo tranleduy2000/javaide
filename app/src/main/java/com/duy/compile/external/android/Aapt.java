@@ -1,6 +1,19 @@
 package com.duy.compile.external.android;
 
+import android.content.Context;
+import android.os.Build;
+
+import com.duy.ide.activities.Environment;
+import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProject;
+
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * $ aapt
@@ -94,9 +107,107 @@ import com.duy.project.file.android.AndroidProject;
  * generates R.java into a different package.
  */
 public class Aapt {
+    private final AndroidBuilder2 builder;
+    private final AndroidProject project;
+    private Context context;
 
-    public static void run(AndroidProject project) {
+    public Aapt(AndroidBuilder2 builder, AndroidProject project) {
+        this.builder = builder;
+        this.project = project;
+        this.context = builder.getContext();
+    }
 
+    public boolean run() throws IOException, InterruptedException {
+        String arch = Build.CPU_ABI.substring(0, 3).toLowerCase(Locale.US);
+        String aaptName;
+
+        int numCores = getNumCores();
+        boolean verbose = builder.isVerbose();
+
+        if (verbose) {
+            builder.stdout("Available cores " + numCores);
+        }
+
+        // Position Independent Executables (PIE) were first supported in Jelly Bean 4.1 (API level 16)
+        // In Android 5.0, they are required
+        // Android versions before 4.1 still need the old binary...
+        boolean usePie = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+
+        // Get the correct AAPT binary for this processor architecture
+        switch (arch) {
+            case "x86":
+                if (usePie) {
+                    aaptName = "aapt-x86-pie";
+                } else {
+                    aaptName = "aapt-x86";
+                }
+                break;
+            case "arm":
+            default:
+                // Default to ARM, just in case
+                if (usePie) {
+                    aaptName = "aapt-arm-pie";
+                } else {
+                    aaptName = "aapt-arm";
+                }
+                break;
+        }
+        File aaptFile = new File(Environment.getBinDir(context), aaptName);
+
+        String[] args = {
+                aaptFile.getAbsolutePath(),
+                "p", "-f", "--auto-add-overlay",
+                "-M", project.getXmlManifest().getAbsolutePath(),  //manifest file
+                "-F", project.getOutResourceFile().getAbsolutePath(),  //output resources.ap_
+                "-I", FileManager.getClasspathFile(context).getAbsolutePath(),//The location of the android.jar resource
+                "-A", project.getAssetsDirs().getAbsolutePath(), //input assets dir
+                "-S", project.getResDirs().getAbsolutePath(),  //input resource dir
+                "-J", project.getClassR().getParent() //parent file of R.java file
+        };
+
+        Process aaptProcess = Runtime.getRuntime().exec(args);
+        int result = aaptProcess.waitFor();
+
+        String stdout = IOUtils.toString(aaptProcess.getInputStream());
+        String stderr = IOUtils.toString(aaptProcess.getErrorStream());
+        builder.stdout(stdout);
+        builder.stderr(stderr);
+
+        return result == 0;
+    }
+
+    /**
+     * Gets the number of cores available in this device, across all processors.
+     * Requires: Ability to peruse the filesystem at "/sys/devices/system/cpu"
+     * <p>
+     * From StackOverflow: http://stackoverflow.com/a/10377934
+     *
+     * @return The number of cores, or Runtime.availableProcessors() if failed to get result
+     */
+    private int getNumCores() {
+        //Private Class to display only CPU devices in the directory listing
+        class CpuFilter implements FileFilter {
+            @Override
+            public boolean accept(File pathname) {
+                //Check if filename is "cpu", followed by a single digit number
+                if (Pattern.matches("cpu[0-9]+", pathname.getName())) {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        try {
+            //Get directory containing CPU info
+            File dir = new File("/sys/devices/system/cpu/");
+            //Filter to only list the devices we care about
+            File[] files = dir.listFiles(new CpuFilter());
+            //Return the number of cores (virtual CPU devices)
+            return files.length;
+        } catch (Exception e) {
+            //Default to return 1 core
+            return Runtime.getRuntime().availableProcessors();
+        }
     }
 
 }

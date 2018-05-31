@@ -104,13 +104,6 @@ public class AndroidBuilder {
                 + " -S " + projectFile.getResDirs().getPath()  //input resource dir
                 + " -J " + projectFile.getClassR().getParent());//parent file of R.java file
 
-        //test
-//        File appcompatDir = new File(Environment.getExternalStorageDirectory(), ".JavaNIDE/appcompat-v7-21.0.0");
-//        File appcompatRes = new File(appcompatDir, "res");
-//        File appcompatAsset = new File(appcompatDir, "assets");
-//        command.append(" -S ").append(appcompatRes.getPath());
-//        command.append(" -A ").append(appcompatAsset.getPath());
-
         File dirLibs = projectFile.getDirLibs();
         File[] files = dirLibs.listFiles();
         if (files != null) {

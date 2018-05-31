@@ -98,11 +98,8 @@ public class AndroidProject extends JavaProjectFolder {
         return apkUnaligned;
     }
 
-    public File getOutResourceFile() throws IOException {
-        if (!outResourceFile.exists()) {
-            outResourceFile.getParentFile().mkdirs();
-            outResourceFile.createNewFile();
-        }
+    public File getOutResourceFile() {
+        outResourceFile.getParentFile().mkdirs();
         return outResourceFile;
     }
 
@@ -162,12 +159,8 @@ public class AndroidProject extends JavaProjectFolder {
         return assetsDirs.get(0);
     }
 
-    public File getClassR() throws IOException {
-        if (classR == null) createClassR();
-        if (!classR.exists()) {
-            classR.getParentFile().mkdirs();
-            classR.createNewFile();
-        }
+    public File getClassR() {
+        classR.getParentFile().mkdirs();
         return classR;
     }
 

@@ -254,43 +254,6 @@ public class Build {
 		try {
 			manifest = new Manifest(this);
 			
-			if (manifest.needsProcessing3Update()) {
-				System.out.println(editor.getResources().getString(R.string.build_manifest_android_mode_3_upgrade));
-				manifest.updateProcessing3();
-			}
-			
-			String packageName = manifest.getPackageName();
-			
-			if(!running.get()) { //CHECK
-				cleanUpHalt();
-				return;
-			}
-			
-			Preferences.setInteger("editor.tabs.size", 2); //TODO this is the default... so a tab adds two spaces
-			
-			//Enable all of the fancy preprocessor stuff
-			Preferences.setBoolean("preproc.enhanced_casting", true);
-			Preferences.setBoolean("preproc.web_colors", true);
-			Preferences.setBoolean("preproc.color_datatype", true);
-			Preferences.setBoolean("preproc.substitute_floats", true);
-			Preferences.setBoolean("preproc.substitute_unicode", true);
-			
-			if (verbose) {
-				System.out.println(editor.getResources().getString(R.string.build_preprocessing));
-			}
-			
-			Preproc preproc = new Preproc(sketchName, packageName);
-			
-			//Combine all of the tabs to check for size
-			String combinedText = "";
-			for(SketchFile tab : tabs)
-				combinedText += tab.getText();
-			preproc.initSketchSize(combinedText, editor);
-			preproc.initSketchSmooth(combinedText, editor);
-			sketchClassName = preprocess(srcFolder, packageName, preproc, false, debug && injectLogBroadcaster);
-			
-
-
 			if(sketchClassName != null) {
 				if (verbose) {
 					System.out.println(editor.getResources().getString(R.string.build_writing_manifest));
@@ -429,24 +392,7 @@ public class Build {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SketchException e) {
-			e.printStackTrace();
-			
-			editor.errorExt(e.getMessage());
-			editor.highlightLineExt(e.getCodeIndex(), e.getCodeLine());
-			
-			//Bail out
-			cleanUp();
-			return;
 		} catch (RuntimeException e) {
-			e.printStackTrace();
-			
-			editor.errorExt(e.getMessage());
-			
-			//Bail out
-			cleanUp();
-			return;
 		}
 		
 		System.out.println(String.format(Locale.US, editor.getResources().getString(R.string.build_detected_architecture), android.os.Build.CPU_ABI));
@@ -495,32 +441,6 @@ public class Build {
 		
 
 		File aaptLoc = new File(tmpFolder, "aapt"); //Use the same name for the destination so that the hyphens aren't an issue
-		//AAPT setup
-		try {
-			if (verbose) {
-				System.out.println(editor.getResources().getString(R.string.build_copying_aapt));
-			}
-			
-			AssetManager am = editor.getAssets();
-			
-			InputStream inputStream = am.open(aaptName);
-			createFileFromInputStream(inputStream, aaptLoc);
-			inputStream.close();
-			
-			if (verbose) {
-				System.out.println(editor.getResources().getString(R.string.build_changing_aapt_execution_permissions));
-			}
-			
-			if (!aaptLoc.setExecutable(true, true)){
-				System.err.println(editor.getResources().getString(R.string.build_change_aapt_execution_permissions_failed));
-				
-				cleanUpError();
-				return;
-			}
-		} catch (IOException e) {
-			System.out.println(editor.getResources().getString(R.string.build_change_aapt_execution_permissions_failed));
-			e.printStackTrace();
-		}
 
 		//Let's try a different method - who needs ANT, anyway?
 		

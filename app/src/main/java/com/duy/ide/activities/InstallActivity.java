@@ -301,6 +301,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
                     IOUtils.copy(input, output);
                     input.close();
                     output.close();
+                    outFile.setExecutable(true, true);
                 }
 
                 return outFile;

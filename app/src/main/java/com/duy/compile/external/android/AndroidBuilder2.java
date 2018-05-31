@@ -1,8 +1,9 @@
 package com.duy.compile.external.android;
 
+import android.content.Context;
+
 import com.android.annotations.Nullable;
 import com.duy.project.file.android.AndroidProject;
-import com.sun.tools.javac.util.Context;
 
 import java.io.PrintStream;
 
@@ -58,15 +59,42 @@ public class AndroidBuilder2 implements IAndroidBuilder {
         if (mVerbose) {
             mStdout.print("Cleanup project");
         }
-
         return true;
     }
 
     private boolean runAAPT() {
-        return true;
+        try {
+            Aapt aapt = new Aapt(this, mAndroidProject);
+            return aapt.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    public void stdout(String message) {
+        if (mVerbose) {
+            mStdout.println(message);
+        }
+    }
+
+    public void stderr(String stderr) {
+        if (mVerbose) {
+            mStderr.println(stderr);
+        }
     }
 
     public void setProject(AndroidProject project) {
         this.mAndroidProject = project;
     }
+
+    public boolean isVerbose() {
+        return mVerbose;
+    }
+
+    public Context getContext() {
+        return mContext;
+    }
+
 }

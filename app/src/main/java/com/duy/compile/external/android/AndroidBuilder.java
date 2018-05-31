@@ -21,7 +21,6 @@ import kellinwood.security.zipsigner.ProgressEvent;
 import kellinwood.security.zipsigner.ZipSigner;
 import kellinwood.security.zipsigner.optional.CustomKeySigner;
 
-import static com.duy.compile.external.android.util.S.dirLibs;
 
 
 public class AndroidBuilder {
@@ -77,13 +76,13 @@ public class AndroidBuilder {
     }
 
     private static void extractLibrary(AndroidProjectFolder projectFolder) {
-        File[] files = dirLibs.listFiles();
-        if (files != null) {
-            for (File lib : files) {
-                if (lib.isFile() && lib.getPath().endsWith(".aar")) {
-                }
-            }
-        }
+//        File[] files = dirLibs.listFiles();
+//        if (files != null) {
+//            for (File lib : files) {
+//                if (lib.isFile() && lib.getPath().endsWith(".aar")) {
+//                }
+//            }
+//        }
     }
 
     private static void runAidl(AndroidProjectFolder projectFile) throws Exception {

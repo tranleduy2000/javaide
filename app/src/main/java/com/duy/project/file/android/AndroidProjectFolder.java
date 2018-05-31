@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by Duy on 05-Aug-17.
@@ -32,7 +31,6 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     private File classR;
     private File dirOutApk;
     private ManifestData.Activity launcherActivity;
-    private ArrayList<String> modules = new ArrayList<>();
 
     public AndroidProjectFolder(File dirRoot,
                                 @Nullable String mainClassName,
@@ -120,21 +118,21 @@ public class AndroidProjectFolder extends JavaProjectFolder {
         getDirAssets();
 
         File menu = new File(dirRes, "menu");
-        if (!menu.exists()) menu.mkdirs();
+        menu.mkdirs();
         File layout = new File(dirRes, "layout");
-        if (!layout.exists()) layout.mkdirs();
+        layout.mkdirs();
         File drawable = new File(dirRes, "drawable");
-        if (!drawable.exists()) drawable.mkdirs();
+        drawable.mkdirs();
         drawable = new File(dirRes, "drawable-hdpi");
-        if (!drawable.exists()) drawable.mkdirs();
+        drawable.mkdirs();
         drawable = new File(dirRes, "drawable-xhdpi");
-        if (!drawable.exists()) drawable.mkdirs();
+        drawable.mkdirs();
         drawable = new File(dirRes, "drawable-xxhdpi");
-        if (!drawable.exists()) drawable.mkdirs();
+        drawable.mkdirs();
         drawable = new File(dirRes, "drawable-xxxhdpi");
-        if (!drawable.exists()) drawable.mkdirs();
+        drawable.mkdirs();
         File value = new File(dirRes, "values");
-        if (!value.exists()) value.mkdirs();
+        value.mkdirs();
     }
 
 
@@ -156,7 +154,6 @@ public class AndroidProjectFolder extends JavaProjectFolder {
         if (!apkUnsigned.exists()) {
             apkUnsigned.getParentFile().mkdirs();
             apkUnsigned.createNewFile();
-            apkUnsigned.setReadable(true);
         }
         return apkUnsigned;
     }
@@ -164,7 +161,6 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     public File getDirRes() {
         if (!dirRes.exists()) {
             dirRes.mkdirs();
-            dirRes.setReadable(true);
         }
         return dirRes;
     }
@@ -172,7 +168,6 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     public File getDirAssets() {
         if (!dirAssets.exists()) {
             dirAssets.mkdirs();
-            dirAssets.setReadable(true);
         }
         return dirAssets;
     }
@@ -182,7 +177,6 @@ public class AndroidProjectFolder extends JavaProjectFolder {
         if (!classR.exists()) {
             classR.getParentFile().mkdirs();
             classR.createNewFile();
-            classR.setReadable(true);
         }
         return classR;
     }

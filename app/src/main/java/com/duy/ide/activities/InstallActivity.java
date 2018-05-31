@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -63,9 +62,6 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         mInfo = findViewById(R.id.txt_info);
         mInstallButton = findViewById(R.id.btn_install);
 
-//        mTxtVersion = (TextView) findViewById(R.id.txt_version);
-//        String version = getString(R.string.system_version) + mPreferences.getSystemVersion();
-//        mTxtVersion.setText(version);
         findViewById(R.id.btn_install).setOnClickListener(this);
         findViewById(R.id.btn_select_file).setOnClickListener(this);
         findViewById(R.id.down_load_from_github).setOnClickListener(this);
@@ -74,32 +70,8 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
     }
 
 
-    @Override
-    public void onClick(View v) {
-       /* if (v.getId() == R.id.btn_install) {
-            if (isConnected()) {
-                downloadFile();
-            } else {
-                showDialogNotConnect();
-            }
-        } else if (v.getId() == R.id.btn_select_file) {
-            selectFile();
-        } else if (v.getId() == R.id.down_load_from_github) {
-            downloadFromGit();
-        }*/
-    }
-
     private void extractFileFromAsset() {
         new CopyFromAssetTask(this).execute();
-    }
-
-    private void downloadFromGit() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.classes_link)));
-        try {
-            startActivity(intent);
-        } catch (Exception e) {
-            Toast.makeText(this, "No browser installed", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void selectFile() {
@@ -186,6 +158,11 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
 
     private void installFailed() {
         Toast.makeText(this, "Install failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 
     private class InstallTask extends AsyncTask<File, String, Boolean> {
@@ -311,9 +288,21 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
                 AssetManager assets = context.getAssets();
                 InputStream open = assets.open("android-21/android-21.zip");
                 File outFile = new File(getFilesDir(), "classes.zip");
-                FileOutputStream fileOutputStream = new FileOutputStream(outFile);
-                FileManager.copyStream(open, fileOutputStream);
-                fileOutputStream.close();
+                FileOutputStream output = new FileOutputStream(outFile);
+                FileManager.copyStream(open, output);
+                output.close();
+
+                File binDir = com.duy.ide.activities.Environment.getBinDir(context);
+                String[] aapts = assets.list("aapt-binaries");
+                for (String aapt : aapts) {
+                    InputStream input = assets.open("aapt-binaries/" + aapt);
+                    outFile = new File(binDir, aapt);
+                    output = new FileOutputStream(outFile);
+                    IOUtils.copy(input, output);
+                    input.close();
+                    output.close();
+                }
+
                 return outFile;
             } catch (IOException e) {
                 e.printStackTrace();

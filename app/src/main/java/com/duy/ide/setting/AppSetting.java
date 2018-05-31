@@ -26,7 +26,6 @@ import android.support.annotation.NonNull;
 
 import com.duy.ide.DLog;
 import com.duy.ide.R;
-import com.duy.ide.themefont.fonts.FontEntry;
 import com.duy.ide.themefont.fonts.FontManager;
 import com.duy.ide.utils.DonateUtils;
 
@@ -238,21 +237,11 @@ public class AppSetting {
                 : FontManager.getFontFromAsset(context, name);
     }
 
-    public void setEditorFont(FontEntry fontEntry) {
-        put("key_pref_editor_font", fontEntry.name);
-        put("key_pref_editor_font_from_storage", fontEntry.fromStorage);
-    }
-
     public Typeface getConsoleFont() {
         boolean fromStorage = getBoolean("key_pref_console_font_from_storage");
         String name = getString("key_pref_console_font");
         return fromStorage && DonateUtils.DONATED ? FontManager.getFontFromStorage(name)
                 : FontManager.getFontFromAsset(context, name);
-    }
-
-    public void setConsoleFont(FontEntry fontEntry) {
-        put("key_pref_console_font", fontEntry.name);
-        put("key_pref_console_font_from_storage", fontEntry.fromStorage);
     }
 
     public boolean isShowLines() {

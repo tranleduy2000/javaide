@@ -43,6 +43,4 @@ public interface EditorControl {
 
     void copyAll();
 
-    void selectThemeFont();
-
 }

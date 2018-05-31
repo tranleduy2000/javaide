@@ -99,11 +99,6 @@ public class MenuEditor {
                 analytics.logEvent("action_redo", new Bundle());
                 if (listener != null) listener.redo();
                 break;
-
-            case R.id.action_select_theme:
-                analytics.logEvent("action_select_theme", new Bundle());
-                if (listener != null) listener.selectThemeFont();
-                break;
             case R.id.action_more_feature:
                 activity.openDrawer(GravityCompat.END);
 

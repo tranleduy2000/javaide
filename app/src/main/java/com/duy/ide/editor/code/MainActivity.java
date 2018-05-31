@@ -69,7 +69,6 @@ import com.duy.ide.javaide.autocomplete.util.JavaUtil;
 import com.duy.ide.javaide.sample.activities.DocumentActivity;
 import com.duy.ide.javaide.sample.activities.SampleActivity;
 import com.duy.ide.setting.AppSetting;
-import com.duy.ide.themefont.activities.ThemeFontActivity;
 import com.duy.ide.utils.RootUtils;
 import com.duy.projectview.ProjectManager;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
@@ -660,7 +659,6 @@ public class MainActivity extends ProjectManagerActivity implements
 
     @Override
     public void selectThemeFont() {
-        startActivity(new Intent(this, ThemeFontActivity.class));
     }
 
     @Override

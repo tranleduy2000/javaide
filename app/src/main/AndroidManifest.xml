@@ -41,7 +41,6 @@
             android:name="com.duy.ide.editor.code.MainActivity"
             android:launchMode="singleTask" />
         <activity android:name="com.duy.ide.setting.SettingsActivity" />
-        <activity android:name="com.duy.ide.themefont.activities.ThemeFontActivity" />
         <activity
             android:name="com.duy.ide.activities.InstallActivity"
             android:configChanges="orientation|screenLayout" />

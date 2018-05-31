@@ -36,11 +36,6 @@
 
     <item android:title="@string/setting">
         <menu>
-            <item
-                android:id="@+id/action_select_theme"
-                android:icon="@drawable/ic_color_lens_white_24dp"
-                android:title="@string/theme_font"
-                android:visible="false"/>
 
             <item
                 android:id="@+id/action_setting"

@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by Duy on 16-Jul-17.
@@ -23,10 +24,10 @@ import java.io.Serializable;
 public class JavaProjectFolder implements Serializable, Cloneable {
     private static final String TAG = "ProjectFile";
 
-    public File dirLibs;
+    protected ArrayList<File> javaSrcDirs = new ArrayList<>();
+    protected File dirLibs;
+    protected File dirBuildClasses;
     protected File dirSrcMain;
-    public File dirJava;
-    public File dirBuildClasses;
     protected File dirGenerated;
     protected File dirGeneratedSource;
 
@@ -59,7 +60,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
     }
 
     public File createClass(String currentPackage, String className, String content) {
-        File file = new File(dirJava, currentPackage.replace(".", File.separator));
+        File file = new File(javaSrcDirs.get(0), currentPackage.replace(".", File.separator));
         if (!file.exists()) file.mkdirs();
         File classf = new File(file, className + ".java");
         FileManager.saveFile(classf, content);
@@ -73,7 +74,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         dirProject = new File(dirRoot, projectName);
         dirLibs = new File(dirProject, "libs");
         dirSrcMain = new File(dirProject, "src" + File.separator + "main");
-        dirJava = new File(dirSrcMain, "java");
+        javaSrcDirs.add(new File(dirSrcMain, "java"));
 
         dirBuild = new File(dirProject, "build");
         dirBuildClasses = new File(dirBuild, "classes");
@@ -90,37 +91,35 @@ public class JavaProjectFolder implements Serializable, Cloneable {
 
         if (!dirRoot.exists()) {
             dirRoot.mkdirs();
-            dirRoot.setReadable(true);
         }
         if (!dirProject.exists()) {
             dirProject.mkdirs();
-            dirProject.setReadable(true);
         }
         if (!dirLibs.exists()) {
             dirLibs.mkdirs();
-            dirLibs.setReadable(true);
         }
         if (!dirSrcMain.exists()) {
             dirSrcMain.mkdirs();
-            dirSrcMain.setReadable(true);
         }
-        if (!dirJava.exists()) {
-            dirJava.mkdirs();
-            dirJava.setReadable(true);
-        }
+        mkdirs(javaSrcDirs);
         if (!dirBuildClasses.exists()) {
             dirBuildClasses.mkdirs();
-            dirBuildClasses.setReadable(true);
         }
         if (!dirGenerated.exists()) {
             dirGenerated.mkdirs();
-            dirGenerated.setReadable(true);
         }
         if (!dirGeneratedSource.exists()) {
             dirGeneratedSource.mkdirs();
-            dirGeneratedSource.setReadable(true);
         }
 
+    }
+
+    protected void mkdirs(ArrayList<File> srcDirs) {
+        for (File srcDir : srcDirs) {
+            if (!srcDir.exists()) {
+                srcDir.mkdirs();
+            }
+        }
     }
 
     public File getDirGenerated() {
@@ -188,7 +187,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         if (!dirProject.exists()) dirProject.mkdirs();
         if (!dirLibs.exists()) dirLibs.mkdirs();
         if (!dirSrcMain.exists()) dirSrcMain.mkdirs();
-        if (!dirJava.exists()) dirJava.mkdirs();
+        mkdirs(javaSrcDirs);
         if (!dirBuildClasses.exists()) dirBuildClasses.mkdirs();
         if (!dirGenerated.exists()) dirGenerated.mkdirs();
         if (!dirGeneratedSource.exists()) dirGeneratedSource.mkdirs();
@@ -203,39 +202,11 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         }
     }
 
-    public File getRootDir() {
-        return dirRoot;
-    }
-
-    public ClassFile getMainClass() {
-        return mainClass;
-    }
-
-    public void setMainClass(ClassFile classFile) {
-        this.mainClass = classFile;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
     public JavaProjectFolder createMainClass() throws IOException {
         this.mkdirs();
         if (packageName != null) {
             //create package file
-            File packageF = new File(dirJava, packageName.replace(".", File.separator));
+            File packageF = new File(javaSrcDirs.get(0), packageName.replace(".", File.separator));
             if (!packageF.exists()) {
                 packageF.getParentFile().mkdirs();
                 packageF.mkdirs();
@@ -248,7 +219,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
                 FileManager.saveFile(mainFile, content);
             }
         } else { //find package name
-            File[] files = dirJava.listFiles();
+            File[] files = javaSrcDirs.get(0).listFiles();
             packageName = "";
             if (files == null) {
             } else if (files.length > 0) {
@@ -316,17 +287,50 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         return classpath.append(File.pathSeparator) + getJavaBootClassPath(context);
     }
 
-    public File getDirSrcJava() {
-        if (!dirJava.exists()) dirJava.mkdirs();
-        return dirJava;
-    }
-
     private String getJavaBootClassPath(Context context) {
         return FileManager.getClasspathFile(context).getPath();
     }
 
     public String getSourcePath() {
-        String sourcePath = getDirSrcJava().getPath();
-        return sourcePath;
+        StringBuilder srcPath = new StringBuilder();
+        for (File javaSrcDir : javaSrcDirs) {
+            if (srcPath.length() != 0) {
+                srcPath.append(File.pathSeparator);
+            }
+            srcPath.append(javaSrcDir.getAbsolutePath());
+        }
+        return srcPath.toString();
+    }
+
+    public File getRootDir() {
+        return dirRoot;
+    }
+
+    public ClassFile getMainClass() {
+        return mainClass;
+    }
+
+    public void setMainClass(ClassFile classFile) {
+        this.mainClass = classFile;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public ArrayList<File> getJavaSrcDirs() {
+        return javaSrcDirs;
     }
 }

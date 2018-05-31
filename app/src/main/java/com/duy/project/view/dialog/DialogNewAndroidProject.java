@@ -141,7 +141,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
     }
 
     private void copyResources(AndroidProjectFolder projectFile, boolean useAppCompat, AssetManager assets) throws FileNotFoundException {
-        String resourcePath = projectFile.getDirRes().getPath();
+        String resourcePath = projectFile.getResDirs().getPath();
         AssetUtil.copyAssetFolder(assets, "templates/src/main/res", resourcePath);
         File file = new File(resourcePath, "values/styles.xml");
         String content = FileManager.streamToString(new FileInputStream(file)).toString();
@@ -151,7 +151,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
     private void copyLibrary(AndroidProjectFolder projectFile, AssetManager assets) {
         //copy android support library
-        AssetUtil.copyAssetFolder(assets, "templates/libs", projectFile.dirLibs.getPath());
+        AssetUtil.copyAssetFolder(assets, "templates/libs", projectFile.getDirLibs().getPath());
     }
 
     private void copyKeyStore(AndroidProjectFolder projectFile, AssetManager assets) throws IOException {
@@ -165,7 +165,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
     }
 
     private void createStringXml(AndroidProjectFolder projectFile, String appName) throws Exception {
-        File stringxml = new File(projectFile.getDirRes(), "values/strings.xml");
+        File stringxml = new File(projectFile.getResDirs(), "values/strings.xml");
         String strings = FileManager.streamToString(new FileInputStream(
                 stringxml)).toString();
         strings = strings.replace("{APP_NAME}", appName);
@@ -189,7 +189,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
     private void createMainActivity(AndroidProjectFolder projectFile, String activityClass,
                                     String packageName, String activityName, String appName,
                                     boolean useAppCompat, AssetManager assets) throws IOException {
-        File activityFile = FileManager.createFileIfNeed(new File(projectFile.dirJava,
+        File activityFile = FileManager.createFileIfNeed(new File(projectFile.getJavaSrcDirs().get(0),
                 activityClass.replace(".", File.separator) + ".java"));
         String name = useAppCompat ? "templates/src/main/MainActivityAppCompat.java" : "templates/src/main/MainActivity.java";
         InputStream activityTemplate = assets.open(name);

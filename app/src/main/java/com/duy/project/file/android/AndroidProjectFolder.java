@@ -14,22 +14,25 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Duy on 05-Aug-17.
  */
 public class AndroidProjectFolder extends JavaProjectFolder {
+    private KeyStore keystore;
+
     private File xmlManifest;
-    private File resourceFile;
     /* Output */
+    private File outResourceFile;
     private File apkUnsigned;
     private File apkUnaligned;
-    private KeyStore keystore;
+
     /* PROJECT */
-    private File dirRes;
-    private File dirAssets;
+    private ArrayList<File> resDirs = new ArrayList<>();
+    private ArrayList<File> assetsDirs = new ArrayList<>();
     private File classR;
-    private File dirOutApk;
+
     private ManifestData.Activity launcherActivity;
 
     public AndroidProjectFolder(File dirRoot,
@@ -42,17 +45,16 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     @Override
     public void init() {
         super.init();
-        dirRes = new File(dirSrcMain, "res");
-        dirAssets = new File(dirSrcMain, "assets");
+        resDirs.add(new File(dirSrcMain, "res"));
+        assetsDirs.add(new File(dirSrcMain, "assets"));
         xmlManifest = new File(dirSrcMain, "AndroidManifest.xml");
 
-        dirOutApk = new File(dirOutput, "apk");
         apkUnsigned = new File(dirOutput, "app-unsigned-debug.apk");
         apkUnaligned = new File(dirOutput, "app-unaligned-debug.apk");
 
         createClassR();
 
-        resourceFile = new File(dirBuild, "resources.ap_");
+        outResourceFile = new File(dirBuild, "resources.ap_");
         dexedClassesFile = new File(dirBuild, "classes.dex");
         keystore = new KeyStore(new File(dirProject, "keystore.jks"),
                 "android".toCharArray(),
@@ -96,12 +98,12 @@ public class AndroidProjectFolder extends JavaProjectFolder {
         return apkUnaligned;
     }
 
-    public File getResourceFile() throws IOException {
-        if (!resourceFile.exists()) {
-            resourceFile.getParentFile().mkdirs();
-            resourceFile.createNewFile();
+    public File getOutResourceFile() throws IOException {
+        if (!outResourceFile.exists()) {
+            outResourceFile.getParentFile().mkdirs();
+            outResourceFile.createNewFile();
         }
-        return resourceFile;
+        return outResourceFile;
     }
 
     @Override
@@ -114,25 +116,18 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     @Override
     public void mkdirs() {
         super.mkdirs();
-        getDirRes();
-        getDirAssets();
+        getResDirs();
+        getAssetsDirs();
 
-        File menu = new File(dirRes, "menu");
-        menu.mkdirs();
-        File layout = new File(dirRes, "layout");
-        layout.mkdirs();
-        File drawable = new File(dirRes, "drawable");
-        drawable.mkdirs();
-        drawable = new File(dirRes, "drawable-hdpi");
-        drawable.mkdirs();
-        drawable = new File(dirRes, "drawable-xhdpi");
-        drawable.mkdirs();
-        drawable = new File(dirRes, "drawable-xxhdpi");
-        drawable.mkdirs();
-        drawable = new File(dirRes, "drawable-xxxhdpi");
-        drawable.mkdirs();
-        File value = new File(dirRes, "values");
-        value.mkdirs();
+        File resDir = resDirs.get(0);
+        new File(resDir, "menu").mkdirs();
+        new File(resDir, "layout").mkdirs();
+        new File(resDir, "drawable").mkdirs();
+        new File(resDir, "drawable-hdpi").mkdirs();
+        new File(resDir, "drawable-xhdpi").mkdirs();
+        new File(resDir, "drawable-xxhdpi").mkdirs();
+        new File(resDir, "drawable-xxxhdpi").mkdirs();
+        new File(resDir, "values").mkdirs();
     }
 
 
@@ -153,23 +148,18 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     public File getApkUnsigned() throws IOException {
         if (!apkUnsigned.exists()) {
             apkUnsigned.getParentFile().mkdirs();
-            apkUnsigned.createNewFile();
         }
         return apkUnsigned;
     }
 
-    public File getDirRes() {
-        if (!dirRes.exists()) {
-            dirRes.mkdirs();
-        }
-        return dirRes;
+    public File getResDirs() {
+        mkdirs(resDirs);
+        return resDirs.get(0);
     }
 
-    public File getDirAssets() {
-        if (!dirAssets.exists()) {
-            dirAssets.mkdirs();
-        }
-        return dirAssets;
+    public File getAssetsDirs() {
+        mkdirs(assetsDirs);
+        return assetsDirs.get(0);
     }
 
     public File getClassR() throws IOException {
@@ -182,7 +172,7 @@ public class AndroidProjectFolder extends JavaProjectFolder {
     }
 
     public File getDirLayout() {
-        File file = new File(getDirRes(), "layout");
+        File file = new File(getResDirs(), "layout");
         if (!file.exists()) {
             file.mkdirs();
         }

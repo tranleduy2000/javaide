@@ -31,7 +31,7 @@ public class AndroidBuilder {
                 projectFile.getApkUnsigned().getPath(),
                 "-v",
                 "-u",
-                "-z", projectFile.getResourceFile().getPath(),
+                "-z", projectFile.getOutResourceFile().getPath(),
                 "-f", projectFile.getDexedClassesFile().getPath()
         };
         DLog.d(TAG, "buildApk args = " + Arrays.toString(args));
@@ -98,10 +98,10 @@ public class AndroidBuilder {
         StringBuilder command = new StringBuilder("aapt p -f --auto-add-overlay"
                 //"-v" + //print info
                 + " -M " + projectFile.getXmlManifest().getPath()  //manifest file
-                + " -F " + projectFile.getResourceFile().getPath()  //output resources.ap_
+                + " -F " + projectFile.getOutResourceFile().getPath()  //output resources.ap_
                 + " -I " + FileManager.getClasspathFile(context).getPath()  //include
-                + " -A " + projectFile.getDirAssets().getPath()  //input assets dir
-                + " -S " + projectFile.getDirRes().getPath()  //input resource dir
+                + " -A " + projectFile.getAssetsDirs().getPath()  //input assets dir
+                + " -S " + projectFile.getResDirs().getPath()  //input resource dir
                 + " -J " + projectFile.getClassR().getParent());//parent file of R.java file
 
         //test

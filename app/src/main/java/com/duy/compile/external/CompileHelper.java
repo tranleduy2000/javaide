@@ -80,7 +80,7 @@ public class CompileHelper {
 
     public static void dexLibs(@NonNull JavaProjectFolder projectFile) throws Exception {
         DLog.d(TAG, "dexLibs() called with: projectFile = [" + projectFile + "]");
-        File dirLibs = projectFile.dirLibs;
+        File dirLibs = projectFile.getDirLibs();
         if (dirLibs.exists()) {
             File[] files = dirLibs.listFiles();
             if (files != null && files.length > 0) {
@@ -107,7 +107,7 @@ public class CompileHelper {
 
     public static File dexBuildClasses(@NonNull JavaProjectFolder projectFile) throws IOException {
         DLog.d(TAG, "dexBuildClasses() called with: projectFile = [" + projectFile + "]");
-        String input = projectFile.dirBuildClasses.getPath();
+        String input = projectFile.getDirBuildClasses().getPath();
         FileManager.ensureFileExist(new File(input));
         String[] args = new String[]{"--dex", "--verbose", "--no-strict",
                 "--output=" + projectFile.getDexedClassesFile().getPath(), //output dex file

@@ -51,7 +51,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
     protected File dirBuildOutputJar;
     protected File dirBuildDexedLibs;
     protected File dirBuildDexedClass;
-    protected File dexedClassesFile;
+    protected File dexFile;
 
 
     @Nullable
@@ -97,7 +97,7 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         dirBuildDexedLibs = new File(dirBuild, "dexedLibs");
         dirBuildDexedClass = new File(dirBuild, "dexedClasses");
 
-        dexedClassesFile = new File(dirBuildDexedClass, projectName + ".dex");
+        dexFile = new File(dirBuildDexedClass, "classes.dex");
         jarArchive = new File(dirBuildOutputJar, projectName + ".jar");
 
 
@@ -148,12 +148,9 @@ public class JavaProjectFolder implements Serializable, Cloneable {
     }
 
 
-    public File getDexedClassesFile() throws IOException {
-        if (!dexedClassesFile.exists()) {
-            dexedClassesFile.getParentFile().mkdirs();
-            dexedClassesFile.createNewFile();
-        }
-        return dexedClassesFile;
+    public File getDexFile() {
+        dexFile.getParentFile().mkdirs();
+        return dexFile;
     }
 
     public File getDirLibs() {

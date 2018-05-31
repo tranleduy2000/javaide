@@ -18,5 +18,5 @@ abstract class BuildTask {
     }
 
     @WorkerThread
-    public abstract boolean run() throws Throwable;
+    public abstract boolean run() throws Exception;
 }

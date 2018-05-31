@@ -3,6 +3,7 @@ package com.duy.compile.external.android.builder;
 import android.content.Context;
 
 import com.duy.compile.external.android.builder.task.Aapt;
+import com.duy.compile.external.android.builder.task.Dexer;
 import com.duy.compile.external.android.builder.task.JavaCompiler;
 import com.duy.project.file.android.AndroidProject;
 
@@ -48,6 +49,21 @@ public class AndroidBuilder2 implements IAndroidBuilder {
             return;
         }
 
+        if (!runDexer()){
+            mStdout.println("runDexer failed");
+            return;
+        }
+
+    }
+
+    private boolean runDexer() {
+        try {
+            Dexer dexer = new Dexer(this, mAndroidProject);
+            return dexer.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private boolean compileJavaSource() {

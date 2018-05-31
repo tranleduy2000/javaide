@@ -75,7 +75,7 @@ public class CompileHelper {
     public static void compileAndRun(Context context, InputStream in, File tempDir, JavaProjectFolder projectFile) throws Exception {
         compileJava(context, projectFile);
         convertToDexFormat(context, projectFile);
-        executeDex(context, in, projectFile.getDexedClassesFile(), tempDir, projectFile.getMainClass().getName());
+        executeDex(context, in, projectFile.getDexFile(), tempDir, projectFile.getMainClass().getName());
     }
 
     public static void dexLibs(@NonNull JavaProjectFolder projectFile) throws Exception {
@@ -110,15 +110,15 @@ public class CompileHelper {
         String input = projectFile.getDirBuildClasses().getPath();
         FileManager.ensureFileExist(new File(input));
         String[] args = new String[]{"--dex", "--verbose", "--no-strict",
-                "--output=" + projectFile.getDexedClassesFile().getPath(), //output dex file
+                "--output=" + projectFile.getDexFile().getPath(), //output dex file
                 input}; //input file
         DexTool.main(args);
-        return projectFile.getDexedClassesFile();
+        return projectFile.getDexFile();
     }
 
     public static File dexMerge(@NonNull JavaProjectFolder projectFile) throws IOException {
         DLog.d(TAG, "dexMerge() called with: projectFile = [" + projectFile + "]");
-        FileManager.ensureFileExist(projectFile.getDexedClassesFile());
+        FileManager.ensureFileExist(projectFile.getDexFile());
 
         if (projectFile.getDirBuildDexedLibs().exists()) {
             File[] files = projectFile.getDirBuildDexedLibs().listFiles();
@@ -126,15 +126,15 @@ public class CompileHelper {
                 for (File dexedLib : files) {
                     DexMerger dexMerger = new DexMerger(
                             new Dex[]{
-                                    new Dex(projectFile.getDexedClassesFile()),
+                                    new Dex(projectFile.getDexFile()),
                                     new Dex(dexedLib)},
                             CollisionPolicy.FAIL);
                     Dex merged = dexMerger.merge();
-                    merged.writeTo(projectFile.getDexedClassesFile());
+                    merged.writeTo(projectFile.getDexFile());
                 }
             }
         }
-        return projectFile.getDexedClassesFile();
+        return projectFile.getDexFile();
     }
 
     public static void executeDex(Context context, InputStream in, @NonNull File outDex, @NonNull File tempDir, String mainClass)

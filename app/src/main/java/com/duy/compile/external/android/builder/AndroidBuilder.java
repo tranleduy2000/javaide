@@ -31,7 +31,7 @@ public class AndroidBuilder {
                 "-v",
                 "-u",
                 "-z", projectFile.getOutResourceFile().getPath(),
-                "-f", projectFile.getDexedClassesFile().getPath()
+                "-f", projectFile.getDexFile().getPath()
         };
         DLog.d(TAG, "buildApk args = " + Arrays.toString(args));
         ApkBuilderMain.main(args);

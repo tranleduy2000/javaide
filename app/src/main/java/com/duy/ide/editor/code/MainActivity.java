@@ -74,7 +74,6 @@ import com.duy.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -357,11 +356,8 @@ public class MainActivity extends ProjectManagerActivity implements
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            mCompileManager.executeDex(projectFile, mProjectFile.getDexedClassesFile());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                            mCompileManager.executeDex(projectFile, mProjectFile.getDexFile());
+
                     }
                 }, 200);
             }

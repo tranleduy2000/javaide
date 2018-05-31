@@ -59,7 +59,6 @@ public class AndroidProject extends JavaProjectFolder {
         createClassR();
 
         outResourceFile = new File(dirBuild, "resources.ap_");
-        dexedClassesFile = new File(dirBuild, "classes.dex");
         keystore = new KeyStore(new File(dirProject, "keystore.jks"),
                 "android".toCharArray(),
                 "android",

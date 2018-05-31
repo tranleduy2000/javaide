@@ -46,9 +46,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.duy.JavaApplication;
-import com.duy.compile.BuildApkTask;
-import com.duy.compile.BuildJarAchieveTask;
-import com.duy.compile.CompileJavaTask;
+import com.duy.compile.BuildAndroidTask;
+import com.duy.compile.BuildJarTask;
+import com.duy.compile.BuildJavaTask;
 import com.duy.compile.CompileManager;
 import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.ide.Builder;
@@ -263,7 +263,7 @@ public class MainActivity extends ProjectManagerActivity implements
                         }).show();
                 return;
             }
-            new BuildApkTask(this, new BuildApkTask.CompileListener() {
+            new BuildAndroidTask(this, new BuildAndroidTask.CompileListener() {
                 @Override
                 public void onStart() {
                     updateUiStartCompile();
@@ -330,7 +330,7 @@ public class MainActivity extends ProjectManagerActivity implements
                     }).show();
             return;
         }
-        CompileJavaTask.CompileListener compileListener = new CompileJavaTask.CompileListener() {
+        BuildJavaTask.CompileListener compileListener = new BuildJavaTask.CompileListener() {
             @Override
             public void onStart() {
                 updateUiStartCompile();
@@ -370,14 +370,14 @@ public class MainActivity extends ProjectManagerActivity implements
                 mMessagePresenter.append(msg);
             }
         };
-        new CompileJavaTask(this, compileListener).execute(mProjectFile);
+        new BuildJavaTask(this, compileListener).execute(mProjectFile);
     }
 
     @Override
     public void buildJar() {
         saveAllFile();
         if (mProjectFile != null) {
-            new BuildJarAchieveTask(this, new BuildJarAchieveTask.CompileListener() {
+            new BuildJarTask(this, new BuildJarTask.CompileListener() {
                 @Override
                 public void onStart() {
                     updateUiStartCompile();

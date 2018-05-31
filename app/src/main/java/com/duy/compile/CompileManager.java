@@ -19,7 +19,7 @@ package com.duy.compile;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.duy.compile.external.android.builder.CompileHelper;
+import com.duy.compile.builder.CompileHelper;
 import com.duy.ide.debug.activities.DebugActivity;
 import com.duy.ide.editor.code.MainActivity;
 import com.duy.project.file.java.JavaProject;
@@ -32,12 +32,10 @@ import java.io.File;
  */
 
 public class CompileManager {
-
     public static final String FILE_PATH = "file_name";     // extras indicators
     public static final String IS_NEW = "is_new";
     public static final String INITIAL_POS = "initial_pos";
     public static final int ACTIVITY_EDITOR = 1001;
-    public static final String MODE = "run_mode";
 
     public static final String PROJECT_FILE = "project_file";
     public static final String ACTION = "action";
@@ -49,7 +47,6 @@ public class CompileManager {
     public CompileManager(Activity activity) {
         this.mActivity = activity;
     }
-
 
 
     public void debug(String name) {
@@ -75,11 +72,4 @@ public class CompileManager {
         mActivity.startActivity(intent);
     }
 
-    public void buildApk() {
-
-    }
-
-    public interface ProcessCallback {
-        void onFailed(String s);
-    }
 }

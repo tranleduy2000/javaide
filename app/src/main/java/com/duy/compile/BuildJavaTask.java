@@ -1,0 +1,103 @@
+package com.duy.compile;
+
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.android.annotations.Nullable;
+import com.duy.compile.builder.CompileHelper;
+import com.duy.project.file.java.JavaProject;
+import com.sun.tools.javac.main.Main;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticListener;
+
+public class BuildJavaTask extends AsyncTask<JavaProject, Object, Integer> {
+    private static final String TAG = "CompileJavaTask";
+    private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
+    private JavaProject projectFile;
+    private Context context;
+    @Nullable
+    private CompileListener compileListener;
+    private Throwable error;
+
+    public BuildJavaTask(Context context, CompileListener compileListener) {
+        this.context = context;
+        this.compileListener = compileListener;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        if (compileListener != null) compileListener.onStart();
+    }
+
+    @Override
+    protected Integer doInBackground(JavaProject... params) {
+        if (params[0] == null) return null;
+        this.projectFile = params[0];
+        DiagnosticListener listener = new DiagnosticListener() {
+            @Override
+            public void report(Diagnostic diagnostic) {
+                mDiagnostics.add(diagnostic);
+            }
+        };
+        //clean task
+        projectFile.clean();
+        projectFile.createBuildDir();
+
+        int status = CompileHelper.compileJava(context, projectFile, listener);
+        if (status == Main.EXIT_OK) {
+            try {
+                CompileHelper.convertToDexFormat(context, projectFile);
+            } catch (Throwable e) {
+                this.error = e;
+                Log.e(TAG, "doInBackground: ", e);
+                publishProgress(e.getMessage().toCharArray(), 0, e.getMessage().length());
+                status = Main.EXIT_ERROR;
+            }
+        }
+        return status;
+    }
+
+    @Override
+    protected void onProgressUpdate(Object... values) {
+        super.onProgressUpdate(values);
+        try {
+            char[] chars = (char[]) values[0];
+            int start = (int) values[1];
+            int end = (int) values[2];
+            if (compileListener != null) {
+                compileListener.onNewMessage(new String(chars, start, end));
+            }
+            Log.d(TAG, new String(chars, start, end));
+        } catch (Exception e) {
+            Log.e(TAG, "onProgressUpdate: ", e);
+        }
+    }
+
+    @Override
+    protected void onPostExecute(final Integer result) {
+        super.onPostExecute(result);
+        if (result != Main.EXIT_OK) {
+            if (compileListener != null) compileListener.onError(error, mDiagnostics);
+        } else {
+            if (compileListener != null) compileListener.onComplete(projectFile, mDiagnostics);
+        }
+    }
+
+    public interface CompileListener {
+        void onStart();
+
+        void onError(Throwable e, ArrayList<Diagnostic> diagnostics);
+
+        void onComplete(JavaProject projectFile, List<Diagnostic> diagnostics);
+
+        void onNewMessage(byte[] chars, int start, int end);
+
+        void onNewMessage(String msg);
+    }
+}

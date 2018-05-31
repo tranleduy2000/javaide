@@ -13,7 +13,7 @@ import android.util.Log;
 
 import com.duy.JavaApplication;
 import com.duy.compile.CompileManager;
-import com.duy.compile.external.android.builder.CompileHelper;
+import com.duy.compile.builder.CompileHelper;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.project.file.java.JavaProject;

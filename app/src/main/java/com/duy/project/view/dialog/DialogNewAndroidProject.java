@@ -103,14 +103,12 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
     private void doCreateProject() {
         if (isOk()) {
-
             ///create new android project
             String packageName = editPackage.getText().toString();
             String activityName = mActivityName.getText().toString();
             String activityClass = String.format("%s.%s", packageName, activityName);
             String mainLayoutName = layoutName.getText().toString();
             String appName = editAppName.getText().toString();
-            String classpath = FileManager.getClasspathFile(getContext()).getPath();
             String projectName = appName.replaceAll("\\s+", "");
             boolean useAppCompat = mAppCompat.isChecked();
             try {

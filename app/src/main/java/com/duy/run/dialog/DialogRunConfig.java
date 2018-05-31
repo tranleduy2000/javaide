@@ -23,6 +23,7 @@ import com.duy.ide.file.FileManager;
 import com.duy.android.compiler.file.java.ClassFile;
 import com.duy.android.compiler.file.java.JavaProject;
 import com.duy.android.compiler.file.java.ClassUtil;
+import com.duy.run.activities.ExecuteActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     public static DialogRunConfig newInstance(JavaProject project) {
 
         Bundle args = new Bundle();
-        args.putSerializable(CompileManager.PROJECT_FILE, project);
+        args.putSerializable(ExecuteActivity.PROJECT_FILE, project);
         DialogRunConfig fragment = new DialogRunConfig();
         fragment.setArguments(args);
         return fragment;
@@ -85,7 +86,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        projectFile = (JavaProject) getArguments().getSerializable(CompileManager.PROJECT_FILE);
+        projectFile = (JavaProject) getArguments().getSerializable(ExecuteActivity.PROJECT_FILE);
         mPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         if (projectFile == null) {
             return;

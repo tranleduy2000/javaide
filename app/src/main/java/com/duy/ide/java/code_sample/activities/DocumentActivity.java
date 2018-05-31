@@ -14,32 +14,22 @@
  * limitations under the License.
  */
 
-package com.duy.ide;
+package com.duy.ide.java.code_sample.activities;
 
-import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 
-import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.ide.R;
+import com.duy.ide.activities.AbstractAppCompatActivity;
 
 /**
- * Created by Duy on 11-Feb-17.
+ * Created by Duy on 27-Feb-17.
  */
 
-public class CompileManager {
-    public static final String FILE_PATH = "file_name";     // extras indicators
-
-    public static final String ACTION = "action";
-    public static final String ARGS = "program_args";
-    public static final String DEX_FILE = "dex_path";
-
-    private final Activity mActivity;
-
-    public CompileManager(Activity activity) {
-        this.mActivity = activity;
+public class DocumentActivity extends AbstractAppCompatActivity {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.document);
     }
-
-
-    public void executeDex(JavaProject projectFile) {
-
-    }
-
 }

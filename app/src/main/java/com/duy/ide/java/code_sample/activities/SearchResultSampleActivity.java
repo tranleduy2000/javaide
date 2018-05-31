@@ -14,32 +14,20 @@
  * limitations under the License.
  */
 
-package com.duy.ide;
+package com.duy.ide.java.code_sample.activities;
 
 import android.app.Activity;
+import android.os.Bundle;
 
-import com.duy.android.compiler.file.java.JavaProject;
-
-/**
- * Created by Duy on 11-Feb-17.
- */
-
-public class CompileManager {
-    public static final String FILE_PATH = "file_name";     // extras indicators
-
-    public static final String ACTION = "action";
-    public static final String ARGS = "program_args";
-    public static final String DEX_FILE = "dex_path";
-
-    private final Activity mActivity;
-
-    public CompileManager(Activity activity) {
-        this.mActivity = activity;
-    }
+import com.duy.ide.R;
 
 
-    public void executeDex(JavaProject projectFile) {
+public class SearchResultSampleActivity extends Activity {
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search_result_sample);
     }
 
 }

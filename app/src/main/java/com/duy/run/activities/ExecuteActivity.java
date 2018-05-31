@@ -3,8 +3,6 @@ package com.duy.run.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.support.v7.app.AlertDialog;
@@ -13,7 +11,6 @@ import android.util.Log;
 import com.duy.JavaApplication;
 import com.duy.android.compiler.file.java.JavaProject;
 import com.duy.android.compiler.java.Java;
-import com.duy.ide.CompileManager;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.run.view.ConsoleEditText;
@@ -26,21 +23,9 @@ import java.io.InputStream;
  */
 
 public class ExecuteActivity extends AbstractAppCompatActivity {
-    public static final int RUN_DEX = 1;
-    private static final int RUN_TIME_ERR = 1;
+    public static final String PROJECT_FILE = "project_file";
     private static final String TAG = "ExecuteActivity";
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case RUN_TIME_ERR:
-                    Exception exception = (Exception) msg.obj;
-                    showDialogError(exception.getMessage());
-                    break;
-            }
-        }
-    };
+
     private ConsoleEditText mConsoleEditText;
     private JavaProject mProjectFile;
 
@@ -70,7 +55,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
             return;
         }
 
-        mProjectFile = (JavaProject) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
+        mProjectFile = (JavaProject) intent.getSerializableExtra(PROJECT_FILE);
         if (mProjectFile == null) {
             finish();
             return;

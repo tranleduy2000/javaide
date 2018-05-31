@@ -14,32 +14,35 @@
  * limitations under the License.
  */
 
-package com.duy.ide;
-
-import android.app.Activity;
-
-import com.duy.android.compiler.file.java.JavaProject;
+package com.duy.ide.java.code_sample.model;
 
 /**
- * Created by Duy on 11-Feb-17.
+ * Created by Duy on 04-Mar-17.
  */
 
-public class CompileManager {
-    public static final String FILE_PATH = "file_name";     // extras indicators
+@SuppressWarnings("DefaultFileTemplate")
+class CodeEntry {
+    private String name;
+    private String content;
 
-    public static final String ACTION = "action";
-    public static final String ARGS = "program_args";
-    public static final String DEX_FILE = "dex_path";
-
-    private final Activity mActivity;
-
-    public CompileManager(Activity activity) {
-        this.mActivity = activity;
+    public CodeEntry(String name, String content) {
+        this.name = name;
+        this.content = content;
     }
 
-
-    public void executeDex(JavaProject projectFile) {
-
+    public String getName() {
+        return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

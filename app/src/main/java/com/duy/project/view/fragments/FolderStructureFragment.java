@@ -13,10 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.duy.ide.CompileManager;
+import com.duy.android.compiler.file.java.JavaProject;
 import com.duy.ide.R;
 import com.duy.project.ProjectFileContract;
-import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.run.activities.ExecuteActivity;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
@@ -66,7 +66,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     public static FolderStructureFragment newInstance(@NonNull JavaProject projectFile) {
 
         Bundle args = new Bundle();
-        args.putSerializable(CompileManager.PROJECT_FILE, projectFile);
+        args.putSerializable(ExecuteActivity.PROJECT_FILE, projectFile);
         FolderStructureFragment fragment = new FolderStructureFragment();
         fragment.setArguments(args);
         return fragment;
@@ -86,7 +86,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mProjectFile = (JavaProject) getArguments().getSerializable(CompileManager.PROJECT_FILE);
+        mProjectFile = (JavaProject) getArguments().getSerializable(ExecuteActivity.PROJECT_FILE);
         mContainerView = view.findViewById(R.id.container);
         view.findViewById(R.id.img_refresh).setOnClickListener(new View.OnClickListener() {
             @Override

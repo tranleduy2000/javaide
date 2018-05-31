@@ -20,7 +20,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.duy.ide.code_sample.activities.CodeSampleActivity"
+    tools:context=".java.code_sample.activities.CodeSampleActivity"
     tools:showIn="@layout/activity_code_sample">
 
     <android.support.v7.widget.RecyclerView

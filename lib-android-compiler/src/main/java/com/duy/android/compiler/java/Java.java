@@ -20,11 +20,11 @@ public class Java {
         System.out.println("Usage : java -v -jar [List of Jar files] CLASSNAME");
     }
 
-    public static void main(String[] zArgs) {
+    public static void main(String[] zArgs) throws Throwable {
         run(zArgs, null, null);
     }
 
-    public static void run(String[] zArgs, @Nullable String tempDir, @Nullable InputStream in) {
+    public static void run(String[] zArgs, @Nullable String tempDir, @Nullable InputStream in) throws Throwable {
         InputStream stdin = System.in;
         if (in != null) System.setIn(in);
         try {
@@ -124,14 +124,12 @@ public class Java {
                 }
             }
 
-//            main.invoke(null, new Object[]{pargs});
-
             main.invoke(null, new Object[]{mainargs});
 
             //restore std
             FileUtils.emptyFolder(new File(tempDir));
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            throw e.getCause();
         } catch (Exception ex) {
             ex.printStackTrace();
             usage();

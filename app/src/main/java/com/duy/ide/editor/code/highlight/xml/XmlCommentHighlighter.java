@@ -12,7 +12,7 @@ import com.duy.ide.themefont.themes.database.CodeTheme;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 
-import static com.duy.ide.autocomplete.Patterns.XML_COMMENTS;
+import static com.duy.ide.java.autocomplete.Patterns.XML_COMMENTS;
 
 /**
  * Created by Duy on 06-Aug-17.

@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.autocomplete.autocomplete.PatternFactory;
+import com.duy.ide.java.autocomplete.autocomplete.PatternFactory;
 
 import java.util.regex.Matcher;
 

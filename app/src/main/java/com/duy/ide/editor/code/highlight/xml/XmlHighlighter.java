@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 
-import static com.duy.ide.autocomplete.Patterns.XML_ATTRS;
-import static com.duy.ide.autocomplete.Patterns.XML_TAGS;
+import static com.duy.ide.java.autocomplete.Patterns.XML_ATTRS;
+import static com.duy.ide.java.autocomplete.Patterns.XML_TAGS;
 
 /**
  * Created by Duy on 06-Aug-17.

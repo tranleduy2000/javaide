@@ -11,11 +11,11 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.duy.JavaApplication;
-import com.duy.ide.CompileManager;
+import com.duy.android.compiler.file.java.JavaProject;
 import com.duy.android.compiler.java.Java;
+import com.duy.ide.CompileManager;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
-import com.duy.android.compiler.file.java.JavaProject;
 import com.duy.run.view.ConsoleEditText;
 
 import java.io.File;
@@ -26,6 +26,7 @@ import java.io.InputStream;
  */
 
 public class ExecuteActivity extends AbstractAppCompatActivity {
+    public static final int RUN_DEX = 1;
     private static final int RUN_TIME_ERR = 1;
     private static final String TAG = "ExecuteActivity";
     private final Handler mHandler = new Handler() {
@@ -41,7 +42,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
         }
     };
     private ConsoleEditText mConsoleEditText;
-    public static final int RUN_DEX = 1;
+    private JavaProject mProjectFile;
 
     private void showDialogError(String message) {
         if (isFinishing()) return;
@@ -60,36 +61,39 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exec);
         setupToolbar();
+
         bindView();
         initInOut();
         final Intent intent = getIntent();
-        if (intent != null) {
-            final JavaProject projectFile = (JavaProject) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
-            if (projectFile == null) {
-                finish();
-                return;
-            }
-            final int action = intent.getIntExtra(CompileManager.ACTION, -1);
-            setTitle(projectFile.getMainClass().getSimpleName());
-
-            Thread runThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        runProgram(projectFile, action, intent);
-                    } catch (Error error) {
-                        error.printStackTrace(mConsoleEditText.getErrorStream());
-                    } catch (Exception e) {
-                        e.printStackTrace(mConsoleEditText.getErrorStream());
-                    } catch (Throwable e) {
-                        e.printStackTrace(mConsoleEditText.getErrorStream());
-                    }
-                }
-            });
-            runThread.start();
-        } else {
+        if (intent == null) {
             finish();
+            return;
         }
+
+        mProjectFile = (JavaProject) intent.getSerializableExtra(CompileManager.PROJECT_FILE);
+        if (mProjectFile == null) {
+            finish();
+            return;
+        }
+        setTitle(mProjectFile.getMainClass().getSimpleName());
+        getSupportActionBar().setSubtitle(R.string.console_running);
+
+        Thread runThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    runProgram(mProjectFile, intent);
+                } catch (Error error) {
+                    error.printStackTrace(mConsoleEditText.getErrorStream());
+                } catch (Exception e) {
+                    e.printStackTrace(mConsoleEditText.getErrorStream());
+                } catch (Throwable e) {
+                    e.printStackTrace(mConsoleEditText.getErrorStream());
+                }
+                getSupportActionBar().setSubtitle(R.string.console_stopped);
+            }
+        });
+        runThread.start();
     }
 
     private void initInOut() {
@@ -99,23 +103,17 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
     }
 
     @WorkerThread
-    private void runProgram(JavaProject projectFile, int action, Intent intent) throws Exception {
+    private void runProgram(JavaProject projectFile, Intent intent) throws Throwable {
         InputStream in = mConsoleEditText.getInputStream();
-
         File tempDir = getDir("dex", MODE_PRIVATE);
-        switch (action) {
-            case RUN_DEX: {
-                File dex = (File) intent.getSerializableExtra(CompileManager.DEX_FILE);
-                if (dex != null) {
-                    String mainClass = projectFile.getMainClass().getName();
-                    executeDex(in, dex, tempDir, mainClass);
-                }
-                break;
-            }
+        File dex = mProjectFile.getDexFile();
+        if (dex != null) {
+            String mainClass = projectFile.getMainClass().getName();
+            executeDex(in, dex, tempDir, mainClass);
         }
     }
 
-    private void executeDex(InputStream in, File outDex, File tempDir, String mainClass) {
+    private void executeDex(InputStream in, File outDex, File tempDir, String mainClass) throws Throwable {
         String[] args = new String[]{"-jar", outDex.getPath(), mainClass};
         Java.run(args, tempDir.getPath(), in);
     }

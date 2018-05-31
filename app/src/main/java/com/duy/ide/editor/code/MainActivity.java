@@ -56,11 +56,11 @@ import com.duy.ide.diagnostic.DiagnosticFragment;
 import com.duy.ide.Builder;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
-import com.duy.ide.autocomplete.AutoCompleteProvider;
-import com.duy.ide.autocomplete.model.Description;
-import com.duy.ide.autocomplete.util.JavaUtil;
-import com.duy.ide.code_sample.activities.DocumentActivity;
-import com.duy.ide.code_sample.activities.SampleActivity;
+import com.duy.ide.java.autocomplete.AutoCompleteProvider;
+import com.duy.ide.java.autocomplete.model.Description;
+import com.duy.ide.java.autocomplete.util.JavaUtil;
+import com.duy.ide.java.code_sample.activities.DocumentActivity;
+import com.duy.ide.java.code_sample.activities.SampleActivity;
 import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.editor.code.view.IndentEditText;
 import com.duy.ide.editor.uidesigner.inflate.DialogLayoutPreview;
@@ -107,7 +107,6 @@ public class MainActivity extends ProjectManagerActivity implements
         mCompileManager = new CompileManager(this);
         mMenuEditor = new MenuEditor(this, this);
         initView(savedInstanceState);
-
         startAutoCompleteService();
     }
 

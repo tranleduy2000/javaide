@@ -34,8 +34,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 
-import static com.duy.ide.autocomplete.Patterns.DECIMAL_NUMBERS;
-import static com.duy.ide.autocomplete.Patterns.JAVA_KEYWORDS;
+import static com.duy.ide.java.autocomplete.Patterns.DECIMAL_NUMBERS;
+import static com.duy.ide.java.autocomplete.Patterns.JAVA_KEYWORDS;
 
 /**
  * Created by Duy on 18-Jun-17.

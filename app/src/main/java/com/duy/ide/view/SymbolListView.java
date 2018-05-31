@@ -24,7 +24,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.duy.ide.adapters.SymbolAdapter;
-import com.duy.ide.autocomplete.KeyWord;
+import com.duy.ide.java.autocomplete.KeyWord;
 
 import java.util.ArrayList;
 

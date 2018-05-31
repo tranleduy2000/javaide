@@ -25,10 +25,8 @@ import android.support.v4.view.GravityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.duy.ide.activities.InstallActivity;
-import com.duy.ide.code_sample.activities.SampleActivity;
+import com.duy.ide.java.code_sample.activities.SampleActivity;
 import com.duy.ide.editor.code.MainActivity;
-import com.duy.ide.setting.AppSetting;
 import com.duy.ide.setting.SettingsActivity;
 import com.duy.ide.utils.DonateUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -45,7 +43,6 @@ public class MenuEditor {
     @Nullable
     private EditorControl listener;
     private Menu menu;
-    private AppSetting pascalPreferences;
     private Builder builder;
 
     public MenuEditor(@NonNull MainActivity activity,
@@ -53,20 +50,11 @@ public class MenuEditor {
         this.activity = activity;
         this.builder = activity;
         this.listener = listener;
-        pascalPreferences = new AppSetting(this.activity);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         activity.getMenuInflater().inflate(R.menu.menu_tool, menu);
-
-        /*
-         * set state for menu editor
-         */
-        menu.findItem(R.id.action_show_line).setChecked(pascalPreferences.isShowLines());
-        menu.findItem(R.id.action_show_symbol).setChecked(pascalPreferences.isShowListSymbol());
-        menu.findItem(R.id.action_show_popup).setChecked(pascalPreferences.isShowSuggestPopup());
-        menu.findItem(R.id.action_edit_word_wrap).setChecked(pascalPreferences.isWrapText());
         return true;
     }
 
@@ -103,12 +91,6 @@ public class MenuEditor {
                 activity.startActivity(intent);
                 break;
             }
-            case R.id.action_github: {
-                Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://github.com/tranleduy2000/javaide"));
-                activity.startActivity(intent);
-                break;
-            }
             case R.id.action_undo:
                 analytics.logEvent("action_undo", new Bundle());
                 if (listener != null) listener.undo();
@@ -117,12 +99,7 @@ public class MenuEditor {
                 analytics.logEvent("action_redo", new Bundle());
                 if (listener != null) listener.redo();
                 break;
-            case R.id.action_paste:
-                if (listener != null) listener.paste();
-                break;
-            case R.id.action_copy_all:
-                if (listener != null) listener.copyAll();
-                break;
+
             case R.id.action_select_theme:
                 analytics.logEvent("action_select_theme", new Bundle());
                 if (listener != null) listener.selectThemeFont();
@@ -131,19 +108,7 @@ public class MenuEditor {
                 activity.openDrawer(GravityCompat.END);
 
                 break;
-            case R.id.action_show_line:
-                pascalPreferences.setShowLines(menuItem.isChecked());
-                break;
-            case R.id.action_show_popup:
-                pascalPreferences.setShowSuggestPopup(menuItem.isChecked());
-                break;
-            case R.id.action_show_symbol:
-                pascalPreferences.setShowSymbol(menuItem.isChecked());
 
-                break;
-            case R.id.action_edit_word_wrap:
-                pascalPreferences.setWordWrap(menuItem.isChecked());
-                break;
             case R.id.action_donate:
                 DonateUtils.showDialogDonate(activity);
                 break;
@@ -159,10 +124,6 @@ public class MenuEditor {
             case R.id.action_new_class:
                 activity.showDialogCreateNewClass(null);
                 break;
-            case R.id.action_install:
-                activity.startActivity(new Intent(activity, InstallActivity.class));
-                break;
-
             case R.id.action_edit_run:
                 activity.showDialogRunConfig();
                 break;

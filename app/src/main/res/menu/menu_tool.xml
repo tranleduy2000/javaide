@@ -76,15 +76,6 @@
                 android:id="@+id/action_redo"
                 android:icon="@drawable/ic_redo_white_24dp"
                 android:title="@string/redo"/>
-
-            <item
-                android:id="@+id/action_paste"
-                android:icon="@drawable/ic_content_paste_white_24dp"
-                android:title="@string/paste"/>
-            <item
-                android:id="@+id/action_copy_all"
-                android:icon="@drawable/ic_content_copy_white_24dp"
-                android:title="@string/copy_all"/>
         </menu>
     </item>
 
@@ -113,40 +104,10 @@
                 android:icon="@drawable/ic_format_indent_increase_white_24dp"
                 android:title="@string/format_code"/>
 
-
             <item
                 android:id="@+id/action_create_keystore"
                 android:icon="@drawable/ic_vpn_key_white_24dp"
                 android:title="@string/create_keystore"/>
-        </menu>
-    </item>
-
-    <item
-        android:icon="@drawable/ic_settings_white_24dp"
-        android:title="@string/setting_editor"
-        app:showAsAction="ifRoom">
-
-        <menu>
-            <item
-                android:id="@+id/action_edit_word_wrap"
-                android:checkable="true"
-                android:icon="@drawable/ic_wrap_text_white_24dp"
-                android:title="@string/word_wrap"/>
-            <item
-                android:id="@+id/action_show_symbol"
-                android:checkable="true"
-                android:icon="@drawable/ic_apps_white_24dp"
-                android:title="@string/show_symbol"/>
-            <item
-                android:id="@+id/action_show_line"
-                android:checkable="true"
-                android:icon="@drawable/ic_format_list_numbered_white_24dp"
-                android:title="@string/show_line"/>
-            <item
-                android:id="@+id/action_show_popup"
-                android:checkable="true"
-                android:icon="@drawable/ic_chat_bubble_outline_white_24dp"
-                android:title="@string/show_suggest_popup"/>
         </menu>
     </item>
     <item

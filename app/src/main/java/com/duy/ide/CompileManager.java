@@ -67,7 +67,6 @@ public class CompileManager {
         Intent intent = new Intent(mActivity, ExecuteActivity.class);
         intent.putExtra(ACTION, ExecuteActivity.RUN_DEX);
         intent.putExtra(PROJECT_FILE, projectFile);
-        intent.putExtra(DEX_FILE, dex);
         mActivity.startActivity(intent);
     }
 

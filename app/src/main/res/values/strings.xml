@@ -485,5 +485,7 @@
     <string name="create_keystore">Create store</string>
     <string name="pref_key_install_root">pref_key_install_root</string>
     <string name="copy_from_asset">Copy from asset</string>
+    <string name="console_running">Running</string>
+    <string name="console_stopped">Stopped</string>
 
 </resources>

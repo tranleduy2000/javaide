@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".code_sample.activities.SampleActivity" />
+        <activity android:name=".java.code_sample.activities.SampleActivity" />
         <activity android:name=".activities.DonateActivity" />
         <activity
             android:name="com.duy.run.activities.ExecuteActivity"

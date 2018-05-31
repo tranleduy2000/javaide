@@ -35,7 +35,7 @@ import com.duy.ide.CompileManager;
 import com.duy.ide.EditPageContract;
 import com.duy.ide.EditorControl;
 import com.duy.ide.R;
-import com.duy.ide.autocomplete.AutoCompleteProvider;
+import com.duy.ide.java.autocomplete.AutoCompleteProvider;
 import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;

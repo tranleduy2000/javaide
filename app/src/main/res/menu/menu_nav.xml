@@ -62,15 +62,7 @@
                 android:id="@+id/action_report_bug"
                 android:icon="@drawable/ic_bug_report_white_24dp"
                 android:title="@string/report_bug"/>
-            <item
-                android:id="@+id/action_github"
-                android:icon="@drawable/ic_bug_report_white_24dp"
-                android:title="@string/github_repo"/>
 
-            <item
-                android:id="@+id/action_install"
-                android:icon="@drawable/ic_system_update_white_24dp"
-                android:title="@string/system_info"/>
         </menu>
     </item>
 </menu>

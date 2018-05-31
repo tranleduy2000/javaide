@@ -5,9 +5,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.android.annotations.Nullable;
-import com.duy.compile.builder.CompileHelper;
+import com.duy.compile.builder.JavaProjectBuilder;
+import com.duy.compile.builder.model.BuildType;
 import com.duy.project.file.java.JavaProject;
-import com.sun.tools.javac.main.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +15,15 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 
-public class BuildJava extends AsyncTask<JavaProject, Object, Integer> {
+public class BuildJava extends AsyncTask<JavaProject, Object, Boolean> {
     private static final String TAG = "CompileJavaTask";
     private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
+    private final DiagnosticListener mListener = new DiagnosticListener() {
+        @Override
+        public void report(Diagnostic diagnostic) {
+            mDiagnostics.add(diagnostic);
+        }
+    };
     private JavaProject projectFile;
     private Context context;
     @Nullable
@@ -36,31 +42,11 @@ public class BuildJava extends AsyncTask<JavaProject, Object, Integer> {
     }
 
     @Override
-    protected Integer doInBackground(JavaProject... params) {
+    protected Boolean doInBackground(JavaProject... params) {
         if (params[0] == null) return null;
         this.projectFile = params[0];
-        DiagnosticListener listener = new DiagnosticListener() {
-            @Override
-            public void report(Diagnostic diagnostic) {
-                mDiagnostics.add(diagnostic);
-            }
-        };
-        //clean task
-        projectFile.clean();
-        projectFile.createBuildDir();
-
-        int status = CompileHelper.compileJava(context, projectFile, listener);
-        if (status == Main.EXIT_OK) {
-            try {
-                CompileHelper.convertToDexFormat(context, projectFile);
-            } catch (Throwable e) {
-                this.error = e;
-                Log.e(TAG, "doInBackground: ", e);
-                publishProgress(e.getMessage().toCharArray(), 0, e.getMessage().length());
-                status = Main.EXIT_ERROR;
-            }
-        }
-        return status;
+        JavaProjectBuilder builder = new JavaProjectBuilder(context, projectFile, mListener);
+        return builder.build(BuildType.DEBUG);
     }
 
     @Override
@@ -80,9 +66,9 @@ public class BuildJava extends AsyncTask<JavaProject, Object, Integer> {
     }
 
     @Override
-    protected void onPostExecute(final Integer result) {
+    protected void onPostExecute(final Boolean result) {
         super.onPostExecute(result);
-        if (result != Main.EXIT_OK) {
+        if (result) {
             if (compileListener != null) compileListener.onError(error, mDiagnostics);
         } else {
             if (compileListener != null) compileListener.onComplete(projectFile, mDiagnostics);

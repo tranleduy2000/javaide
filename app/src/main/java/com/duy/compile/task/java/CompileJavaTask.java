@@ -7,16 +7,15 @@ import com.duy.project.file.java.JavaProject;
 
 import java.util.Arrays;
 
-import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 
 public class CompileJavaTask extends ABuildTask<JavaProject> {
 
-    private final JavaProject project;
+    private DiagnosticListener listener;
 
-    public CompileJavaTask(IBuilder<? extends JavaProject> builder, JavaProject project) {
+    public CompileJavaTask(IBuilder<? extends JavaProject> builder, DiagnosticListener listener) {
         super(builder);
-        this.project = project;
+        this.listener = listener;
     }
 
     @Override
@@ -33,14 +32,7 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
                 project.getMainClass().getPath(project) //main class
         };
         System.out.println("args = " + Arrays.toString(args));
-        int compileStatus;
-        compileStatus = Javac.compile(args, new DiagnosticListener() {
-            @Override
-            public void report(Diagnostic diagnostic) {
-                System.out.println("diagnostic = " + diagnostic);
-            }
-        });
-        System.out.println("compileStatus = " + compileStatus);
-        return compileStatus == 0;
+        int resultCode = Javac.compile(args, listener);
+        return resultCode == 0;
     }
 }

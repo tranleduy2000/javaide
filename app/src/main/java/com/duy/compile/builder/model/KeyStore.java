@@ -1,4 +1,4 @@
-package com.duy.compile.builder;
+package com.duy.compile.builder.model;
 
 import java.util.Arrays;
 

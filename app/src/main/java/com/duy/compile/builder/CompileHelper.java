@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.duy.compile.builder.model.BuildType;
 import com.duy.compile.builder.util.MD5Hash;
 import com.duy.compile.dex.DexTool;
 import com.duy.compile.java.Jar;
@@ -154,7 +155,7 @@ public class CompileHelper {
 
     public static File buildApk(Context context, AndroidProject projectFile,
                                 DiagnosticCollector diagnosticCollector) throws Exception {
-        AndroidProjectBuilder builder = new AndroidProjectBuilder(context, projectFile);
+        AndroidProjectBuilder builder = new AndroidProjectBuilder(context, projectFile, diagnosticCollector);
         builder.build(BuildType.DEBUG);
         return projectFile.getApkSigned();
     }

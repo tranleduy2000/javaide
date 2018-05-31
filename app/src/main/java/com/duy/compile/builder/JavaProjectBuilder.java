@@ -2,8 +2,10 @@ package com.duy.compile.builder;
 
 import android.content.Context;
 
+import com.duy.compile.builder.model.BuildType;
 import com.duy.compile.task.ABuildTask;
 import com.duy.compile.task.java.BuildJarTask;
+import com.duy.compile.task.java.CleanTask;
 import com.duy.compile.task.java.CompileJavaTask;
 import com.duy.compile.task.java.DxTask;
 import com.duy.project.file.java.JavaProject;
@@ -11,31 +13,29 @@ import com.duy.project.file.java.JavaProject;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-public class JavaProjectBuilder implements IBuilder<JavaProject> {
-    private Context mContext;
-    private boolean mVerbose;
-    private PrintStream mStdout, mStderr;
+import javax.tools.DiagnosticListener;
+
+public class JavaProjectBuilder extends BuilderImpl<JavaProject> {
+
 
     private JavaProject mProject;
 
-    public JavaProjectBuilder(Context context, JavaProject project) {
-        mContext = context;
+    public JavaProjectBuilder(Context context, JavaProject project, DiagnosticListener listener) {
+        super(context, listener);
         mProject = project;
-        mStdout = new PrintStream(System.out);
-        mStderr = new PrintStream(System.err);
-        mVerbose = true;
+
     }
 
     @Override
-    public void build(BuildType buildType) {
-
+    public boolean build(BuildType buildType) {
         if (mVerbose) {
             mStdout.println("Starting build android project");
             mStdout.println("Build type " + buildType);
         }
 
         ArrayList<ABuildTask> tasks = new ArrayList<>();
-        tasks.add(new CompileJavaTask(this, mProject));
+        tasks.add(new CleanTask(this));
+        tasks.add(new CompileJavaTask(this, mDiagnosticListener));
         tasks.add(new DxTask(this));
         tasks.add(new BuildJarTask(this));
 
@@ -45,14 +45,15 @@ public class JavaProjectBuilder implements IBuilder<JavaProject> {
                 boolean result = task.run();
                 if (!result) {
                     stdout(task.getTaskName() + " failed");
-                    return;
+                    return false;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 stdout(task.getTaskName() + " failed");
-                return;
+                return false;
             }
         }
+        return true;
     }
 
 

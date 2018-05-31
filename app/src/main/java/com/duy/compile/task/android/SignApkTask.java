@@ -1,7 +1,7 @@
 package com.duy.compile.task.android;
 
 import com.duy.compile.builder.AndroidProjectBuilder;
-import com.duy.compile.builder.BuildType;
+import com.duy.compile.builder.model.BuildType;
 import com.duy.compile.task.ABuildTask;
 import com.duy.project.file.android.AndroidProject;
 

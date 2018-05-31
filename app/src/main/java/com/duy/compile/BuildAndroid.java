@@ -3,7 +3,8 @@ package com.duy.compile;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.duy.compile.builder.CompileHelper;
+import com.duy.compile.builder.AndroidProjectBuilder;
+import com.duy.compile.builder.model.BuildType;
 import com.duy.project.file.android.AndroidProject;
 
 import java.io.File;
@@ -35,12 +36,12 @@ public class BuildAndroid extends AsyncTask<AndroidProject, Object, File> {
     protected File doInBackground(AndroidProject... params) {
         AndroidProject projectFile = params[0];
         if (params[0] == null) return null;
-        try {
-            return CompileHelper.buildApk(context, projectFile, mDiagnosticCollector);
-        } catch (Exception e) {
-            this.error = e;
+        AndroidProjectBuilder builder = new AndroidProjectBuilder(context, projectFile, mDiagnosticCollector);
+        if (builder.build(BuildType.DEBUG)) {
+            return projectFile.getApkSigned();
+        } else {
+            return null;
         }
-        return null;
     }
 
 

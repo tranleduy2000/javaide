@@ -5,8 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.duy.compile.external.android.AndroidBuilder;
-import com.duy.compile.external.android.util.Util;
+import com.duy.compile.external.android.builder.AndroidBuilder2;
+import com.duy.compile.external.android.builder.BuildType;
+import com.duy.compile.external.android.builder.util.Util;
 import com.duy.compile.external.dex.DexTool;
 import com.duy.compile.external.java.Jar;
 import com.duy.compile.external.java.Java;
@@ -154,7 +155,9 @@ public class CompileHelper {
 
     public static File buildApk(Context context, AndroidProject projectFile,
                                 DiagnosticCollector diagnosticCollector) throws Exception {
-        AndroidBuilder.build(context, projectFile, diagnosticCollector);
+//        AndroidBuilder.build(context, projectFile, diagnosticCollector);
+        AndroidBuilder2 builder = new AndroidBuilder2(context);
+        builder.build(projectFile, BuildType.DEBUG);
         return projectFile.getApkUnaligned();
     }
 

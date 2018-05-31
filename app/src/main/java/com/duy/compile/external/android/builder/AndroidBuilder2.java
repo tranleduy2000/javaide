@@ -1,8 +1,7 @@
-package com.duy.compile.external.android;
+package com.duy.compile.external.android.builder;
 
 import android.content.Context;
 
-import com.android.annotations.Nullable;
 import com.duy.project.file.android.AndroidProject;
 
 import java.io.PrintStream;
@@ -10,9 +9,8 @@ import java.io.PrintStream;
 public class AndroidBuilder2 implements IAndroidBuilder {
     private Context mContext;
     private boolean mVerbose;
-    private PrintStream mStdout;
-    private PrintStream mStderr;
-    @Nullable
+
+    private PrintStream mStdout, mStderr;
     private KeyStore mKeyStore;
 
     private AndroidProject mAndroidProject;
@@ -33,7 +31,7 @@ public class AndroidBuilder2 implements IAndroidBuilder {
             mStdout.println("Build " + buildType);
         }
 
-        if (cleanupBuild()) {
+        if (!cleanupBuild()) {
             mStdout.println("Aborted");
             return;
         }
@@ -64,6 +62,7 @@ public class AndroidBuilder2 implements IAndroidBuilder {
 
     private boolean runAAPT() {
         try {
+            stdout("Run AAPT");
             Aapt aapt = new Aapt(this, mAndroidProject);
             return aapt.run();
         } catch (Exception e) {

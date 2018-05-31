@@ -1,4 +1,4 @@
-package com.duy.compile.external.android.util;
+package com.duy.compile.external.android.builder.util;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

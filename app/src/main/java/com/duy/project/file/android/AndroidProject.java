@@ -29,8 +29,8 @@ public class AndroidProject extends JavaProjectFolder {
     private File apkUnaligned;
 
     /* PROJECT */
-    private ArrayList<File> resDirs = new ArrayList<>();
-    private ArrayList<File> assetsDirs = new ArrayList<>();
+    private ArrayList<File> resDirs;
+    private ArrayList<File> assetsDirs;
     private File classR;
 
     private ManifestData.Activity launcherActivity;
@@ -45,7 +45,11 @@ public class AndroidProject extends JavaProjectFolder {
     @Override
     public void init() {
         super.init();
+
+        resDirs = new ArrayList<>();
         resDirs.add(new File(dirSrcMain, "res"));
+
+        assetsDirs = new ArrayList<>();
         assetsDirs.add(new File(dirSrcMain, "assets"));
         xmlManifest = new File(dirSrcMain, "AndroidManifest.xml");
 

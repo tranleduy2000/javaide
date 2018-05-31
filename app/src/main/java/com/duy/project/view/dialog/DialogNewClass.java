@@ -112,7 +112,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
             File currentFolder = (File) getArguments().getSerializable(KEY_PARENT_FILE);
             JavaProjectFolder projectFile = (JavaProjectFolder) getArguments().getSerializable(KEY_PROJECT_FILE);
             if (currentFolder != null && projectFile != null) {
-                packageName = ProjectFileUtil.findPackage(projectFile.javaSrcDirs, currentFolder);
+                packageName = ProjectFileUtil.findPackage(projectFile.getJavaSrcDirs().get(0), currentFolder);
             }
         }
 

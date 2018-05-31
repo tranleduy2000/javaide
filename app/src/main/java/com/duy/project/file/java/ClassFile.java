@@ -54,7 +54,7 @@ public class ClassFile implements Serializable, Cloneable {
     @NonNull
     public String getPath(JavaProjectFolder parent) {
         try {
-            File file = new File(parent.javaSrcDirs, name.replace(".", File.separator) + ".java");
+            File file = new File(parent.javaSrcDirs.get(0), name.replace(".", File.separator) + ".java");
             return file.getPath();
         } catch (Exception e) {
             return "";

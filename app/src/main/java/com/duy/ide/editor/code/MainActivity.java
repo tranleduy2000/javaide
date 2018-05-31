@@ -675,7 +675,7 @@ public class MainActivity extends ProjectManagerActivity implements
             Toast.makeText(this, (getString(R.string.main_not_found)), Toast.LENGTH_SHORT).show();
             return;
         }
-        String className = JavaUtil.getClassName(mProjectFile.javaSrcDirs, filePath);
+        String className = JavaUtil.getClassName(mProjectFile.getJavaSrcDirs().get(0), filePath);
         if (className == null) {
             Toast.makeText(this, ("Class \"" + filePath + "\"" + "invalid"), Toast.LENGTH_SHORT).show();
             return;

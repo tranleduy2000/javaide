@@ -2,6 +2,7 @@ package com.duy.ide.javaide.autocomplete.util;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -23,8 +24,8 @@ public class EditorUtil {
     }
 
     @Nullable
-    public static String getCurrentPackage(EditText editText) {
-        Matcher matcher = PatternFactory.PACKAGE.matcher(editText.getText());
+    public static String getCurrentPackage(Editable editText) {
+        Matcher matcher = PatternFactory.PACKAGE.matcher(editText);
         if (matcher.find()) {
             return matcher.group();
         }
@@ -33,7 +34,7 @@ public class EditorUtil {
 
     public static String getCurrentClassName(String editor) {
         // TODO: 21-Jul-17
-        return "com.duy.Main";
+        return "";
     }
 
     @NonNull

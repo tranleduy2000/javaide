@@ -243,7 +243,7 @@ public abstract class CodeSuggestsEditText extends IndentEditText
     public void onClickSuggest(Description description) {
         Log.d(TAG, "onClickSuggest() called with: description = [" + description + "]");
         if (mAutoCompleteProvider != null) {
-            mAutoCompleteProvider.onInsertSuggestion(this, description);
+            mAutoCompleteProvider.onInsertSuggestion(getText(), description);
         }
     }
 

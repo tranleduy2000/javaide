@@ -1,6 +1,7 @@
 package com.duy.ide.javaide.autocomplete.autocomplete;
 
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -27,7 +28,7 @@ public class PackageImporter {
     /**
      * Add import statement if import does not already exist.
      */
-    public static void importClass(EditText editor, String className) {
+    public static void importClass(Editable editor, String className) {
         String packageName = JavaUtil.getPackageName(className);
         if (getImportedClassName(editor, className) == null
                 && !packageName.equals("java.lang")
@@ -37,7 +38,7 @@ public class PackageImporter {
     }
 
     public static String getImportedClassName(EditText editor, @Nullable String className) {
-        return getImportedClassName(editor.getText(), className);
+        return getImportedClassName(editor, className);
     }
 
     public static String getImportedClassName(CharSequence src, @Nullable String className) {
@@ -52,7 +53,7 @@ public class PackageImporter {
     }
 
 
-    public static void organizeImports(EditText editor, String importStr) {
+    public static void organizeImports(Editable editor, String importStr) {
         Log.d(TAG, "organizeImports() called with: editor = [" + editor + "], importStr = [" + importStr + "]");
 
         ArrayList<String> imports = getImports(editor);
@@ -86,21 +87,21 @@ public class PackageImporter {
         int first = firstMatch(editor, PatternFactory.IMPORT);
         int last = PatternFactory.lastMatch(editor, PatternFactory.IMPORT);
         if (first >= 0 && last > first) {
-            editor.getText().replace(first, last, ""); //clear import
-            editor.getText().insert(first, imp); //insert new
+            editor.replace(first, last, ""); //clear import
+            editor.insert(first, imp); //insert new
         } else {
             int i = lastMatch(editor, PatternFactory.PACKAGE);
             if (i < 0) {
-                editor.getText().insert(0, imp); //insert new
+                editor.insert(0, imp); //insert new
             } else {
-                editor.getText().insert(i, "\n\n" + imp + "\n");
+                editor.insert(i, "\n\n" + imp + "\n");
             }
 
         }
     }
 
-    public static ArrayList<String> getImports(EditText editor) {
-        return PatternFactory.allMatch(editor.getText(), PatternFactory.IMPORT);
+    public static ArrayList<String> getImports(Editable editor) {
+        return PatternFactory.allMatch(editor, PatternFactory.IMPORT);
     }
 
 }

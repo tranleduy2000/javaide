@@ -2,11 +2,14 @@ package com.duy.ide.javaide.autocomplete;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
+import android.text.Editable;
 import android.util.Log;
 import android.widget.EditText;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
+import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.ide.file.FileManager;
 import com.duy.ide.javaide.autocomplete.autocomplete.AutoCompletePackage;
 import com.duy.ide.javaide.autocomplete.autocomplete.PackageImporter;
 import com.duy.ide.javaide.autocomplete.autocomplete.PatternFactory;
@@ -21,8 +24,6 @@ import com.duy.ide.javaide.autocomplete.model.MethodDescription;
 import com.duy.ide.javaide.autocomplete.model.PackageDescription;
 import com.duy.ide.javaide.autocomplete.parser.JavaParser;
 import com.duy.ide.javaide.autocomplete.util.EditorUtil;
-import com.duy.ide.file.FileManager;
-import com.duy.android.compiler.file.java.JavaProject;
 import com.google.common.collect.Lists;
 import com.sun.tools.javac.tree.JCTree;
 
@@ -1007,7 +1008,7 @@ public class AutoCompleteProvider {
     }
 
 
-    public void onInsertSuggestion(EditText editText, Description suggestion) {
+    public void onInsertSuggestion(Editable editText, Description suggestion) {
         if (suggestion instanceof ClassDescription) {
             PackageImporter.importClass(editText, ((ClassDescription) suggestion).getClassName());
         } else if (suggestion instanceof ConstructorDescription) {

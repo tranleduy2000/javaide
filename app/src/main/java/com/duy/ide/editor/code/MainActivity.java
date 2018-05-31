@@ -658,10 +658,6 @@ public class MainActivity extends ProjectManagerActivity implements
     }
 
     @Override
-    public void selectThemeFont() {
-    }
-
-    @Override
     public void runFile(String filePath) {
         saveCurrentFile();
         if (mProject == null) return;

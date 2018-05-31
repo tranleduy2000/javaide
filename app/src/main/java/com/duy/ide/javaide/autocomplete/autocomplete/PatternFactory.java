@@ -1,7 +1,6 @@
 package com.duy.ide.javaide.autocomplete.autocomplete;
 
 import android.support.annotation.Nullable;
-import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -78,18 +77,14 @@ public class PatternFactory {
     }
 
 
-    public static int lastMatch(EditText editor, Pattern pattern) {
+    public static int lastMatch(CharSequence editor, Pattern pattern) {
         int last = -1;
-        Matcher matcher = pattern.matcher(editor.getText());
+        Matcher matcher = pattern.matcher(editor);
         while (matcher.find()) last = matcher.end();
         return last;
     }
 
-    public static int firstMatch(EditText editor, Pattern pattern) {
-        return firstMatch(editor.getText().toString(), pattern);
-    }
-
-    public static int matchEnd(String editor, Pattern pattern, int start) {
+    public static int matchEnd(CharSequence editor, Pattern pattern, int start) {
         Matcher matcher = pattern.matcher(editor);
         if (matcher.find(start)) {
             return matcher.end();
@@ -97,7 +92,7 @@ public class PatternFactory {
         return -1;
     }
 
-    public static int firstMatch(String editor, Pattern pattern) {
+    public static int firstMatch(CharSequence editor, Pattern pattern) {
         Matcher matcher = pattern.matcher(editor);
         if (matcher.find()) {
             return matcher.start();

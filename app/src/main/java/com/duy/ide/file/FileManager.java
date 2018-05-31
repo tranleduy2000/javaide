@@ -194,12 +194,6 @@ public class FileManager {
         return classes;
     }
 
-    public static void ensureFileExist(File file) throws FileNotFoundException {
-        if (!file.exists()) {
-            throw new FileNotFoundException(file + "");
-        }
-    }
-
     public static File createFileIfNeed(File file) throws IOException {
         if (!file.exists()) {
             file.getParentFile().mkdirs();

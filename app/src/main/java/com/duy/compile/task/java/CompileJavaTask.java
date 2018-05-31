@@ -1,7 +1,8 @@
-package com.duy.compile.task;
+package com.duy.compile.task.java;
 
 import com.duy.compile.builder.IBuilder;
 import com.duy.compile.java.Javac;
+import com.duy.compile.task.ABuildTask;
 import com.duy.project.file.java.JavaProject;
 
 import java.util.Arrays;
@@ -9,11 +10,11 @@ import java.util.Arrays;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 
-public class CompileJavaTask extends ABuildTask {
+public class CompileJavaTask extends ABuildTask<JavaProject> {
 
     private final JavaProject project;
 
-    public CompileJavaTask(IBuilder builder, JavaProject project) {
+    public CompileJavaTask(IBuilder<? extends JavaProject> builder, JavaProject project) {
         super(builder);
         this.project = project;
     }

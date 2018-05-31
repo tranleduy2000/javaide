@@ -12,14 +12,14 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 
-public class BuildAndroidTask extends AsyncTask<AndroidProject, Object, File> {
+public class BuildAndroid extends AsyncTask<AndroidProject, Object, File> {
     private static final String TAG = "BuildApkTask";
     private Context context;
-    private BuildAndroidTask.CompileListener listener;
+    private BuildAndroid.CompileListener listener;
     private DiagnosticCollector mDiagnosticCollector;
     private Exception error;
 
-    public BuildAndroidTask(Context context, BuildAndroidTask.CompileListener listener) {
+    public BuildAndroid(Context context, BuildAndroid.CompileListener listener) {
         this.context = context;
         this.listener = listener;
         mDiagnosticCollector = new DiagnosticCollector();

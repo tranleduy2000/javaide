@@ -46,9 +46,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.duy.JavaApplication;
-import com.duy.compile.BuildAndroidTask;
-import com.duy.compile.BuildJarTask;
-import com.duy.compile.BuildJavaTask;
+import com.duy.compile.BuildAndroid;
+import com.duy.compile.BuildJar;
+import com.duy.compile.BuildJava;
 import com.duy.compile.CompileManager;
 import com.duy.compile.diagnostic.DiagnosticFragment;
 import com.duy.ide.Builder;
@@ -263,7 +263,7 @@ public class MainActivity extends ProjectManagerActivity implements
                         }).show();
                 return;
             }
-            new BuildAndroidTask(this, new BuildAndroidTask.CompileListener() {
+            new BuildAndroid(this, new BuildAndroid.CompileListener() {
                 @Override
                 public void onStart() {
                     updateUiStartCompile();
@@ -330,7 +330,7 @@ public class MainActivity extends ProjectManagerActivity implements
                     }).show();
             return;
         }
-        BuildJavaTask.CompileListener compileListener = new BuildJavaTask.CompileListener() {
+        BuildJava.CompileListener compileListener = new BuildJava.CompileListener() {
             @Override
             public void onStart() {
                 updateUiStartCompile();
@@ -370,14 +370,14 @@ public class MainActivity extends ProjectManagerActivity implements
                 mMessagePresenter.append(msg);
             }
         };
-        new BuildJavaTask(this, compileListener).execute(mProjectFile);
+        new BuildJava(this, compileListener).execute(mProjectFile);
     }
 
     @Override
     public void buildJar() {
         saveAllFile();
         if (mProjectFile != null) {
-            new BuildJarTask(this, new BuildJarTask.CompileListener() {
+            new BuildJar(this, new BuildJar.CompileListener() {
                 @Override
                 public void onStart() {
                     updateUiStartCompile();

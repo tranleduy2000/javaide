@@ -2,26 +2,23 @@ package com.duy.compile.builder;
 
 import android.content.Context;
 
-import com.duy.compile.task.Aapt;
-import com.duy.compile.task.BuildApkTask;
 import com.duy.compile.task.ABuildTask;
-import com.duy.compile.task.DxTask;
-import com.duy.compile.task.CompileJavaTask;
-import com.duy.compile.task.SignApkTask;
-import com.duy.project.file.android.AndroidProject;
+import com.duy.compile.task.java.BuildJarTask;
+import com.duy.compile.task.java.CompileJavaTask;
+import com.duy.compile.task.java.DxTask;
+import com.duy.project.file.java.JavaProject;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-public class AndroidBuilder implements IBuilder {
+public class JavaProjectBuilder implements IBuilder<JavaProject> {
     private Context mContext;
     private boolean mVerbose;
     private PrintStream mStdout, mStderr;
 
-    private KeyStore mKeyStore;
-    private AndroidProject mProject;
+    private JavaProject mProject;
 
-    public AndroidBuilder(Context context, AndroidProject project) {
+    public JavaProjectBuilder(Context context, JavaProject project) {
         mContext = context;
         mProject = project;
         mStdout = new PrintStream(System.out);
@@ -38,11 +35,9 @@ public class AndroidBuilder implements IBuilder {
         }
 
         ArrayList<ABuildTask> tasks = new ArrayList<>();
-        tasks.add(new Aapt(this));
         tasks.add(new CompileJavaTask(this, mProject));
         tasks.add(new DxTask(this));
-        tasks.add(new BuildApkTask(this));
-        tasks.add(new SignApkTask(this, buildType));
+        tasks.add(new BuildJarTask(this));
 
         for (ABuildTask task : tasks) {
             try {
@@ -58,13 +53,8 @@ public class AndroidBuilder implements IBuilder {
                 return;
             }
         }
-
-        cleanAfterBuild();
     }
 
-    private void cleanAfterBuild() {
-        mProject.getApkUnsigned().delete();
-    }
 
     public void stdout(String message) {
         if (mVerbose) {
@@ -78,7 +68,6 @@ public class AndroidBuilder implements IBuilder {
         }
     }
 
-
     public boolean isVerbose() {
         return mVerbose;
     }
@@ -87,7 +76,7 @@ public class AndroidBuilder implements IBuilder {
         return mContext;
     }
 
-    public AndroidProject getProject() {
+    public JavaProject getProject() {
         return mProject;
     }
 

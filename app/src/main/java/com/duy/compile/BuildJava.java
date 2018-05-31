@@ -15,7 +15,7 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 
-public class BuildJavaTask extends AsyncTask<JavaProject, Object, Integer> {
+public class BuildJava extends AsyncTask<JavaProject, Object, Integer> {
     private static final String TAG = "CompileJavaTask";
     private ArrayList<Diagnostic> mDiagnostics = new ArrayList<>();
     private JavaProject projectFile;
@@ -24,7 +24,7 @@ public class BuildJavaTask extends AsyncTask<JavaProject, Object, Integer> {
     private CompileListener compileListener;
     private Throwable error;
 
-    public BuildJavaTask(Context context, CompileListener compileListener) {
+    public BuildJava(Context context, CompileListener compileListener) {
         this.context = context;
         this.compileListener = compileListener;
     }

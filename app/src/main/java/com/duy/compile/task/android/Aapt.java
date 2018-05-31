@@ -1,10 +1,12 @@
-package com.duy.compile.task;
+package com.duy.compile.task.android;
 
 import android.os.Build;
 
-import com.duy.compile.builder.AndroidBuilder;
+import com.duy.compile.builder.AndroidProjectBuilder;
+import com.duy.compile.task.ABuildTask;
 import com.duy.ide.activities.Environment;
 import com.duy.ide.file.FileManager;
+import com.duy.project.file.android.AndroidProject;
 
 import org.apache.commons.io.IOUtils;
 
@@ -106,9 +108,9 @@ import java.util.regex.Pattern;
  * --custom-package
  * generates R.java into a different package.
  */
-public class Aapt extends ABuildTask {
+public class Aapt extends ABuildTask<AndroidProject> {
 
-    public Aapt(AndroidBuilder builder) {
+    public Aapt(AndroidProjectBuilder builder) {
         super(builder);
     }
 

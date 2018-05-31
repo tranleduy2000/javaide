@@ -1,10 +1,11 @@
-package com.duy.compile.task;
+package com.duy.compile.task.java;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.duy.compile.builder.AndroidBuilder;
+import com.duy.compile.builder.IBuilder;
 import com.duy.compile.builder.util.MD5Hash;
+import com.duy.compile.task.ABuildTask;
 import com.duy.dex.Dex;
 import com.duy.dx.merge.CollisionPolicy;
 import com.duy.dx.merge.DexMerger;
@@ -15,10 +16,10 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 
-public class DxTask extends ABuildTask {
+public class DxTask extends ABuildTask<JavaProject> {
     private static final String TAG = "Dexer";
 
-    public DxTask(AndroidBuilder builder) {
+    public DxTask(IBuilder<? extends JavaProject> builder) {
         super(builder);
     }
 

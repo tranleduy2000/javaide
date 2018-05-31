@@ -12,14 +12,14 @@ import java.util.List;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 
-public class BuildJarTask extends AsyncTask<JavaProject, Object, File> {
+public class BuildJar extends AsyncTask<JavaProject, Object, File> {
     private static final String TAG = "BuildJarAchieveTask";
     private Context context;
-    private BuildJarTask.CompileListener listener;
+    private BuildJar.CompileListener listener;
     private DiagnosticCollector mDiagnosticCollector;
     private Exception error;
 
-    public BuildJarTask(Context context, CompileListener listener) {
+    public BuildJar(Context context, CompileListener listener) {
         this.context = context;
         this.listener = listener;
         mDiagnosticCollector = new DiagnosticCollector();

@@ -1,8 +1,8 @@
-package com.duy.compile.external.android.builder;
+package com.duy.compile.external.android.builder.task;
 
-import android.content.Context;
 import android.os.Build;
 
+import com.duy.compile.external.android.builder.AndroidBuilder2;
 import com.duy.ide.activities.Environment;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProject;
@@ -12,6 +12,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -106,15 +107,10 @@ import java.util.regex.Pattern;
  * --custom-package
  * generates R.java into a different package.
  */
-public class Aapt {
-    private final AndroidBuilder2 builder;
-    private final AndroidProject project;
-    private Context context;
+public class Aapt extends BuildTask {
 
     public Aapt(AndroidBuilder2 builder, AndroidProject project) {
-        this.builder = builder;
-        this.project = project;
-        this.context = builder.getContext();
+        super(builder, project);
     }
 
     public boolean run() throws IOException, InterruptedException {
@@ -122,11 +118,7 @@ public class Aapt {
         String aaptName;
 
         int numCores = getNumCores();
-        boolean verbose = builder.isVerbose();
-
-        if (verbose) {
-            builder.stdout("Available cores " + numCores);
-        }
+        builder.stdout("Available cores " + numCores);
 
         // Position Independent Executables (PIE) were first supported in Jelly Bean 4.1 (API level 16)
         // In Android 5.0, they are required
@@ -157,6 +149,7 @@ public class Aapt {
         String[] args = {
                 aaptFile.getAbsolutePath(),
                 "p", "-f", "--auto-add-overlay",
+                "-v",
                 "-M", project.getXmlManifest().getAbsolutePath(),  //manifest file
                 "-F", project.getOutResourceFile().getAbsolutePath(),  //output resources.ap_
                 "-I", FileManager.getClasspathFile(context).getAbsolutePath(),//The location of the android.jar resource
@@ -164,16 +157,18 @@ public class Aapt {
                 "-S", project.getResDirs().getAbsolutePath(),  //input resource dir
                 "-J", project.getClassR().getParent() //parent file of R.java file
         };
-
+        System.out.println("args = " + Arrays.toString(args));
         Process aaptProcess = Runtime.getRuntime().exec(args);
-        int result = aaptProcess.waitFor();
+        int exitCode = aaptProcess.waitFor();
 
         String stdout = IOUtils.toString(aaptProcess.getInputStream());
         String stderr = IOUtils.toString(aaptProcess.getErrorStream());
+
+        builder.stdout("AAPT exit code " + exitCode);
         builder.stdout(stdout);
         builder.stderr(stderr);
 
-        return result == 0;
+        return exitCode == 0;
     }
 
     /**

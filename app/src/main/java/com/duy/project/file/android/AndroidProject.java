@@ -53,8 +53,8 @@ public class AndroidProject extends JavaProjectFolder {
         assetsDirs.add(new File(dirSrcMain, "assets"));
         xmlManifest = new File(dirSrcMain, "AndroidManifest.xml");
 
-        apkUnsigned = new File(dirOutput, "app-unsigned-debug.apk");
-        apkUnaligned = new File(dirOutput, "app-unaligned-debug.apk");
+        apkUnsigned = new File(dirBuildOutput, "app-unsigned-debug.apk");
+        apkUnaligned = new File(dirBuildOutput, "app-unaligned-debug.apk");
 
         createClassR();
 

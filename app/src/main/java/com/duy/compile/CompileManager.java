@@ -19,7 +19,7 @@ package com.duy.compile;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.duy.compile.external.CompileHelper;
+import com.duy.compile.external.android.builder.CompileHelper;
 import com.duy.ide.debug.activities.DebugActivity;
 import com.duy.ide.editor.code.MainActivity;
 import com.duy.project.file.java.JavaProjectFolder;

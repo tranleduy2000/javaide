@@ -35,13 +35,25 @@ public class JavaProjectFolder implements Serializable, Cloneable {
     protected File dirRoot;
     protected File dirProject;
 
-    /* Build */
+    /**
+     * Build folder
+     * <p>
+     * rootProject
+     * ----module
+     * --------build
+     * ------------classes <- .class output
+     * ------------dexedLibs <- contains dexed java library, it can be cached for build faster
+     * ------------generated <- generate source, such as aapt generate class R
+     * ------------output <- apk, jar file output
+     */
     protected File dirBuild;
-    protected File dirOutput;
-    protected File dirOutputJar;
-    protected File dirDexedLibs;
-    protected File dirDexedClass;
+    protected File dirBuildOutput;
+    protected File dirBuildOutputJar;
+    protected File dirBuildDexedLibs;
+    protected File dirBuildDexedClass;
     protected File dexedClassesFile;
+
+
     @Nullable
     protected String packageName;
 
@@ -80,13 +92,13 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         dirBuildClasses = new File(dirBuild, "classes");
         dirGenerated = new File(dirBuild, "generated");
         dirGeneratedSource = new File(dirGenerated, "source");
-        dirOutput = new File(dirBuild, "output");
-        dirOutputJar = new File(dirOutput, "jar");
-        dirDexedLibs = new File(dirBuild, "dexedLibs");
-        dirDexedClass = new File(dirBuild, "dexedClasses");
+        dirBuildOutput = new File(dirBuild, "output");
+        dirBuildOutputJar = new File(dirBuildOutput, "jar");
+        dirBuildDexedLibs = new File(dirBuild, "dexedLibs");
+        dirBuildDexedClass = new File(dirBuild, "dexedClasses");
 
-        dexedClassesFile = new File(dirDexedClass, projectName + ".dex");
-        jarArchive = new File(dirOutputJar, projectName + ".jar");
+        dexedClassesFile = new File(dirBuildDexedClass, projectName + ".dex");
+        jarArchive = new File(dirBuildOutputJar, projectName + ".jar");
 
 
         if (!dirRoot.exists()) {
@@ -149,21 +161,14 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         return dirLibs;
     }
 
-    public File getDirDexedLibs() {
-        if (!dirDexedLibs.exists()) dirDexedLibs.mkdirs();
-        return dirDexedLibs;
+    public File getDirBuildDexedLibs() {
+        if (!dirBuildDexedLibs.exists()) dirBuildDexedLibs.mkdirs();
+        return dirBuildDexedLibs;
     }
 
-    public File getDirDexedClass() {
-        if (!dirDexedClass.exists()) {
-            dirDexedClass.mkdirs();
-        }
-        return dirDexedClass;
-    }
-
-    public File getDirOutputJar() {
-        if (!dirOutputJar.exists()) dirOutputJar.mkdirs();
-        return dirOutputJar;
+    public File getDirBuildOutputJar() {
+        if (!dirBuildOutputJar.exists()) dirBuildOutputJar.mkdirs();
+        return dirBuildOutputJar;
     }
 
     public File getDirBuildClasses() {
@@ -177,8 +182,8 @@ public class JavaProjectFolder implements Serializable, Cloneable {
         if (!dirGenerated.exists()) dirGenerated.mkdirs();
         if (!dirGeneratedSource.exists()) dirGeneratedSource.mkdirs();
         if (!dirBuildClasses.exists()) dirBuildClasses.mkdirs();
-        if (!dirOutput.exists()) dirOutput.mkdirs();
-        if (!dirOutputJar.exists()) dirOutputJar.mkdirs();
+        if (!dirBuildOutput.exists()) dirBuildOutput.mkdirs();
+        if (!dirBuildOutputJar.exists()) dirBuildOutputJar.mkdirs();
     }
 
     @CallSuper

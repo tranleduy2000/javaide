@@ -2,6 +2,8 @@ package com.duy.compile.external.android.builder;
 
 import android.content.Context;
 
+import com.duy.compile.external.android.builder.task.Aapt;
+import com.duy.compile.external.android.builder.task.JavaCompiler;
 import com.duy.project.file.android.AndroidProject;
 
 import java.io.PrintStream;
@@ -28,7 +30,7 @@ public class AndroidBuilder2 implements IAndroidBuilder {
 
         if (mVerbose) {
             mStdout.println("Starting build android project");
-            mStdout.println("Build " + buildType);
+            mStdout.println("Build type " + buildType);
         }
 
         if (!cleanupBuild()) {
@@ -49,7 +51,13 @@ public class AndroidBuilder2 implements IAndroidBuilder {
     }
 
     private boolean compileJavaSource() {
-        return true;
+        try {
+            JavaCompiler javaCompiler = new JavaCompiler(this, mAndroidProject);
+            javaCompiler.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 

@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.android.annotations.NonNull;
 import com.android.sdklib.build.ApkBuilderMain;
-import com.duy.compile.external.CompileHelper;
 import com.duy.ide.DLog;
 import com.duy.ide.file.FileManager;
 import com.duy.project.file.android.AndroidProject;

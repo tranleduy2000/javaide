@@ -68,9 +68,9 @@ public class JavaClassReader {
         if (classpath != null) {
             classes.addAll(getAllClassesFromJar(android, classpath));
         }
-        if (projectFolder.getDirDexedLibs().listFiles() != null
-                && projectFolder.getDirDexedLibs().listFiles().length > 0) {
-            for (File lib : projectFolder.getDirDexedLibs().listFiles()) {
+        if (projectFolder.getDirBuildDexedLibs().listFiles() != null
+                && projectFolder.getDirBuildDexedLibs().listFiles().length > 0) {
+            for (File lib : projectFolder.getDirBuildDexedLibs().listFiles()) {
                 if (lib.getPath().endsWith(".jar")) {
                     classes.addAll(getAllClassesFromJar(android, lib.getPath()));
                 } else if (lib.getPath().endsWith(".dex")) {

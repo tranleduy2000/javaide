@@ -3,7 +3,7 @@ package com.duy.compile;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.duy.compile.external.CompileHelper;
+import com.duy.compile.external.android.builder.CompileHelper;
 import com.duy.project.file.java.JavaProjectFolder;
 
 import java.io.File;

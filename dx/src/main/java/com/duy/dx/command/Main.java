@@ -162,10 +162,10 @@ public class Main {
     /**
      * Prints the version message.
      */
-    private static void version() {
+    private static int version() {
         System.err.println("dx version " + Version.VERSION);
         //todo fix it
-//        System.exit(0);
+        return 0;
     }
 
     /**

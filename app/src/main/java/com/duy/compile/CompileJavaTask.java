@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.android.annotations.Nullable;
-import com.duy.compile.external.CompileHelper;
+import com.duy.compile.external.android.builder.CompileHelper;
 import com.duy.project.file.java.JavaProjectFolder;
 import com.sun.tools.javac.main.Main;
 

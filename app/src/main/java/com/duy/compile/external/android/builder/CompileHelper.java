@@ -1,12 +1,10 @@
-package com.duy.compile.external;
+package com.duy.compile.external.android.builder;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.duy.compile.external.android.builder.AndroidBuilder2;
-import com.duy.compile.external.android.builder.BuildType;
 import com.duy.compile.external.android.builder.util.Util;
 import com.duy.compile.external.dex.DexTool;
 import com.duy.compile.external.java.Jar;
@@ -22,6 +20,7 @@ import com.duy.project.file.java.JavaProjectFolder;
 import com.sun.tools.javac.main.Main;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,27 +81,27 @@ public class CompileHelper {
     public static void dexLibs(@NonNull JavaProjectFolder projectFile) throws Exception {
         DLog.d(TAG, "dexLibs() called with: projectFile = [" + projectFile + "]");
         File dirLibs = projectFile.getDirLibs();
-        if (dirLibs.exists()) {
-            File[] files = dirLibs.listFiles();
-            if (files != null && files.length > 0) {
-                for (File jarLib : files) {
-                    // skip native libs in sub directories
-                    if (!jarLib.isFile() || !jarLib.getName().endsWith(".jar")) {
-                        continue;
-                    }
-
-                    // compare hash of jar contents to name of dexed version
-                    String md5 = Util.getMD5Checksum(jarLib);
-
-                    File dexLib = new File(projectFile.getDirDexedLibs(), jarLib.getName().replace(".jar", "-" + md5 + ".dex"));
-                    if (dexLib.exists()) {
-                        continue;
-                    }
-                    String[] args = new String[]{"--dex", "--verbose", "--no-strict",
-                            "--output=" + dexLib.getPath(), jarLib.getPath()};
-                    DexTool.main(args);
-                }
+        File[] files = dirLibs.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.isFile() && pathname.getName().toLowerCase().endsWith(".jar");
             }
+        });
+        for (File jarLib : files) {
+            // compare hash of jar contents to name of dexed version
+            String md5 = Util.getMD5Checksum(jarLib);
+
+            String dexName = jarLib.getName().replace(".jar", "-" + md5 + ".dex");
+            File dexLib = new File(projectFile.getDirBuildDexedLibs(), dexName);
+            if (dexLib.exists()) {
+                continue;
+            }
+            String[] args = {
+                    "--dex",
+                    "--verbose",
+                    "--no-strict",
+                    "--output=" + dexLib.getPath(), jarLib.getPath()};
+            DexTool.main(args);
         }
     }
 
@@ -121,8 +120,8 @@ public class CompileHelper {
         DLog.d(TAG, "dexMerge() called with: projectFile = [" + projectFile + "]");
         FileManager.ensureFileExist(projectFile.getDexedClassesFile());
 
-        if (projectFile.getDirDexedLibs().exists()) {
-            File[] files = projectFile.getDirDexedLibs().listFiles();
+        if (projectFile.getDirBuildDexedLibs().exists()) {
+            File[] files = projectFile.getDirBuildDexedLibs().listFiles();
             if (files != null && files.length > 0) {
                 for (File dexedLib : files) {
                     DexMerger dexMerger = new DexMerger(

@@ -34,11 +34,7 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/dictionaries
-.idea/libraries
+.idea/
 
 # Keystore files
 *.jks
@@ -61,3 +57,9 @@ freeline_project_description.json
 /tools/
 !/javacompiler/src/main/java/com/android/sdklib/internal/build/
 !/javacompiler/src/main/java/com/android/sdklib/build/
+app/src/androidTest/java/com/duy/android/
+app/src/main/java/com/duy/android/
+dx/libs/
+dx/src/main/res/drawable/
+manifest_merger/libs/
+manifest_merger/src/main/res/drawable/

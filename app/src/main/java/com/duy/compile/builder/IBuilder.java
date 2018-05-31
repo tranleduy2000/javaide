@@ -21,4 +21,5 @@ public interface IBuilder<T extends JavaProject> {
 
     Context getContext();
 
+    boolean isVerbose();
 }

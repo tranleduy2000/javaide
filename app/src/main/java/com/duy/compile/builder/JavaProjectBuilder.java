@@ -29,7 +29,7 @@ public class JavaProjectBuilder extends BuilderImpl<JavaProject> {
     @Override
     public boolean build(BuildType buildType) {
         if (mVerbose) {
-            mStdout.println("Starting build android project");
+            mStdout.println("Starting build java project");
             mStdout.println("Build type " + buildType);
         }
 
@@ -39,21 +39,7 @@ public class JavaProjectBuilder extends BuilderImpl<JavaProject> {
         tasks.add(new DxTask(this));
         tasks.add(new BuildJarTask(this));
 
-        for (ABuildTask task : tasks) {
-            try {
-                stdout("Run " + task.getTaskName() + " task");
-                boolean result = task.run();
-                if (!result) {
-                    stdout(task.getTaskName() + " failed");
-                    return false;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                stdout(task.getTaskName() + " failed");
-                return false;
-            }
-        }
-        return true;
+        return runTasks(tasks);
     }
 
 

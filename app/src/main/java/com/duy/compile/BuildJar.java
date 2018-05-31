@@ -3,7 +3,8 @@ package com.duy.compile;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.duy.compile.builder.CompileHelper;
+import com.duy.compile.builder.JavaProjectBuilder;
+import com.duy.compile.builder.model.BuildType;
 import com.duy.project.file.java.JavaProject;
 
 import java.io.File;
@@ -13,7 +14,6 @@ import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 
 public class BuildJar extends AsyncTask<JavaProject, Object, File> {
-    private static final String TAG = "BuildJarAchieveTask";
     private Context context;
     private BuildJar.CompileListener listener;
     private DiagnosticCollector mDiagnosticCollector;
@@ -38,8 +38,10 @@ public class BuildJar extends AsyncTask<JavaProject, Object, File> {
             return null;
         }
         try {
-            projectFile.clean();
-            return CompileHelper.buildJarAchieve(context, projectFile, mDiagnosticCollector);
+            JavaProjectBuilder builder = new JavaProjectBuilder(context, projectFile, mDiagnosticCollector);
+            if (builder.build(BuildType.DEBUG)) {
+                return projectFile.getOutJarArchive();
+            }
         } catch (Exception e) {
             this.error = e;
         }

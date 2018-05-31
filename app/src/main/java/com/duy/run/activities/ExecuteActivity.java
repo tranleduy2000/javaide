@@ -1,6 +1,5 @@
 package com.duy.run.activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +12,7 @@ import android.util.Log;
 
 import com.duy.JavaApplication;
 import com.duy.compile.CompileManager;
-import com.duy.compile.builder.CompileHelper;
+import com.duy.compile.java.Java;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.project.file.java.JavaProject;
@@ -42,6 +41,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
         }
     };
     private ConsoleEditText mConsoleEditText;
+    public static final int RUN_DEX = 1;
 
     private void showDialogError(String message) {
         if (isFinishing()) return;
@@ -76,7 +76,7 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
                 @Override
                 public void run() {
                     try {
-                        runProgram(ExecuteActivity.this, projectFile, action, intent);
+                        runProgram(projectFile, action, intent);
                     } catch (Error error) {
                         error.printStackTrace(mConsoleEditText.getErrorStream());
                     } catch (Exception e) {
@@ -99,24 +99,25 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
     }
 
     @WorkerThread
-    private void runProgram(Context context, JavaProject projectFile, int action, Intent intent) throws Exception {
+    private void runProgram(JavaProject projectFile, int action, Intent intent) throws Exception {
         InputStream in = mConsoleEditText.getInputStream();
 
         File tempDir = getDir("dex", MODE_PRIVATE);
         switch (action) {
-            case CompileHelper.Action.RUN: {
-                CompileHelper.compileAndRun(context, in, tempDir, projectFile);
-                break;
-            }
-            case CompileHelper.Action.RUN_DEX: {
+            case RUN_DEX: {
                 File dex = (File) intent.getSerializableExtra(CompileManager.DEX_FILE);
                 if (dex != null) {
                     String mainClass = projectFile.getMainClass().getName();
-                    CompileHelper.executeDex(context, in, dex, tempDir, mainClass);
+                    executeDex(in, dex, tempDir, mainClass);
                 }
                 break;
             }
         }
+    }
+
+    private void executeDex(InputStream in, File outDex, File tempDir, String mainClass) {
+        String[] args = new String[]{"-jar", outDex.getPath(), mainClass};
+        Java.run(args, tempDir.getPath(), in);
     }
 
     @Override

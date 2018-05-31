@@ -19,7 +19,6 @@ package com.duy.compile;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.duy.compile.builder.CompileHelper;
 import com.duy.ide.debug.activities.DebugActivity;
 import com.duy.ide.editor.code.MainActivity;
 import com.duy.project.file.java.JavaProject;
@@ -66,7 +65,7 @@ public class CompileManager {
 
     public void executeDex(JavaProject projectFile, File dex) {
         Intent intent = new Intent(mActivity, ExecuteActivity.class);
-        intent.putExtra(ACTION, CompileHelper.Action.RUN_DEX);
+        intent.putExtra(ACTION, ExecuteActivity.RUN_DEX);
         intent.putExtra(PROJECT_FILE, projectFile);
         intent.putExtra(DEX_FILE, dex);
         mActivity.startActivity(intent);

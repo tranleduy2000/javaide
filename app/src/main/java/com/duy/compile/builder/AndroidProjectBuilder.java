@@ -44,27 +44,7 @@ public class AndroidProjectBuilder extends BuilderImpl<AndroidProject> {
         tasks.add(new BuildApkTask(this));
         tasks.add(new SignApkTask(this, buildType));
 
-        for (ABuildTask task : tasks) {
-            try {
-                stdout("Run " + task.getTaskName() + " task");
-                boolean result = task.run();
-                if (!result) {
-                    stdout(task.getTaskName() + " failed");
-                    return result;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                stdout(task.getTaskName() + " failed");
-                return false;
-            }
-        }
-
-        cleanAfterBuild();
-        return true;
-    }
-
-    private void cleanAfterBuild() {
-        mProject.getApkUnsigned().delete();
+        return runTasks(tasks);
     }
 
     public void stdout(String message) {

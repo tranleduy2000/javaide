@@ -60,46 +60,6 @@ public class AndroidBuilder2 implements IAndroidBuilder {
         }
     }
 
-    private boolean runDexer() {
-        try {
-            Dexer dexer = new Dexer(this);
-            return dexer.run();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private boolean compileJavaSource() {
-        try {
-            JavaCompiler javaCompiler = new JavaCompiler(this);
-            return javaCompiler.run();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
-    private boolean cleanupBuild() {
-        if (mVerbose) {
-            mStdout.print("Cleanup project");
-        }
-        return true;
-    }
-
-    private boolean runAAPT() {
-        try {
-            stdout("Run AAPT");
-            Aapt aapt = new Aapt(this);
-            return aapt.run();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
     public void stdout(String message) {
         if (mVerbose) {
             mStdout.println(message);

@@ -18,7 +18,7 @@ public class SignApkTask extends BuildTask {
 
     @Override
     public String getTaskName() {
-        return "Sign " + type + "  apk";
+        return "Sign apk";
     }
 
     @Override

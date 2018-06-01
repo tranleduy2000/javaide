@@ -3,10 +3,10 @@ package com.duy.android.compiler.builder;
 import android.content.Context;
 
 import com.duy.android.compiler.builder.model.BuildType;
-import com.duy.android.compiler.task.ABuildTask;
-import com.duy.android.compiler.task.java.CleanTask;
-import com.duy.android.compiler.task.java.CompileJavaTask;
-import com.duy.android.compiler.task.java.DxTask;
+import com.duy.android.compiler.builder.task.ABuildTask;
+import com.duy.android.compiler.builder.task.java.CleanTask;
+import com.duy.android.compiler.builder.task.java.CompileJavaTask;
+import com.duy.android.compiler.builder.task.java.DxTask;
 import com.duy.android.compiler.project.JavaProject;
 
 import java.io.PrintStream;

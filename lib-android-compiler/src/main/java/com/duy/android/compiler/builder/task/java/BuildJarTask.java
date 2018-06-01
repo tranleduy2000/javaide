@@ -1,8 +1,8 @@
-package com.duy.android.compiler.task.java;
+package com.duy.android.compiler.builder.task.java;
 
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.java.JarArchive;
-import com.duy.android.compiler.task.ABuildTask;
+import com.duy.android.compiler.builder.task.ABuildTask;
 import com.duy.android.compiler.project.JavaProject;
 
 public class BuildJarTask extends ABuildTask<JavaProject> {

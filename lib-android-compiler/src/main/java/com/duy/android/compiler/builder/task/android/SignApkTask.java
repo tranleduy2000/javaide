@@ -1,8 +1,8 @@
-package com.duy.android.compiler.task.android;
+package com.duy.android.compiler.builder.task.android;
 
 import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.builder.model.BuildType;
-import com.duy.android.compiler.task.ABuildTask;
+import com.duy.android.compiler.builder.task.ABuildTask;
 import com.duy.android.compiler.project.AndroidApplicationProject;
 
 import java.io.File;

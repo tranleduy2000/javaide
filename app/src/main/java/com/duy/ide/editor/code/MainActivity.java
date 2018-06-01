@@ -46,8 +46,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.duy.JavaApplication;
-import com.duy.android.compiler.BuildJar;
-import com.duy.android.compiler.BuildTask;
+import com.duy.android.compiler.builder.BuildJar;
+import com.duy.android.compiler.builder.BuildTask;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.JavaBuilder;

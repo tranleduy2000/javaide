@@ -1,11 +1,11 @@
-package com.duy.android.compiler.task.android;
+package com.duy.android.compiler.builder.task.android;
 
 import android.os.Build;
 
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.project.AndroidApplicationProject;
-import com.duy.android.compiler.task.ABuildTask;
+import com.duy.android.compiler.builder.task.ABuildTask;
 
 import org.apache.commons.io.IOUtils;
 

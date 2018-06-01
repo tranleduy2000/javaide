@@ -30,7 +30,7 @@ allprojects {
 
 ext {
     compileSdkVersion = 27
-    buildToolsVersion = '27.0.1'
+    buildToolsVersion = '27.0.3'
     targetSdkVersion = 27
     minSdkVersion = 14
     googleServiceVersion = "15.0.2"

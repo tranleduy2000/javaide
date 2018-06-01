@@ -2,7 +2,6 @@ package com.duy.ide.javaide.autocomplete.model;
 
 
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;
-import com.duy.ide.editor.code.view.CodeSuggestsEditText;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -74,7 +73,7 @@ public class ClassDescription extends DescriptionImpl {
 
     @Override
     public String getSnippet() {
-        return getSimpleName() + " " + CodeSuggestsEditText.CURSOR;
+        return getSimpleName() + " ";
     }
 
     @Override

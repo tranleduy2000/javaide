@@ -3,6 +3,7 @@ package com.duy.ide.javaide.run.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.support.v7.app.AlertDialog;
@@ -25,7 +26,7 @@ import java.io.InputStream;
 public class ExecuteActivity extends AbstractAppCompatActivity {
     public static final String PROJECT_FILE = "project_file";
     private static final String TAG = "ExecuteActivity";
-
+    private final Handler mHandler = new Handler();
     private ConsoleEditText mConsoleEditText;
     private JavaProject mProjectFile;
 
@@ -75,7 +76,12 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
                 } catch (Throwable e) {
                     e.printStackTrace(mConsoleEditText.getErrorStream());
                 }
-                getSupportActionBar().setSubtitle(R.string.console_stopped);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        getSupportActionBar().setSubtitle(R.string.console_stopped);
+                    }
+                });
             }
         });
         runThread.start();

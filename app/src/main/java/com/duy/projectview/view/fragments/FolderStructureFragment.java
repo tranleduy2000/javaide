@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 
 import com.duy.android.compiler.file.java.JavaProject;
 import com.duy.ide.R;
-import com.duy.projectview.ProjectFileContract;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
+import com.duy.projectview.ProjectFileContract;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
@@ -37,7 +37,8 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     private final android.os.Handler mHandler = new android.os.Handler();
     private JavaProject mProjectFile;
     @Nullable
-    private com.duy.projectview.ProjectFileContract.FileActionListener listener;
+    private ProjectFileContract.FileActionListener listener;
+
     private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
         @Override
         public void onClick(TreeNode node, Object value) {
@@ -57,9 +58,9 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
             return true;
         }
     };
+
     private ViewGroup mContainerView;
     private ProjectFileContract.Presenter presenter;
-    @Nullable
     private AndroidTreeView mTreeView;
     private SharedPreferences mPref;
 
@@ -277,7 +278,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            this.listener = (com.duy.projectview.ProjectFileContract.FileActionListener) getActivity();
+            this.listener = (ProjectFileContract.FileActionListener) getActivity();
         } catch (ClassCastException ignored) {
         }
         mPref = PreferenceManager.getDefaultSharedPreferences(context);

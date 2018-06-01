@@ -55,21 +55,9 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
     }
 
 
-    private void showDialogSuccess() {
-        if (isFinishing()) {
-            return;
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.success);
-        builder.setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                setResult(RESULT_OK);
-                finish();
-            }
-        });
-        builder.create().show();
+    private void installSuccess() {
+        setResult(RESULT_OK);
+        finish();
     }
 
     private void showDialogFailed(@Nullable Exception error) {
@@ -135,7 +123,7 @@ public class InstallActivity extends AbstractAppCompatActivity implements View.O
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if ((FileManager.isSdkInstalled(context))) {
-                showDialogSuccess();
+                installSuccess();
             } else {
                 showDialogFailed(error);
             }

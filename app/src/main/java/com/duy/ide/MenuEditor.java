@@ -25,10 +25,11 @@ import android.support.v4.view.GravityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.duy.ide.javaide.sample.activities.SampleActivity;
 import com.duy.ide.editor.code.MainActivity;
+import com.duy.ide.javaide.sample.activities.SampleActivity;
 import com.duy.ide.setting.SettingsActivity;
 import com.duy.ide.utils.DonateUtils;
+import com.duy.ide.utils.StoreUtil;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.pluscubed.logcat.ui.LogcatActivity;
 
@@ -143,6 +144,9 @@ public class MenuEditor {
                 break;
             case R.id.action_create_keystore:
                 activity.createKeyStore();
+                break;
+            case R.id.action_install_cpp_nide:
+                StoreUtil.gotoPlayStore(activity, "com.duy.c.cpp.compiler");
                 break;
         }
         return true;

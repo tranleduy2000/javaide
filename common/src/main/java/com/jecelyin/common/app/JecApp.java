@@ -40,7 +40,7 @@ public abstract class JecApp extends Application  {
         if (startupTimestamp == 0)
             startupTimestamp = System.currentTimeMillis();
 
-        if (SysUtils.isDebug(this))
+        if (SysUtils.isDebug())
         {
             L.debug = true;
             //内存泄漏监控

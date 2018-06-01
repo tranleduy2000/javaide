@@ -1,3 +1,4 @@
+//noinspection GradleDependency
 apply plugin: 'com.android.library'
 
 android {
@@ -30,6 +31,12 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api project(':dx')
     api "com.android.support:support-annotations:$supportLibVersion"
+    api "com.android.support:support-v4:$supportLibVersion"
+    //noinspection GradleDependency
     api 'com.google.guava:guava:22.0-android'
     api 'commons-io:commons-io:2.4'
+
+    // https://mvnrepository.com/artifact/org.apache.maven/maven-model
+    compile group: 'org.apache.maven', name: 'maven-model', version: '3.0.4'
+
 }

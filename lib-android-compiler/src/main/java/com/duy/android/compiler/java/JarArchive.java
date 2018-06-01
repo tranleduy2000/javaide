@@ -5,7 +5,7 @@
 
 package com.duy.android.compiler.java;
 
-import com.duy.android.compiler.file.JavaProject;
+import com.duy.android.compiler.project.JavaProject;
 
 import java.io.BufferedInputStream;
 import java.io.File;

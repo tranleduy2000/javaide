@@ -1,4 +1,4 @@
-package com.duy.android.compiler.file;
+package com.duy.android.compiler.project;
 
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
@@ -14,6 +14,8 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 
 /**
+ * https://developer.android.com/studio/projects/android-library#aar-contents
+ *
  * AAR library
  */
 public class AndroidLibraryProject extends JavaProject {

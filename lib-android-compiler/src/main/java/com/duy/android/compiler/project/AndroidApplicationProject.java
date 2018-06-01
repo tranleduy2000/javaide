@@ -1,8 +1,11 @@
-package com.duy.android.compiler.file;
+package com.duy.android.compiler.project;
+
+import android.support.v4.util.ArraySet;
 
 import com.android.annotations.Nullable;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
+import com.duy.android.compiler.library.AndroidLibrary;
 import com.google.common.base.MoreObjects;
 
 import java.io.File;
@@ -27,11 +30,13 @@ public class AndroidApplicationProject extends JavaProject {
 
     private ManifestData.Activity launcherActivity;
 
+    private ArraySet<AndroidLibrary> dependencies;
+
     public AndroidApplicationProject(File dirRoot,
                                      @Nullable String mainClassName,
-                                     @Nullable String packageName,
-                                     String projectName) {
+                                     @Nullable String packageName) {
         super(dirRoot, mainClassName, packageName);
+        dependencies = new ArraySet<>();
     }
 
     @Override
@@ -131,7 +136,9 @@ public class AndroidApplicationProject extends JavaProject {
     public File getResDirs() {
         mkdirs(resDirs);
         return resDirs.get(0);
-    }   public File getResDir() {
+    }
+
+    public File getResDir() {
         mkdirs(resDirs);
         return resDirs.get(0);
     }
@@ -167,4 +174,11 @@ public class AndroidApplicationProject extends JavaProject {
         } else return null;
     }
 
+    public ArraySet<AndroidLibrary> getDependencies() {
+        return dependencies;
+    }
+
+    public void addDependence(AndroidLibrary androidLibrary) {
+        dependencies.add(androidLibrary);
+    }
 }

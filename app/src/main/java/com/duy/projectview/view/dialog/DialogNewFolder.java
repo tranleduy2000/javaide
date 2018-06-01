@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.duy.ide.R;
 import com.duy.projectview.ProjectFileContract;
-import com.duy.android.compiler.file.JavaProject;
+import com.duy.android.compiler.project.JavaProject;
 
 import java.io.File;
 

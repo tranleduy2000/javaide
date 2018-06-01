@@ -6,7 +6,7 @@ import android.util.Log;
 import com.android.annotations.Nullable;
 import com.duy.ide.javaide.autocomplete.dex.JavaClassReader;
 import com.duy.ide.javaide.autocomplete.model.PackageDescription;
-import com.duy.android.compiler.file.JavaProject;
+import com.duy.android.compiler.project.JavaProject;
 
 import java.io.File;
 import java.util.ArrayList;

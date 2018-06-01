@@ -8,9 +8,9 @@ import android.util.Log;
 
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
-import com.duy.android.compiler.file.AndroidApplicationProject;
-import com.duy.android.compiler.file.ClassFile;
-import com.duy.android.compiler.file.JavaProject;
+import com.duy.android.compiler.project.AndroidApplicationProject;
+import com.duy.android.compiler.project.ClassFile;
+import com.duy.android.compiler.project.JavaProject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,9 +50,8 @@ public class ProjectManager {
         if (rootDir == null || !(new File(rootDir).exists())) return null;
         String mainClassName = preferences.getString(MAIN_CLASS_NAME, null);
         String packageName = preferences.getString(PACKAGE_NAME, null);
-        String projectName = preferences.getString(PROJECT_NAME, null);
         if (androidProject) {
-            return new AndroidApplicationProject(new File(rootDir), mainClassName, packageName, projectName);
+            return new AndroidApplicationProject(new File(rootDir), mainClassName, packageName);
         } else {
             return new JavaProject(new File(rootDir), mainClassName, packageName);
         }
@@ -78,7 +77,7 @@ public class ProjectManager {
         Log.d(TAG, "importAndroidProject() called with: context = [" + context + "], file = [" + file + "]");
 
         AndroidApplicationProject project = new AndroidApplicationProject(file.getParentFile(),
-                null, null, file.getName());
+                null, null);
         try {
             if (project.getXmlManifest().exists()) {
                 ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(project.getXmlManifest()));

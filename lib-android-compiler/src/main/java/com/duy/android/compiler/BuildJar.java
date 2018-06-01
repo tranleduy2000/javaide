@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 
 import com.duy.android.compiler.builder.JavaBuilder;
 import com.duy.android.compiler.builder.model.BuildType;
-import com.duy.android.compiler.file.JavaProject;
+import com.duy.android.compiler.project.JavaProject;
 
 import java.io.File;
 import java.util.List;

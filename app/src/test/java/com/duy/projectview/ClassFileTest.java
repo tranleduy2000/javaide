@@ -1,6 +1,6 @@
 package com.duy.projectview;
 
-import com.duy.android.compiler.file.ClassFile;
+import com.duy.android.compiler.project.ClassFile;
 
 import junit.framework.TestCase;
 

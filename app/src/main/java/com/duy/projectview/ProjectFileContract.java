@@ -3,7 +3,7 @@ package com.duy.projectview;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.duy.android.compiler.file.JavaProject;
+import com.duy.android.compiler.project.JavaProject;
 import com.unnamed.b.atv.model.TreeNode;
 
 import java.io.File;

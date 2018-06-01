@@ -1,14 +1,16 @@
-package com.duy.android.compiler.file;
+package com.duy.android.compiler.project;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 
+import com.duy.android.compiler.env.Assets;
+
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class AndroidProjectManager {
     private Context context;
@@ -25,12 +27,12 @@ public class AndroidProjectManager {
      * @param projectName      - Name of project, it will be used for create root directory
      * @param useCompatLibrary - <code>true</code> if need copy android compat library
      */
-    public void createNewProject(Context context, File dir, String projectName,
-                                 String packageName, String activityName, String mainLayoutName,
-                                 String appName, boolean useCompatLibrary) throws Exception {
+    public AndroidApplicationProject createNewProject(Context context, File dir, String projectName,
+                                                      String packageName, String activityName, String mainLayoutName,
+                                                      String appName, boolean useCompatLibrary) throws Exception {
 
         String activityClass = String.format("%s.%s", packageName, activityName);
-        AndroidApplicationProject project = new AndroidApplicationProject(dir, activityClass, packageName, projectName);
+        AndroidApplicationProject project = new AndroidApplicationProject(dir, activityClass, packageName);
         //create directory
         project.mkdirs();
 
@@ -41,6 +43,8 @@ public class AndroidProjectManager {
         createMainActivity(project, activityClass, packageName, activityName, appName, useCompatLibrary, assets);
         createMainLayoutXml(project, mainLayoutName);
         copyLibrary(project, useCompatLibrary, assets);
+
+        return project;
     }
 
 
@@ -69,7 +73,7 @@ public class AndroidProjectManager {
     private void createManifest(AndroidApplicationProject project, String activityClass, String packageName,
                                 AssetManager assets) throws IOException {
         File manifest = project.getXmlManifest();
-        String content = IOUtils.toString(assets.open("templates/src/main/AndroidManifest.xml"));
+        String content = IOUtils.toString(assets.open("templates/AndroidManifest.xml"));
 
         content = content.replace("PACKAGE", packageName);
         content = content.replace("MAIN_ACTIVITY", activityClass);
@@ -98,11 +102,10 @@ public class AndroidProjectManager {
         copyAssets("templates/activity_main.xml", layoutMain);
     }
 
-    private void copyAssets(String filePath, File outFile) throws IOException {
+    private void copyAssets(String assetsPath, File outFile) throws IOException {
         outFile.getParentFile().mkdirs();
-        File in = new File(filePath);
-        FileOutputStream output = new FileOutputStream(new File(outFile, in.getName()));
-        FileInputStream input = new FileInputStream(in);
+        FileOutputStream output = new FileOutputStream(outFile);
+        InputStream input = context.getAssets().open(assetsPath);
         org.apache.commons.io.IOUtils.copy(input, output);
         input.close();
         output.close();
@@ -115,9 +118,9 @@ public class AndroidProjectManager {
         output.close();
     }
 
-    private void copyLibrary(AndroidApplicationProject project, boolean useCompatLibrary, AssetManager assets) {
+    private void copyLibrary(AndroidApplicationProject project, boolean useCompatLibrary, AssetManager assets) throws IOException {
         if (useCompatLibrary) {
-
+            Assets.copyAssets(assets, "libs", project.getDirLibs());
         }
     }
 

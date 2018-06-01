@@ -1,4 +1,4 @@
-package com.duy.android.compiler.io;
+package com.duy.android.compiler.utils;
 
 import java.io.File;
 import java.io.FileInputStream;

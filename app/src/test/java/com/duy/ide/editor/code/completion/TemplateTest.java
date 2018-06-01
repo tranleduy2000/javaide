@@ -1,6 +1,6 @@
 package com.duy.ide.editor.code.completion;
 
-import com.duy.android.compiler.file.Template;
+import com.duy.android.compiler.project.Template;
 
 import junit.framework.TestCase;
 

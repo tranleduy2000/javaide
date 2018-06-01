@@ -20,7 +20,7 @@ import com.duy.ide.R;
 import com.duy.ide.javaide.autocomplete.Patterns;
 import com.duy.ide.javaide.sample.model.AssetUtil;
 import com.duy.ide.file.FileManager;
-import com.duy.android.compiler.file.AndroidApplicationProject;
+import com.duy.android.compiler.project.AndroidApplicationProject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -113,7 +113,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             boolean useAppCompat = mAppCompat.isChecked();
             try {
                 AndroidApplicationProject projectFile = new AndroidApplicationProject(
-                        new File(FileManager.EXTERNAL_DIR), activityClass, packageName, projectName);
+                        new File(FileManager.EXTERNAL_DIR), activityClass, packageName);
                 //create directory
                 projectFile.mkdirs();
 

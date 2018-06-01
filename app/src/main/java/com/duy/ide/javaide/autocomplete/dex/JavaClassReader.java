@@ -9,8 +9,8 @@ import com.duy.ide.javaide.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.javaide.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.autocomplete.model.MethodDescription;
-import com.duy.android.compiler.file.AndroidApplicationProject;
-import com.duy.android.compiler.file.JavaProject;
+import com.duy.android.compiler.project.AndroidApplicationProject;
+import com.duy.android.compiler.project.JavaProject;
 
 import java.io.File;
 import java.io.IOException;

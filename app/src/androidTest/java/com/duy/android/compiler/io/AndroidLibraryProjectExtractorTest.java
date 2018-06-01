@@ -4,22 +4,23 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.android.io.StreamException;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
+import com.duy.android.compiler.builder.model.BuildType;
 import com.duy.android.compiler.env.Environment;
-import com.duy.android.compiler.file.AndroidLibraryProject;
+import com.duy.android.compiler.library.AndroidLibraryExtractor;
+import com.duy.android.compiler.project.AndroidApplicationProject;
+import com.duy.android.compiler.project.AndroidProjectManager;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 
-import javax.xml.parsers.ParserConfigurationException;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticListener;
 
 import static junit.framework.Assert.assertTrue;
 
@@ -27,7 +28,7 @@ import static junit.framework.Assert.assertTrue;
 public class AndroidLibraryProjectExtractorTest {
 
     @Test
-    public void extract() throws IOException, StreamException, SAXException, ParserConfigurationException {
+    public void testExtractAar() throws Exception {
         Context context = InstrumentationRegistry.getTargetContext();
 
         String[] list = context.getAssets().list("");
@@ -45,9 +46,23 @@ public class AndroidLibraryProjectExtractorTest {
         assertTrue(result);
 
         File libDir = new File(Environment.getSdCardLibraryCachedDir(context), libraryName);
+    }
 
+    @Test
+    public void testBuild() throws Exception {
+        Context context = InstrumentationRegistry.getTargetContext();
+        AndroidProjectManager projectManager = new AndroidProjectManager(context);
+        File dir = (Environment.getSdkAppDir());
+        AndroidApplicationProject project = projectManager.createNewProject(context, dir, "AndroidLibraryProjectExtractorTest"
+                , "com.duy.example", "MainActivity", "activity_main.xml",
+                "TestLibrary", true);
 
-        AndroidLibraryProject library = new AndroidLibraryProject(libDir, libraryName);
-
+        AndroidAppBuilder builder = new AndroidAppBuilder(context, project, new DiagnosticListener() {
+            @Override
+            public void report(Diagnostic diagnostic) {
+                System.out.println("diagnostic = " + diagnostic);
+            }
+        });
+        builder.build(BuildType.DEBUG);
     }
 }

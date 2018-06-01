@@ -4,7 +4,7 @@ import android.os.Build;
 
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
-import com.duy.android.compiler.file.AndroidApplicationProject;
+import com.duy.android.compiler.project.AndroidApplicationProject;
 import com.duy.android.compiler.task.ABuildTask;
 
 import org.apache.commons.io.IOUtils;

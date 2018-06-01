@@ -14,12 +14,12 @@ import java.util.ArrayList;
 
 import javax.tools.DiagnosticListener;
 
-public class JavaProjectBuilder extends BuilderImpl<JavaProject> {
+public class JavaBuilder extends BuilderImpl<JavaProject> {
 
 
     private JavaProject mProject;
 
-    public JavaProjectBuilder(Context context, JavaProject project, DiagnosticListener listener) {
+    public JavaBuilder(Context context, JavaProject project, DiagnosticListener listener) {
         super(context, listener);
         mProject = project;
 

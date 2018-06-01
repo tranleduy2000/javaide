@@ -44,6 +44,11 @@ public class Environment {
         return mkdirsIfNotExist(dir);
     }
 
+    public static File getPlatformApiDir(Context context, int api) {
+        File dir = new File(getPlatformDir(context), "android-" + api);
+        return mkdirsIfNotExist(dir);
+    }
+
     public static File getClasspathFile(Context context) {
         return new File(getPlatformDir(context), "android-21/android.jar");
     }

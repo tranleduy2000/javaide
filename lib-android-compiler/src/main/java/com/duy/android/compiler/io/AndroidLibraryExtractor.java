@@ -17,15 +17,24 @@ public class AndroidLibraryExtractor {
         this.context = context;
     }
 
-    public boolean extract(File file) {
+    /**
+     * Extract to local repository
+     *
+     * @param file        - arr file
+     * @param libraryName
+     * @return
+     */
+    public boolean extract(File file, String libraryName) {
+        if (!file.isFile() || !file.getName().toLowerCase().endsWith(".aar")) {
+            return false;
+        }
+
         try {
             File libraryCachedDir = Environment.getSdCardLibraryCachedDir(context);
-            String outputFolderName = removeExt(file.getName());
-            File outDir = new File(libraryCachedDir, outputFolderName);
+            File outDir = new File(libraryCachedDir, libraryName);
             FileUtils.emptyFolder(outDir);
-            outDir.mkdirs();
 
-            Zip.unpackZip(file, outputFolderName, libraryCachedDir);
+            Zip.unpackZip(file, outDir);
             return true;
         } catch (Exception e) {
             return false;

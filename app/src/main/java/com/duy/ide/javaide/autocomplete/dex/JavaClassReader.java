@@ -9,7 +9,7 @@ import com.duy.ide.javaide.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.javaide.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.autocomplete.model.MethodDescription;
-import com.duy.android.compiler.file.AndroidProject;
+import com.duy.android.compiler.file.AndroidApplicationProject;
 import com.duy.android.compiler.file.JavaProject;
 
 import java.io.File;
@@ -63,7 +63,7 @@ public class JavaClassReader {
 
     public ArrayList<Class> getAllClassesFromProject(@NonNull JavaProject projectFolder) {
         ArrayList<Class> classes = new ArrayList<>();
-        boolean android = projectFolder instanceof AndroidProject;
+        boolean android = projectFolder instanceof AndroidApplicationProject;
         //load all class from classpath
         if (classpath != null) {
             classes.addAll(getAllClassesFromJar(android, classpath));

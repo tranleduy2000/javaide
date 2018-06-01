@@ -31,13 +31,10 @@ public class JavaProject implements Serializable, Cloneable {
     protected File dirLibs;
     protected File dirBuildClasses;
     protected File dirSrcMain;
-    protected File dirGenerated;
     protected File dirGeneratedSource;
-
     /* Project */
     protected File dirRoot;
-    protected File dirProject;
-
+    protected File dirApp;
     /**
      * Build folder
      * <p>
@@ -59,20 +56,16 @@ public class JavaProject implements Serializable, Cloneable {
     protected File dirBuildDexedLibs;
     protected File dirBuildDexedClass;
     protected File dexFile;
-
-
     @Nullable
     protected String packageName;
-
     /*Main class*/
-    protected ClassFile mainClass;
     @Nullable
-    protected String projectName;
-    protected File jarArchive;
+    protected ClassFile mainClass;
+    protected File outJarArchive;
+    private File dirGenerated;
 
-    public JavaProject(File root, @Nullable String mainClassName, @Nullable String packageName, String projectName) {
+    public JavaProject(File root, @Nullable String mainClassName, @Nullable String packageName) {
         this.mainClass = new ClassFile(mainClassName);
-        this.projectName = projectName;
         this.packageName = packageName;
         this.dirRoot = root;
         init();
@@ -99,14 +92,14 @@ public class JavaProject implements Serializable, Cloneable {
 
     @CallSuper
     public void init() {
-        dirProject = new File(dirRoot, projectName);
-        dirLibs = new File(dirProject, "libs");
-        dirSrcMain = new File(dirProject, "src" + File.separator + "main");
+        dirApp = new File(dirRoot, "app");
+        dirLibs = new File(dirApp, "libs");
+        dirSrcMain = new File(dirApp, "src/main");
 
         javaSrcDirs = new ArrayList<>();
         javaSrcDirs.add(new File(dirSrcMain, "java"));
 
-        dirBuild = new File(dirProject, "build");
+        dirBuild = new File(dirApp, "build");
         dirBuildClasses = new File(dirBuild, "classes");
         dirGenerated = new File(dirBuild, "generated");
         dirGeneratedSource = new File(dirGenerated, "source");
@@ -116,14 +109,14 @@ public class JavaProject implements Serializable, Cloneable {
         dirBuildDexedClass = new File(dirBuild, "dexedClasses");
 
         dexFile = new File(dirBuildDexedClass, "classes.dex");
-        jarArchive = new File(dirBuildOutputJar, projectName + ".jar");
+        outJarArchive = new File(dirBuildOutputJar, getProjectName() + ".jar");
 
 
         if (!dirRoot.exists()) {
             dirRoot.mkdirs();
         }
-        if (!dirProject.exists()) {
-            dirProject.mkdirs();
+        if (!dirApp.exists()) {
+            dirApp.mkdirs();
         }
         if (!dirLibs.exists()) {
             dirLibs.mkdirs();
@@ -157,11 +150,11 @@ public class JavaProject implements Serializable, Cloneable {
     }
 
     public File getOutJarArchive() throws IOException {
-        if (!jarArchive.exists()) {
-            jarArchive.getParentFile().mkdirs();
-            jarArchive.createNewFile();
+        if (!outJarArchive.exists()) {
+            outJarArchive.getParentFile().mkdirs();
+            outJarArchive.createNewFile();
         }
-        return jarArchive;
+        return outJarArchive;
 
     }
 
@@ -191,20 +184,10 @@ public class JavaProject implements Serializable, Cloneable {
         return dirBuildClasses;
     }
 
-    public void createBuildDir() {
-        if (!dirBuild.exists()) dirBuild.mkdirs();
-        if (!dirBuildClasses.exists()) dirBuildClasses.mkdirs();
-        if (!dirGenerated.exists()) dirGenerated.mkdirs();
-        if (!dirGeneratedSource.exists()) dirGeneratedSource.mkdirs();
-        if (!dirBuildClasses.exists()) dirBuildClasses.mkdirs();
-        if (!dirBuildOutput.exists()) dirBuildOutput.mkdirs();
-        if (!dirBuildOutputJar.exists()) dirBuildOutputJar.mkdirs();
-    }
-
     @CallSuper
     public void mkdirs() {
         if (!dirRoot.exists()) dirRoot.mkdirs();
-        if (!dirProject.exists()) dirProject.mkdirs();
+        if (!dirApp.exists()) dirApp.mkdirs();
         if (!dirLibs.exists()) dirLibs.mkdirs();
         if (!dirSrcMain.exists()) dirSrcMain.mkdirs();
         mkdirs(javaSrcDirs);
@@ -267,7 +250,7 @@ public class JavaProject implements Serializable, Cloneable {
     }
 
     public File getProjectDir() {
-        return dirProject;
+        return dirApp;
     }
 
     public JSONObject exportJson() {
@@ -276,7 +259,6 @@ public class JavaProject implements Serializable, Cloneable {
             if (mainClass != null) json.put("main_class_mame", mainClass.getName());
             json.put("root_dir", dirRoot);
             json.put("package_name", packageName);
-            json.put("project_name", projectName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -288,7 +270,6 @@ public class JavaProject implements Serializable, Cloneable {
         return "ProjectFile{" +
                 "dirRoot='" + dirRoot + '\'' +
                 ", packageName='" + packageName + '\'' +
-                ", projectName='" + projectName + '\'' +
                 ", mainClass='" + mainClass + '\'' +
                 '}';
     }
@@ -349,14 +330,14 @@ public class JavaProject implements Serializable, Cloneable {
     }
 
     public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+        return dirRoot.getName();
     }
 
     public ArrayList<File> getJavaSrcDirs() {
         return javaSrcDirs;
+    }
+
+    public File getJavaSrcDir() {
+        return javaSrcDirs.get(0);
     }
 }

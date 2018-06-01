@@ -3,7 +3,7 @@ package com.duy.android.compiler;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.duy.android.compiler.builder.JavaProjectBuilder;
+import com.duy.android.compiler.builder.JavaBuilder;
 import com.duy.android.compiler.builder.model.BuildType;
 import com.duy.android.compiler.file.JavaProject;
 
@@ -38,7 +38,7 @@ public class BuildJar extends AsyncTask<JavaProject, Object, File> {
             return null;
         }
         try {
-            JavaProjectBuilder builder = new JavaProjectBuilder(context, projectFile, mDiagnosticCollector);
+            JavaBuilder builder = new JavaBuilder(context, projectFile, mDiagnosticCollector);
             if (builder.build(BuildType.DEBUG)) {
                 return projectFile.getOutJarArchive();
             }

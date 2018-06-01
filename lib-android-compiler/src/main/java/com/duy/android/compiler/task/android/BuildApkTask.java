@@ -1,15 +1,15 @@
 package com.duy.android.compiler.task.android;
 
 import com.android.sdklib.build.ApkBuilder;
-import com.duy.android.compiler.builder.AndroidProjectBuilder;
+import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.task.ABuildTask;
-import com.duy.android.compiler.file.AndroidProject;
+import com.duy.android.compiler.file.AndroidApplicationProject;
 
 import java.io.File;
 
-public class BuildApkTask extends ABuildTask<AndroidProject> {
+public class BuildApkTask extends ABuildTask<AndroidApplicationProject> {
 
-    public BuildApkTask(AndroidProjectBuilder builder) {
+    public BuildApkTask(AndroidAppBuilder builder) {
         super(builder);
     }
 

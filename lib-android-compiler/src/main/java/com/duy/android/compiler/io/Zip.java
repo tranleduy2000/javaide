@@ -9,7 +9,7 @@ import java.util.zip.ZipInputStream;
 
 public class Zip {
 
-    public static boolean unpackZip(File zipFile, String outputFolderName, File destFolder) {
+    public static boolean unpackZip(File zipFile, File destFolder) {
 
         try {
             ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFile));

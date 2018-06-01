@@ -16,13 +16,17 @@ android {
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
+    flavorDimensions "name"
+    productFlavors {
+        store
+        local
+    }
     sourceSets {
         main {
             res.srcDirs += "src/main/res-color-picker"
         }
-        androidTest {
-            assets.srcDirs = ["src/androidTest/assets", "src/main/assets"]
+        local {
+            assets.srcDirs += "src/androidTest/assets-test"
         }
     }
     buildTypes {

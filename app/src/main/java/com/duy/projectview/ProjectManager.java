@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
-import com.duy.android.compiler.file.AndroidProject;
+import com.duy.android.compiler.file.AndroidApplicationProject;
 import com.duy.android.compiler.file.ClassFile;
 import com.duy.android.compiler.file.JavaProject;
 
@@ -34,7 +34,7 @@ public class ProjectManager {
     public static void saveProject(@NonNull Context context, @NonNull JavaProject folder) {
         SharedPreferences preferences = context.getSharedPreferences(CURRENT_PROJECT, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = preferences.edit();
-        edit.putBoolean(ANDROID_PROJECT, folder instanceof AndroidProject);
+        edit.putBoolean(ANDROID_PROJECT, folder instanceof AndroidApplicationProject);
         edit.putString(ROOT_DIR, folder.getRootDir().getPath());
         edit.putString(MAIN_CLASS_NAME, folder.getMainClass().getName());
         edit.putString(PACKAGE_NAME, folder.getPackageName());
@@ -52,9 +52,9 @@ public class ProjectManager {
         String packageName = preferences.getString(PACKAGE_NAME, null);
         String projectName = preferences.getString(PROJECT_NAME, null);
         if (androidProject) {
-            return new AndroidProject(new File(rootDir), mainClassName, packageName, projectName);
+            return new AndroidApplicationProject(new File(rootDir), mainClassName, packageName, projectName);
         } else {
-            return new JavaProject(new File(rootDir), mainClassName, packageName, projectName);
+            return new JavaProject(new File(rootDir), mainClassName, packageName);
         }
     }
 
@@ -64,9 +64,7 @@ public class ProjectManager {
             return null;
         }
         // TODO: 05-Aug-17 dynamic change classpath
-        JavaProject projectFile = new JavaProject(file.getParentFile(), null,
-                null, file.getName());
-        projectFile.setProjectName(file.getName());
+        JavaProject projectFile = new JavaProject(file.getParentFile(), null, null);
         try {
             projectFile.createMainClass();
         } catch (Exception e) {
@@ -76,10 +74,10 @@ public class ProjectManager {
         return projectFile;
     }
 
-    public static AndroidProject importAndroidProject(Context context, File file) {
+    public static AndroidApplicationProject importAndroidProject(Context context, File file) {
         Log.d(TAG, "importAndroidProject() called with: context = [" + context + "], file = [" + file + "]");
 
-        AndroidProject project = new AndroidProject(file.getParentFile(),
+        AndroidApplicationProject project = new AndroidApplicationProject(file.getParentFile(),
                 null, null, file.getName());
         try {
             if (project.getXmlManifest().exists()) {

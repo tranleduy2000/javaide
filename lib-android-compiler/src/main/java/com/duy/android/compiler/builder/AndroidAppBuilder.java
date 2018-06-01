@@ -11,19 +11,19 @@ import com.duy.android.compiler.task.android.SignApkTask;
 import com.duy.android.compiler.task.java.CleanTask;
 import com.duy.android.compiler.task.java.CompileJavaTask;
 import com.duy.android.compiler.task.java.DxTask;
-import com.duy.android.compiler.file.AndroidProject;
+import com.duy.android.compiler.file.AndroidApplicationProject;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 
 import javax.tools.DiagnosticListener;
 
-public class AndroidProjectBuilder extends BuilderImpl<AndroidProject> {
+public class AndroidAppBuilder extends BuilderImpl<AndroidApplicationProject> {
 
     private KeyStore mKeyStore;
-    private AndroidProject mProject;
+    private AndroidApplicationProject mProject;
 
-    public AndroidProjectBuilder(Context context, AndroidProject project, DiagnosticListener diagnosticCollector) {
+    public AndroidAppBuilder(Context context, AndroidApplicationProject project, DiagnosticListener diagnosticCollector) {
         super(context, diagnosticCollector);
         mProject = project;
     }
@@ -67,7 +67,7 @@ public class AndroidProjectBuilder extends BuilderImpl<AndroidProject> {
         return mContext;
     }
 
-    public AndroidProject getProject() {
+    public AndroidApplicationProject getProject() {
         return mProject;
     }
 

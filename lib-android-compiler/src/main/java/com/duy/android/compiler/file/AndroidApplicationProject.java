@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by Duy on 05-Aug-17.
  */
-public class AndroidProject extends JavaProject {
+public class AndroidApplicationProject extends JavaProject {
 
     private File xmlManifest;
     /* Output */
@@ -27,11 +27,11 @@ public class AndroidProject extends JavaProject {
 
     private ManifestData.Activity launcherActivity;
 
-    public AndroidProject(File dirRoot,
-                          @Nullable String mainClassName,
-                          @Nullable String packageName,
-                          String projectName) {
-        super(dirRoot, mainClassName, packageName, projectName);
+    public AndroidApplicationProject(File dirRoot,
+                                     @Nullable String mainClassName,
+                                     @Nullable String packageName,
+                                     String projectName) {
+        super(dirRoot, mainClassName, packageName);
     }
 
     @Override
@@ -120,10 +120,7 @@ public class AndroidProject extends JavaProject {
 
     @Override
     public String getSourcePath() {
-        String sourcePath = super.getSourcePath();
-        File generatedSource = new File(dirGenerated, "source");
-        sourcePath += File.pathSeparator + generatedSource.getPath();
-        return sourcePath;
+        return dirGeneratedSource.getAbsolutePath();
     }
 
     public File getApkUnsigned() {
@@ -132,6 +129,9 @@ public class AndroidProject extends JavaProject {
     }
 
     public File getResDirs() {
+        mkdirs(resDirs);
+        return resDirs.get(0);
+    }   public File getResDir() {
         mkdirs(resDirs);
         return resDirs.get(0);
     }

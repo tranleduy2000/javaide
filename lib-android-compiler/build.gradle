@@ -39,6 +39,7 @@ repositories {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api project(':dx')
+
     api "com.android.support:support-annotations:$supportLibVersion"
     api "com.android.support:support-v4:$supportLibVersion"
     //noinspection GradleDependency

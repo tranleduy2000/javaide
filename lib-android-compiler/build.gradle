@@ -11,7 +11,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         release {
@@ -23,11 +22,6 @@ android {
 
 
 dependencies {
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    testImplementation 'junit:junit:4.12'
-
     api fileTree(dir: 'libs', include: ['*.jar'])
     api project(':dx')
     api "com.android.support:support-annotations:$supportLibVersion"
@@ -37,6 +31,8 @@ dependencies {
     api 'commons-io:commons-io:2.4'
 
     // https://mvnrepository.com/artifact/org.apache.maven/maven-model
-    compile group: 'org.apache.maven', name: 'maven-model', version: '3.0.4'
+    api group: 'org.apache.maven', name: 'maven-model', version: '3.0.4'
+    // https://mvnrepository.com/artifact/org.apache.maven/maven-project
+    api 'org.apache.maven:maven-project:2.2.1'
 
 }

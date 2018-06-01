@@ -12,11 +12,16 @@ import com.duy.android.compiler.project.AndroidApplicationProject;
 import com.duy.android.compiler.project.AndroidProjectManager;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.project.MavenProject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
 
 import javax.tools.Diagnostic;
@@ -64,5 +69,28 @@ public class AndroidLibraryProjectExtractorTest {
             }
         });
         builder.build(BuildType.DEBUG);
+    }
+
+    @Test
+    public void testReadPom() throws IOException {
+        Context context = InstrumentationRegistry.getTargetContext();
+
+        File pomFile = new File(Environment.getSdkAppDir(), "appcompat-v7-27.1.1.pom");
+        FileOutputStream output = new FileOutputStream(pomFile);
+        IOUtils.copy(context.getAssets().open("libs/appcompat-v7-27.1.1.pom"), output);
+        output.close();
+
+        Model model = null;
+        FileReader reader = null;
+        MavenXpp3Reader mavenReader = new MavenXpp3Reader();
+        try {
+            reader = new FileReader(pomFile);
+            model = mavenReader.read(reader);
+            model.setPomFile(pomFile);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        MavenProject mavenProject = new MavenProject(model);
+        System.out.println("mavenProject = " + mavenProject);
     }
 }

@@ -14,11 +14,16 @@ android {
         versionCode 38
         versionName "1.3.8"
         vectorDrawables.useSupportLibrary = true
-
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    sourceSets{
-        main.res.srcDirs += "src/main/res-color-picker"
+    sourceSets {
+        main {
+            res.srcDirs += "src/main/res-color-picker"
+        }
+        androidTest {
+            assets.srcDirs = ["src/androidTest/assets", "src/main/assets"]
+        }
     }
     buildTypes {
         release {
@@ -55,7 +60,14 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    testCompile 'junit:junit:4.12'
+    androidTestImplementation "com.android.support:support-annotations:$supportLibVersion"
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testImplementation 'junit:junit:4.12'
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':treeview')

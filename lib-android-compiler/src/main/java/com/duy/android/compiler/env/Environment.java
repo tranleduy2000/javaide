@@ -47,4 +47,14 @@ public class Environment {
     public static File getClasspathFile(Context context) {
         return new File(getPlatformDir(context), "android-21/android.jar");
     }
+
+    public static File getSdCardLibraryCachedDir(Context context) {
+        File dir = new File(getSdkAppDir(), ".cached");
+        return mkdirsIfNotExist(dir);
+    }
+
+    public static File getSdkAppDir() {
+        File dir = new File(android.os.Environment.getExternalStorageDirectory(), APP_NAME);
+        return mkdirsIfNotExist(dir);
+    }
 }

@@ -51,7 +51,6 @@ android {
     lintOptions {
         disable 'MissingTranslation'
     }
-
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
@@ -61,8 +60,8 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/plexus/components.xml'
     }
-
 }
 
 

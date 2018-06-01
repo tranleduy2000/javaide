@@ -10,6 +10,9 @@ import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.library.AndroidLibraryExtractor;
 import com.duy.android.compiler.project.AndroidApplicationProject;
 import com.duy.android.compiler.project.AndroidProjectManager;
+import com.duy.android.compiler.repo.maven.ArtifactDownloader;
+import com.duy.android.compiler.repo.maven.MojoExecutionException;
+import com.duy.android.compiler.repo.maven.MojoFailureException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Model;
@@ -86,11 +89,35 @@ public class AndroidLibraryProjectExtractorTest {
         try {
             reader = new FileReader(pomFile);
             model = mavenReader.read(reader);
-            model.setPomFile(pomFile);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         MavenProject mavenProject = new MavenProject(model);
         System.out.println("mavenProject = " + mavenProject);
+    }
+
+    @Test
+    public void testDownload() throws IOException, MojoFailureException, MojoExecutionException {
+        Context context = InstrumentationRegistry.getTargetContext();
+
+        File pomFile = new File(Environment.getSdkAppDir(), "appcompat-v7-27.1.1.pom");
+        FileOutputStream output = new FileOutputStream(pomFile);
+        IOUtils.copy(context.getAssets().open("libs/appcompat-v7-27.1.1.pom"), output);
+        output.close();
+
+        Model model = null;
+        FileReader reader = null;
+        MavenXpp3Reader mavenReader = new MavenXpp3Reader();
+        try {
+            reader = new FileReader(pomFile);
+            model = mavenReader.read(reader);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        MavenProject mavenProject = new MavenProject(model);
+        System.out.println("mavenProject = " + mavenProject);
+
+        ArtifactDownloader artifactDownloader = new ArtifactDownloader(context, mavenProject);
+        artifactDownloader.execute();
     }
 }

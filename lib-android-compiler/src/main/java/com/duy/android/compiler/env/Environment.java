@@ -62,4 +62,9 @@ public class Environment {
         File dir = new File(android.os.Environment.getExternalStorageDirectory(), APP_NAME);
         return mkdirsIfNotExist(dir);
     }
+
+    public static File getLocalRepositoryDir(Context context) {
+        File dir = new File(getSdkDir(context), ".repo");
+        return mkdirsIfNotExist(dir);
+    }
 }

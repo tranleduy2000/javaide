@@ -19,7 +19,6 @@ android {
         }
     }
 
-
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
@@ -29,9 +28,13 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/plexus/components.xml'
     }
 }
 
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
@@ -40,11 +43,13 @@ dependencies {
     api "com.android.support:support-v4:$supportLibVersion"
     //noinspection GradleDependency
     api 'com.google.guava:guava:22.0-android'
-    api 'commons-io:commons-io:2.4'
-
-    // https://mvnrepository.com/artifact/org.apache.maven/maven-model
-    api group: 'org.apache.maven', name: 'maven-model', version: '3.0.4'
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    api group: 'commons-io', name: 'commons-io', version: '2.6'
     // https://mvnrepository.com/artifact/org.apache.maven/maven-project
-    api 'org.apache.maven:maven-project:2.2.1'
+    api group: 'org.apache.maven', name: 'maven-project', version: '2.2.1'
+    // https://mvnrepository.com/artifact/org.codehaus.plexus/plexus-archiver
+    api group: 'org.codehaus.plexus', name: 'plexus-archiver', version: '3.6.0'
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    api group: 'commons-codec', name: 'commons-codec', version: '1.10'
 
 }

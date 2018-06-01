@@ -6,8 +6,6 @@ import android.util.Log;
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.task.ABuildTask;
 import com.duy.android.compiler.builder.util.MD5Hash;
-import com.duy.android.compiler.project.AndroidApplicationProject;
-import com.duy.android.compiler.project.AndroidLibraryProject;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.dex.Dex;
 import com.duy.dx.merge.CollisionPolicy;
@@ -50,21 +48,8 @@ public class DxTask extends ABuildTask<JavaProject> {
 
     private boolean dexLibs(@NonNull JavaProject project) throws Exception {
         builder.stdout("Dex libs");
-
-        File[] projectLibs = project.getDirLibs().listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isFile() && pathname.getName().toLowerCase().endsWith(".jar");
-            }
-        });
-        ArrayList<File> libraryLibs = new ArrayList<>(java.util.Arrays.asList(projectLibs));
-        if (project instanceof AndroidApplicationProject) {
-            for (AndroidLibraryProject libraryProject : ((AndroidApplicationProject) project).getDependencies()) {
-                File classesJar = libraryProject.getClassesJar();
-                libraryLibs.add(classesJar);
-            }
-        }
-        for (File jarLib : libraryLibs) {
+        ArrayList<File> javaLibraries = project.getJavaLibraries(context);
+        for (File jarLib : javaLibraries) {
             // compare hash of jar contents to name of dexed version
             String md5 = MD5Hash.getMD5Checksum(jarLib);
 

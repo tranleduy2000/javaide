@@ -1,5 +1,6 @@
 package com.duy.android.compiler.project;
 
+import com.android.annotations.Nullable;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
 import com.android.io.StreamException;
@@ -25,17 +26,23 @@ public class AndroidLibraryProject extends JavaProject {
     private File aidlDir;
     private File jniDir;
     private File assetsDir;
+    @Nullable
     private File classesJar;
     private File classR;
 
     public AndroidLibraryProject(File libraryDir, String libraryName) throws IOException, SAXException, StreamException, ParserConfigurationException {
         super(libraryDir, null, null);
         parseAndroidManifest();
+
         resDir = new File(dirRoot, "res");
         aidlDir = new File(dirRoot, "aidl");
         jniDir = new File(dirRoot, "jni");
         assetsDir = new File(dirRoot, "assets");
-        classesJar = new File(dirRoot, "classes.jar");
+
+        if (new File(dirRoot, "classes.jar").exists()) {
+            classesJar = new File(dirRoot, "classes.jar");
+        }
+
         classR = new File(dirRoot, getPackageName().replace(".", "/") + "/R.java");
     }
 
@@ -59,6 +66,7 @@ public class AndroidLibraryProject extends JavaProject {
         return assetsDir;
     }
 
+    @Nullable
     public File getClassesJar() {
         return classesJar;
     }

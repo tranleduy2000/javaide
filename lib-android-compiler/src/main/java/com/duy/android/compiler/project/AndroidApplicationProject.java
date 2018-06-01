@@ -135,8 +135,8 @@ public class AndroidApplicationProject extends JavaProject {
     public ArrayList<File> getJavaLibraries(Context context) {
         ArrayList<File> libraries = (super.getJavaLibraries(context));
         for (AndroidLibraryProject dependency : dependencies) {
-            if (dependency.getClassesJar().exists()) {
-               libraries.add(dependency.getClassesJar());
+            if (dependency.getClassesJar() != null) {
+                libraries.add(dependency.getClassesJar());
             }
         }
         return libraries;

@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.util.MD5Hash;
-import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.android.compiler.file.JavaProject;
 import com.duy.android.compiler.task.ABuildTask;
 import com.duy.dex.Dex;
 import com.duy.dx.merge.CollisionPolicy;

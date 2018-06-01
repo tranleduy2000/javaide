@@ -8,9 +8,9 @@ import android.util.Log;
 
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
-import com.duy.android.compiler.file.android.AndroidProject;
-import com.duy.android.compiler.file.java.ClassFile;
-import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.android.compiler.file.AndroidProject;
+import com.duy.android.compiler.file.ClassFile;
+import com.duy.android.compiler.file.JavaProject;
 
 import java.io.File;
 import java.io.FileInputStream;

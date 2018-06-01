@@ -10,7 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.duy.JavaApplication;
-import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.android.compiler.file.JavaProject;
 import com.duy.android.compiler.java.Java;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;

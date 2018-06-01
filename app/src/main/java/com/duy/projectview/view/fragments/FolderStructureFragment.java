@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.android.compiler.file.JavaProject;
 import com.duy.ide.R;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.projectview.ProjectFileContract;

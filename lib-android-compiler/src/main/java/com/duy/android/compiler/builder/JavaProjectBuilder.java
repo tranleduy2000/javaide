@@ -7,7 +7,7 @@ import com.duy.android.compiler.task.ABuildTask;
 import com.duy.android.compiler.task.java.CleanTask;
 import com.duy.android.compiler.task.java.CompileJavaTask;
 import com.duy.android.compiler.task.java.DxTask;
-import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.android.compiler.file.JavaProject;
 
 import java.io.PrintStream;
 import java.util.ArrayList;

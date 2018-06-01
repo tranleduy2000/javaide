@@ -18,7 +18,7 @@ package com.duy.ide;
 
 import android.app.Activity;
 
-import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.android.compiler.file.JavaProject;
 
 /**
  * Created by Duy on 11-Feb-17.

@@ -1,4 +1,4 @@
-package com.duy.android.compiler.file.java;
+package com.duy.android.compiler.file;
 
 import android.content.Context;
 import android.support.annotation.CallSuper;

@@ -4,8 +4,8 @@ import android.os.AsyncTask;
 
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.model.BuildType;
-import com.duy.android.compiler.file.android.AndroidProject;
-import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.android.compiler.file.AndroidProject;
+import com.duy.android.compiler.file.JavaProject;
 
 public class BuildTask<T extends JavaProject> extends AsyncTask<AndroidProject, Object, Boolean> {
     private IBuilder<T> builder;

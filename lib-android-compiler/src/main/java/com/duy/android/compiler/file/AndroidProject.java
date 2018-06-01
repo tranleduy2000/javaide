@@ -1,10 +1,8 @@
-package com.duy.android.compiler.file.android;
+package com.duy.android.compiler.file;
 
 import com.android.annotations.Nullable;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
-import com.duy.android.compiler.file.java.ClassFile;
-import com.duy.android.compiler.file.java.JavaProject;
 import com.google.common.base.MoreObjects;
 
 import java.io.File;

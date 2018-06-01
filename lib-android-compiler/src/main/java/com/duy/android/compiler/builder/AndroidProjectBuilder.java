@@ -11,7 +11,7 @@ import com.duy.android.compiler.task.android.SignApkTask;
 import com.duy.android.compiler.task.java.CleanTask;
 import com.duy.android.compiler.task.java.CompileJavaTask;
 import com.duy.android.compiler.task.java.DxTask;
-import com.duy.android.compiler.file.android.AndroidProject;
+import com.duy.android.compiler.file.AndroidProject;
 
 import java.io.PrintStream;
 import java.util.ArrayList;

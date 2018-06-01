@@ -1,4 +1,4 @@
-package com.duy.android.compiler.file.android;
+package com.duy.android.compiler.file;
 
 import java.io.File;
 

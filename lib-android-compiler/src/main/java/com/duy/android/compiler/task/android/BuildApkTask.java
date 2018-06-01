@@ -3,7 +3,7 @@ package com.duy.android.compiler.task.android;
 import com.android.sdklib.build.ApkBuilder;
 import com.duy.android.compiler.builder.AndroidProjectBuilder;
 import com.duy.android.compiler.task.ABuildTask;
-import com.duy.android.compiler.file.android.AndroidProject;
+import com.duy.android.compiler.file.AndroidProject;
 
 import java.io.File;
 

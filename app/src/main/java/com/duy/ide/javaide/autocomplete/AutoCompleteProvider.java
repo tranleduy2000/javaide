@@ -8,7 +8,7 @@ import android.widget.EditText;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.android.compiler.file.JavaProject;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.javaide.autocomplete.autocomplete.AutoCompletePackage;
 import com.duy.ide.javaide.autocomplete.autocomplete.PackageImporter;

@@ -3,7 +3,7 @@ package com.duy.android.compiler.builder;
 import android.content.Context;
 
 import com.duy.android.compiler.task.ABuildTask;
-import com.duy.android.compiler.file.java.JavaProject;
+import com.duy.android.compiler.file.JavaProject;
 
 import java.io.PrintStream;
 import java.util.ArrayList;

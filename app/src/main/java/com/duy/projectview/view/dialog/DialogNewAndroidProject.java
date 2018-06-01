@@ -20,7 +20,7 @@ import com.duy.ide.R;
 import com.duy.ide.javaide.autocomplete.Patterns;
 import com.duy.ide.javaide.sample.model.AssetUtil;
 import com.duy.ide.file.FileManager;
-import com.duy.android.compiler.file.android.AndroidProject;
+import com.duy.android.compiler.file.AndroidProject;
 
 import java.io.File;
 import java.io.FileInputStream;

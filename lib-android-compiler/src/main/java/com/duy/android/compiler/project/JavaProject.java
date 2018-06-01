@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Duy on 16-Jul-17.
@@ -278,23 +279,17 @@ public class JavaProject implements Serializable, Cloneable {
      * @param context
      * @return the string contains all file *.jar in dirLibs
      */
-    public String getJavaClassPath(Context context) {
-        StringBuilder classpath = new StringBuilder(".");
+    public ArrayList<File> getJavaLibraries(Context context) {
         File[] files = getDirLibs().listFiles(new FileFilter() {
             @Override
             public boolean accept(File jarLib) {
                 return (jarLib.isFile() && jarLib.getName().endsWith(".jar"));
             }
         });
-        for (File jarLib : files) {
-            if (jarLib.isFile() && jarLib.getName().endsWith(".jar")) {
-                classpath.append(File.pathSeparator).append(jarLib.getAbsolutePath());
-            }
-        }
-        return classpath.append(File.pathSeparator) + getJavaBootClassPath(context);
+        return new ArrayList<>(Arrays.asList(files));
     }
 
-    private String getJavaBootClassPath(Context context) {
+    public String getBootClassPath(Context context) {
         return Environment.getClasspathFile(context).getAbsolutePath();
     }
 

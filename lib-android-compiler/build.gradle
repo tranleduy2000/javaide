@@ -51,5 +51,7 @@ dependencies {
     api group: 'org.codehaus.plexus', name: 'plexus-archiver', version: '3.6.0'
     // https://mvnrepository.com/artifact/commons-codec/commons-codec
     api group: 'commons-codec', name: 'commons-codec', version: '1.10'
+    // https://mvnrepository.com/artifact/org.eclipse.jdt.core.compiler/ecj
+    api group: 'org.eclipse.jdt.core.compiler', name: 'ecj', version: '4.6.1'
 
 }

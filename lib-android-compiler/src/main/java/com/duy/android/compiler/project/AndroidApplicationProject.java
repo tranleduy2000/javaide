@@ -132,15 +132,14 @@ public class AndroidApplicationProject extends JavaProject {
     }
 
     @Override
-    public String getJavaClassPath(Context context) {
-        StringBuilder javaClassPath = new StringBuilder(super.getJavaClassPath(context));
+    public ArrayList<File> getJavaLibraries(Context context) {
+        ArrayList<File> libraries = (super.getJavaLibraries(context));
         for (AndroidLibraryProject dependency : dependencies) {
             if (dependency.getClassesJar().exists()) {
-                javaClassPath.append(File.pathSeparator)
-                        .append(dependency.getClassesJar().getAbsolutePath());
+               libraries.add(dependency.getClassesJar());
             }
         }
-        return javaClassPath.toString();
+        return libraries;
     }
 
     public File getApkUnsigned() {

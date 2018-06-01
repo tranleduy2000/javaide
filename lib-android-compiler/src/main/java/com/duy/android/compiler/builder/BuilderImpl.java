@@ -42,4 +42,8 @@ public abstract class BuilderImpl<T extends JavaProject> implements IBuilder<T> 
         }
         return true;
     }
+    @Override
+    public PrintStream getStderr() {
+        return mStderr;
+    }
 }

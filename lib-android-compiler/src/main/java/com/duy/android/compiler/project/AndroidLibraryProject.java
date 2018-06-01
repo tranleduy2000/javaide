@@ -35,7 +35,7 @@ public class AndroidLibraryProject extends JavaProject {
         aidlDir = new File(dirRoot, "aidl");
         jniDir = new File(dirRoot, "jni");
         assetsDir = new File(dirRoot, "assets");
-        classesJar = new File(dirBuildOutput, "classes.jar");
+        classesJar = new File(dirRoot, "classes.jar");
         classR = new File(dirRoot, getPackageName().replace(".", "/") + "/R.java");
     }
 

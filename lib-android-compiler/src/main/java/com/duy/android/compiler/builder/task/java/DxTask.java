@@ -48,23 +48,24 @@ public class DxTask extends ABuildTask<JavaProject> {
 
     private boolean dexLibs(@NonNull JavaProject project) throws Exception {
         builder.stdout("Dex libs");
-        ArrayList<File> javaLibraries = project.getJavaLibraries(context);
+        ArrayList<File> javaLibraries = project.getJavaLibraries();
         for (File jarLib : javaLibraries) {
             // compare hash of jar contents to name of dexed version
             String md5 = MD5Hash.getMD5Checksum(jarLib);
 
             File dexLib = new File(project.getDirBuildDexedLibs(), jarLib.getName().replace(".jar", "-" + md5 + ".dex"));
             if (dexLib.exists()) {
-                builder.stdout("Lib " + jarLib.getName() + " has been dexed with cached file " + dexLib.getName());
+                builder.stdout("Lib " + jarLib.getPath() + " has been dexed with cached file " + dexLib.getName());
                 continue;
             }
 
             String[] args = {"--verbose",
                     "--no-strict",
+                    "--no-files",
                     "--output=" + dexLib.getAbsolutePath(), //output
                     jarLib.getAbsolutePath() //input
             };
-            builder.stdout("Dexing lib " + dexLib.getAbsolutePath());
+            builder.stdout("Dexing lib " + jarLib.getPath() + " => " + dexLib.getAbsolutePath());
             int resultCode = com.duy.dx.command.dexer.Main.main(args);
             if (resultCode != 0) {
                 return false;

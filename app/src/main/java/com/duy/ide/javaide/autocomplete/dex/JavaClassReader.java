@@ -149,7 +149,7 @@ public class JavaClassReader {
         });
 
         for (Class mClass : mClasses) {
-            mSimpleClasses.add(new Pair<>(mClass.getSimpleName(), mClass));
+//            mSimpleClasses.add(new Pair<>(mClass.getSimpleName(), mClass));
         }
         Collections.sort(mSimpleClasses, new Comparator<Pair<String, Class>>() {
             @Override

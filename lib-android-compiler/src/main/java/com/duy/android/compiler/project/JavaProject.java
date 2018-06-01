@@ -249,7 +249,7 @@ public class JavaProject implements Serializable, Cloneable {
         return this;
     }
 
-    public File getProjectDir() {
+    public File getAppDir() {
         return dirApp;
     }
 

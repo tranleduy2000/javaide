@@ -25,7 +25,7 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
 
     public boolean run() {
         String[] args = new String[]{
-//                "-verbose",
+                "-verbose",
                 "-cp", project.getJavaClassPath(context),
                 "-sourcepath", project.getSourcePath(), //sourcepath
                 "-d", project.getDirBuildClasses().getPath(), //output dir

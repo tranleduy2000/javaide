@@ -15,7 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * https://developer.android.com/studio/projects/android-library#aar-contents
- *
+ * <p>
  * AAR library
  */
 public class AndroidLibraryProject extends JavaProject {
@@ -26,11 +26,10 @@ public class AndroidLibraryProject extends JavaProject {
     private File jniDir;
     private File assetsDir;
     private File classesJar;
-
     private File classR;
 
-    public AndroidLibraryProject(File root, String libraryName) throws IOException, SAXException, StreamException, ParserConfigurationException {
-        super(root, null, null);
+    public AndroidLibraryProject(File libraryDir, String libraryName) throws IOException, SAXException, StreamException, ParserConfigurationException {
+        super(libraryDir, null, null);
         parseAndroidManifest();
         resDir = new File(dirRoot, "res");
         aidlDir = new File(dirRoot, "aidl");
@@ -40,15 +39,38 @@ public class AndroidLibraryProject extends JavaProject {
         classR = new File(dirRoot, getPackageName().replace(".", "/") + "/R.java");
     }
 
-    public AndroidLibraryProject(File root, String mainClassName, String packageName, String projectName) {
-        super(root, mainClassName, packageName);
+    public File getXmlManifest() {
+        return xmlManifest;
     }
 
+    public File getResDir() {
+        return resDir;
+    }
+
+    public File getAidlDir() {
+        return aidlDir;
+    }
+
+    public File getJniDir() {
+        return jniDir;
+    }
+
+    public File getAssetsDir() {
+        return assetsDir;
+    }
+
+    public File getClassesJar() {
+        return classesJar;
+    }
+
+    public File getClassR() {
+        return classR;
+    }
 
     private void parseAndroidManifest() throws IOException, SAXException, StreamException, ParserConfigurationException {
         xmlManifest = new File(dirRoot, "AndroidManifest.xml");
         if (!xmlManifest.exists()) {
-            throw new FileNotFoundException("AndroidManifest.xml");
+            throw new FileNotFoundException(xmlManifest + " not exist");
         }
 
         ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(xmlManifest));

@@ -3,14 +3,20 @@ package com.duy.android.compiler.project;
 import android.content.Context;
 import android.content.res.AssetManager;
 
+import com.android.io.StreamException;
 import com.duy.android.compiler.env.Assets;
+import com.duy.android.compiler.env.Environment;
+import com.duy.android.compiler.library.AndroidLibraryExtractor;
 
 import org.apache.commons.io.IOUtils;
+import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 public class AndroidProjectManager {
     private Context context;
@@ -84,7 +90,8 @@ public class AndroidProjectManager {
     private void createMainActivity(AndroidApplicationProject project, String activityClass,
                                     String packageName, String activityName, String appName,
                                     boolean useAppCompat, AssetManager assets) throws IOException {
-        File activityFile = new File(project.getJavaSrcDir(), activityClass.replace(".", File.separator) + ".java");
+        File activityFile = new File(project.getJavaSrcDir(),
+                activityClass.replace(".", File.separator) + ".java");
 
         String name = useAppCompat ? "templates/MainActivityAppCompat.java" : "templates/MainActivity.java";
         String content = IOUtils.toString(assets.open(name));
@@ -118,10 +125,30 @@ public class AndroidProjectManager {
         output.close();
     }
 
-    private void copyLibrary(AndroidApplicationProject project, boolean useCompatLibrary, AssetManager assets) throws IOException {
+    private void copyLibrary(AndroidApplicationProject project, boolean useCompatLibrary, AssetManager assets) throws IOException, StreamException, SAXException, ParserConfigurationException {
         if (useCompatLibrary) {
-            Assets.copyAssets(assets, "libs", project.getDirLibs());
+            Assets.copyAssets(assets, "libs", project.getAppDir());
+            addLib(project, "appcompat-v7-27.1.1.aar", "appcompat-v7-27.1.1");
+            addLib(project, "animated-vector-drawable-27.1.1.aar", "animated-vector-drawable-27.1.1");
+            addLib(project, "livedata-core-1.1.1.aar", "livedata-core-1.1.1");
+            addLib(project, "support-compat-27.1.1.aar", "support-compat-27.1.1");
+            addLib(project, "support-core-ui-27.1.1.aar", "support-core-ui-27.1.1");
+            addLib(project, "support-core-utils-27.1.1.aar", "support-core-utils-27.1.1");
+            addLib(project, "support-fragment-27.1.1.aar", "support-fragment-27.1.1");
+            addLib(project, "support-vector-drawable-27.1.1.aar", "support-vector-drawable-27.1.1");
+            addLib(project, "viewmodel-1.1.1.aar", "viewmodel-1.1.1");
         }
+    }
+
+    private void addLib(AndroidApplicationProject project, String fileName, String libName) throws SAXException, StreamException, ParserConfigurationException, IOException {
+
+        File aarFile = new File(project.getDirLibs(), fileName);
+        AndroidLibraryExtractor extractor = new AndroidLibraryExtractor(context);
+        extractor.extract(aarFile, libName);
+
+        File dirLib = new File(Environment.getSdCardLibraryCachedDir(context), libName);
+        AndroidLibraryProject supportCompatV7 = new AndroidLibraryProject(dirLib, libName);
+        project.addDependence(supportCompatV7);
     }
 
 }

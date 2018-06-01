@@ -132,7 +132,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     @Nullable
     private TreeNode createFileStructure(@Nullable JavaProject projectFile) {
         if (projectFile == null) return null;
-        File rootDir = projectFile.getProjectDir();
+        File rootDir = projectFile.getAppDir();
         TreeNode root = new TreeNode(new FolderHolder.TreeItem(rootDir, rootDir, listener));
         try {
             root.addChildren(getNode(rootDir, rootDir));

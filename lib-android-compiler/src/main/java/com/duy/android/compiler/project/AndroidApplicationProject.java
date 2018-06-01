@@ -1,11 +1,10 @@
 package com.duy.android.compiler.project;
 
-import android.support.v4.util.ArraySet;
+import android.content.Context;
 
 import com.android.annotations.Nullable;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
-import com.duy.android.compiler.library.AndroidLibrary;
 import com.google.common.base.MoreObjects;
 
 import java.io.File;
@@ -15,6 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by Duy on 05-Aug-17.
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class AndroidApplicationProject extends JavaProject {
 
     private File xmlManifest;
@@ -30,13 +30,13 @@ public class AndroidApplicationProject extends JavaProject {
 
     private ManifestData.Activity launcherActivity;
 
-    private ArraySet<AndroidLibrary> dependencies;
+    private ArrayList<AndroidLibraryProject> dependencies;
 
     public AndroidApplicationProject(File dirRoot,
                                      @Nullable String mainClassName,
                                      @Nullable String packageName) {
         super(dirRoot, mainClassName, packageName);
-        dependencies = new ArraySet<>();
+        dependencies = new ArrayList<>();
     }
 
     @Override
@@ -125,7 +125,22 @@ public class AndroidApplicationProject extends JavaProject {
 
     @Override
     public String getSourcePath() {
-        return dirGeneratedSource.getAbsolutePath();
+        String sourcePath = super.getSourcePath();
+        sourcePath += File.pathSeparator + dirGeneratedSource.getAbsolutePath();
+
+        return sourcePath;
+    }
+
+    @Override
+    public String getJavaClassPath(Context context) {
+        StringBuilder javaClassPath = new StringBuilder(super.getJavaClassPath(context));
+        for (AndroidLibraryProject dependency : dependencies) {
+            if (dependency.getClassesJar().exists()) {
+                javaClassPath.append(File.pathSeparator)
+                        .append(dependency.getClassesJar().getAbsolutePath());
+            }
+        }
+        return javaClassPath.toString();
     }
 
     public File getApkUnsigned() {
@@ -168,17 +183,22 @@ public class AndroidApplicationProject extends JavaProject {
      */
     @Override
     public ClassFile getMainClass() {
-        if (launcherActivity == null) getLauncherActivity();
+        if (launcherActivity == null) {
+            getLauncherActivity();
+        }
         if (launcherActivity != null) {
             return new ClassFile(this.launcherActivity.getName());
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
-    public ArraySet<AndroidLibrary> getDependencies() {
+
+    public ArrayList<AndroidLibraryProject> getDependencies() {
         return dependencies;
     }
 
-    public void addDependence(AndroidLibrary androidLibrary) {
+    public void addDependence(AndroidLibraryProject androidLibrary) {
         dependencies.add(androidLibrary);
     }
 }

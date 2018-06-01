@@ -16,11 +16,13 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.duy.android.compiler.env.Environment;
+import com.duy.android.compiler.project.AndroidApplicationProject;
+import com.duy.android.compiler.project.AndroidProjectManager;
 import com.duy.ide.R;
+import com.duy.ide.file.FileManager;
 import com.duy.ide.javaide.autocomplete.Patterns;
 import com.duy.ide.javaide.sample.model.AssetUtil;
-import com.duy.ide.file.FileManager;
-import com.duy.android.compiler.project.AndroidApplicationProject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -106,26 +108,17 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             ///create new android project
             String packageName = editPackage.getText().toString();
             String activityName = mActivityName.getText().toString();
-            String activityClass = String.format("%s.%s", packageName, activityName);
             String mainLayoutName = layoutName.getText().toString();
             String appName = editAppName.getText().toString();
             String projectName = appName.replaceAll("\\s+", "");
-            boolean useAppCompat = mAppCompat.isChecked();
+            boolean useAppCompat = /*mAppCompat.isChecked()*/ true;
+            File dir = new File(Environment.getSdkAppDir(), projectName);
             try {
-                AndroidApplicationProject projectFile = new AndroidApplicationProject(
-                        new File(FileManager.EXTERNAL_DIR), activityClass, packageName);
-                //create directory
-                projectFile.mkdirs();
-
-                AssetManager assets = getContext().getAssets();
-
-                copyResources(projectFile, useAppCompat, assets);
-                createStringXml(projectFile, appName);
-                createManifest(projectFile, activityClass, packageName, assets);
-                createMainActivity(projectFile, activityClass, packageName, activityName, appName, useAppCompat, assets);
-                createMainXml(projectFile, mainLayoutName, assets);
-                copyLibrary(projectFile, assets);
-                if (listener != null) listener.onProjectCreated(projectFile);
+                AndroidProjectManager projectManager = new AndroidProjectManager(getContext());
+                AndroidApplicationProject project = projectManager.createNewProject(getContext(), dir, projectName
+                        , packageName, activityName, mainLayoutName,
+                        appName, useAppCompat);
+                if (listener != null) listener.onProjectCreated(project);
                 this.dismiss();
             } catch (Exception e) {
                 e.printStackTrace();

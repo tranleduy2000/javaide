@@ -2,17 +2,18 @@ package com.duy.android.compiler.builder.task.android;
 
 import android.os.Build;
 
-import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
-import com.duy.android.compiler.project.AndroidApplicationProject;
 import com.duy.android.compiler.builder.task.ABuildTask;
+import com.duy.android.compiler.builder.util.Argument;
+import com.duy.android.compiler.env.Environment;
+import com.duy.android.compiler.project.AndroidApplicationProject;
+import com.duy.android.compiler.project.AndroidLibraryProject;
 
-import org.apache.commons.io.IOUtils;
-
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -151,29 +152,61 @@ public class Aapt extends ABuildTask<AndroidApplicationProject> {
         }
         File aaptFile = new File(Environment.getBinDir(context), aaptName);
 
-        String[] args = {
-                aaptFile.getAbsolutePath(),
-                "p", "-f", "--auto-add-overlay",
-                "-v",
-                "-M", project.getXmlManifest().getAbsolutePath(),  //manifest file
-                "-F", project.getOutResourceFile().getAbsolutePath(),  //output resources.ap_
-                "-I", Environment.getClasspathFile(context).getAbsolutePath(),//The location of the android.jar resource
-                "-A", project.getAssetsDirs().getAbsolutePath(), //input assets dir
-                "-S", project.getResDirs().getAbsolutePath(),  //input resource dir
-                "-J", project.getClassR().getParent() //parent file of R.java file
-        };
-        System.out.println("args = " + Arrays.toString(args));
-        Process aaptProcess = Runtime.getRuntime().exec(args);
-        int exitCode = aaptProcess.waitFor();
+        Argument args = new Argument();
+        args.add(aaptFile.getAbsolutePath());
+        args.add("p", "-f", "--auto-add-overlay");
+        args.add("-v");
+        args.add("-M", project.getXmlManifest().getAbsolutePath());  //manifest file
+        args.add("-F", project.getOutResourceFile().getAbsolutePath());  //output resources.ap_
+        args.add("-I", Environment.getClasspathFile(context).getAbsolutePath());//The location of the android.jar resource
+        args.add("-A", project.getAssetsDirs().getAbsolutePath()); //input assets dir
+        args.add("-S", project.getResDirs().getAbsolutePath());  //input resource dir
+        args.add("-J", project.getClassR().getParent()); //parent file of R.java file
 
-        String stdout = IOUtils.toString(aaptProcess.getInputStream());
-        String stderr = IOUtils.toString(aaptProcess.getErrorStream());
+        for (AndroidLibraryProject library : project.getDependencies()) {
+            args.add("-S", library.getResDir().getAbsolutePath());
+            args.add("-A", library.getAssetsDir().getAbsolutePath()); //input assets dir
+        }
+        final int[] exitCode = new int[1];
+        final Process aaptProcess = Runtime.getRuntime().exec(args.toArray());
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    exitCode[0] = aaptProcess.waitFor();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        BufferedReader reader = new BufferedReader(new InputStreamReader(aaptProcess.getInputStream()));
+        do {
+            try {
+                String s = reader.readLine();
+                builder.stdout("aapt: " + s);
+            } catch (Exception e) {
+                break;
+            }
+        } while (thread.isAlive());
+        reader.close();
+        reader = new BufferedReader(new InputStreamReader(aaptProcess.getErrorStream()));
+        do {
+            try {
+                String s = reader.readLine();
+                builder.stderr("aapt: " + s);
+            } catch (Exception e) {
+                break;
+            }
+        } while (thread.isAlive());
+        thread.join();
+//        String stdout = IOUtils.toString(aaptProcess.getInputStream());
+//        String stderr = IOUtils.toString(aaptProcess.getErrorStream());
+//
+        builder.stdout("AAPT exit code " + exitCode[0]);
+//        builder.stdout(stdout);
+//        builder.stderr(stderr);
 
-        builder.stdout("AAPT exit code " + exitCode);
-        builder.stdout(stdout);
-        builder.stderr(stderr);
-
-        return exitCode == 0;
+        return exitCode[0] == 0;
     }
 
     /**

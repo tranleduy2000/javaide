@@ -158,7 +158,7 @@ public class Aapt extends ABuildTask<AndroidApplicationProject> {
         args.add("-v");
         args.add("-M", project.getXmlManifest().getAbsolutePath());  //manifest file
         args.add("-F", project.getOutResourceFile().getAbsolutePath());  //output resources.ap_
-        args.add("-I", Environment.getClasspathFile(context).getAbsolutePath());//The location of the android.jar resource
+        args.add("-I", project.getBootClassPath(context));//The location of the android.jar resource
         args.add("-A", project.getAssetsDirs().getAbsolutePath()); //input assets dir
         args.add("-S", project.getResDirs().getAbsolutePath());  //input resource dir
         args.add("-J", project.getClassR().getParent()); //parent file of R.java file

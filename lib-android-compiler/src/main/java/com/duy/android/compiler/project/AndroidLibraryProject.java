@@ -42,7 +42,6 @@ public class AndroidLibraryProject extends JavaProject {
         if (new File(dirRoot, "classes.jar").exists()) {
             classesJar = new File(dirRoot, "classes.jar");
         }
-
         classR = new File(dirRoot, getPackageName().replace(".", "/") + "/R.java");
     }
 

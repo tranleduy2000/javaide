@@ -266,7 +266,7 @@ public class Main {
 
         int result = run(arguments);
         if (result != 0) {
-            System.exit(result);
+//            System.exit(result);
             System.err.println("Exit code " + result);
         }
         return result;

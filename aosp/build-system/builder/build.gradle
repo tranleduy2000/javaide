@@ -35,11 +35,11 @@ dependencies {
     api "com.android.support:support-annotations:$supportLibVersion"
     api "com.android.support:support-v4:$supportLibVersion"
     //noinspection GradleDependency
-    api 'com.google.guava:guava:22.0-android'
+    api 'com.google.guava:guava:25.1-android'
 
     api 'com.squareup:javawriter:2.5.0'
-    api 'org.bouncycastle:bcpkix-jdk15on:1.48'
-    api 'org.bouncycastle:bcprov-jdk15on:1.48'
-    api 'org.ow2.asm:asm:5.0.3'
-    api 'org.ow2.asm:asm-tree:5.0.3'
+    api 'org.bouncycastle:bcpkix-jdk15on:1.56'
+    api 'org.bouncycastle:bcprov-jdk15on:1.56'
+    api 'org.ow2.asm:asm:6.0'
+    api 'org.ow2.asm:asm-tree:6.0'
 }

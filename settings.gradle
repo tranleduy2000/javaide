@@ -2,3 +2,10 @@ include ':app', ':treeview', ':dx'
 include ':lib-google-java-format', ':lib-android-compiler', ':androidlogcat'
 include ':fileexplorer', ':common', ':styles'
 
+include ':android-buildsystem-gradle:gradle'
+include ':android-buildsystem-gradle:gradle-core'
+include ':android-buildsystem-gradle:gradle-experimental'
+
+include ':aosp:annotations'
+include ':aosp:build-system:builder'
+include ':aosp:build-system:builder-model'

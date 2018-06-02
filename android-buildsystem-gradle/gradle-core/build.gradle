@@ -1,0 +1,28 @@
+apply plugin: 'groovy'
+
+configurations {
+    provided
+}
+
+sourceSets {
+    main {
+        groovy.srcDirs = ['src/main/groovy', 'src/fromGradle/groovy']
+        resources.srcDirs = ['src/main/resources', 'src/fromGradle/resources']
+        compileClasspath += configurations.provided
+    }
+}
+
+
+dependencies {
+//    compile project(':android-buildsystem-gradle:builder')
+//    compile project(':android-buildsystem-gradle:lint')
+//    compile "net.sf.proguard:proguard-gradle:${project.ext.proguardVersion}"
+
+    // Add gradleApi to classpath for compilation, but use provided configuration so that groovy is
+    // not exposed as a runtime dependency.
+    provided gradleApi()
+    testCompile gradleApi()
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:1.9.5'
+}

@@ -25,15 +25,16 @@
 
 package sun.misc;
 
-import com.spartacusrex.spartacuside.helper.Arrays;
 import java.io.EOFException;
-import java.net.URL;
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.io.InputStream;
-import java.security.CodeSigner;
-import java.util.jar.Manifest;
+import java.io.InterruptedIOException;
+import java.net.URL;
 import java.nio.ByteBuffer;
+import java.security.CodeSigner;
+import java.util.Arrays;
+import java.util.jar.Manifest;
+
 import sun.nio.ByteBuffered;
 
 /**

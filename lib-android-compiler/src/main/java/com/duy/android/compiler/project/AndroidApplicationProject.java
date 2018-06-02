@@ -1,7 +1,5 @@
 package com.duy.android.compiler.project;
 
-import android.content.Context;
-
 import com.android.annotations.Nullable;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
@@ -132,8 +130,8 @@ public class AndroidApplicationProject extends JavaProject {
     }
 
     @Override
-    public ArrayList<File> getJavaLibraries(Context context) {
-        ArrayList<File> libraries = (super.getJavaLibraries(context));
+    public ArrayList<File> getJavaLibraries() {
+        ArrayList<File> libraries = (super.getJavaLibraries());
         for (AndroidLibraryProject dependency : dependencies) {
             if (dependency.getClassesJar() != null) {
                 libraries.add(dependency.getClassesJar());

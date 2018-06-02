@@ -51,7 +51,7 @@ public class Environment {
     }
 
     public static File getClasspathFile(Context context) {
-        return new File(getPlatformDir(context), "android-" + ANDROID_API + "/android.jar");
+        return new File(getPlatformApiDir(context, ANDROID_API), "android.jar");
     }
 
     public static File getSdCardLibraryCachedDir(Context context) {

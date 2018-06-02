@@ -276,10 +276,9 @@ public class JavaProject implements Serializable, Cloneable {
     }
 
     /**
-     * @param context
      * @return the string contains all file *.jar in dirLibs
      */
-    public ArrayList<File> getJavaLibraries(Context context) {
+    public ArrayList<File> getJavaLibraries() {
         File[] files = getDirLibs().listFiles(new FileFilter() {
             @Override
             public boolean accept(File jarLib) {
@@ -287,6 +286,18 @@ public class JavaProject implements Serializable, Cloneable {
             }
         });
         return new ArrayList<>(Arrays.asList(files));
+    }
+
+    public String getClasspath() {
+        ArrayList<File> javaLibraries = getJavaLibraries();
+        StringBuilder classpath = new StringBuilder(".");
+        for (File javaLibrary : javaLibraries) {
+            if (classpath.length() != 0) {
+                classpath.append(File.pathSeparator);
+            }
+            classpath.append(javaLibrary.getAbsolutePath());
+        }
+        return classpath.toString();
     }
 
     public String getBootClassPath(Context context) {

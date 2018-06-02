@@ -129,15 +129,15 @@ public class AndroidProjectManager {
             //v7
             addLib(project, "libs/27.1.1/appcompat-v7-27.1.1.aar", "appcompat-v7-27.1.1");
             addLib(project, "libs/27.1.1/animated-vector-drawable-27.1.1.aar", "animated-vector-drawable-27.1.1");
-            addLib(project, "libs/27.1.1/livedata-core-1.1.1.aar", "livedata-core-1.1.1");
-            addLib(project, "libs/27.1.1/runtime-1.1.1.aar", "runtime-1.1.1");
+            addLib(project, "libs/27.1.1/livedata-core-1.1.0.aar", "livedata-core-1.1.0");
+            addLib(project, "libs/27.1.1/runtime-1.1.0.aar", "runtime-1.1.0");
+            addLib(project, "libs/27.1.1/common-1.1.0.jar", "common-1.1.0.jar");
+            addLib(project, "libs/27.1.1/viewmodel-1.1.1.aar", "viewmodel-1.1.1");
             addLib(project, "libs/27.1.1/support-compat-27.1.1.aar", "support-compat-27.1.1");
             addLib(project, "libs/27.1.1/support-core-ui-27.1.1.aar", "support-core-ui-27.1.1");
             addLib(project, "libs/27.1.1/support-core-utils-27.1.1.aar", "support-core-utils-27.1.1");
             addLib(project, "libs/27.1.1/support-fragment-27.1.1.aar", "support-fragment-27.1.1");
             addLib(project, "libs/27.1.1/support-vector-drawable-27.1.1.aar", "support-vector-drawable-27.1.1");
-            addLib(project, "libs/27.1.1/viewmodel-1.1.1.aar", "viewmodel-1.1.1");
-            addLib(project, "libs/27.1.1/common-1.1.1.jar", "common-1.1.1.jar");
             addLib(project, "libs/27.1.1/support-annotations-27.1.1.jar", "support-annotations-27.1.1.jar");
             addLib(project, "libs/27.1.1/support-media-compat-27.1.1.aar", "support-media-compat-27.1.1");
             addLib(project, "libs/27.1.1/support-v4-27.1.1.aar", "support-v4-27.1.1.aar");
@@ -156,6 +156,8 @@ public class AndroidProjectManager {
 //            addLib(project, "libs/27.0.0/support-fragment-27.0.0.aar", "support-fragment-27.0.0");
 //            addLib(project, "libs/27.0.0/support-media-compat-27.0.0.aar", "support-media-compat-27.0.0");
 //            addLib(project, "libs/27.0.0/support-v4-27.0.0.aar", "support-v4-27.0.0");
+
+            addLib(project, "libs/27.1.1/support-fragment-27.1.1.aar", "support-fragment-27.1.1");
         }
     }
 

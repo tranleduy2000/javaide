@@ -130,7 +130,6 @@ public class Aapt extends ABuildTask<AndroidApplicationProject> {
         // In Android 5.0, they are required
         // Android versions before 4.1 still need the old binary...
         boolean usePie = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
-
         // Get the correct AAPT binary for this processor architecture
         switch (arch) {
             case "x86":
@@ -199,13 +198,8 @@ public class Aapt extends ABuildTask<AndroidApplicationProject> {
             }
         } while (thread.isAlive());
         thread.join();
-//        String stdout = IOUtils.toString(aaptProcess.getInputStream());
-//        String stderr = IOUtils.toString(aaptProcess.getErrorStream());
-//
-        builder.stdout("AAPT exit code " + exitCode[0]);
-//        builder.stdout(stdout);
-//        builder.stderr(stderr);
 
+        builder.stdout("AAPT exit code " + exitCode[0]);
         return exitCode[0] == 0;
     }
 

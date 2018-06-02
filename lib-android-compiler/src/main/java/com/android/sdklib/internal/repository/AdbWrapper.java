@@ -24,7 +24,12 @@ import java.io.IOException;
 /**
  * A lightweight wrapper to start & stop ADB.
  * This is <b>specific</b> to the SDK Manager install process.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class AdbWrapper {
 
     /*

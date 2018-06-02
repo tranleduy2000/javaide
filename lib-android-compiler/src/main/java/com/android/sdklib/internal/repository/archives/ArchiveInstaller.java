@@ -33,11 +33,11 @@ import com.android.utils.GrabProcessOutput;
 import com.android.utils.GrabProcessOutput.IProcessOutput;
 import com.android.utils.GrabProcessOutput.Wait;
 import com.android.utils.Pair;
-import com.google.common.net.HttpHeaders;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.message.BasicHeader;
@@ -64,7 +64,11 @@ import java.util.regex.Pattern;
 
 /**
  * Performs the work of installing a given {@link Archive}.
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class ArchiveInstaller {
 
     private static final String PROP_STATUS_CODE = "StatusCode";                    //$NON-NLS-1$
@@ -284,9 +288,9 @@ public class ArchiveInstaller {
                     String etag = props.getProperty(HttpHeaders.ETAG);
                     String lastMod = props.getProperty(HttpHeaders.LAST_MODIFIED);
 
-                    if (etag != null && etag.length() > 0) {
+                    if (etag != null && !etag.isEmpty()) {
                         headers.add(new BasicHeader(HttpHeaders.IF_MATCH, etag));
-                    } else if (lastMod != null && lastMod.length() > 0) {
+                    } else if (lastMod != null && !lastMod.isEmpty()) {
                         headers.add(new BasicHeader(HttpHeaders.IF_MATCH, lastMod));
                     }
 

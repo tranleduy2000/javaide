@@ -46,33 +46,38 @@ import com.android.utils.ILogger;
  *   This is set using {@link #log}, {@link #logError} and {@link #logVerbose}.
  * <p/>
  * A monitor is also an {@link ILogger} implementation.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public interface ITaskMonitor extends ILogger {
 
     /**
      * Sets the description in the current task dialog.
      * This method can be invoked from a non-UI thread.
      */
-    public void setDescription(String format, Object...args);
+    void setDescription(String format, Object... args);
 
     /**
      * Logs a "normal" information line.
      * This method can be invoked from a non-UI thread.
      */
-    public void log(String format, Object...args);
+    void log(String format, Object... args);
 
     /**
      * Logs an "error" information line.
      * This method can be invoked from a non-UI thread.
      */
-    public void logError(String format, Object...args);
+    void logError(String format, Object... args);
 
     /**
      * Logs a "verbose" information line, that is extra details which are typically
      * not that useful for the end-user and might be hidden until explicitly shown.
      * This method can be invoked from a non-UI thread.
      */
-    public void logVerbose(String format, Object...args);
+    void logVerbose(String format, Object... args);
 
     /**
      * Sets the max value of the progress bar.
@@ -83,13 +88,13 @@ public interface ITaskMonitor extends ILogger {
      * discouraged from using more than once -- implementations can either discard
      * the next calls or behave incoherently.
      */
-    public void setProgressMax(int max);
+    void setProgressMax(int max);
 
     /**
      * Returns the max value of the progress bar, as last set by {@link #setProgressMax(int)}.
      * Returns 0 if the max has never been set yet.
      */
-    public int getProgressMax();
+    int getProgressMax();
 
     /**
      * Increments the current value of the progress bar.
@@ -97,7 +102,7 @@ public interface ITaskMonitor extends ILogger {
      *
      * Callers MUST use setProgressMax before using this method.
      */
-    public void incProgress(int delta);
+    void incProgress(int delta);
 
     /**
      * Returns the current value of the progress bar,
@@ -105,20 +110,20 @@ public interface ITaskMonitor extends ILogger {
      *
      * Callers MUST use setProgressMax before using this method.
      */
-    public int getProgress();
+    int getProgress();
 
     /**
      * Returns true if the user requested to cancel the operation.
      * It is up to the task thread to pool this and exit as soon
      * as possible.
      */
-    public boolean isCancelRequested();
+    boolean isCancelRequested();
 
     /**
      * Creates a sub-monitor that will use up to tickCount on the progress bar.
      * tickCount must be 1 or more.
      */
-    public ITaskMonitor createSubMonitor(int tickCount);
+    ITaskMonitor createSubMonitor(int tickCount);
 
     /**
      * Display a yes/no question dialog box.
@@ -130,7 +135,7 @@ public interface ITaskMonitor extends ILogger {
      * @param message The error message
      * @return true if YES was clicked.
      */
-    public boolean displayPrompt(final String title, final String message);
+    boolean displayPrompt(final String title, final String message);
 
     /**
      * Launch an interface which asks for user credentials. Implementations
@@ -143,5 +148,5 @@ public interface ITaskMonitor extends ILogger {
      *         did not provide any input.
                If operation is <b>canceled</b> by user the return value must be <b>null</b>.
      */
-    public UserCredentials displayLoginCredentialsPrompt(String title, String message);
+    UserCredentials displayLoginCredentialsPrompt(String title, String message);
 }

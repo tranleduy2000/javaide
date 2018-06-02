@@ -23,7 +23,7 @@ import com.android.io.NonClosingInputStream;
 import com.android.io.NonClosingInputStream.CloseBehavior;
 import com.android.sdklib.internal.repository.CanceledByUserException;
 import com.android.sdklib.internal.repository.DownloadCache;
-import com.android.sdklib.internal.repository.IDescription;
+import com.android.sdklib.repository.IDescription;
 import com.android.sdklib.internal.repository.ITaskMonitor;
 import com.android.sdklib.internal.repository.packages.AddonPackage;
 import com.android.sdklib.internal.repository.packages.BuildToolPackage;
@@ -73,7 +73,12 @@ import javax.xml.validation.Validator;
  * An sdk-addon or sdk-repository source, i.e. a download site.
  * It may be a full repository or an add-on only repository.
  * A repository describes one or {@link Package}s available for download.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public abstract class SdkSource implements IDescription, Comparable<SdkSource> {
 
     private String mUrl;
@@ -289,7 +294,7 @@ public abstract class SdkSource implements IDescription, Comparable<SdkSource> {
     @Override
     public String getShortDescription() {
 
-        if (mUiName != null && mUiName.length() > 0) {
+        if (mUiName != null && !mUiName.isEmpty()) {
 
             String host = "malformed URL";
 

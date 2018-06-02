@@ -1,0 +1,22 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+apply plugin: 'com.android.application'
+
+apply from: "../commonLocalRepo.gradle"
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    aaptOptions {
+        cruncherEnabled = false
+    }
+
+    defaultConfig {
+        versionCode 12
+        versionName "2.0"
+        minSdkVersion 16
+        targetSdkVersion 16
+    }
+}

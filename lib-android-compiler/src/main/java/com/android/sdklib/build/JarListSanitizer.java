@@ -209,7 +209,7 @@ public class JarListSanitizer {
         }
 
         // the actual clean up.
-        if (results.size() > 0) {
+        if (!results.isEmpty()) {
             for (File f : results) {
                 jarList.remove(f.getAbsolutePath());
             }

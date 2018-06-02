@@ -17,9 +17,6 @@
 package com.android.sdklib.repository.local;
 
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
-import com.android.sdklib.internal.repository.packages.Package;
-import com.android.sdklib.internal.repository.packages.ToolPackage;
 import com.android.sdklib.repository.FullRevision;
 import com.android.sdklib.repository.descriptors.IPkgDesc;
 import com.android.sdklib.repository.descriptors.PkgDesc;
@@ -29,7 +26,8 @@ import java.util.Properties;
 
 public class LocalToolPkgInfo extends LocalPkgInfo {
 
-    private final @NonNull IPkgDesc mDesc;
+    @NonNull
+    private final IPkgDesc mDesc;
 
     public LocalToolPkgInfo(@NonNull LocalSdk localSdk,
                             @NonNull File localDir,
@@ -44,28 +42,5 @@ public class LocalToolPkgInfo extends LocalPkgInfo {
     @Override
     public IPkgDesc getDesc() {
         return mDesc;
-    }
-
-    @Nullable
-    @Override
-    public Package getPackage() {
-        Package pkg = super.getPackage();
-        if (pkg == null) {
-            try {
-                pkg = ToolPackage.create(
-                        null,                       //source
-                        getSourceProperties(),      //properties
-                        0,                          //revision
-                        null,                       //license
-                        "Tools",                    //description
-                        null,                       //descUrl
-                        getLocalDir().getPath()     //archiveOsPath
-                        );
-                setPackage(pkg);
-            } catch (Exception e) {
-                appendLoadError("Failed to parse package: %1$s", e.toString());
-            }
-        }
-        return pkg;
     }
 }

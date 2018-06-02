@@ -1,0 +1,16 @@
+apply plugin: 'com.android.library'
+
+dependencies {
+    compile project(':lib2')
+}
+
+android {
+    resourcePrefix 'lib1_'
+    compileSdkVersion 21
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 15
+    }
+}

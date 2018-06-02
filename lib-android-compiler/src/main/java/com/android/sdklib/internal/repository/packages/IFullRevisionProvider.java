@@ -29,7 +29,12 @@ import com.android.sdklib.repository.FullRevision.PreviewComparison;
  * This interface is a tag. It indicates that {@link Package#getRevision()} returns a
  * {@link FullRevision} instead of a limited {@link MajorRevision}. <br/>
  * The preview version number is available via {@link Package#getRevision()}.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public interface IFullRevisionProvider {
 
     /**
@@ -41,6 +46,6 @@ public interface IFullRevisionProvider {
      * @param comparePreview How to compare previews.
      * @return true if the items are the same.
      */
-    public abstract boolean sameItemAs(Package pkg, PreviewComparison comparePreview);
+    boolean sameItemAs(Package pkg, PreviewComparison comparePreview);
 
 }

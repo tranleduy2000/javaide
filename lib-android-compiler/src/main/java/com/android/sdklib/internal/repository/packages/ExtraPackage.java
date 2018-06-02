@@ -22,12 +22,12 @@ import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
 import com.android.annotations.VisibleForTesting.Visibility;
 import com.android.sdklib.SdkManager;
-import com.android.sdklib.internal.repository.IDescription;
 import com.android.sdklib.internal.repository.LocalSdkParser;
 import com.android.sdklib.internal.repository.NullTaskMonitor;
 import com.android.sdklib.internal.repository.archives.Archive;
 import com.android.sdklib.internal.repository.sources.SdkSource;
 import com.android.sdklib.repository.FullRevision;
+import com.android.sdklib.repository.IDescription;
 import com.android.sdklib.repository.PkgProps;
 import com.android.sdklib.repository.RepoConstants;
 import com.android.sdklib.repository.descriptors.IPkgDescExtra;
@@ -36,7 +36,6 @@ import com.android.sdklib.repository.descriptors.PkgDesc;
 import com.android.sdklib.repository.descriptors.PkgDescExtra;
 import com.android.sdklib.repository.local.LocalExtraPkgInfo;
 import com.android.utils.NullLogger;
-
 import org.w3c.dom.Node;
 
 import java.io.File;
@@ -48,7 +47,12 @@ import java.util.regex.Pattern;
 
 /**
  * Represents a extra XML node in an SDK repository.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class ExtraPackage extends NoPreviewRevisionPackage
     implements IMinApiLevelDependency, IMinToolsDependency {
 
@@ -124,24 +128,24 @@ public class ExtraPackage extends NoPreviewRevisionPackage
         String vid   =
             PackageParserUtils.getXmlString(packageNode, RepoConstants.NODE_VENDOR_ID);
 
-        if (vid.length() == 0) {
+        if (vid.isEmpty()) {
             // If vid is missing, use the old <vendor> attribute.
             // Note that in a valid XML, vendor-id cannot be an empty string.
             // The only reason vid can be empty is when <vendor-id> is missing, which
             // happens in an addon-3 schema, in which case the old <vendor> needs to be used.
             String vendor = PackageParserUtils.getXmlString(packageNode, RepoConstants.NODE_VENDOR);
             vid = sanitizeLegacyVendor(vendor);
-            if (vname.length() == 0) {
+            if (vname.isEmpty()) {
                 vname = vendor;
             }
         }
-        if (vname.length() == 0) {
+        if (vname.isEmpty()) {
             // The vendor-display name can be empty, in which case we use the vendor-id.
             vname = vid;
         }
         mVendor = new IdDisplay(vid.trim(), vname.trim());
 
-        if (name.length() == 0) {
+        if (name.isEmpty()) {
             // If name is missing, use the <path> attribute as done in an addon-3 schema.
             name = LocalExtraPkgInfo.getPrettyName(mVendor, mPath);
         }
@@ -155,14 +159,9 @@ public class ExtraPackage extends NoPreviewRevisionPackage
 
         mOldPaths = PackageParserUtils.getXmlString(packageNode, RepoConstants.NODE_OLD_PATHS);
 
-        mPkgDesc = (IPkgDescExtra) PkgDesc.Builder
-                .newExtra(mVendor,
-                          mPath,
-                          mDisplayName,
-                          getOldPaths(),
-                          getRevision())
-                .setDescriptions(this)
-                .create();
+        mPkgDesc =
+          (IPkgDescExtra)setDescriptions(PkgDesc.Builder.newExtra(mVendor, mPath, mDisplayName,
+                  getOldPaths(), getRevision())).create();
     }
 
     private String[] parseProjectFiles(Node projectFilesNode) {
@@ -180,7 +179,7 @@ public class ExtraPackage extends NoPreviewRevisionPackage
                     String path = child.getTextContent();
                     if (path != null) {
                         path = path.trim();
-                        if (path.length() > 0) {
+                        if (!path.isEmpty()) {
                             paths.add(path);
                         }
                     }
@@ -252,22 +251,22 @@ public class ExtraPackage extends NoPreviewRevisionPackage
         String vid   = vendorId != null ? vendorId :
                               getProperty(props, PkgProps.EXTRA_VENDOR_ID, ""); //$NON-NLS-1$
 
-        if (vid == null || vid.length() == 0) {
+        if (vid == null || vid.isEmpty()) {
             // If vid is missing, use the old <vendor> attribute.
             // <vendor> did not exist prior to schema repo-v3 and tools r8.
             String vendor = getProperty(props, PkgProps.EXTRA_VENDOR, "");      //$NON-NLS-1$
             vid = sanitizeLegacyVendor(vendor);
-            if (vname == null || vname.length() == 0) {
+            if (vname == null || vname.isEmpty()) {
                 vname = vendor;
             }
         }
-        if (vname == null || vname.length() == 0) {
+        if (vname == null || vname.isEmpty()) {
             // The vendor-display name can be empty, in which case we use the vendor-id.
             vname = vid;
         }
         mVendor = new IdDisplay(vid.trim(), vname.trim());
 
-        if (name == null || name.length() == 0) {
+        if (name == null || name.isEmpty()) {
             // If name is missing, use the <path> attribute as done in an addon-3 schema.
             name = LocalExtraPkgInfo.getPrettyName(mVendor, mPath);
         }
@@ -280,10 +279,10 @@ public class ExtraPackage extends NoPreviewRevisionPackage
 
         String projectFiles = getProperty(props, PkgProps.EXTRA_PROJECT_FILES, null);
         ArrayList<String> filePaths = new ArrayList<String>();
-        if (projectFiles != null && projectFiles.length() > 0) {
+        if (projectFiles != null && !projectFiles.isEmpty()) {
             for (String filePath : projectFiles.split(Pattern.quote(File.pathSeparator))) {
                 filePath = filePath.trim();
-                if (filePath.length() > 0) {
+                if (!filePath.isEmpty()) {
                     filePaths.add(filePath);
                 }
             }
@@ -291,13 +290,8 @@ public class ExtraPackage extends NoPreviewRevisionPackage
 
         mProjectFiles = filePaths.toArray(new String[filePaths.size()]);
 
-        mPkgDesc = (IPkgDescExtra) PkgDesc.Builder
-                .newExtra(mVendor,
-                          mPath,
-                          mDisplayName,
-                          getOldPaths(),
-                          getRevision())
-                .setDescriptions(this)
+        mPkgDesc = (IPkgDescExtra) setDescriptions(PkgDesc.Builder
+                .newExtra(mVendor, mPath, mDisplayName, getOldPaths(), getRevision()))
                 .create();
     }
 
@@ -336,7 +330,7 @@ public class ExtraPackage extends NoPreviewRevisionPackage
             props.setProperty(PkgProps.EXTRA_PROJECT_FILES, sb.toString());
         }
 
-        if (mOldPaths != null && mOldPaths.length() > 0) {
+        if (mOldPaths != null && !mOldPaths.isEmpty()) {
             props.setProperty(PkgProps.EXTRA_OLD_PATHS, mOldPaths);
         }
     }
@@ -404,7 +398,7 @@ public class ExtraPackage extends NoPreviewRevisionPackage
 
         // Sanitize the path
         String path = mPath.replaceAll("[^a-zA-Z0-9-]+", "_");      //$NON-NLS-1$
-        if (path.length() == 0 || path.equals("_")) {               //$NON-NLS-1$
+        if (path.isEmpty() || path.equals("_")) {               //$NON-NLS-1$
             int h = path.hashCode();
             path = String.format("extra%08x", h);                   //$NON-NLS-1$
         }
@@ -433,7 +427,7 @@ public class ExtraPackage extends NoPreviewRevisionPackage
         // and cannot be empty. Let's be defensive and enforce that anyway since things
         // like "____" are still valid values that we don't want to allow.
 
-        if (vendorDisplay != null && vendorDisplay.length() > 0) {
+        if (vendorDisplay != null && !vendorDisplay.isEmpty()) {
             String vendor = vendorDisplay.trim();
             // Sanitize the vendor
             vendor = vendor.replaceAll("[^a-zA-Z0-9-]+", "_");      //$NON-NLS-1$
@@ -517,7 +511,7 @@ public class ExtraPackage extends NoPreviewRevisionPackage
                 getVendorDisplay());
 
         String d = getDescription();
-        if (d != null && d.length() > 0) {
+        if (d != null && !d.isEmpty()) {
             s += '\n' + d;
         }
 
@@ -591,12 +585,12 @@ public class ExtraPackage extends NoPreviewRevisionPackage
         File path = new File(osSdkRoot, SdkConstants.FD_EXTRAS);
 
         String vendor = getVendorId();
-        if (vendor != null && vendor.length() > 0) {
+        if (vendor != null && !vendor.isEmpty()) {
             path = new File(path, vendor);
         }
 
         String name = getPath();
-        if (name != null && name.length() > 0) {
+        if (name != null && !name.isEmpty()) {
             path = new File(path, name);
         }
 

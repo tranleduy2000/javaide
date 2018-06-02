@@ -27,18 +27,12 @@ import com.android.sdklib.AndroidVersion.AndroidVersionException;
 import com.android.sdklib.SdkManager;
 import com.android.sdklib.SystemImage;
 import com.android.sdklib.devices.Abi;
-import com.android.sdklib.internal.repository.IDescription;
 import com.android.sdklib.internal.repository.sources.SdkSource;
-import com.android.sdklib.repository.MajorRevision;
-import com.android.sdklib.repository.PkgProps;
-import com.android.sdklib.repository.SdkAddonConstants;
-import com.android.sdklib.repository.SdkRepoConstants;
-import com.android.sdklib.repository.SdkSysImgConstants;
+import com.android.sdklib.repository.*;
 import com.android.sdklib.repository.descriptors.IPkgDesc;
 import com.android.sdklib.repository.descriptors.IdDisplay;
 import com.android.sdklib.repository.descriptors.PkgDesc;
 import com.android.sdklib.repository.local.LocalSysImgPkgInfo;
-
 import org.w3c.dom.Node;
 
 import java.io.File;
@@ -49,7 +43,12 @@ import java.util.regex.Pattern;
 
 /**
  * Represents a system-image XML node in an SDK repository.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class SystemImagePackage extends MajorRevisionPackage
         implements IAndroidVersionProvider, IPlatformDependency {
 
@@ -84,7 +83,7 @@ public class SystemImagePackage extends MajorRevisionPackage
             PackageParserUtils.getXmlInt(packageNode, SdkRepoConstants.NODE_API_LEVEL, 0);
         String codeName =
             PackageParserUtils.getXmlString(packageNode, SdkRepoConstants.NODE_CODENAME);
-        if (codeName.length() == 0) {
+        if (codeName.isEmpty()) {
             codeName = null;
         }
         mVersion = new AndroidVersion(apiLevel, codeName);
@@ -113,12 +112,8 @@ public class SystemImagePackage extends MajorRevisionPackage
 
         if (addonNode == null) {
             // A platform system-image
-            desc = PkgDesc.Builder
-                    .newSysImg(mVersion,
-                               mTag,
-                               mAbi,
-                               (MajorRevision) getRevision())
-                    .setDescriptions(this)
+            desc = setDescriptions(PkgDesc.Builder
+                    .newSysImg(mVersion, mTag, mAbi, (MajorRevision) getRevision()))
                     .create();
         } else {
             // An add-on system-image
@@ -130,18 +125,13 @@ public class SystemImagePackage extends MajorRevisionPackage
                     SdkAddonConstants.NODE_VENDOR_DISPLAY,
                     vendorId);
 
-            assert vendorId.length() > 0;
-            assert vendorDisp.length() > 0;
+            assert !vendorId.isEmpty();
+            assert !vendorDisp.isEmpty();
 
             vendor = new IdDisplay(vendorId, vendorDisp);
 
-            desc = PkgDesc.Builder
-                    .newAddonSysImg(mVersion,
-                                    vendor,
-                                    mTag,
-                                    mAbi,
-                                    (MajorRevision) getRevision())
-                    .setDescriptions(this)
+            desc = setDescriptions(PkgDesc.Builder
+                    .newAddonSysImg(mVersion, vendor, mTag, mAbi, (MajorRevision) getRevision()))
                     .create();
         }
 
@@ -192,28 +182,16 @@ public class SystemImagePackage extends MajorRevisionPackage
 
         if (vendorId == null) {
             // A platform system-image
-            desc = PkgDesc.Builder
-                    .newSysImg(mVersion,
-                               mTag,
-                               mAbi,
-                               (MajorRevision) getRevision())
-                    .setDescriptions(this)
-                    .create();
-        } else {
+            desc = setDescriptions(PkgDesc.Builder.newSysImg(mVersion, mTag, mAbi, (MajorRevision)getRevision())).create();
+        }
+        else {
             // An add-on system-image
-            assert vendorId.length() > 0;
-            assert vendorDisp.length() > 0;
+            assert !vendorId.isEmpty();
+            assert !vendorDisp.isEmpty();
 
             vendor = new IdDisplay(vendorId, vendorDisp);
 
-            desc = PkgDesc.Builder
-                    .newAddonSysImg(mVersion,
-                                    vendor,
-                                    mTag,
-                                    mAbi,
-                                    (MajorRevision) getRevision())
-                    .setDescriptions(this)
-                    .create();
+            desc = setDescriptions(PkgDesc.Builder.newAddonSysImg(mVersion, vendor, mTag, mAbi, (MajorRevision)getRevision())).create();
         }
 
         mPkgDesc = desc;
@@ -502,7 +480,7 @@ public class SystemImagePackage extends MajorRevisionPackage
     @Override
     public String getLongDescription() {
         String s = getDescription();
-        if (s == null || s.length() == 0) {
+        if (s == null || s.isEmpty()) {
             s = getShortDescription();
         }
 

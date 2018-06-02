@@ -16,10 +16,6 @@
 
 package com.android.sdklib.build;
 
-import static com.android.SdkConstants.EXT_FS;
-import static com.android.SdkConstants.EXT_RS;
-import static com.android.SdkConstants.EXT_RSH;
-
 import com.android.annotations.NonNull;
 import com.google.common.collect.Lists;
 
@@ -27,6 +23,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+
+import static com.android.SdkConstants.EXT_FS;
+import static com.android.SdkConstants.EXT_RS;
+import static com.android.SdkConstants.EXT_RSH;
 
 /**
  * Checks whether Renderscript compilation is needed. This is entirely based

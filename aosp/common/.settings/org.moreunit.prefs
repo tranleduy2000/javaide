@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+org.moreunit.prefixes=
+org.moreunit.unitsourcefolder=common\:src/main/java\:common-tests\:java
+org.moreunit.useprojectsettings=true

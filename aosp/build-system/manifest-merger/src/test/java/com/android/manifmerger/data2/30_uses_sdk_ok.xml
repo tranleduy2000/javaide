@@ -1,0 +1,107 @@
+#
+# Test uses-sdk: add a uses-sdk from an app that doesn't define one.
+#
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <supports-screens
+            android:largeScreens="true"
+            />
+
+    <!-- I should be moved first -->
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="14"
+        tools:replace="minSdkVersion, targetSdkVersion"
+        tools:remove="maxSdkVersion"
+        />
+
+    <!-- I should remain last -->
+    <application android:name="com.example.TheApp" />
+
+</manifest>
+
+
+@lib1
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib1">
+
+    <!-- This app requires cupcake. -->
+    <uses-sdk android:minSdkVersion="3" />
+
+</manifest>
+
+
+@lib2
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib2">
+
+    <!-- This only defines a max-sdk, and we purposely ignore this attribute.
+         It doesn't get merged and doesn't generate a conflict either.
+    -->
+    <uses-sdk
+        android:maxSdkVersion="5"
+        />
+
+</manifest>
+
+
+@lib3
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib3">
+
+    <!-- Lib3 redefines the same requirements as lib1.
+    -->
+    <uses-sdk
+        android:minSdkVersion="3"
+        android:targetSdkVersion="11"
+        />
+
+</manifest>
+
+
+@result
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <!-- I should be moved first -->
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="14"
+        />
+
+    <supports-screens
+            android:largeScreens="true"
+            />
+
+    <android:uses-permission
+            android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission
+            android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- I should remain last -->
+    <application android:name="com.example.TheApp" />
+
+</manifest>
+
+
+@errors
+

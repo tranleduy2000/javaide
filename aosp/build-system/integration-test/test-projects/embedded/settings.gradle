@@ -1,0 +1,4 @@
+include ':main'
+include ':micro-apps:default'
+include ':micro-apps:flavor1'
+include ':micro-apps:custom'

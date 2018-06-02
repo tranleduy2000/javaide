@@ -54,7 +54,8 @@ public class NoPreviewRevision extends FullRevision {
     public static NoPreviewRevision parseRevision(@NonNull String revision)
             throws NumberFormatException {
         FullRevision r = parseRevisionImpl(
-                revision, true /*supportMinorMicro*/, false /*supportPreview*/);
+                revision, true /*supportMinorMicro*/, false /*supportPreview*/,
+                false /*keepPrecision*/);
         return new NoPreviewRevision(r.getMajor(), r.getMinor(), r.getMicro());
     }
 }

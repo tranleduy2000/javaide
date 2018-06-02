@@ -35,7 +35,12 @@ import java.util.Properties;
 
 /**
  * Misc utilities to help extracting elements and attributes out of a repository XML document.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class PackageParserUtils {
 
     /**

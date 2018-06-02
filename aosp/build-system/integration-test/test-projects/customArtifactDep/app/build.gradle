@@ -1,0 +1,10 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion = rootProject.buildToolsVersion
+}
+
+dependencies {
+    compile project(path: ':util', configuration: 'custom')
+}

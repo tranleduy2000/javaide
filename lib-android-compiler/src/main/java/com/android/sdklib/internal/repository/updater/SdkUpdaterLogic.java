@@ -57,7 +57,12 @@ import java.util.Set;
  * <p/>
  * When the user doesn't provide a selection, looks at local package to find
  * those that can be updated and compute dependencies too.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class SdkUpdaterLogic {
 
     private final IUpdaterData mUpdaterData;
@@ -692,7 +697,7 @@ public class SdkUpdaterLogic {
             }
         }
 
-        if (aiFound.size() > 0) {
+        if (!aiFound.isEmpty()) {
             ArchiveInfo[] result = aiFound.toArray(new ArchiveInfo[aiFound.size()]);
             Arrays.sort(result);
             return result;
@@ -871,6 +876,10 @@ public class SdkUpdaterLogic {
                 Package p = a.getParentPackage();
                 if (p instanceof PlatformToolPackage) {
                     FullRevision r = ((PlatformToolPackage) p).getRevision();
+                    // If computing dependencies for a non-preview package, don't offer preview dependencies
+                    if (r.isPreview() && !rev.isPreview()) {
+                        continue;
+                    }
                     if (r.compareTo(localRev) >= compareThreshold) {
                         localRev = r;
                         localAiMax = ai;
@@ -897,6 +906,11 @@ public class SdkUpdaterLogic {
                 Package p = a.getParentPackage();
                 if (p instanceof PlatformToolPackage) {
                     FullRevision r = ((PlatformToolPackage) p).getRevision();
+                    // If computing dependencies for a non-preview package, don't offer preview dependencies
+                    if (r.isPreview() && !rev.isPreview()) {
+                        continue;
+                    }
+
                     if (r.compareTo(localRev) >= compareThreshold) {
                         localRev = r;
                         localAiMax = null;
@@ -929,6 +943,11 @@ public class SdkUpdaterLogic {
         for (Package p : remotePkgs) {
             if (p instanceof PlatformToolPackage) {
                 FullRevision r = ((PlatformToolPackage) p).getRevision();
+                // If computing dependencies for a non-preview package, don't offer preview dependencies
+                if (r.isPreview() && !rev.isPreview()) {
+                    continue;
+                }
+
                 if (r.compareTo(rev) >= 0) {
                     // Make sure there's at least one valid archive here
                     for (Archive a : p.getArchives()) {
@@ -1353,7 +1372,7 @@ public class SdkUpdaterLogic {
     protected void fetchRemotePackages(
             final Collection<Package> remotePkgs,
             final SdkSource[] remoteSources) {
-        if (remotePkgs.size() > 0) {
+        if (!remotePkgs.isEmpty()) {
             return;
         }
 

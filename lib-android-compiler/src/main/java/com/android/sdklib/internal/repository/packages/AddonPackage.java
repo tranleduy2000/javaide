@@ -22,11 +22,11 @@ import com.android.annotations.VisibleForTesting;
 import com.android.annotations.VisibleForTesting.Visibility;
 import com.android.sdklib.AndroidVersion;
 import com.android.sdklib.IAndroidTarget;
-import com.android.sdklib.IAndroidTarget.IOptionalLibrary;
+import com.android.sdklib.IAndroidTarget.OptionalLibrary;
 import com.android.sdklib.SdkManager;
-import com.android.sdklib.internal.repository.IDescription;
 import com.android.sdklib.internal.repository.sources.SdkSource;
 import com.android.sdklib.repository.AddonManifestIniProps;
+import com.android.sdklib.repository.IDescription;
 import com.android.sdklib.repository.MajorRevision;
 import com.android.sdklib.repository.PkgProps;
 import com.android.sdklib.repository.SdkAddonConstants;
@@ -36,19 +36,26 @@ import com.android.sdklib.repository.descriptors.IdDisplay;
 import com.android.sdklib.repository.descriptors.PkgDesc;
 import com.android.sdklib.repository.local.LocalAddonPkgInfo;
 import com.android.utils.Pair;
+import com.google.common.collect.ImmutableList;
 
 import org.w3c.dom.Node;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
 /**
  * Represents an add-on XML node in an SDK repository.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class AddonPackage extends MajorRevisionPackage
         implements IAndroidVersionProvider, IPlatformDependency,
                    IExactApiLevelDependency, ILayoutlibVersion {
@@ -155,17 +162,17 @@ public class AddonPackage extends MajorRevisionPackage
                                                           SdkRepoConstants.NODE_NAME);
 
         // The old <name> is equivalent to the new <name-display>
-        if (nameDisp.length() == 0) {
+        if (nameDisp.isEmpty()) {
             nameDisp = name;
         }
 
         // For a missing id, we simply use a sanitized version of the display name
-        if (nameId.length() == 0) {
-            nameId = LocalAddonPkgInfo.sanitizeDisplayToNameId(name.length() > 0 ? name : nameDisp);
+        if (nameId.isEmpty()) {
+            nameId = LocalAddonPkgInfo.sanitizeDisplayToNameId(!name.isEmpty() ? name : nameDisp);
         }
 
-        assert nameId.length() > 0;
-        assert nameDisp.length() > 0;
+        assert !nameId.isEmpty();
+        assert !nameDisp.isEmpty();
 
         mNameId = nameId.trim();
         mDisplayName = nameDisp.trim();
@@ -181,18 +188,18 @@ public class AddonPackage extends MajorRevisionPackage
                                                             SdkAddonConstants.NODE_VENDOR);
 
         // The old <vendor> is equivalent to the new <vendor-display>
-        if (vendorDisp.length() == 0) {
+        if (vendorDisp.isEmpty()) {
             vendorDisp = vendor;
         }
 
         // For a missing id, we simply use a sanitized version of the display vendor
-        if (vendorId.length() == 0) {
-            boolean hasVendor = vendor.length() > 0;
+        if (vendorId.isEmpty()) {
+            boolean hasVendor = !vendor.isEmpty();
             vendorId = LocalAddonPkgInfo.sanitizeDisplayToNameId(hasVendor ? vendor : vendorDisp);
         }
 
-        assert vendorId.length() > 0;
-        assert vendorDisp.length() > 0;
+        assert !vendorId.isEmpty();
+        assert !vendorDisp.isEmpty();
 
         mVendorId      = vendorId.trim();
         mVendorDisplay = vendorDisp.trim();
@@ -208,12 +215,10 @@ public class AddonPackage extends MajorRevisionPackage
 
         mLayoutlibVersion = new LayoutlibVersionMixin(packageNode);
 
-        mPkgDesc = PkgDesc.Builder
-                .newAddon(mVersion,
-                          (MajorRevision) getRevision(),
-                          new IdDisplay(mVendorId, mVendorDisplay),
-                          new IdDisplay(mNameId, mDisplayName))
-                .setDescriptions(this)
+        mPkgDesc = setDescriptions(
+                PkgDesc.Builder.newAddon(mVersion, (MajorRevision) getRevision(),
+                        new IdDisplay(mVendorId, mVendorDisplay),
+                        new IdDisplay(mNameId, mDisplayName)))
                 .create();
     }
 
@@ -256,17 +261,19 @@ public class AddonPackage extends MajorRevisionPackage
         String name     = getProperty(props, PkgProps.ADDON_NAME, target.getName());
 
         // The old <name> is equivalent to the new <name-display>
-        if (nameDisp.length() == 0) {
+        //noinspection ConstantConditions
+        if (nameDisp.isEmpty()) {
             nameDisp = name;
         }
 
         // For a missing id, we simply use a sanitized version of the display name
-        if (nameId.length() == 0) {
-            nameId = LocalAddonPkgInfo.sanitizeDisplayToNameId(name.length() > 0 ? name : nameDisp);
+        //noinspection ConstantConditions
+        if (nameId.isEmpty()) {
+            nameId = LocalAddonPkgInfo.sanitizeDisplayToNameId(!name.isEmpty() ? name : nameDisp);
         }
 
-        assert nameId.length() > 0;
-        assert nameDisp.length() > 0;
+        assert !nameId.isEmpty();
+        assert !nameDisp.isEmpty();
 
         mNameId = nameId.trim();
         mDisplayName = nameDisp.trim();
@@ -279,18 +286,21 @@ public class AddonPackage extends MajorRevisionPackage
         String vendor     = getProperty(props, PkgProps.ADDON_VENDOR, target.getVendor());
 
         // The old <vendor> is equivalent to the new <vendor-display>
-        if (vendorDisp.length() == 0) {
+        //noinspection ConstantConditions
+        if (vendorDisp.isEmpty()) {
             vendorDisp = vendor;
         }
 
         // For a missing id, we simply use a sanitized version of the display vendor
-        if (vendorId.length() == 0) {
-            boolean hasVendor = vendor.length() > 0;
+        //noinspection ConstantConditions
+        if (vendorId.isEmpty()) {
+            //noinspection ConstantConditions
+            boolean hasVendor = !vendor.isEmpty();
             vendorId = LocalAddonPkgInfo.sanitizeDisplayToNameId(hasVendor ? vendor : vendorDisp);
         }
 
-        assert vendorId.length() > 0;
-        assert vendorDisp.length() > 0;
+        assert !vendorId.isEmpty();
+        assert !vendorDisp.isEmpty();
 
         mVendorId = vendorId.trim();
         mVendorDisplay = vendorDisp.trim();
@@ -300,22 +310,21 @@ public class AddonPackage extends MajorRevisionPackage
         mVersion = target.getVersion();
         mLayoutlibVersion = new LayoutlibVersionMixin(props);
 
-        IOptionalLibrary[] optLibs = target.getOptionalLibraries();
-        if (optLibs == null || optLibs.length == 0) {
+        List<OptionalLibrary> optLibs = target.getAdditionalLibraries();
+        if (optLibs.isEmpty()) {
             mLibs = new Lib[0];
         } else {
-            mLibs = new Lib[optLibs.length];
-            for (int i = 0; i < optLibs.length; i++) {
-                mLibs[i] = new Lib(optLibs[i].getName(), optLibs[i].getDescription());
+            mLibs = new Lib[optLibs.size()];
+            for (int i = 0; i < optLibs.size(); i++) {
+                OptionalLibrary optionalLibrary = optLibs.get(i);
+                mLibs[i] = new Lib(optionalLibrary.getName(), optionalLibrary.getDescription());
             }
         }
 
-        mPkgDesc = PkgDesc.Builder
-                .newAddon(mVersion,
-                          (MajorRevision) getRevision(),
-                          new IdDisplay(mVendorId, mVendorDisplay),
-                          new IdDisplay(mNameId, mDisplayName))
-                .setDescriptions(this)
+        mPkgDesc = setDescriptions(
+                PkgDesc.Builder.newAddon(mVersion, (MajorRevision) getRevision(),
+                        new IdDisplay(mVendorId, mVendorDisplay),
+                        new IdDisplay(mNameId, mDisplayName)))
                 .create();
     }
 
@@ -587,7 +596,7 @@ public class AddonPackage extends MajorRevisionPackage
                 getDisplayVendor());
 
         String d = getDescription();
-        if (d != null && d.length() > 0) {
+        if (d != null && !d.isEmpty()) {
             s += '\n' + d;
         }
 

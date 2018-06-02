@@ -29,6 +29,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.AuthState;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.NTCredentials;
+import org.apache.http.auth.params.AuthPNames;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.params.AuthPolicy;
@@ -72,7 +73,12 @@ import java.util.Properties;
  * there's no caching. However from an implementation perspective it's still recommended
  * to pass down a {@link DownloadCache} instance, which will let us override the implementation
  * later on (for testing, for example.)
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 class UrlOpener {
 
     private static final boolean DEBUG =
@@ -375,9 +381,8 @@ class UrlOpener {
         authpref.add(AuthPolicy.BASIC);
         authpref.add(AuthPolicy.DIGEST);
         authpref.add(AuthPolicy.NTLM);
-        // TODO: 23-Dec-17 umcomment
-//        httpClient.getParams().setParameter(AuthPNames.PROXY_AUTH_PREF, authpref);
-//        httpClient.getParams().setParameter(AuthPNames.TARGET_AUTH_PREF, authpref);
+        httpClient.getParams().setParameter(AuthPNames.PROXY_AUTH_PREF, authpref);
+        httpClient.getParams().setParameter(AuthPNames.TARGET_AUTH_PREF, authpref);
 
         if (DEBUG) {
             try {
@@ -463,7 +468,7 @@ class UrlOpener {
                 String domain = result.getDomain();
 
                 // proceed in case there is indeed a user
-                if (user != null && user.length() > 0) {
+                if (user != null && !user.isEmpty()) {
                     Credentials credentials = new NTCredentials(user, password,
                             workstation, domain);
                     httpClient.getCredentialsProvider().setCredentials(authScope, credentials);

@@ -100,7 +100,7 @@ public class ProjectPropertiesWorkingCopy extends ProjectProperties {
      *     overridden by the build.properties file.
      * </ul>
      *
-     * @param type One the possible {@link ProjectProperties.PropertyType}s.
+     * @param type One the possible {@link PropertyType}s.
      * @return this object, for chaining.
      */
     public synchronized ProjectPropertiesWorkingCopy merge(PropertyType type) {

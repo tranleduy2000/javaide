@@ -23,7 +23,7 @@ import java.io.OutputStream;
  * A file.
  */
 public interface IAbstractFile extends IAbstractResource {
-    public static enum PreferredWriteMode {
+    enum PreferredWriteMode {
         INPUTSTREAM, OUTPUTSTREAM
     }
 

@@ -1,0 +1,25 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+apply plugin: 'com.android.application'
+
+apply from: "../commonLocalRepo.gradle"
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion = rootProject.buildToolsVersion
+
+    buildTypes {
+        customSigning.initWith buildTypes.release
+    }
+
+    applicationVariants.all { variant ->
+        if (variant.buildType.name == "customSigning") {
+            variant.outputsAreSigned = true
+            // Normally you would have something like this here:
+            //
+            // variant.outputs.first { output ->
+            //      output.outputFile = mySigningTask.outputFile
+            // }
+        }
+    }
+}

@@ -1,0 +1,53 @@
+#
+# Test:
+# - Inject attributes in a main manifest.
+#
+
+@inject
+/manifest|http://schemas.android.com/apk/res/android versionCode=101
+/manifest|http://schemas.android.com/apk/res/android versionName=1.0.1
+/manifest/uses-sdk|http://schemas.android.com/apk/res/android minSdkVersion=10
+/manifest/uses-sdk|http://schemas.android.com/apk/res/android targetSdkVersion=14
+/manifest/application|http://schemas.android.com/apk/res/android label=null
+/manifest/application|http://schemas.android.com/apk/res/android icon=null
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/app_icon"
+        android:backupAgent="com.example.app.BackupAgentClass"
+        android:restoreAnyVersion="true"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:name="com.example.TheApp" >
+    </application>
+
+</manifest>
+
+@result
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="101"
+    android:versionName="1.0.1"><uses-sdk android:minSdkVersion="10" android:targetSdkVersion="14"/>
+
+    <application
+        android:backupAgent="com.example.app.BackupAgentClass"
+        android:restoreAnyVersion="true"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:name="com.example.TheApp" >
+    </application>
+
+</manifest>
+
+@errors
+

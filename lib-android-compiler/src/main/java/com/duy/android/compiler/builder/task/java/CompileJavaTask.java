@@ -73,20 +73,18 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
         return srcs.toString();
     }
 
-    public void getAllSourceFile(ArrayList<File> toAdd, File parent) {
+    private void getAllSourceFile(ArrayList<File> toAdd, File parent) {
         if (!parent.exists()) {
             return;
         }
         for (File child : parent.listFiles()) {
             if (child.isDirectory()) {
                 getAllSourceFile(toAdd, child);
-            } else {
-                if (child.isFile()) {
-                    if (parent.getName().endsWith(".java")) {
-                        toAdd.add(parent);
-                    }
-                    return;
+            } else if (child.isFile()) {
+                if (child.getName().endsWith(".java")) {
+                    toAdd.add(child);
                 }
+                return;
             }
         }
     }

@@ -126,6 +126,6 @@ public class ExecuteActivity extends AbstractAppCompatActivity {
     }
 
     private void bindView() {
-        mConsoleEditText = (ConsoleEditText) findViewById(R.id.console_view);
+        mConsoleEditText = findViewById(R.id.console_view);
     }
 }

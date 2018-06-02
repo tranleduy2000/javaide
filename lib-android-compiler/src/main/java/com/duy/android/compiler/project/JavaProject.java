@@ -29,12 +29,13 @@ public class JavaProject implements Serializable, Cloneable {
     private static final String TAG = "ProjectFile";
 
     protected ArrayList<File> javaSrcDirs;
-    protected File dirLibs;
-    protected File dirBuildClasses;
+    private File dirLibs;
+    private File dirBuildClasses;
     protected File dirSrcMain;
     protected File dirGeneratedSource;
     /* Project */
     protected File dirRoot;
+    // TODO: 02-Jun-18 remove
     protected File dirApp;
     /**
      * Build folder
@@ -51,18 +52,18 @@ public class JavaProject implements Serializable, Cloneable {
      * ----------------java
      * ----------------res
      */
-    protected File dirBuild;
-    protected File dirBuildOutput;
-    protected File dirBuildOutputJar;
-    protected File dirBuildDexedLibs;
-    protected File dirBuildDexedClass;
-    protected File dexFile;
+    File dirBuild;
+    File dirBuildOutput;
+    private File dirBuildOutputJar;
+    private File dirBuildDexedLibs;
+    private File dirBuildDexedClass;
+    private File dexFile;
     @Nullable
     protected String packageName;
     /*Main class*/
     @Nullable
-    protected ClassFile mainClass;
-    protected File outJarArchive;
+    private ClassFile mainClass;
+    private File outJarArchive;
     private File dirGenerated;
 
     public JavaProject(File root, @Nullable String mainClassName, @Nullable String packageName) {
@@ -254,7 +255,7 @@ public class JavaProject implements Serializable, Cloneable {
         return dirApp;
     }
 
-    public JSONObject exportJson() {
+    public JSONObject writeToJson() {
         JSONObject json = new JSONObject();
         try {
             if (mainClass != null) json.put("main_class_mame", mainClass.getName());
@@ -264,15 +265,6 @@ public class JavaProject implements Serializable, Cloneable {
             e.printStackTrace();
         }
         return json;
-    }
-
-    @Override
-    public String toString() {
-        return "ProjectFile{" +
-                "dirRoot='" + dirRoot + '\'' +
-                ", packageName='" + packageName + '\'' +
-                ", mainClass='" + mainClass + '\'' +
-                '}';
     }
 
     /**

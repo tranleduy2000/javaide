@@ -26,17 +26,17 @@
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/img_icon"
             android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_height="24dp"
             app:srcCompat="@drawable/ic_jar_file_white" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/node_value"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:textColor="@color/dark.color_folder"
             android:textSize="12sp"
-            tools:text="sample" />
+            tools:text="sampl sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssse" />
     </LinearLayout>
 
 

@@ -16,9 +16,6 @@
 
 package com.android.builder.png;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-
 import com.android.annotations.NonNull;
 import com.android.ide.common.res2.ResourcePreprocessor;
 import com.android.ide.common.resources.configuration.DensityQualifier;
@@ -44,12 +41,17 @@ import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * Generates PNG images (and XML copies) from VectorDrawable files.
  */
 @SuppressWarnings("MethodMayBeStatic")
 public class VectorDrawableRenderer implements ResourcePreprocessor {
-    /** Projects with minSdk set to this or higher don't need to generate PNGs. */
+    /**
+     * Projects with minSdk set to this or higher don't need to generate PNGs.
+     */
     public static final int MIN_SDK_WITH_VECTOR_SUPPORT = 21;
 
     private final ILogger mLogger;

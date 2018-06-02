@@ -1,0 +1,28 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'sdk-java-lib'
+
+group = 'com.android.tools.ddms'
+archivesBaseName = 'ddmlib'
+version = rootProject.ext.baseVersion
+
+dependencies {
+    compile project(':base:common')
+
+    compile 'net.sf.kxml:kxml2:2.3.0'
+
+    testCompile 'org.easymock:easymock:3.1'
+    testCompile 'junit:junit:4.12'
+}
+
+sourceSets {
+    main.resources.srcDir 'src/main/java'
+    test.resources.srcDir 'src/test/java'
+}
+
+project.ext.pomName = 'Android Tools ddmlib'
+project.ext.pomDesc = 'Library providing APIs to talk to Android devices'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"

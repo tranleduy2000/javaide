@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'clone-artifacts'
+
+dependencies {
+    compile project(':base:ddmlib')
+
+    testCompile 'junit:junit:4.12'
+}
+
+group = 'com.android.tools.build'
+archivesBaseName = 'builder-test-api'
+version = rootProject.ext.buildVersion
+
+project.ext.pomName = 'Android Builder Test API library'
+project.ext.pomDesc = 'API for the Test extension point in the Builder library.'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"
+

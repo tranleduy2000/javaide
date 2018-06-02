@@ -33,12 +33,12 @@ public interface SdkLoader {
 
     /**
      * Returns information about a build target.
-     *
+     * <p>
      * This requires loading/parsing the SDK.
      *
-     * @param targetHash the compilation target hash string.
+     * @param targetHash        the compilation target hash string.
      * @param buildToolRevision the build tools revision.
-     * @param logger a logger to output messages.
+     * @param logger            a logger to output messages.
      * @return the target info.
      */
     @NonNull
@@ -49,7 +49,7 @@ public interface SdkLoader {
 
     /**
      * Returns generic SDK information.
-     *
+     * <p>
      * This requires loading/parsing the SDK.
      *
      * @param logger a logger to output messages.
@@ -60,6 +60,7 @@ public interface SdkLoader {
 
     /**
      * Returns the location of artifact repositories built-in the SDK.
+     *
      * @return a non null list of repository folders.
      */
     @NonNull

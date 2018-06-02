@@ -70,104 +70,22 @@ public class SignedJarBuilder {
     private static final String DIGEST_ALGORITHM = "SHA1";
     private static final String DIGEST_ATTR = "SHA1-Digest";
     private static final String DIGEST_MANIFEST_ATTR = "SHA1-Digest-Manifest";
-
-    /** Write to another stream and track how many bytes have been
-     *  written.
-     */
-    private static class CountOutputStream extends FilterOutputStream {
-        private int mCount = 0;
-
-        public CountOutputStream(OutputStream out) {
-            super(out);
-            mCount = 0;
-        }
-
-        @Override
-        public void write(int b) throws IOException {
-            super.write(b);
-            mCount++;
-        }
-
-        @Override
-        public void write(byte[] b, int off, int len) throws IOException {
-            super.write(b, off, len);
-            mCount += len;
-        }
-
-        public int size() {
-            return mCount;
-        }
-    }
-
     private JarOutputStream mOutputJar;
     private PrivateKey mKey;
     private X509Certificate mCertificate;
     private Manifest mManifest;
     private MessageDigest mMessageDigest;
-
     private byte[] mBuffer = new byte[4096];
-
-    /**
-     * Classes which implement this interface provides a method to check whether a file should
-     * be added to a Jar file.
-     */
-    public interface IZipEntryFilter {
-
-        /**
-         * An exception thrown during packaging of a zip file into APK file.
-         * This is typically thrown by implementations of
-         * {@link IZipEntryFilter#checkEntry(String)}.
-         */
-        class ZipAbortException extends Exception {
-            private static final long serialVersionUID = 1L;
-
-            public ZipAbortException() {
-                super();
-            }
-
-            public ZipAbortException(String format, Object... args) {
-                super(String.format(format, args));
-            }
-
-            public ZipAbortException(Throwable cause, String format, Object... args) {
-                super(String.format(format, args), cause);
-            }
-
-            public ZipAbortException(Throwable cause) {
-                super(cause);
-            }
-        }
-
-
-        /**
-         * Checks a file for inclusion in a Jar archive.
-         * @param archivePath the archive file path of the entry
-         * @return <code>true</code> if the file should be included.
-         * @throws ZipAbortException if writing the file should be aborted.
-         */
-        boolean checkEntry(String archivePath) throws ZipAbortException;
-    }
-
-
-    /**
-     * Classes which implement this interface provides a method to check whether a file should
-     * be merged and extracted from the zip.
-     */
-    public interface ZipEntryExtractor {
-
-        boolean checkEntry(String archivePath);
-
-        void extract(String archivePath, InputStream zis) throws IOException;
-    }
 
     /**
      * Creates a {@link SignedJarBuilder} with a given output stream, and signing information.
      * <p/>If either <code>key</code> or <code>certificate</code> is <code>null</code> then
      * the archive will not be signed.
-     * @param out the {@link OutputStream} where to write the Jar archive.
-     * @param key the {@link PrivateKey} used to sign the archive, or <code>null</code>.
+     *
+     * @param out         the {@link OutputStream} where to write the Jar archive.
+     * @param key         the {@link PrivateKey} used to sign the archive, or <code>null</code>.
      * @param certificate the {@link X509Certificate} used to sign the archive, or
-     * <code>null</code>.
+     *                    <code>null</code>.
      * @throws IOException
      * @throws NoSuchAlgorithmException
      */
@@ -199,8 +117,9 @@ public class SignedJarBuilder {
 
     /**
      * Writes a new {@link File} into the archive.
+     *
      * @param inputFile the {@link File} to write.
-     * @param jarPath the filepath inside the archive.
+     * @param jarPath   the filepath inside the archive.
      * @throws IOException
      */
     public void writeFile(File inputFile, String jarPath) throws IOException {
@@ -221,6 +140,7 @@ public class SignedJarBuilder {
 
     /**
      * Copies the content of a Jar/Zip archive into the receiver archive.
+     *
      * @param input the {@link InputStream} for the Jar/Zip to copy.
      * @throws IOException
      * @throws ZipAbortException if the {@link IZipEntryFilter} filter indicated that the write
@@ -234,7 +154,8 @@ public class SignedJarBuilder {
      * Copies the content of a Jar/Zip archive into the receiver archive.
      * <p/>An optional {@link IZipEntryFilter} allows to selectively choose which files
      * to copy over.
-     * @param input the {@link InputStream} for the Jar/Zip to copy.
+     *
+     * @param input  the {@link InputStream} for the Jar/Zip to copy.
      * @param filter the filter or <code>null</code>
      * @throws IOException
      * @throws ZipAbortException if the {@link IZipEntryFilter} filter indicated that the write
@@ -311,6 +232,7 @@ public class SignedJarBuilder {
 
     /**
      * Closes the Jar archive by creating the manifest, and signing the archive.
+     *
      * @throws IOException
      * @throws SigningException
      */
@@ -359,6 +281,7 @@ public class SignedJarBuilder {
 
     /**
      * Adds an entry to the output jar, and write its content from the {@link InputStream}
+     *
      * @param input The input stream from where to write the entry content.
      * @param entry the entry to write in the jar.
      * @throws IOException
@@ -388,12 +311,14 @@ public class SignedJarBuilder {
                 attr = new Attributes();
                 mManifest.getEntries().put(entry.getName(), attr);
             }
-            attr.putValue(DIGEST_ATTR, 
-                          new String(Base64.encode(mMessageDigest.digest()), "ASCII"));
+            attr.putValue(DIGEST_ATTR,
+                    new String(Base64.encode(mMessageDigest.digest()), "ASCII"));
         }
     }
 
-    /** Writes a .SF file with a digest to the manifest. */
+    /**
+     * Writes a .SF file with a digest to the manifest.
+     */
     private void writeSignatureFile(OutputStream out)
             throws IOException, GeneralSecurityException {
         Manifest sf = new Manifest();
@@ -438,13 +363,15 @@ public class SignedJarBuilder {
         }
     }
 
-    /** Write the certificate file with a digital signature. */
+    /**
+     * Write the certificate file with a digital signature.
+     */
     private void writeSignatureBlock(CMSTypedData data, X509Certificate publicKey,
-            PrivateKey privateKey)
-                        throws IOException,
-                        CertificateEncodingException,
-                        OperatorCreationException,
-                        CMSException {
+                                     PrivateKey privateKey)
+            throws IOException,
+            CertificateEncodingException,
+            OperatorCreationException,
+            CMSException {
 
         ArrayList<X509Certificate> certList = new ArrayList<X509Certificate>();
         certList.add(publicKey);
@@ -452,14 +379,14 @@ public class SignedJarBuilder {
 
         CMSSignedDataGenerator gen = new CMSSignedDataGenerator();
         ContentSigner sha1Signer = new JcaContentSignerBuilder(
-                                       "SHA1with" + privateKey.getAlgorithm())
-                                   .build(privateKey);
+                "SHA1with" + privateKey.getAlgorithm())
+                .build(privateKey);
         gen.addSignerInfoGenerator(
-            new JcaSignerInfoGeneratorBuilder(
-                new JcaDigestCalculatorProviderBuilder()
-                .build())
-            .setDirectSignature(true)
-            .build(sha1Signer, publicKey));
+                new JcaSignerInfoGeneratorBuilder(
+                        new JcaDigestCalculatorProviderBuilder()
+                                .build())
+                        .setDirectSignature(true)
+                        .build(sha1Signer, publicKey));
         gen.addCertificates(certs);
         CMSSignedData sigData = gen.generate(data, false);
 
@@ -470,5 +397,86 @@ public class SignedJarBuilder {
         dos.flush();
         dos.close();
         asn1.close();
+    }
+
+    /**
+     * Classes which implement this interface provides a method to check whether a file should
+     * be added to a Jar file.
+     */
+    public interface IZipEntryFilter {
+
+        /**
+         * Checks a file for inclusion in a Jar archive.
+         *
+         * @param archivePath the archive file path of the entry
+         * @return <code>true</code> if the file should be included.
+         * @throws ZipAbortException if writing the file should be aborted.
+         */
+        boolean checkEntry(String archivePath) throws ZipAbortException;
+
+        /**
+         * An exception thrown during packaging of a zip file into APK file.
+         * This is typically thrown by implementations of
+         * {@link IZipEntryFilter#checkEntry(String)}.
+         */
+        class ZipAbortException extends Exception {
+            private static final long serialVersionUID = 1L;
+
+            public ZipAbortException() {
+                super();
+            }
+
+            public ZipAbortException(String format, Object... args) {
+                super(String.format(format, args));
+            }
+
+            public ZipAbortException(Throwable cause, String format, Object... args) {
+                super(String.format(format, args), cause);
+            }
+
+            public ZipAbortException(Throwable cause) {
+                super(cause);
+            }
+        }
+    }
+
+    /**
+     * Classes which implement this interface provides a method to check whether a file should
+     * be merged and extracted from the zip.
+     */
+    public interface ZipEntryExtractor {
+
+        boolean checkEntry(String archivePath);
+
+        void extract(String archivePath, InputStream zis) throws IOException;
+    }
+
+    /**
+     * Write to another stream and track how many bytes have been
+     * written.
+     */
+    private static class CountOutputStream extends FilterOutputStream {
+        private int mCount = 0;
+
+        public CountOutputStream(OutputStream out) {
+            super(out);
+            mCount = 0;
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            super.write(b);
+            mCount++;
+        }
+
+        @Override
+        public void write(byte[] b, int off, int len) throws IOException {
+            super.write(b, off, len);
+            mCount += len;
+        }
+
+        public int size() {
+            return mCount;
+        }
     }
 }

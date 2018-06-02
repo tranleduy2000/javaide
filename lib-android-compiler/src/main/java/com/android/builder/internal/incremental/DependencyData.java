@@ -34,50 +34,15 @@ import java.util.List;
 public class DependencyData {
 
     @NonNull
+    List<String> mSecondaryOutputFiles = Lists.newArrayList();
+    @NonNull
     private String mMainFile;
     @NonNull
     private List<String> mSecondaryFiles = Lists.newArrayList();
     @NonNull
     private List<String> mOutputFiles = Lists.newArrayList();
-    @NonNull List<String> mSecondaryOutputFiles = Lists.newArrayList();
 
     DependencyData() {
-    }
-
-    @NonNull
-    public String getMainFile() {
-        return mMainFile;
-    }
-
-    void setMainFile(@NonNull String path) {
-        mMainFile = path;
-    }
-
-    @NonNull
-    public List<String> getSecondaryFiles() {
-        return mSecondaryFiles;
-    }
-
-    void addSecondaryFile(@NonNull String path) {
-        mSecondaryFiles.add(path);
-    }
-
-    @NonNull
-    public List<String> getOutputFiles() {
-        return mOutputFiles;
-    }
-
-    void addOutputFile(@NonNull String path) {
-        mOutputFiles.add(path);
-    }
-
-    public void addSecondaryOutputFile(@NonNull String path) {
-        mSecondaryOutputFiles.add(path);
-    }
-
-    @NonNull
-    public List<String> getSecondaryOutputFiles() {
-        return mSecondaryOutputFiles;
     }
 
     /**
@@ -96,10 +61,6 @@ public class DependencyData {
         // Read in our dependency file
         List<String> content = Files.readLines(dependencyFile, Charsets.UTF_8);
         return processDependencyData(content);
-    }
-
-    private enum ParseMode {
-        OUTPUT, MAIN, SECONDARY, DONE
     }
 
     @VisibleForTesting
@@ -170,6 +131,42 @@ public class DependencyData {
         return data;
     }
 
+    @NonNull
+    public String getMainFile() {
+        return mMainFile;
+    }
+
+    void setMainFile(@NonNull String path) {
+        mMainFile = path;
+    }
+
+    @NonNull
+    public List<String> getSecondaryFiles() {
+        return mSecondaryFiles;
+    }
+
+    void addSecondaryFile(@NonNull String path) {
+        mSecondaryFiles.add(path);
+    }
+
+    @NonNull
+    public List<String> getOutputFiles() {
+        return mOutputFiles;
+    }
+
+    void addOutputFile(@NonNull String path) {
+        mOutputFiles.add(path);
+    }
+
+    public void addSecondaryOutputFile(@NonNull String path) {
+        mSecondaryOutputFiles.add(path);
+    }
+
+    @NonNull
+    public List<String> getSecondaryOutputFiles() {
+        return mSecondaryOutputFiles;
+    }
+
     @Override
     public String toString() {
         return "DependencyData{" +
@@ -177,5 +174,9 @@ public class DependencyData {
                 ", mSecondaryFiles=" + mSecondaryFiles +
                 ", mOutputFiles=" + mOutputFiles +
                 '}';
+    }
+
+    private enum ParseMode {
+        OUTPUT, MAIN, SECONDARY, DONE
     }
 }

@@ -34,16 +34,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * Stores a collection of {@link DependencyData}.
- *
+ * <p>
  * The format is binary and follows the following format:
- *
+ * <p>
  * (Header Tag)(version number: int)
  * (Start Tag)(Main File)[(2ndary Tag)(2ndary File)...][(Output tag)(output file)...][(2ndary Output tag)(output file)...]
  * (Start Tag)(Main File)[(2ndary Tag)(2ndary File)...][(Output tag)(output file)...][(2ndary Output tag)(output file)...]
  * ...
- *
+ * <p>
  * All files are written as (size in int)(byte array, using UTF8 encoding).
  */
 public class DependencyDataStore {
@@ -60,6 +59,59 @@ public class DependencyDataStore {
     private final Map<String, DependencyData> mMainFileMap = Maps.newHashMap();
 
     public DependencyDataStore() {
+    }
+
+    private static void writeInt(@NonNull FileOutputStream fos, int value) throws IOException {
+        ByteBuffer b = ByteBuffer.allocate(4);
+        b.putInt(value);
+        fos.write(b.array());
+    }
+
+    private static void writePath(@NonNull FileOutputStream fos, String path) throws IOException {
+        byte[] pathBytes = path.getBytes(Charsets.UTF_8);
+
+        writeInt(fos, pathBytes.length);
+        fos.write(pathBytes);
+    }
+
+    private static byte readByte(@NonNull FileInputStream fis, @NonNull ReusableBuffer buffers)
+            throws IOException {
+        int read = fis.read(buffers.intBuffer, 0, 1);
+        if (read != 1) {
+            return TAG_END;
+        }
+
+        return buffers.intBuffer[0];
+    }
+
+    private static int readInt(@NonNull FileInputStream fis, @NonNull ReusableBuffer buffers)
+            throws IOException {
+        int read = fis.read(buffers.intBuffer);
+
+        // there must always be 4 bytes for the path length
+        if (read != 4) {
+            throw new IOException("Failed to read path length");
+        }
+
+        // get the int value.
+        ByteBuffer b = ByteBuffer.wrap(buffers.intBuffer);
+        return b.getInt();
+    }
+
+    private static String readPath(@NonNull FileInputStream fis, @NonNull ReusableBuffer buffers)
+            throws IOException {
+        int length = readInt(fis, buffers);
+
+        if (buffers.pathBuffer == null || buffers.pathBuffer.length < length) {
+            buffers.pathBuffer = new byte[length];
+        }
+
+        int read = fis.read(buffers.pathBuffer, 0, length);
+        if (read != length) {
+            throw new IOException("Failed to read path");
+        }
+
+        return new String(buffers.pathBuffer, 0, length, Charsets.UTF_8);
     }
 
     public void addData(@NonNull List<DependencyData> dataList) {
@@ -143,11 +195,6 @@ public class DependencyDataStore {
         }
     }
 
-    private static class ReusableBuffer {
-        byte[] intBuffer = new byte[4];
-        byte[] pathBuffer = null;
-    }
-
     /**
      * Loads the dependency data from the given file.
      *
@@ -221,56 +268,8 @@ public class DependencyDataStore {
         }
     }
 
-    private static void writeInt(@NonNull FileOutputStream fos, int value) throws IOException {
-        ByteBuffer b = ByteBuffer.allocate(4);
-        b.putInt(value);
-        fos.write(b.array());
-    }
-
-    private static void writePath(@NonNull FileOutputStream fos, String path) throws IOException {
-        byte[] pathBytes = path.getBytes(Charsets.UTF_8);
-
-        writeInt(fos, pathBytes.length);
-        fos.write(pathBytes);
-    }
-
-    private static byte readByte(@NonNull FileInputStream fis, @NonNull ReusableBuffer buffers)
-            throws IOException {
-        int read = fis.read(buffers.intBuffer, 0, 1);
-        if (read != 1) {
-            return TAG_END;
-        }
-
-        return buffers.intBuffer[0];
-    }
-
-    private static int readInt(@NonNull FileInputStream fis, @NonNull ReusableBuffer buffers)
-            throws IOException {
-        int read = fis.read(buffers.intBuffer);
-
-        // there must always be 4 bytes for the path length
-        if (read != 4) {
-            throw new IOException("Failed to read path length");
-        }
-
-        // get the int value.
-        ByteBuffer b = ByteBuffer.wrap(buffers.intBuffer);
-        return b.getInt();
-    }
-
-    private static String readPath(@NonNull FileInputStream fis, @NonNull ReusableBuffer buffers)
-            throws IOException {
-        int length = readInt(fis, buffers);
-
-        if (buffers.pathBuffer == null || buffers.pathBuffer.length < length) {
-            buffers.pathBuffer = new byte[length];
-        }
-
-        int read = fis.read(buffers.pathBuffer, 0, length);
-        if (read != length) {
-            throw new IOException("Failed to read path");
-        }
-
-        return new String(buffers.pathBuffer, 0, length, Charsets.UTF_8);
+    private static class ReusableBuffer {
+        byte[] intBuffer = new byte[4];
+        byte[] pathBuffer = null;
     }
 }

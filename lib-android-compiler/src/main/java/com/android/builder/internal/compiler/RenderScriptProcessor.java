@@ -73,6 +73,7 @@ public class RenderScriptProcessor {
     private final Set<String> mAbiFilters;
     private final File mRsLib;
     private final Map<String, File> mLibClCore = Maps.newHashMap();
+
     public RenderScriptProcessor(
             @NonNull List<File> sourceFolders,
             @NonNull List<File> importFolders,

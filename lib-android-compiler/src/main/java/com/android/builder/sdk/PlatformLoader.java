@@ -16,12 +16,6 @@
 
 package com.android.builder.sdk;
 
-import static com.android.SdkConstants.FN_AAPT;
-import static com.android.SdkConstants.FN_AIDL;
-import static com.android.SdkConstants.FN_BCC_COMPAT;
-import static com.android.SdkConstants.FN_RENDERSCRIPT;
-import static com.android.SdkConstants.FN_ZIPALIGN;
-
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.builder.internal.FakeAndroidTarget;
@@ -33,9 +27,15 @@ import com.google.common.collect.ImmutableList;
 
 import java.io.File;
 
+import static com.android.SdkConstants.FN_AAPT;
+import static com.android.SdkConstants.FN_AIDL;
+import static com.android.SdkConstants.FN_BCC_COMPAT;
+import static com.android.SdkConstants.FN_RENDERSCRIPT;
+import static com.android.SdkConstants.FN_ZIPALIGN;
+
 /**
  * Singleton-based implementation of SdkLoader for a platform-based SDK.
- *
+ * <p>
  * Platform-based SDK are in the Android source tree in AOSP, using a different
  * folder layout for all the files.
  */
@@ -45,11 +45,15 @@ public class PlatformLoader implements SdkLoader {
 
     @NonNull
     private final File mTreeLocation;
-
-    private File mHostToolsFolder;
-    private SdkInfo mSdkInfo;
     @NonNull
     private final ImmutableList<File> mRepositories;
+    private File mHostToolsFolder;
+    private SdkInfo mSdkInfo;
+
+    private PlatformLoader(@NonNull File treeLocation) {
+        mTreeLocation = treeLocation;
+        mRepositories = ImmutableList.of(new File(mTreeLocation + "/prebuilts/sdk/m2repository"));
+    }
 
     public static synchronized SdkLoader getLoader(
             @NonNull File treeLocation) {
@@ -69,7 +73,7 @@ public class PlatformLoader implements SdkLoader {
     @NonNull
     @Override
     public TargetInfo getTargetInfo(@NonNull String targetHash,
-            @NonNull FullRevision buildToolRevision, @NonNull ILogger logger) {
+                                    @NonNull FullRevision buildToolRevision, @NonNull ILogger logger) {
         init(logger);
 
         IAndroidTarget androidTarget = new FakeAndroidTarget(mTreeLocation.getPath(), targetHash);
@@ -106,11 +110,6 @@ public class PlatformLoader implements SdkLoader {
     @NonNull
     public ImmutableList<File> getRepositories() {
         return mRepositories;
-    }
-
-    private PlatformLoader(@NonNull File treeLocation) {
-        mTreeLocation = treeLocation;
-        mRepositories = ImmutableList.of(new File(mTreeLocation + "/prebuilts/sdk/m2repository"));
     }
 
     private synchronized void init(@NonNull ILogger logger) {

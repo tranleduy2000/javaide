@@ -16,15 +16,6 @@
 
 package com.android.builder.sdk;
 
-import static com.android.SdkConstants.FD_EXTRAS;
-import static com.android.SdkConstants.FD_M2_REPOSITORY;
-import static com.android.SdkConstants.FD_PLATFORM_TOOLS;
-import static com.android.SdkConstants.FD_SUPPORT;
-import static com.android.SdkConstants.FD_TOOLS;
-import static com.android.SdkConstants.FN_ADB;
-import static com.android.SdkConstants.FN_ANNOTATIONS_JAR;
-import static com.android.SdkConstants.FN_SOURCE_PROP;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.sdklib.BuildToolInfo;
@@ -47,6 +38,15 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Properties;
 
+import static com.android.SdkConstants.FD_EXTRAS;
+import static com.android.SdkConstants.FD_M2_REPOSITORY;
+import static com.android.SdkConstants.FD_PLATFORM_TOOLS;
+import static com.android.SdkConstants.FD_SUPPORT;
+import static com.android.SdkConstants.FD_TOOLS;
+import static com.android.SdkConstants.FN_ADB;
+import static com.android.SdkConstants.FN_ANNOTATIONS_JAR;
+import static com.android.SdkConstants.FN_SOURCE_PROP;
+
 /**
  * Singleton-based implementation of SdkLoader for a standard SDK
  */
@@ -56,9 +56,14 @@ public class DefaultSdkLoader implements SdkLoader {
 
     @NonNull
     private final File mSdkLocation;
+    private final ImmutableList<File> mRepositories;
     private SdkManager mSdkManager;
     private SdkInfo mSdkInfo;
-    private final ImmutableList<File> mRepositories;
+
+    private DefaultSdkLoader(@NonNull File sdkLocation) {
+        mSdkLocation = sdkLocation;
+        mRepositories = computeRepositories();
+    }
 
     public static synchronized SdkLoader getLoader(
             @NonNull File sdkLocation) {
@@ -108,11 +113,6 @@ public class DefaultSdkLoader implements SdkLoader {
     @NonNull
     public ImmutableList<File> getRepositories() {
         return mRepositories;
-    }
-
-    private DefaultSdkLoader(@NonNull File sdkLocation) {
-        mSdkLocation = sdkLocation;
-        mRepositories = computeRepositories();
     }
 
     private synchronized void init(@NonNull ILogger logger) {

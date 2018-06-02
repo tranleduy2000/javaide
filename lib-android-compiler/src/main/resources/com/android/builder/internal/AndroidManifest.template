@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="#PACKAGE#">
+
+    <uses-sdk android:minSdkVersion="#MINSDKVERSION#" android:targetSdkVersion="#TARGETSDKVERSION#" />
+
+    <application>
+        <uses-library android:name="android.test.runner" />
+    </application>
+
+    <instrumentation android:name="#TESTRUNNER#"
+                     android:targetPackage="#TESTEDPACKAGE#"
+                     android:handleProfiling="#HANDLEPROFILING#"
+                     android:functionalTest="#FUNCTIONALTEST#"
+                     android:label="Tests for #TESTEDPACKAGE#"/>
+</manifest>

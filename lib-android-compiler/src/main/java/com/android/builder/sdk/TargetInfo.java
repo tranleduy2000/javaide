@@ -40,6 +40,7 @@ public class TargetInfo {
 
     /**
      * Returns the compilation target
+     *
      * @return the target.
      */
     @NonNull
@@ -49,6 +50,7 @@ public class TargetInfo {
 
     /**
      * Returns the BuildToolInfo
+     *
      * @return the build tool info
      */
     @NonNull

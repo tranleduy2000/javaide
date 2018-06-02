@@ -151,6 +151,35 @@ public class Aapt extends ABuildTask<AndroidApplicationProject> {
         }
         File aaptFile = new File(Environment.getBinDir(context), aaptName);
 
+        if (project.getDependencies().size() > 0) {
+            builder.stdout("Run AAPT for all libraries");
+            //run aapt for library
+            for (AndroidLibraryProject library : project.getDependencies()) {
+                builder.stdout("AAPT for library " + library.getProjectName());
+                Argument args = new Argument();
+                args.add(aaptFile.getAbsolutePath());
+                args.add("p"); //package
+                args.add("-f"); //force overwrite of existing files
+                args.add("--auto-add-overlay");
+                if (builder.isVerbose()) {
+                    args.add("-v"); //debug
+                }
+                args.add("--non-constant-id"); //non constant for library
+                args.add("-M", library.getXmlManifest().getAbsolutePath());  //manifest file
+                args.add("-A", library.getAssetsDir().getAbsolutePath()); //input assets dir
+                args.add("-I", project.getBootClassPath(context));//The location of the android.jar resource
+                args.add("-S", library.getResDir().getAbsolutePath());  //input resource dir
+                args.add("-m"); // make package directories under location specified by -J
+                //specify where to output R.java resource constant definitions
+                args.add("-J", library.getDirGeneratedSource().getAbsolutePath());
+
+                boolean complete = execAapt(aaptFile, args);
+                if (!complete) {
+                    return false;
+                }
+            }
+        }
+
         Argument args = new Argument();
         args.add(aaptFile.getAbsolutePath());
         args.add("p", "-f", "--auto-add-overlay");
@@ -166,6 +195,10 @@ public class Aapt extends ABuildTask<AndroidApplicationProject> {
             args.add("-S", library.getResDir().getAbsolutePath());
             args.add("-A", library.getAssetsDir().getAbsolutePath()); //input assets dir
         }
+        return execAapt(aaptFile, args);
+    }
+
+    private boolean execAapt(File aaptFile, Argument args) throws InterruptedException, IOException {
         final int[] exitCode = new int[1];
         final Process aaptProcess = Runtime.getRuntime().exec(args.toArray());
         Thread thread = new Thread(new Runnable() {

@@ -48,7 +48,7 @@ public class AndroidProjectManager {
         createManifest(project, activityClass, packageName, assets);
         createMainActivity(project, activityClass, packageName, activityName, appName, useCompatLibrary, assets);
         createMainLayoutXml(project, mainLayoutName);
-        copyLibrary(project, useCompatLibrary, assets);
+        copyLibrary(project, useCompatLibrary);
 
         return project;
     }
@@ -125,11 +125,13 @@ public class AndroidProjectManager {
         output.close();
     }
 
-    private void copyLibrary(AndroidApplicationProject project, boolean useCompatLibrary, AssetManager assets) throws IOException, StreamException, SAXException, ParserConfigurationException {
+    private void copyLibrary(AndroidApplicationProject project, boolean useCompatLibrary)
+            throws IOException, StreamException, SAXException, ParserConfigurationException {
         if (useCompatLibrary) {
             //v7
             addLib(project, "libs/27.1.1/android.arch.core-common-1.1.0.jar", "android.arch.core-common-1.1.0.jar");
             addLib(project, "libs/27.1.1/android.arch.core-runtime-1.1.0.aar", "android.arch.core-runtime-1.1.0");
+            addLib(project, "libs/27.1.1/android.arch.lifecycle-common-1.1.0.jar", "android.arch.lifecycle-common-1.1.0.jar");
             addLib(project, "libs/27.1.1/android.arch.lifecycle-livedata-core-1.1.0.aar", "android.arch.lifecycle-livedata-core-1.1.0");
             addLib(project, "libs/27.1.1/android.arch.lifecycle-runtime-1.1.0.aar", "android.arch.lifecycle-runtime-1.1.0");
             addLib(project, "libs/27.1.1/android.arch.lifecycle-viewmodel-1.1.0.aar", "android.arch.lifecycle-viewmodel-1.1.0");
@@ -155,12 +157,10 @@ public class AndroidProjectManager {
             output.close();
         } else if (assetsPath.endsWith(".aar")) {
             File aarFile = new File(project.getDirBuildDexedLibs(), assetsPath);
-//            if (!aarFile.exists()) {
             aarFile.getParentFile().mkdirs();
             FileOutputStream output = new FileOutputStream(aarFile);
             IOUtils.copy(context.getAssets().open(assetsPath), output);
             output.close();
-//            }
 
             AndroidLibraryExtractor extractor = new AndroidLibraryExtractor(context);
             extractor.extract(aarFile, libName);

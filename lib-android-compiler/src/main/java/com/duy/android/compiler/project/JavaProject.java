@@ -346,4 +346,8 @@ public class JavaProject implements Serializable, Cloneable {
     public File getJavaSrcDir() {
         return javaSrcDirs.get(0);
     }
+
+    public File getDirGeneratedSource() {
+        return dirGeneratedSource;
+    }
 }

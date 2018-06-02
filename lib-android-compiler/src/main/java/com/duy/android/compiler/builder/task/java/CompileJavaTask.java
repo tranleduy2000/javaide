@@ -54,35 +54,37 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
         argument.add("-target", CompilerOptions.VERSION_1_7); //target
         argument.add("-proc:none"); // Disable annotation processors...
         argument.add("-d", project.getDirBuildClasses().getAbsolutePath()); // The location of the output folder
-        argument.add(getAllSourceFile(project));
+
+        String[] sourceFiles = getAllSourceFiles(project);
+        argument.add(sourceFiles);
 
         System.err.println("argument = " + argument);
         return main.compile(argument.toArray());
     }
 
-    private String getAllSourceFile(JavaProject project) {
-        ArrayList<File> javaFiles = new ArrayList<>();
+    private String[] getAllSourceFiles(JavaProject project) {
+        ArrayList<String> javaFiles = new ArrayList<>();
         String[] sourcePaths = project.getSourcePath().split(File.pathSeparator);
         for (String sourcePath : sourcePaths) {
-            getAllSourceFile(javaFiles, new File(sourcePath));
+            getAllSourceFiles(javaFiles, new File(sourcePath));
         }
-        StringBuilder srcs = new StringBuilder();
-        for (File javaFile : javaFiles) {
-            srcs.append(" ").append(javaFile.getAbsolutePath());
-        }
-        return srcs.toString();
+
+        System.out.println("source size: " + javaFiles.size());
+        String[] srcs = new String[javaFiles.size()];
+        return javaFiles.toArray(srcs);
     }
 
-    private void getAllSourceFile(ArrayList<File> toAdd, File parent) {
+    private void getAllSourceFiles(ArrayList<String> toAdd, File parent) {
         if (!parent.exists()) {
             return;
         }
+        String path = project.getMainClass().getPath(project);
         for (File child : parent.listFiles()) {
             if (child.isDirectory()) {
-                getAllSourceFile(toAdd, child);
-            } else if (child.isFile()) {
+                getAllSourceFiles(toAdd, child);
+            } else if (child.exists() && child.isFile()) {
                 if (child.getName().endsWith(".java")) {
-                    toAdd.add(child);
+                    toAdd.add(child.getAbsolutePath());
                 }
                 return;
             }

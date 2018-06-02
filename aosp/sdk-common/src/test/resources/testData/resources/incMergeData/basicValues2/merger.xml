@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3">
+    <dataSet config="main">
+        <source path="$TOP$$SEP$main">
+            <file path="$TOP$$SEP$main$SEP$values$SEP$values.xml" qualifiers="">
+                <string name="untouched">untouched</string>
+                <string name="removed_overlay">untouched</string>
+            </file>
+        </source>
+    </dataSet>
+    <dataSet config="overlay">
+        <source path="$TOP$$SEP$overlay">
+            <file path="$TOP$$SEP$overlay$SEP$values$SEP$values.xml" qualifiers="">
+                <string name="removed_overlay">overlay</string>
+            </file>
+        </source>
+    </dataSet>
+</merger>

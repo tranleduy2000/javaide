@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+    <dataSet config="main">
+        <source path="$TOP$$SEP$..$SEP$baseSet">
+            <file name="foo/icon.png" path="$TOP$$SEP$..$SEP$baseSet$SEP$foo$SEP$icon.png" />
+            <file name="main.xml" path="$TOP$$SEP$..$SEP$baseSet$SEP$main.xml" />
+            <file name="foo/foo.dat" path="$TOP$$SEP$..$SEP$baseSet$SEP$foo$SEP$foo.dat" />
+            <file name="value.xml" path="$TOP$$SEP$..$SEP$baseSet$SEP$value.xml" />
+        </source>
+    </dataSet>
+    <dataSet config="overlay">
+        <source path="$TOP$$SEP$overlay">
+            <file name="icon2.png" path="$TOP$$SEP$overlay$SEP$icon2.png" />
+            <file name="foo/icon.png" path="$TOP$$SEP$overlay$SEP$foo$SEP$icon.png" />
+        </source>
+    </dataSet>
+</merger>

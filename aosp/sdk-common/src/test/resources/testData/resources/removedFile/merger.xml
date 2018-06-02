@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3" xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+    <dataSet config="main">
+        <source path="$TOP$$SEP$res">
+            <file name="icon" path="$TOP$$SEP$res$SEP$drawable$SEP$icon.png" qualifiers="" type="drawable"/>
+            <file name="removed" path="$TOP$$SEP$res$SEP$drawable$SEP$removed.png" qualifiers="" type="drawable"/>
+        </source>
+    </dataSet>
+</merger>

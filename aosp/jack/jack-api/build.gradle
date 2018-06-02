@@ -1,0 +1,26 @@
+apply plugin: 'java'
+
+group = 'com.android.tools.jack'
+archivesBaseName = 'jack-api'
+version = '0.9.0'
+
+configurations {
+  provided
+}
+
+dependencies {
+  provided 'com.google.code.findbugs:jsr305:1.3.9'
+}
+
+compileJava.classpath += configurations.provided
+
+project.ext.pomName = 'Android Jack API'
+project.ext.pomDesc = 'API to dynamically load Jack'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"
+
+javadoc {
+    classpath += configurations.provided
+}

@@ -55,5 +55,5 @@ dependencies {
     api group: 'commons-codec', name: 'commons-codec', version: '1.10'
     // https://mvnrepository.com/artifact/org.eclipse.jdt.core.compiler/ecj
     api group: 'org.eclipse.jdt.core.compiler', name: 'ecj', version: '4.6.1'
-
+    api 'com.squareup:javawriter:2.5.0'
 }

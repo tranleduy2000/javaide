@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3">
+    <dataSet config="main">
+        <source path="$TOP$$SEP$main">
+            <file name="untouched" path="$TOP$$SEP$main$SEP$drawable$SEP$untouched.png" qualifiers="" type="drawable"/>
+            <file name="touched" path="$TOP$$SEP$main$SEP$drawable$SEP$touched.png" qualifiers="" type="drawable"/>
+            <file name="new_overlay" path="$TOP$$SEP$main$SEP$drawable$SEP$new_overlay.png" qualifiers="" type="drawable"/>
+            <file name="removed" path="$TOP$$SEP$main$SEP$drawable$SEP$removed.png" qualifiers="" type="drawable"/>
+            <file name="removed" path="$TOP$$SEP$main$SEP$drawable-ldpi$SEP$removed.png" qualifiers="ldpi" type="drawable"/>
+            <file name="removed_overlay" path="$TOP$$SEP$main$SEP$drawable$SEP$removed_overlay.png" qualifiers="" type="drawable"/>
+        </source>
+    </dataSet>
+    <dataSet config="overlay">
+        <source path="$TOP$$SEP$overlay">
+            <file name="removed_overlay" path="$TOP$$SEP$overlay$SEP$drawable$SEP$removed_overlay.png" qualifiers="" type="drawable"/>
+        </source>
+    </dataSet>
+</merger>

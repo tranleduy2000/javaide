@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3">
+    <dataSet config="main">
+        <source path="$TOP$$SEP$main">
+            <file name="untouched.png" path="$TOP$$SEP$main$SEP$untouched.png" />
+            <file name="touched.png" path="$TOP$$SEP$main$SEP$touched.png" />
+            <file name="removed.png" path="$TOP$$SEP$main$SEP$removed.png" />
+            <file name="overlay_removed.png" path="$TOP$$SEP$main$SEP$overlay_removed.png" />
+            <file name="foo/overlay_added.png" path="$TOP$$SEP$main$SEP$foo$SEP$overlay_added.png" />
+        </source>
+    </dataSet>
+    <dataSet config="overlay">
+        <source path="$TOP$$SEP$overlay">
+            <file name="overlay_removed.png" path="$TOP$$SEP$overlay$SEP$overlay_removed.png" />
+        </source>
+    </dataSet>
+</merger>

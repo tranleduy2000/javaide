@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <attr name="d_common_attr" format="string"/>
+
+    <declare-styleable name="StyleableExample">
+        <attr name="d_common_attr" format="string"/>
+   </wrong-end-tag>
+</resources>

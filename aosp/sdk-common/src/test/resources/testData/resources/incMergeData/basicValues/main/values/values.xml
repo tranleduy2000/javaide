@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="untouched">untouched</string>
+    <string name="touched">touched</string>
+    <string name="new_overlay">old_overlay</string>
+</resources>

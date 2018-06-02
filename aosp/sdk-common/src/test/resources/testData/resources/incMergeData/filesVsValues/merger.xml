@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3">
+    <dataSet config="main">
+        <source path="$TOP$$SEP$main">
+            <file name="main" path="$TOP$$SEP$main$SEP$layout$SEP$main.xml" qualifiers="" type="layout"/>
+            <file name="file_replaced_by_alias" path="$TOP$$SEP$main$SEP$layout$SEP$file_replaced_by_alias.xml" qualifiers="" type="layout"/>
+            <file path="$TOP$$SEP$main$SEP$values$SEP$values.xml" qualifiers="">
+                <item type="layout" name="alias_replaced_by_file">@layout/main</item>
+            </file>
+        </source>
+    </dataSet>
+</merger>

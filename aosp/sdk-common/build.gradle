@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'sdk-java-lib'
+apply plugin: 'application'
+
+group = 'com.android.tools'
+archivesBaseName = 'sdk-common'
+version = rootProject.ext.baseVersion
+mainClassName = 'com.android.ide.common.vectordrawable.VdPreview'
+
+dependencies {
+    compile project(':base:sdklib')
+    compile project(':base:builder-test-api')
+    compile project(':base:builder-model')
+
+    testCompile 'junit:junit:4.12'
+    testCompile project(':base:sdklib').sourceSets.test.output
+    testCompile project(':base:testutils')
+    testCompile 'org.easymock:easymock:3.3'
+    testCompile 'org.mockito:mockito-all:1.9.5'
+}
+
+project.ext.pomName = 'Android Tools sdk-common library'
+project.ext.pomDesc = 'sdk-common library used by other Android tools libraries.'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"
+

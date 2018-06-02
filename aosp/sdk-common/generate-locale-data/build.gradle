@@ -1,0 +1,13 @@
+apply plugin: 'java'
+apply plugin: 'sdk-java-lib'
+
+dependencies {
+    compile project(':base:sdk-common')
+    compile 'com.google.guava:guava:17.0'
+    compile 'com.ibm.icu:icu4j:54.1.1'
+}
+
+group = 'com.android.tools'
+archivesBaseName = 'generate-locale-data'
+version = rootProject.ext.baseVersion
+sdkJar.manifest.attributes("Main-Class": "com.android.ide.common.generate.locale.LocaleTableGenerator")

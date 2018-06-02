@@ -21,7 +21,7 @@ public class AndroidAppCompatTest {
         Context context = InstrumentationRegistry.getTargetContext();
         AndroidProjectManager projectManager = new AndroidProjectManager(context);
         File dir = (Environment.getSdkAppDir());
-        AndroidApplicationProject project = projectManager.createNewProject(context, dir, "AndroidLibraryProjectExtractorTest"
+        AndroidAppProject project = projectManager.createNewProject(context, dir, "AndroidLibraryProjectExtractorTest"
                 , "com.duy.example", "MainActivity", "activity_main.xml",
                 "TestLibrary", true);
 

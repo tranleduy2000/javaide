@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
-import com.duy.android.compiler.project.AndroidApplicationProject;
+import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.ClassFile;
 import com.duy.android.compiler.project.JavaProject;
 
@@ -91,10 +91,10 @@ public class ProjectManager {
         return projectFile;
     }
 
-    public static AndroidApplicationProject importAndroidProject(Context context, File file) {
+    public static AndroidAppProject importAndroidProject(Context context, File file) {
         Log.d(TAG, "importAndroidProject() called with: context = [" + context + "], file = [" + file + "]");
 
-        AndroidApplicationProject project = new AndroidApplicationProject(file.getParentFile(),
+        AndroidAppProject project = new AndroidAppProject(file.getParentFile(),
                 null, null);
         try {
             if (project.getXmlManifest().exists()) {

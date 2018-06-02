@@ -32,13 +32,13 @@ public class AndroidProjectManager {
      * @param projectName      - Name of project, it will be used for create root directory
      * @param useCompatLibrary - <code>true</code> if need copy android compat library
      */
-    public AndroidApplicationProject createNewProject(Context context, File dir, String projectName,
-                                                      String packageName, String activityName, String mainLayoutName,
-                                                      String appName, boolean useCompatLibrary) throws Exception {
+    public AndroidAppProject createNewProject(Context context, File dir, String projectName,
+                                              String packageName, String activityName, String mainLayoutName,
+                                              String appName, boolean useCompatLibrary) throws Exception {
 
         String activityClass = String.format("%s.%s", packageName, activityName);
         File projectDir = new File(dir, projectName);
-        AndroidApplicationProject project = new AndroidApplicationProject(projectDir, activityClass, packageName);
+        AndroidAppProject project = new AndroidAppProject(projectDir, activityClass, packageName);
         //create directory
         project.mkdirs();
 
@@ -54,7 +54,7 @@ public class AndroidProjectManager {
     }
 
 
-    private void createRes(AndroidApplicationProject project, boolean useAppCompat, String appName) throws IOException {
+    private void createRes(AndroidAppProject project, boolean useAppCompat, String appName) throws IOException {
         File resDir = project.getResDir();
 
         //drawable
@@ -76,7 +76,7 @@ public class AndroidProjectManager {
         saveFile(string, content);
     }
 
-    private void createManifest(AndroidApplicationProject project, String activityClass, String packageName,
+    private void createManifest(AndroidAppProject project, String activityClass, String packageName,
                                 AssetManager assets) throws IOException {
         File manifest = project.getXmlManifest();
         String content = IOUtils.toString(assets.open("templates/AndroidManifest.xml"));
@@ -87,7 +87,7 @@ public class AndroidProjectManager {
     }
 
 
-    private void createMainActivity(AndroidApplicationProject project, String activityClass,
+    private void createMainActivity(AndroidAppProject project, String activityClass,
                                     String packageName, String activityName, String appName,
                                     boolean useAppCompat, AssetManager assets) throws IOException {
         File activityFile = new File(project.getJavaSrcDir(),
@@ -100,7 +100,7 @@ public class AndroidProjectManager {
         saveFile(activityFile, content);
     }
 
-    private void createMainLayoutXml(AndroidApplicationProject project, String layoutName) throws IOException {
+    private void createMainLayoutXml(AndroidAppProject project, String layoutName) throws IOException {
         if (!layoutName.contains(".")) {
             layoutName += ".xml";
         }
@@ -125,7 +125,7 @@ public class AndroidProjectManager {
         output.close();
     }
 
-    private void copyLibrary(AndroidApplicationProject project, boolean useCompatLibrary)
+    private void copyLibrary(AndroidAppProject project, boolean useCompatLibrary)
             throws IOException, StreamException, SAXException, ParserConfigurationException {
         if (useCompatLibrary) {
             //v7
@@ -148,7 +148,7 @@ public class AndroidProjectManager {
         }
     }
 
-    private void addLib(AndroidApplicationProject project, String assetsPath, String libName)
+    private void addLib(AndroidAppProject project, String assetsPath, String libName)
             throws SAXException, StreamException, ParserConfigurationException, IOException {
         if (assetsPath.endsWith(".jar")) {
             File javaLib = new File(project.getDirLibs(), libName);

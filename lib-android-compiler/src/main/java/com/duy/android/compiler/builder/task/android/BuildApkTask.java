@@ -3,11 +3,11 @@ package com.duy.android.compiler.builder.task.android;
 import com.android.sdklib.build.ApkBuilder;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.builder.task.ABuildTask;
-import com.duy.android.compiler.project.AndroidApplicationProject;
+import com.duy.android.compiler.project.AndroidAppProject;
 
 import java.io.File;
 
-public class BuildApkTask extends ABuildTask<AndroidApplicationProject> {
+public class BuildApkTask extends ABuildTask<AndroidAppProject> {
 
     public BuildApkTask(AndroidAppBuilder builder) {
         super(builder);

@@ -3,10 +3,10 @@ package com.duy.android.compiler.builder;
 import android.os.AsyncTask;
 
 import com.duy.android.compiler.builder.model.BuildType;
-import com.duy.android.compiler.project.AndroidApplicationProject;
+import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.JavaProject;
 
-public class BuildTask<T extends JavaProject> extends AsyncTask<AndroidApplicationProject, Object, Boolean> {
+public class BuildTask<T extends JavaProject> extends AsyncTask<AndroidAppProject, Object, Boolean> {
     private IBuilder<T> builder;
     private BuildTask.CompileListener<T> listener;
     private Exception exception;
@@ -23,7 +23,7 @@ public class BuildTask<T extends JavaProject> extends AsyncTask<AndroidApplicati
     }
 
     @Override
-    protected Boolean doInBackground(AndroidApplicationProject... params) {
+    protected Boolean doInBackground(AndroidAppProject... params) {
         try {
             return builder.build(BuildType.DEBUG);
         } catch (Exception e) {

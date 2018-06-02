@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * Created by Duy on 05-Aug-17.
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class AndroidApplicationProject extends JavaProject {
+public class AndroidAppProject extends JavaProject {
 
     private File xmlManifest;
     /* Output */
@@ -30,9 +30,9 @@ public class AndroidApplicationProject extends JavaProject {
 
     private ArrayList<AndroidLibraryProject> dependencies;
 
-    public AndroidApplicationProject(File dirRoot,
-                                     @Nullable String mainClassName,
-                                     @Nullable String packageName) {
+    public AndroidAppProject(File dirRoot,
+                             @Nullable String mainClassName,
+                             @Nullable String packageName) {
         super(dirRoot, mainClassName, packageName);
         dependencies = new ArrayList<>();
     }

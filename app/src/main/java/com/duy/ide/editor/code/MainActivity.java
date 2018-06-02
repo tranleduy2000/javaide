@@ -51,7 +51,7 @@ import com.duy.android.compiler.builder.BuildTask;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.JavaBuilder;
-import com.duy.android.compiler.project.AndroidApplicationProject;
+import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.ClassFile;
 import com.duy.android.compiler.project.ClassUtil;
 import com.duy.android.compiler.project.JavaProject;
@@ -238,7 +238,7 @@ public class MainActivity extends ProjectManagerActivity implements
     public void runProject() {
         saveAllFile();
         if (mProject != null) {
-            if (mProject instanceof AndroidApplicationProject) {
+            if (mProject instanceof AndroidAppProject) {
                 compileAndroidProject();
             } else {
                 compileJavaProject();
@@ -249,13 +249,13 @@ public class MainActivity extends ProjectManagerActivity implements
     }
 
     private void compileAndroidProject() {
-        if (mProject instanceof AndroidApplicationProject) {
-            if (!((AndroidApplicationProject) mProject).getXmlManifest().exists()) {
+        if (mProject instanceof AndroidAppProject) {
+            if (!((AndroidAppProject) mProject).getXmlManifest().exists()) {
                 Toast.makeText(this, "Can not find AndroidManifest.xml", Toast.LENGTH_SHORT).show();
                 return;
             }
             //check launcher activity
-            if (((AndroidApplicationProject) mProject).getLauncherActivity() == null) {
+            if (((AndroidAppProject) mProject).getLauncherActivity() == null) {
                 String msg = getString(R.string.can_not_find_launcher_activity);
                 Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
                         .setAction(R.string.config, new View.OnClickListener() {
@@ -268,8 +268,8 @@ public class MainActivity extends ProjectManagerActivity implements
 
 
             final DiagnosticCollector mDiagnosticCollector = new DiagnosticCollector();
-            final IBuilder<AndroidApplicationProject> builder = new AndroidAppBuilder(this, (AndroidApplicationProject) mProject, mDiagnosticCollector);
-            final BuildTask<AndroidApplicationProject> buildTask = new BuildTask<>(builder, new BuildTask.CompileListener<AndroidApplicationProject>() {
+            final IBuilder<AndroidAppProject> builder = new AndroidAppBuilder(this, (AndroidAppProject) mProject, mDiagnosticCollector);
+            final BuildTask<AndroidAppProject> buildTask = new BuildTask<>(builder, new BuildTask.CompileListener<AndroidAppProject>() {
                 @Override
                 public void onStart() {
                     updateUiStartCompile();
@@ -290,7 +290,7 @@ public class MainActivity extends ProjectManagerActivity implements
                     mFilePresenter.refresh(mProject);
                     mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
                     mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    RootUtils.installApk(MainActivity.this, ((AndroidApplicationProject) mProject).getApkSigned());
+                    RootUtils.installApk(MainActivity.this, ((AndroidAppProject) mProject).getApkSigned());
                 }
 
             });

@@ -6,7 +6,7 @@ import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.builder.task.ABuildTask;
 import com.duy.android.compiler.builder.util.Argument;
 import com.duy.android.compiler.env.Environment;
-import com.duy.android.compiler.project.AndroidApplicationProject;
+import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.AndroidLibraryProject;
 
 import java.io.BufferedReader;
@@ -108,7 +108,7 @@ import java.util.regex.Pattern;
  * --custom-package
  * generates R.java into a different package.
  */
-public class Aapt extends ABuildTask<AndroidApplicationProject> {
+public class Aapt extends ABuildTask<AndroidAppProject> {
 
     public Aapt(AndroidAppBuilder builder) {
         super(builder);
@@ -173,7 +173,7 @@ public class Aapt extends ABuildTask<AndroidApplicationProject> {
                 //specify where to output R.java resource constant definitions
                 args.add("-J", library.getDirGeneratedSource().getAbsolutePath());
 
-                boolean complete = execAapt(aaptFile, args);
+                boolean complete = execAapt(args);
                 if (!complete) {
                     return false;
                 }
@@ -195,10 +195,10 @@ public class Aapt extends ABuildTask<AndroidApplicationProject> {
             args.add("-S", library.getResDir().getAbsolutePath());
             args.add("-A", library.getAssetsDir().getAbsolutePath()); //input assets dir
         }
-        return execAapt(aaptFile, args);
+        return execAapt(args);
     }
 
-    private boolean execAapt(File aaptFile, Argument args) throws InterruptedException, IOException {
+    private boolean execAapt(Argument args) throws InterruptedException, IOException {
         final int[] exitCode = new int[1];
         final Process aaptProcess = Runtime.getRuntime().exec(args.toArray());
         Thread thread = new Thread(new Runnable() {
@@ -215,7 +215,10 @@ public class Aapt extends ABuildTask<AndroidApplicationProject> {
         do {
             try {
                 String s = reader.readLine();
-                builder.stdout("aapt: " + s);
+                if (s == null) {
+                    break;
+                }
+                builder.stdout("AAPT: " + s);
             } catch (Exception e) {
                 break;
             }
@@ -225,7 +228,10 @@ public class Aapt extends ABuildTask<AndroidApplicationProject> {
         do {
             try {
                 String s = reader.readLine();
-                builder.stderr("aapt: " + s);
+                if (s == null) {
+                    break;
+                }
+                builder.stderr("AAPT: " + s);
             } catch (Exception e) {
                 break;
             }

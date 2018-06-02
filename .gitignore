@@ -53,3 +53,5 @@ freeline_project_description.json
 !/javacompiler/src/main/java/com/android/sdklib/internal/build/
 !/javacompiler/src/main/java/com/android/sdklib/build/
 
+!/aosp/sdklib/src/main/java/com/android/sdklib/internal/build/
+!/aosp/sdklib/src/main/java/com/android/sdklib/build/

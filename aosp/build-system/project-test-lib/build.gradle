@@ -20,9 +20,9 @@ android {
 
 }
 
-def toolingApiVersion = gradle.gradleVersion
 dependencies {
     api project(':aosp:build-system:builder-model')
     api project(':aosp:common')
-   // compile "org.gradle:gradle-tooling-api:${toolingApiVersion}"
+    // https://mvnrepository.com/artifact/org.gradle/gradle-tooling-api
+    api group: 'org.gradle', name: 'gradle-tooling-api', version: '4.3'
 }

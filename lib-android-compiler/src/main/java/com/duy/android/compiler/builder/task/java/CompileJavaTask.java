@@ -9,7 +9,6 @@ import com.duy.android.compiler.utils.DLog;
 import org.eclipse.jdt.core.compiler.CompilationProgress;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 
-import java.io.File;
 import java.io.PrintWriter;
 
 import javax.tools.DiagnosticListener;
@@ -92,12 +91,9 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
 
         Argument argument = new Argument();
         argument.add(builder.isVerbose() ? "-verbose" : "-warn:");
-        argument.add("-bootclasspath", project.getBootClassPath(context) +
-                File.pathSeparator + project.getClasspath());
-        argument.add("-classpath", project.getClasspath() +
-                File.pathSeparator + project.getSourcePath());
-        argument.add("-sourcepath", project.getSourcePath()
-                + File.pathSeparator + project.getClasspath());
+        argument.add("-bootclasspath", project.getBootClassPath(context));
+        argument.add("-classpath", project.getClasspath());
+        argument.add("-sourcepath", project.getSourcePath());
         argument.add("-" + CompilerOptions.VERSION_1_7); //host
         argument.add("-target", CompilerOptions.VERSION_1_7); //target
         //                "-proc:none", // Disable annotation processors...

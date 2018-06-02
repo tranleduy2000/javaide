@@ -312,6 +312,7 @@ public class JavaProject implements Serializable, Cloneable {
             }
             srcPath.append(javaSrcDir.getAbsolutePath());
         }
+        srcPath.append(File.pathSeparator).append(dirGeneratedSource.getAbsolutePath());
         return srcPath.toString();
     }
 

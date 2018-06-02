@@ -123,10 +123,11 @@ public class AndroidAppProject extends JavaProject {
 
     @Override
     public String getSourcePath() {
-        String sourcePath = super.getSourcePath();
-        sourcePath += File.pathSeparator + dirGeneratedSource.getAbsolutePath();
-
-        return sourcePath;
+        StringBuilder sourcePath = new StringBuilder(super.getSourcePath());
+//        for (AndroidLibraryProject library : getDependencies()) {
+//            sourcePath.append(File.pathSeparator).append(library.getDirGeneratedSource());
+//        }
+        return sourcePath.toString();
     }
 
     @Override

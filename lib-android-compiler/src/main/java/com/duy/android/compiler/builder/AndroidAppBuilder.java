@@ -5,7 +5,7 @@ import android.content.Context;
 import com.duy.android.compiler.builder.model.BuildType;
 import com.duy.android.compiler.builder.model.KeyStore;
 import com.duy.android.compiler.builder.task.ABuildTask;
-import com.duy.android.compiler.builder.task.android.Aapt;
+import com.duy.android.compiler.builder.task.android.AAPTTask;
 import com.duy.android.compiler.builder.task.android.BuildApkTask;
 import com.duy.android.compiler.builder.task.android.SignApkTask;
 import com.duy.android.compiler.builder.task.java.CleanTask;
@@ -38,7 +38,7 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
 
         ArrayList<ABuildTask> tasks = new ArrayList<>();
         tasks.add(new CleanTask(this));
-        tasks.add(new Aapt(this));
+        tasks.add(new AAPTTask(this));
         tasks.add(new CompileJavaTask(this, mDiagnosticListener));
         tasks.add(new DxTask(this));
         tasks.add(new BuildApkTask(this));

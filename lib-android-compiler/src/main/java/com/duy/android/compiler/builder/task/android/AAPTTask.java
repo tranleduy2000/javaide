@@ -108,9 +108,9 @@ import java.util.regex.Pattern;
  * --custom-package
  * generates R.java into a different package.
  */
-public class Aapt extends ABuildTask<AndroidAppProject> {
+public class AAPTTask extends ABuildTask<AndroidAppProject> {
 
-    public Aapt(AndroidAppBuilder builder) {
+    public AAPTTask(AndroidAppBuilder builder) {
         super(builder);
     }
 
@@ -171,7 +171,7 @@ public class Aapt extends ABuildTask<AndroidAppProject> {
                 args.add("-S", library.getResDir().getAbsolutePath());  //input resource dir
                 args.add("-m"); // make package directories under location specified by -J
                 //specify where to output R.java resource constant definitions
-                args.add("-J", library.getDirGeneratedSource().getAbsolutePath());
+                args.add("-J", project.getDirGeneratedSource().getAbsolutePath());
 
                 boolean complete = execAapt(args);
                 if (!complete) {
@@ -189,7 +189,9 @@ public class Aapt extends ABuildTask<AndroidAppProject> {
         args.add("-I", project.getBootClassPath(context));//The location of the android.jar resource
         args.add("-A", project.getAssetsDirs().getAbsolutePath()); //input assets dir
         args.add("-S", project.getResDirs().getAbsolutePath());  //input resource dir
-        args.add("-J", project.getClassR().getParent()); //parent file of R.java file
+        args.add("-m"); // make package directories under location specified by -J
+        //specify where to output R.java resource constant definitions
+        args.add("-J", project.getDirGeneratedSource().getAbsolutePath());
 
         for (AndroidLibraryProject library : project.getDependencies()) {
             args.add("-S", library.getResDir().getAbsolutePath());

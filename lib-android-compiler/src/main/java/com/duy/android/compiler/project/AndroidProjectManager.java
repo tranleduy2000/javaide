@@ -37,7 +37,8 @@ public class AndroidProjectManager {
                                                       String appName, boolean useCompatLibrary) throws Exception {
 
         String activityClass = String.format("%s.%s", packageName, activityName);
-        AndroidApplicationProject project = new AndroidApplicationProject(dir, activityClass, packageName);
+        File projectDir = new File(dir, projectName);
+        AndroidApplicationProject project = new AndroidApplicationProject(projectDir, activityClass, packageName);
         //create directory
         project.mkdirs();
 
@@ -127,10 +128,11 @@ public class AndroidProjectManager {
     private void copyLibrary(AndroidApplicationProject project, boolean useCompatLibrary, AssetManager assets) throws IOException, StreamException, SAXException, ParserConfigurationException {
         if (useCompatLibrary) {
             //v7
-            addLib(project, "libs/27.1.1/livedata-core-1.1.0.aar", "livedata-core-1.1.0");
-            addLib(project, "libs/27.1.1/runtime-1.1.0.aar", "runtime-1.1.0");
-            addLib(project, "libs/27.1.1/common-1.1.0.jar", "common-1.1.0.jar");
-            addLib(project, "libs/27.1.1/viewmodel-1.1.0.aar", "viewmodel-1.1.0");
+            addLib(project, "libs/27.1.1/android.arch.core-common-1.1.0.jar", "android.arch.core-common-1.1.0.jar");
+            addLib(project, "libs/27.1.1/android.arch.core-runtime-1.1.0.aar", "android.arch.core-runtime-1.1.0");
+            addLib(project, "libs/27.1.1/android.arch.lifecycle-livedata-core-1.1.0.aar", "android.arch.lifecycle-livedata-core-1.1.0");
+            addLib(project, "libs/27.1.1/android.arch.lifecycle-runtime-1.1.0.aar", "android.arch.lifecycle-runtime-1.1.0");
+            addLib(project, "libs/27.1.1/android.arch.lifecycle-viewmodel-1.1.0.aar", "android.arch.lifecycle-viewmodel-1.1.0");
             addLib(project, "libs/27.1.1/appcompat-v7-27.1.1.aar", "appcompat-v7-27.1.1");
             addLib(project, "libs/27.1.1/animated-vector-drawable-27.1.1.aar", "animated-vector-drawable-27.1.1");
             addLib(project, "libs/27.1.1/support-compat-27.1.1.aar", "support-compat-27.1.1");
@@ -141,23 +143,6 @@ public class AndroidProjectManager {
             addLib(project, "libs/27.1.1/support-annotations-27.1.1.jar", "support-annotations-27.1.1.jar");
             addLib(project, "libs/27.1.1/support-media-compat-27.1.1.aar", "support-media-compat-27.1.1");
             addLib(project, "libs/27.1.1/support-v4-27.1.1.aar", "support-v4-27.1.1.aar");
-
-
-            //test v4 lib
-//            addLib(project, "libs/27.0.0/appcompat-v7-27.0.0.aar", "appcompat-v7-27.0.0");
-//            addLib(project, "libs/27.0.0/support-vector-drawable-27.0.0.aar", "support-vector-drawable-27.0.0");
-//            addLib(project, "libs/27.0.0/animated-vector-drawable-27.0.0.aar", "animated-vector-drawable-27.0.0");
-//            addLib(project, "libs/27.0.0/common-1.1.1.jar", "common-1.1.1.jar");
-//            addLib(project, "libs/27.0.0/runtime-1.1.1.aar", "runtime-1.1.1");
-//            addLib(project, "libs/27.0.0/support-annotations-27.0.0.jar", "support-annotations-27.0.0.jar");
-//            addLib(project, "libs/27.0.0/support-compat-27.0.0.aar", "support-compat-27.0.0");
-//            addLib(project, "libs/27.0.0/support-core-ui-27.0.0.aar", "support-core-ui-27.0.0");
-//            addLib(project, "libs/27.0.0/support-core-utils-27.0.0.aar", "support-core-utils-27.0.0");
-//            addLib(project, "libs/27.0.0/support-fragment-27.0.0.aar", "support-fragment-27.0.0");
-//            addLib(project, "libs/27.0.0/support-media-compat-27.0.0.aar", "support-media-compat-27.0.0");
-//            addLib(project, "libs/27.0.0/support-v4-27.0.0.aar", "support-v4-27.0.0");
-
-            addLib(project, "libs/27.1.1/support-fragment-27.1.1.aar", "support-fragment-27.1.1");
         }
     }
 

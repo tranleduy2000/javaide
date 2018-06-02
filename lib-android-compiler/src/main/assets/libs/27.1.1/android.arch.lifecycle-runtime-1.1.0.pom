@@ -3,18 +3,14 @@
     xmlns="http://maven.apache.org/POM/4.0.0"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.android.support</groupId>
-    <artifactId>support-compat</artifactId>
-    <version>27.1.1</version>
+    <groupId>android.arch.lifecycle</groupId>
+    <artifactId>runtime</artifactId>
+    <version>1.1.0</version>
     <packaging>aar</packaging>
-    <name>Android Support Library compat</name>
-    <description>The Support Library is a static library that you can add to your Android
-        application in order to use APIs that are either not available for older platform versions
-        or utility APIs that aren't a part of the framework APIs. Compatible on devices running API
-        14 or later.
-    </description>
-    <url>http://developer.android.com/tools/extras/support-library.html</url>
-    <inceptionYear>2015</inceptionYear>
+    <name>Android Lifecycle Runtime</name>
+    <description>Android Lifecycle Runtime</description>
+    <url>https://developer.android.com/topic/libraries/architecture/index.html</url>
+    <inceptionYear>2017</inceptionYear>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -34,23 +30,22 @@
     </scm>
     <dependencies>
         <dependency>
-            <groupId>com.android.support</groupId>
-            <artifactId>support-annotations</artifactId>
-            <version>27.1.1</version>
+            <groupId>android.arch.lifecycle</groupId>
+            <artifactId>common</artifactId>
+            <version>1.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>android.arch.lifecycle</groupId>
-            <artifactId>runtime</artifactId>
+            <groupId>android.arch.core</groupId>
+            <artifactId>common</artifactId>
             <version>1.1.0</version>
-            <type>aar</type>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>support-annotations</artifactId>
-                    <groupId>*</groupId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.android.support</groupId>
+            <artifactId>support-annotations</artifactId>
+            <version>26.1.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

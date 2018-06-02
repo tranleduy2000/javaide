@@ -29,14 +29,14 @@ public class JavaProject implements Serializable, Cloneable {
     private static final String TAG = "ProjectFile";
 
     protected ArrayList<File> javaSrcDirs;
-    private File dirLibs;
-    private File dirBuildClasses;
     protected File dirSrcMain;
     protected File dirGeneratedSource;
     /* Project */
     protected File dirRoot;
     // TODO: 02-Jun-18 remove
     protected File dirApp;
+    @Nullable
+    protected String packageName;
     /**
      * Build folder
      * <p>
@@ -54,12 +54,13 @@ public class JavaProject implements Serializable, Cloneable {
      */
     File dirBuild;
     File dirBuildOutput;
+    private File dirLibs;
+    private File dirBuildClasses;
     private File dirBuildOutputJar;
     private File dirBuildDexedLibs;
     private File dirBuildDexedClass;
+    private File dirBuildIntermediates;
     private File dexFile;
-    @Nullable
-    protected String packageName;
     /*Main class*/
     @Nullable
     private ClassFile mainClass;
@@ -108,6 +109,7 @@ public class JavaProject implements Serializable, Cloneable {
         dirBuildOutput = new File(dirBuild, "output");
         dirBuildOutputJar = new File(dirBuildOutput, "jar");
         dirBuildDexedLibs = new File(dirBuild, "dexedLibs");
+        dirBuildIntermediates = new File(dirBuild, "intermediates");
         dirBuildDexedClass = new File(dirBuild, "dexedClasses");
 
         dexFile = new File(dirBuildDexedClass, "classes.dex");
@@ -346,5 +348,9 @@ public class JavaProject implements Serializable, Cloneable {
 
     public File getDirGeneratedSource() {
         return dirGeneratedSource;
+    }
+
+    public File getDirBuildIntermediates() {
+        return dirBuildIntermediates;
     }
 }

@@ -16,10 +16,10 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class DxTask extends ABuildTask<JavaProject> {
+public class DexTask extends ABuildTask<JavaProject> {
     private static final String TAG = "Dexer";
 
-    public DxTask(IBuilder<? extends JavaProject> builder) {
+    public DexTask(IBuilder<? extends JavaProject> builder) {
         super(builder);
     }
 

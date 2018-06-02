@@ -25,16 +25,13 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
         this.listener = listener;
     }
 
-
     @Override
     public String getTaskName() {
         return "Compile java source";
     }
 
     public boolean run() {
-//        return runOldJavaCompiler();
         return runEcj();
-//        return runAnt();
     }
 
 
@@ -71,15 +68,14 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
         }
 
         System.out.println("source size: " + javaFiles.size());
-        String[] srcs = new String[javaFiles.size()];
-        return javaFiles.toArray(srcs);
+        String[] sources = new String[javaFiles.size()];
+        return javaFiles.toArray(sources);
     }
 
     private void getAllSourceFiles(ArrayList<String> toAdd, File parent) {
         if (!parent.exists()) {
             return;
         }
-        String path = project.getMainClass().getPath(project);
         for (File child : parent.listFiles()) {
             if (child.isDirectory()) {
                 getAllSourceFiles(toAdd, child);

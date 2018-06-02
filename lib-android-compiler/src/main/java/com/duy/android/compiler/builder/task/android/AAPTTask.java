@@ -109,9 +109,9 @@ import java.util.regex.Pattern;
  * generates R.java into a different package.
  *
  * @link https://elinux.org/Android_aapt
+ * @link https://android.googlesource.com/platform/frameworks/base.git/+/master/tools/aapt/Main.cpp
  */
 public class AAPTTask extends ABuildTask<AndroidAppProject> {
-
     public AAPTTask(AndroidAppBuilder builder) {
         super(builder);
     }
@@ -121,7 +121,7 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
         return "AAPT";
     }
 
-    public boolean run() throws IOException, InterruptedException {
+    public boolean run() throws Exception {
         String arch = Build.CPU_ABI.substring(0, 3).toLowerCase(Locale.US);
         String aaptName;
 
@@ -160,7 +160,8 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
                 builder.stdout("AAPT for library " + library.getProjectName());
                 Argument args = new Argument();
                 args.add(aaptFile.getAbsolutePath());
-                args.add("p"); //package
+                args.add("package"); //package
+                args.add("--no-crunch");
                 args.add("-f"); //force overwrite of existing files
                 args.add("--auto-add-overlay");
                 if (builder.isVerbose()) args.add("-v"); //verbose output
@@ -182,17 +183,25 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
 
         Argument args = new Argument();
         args.add(aaptFile.getAbsolutePath());
-        args.add("p", "-f", "--auto-add-overlay");
+        args.add("p");
+        args.add("-f");
+        args.add("--auto-add-overlay");
         args.add("-v");
         args.add("-M", project.getXmlManifest().getAbsolutePath());  //manifest file
         args.add("-F", project.getOutResourceFile().getAbsolutePath());  //output resources.ap_
         args.add("-I", project.getBootClassPath(context));//The location of the android.jar resource
         args.add("-A", project.getAssetsDirs().getAbsolutePath()); //input assets dir
         args.add("-S", project.getResDirs().getAbsolutePath());  //input resource dir
-        args.add("-m"); // make package directories under location specified by -J
+
+        //-G A file to output proguard options into.\n"
+        //-D A file to output proguard options for the main dex into
+
+        args.add("-m");  // make package directories under location specified by -J
         //specify where to output R.java resource constant definitions
         args.add("-J", project.getDirGeneratedSource().getAbsolutePath());
-        args.add("-P", project.getDirGeneratedSource().getAbsolutePath() + "/R.txt");
+        args.add(AAPTOptions.OUTPUT_TEXT_SYMBOL, project.getDirGeneratedSource().getAbsolutePath() + "/R.txt");
+
+        //--custom-package project.getPackageName()
 
         for (AndroidLibraryProject library : project.getDependencies()) {
             args.add("-S", library.getResDir().getAbsolutePath());
@@ -277,6 +286,37 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
             //Default to return 1 core
             return Runtime.getRuntime().availableProcessors();
         }
+    }
+
+    public static final class AAPTOptions {
+        /**
+         * android.jar
+         */
+        private static final String ANDROID_JAR_PATH = "androidJarPath";
+        /**
+         * Output directory for R.java
+         */
+        private static final String SOURCE_OUTPUT_DIR = "sourceOutputDir";
+        /**
+         * Output directory for resource.ap_
+         */
+        private static final String RESOURCE_OUTPUT_APK = "resourceOutputApk";
+        /**
+         * Public resource definition of library R.txt
+         */
+        private static final String LIBRARY_SYMBOL_TABLE_FILES = "librarySymbolTableFiles";
+        /**
+         * Output public resource definition for application
+         */
+        private static final String OUTPUT_TEXT_SYMBOL = "--output-text-symbols";
+
+        private static final String VERBOSE = "verbose";
+
+        private static final String PROGUARD_OUTPUT_FILE = "proguardOutputFile";
+
+        private static final String MAIN_DEX_LIST_PROGUARD_OUTPUT_FILE = "mainDexListProguardOutputFile";
+
+        private static final String customPackageForR = "customPackageForR";
     }
 
 }

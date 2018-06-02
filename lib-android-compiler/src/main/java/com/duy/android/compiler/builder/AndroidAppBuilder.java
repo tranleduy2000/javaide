@@ -7,11 +7,12 @@ import com.duy.android.compiler.builder.model.KeyStore;
 import com.duy.android.compiler.builder.task.ABuildTask;
 import com.duy.android.compiler.builder.task.android.AAPTTask;
 import com.duy.android.compiler.builder.task.android.BuildApkTask;
+import com.duy.android.compiler.builder.task.android.GenerateBuildConfigTask;
 import com.duy.android.compiler.builder.task.android.MergeManifestTask;
 import com.duy.android.compiler.builder.task.android.SignApkTask;
 import com.duy.android.compiler.builder.task.java.CleanTask;
 import com.duy.android.compiler.builder.task.java.CompileJavaTask;
-import com.duy.android.compiler.builder.task.java.DxTask;
+import com.duy.android.compiler.builder.task.java.DexTask;
 import com.duy.android.compiler.project.AndroidAppProject;
 
 import java.io.PrintStream;
@@ -43,11 +44,13 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
 
         tasks.add(new MergeManifestTask(this));
 
+        tasks.add(new GenerateBuildConfigTask(this));
+
         tasks.add(new AAPTTask(this));
 
         tasks.add(new CompileJavaTask(this, mDiagnosticListener));
 
-        tasks.add(new DxTask(this));
+        tasks.add(new DexTask(this));
 
         tasks.add(new BuildApkTask(this));
 

@@ -156,7 +156,7 @@ public class AndroidProjectManager {
             IOUtils.copy(context.getAssets().open(assetsPath), output);
             output.close();
         } else if (assetsPath.endsWith(".aar")) {
-            File aarFile = new File(project.getDirBuildDexedLibs(), assetsPath);
+            File aarFile = new File(project.getRootDir(), libName + "/" + assetsPath);
             aarFile.getParentFile().mkdirs();
             FileOutputStream output = new FileOutputStream(aarFile);
             IOUtils.copy(context.getAssets().open(assetsPath), output);

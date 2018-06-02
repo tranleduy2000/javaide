@@ -7,7 +7,7 @@ import com.duy.android.compiler.builder.task.ABuildTask;
 import com.duy.android.compiler.builder.task.java.BuildJarTask;
 import com.duy.android.compiler.builder.task.java.CleanTask;
 import com.duy.android.compiler.builder.task.java.CompileJavaTask;
-import com.duy.android.compiler.builder.task.java.DxTask;
+import com.duy.android.compiler.builder.task.java.DexTask;
 import com.duy.android.compiler.project.JavaProject;
 
 import java.io.PrintStream;
@@ -34,13 +34,14 @@ public class JavaBuilder extends BuilderImpl<JavaProject> {
         }
 
         ArrayList<ABuildTask> tasks = new ArrayList<>();
+
         tasks.add(new CleanTask(this));
 
         tasks.add(new CompileJavaTask(this, mDiagnosticListener));
 
         tasks.add(new BuildJarTask(this));
 
-        tasks.add(new DxTask(this));
+        tasks.add(new DexTask(this));
 
         return runTasks(tasks);
     }

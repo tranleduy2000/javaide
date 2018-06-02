@@ -16,11 +16,10 @@
 
 package com.android.ide.common.vectordrawable;
 
-import com.android.ide.common.util.AssetUtil;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 
-import java.awt.*;
-import java.awt.geom.Path2D;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,15 +51,15 @@ class VdTree {
         mCurrentGroup.add(pathOrGroup);
     }
 
-    float getBaseWidth(){
+    float getBaseWidth() {
         return mBaseWidth;
     }
 
-    float getBaseHeight(){
+    float getBaseHeight() {
         return mBaseHeight;
     }
 
-    private void drawInternal(Graphics g, int w, int h) {
+    private void drawInternal(Canvas g, int w, int h) {
         float scaleX = w / mPortWidth;
         float scaleY = h / mPortHeight;
         float minScale = Math.min(scaleX, scaleY);
@@ -69,61 +68,62 @@ class VdTree {
             logger.log(Level.FINE, "no pathes");
             return;
         }
-        ((Graphics2D) g).scale(scaleX, scaleY);
+        ((Canvas) g).scale(scaleX, scaleY);
 
-        Rectangle bounds = null;
+        Rect bounds = null;
         for (int i = 0; i < mChildren.size(); i++) {
             // TODO: do things differently when it is a path or group!!
             VdPath path = (VdPath) mChildren.get(i);
             logger.log(Level.FINE, "mCurrentPaths[" + i + "]=" + path.getName() +
-                                   Integer.toHexString(path.mFillColor));
+                    Integer.toHexString(path.mFillColor));
             if (mChildren.get(i) != null) {
-                Rectangle r = drawPath(path, g, w, h, minScale);
+                Rect r = drawPath(path, g, w, h, minScale);
                 if (bounds == null) {
                     bounds = r;
                 } else {
-                    bounds.add(r);
+                    bounds.set(r);
                 }
             }
         }
-        logger.log(Level.FINE, "Rectangle " + bounds);
-        logger.log(Level.FINE, "Port  " + mPortWidth + "," + mPortHeight);
-        double right = mPortWidth - bounds.getMaxX();
-        double bot = mPortHeight - bounds.getMaxY();
-        logger.log(Level.FINE, "x " + bounds.getMinX() + ", " + right);
-        logger.log(Level.FINE, "y " + bounds.getMinY() + ", " + bot);
+//        logger.log(Level.FINE, "Rect " + bounds);
+//        logger.log(Level.FINE, "Port  " + mPortWidth + "," + mPortHeight);
+//        double right = mPortWidth - bounds.getMaxX();
+//        double bot = mPortHeight - bounds.getMaxY();
+//        logger.log(Level.FINE, "x " + bounds.getMinX() + ", " + right);
+//        logger.log(Level.FINE, "y " + bounds.getMinY() + ", " + bot);
     }
 
-    private Rectangle drawPath(VdPath path, Graphics canvas, int w, int h, float scale) {
+    private Rect drawPath(VdPath path, Canvas canvas, int w, int h, float scale) {
 
-        Path2D path2d = new Path2D.Double();
-        Graphics2D g = (Graphics2D) canvas;
-        path.toPath(path2d);
-
-        // TODO: Use AffineTransform to apply group's transformation info.
-        double theta = Math.toRadians(path.mRotate);
-        g.rotate(theta, path.mRotateX, path.mRotateY);
-        if (path.mClip) {
-            logger.log(Level.FINE, "CLIP");
-
-            g.setColor(Color.RED);
-            g.fill(path2d);
-
-        }
-        if (path.mFillColor != 0) {
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g.setColor(new Color(path.mFillColor, true));
-            g.fill(path2d);
-        }
-        if (path.mStrokeColor != 0) {
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g.setStroke(new BasicStroke(path.mStrokeWidth));
-            g.setColor(new Color(path.mStrokeColor, true));
-            g.draw(path2d);
-        }
-
-        g.rotate(-theta, path.mRotateX, path.mRotateY);
-        return path2d.getBounds();
+//        Path path2d = new Path();
+//        Canvas g = (Canvas) canvas;
+//        path.toPath(path2d);
+//
+//        // TODO: Use AffineTransform to apply group's transformation info.
+//        double theta = Math.toRadians(path.mRotate);
+//        g.rotate(theta, path.mRotateX, path.mRotateY);
+//        if (path.mClip) {
+//            logger.log(Level.FINE, "CLIP");
+//
+//            g.setColor(Color.RED);
+//            g.fill(path2d);
+//
+//        }
+//        if (path.mFillColor != 0) {
+//            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//            g.setColor(new Color(path.mFillColor, true));
+//            g.fill(path2d);
+//        }
+//        if (path.mStrokeColor != 0) {
+//            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//            g.setStroke(new BasicStroke(path.mStrokeWidth));
+//            g.setColor(new Color(path.mStrokeColor, true));
+//            g.draw(path2d);
+//        }
+//
+//        g.rotate(-theta, path.mRotateX, path.mRotateY);
+//        return path2d.getBounds();
+        return null;
     }
 
     /**
@@ -131,24 +131,25 @@ class VdTree {
      * If the root alpha is less than 1.0, then draw into a temporary image,
      * then draw into the result image applying alpha blending.
      */
-    public void drawIntoImage(BufferedImage image) {
-        Graphics2D gFinal = (Graphics2D) image.getGraphics();
-        int width = image.getWidth();
-        int height = image.getHeight();
-        gFinal.setColor(new Color(255, 255, 255, 0));
-        gFinal.fillRect(0, 0, width, height);
-
-        float rootAlpha = mRootAlpha;
-        if (rootAlpha < 1.0) {
-            BufferedImage alphaImage = AssetUtil.newArgbBufferedImage(width, height);
-            Graphics2D gTemp = (Graphics2D)alphaImage.getGraphics();
-            drawInternal(gTemp, width, height);
-            gFinal.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, rootAlpha));
-            gFinal.drawImage(alphaImage, 0, 0, null);
-            gTemp.dispose();
-        } else {
-            drawInternal(gFinal, width, height);
-        }
-        gFinal.dispose();
+    public void drawIntoImage(Bitmap image) {
+//        Canvas gFinal = (Canvas) new Canvas(image);
+//        int width = image.getWidth();
+//        int height = image.getHeight();
+//        Paint paint = new Paint();
+//        paint.setColor(Color.argb(255, 255, 255, 0));
+//        gFinal.drawRect(0, 0, width, height, paint);
+//
+//        float rootAlpha = mRootAlpha;
+//        if (rootAlpha < 1.0) {
+//            Bitmap alphaImage = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+//            Canvas gTemp = (Canvas) new Canvas(alphaImage);
+//            drawInternal(gTemp, width, height);
+//            gFinal.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, rootAlpha));
+//            gFinal.drawImage(alphaImage, 0, 0, null);
+//            gTemp.dispose();
+//        } else {
+//            drawInternal(gFinal, width, height);
+//        }
+//        gFinal.dispose();
     }
 }

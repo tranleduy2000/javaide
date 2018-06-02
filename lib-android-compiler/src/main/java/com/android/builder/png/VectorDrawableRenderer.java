@@ -32,12 +32,10 @@ import com.google.common.io.Files;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -132,9 +130,6 @@ public class VectorDrawableRenderer implements ResourcePreprocessor {
             }
 
             final VdPreview.TargetSize imageSize = VdPreview.TargetSize.createSizeFromScale(scaleFactor);
-            BufferedImage image = VdPreview.getPreviewFromVectorXml(imageSize, xmlContent, null);
-            checkState(image != null, "Generating the image failed.");
-            ImageIO.write(image, "png", toBeGenerated);
         }
     }
 

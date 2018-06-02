@@ -16,13 +16,14 @@
 
 package com.android.ide.common.rendering.api;
 
-import static com.android.ide.common.rendering.api.Result.Status.NOT_IMPLEMENTED;
+import android.graphics.Bitmap;
 
 import com.android.ide.common.rendering.api.Result.Status;
 
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Map;
+
+import static com.android.ide.common.rendering.api.Result.Status.NOT_IMPLEMENTED;
 
 /**
  * An object allowing interaction with an Android layout.
@@ -89,7 +90,7 @@ public class RenderSession {
      * <p/>
      * This can be safely modified by the caller.
      */
-    public BufferedImage getImage() {
+    public Bitmap getImage() {
         return null;
     }
 

@@ -17,7 +17,9 @@
 package com.android.ide.common.rendering.api;
 
 
-import java.awt.image.BufferedImage;
+import android.graphics.Bitmap;
+
+import com.duy.virtual.awt.image.BufferedImage;
 
 /**
  * Image Factory Interface.
@@ -38,5 +40,5 @@ public interface IImageFactory {
      * @param height the height of the image
      * @return a new (or reused) BufferedImage of the given size.
      */
-    BufferedImage getImage(int width, int height);
+    Bitmap getImage(int width, int height);
 }

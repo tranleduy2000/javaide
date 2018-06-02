@@ -16,8 +16,6 @@
 
 package com.android.ide.common.rendering;
 
-import static com.android.ide.common.rendering.api.Result.Status.ERROR_REFLECTION;
-
 import com.android.annotations.VisibleForTesting;
 import com.android.ide.common.rendering.api.Bridge;
 import com.android.ide.common.rendering.api.Capability;
@@ -47,7 +45,6 @@ import com.android.resources.ResourceType;
 import com.android.utils.ILogger;
 import com.android.utils.SdkUtils;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -59,6 +56,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import static com.android.ide.common.rendering.api.Result.Status.ERROR_REFLECTION;
 
 /**
  * Class to use the Layout library.
@@ -83,17 +82,26 @@ public class LayoutLibrary {
     public static final String CLASS_BRIDGE = "com.android.layoutlib.bridge.Bridge"; //$NON-NLS-1$
     public static final String FN_ICU_JAR = "icu4j.jar"; //$NON-NLS-1$
 
-    /** Link to the layout bridge */
+    /**
+     * Link to the layout bridge
+     */
     private final Bridge mBridge;
-    /** Link to a ILayoutBridge in case loaded an older library */
+    /**
+     * Link to a ILayoutBridge in case loaded an older library
+     */
     private final ILayoutBridge mLegacyBridge;
-    /** Status of the layoutlib.jar loading */
+    /**
+     * Status of the layoutlib.jar loading
+     */
     private final LoadStatus mStatus;
-    /** Message associated with the {@link LoadStatus}. This is mostly used when
+    /**
+     * Message associated with the {@link LoadStatus}. This is mostly used when
      * {@link #getStatus()} returns {@link LoadStatus#FAILED}.
      */
     private final String mLoadMessage;
-    /** classloader used to load the jar file */
+    /**
+     * classloader used to load the jar file
+     */
     private final ClassLoader mClassLoader;
 
     // Reflection data for older Layout Libraries.
@@ -106,25 +114,22 @@ public class LayoutLibrary {
     private Field mRightMarginField;
     private Field mBottomMarginField;
 
-    /**
-     * Returns the {@link LoadStatus} of the loading of the layoutlib jar file.
-     */
-    public LoadStatus getStatus() {
-        return mStatus;
+    private LayoutLibrary(Bridge bridge, ILayoutBridge legacyBridge, ClassLoader classLoader,
+                          LoadStatus status, String message) {
+        mBridge = bridge;
+        mLegacyBridge = legacyBridge;
+        mClassLoader = classLoader;
+        mStatus = status;
+        mLoadMessage = message;
     }
 
-    /** Returns the message associated with the {@link LoadStatus}. This is mostly used when
-     * {@link #getStatus()} returns {@link LoadStatus#FAILED}.
-     */
-    public String getLoadMessage() {
-        return mLoadMessage;
-    }
-
-    /**
-     * Returns the classloader used to load the classes in the layoutlib jar file.
-     */
-    public ClassLoader getClassLoader() {
-        return mClassLoader;
+    @VisibleForTesting(visibility = VisibleForTesting.Visibility.PRIVATE)
+    protected LayoutLibrary() {
+        mBridge = null;
+        mLegacyBridge = null;
+        mClassLoader = null;
+        mStatus = null;
+        mLoadMessage = null;
     }
 
     /**
@@ -135,7 +140,7 @@ public class LayoutLibrary {
      * be null.
      *
      * @param layoutLibJarOsPath the path of the jar file
-     * @param log an optional log file.
+     * @param log                an optional log file.
      * @return a {@link LayoutLibrary} object always.
      */
     public static LayoutLibrary load(String layoutLibJarOsPath, ILogger log, String toolName) {
@@ -180,7 +185,7 @@ public class LayoutLibrary {
                     if (constructor != null) {
                         Object bridgeObject = constructor.newInstance();
                         if (bridgeObject instanceof Bridge) {
-                            bridge = (Bridge)bridgeObject;
+                            bridge = (Bridge) bridgeObject;
                         } else if (bridgeObject instanceof ILayoutBridge) {
                             legacyBridge = (ILayoutBridge) bridgeObject;
                         }
@@ -193,9 +198,9 @@ public class LayoutLibrary {
                     if (log != null) {
                         log.error(null,
                                 "Failed to load " + //$NON-NLS-1$
-                                CLASS_BRIDGE +
-                                " from " +          //$NON-NLS-1$
-                                layoutLibJarOsPath);
+                                        CLASS_BRIDGE +
+                                        " from " +          //$NON-NLS-1$
+                                        layoutLibJarOsPath);
                     }
                 } else {
                     // mark the lib as loaded, unless it's overridden below.
@@ -228,7 +233,29 @@ public class LayoutLibrary {
         return new LayoutLibrary(bridge, legacyBridge, classLoader, status, message);
     }
 
+    /**
+     * Returns the {@link LoadStatus} of the loading of the layoutlib jar file.
+     */
+    public LoadStatus getStatus() {
+        return mStatus;
+    }
+
     // ------ Layout Lib API proxy
+
+    /**
+     * Returns the message associated with the {@link LoadStatus}. This is mostly used when
+     * {@link #getStatus()} returns {@link LoadStatus#FAILED}.
+     */
+    public String getLoadMessage() {
+        return mLoadMessage;
+    }
+
+    /**
+     * Returns the classloader used to load the classes in the layoutlib jar file.
+     */
+    public ClassLoader getClassLoader() {
+        return mClassLoader;
+    }
 
     /**
      * Returns the API level of the layout library.
@@ -259,10 +286,9 @@ public class LayoutLibrary {
 
     /**
      * Returns whether the LayoutLibrary supports a given {@link Capability}.
+     *
      * @return true if it supports it.
-     *
      * @see Bridge#getCapabilities()
-     *
      * @deprecated use {@link #supports(int)}
      */
     @Deprecated
@@ -301,16 +327,16 @@ public class LayoutLibrary {
      * on the instance.
      *
      * @param platformProperties The build properties for the platform.
-     * @param fontLocation the location of the fonts in the SDK target.
-     * @param enumValueMap map attrName => { map enumFlagName => Integer value }. This is typically
-     *          read from attrs.xml in the SDK target.
-     * @param log a {@link LayoutLog} object. Can be null.
+     * @param fontLocation       the location of the fonts in the SDK target.
+     * @param enumValueMap       map attrName => { map enumFlagName => Integer value }. This is typically
+     *                           read from attrs.xml in the SDK target.
+     * @param log                a {@link LayoutLog} object. Can be null.
      * @return true if success.
      */
     public boolean init(Map<String, String> platformProperties,
-            File fontLocation,
-            Map<String, Map<String, Integer>> enumValueMap,
-            LayoutLog log) {
+                        File fontLocation,
+                        Map<String, Map<String, Integer>> enumValueMap,
+                        LayoutLog log) {
         if (mBridge != null) {
             return mBridge.init(platformProperties, fontLocation, enumValueMap, log);
         } else if (mLegacyBridge != null) {
@@ -342,7 +368,6 @@ public class LayoutLibrary {
      *
      * @return a new {@link RenderSession} object that contains the result of the scene creation and
      * first rendering or null if {@link #getStatus()} doesn't return {@link LoadStatus#LOADED}.
-     *
      * @see Bridge#createSession(SessionParams)
      */
     public RenderSession createSession(SessionParams params) {
@@ -369,7 +394,8 @@ public class LayoutLibrary {
 
     /**
      * Renders a Drawable. If the rendering is successful, the result image is accessible through
-     * {@link Result#getData()}. It is of type {@link BufferedImage}
+     * {@link Result#getData()}. It is of type {@link Bitmap}
+     *
      * @param params the rendering parameters.
      * @return the result of the action.
      */
@@ -389,7 +415,6 @@ public class LayoutLibrary {
      * resource changes (at this time only bitmaps and 9 patches go into the cache).
      *
      * @param projectKey the key for the project.
-     *
      * @see Bridge#clearCaches(Object)
      */
     public void clearCaches(Object projectKey) {
@@ -404,9 +429,8 @@ public class LayoutLibrary {
      * Utility method returning the parent of a given view object.
      *
      * @param viewObject the object for which to return the parent.
-     *
      * @return a {@link Result} indicating the status of the action, and if success, the parent
-     *      object in {@link Result#getData()}
+     * object in {@link Result#getData()}
      */
     public Result getViewParent(Object viewObject) {
         if (mBridge != null) {
@@ -419,12 +443,14 @@ public class LayoutLibrary {
         return getViewParentWithReflection(viewObject);
     }
 
+    // ------ Implementation
+
     /**
      * Utility method returning the index of a given view in its parent.
-     * @param viewObject the object for which to return the index.
      *
+     * @param viewObject the object for which to return the index.
      * @return a {@link Result} indicating the status of the action, and if success, the index in
-     *      the parent in {@link Result#getData()}
+     * the parent in {@link Result#getData()}
      */
     public Result getViewIndex(Object viewObject) {
         if (mBridge != null) {
@@ -439,22 +465,12 @@ public class LayoutLibrary {
 
     /**
      * Returns true if the character orientation of the locale is right to left.
+     *
      * @param locale The locale formatted as language-region
      * @return true if the locale is right to left.
      */
     public boolean isRtl(String locale) {
         return supports(Features.RTL) && mBridge.isRtl(locale);
-    }
-
-    // ------ Implementation
-
-    private LayoutLibrary(Bridge bridge, ILayoutBridge legacyBridge, ClassLoader classLoader,
-            LoadStatus status, String message) {
-        mBridge = bridge;
-        mLegacyBridge = legacyBridge;
-        mClassLoader = classLoader;
-        mStatus = status;
-        mLoadMessage = message;
     }
 
     /**
@@ -584,7 +600,7 @@ public class LayoutLibrary {
     private Map<String, Map<String, IResourceValue>> convertMap(
             Map<ResourceType, Map<String, ResourceValue>> map) {
         Map<String, Map<String, IResourceValue>> result =
-            new HashMap<String, Map<String, IResourceValue>>();
+                new HashMap<String, Map<String, IResourceValue>>();
 
         for (Entry<ResourceType, Map<String, ResourceValue>> entry : map.entrySet()) {
             // ugly case but works.
@@ -678,10 +694,10 @@ public class LayoutLibrary {
 
     /**
      * Utility method returning the index of a given view in its parent.
-     * @param viewObject the object for which to return the index.
      *
+     * @param viewObject the object for which to return the index.
      * @return a {@link Result} indicating the status of the action, and if success, the index in
-     *      the parent in {@link Result#getData()}
+     * the parent in {@link Result#getData()}
      */
     private Result getViewIndexReflection(Object viewObject) {
         // default implementation using reflection.
@@ -740,10 +756,10 @@ public class LayoutLibrary {
 
             if (mMarginLayoutParamClass.isAssignableFrom(params.getClass())) {
 
-                leftMargin = (Integer)mLeftMarginField.get(params);
-                topMargin = (Integer)mTopMarginField.get(params);
-                rightMargin = (Integer)mRightMarginField.get(params);
-                bottomMargin = (Integer)mBottomMarginField.get(params);
+                leftMargin = (Integer) mLeftMarginField.get(params);
+                topMargin = (Integer) mTopMarginField.get(params);
+                rightMargin = (Integer) mRightMarginField.get(params);
+                bottomMargin = (Integer) mBottomMarginField.get(params);
             }
 
         } catch (Exception e) {
@@ -762,9 +778,8 @@ public class LayoutLibrary {
      * View.getBaseline().
      *
      * @param viewObject the object for which to return the index.
-     *
      * @return the baseline value or -1 if not applicable to the view object or if this layout
-     *     library does not implement this method.
+     * library does not implement this method.
      */
     private int getViewBaselineReflection(Object viewObject) {
         // default implementation using reflection.
@@ -776,7 +791,7 @@ public class LayoutLibrary {
 
             Object result = mViewGetBaselineMethod.invoke(viewObject);
             if (result instanceof Integer) {
-                return ((Integer)result).intValue();
+                return ((Integer) result).intValue();
             }
 
         } catch (Exception e) {
@@ -784,14 +799,5 @@ public class LayoutLibrary {
         }
 
         return Integer.MIN_VALUE;
-    }
-
-    @VisibleForTesting(visibility = VisibleForTesting.Visibility.PRIVATE)
-    protected LayoutLibrary() {
-        mBridge = null;
-        mLegacyBridge = null;
-        mClassLoader = null;
-        mStatus = null;
-        mLoadMessage = null;
     }
 }

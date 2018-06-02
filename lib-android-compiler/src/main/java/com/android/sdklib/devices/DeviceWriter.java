@@ -16,6 +16,8 @@
 
 package com.android.sdklib.devices;
 
+import android.graphics.Point;
+
 import com.android.dvlib.DeviceSchema;
 import com.android.resources.UiMode;
 
@@ -24,7 +26,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.awt.Point;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -54,7 +55,8 @@ public class DeviceWriter {
      * Writes the XML definition of the given {@link Collection} of {@link Device}s according to
      * {@link DeviceSchema#NS_DEVICES_URI} to the {@link OutputStream}.
      * Note that it is up to the caller to close the {@link OutputStream}.
-     * @param out The {@link OutputStream} to write the resulting XML to.
+     *
+     * @param out     The {@link OutputStream} to write the resulting XML to.
      * @param devices The {@link Device}s from which to generate the XML.
      * @throws ParserConfigurationException
      * @throws TransformerFactoryConfigurationError
@@ -173,7 +175,7 @@ public class DeviceWriter {
 
         addElement(doc, screen, DeviceSchema.NODE_SCREEN_SIZE, s.getSize().getResourceValue());
         addElement(doc, screen, DeviceSchema.NODE_DIAGONAL_LENGTH,
-                String.format(Locale.US, "%.2f",s.getDiagonalLength()));
+                String.format(Locale.US, "%.2f", s.getDiagonalLength()));
         addElement(doc, screen, DeviceSchema.NODE_PIXEL_DENSITY,
                 s.getPixelDensity().getResourceValue());
         addElement(doc, screen, DeviceSchema.NODE_SCREEN_RATIO, s.getRatio().getResourceValue());
@@ -202,7 +204,7 @@ public class DeviceWriter {
         addElement(doc, hardware, DeviceSchema.NODE_MIC, Boolean.toString(hw.hasMic()));
 
         for (Camera c : hw.getCameras()) {
-            Element camera  = doc.createElement(PREFIX + DeviceSchema.NODE_CAMERA);
+            Element camera = doc.createElement(PREFIX + DeviceSchema.NODE_CAMERA);
             hardware.appendChild(camera);
             addElement(doc, camera, DeviceSchema.NODE_LOCATION, c.getLocation().toString());
             addElement(doc, camera, DeviceSchema.NODE_AUTOFOCUS,
@@ -287,7 +289,7 @@ public class DeviceWriter {
             // TODO: Only append nodes which are different from the default hardware
             Element hardware = generateHardwareNode(s.getHardware(), doc);
             NodeList children = hardware.getChildNodes();
-            for (int i = 0 ; i < children.getLength(); i++) {
+            for (int i = 0; i < children.getLength(); i++) {
                 Node child = children.item(i);
                 state.appendChild(child);
             }
@@ -303,19 +305,19 @@ public class DeviceWriter {
     }
 
     private static Element addElement(Document doc, Element parent, String tag,
-            Collection<?> content) {
+                                      Collection<?> content) {
         StringBuilder sb = new StringBuilder();
         for (Object o : content) {
             sb.append('\n').append(o.toString());
         }
-        return addElement(doc, parent,  tag, sb.toString());
+        return addElement(doc, parent, tag, sb.toString());
     }
 
     /* This adds generates the XML for a Collection<Storage> and appends it to the parent. Note
      * that it picks the proper unit for the unit attribute and sets it on the node.
      */
     private static Element addStorageElement(Document doc, Element parent, String tag,
-            Collection<Storage> content) {
+                                             Collection<Storage> content) {
         Storage.Unit unit = Storage.Unit.TiB;
 
         // Get the lowest common unit (so if one piece of storage is 128KiB and another is 1MiB,

@@ -18,17 +18,16 @@ package com.android.ide.common.vectordrawable;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.android.ide.common.util.AssetUtil;
-import com.google.common.base.Charsets;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
+import java.io.StringWriter;
 
 /**
  * Generate a Image based on the VectorDrawable's XML content.
@@ -41,8 +40,6 @@ public class VdPreview {
     private static final String ANDROID_AUTO_MIRRORED = "android:autoMirrored";
     private static final String ANDROID_HEIGHT = "android:height";
     private static final String ANDROID_WIDTH = "android:width";
-    public static final int MAX_PREVIEW_IMAGE_SIZE = 4096;
-    public static final int MIN_PREVIEW_IMAGE_SIZE = 1;
 
     /**
      * This encapsulates the information used to determine the preview image size.
@@ -222,67 +219,6 @@ public class VdPreview {
             nodeAttr.setTextContent(overrideValue + "dp");
         }
         return originalValue;
-    }
-
-    /**
-     * This generates an image according to the VectorDrawable's content {@code xmlFileContent}.
-     * At the same time, {@vdErrorLog} captures all the errors found during parsing.
-     * The size of image is determined by the {@code size}.
-     *
-     * @param targetSize the size of result image.
-     * @param xmlFileContent  VectorDrawable's XML file's content.
-     * @param vdErrorLog      log for the parsing errors and warnings.
-     * @return an preview image according to the VectorDrawable's XML
-     */
-    @Nullable
-    public static BufferedImage getPreviewFromVectorXml(@NonNull TargetSize targetSize,
-                                                        @Nullable String xmlFileContent,
-                                                        @Nullable StringBuilder vdErrorLog) {
-        if (xmlFileContent == null || xmlFileContent.isEmpty()) {
-            return null;
-        }
-        VdParser p = new VdParser();
-        VdTree vdTree;
-
-        InputStream inputStream = new ByteArrayInputStream(
-                xmlFileContent.getBytes(Charsets.UTF_8));
-        vdTree = p.parse(inputStream, vdErrorLog);
-        if (vdTree == null) {
-            return null;
-        }
-
-        // If the forceImageSize is set (>0), then we honor that.
-        // Otherwise, we will ask the vectorDrawable for the prefer size, then apply the imageScale.
-        float vdWidth = vdTree.getBaseWidth();
-        float vdHeight = vdTree.getBaseHeight();
-        float imageWidth;
-        float imageHeight;
-        int forceImageSize = targetSize.mImageMaxDimension;
-        float imageScale = targetSize.mImageScale;
-
-        if (forceImageSize > 0) {
-            // The goal here is to generate an image within certain size, while keeping the
-            // aspect ration as much as we can.
-            // If it is scaling too much to fit in, we log an error.
-            float maxVdSize = Math.max(vdWidth, vdHeight);
-            float ratioToForceImageSize = forceImageSize / maxVdSize;
-            float scaledWidth = ratioToForceImageSize * vdWidth;
-            float scaledHeight = ratioToForceImageSize * vdHeight;
-            imageWidth = Math.max(MIN_PREVIEW_IMAGE_SIZE, Math.min(MAX_PREVIEW_IMAGE_SIZE, scaledWidth));
-            imageHeight = Math.max(MIN_PREVIEW_IMAGE_SIZE, Math.min(MAX_PREVIEW_IMAGE_SIZE, scaledHeight));
-            if (scaledWidth != imageWidth || scaledHeight != imageHeight) {
-                vdErrorLog.append("Invalid image size, can't fit in a square whose size is" + forceImageSize);
-            }
-        } else {
-            imageWidth = vdWidth * imageScale;
-            imageHeight = vdHeight * imageScale;
-        }
-
-        // Create the image according to the vectorDrawable's aspect ratio.
-
-        BufferedImage image = AssetUtil.newArgbBufferedImage((int)imageWidth, (int)imageHeight);
-        vdTree.drawIntoImage(image);
-        return image;
     }
 
     public static void main(String[] args) {

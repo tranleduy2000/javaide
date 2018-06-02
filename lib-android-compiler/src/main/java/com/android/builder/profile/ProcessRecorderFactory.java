@@ -35,8 +35,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.management.GarbageCollectorMXBean;
-import java.lang.management.ManagementFactory;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -55,17 +53,17 @@ public class ProcessRecorderFactory {
 
     public static void shutdown() throws InterruptedException {
         synchronized (LOCK) {
-            List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory
-                    .getGarbageCollectorMXBeans();
-            ThreadRecorder.get().record(ExecutionType.FINAL_METADATA, Recorder.EmptyBlock,
-                    new Recorder.Property("build_time",
-                            Long.toString(System.currentTimeMillis() - sINSTANCE.startTime)),
-                    new Recorder.Property("gc_count",
-                            Long.toString(garbageCollectorMXBeans.get(0).getCollectionCount()
-                                    - sINSTANCE.gcCountAtStart)),
-                    new Recorder.Property("gc_time",
-                            Long.toString(garbageCollectorMXBeans.get(0).getCollectionTime()
-                                    - sINSTANCE.gcTimeAtStart)));
+//            List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory
+//                    .getGarbageCollectorMXBeans();
+//            ThreadRecorder.get().record(ExecutionType.FINAL_METADATA, Recorder.EmptyBlock,
+//                    new Recorder.Property("build_time",
+//                            Long.toString(System.currentTimeMillis() - sINSTANCE.startTime)),
+//                    new Recorder.Property("gc_count",
+//                            Long.toString(garbageCollectorMXBeans.get(0).getCollectionCount()
+//                                    - sINSTANCE.gcCountAtStart)),
+//                    new Recorder.Property("gc_time",
+//                            Long.toString(garbageCollectorMXBeans.get(0).getCollectionTime()
+//                                    - sINSTANCE.gcTimeAtStart)));
             if (sINSTANCE.isInitialized()) {
                 sINSTANCE.get().finish();
                 sINSTANCE.uploadData();
@@ -125,15 +123,15 @@ public class ProcessRecorderFactory {
     private static boolean sENABLED = !Strings.isNullOrEmpty(System.getenv("RECORD_SPANS"));
 
     private final long startTime;
-    private final long gcCountAtStart;
-    private final long gcTimeAtStart;
+//    private final long gcCountAtStart;
+//    private final long gcTimeAtStart;
 
     ProcessRecorderFactory() {
         startTime = System.currentTimeMillis();
-        List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory
-                .getGarbageCollectorMXBeans();
-        gcCountAtStart = garbageCollectorMXBeans.get(0).getCollectionCount();
-        gcTimeAtStart = garbageCollectorMXBeans.get(0).getCollectionTime();
+//        List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory
+//                .getGarbageCollectorMXBeans();
+//        gcCountAtStart = garbageCollectorMXBeans.get(0).getCollectionCount();
+//        gcTimeAtStart = garbageCollectorMXBeans.get(0).getCollectionTime();
     }
 
     public static void initializeForTests(ProcessRecorder.ExecutionRecordWriter recordWriter) {

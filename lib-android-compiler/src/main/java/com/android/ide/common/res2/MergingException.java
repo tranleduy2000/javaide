@@ -24,7 +24,7 @@ import com.android.ide.common.blame.SourceFile;
 import com.android.ide.common.blame.SourceFilePosition;
 import com.android.ide.common.blame.SourcePosition;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -106,7 +106,7 @@ public class MergingException extends Exception {
         public MergingException build() {
             if (mCause != null) {
                 if (mMessageText == null) {
-                    mMessageText = Objects.firstNonNull(
+                    mMessageText =  MoreObjects.firstNonNull(
                             mCause.getLocalizedMessage(), mCause.getClass().getCanonicalName());
                 }
                 if (mPosition == SourcePosition.UNKNOWN && mCause instanceof SAXParseException) {
@@ -129,7 +129,7 @@ public class MergingException extends Exception {
                     new Message(
                             Kind.ERROR,
                             mMessageText,
-                            Objects.firstNonNull(mOriginalMessageText, mMessageText),
+                            MoreObjects.firstNonNull(mOriginalMessageText, mMessageText),
                             new SourceFilePosition(mFile, mPosition)));
         }
 

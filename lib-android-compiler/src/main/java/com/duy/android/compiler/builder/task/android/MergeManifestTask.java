@@ -2,17 +2,16 @@ package com.duy.android.compiler.builder.task.android;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
+import com.android.builder.dependency.ManifestDependency;
 import com.android.ide.common.internal.CommandLineRunner;
+import com.android.manifmerger.ICallback;
+import com.android.manifmerger.ManifestMerger;
+import com.android.manifmerger.MergerLog;
 import com.android.sdklib.IAndroidTarget;
 import com.android.sdklib.repository.FullRevision;
 import com.android.utils.ILogger;
 import com.android.utils.SdkUtils;
 import com.duy.android.compiler.builder.IBuilder;
-import com.android.builder.compiling.DependencyFileProcessor;
-import com.android.builder.dependency.ManifestDependency;
-import com.android.manifmerger.ICallback;
-import com.android.manifmerger.ManifestMerger;
-import com.android.manifmerger.MergerLog;
 import com.duy.android.compiler.builder.sdk.SdkInfo;
 import com.duy.android.compiler.builder.sdk.TargetInfo;
 import com.duy.android.compiler.builder.task.ABuildTask;
@@ -35,12 +34,6 @@ public class MergeManifestTask extends ABuildTask<AndroidAppProject> {
 
     private static final FullRevision MIN_BUILD_TOOLS_REV = new FullRevision(19, 0, 0);
 
-    private static final DependencyFileProcessor sNoOpDependencyFileProcessor = new DependencyFileProcessor() {
-        @Override
-        public boolean processFile(@NonNull File dependencyFile) {
-            return true;
-        }
-    };
 
     private final ILogger mLogger;
     private final CommandLineRunner mCmdLineRunner;

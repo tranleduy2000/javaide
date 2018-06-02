@@ -17,9 +17,10 @@
 package com.android.ide.common.rendering.api;
 
 
+import android.graphics.Bitmap;
+
 import com.android.ide.common.rendering.api.Result.Status;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.EnumSet;
 import java.util.Map;
@@ -111,7 +112,7 @@ public abstract class Bridge {
 
     /**
      * Renders a Drawable. If the rendering is successful, the result image is accessible through
-     * {@link Result#getData()}. It is of type {@link BufferedImage}
+     * {@link Result#getData()}. It is of type {@link Bitmap}
      * @param params the rendering parameters.
      * @return the result of the action.
      */

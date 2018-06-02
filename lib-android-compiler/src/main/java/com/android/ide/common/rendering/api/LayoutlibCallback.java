@@ -20,8 +20,6 @@ import com.android.annotations.Nullable;
 import com.android.resources.ResourceType;
 import com.android.util.Pair;
 
-import org.intellij.lang.annotations.MagicConstant;
-
 /**
  * Intermediary class implementing parts of both the old and new ProjectCallback from the
  * LayoutLib API.
@@ -43,34 +41,34 @@ public abstract class LayoutlibCallback implements IProjectCallback,
      * @param name className in binary format (see {@link ClassLoader})
      * @return an new instance created by calling the given constructor.
      * @throws ClassNotFoundException any exceptions thrown when creating the instance is wrapped in
-     * ClassNotFoundException.
+     *                                ClassNotFoundException.
      * @since API 15
      */
     public Object loadClass(@NonNull String name, @Nullable Class[] constructorSignature,
-      @Nullable Object[] constructorArgs) throws ClassNotFoundException {
+                            @Nullable Object[] constructorArgs) throws ClassNotFoundException {
         try {
             return loadView(name, constructorSignature, constructorArgs);
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new ClassNotFoundException(name + " not found.", e);
         }
     }
 
     /**
      * Returns if the IDE supports the requested feature.
+     *
      * @see Features
      * @since API 15
      */
     public abstract boolean supports(
-            @MagicConstant(valuesFromClass = Features.class) int ideFeature);
+            /*@MagicConstant(valuesFromClass = Features.class) */int ideFeature);
 
     /**
      * A callback to query arbitrary data. This is similar to {@link RenderParams#setFlag(SessionParams.Key,
      * Object)}. The main difference is that when using this, the IDE doesn't have to compute the
      * value in advance and thus may save on some computation.
+     *
      * @since API 15
      */
     @Nullable
@@ -80,6 +78,7 @@ public abstract class LayoutlibCallback implements IProjectCallback,
 
     /**
      * Get a ParserFactory which can be used to create XmlPullParsers.
+     *
      * @since API 15
      */
     @NonNull
@@ -92,6 +91,7 @@ public abstract class LayoutlibCallback implements IProjectCallback,
      * <p/>
      * Like {@link #loadClass(String, Class[], Object[])}, but doesn't instantiate
      * an object and just returns the class found.
+     *
      * @param name className in binary format. (see {@link ClassLoader}.
      * @since API 15
      */
@@ -111,7 +111,7 @@ public abstract class LayoutlibCallback implements IProjectCallback,
     public final String[] resolveResourceValue(int id) {
         Pair<ResourceType, String> info = resolveResourceId(id);
         if (info != null) {
-            return new String[] { info.getSecond(), info.getFirst().getName() };
+            return new String[]{info.getSecond(), info.getFirst().getName()};
         }
 
         return null;

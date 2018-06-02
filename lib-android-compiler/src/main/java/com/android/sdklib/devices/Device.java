@@ -16,13 +16,14 @@
 
 package com.android.sdklib.devices;
 
+import android.graphics.Point;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.dvlib.DeviceSchema;
 import com.android.resources.ScreenOrientation;
 import com.android.resources.ScreenRound;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -214,7 +215,7 @@ public final class Device {
 
     @SuppressWarnings("SuspiciousNameCombination") // Deliberately swapping orientations
     @Nullable
-    public Dimension getScreenSize(@NonNull ScreenOrientation orientation) {
+    public Point getScreenSize(@NonNull ScreenOrientation orientation) {
         Screen screen = getDefaultHardware().getScreen();
         if (screen == null) {
             return null;
@@ -246,7 +247,7 @@ public final class Device {
             }
         }
 
-        return new Dimension(screenWidth, screenHeight);
+        return new Point(screenWidth, screenHeight);
     }
 
     /**

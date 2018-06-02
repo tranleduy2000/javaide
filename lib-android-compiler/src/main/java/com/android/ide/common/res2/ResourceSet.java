@@ -16,10 +16,6 @@
 
 package com.android.ide.common.res2;
 
-import static com.android.ide.common.res2.ResourceFile.ATTR_QUALIFIER;
-import static com.google.common.base.Objects.firstNonNull;
-import static com.google.common.base.Preconditions.checkState;
-
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -41,6 +37,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.android.ide.common.res2.ResourceFile.ATTR_QUALIFIER;
+import static com.google.common.base.MoreObjects.firstNonNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Implementation of {@link DataSet} for {@link ResourceItem} and {@link ResourceFile}.

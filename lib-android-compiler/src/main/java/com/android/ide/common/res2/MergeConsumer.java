@@ -22,7 +22,7 @@ import com.android.ide.common.blame.Message;
 import com.android.ide.common.blame.SourceFile;
 import com.android.ide.common.blame.SourceFilePosition;
 import com.android.ide.common.blame.SourcePosition;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Throwables;
 
 import java.io.File;
@@ -51,7 +51,7 @@ public interface MergeConsumer<I extends DataItem> {
         private ConsumerException(@NonNull Throwable cause, @NonNull SourceFile file) {
             super(cause, new Message(
                     Message.Kind.ERROR,
-                    Objects.firstNonNull(
+                    MoreObjects.firstNonNull(
                             cause.getLocalizedMessage(),
                             cause.getClass().getCanonicalName()),
                     Throwables.getStackTraceAsString(cause),

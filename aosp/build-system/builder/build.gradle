@@ -21,17 +21,16 @@ android {
 }
 dependencies {
 
-//    compile project(':base:builder-model')
-//    compile project(':base:builder-test-api')
+    api project(':aosp:build-system:builder-model')
+    api project(':aosp:build-system:builder-test-api')
+    api project(':aosp:build-system:manifest-merger')
+    api project(':aosp:sdklib')
+    api project(':aosp:sdk-common')
+    api project(':aosp:common')
+    api project(':aosp:ddmlib')
 //
-//    compile project(':base:sdklib')
-//    compile project(':base:sdk-common')
-//    compile project(':base:common')
-//    compile project(':base:manifest-merger')
-//    compile project(':base:ddmlib')
-//
-//    compile project(':base:jack:jack-api')
-//    compile project(':base:jack:jill-api')
+//    compile project(':aosp:jack:jack-api')
+//    compile project(':aosp:jack:jill-api')
     api "com.android.support:support-annotations:$supportLibVersion"
     api "com.android.support:support-v4:$supportLibVersion"
     //noinspection GradleDependency

@@ -1,25 +1,31 @@
-apply plugin: 'java'
-apply plugin: 'jacoco'
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
 
 dependencies {
-    compile project(':base:annotations')
-    compile project(':base:common')
-    compile 'com.google.guava:guava:17.0'
-    compile 'com.google.code.gson:gson:2.2.4'
+    compile project(':aosp:annotations')
+    compile project(':aosp:common')
+    compile 'com.google.guava:guava:23.0'
+    compile 'com.google.code.gson:gson:2.8.1'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:1.9.5'
-}
-
-configurations {
-    sourcesOnly
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    sourcesOnly sourcesJar
 }

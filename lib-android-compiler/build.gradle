@@ -40,6 +40,7 @@ repositories {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api project(':dx')
+    api project(':jdk-1_7')
     api group: 'org.gradle', name: 'gradle-core', version: '2.2.1'
 
     api "com.android.support:support-annotations:$supportLibVersion"

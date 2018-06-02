@@ -17,7 +17,7 @@
 package com.android.builder.tasks;
 
 import com.android.annotations.NonNull;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -72,4 +72,5 @@ public class Job<T> {
                 .add("result", mResult.get())
                 .toString();
     }
+
 }

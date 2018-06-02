@@ -1,21 +1,27 @@
-apply plugin: 'java'
-apply plugin: 'jacoco'
-apply plugin: 'sdk-java-lib'
+apply plugin: 'com.android.library'
 
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
 dependencies {
-    compile project(':base:annotations')
-    compile 'com.google.guava:guava:17.0'
+    compile project(':aosp:annotations')
+    compile 'com.google.guava:guava:23.0'
 
     testCompile 'junit:junit:4.12'
 }
-
-group = 'com.android.tools'
-archivesBaseName = 'common'
-version = rootProject.ext.baseVersion
-
-project.ext.pomName = 'Android Tools common library'
-project.ext.pomDesc = 'common library used by other Android tools libraries.'
-
-apply from: "$rootDir/buildSrc/base/publish.gradle"
-apply from: "$rootDir/buildSrc/base/bintray.gradle"
-apply from: "$rootDir/buildSrc/base/javadoc.gradle"

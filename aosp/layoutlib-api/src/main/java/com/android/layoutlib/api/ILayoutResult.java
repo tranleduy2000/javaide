@@ -16,10 +16,10 @@
 
 package com.android.layoutlib.api;
 
+import android.graphics.Bitmap;
+
 import com.android.ide.common.rendering.api.Bridge;
 import com.android.ide.common.rendering.api.RenderSession;
-
-import java.awt.image.BufferedImage;
 
 /**
  * The result of a layout computation through {@link ILayoutBridge}.
@@ -55,7 +55,7 @@ public interface ILayoutResult {
     /**
      * Returns the rendering of the full layout.
      */
-    BufferedImage getImage();
+    Bitmap getImage();
 
     /**
      * Returns the error message.

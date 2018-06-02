@@ -17,17 +17,18 @@
 package com.android.ide.common.rendering.api;
 
 
-import java.awt.image.BufferedImage;
+import android.graphics.Bitmap;
+
 
 /**
  * Image Factory Interface.
  *
- * An Image factory's task is to create the {@link BufferedImage} into which the scene will be
+ * An Image factory's task is to create the {@link Bitmap} into which the scene will be
  * rendered. The goal is to let the layoutlib caller create an image that's optimized for its use
  * case.
  *
  * If no factory is passed in {@link RenderParams#setImageFactory(IImageFactory)}, then a default
- * {@link BufferedImage} of type {@link BufferedImage#TYPE_INT_ARGB} is created.
+ * {@link Bitmap} of type {@link Bitmap#TYPE_INT_ARGB} is created.
  *
  */
 public interface IImageFactory {
@@ -38,5 +39,5 @@ public interface IImageFactory {
      * @param height the height of the image
      * @return a new (or reused) BufferedImage of the given size.
      */
-    BufferedImage getImage(int width, int height);
+    Bitmap getImage(int width, int height);
 }

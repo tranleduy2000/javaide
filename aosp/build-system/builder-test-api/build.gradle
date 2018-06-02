@@ -1,21 +1,26 @@
-apply plugin: 'java'
-apply plugin: 'jacoco'
-apply plugin: 'clone-artifacts'
+apply plugin: 'com.android.library'
 
-dependencies {
-    compile project(':base:ddmlib')
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
-    testCompile 'junit:junit:4.12'
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
 }
 
-group = 'com.android.tools.build'
-archivesBaseName = 'builder-test-api'
-version = rootProject.ext.buildVersion
-
-project.ext.pomName = 'Android Builder Test API library'
-project.ext.pomDesc = 'API for the Test extension point in the Builder library.'
-
-apply from: "$rootDir/buildSrc/base/publish.gradle"
-apply from: "$rootDir/buildSrc/base/bintray.gradle"
-apply from: "$rootDir/buildSrc/base/javadoc.gradle"
-
+dependencies {
+    compile project(':aosp:ddmlib')
+    testCompile 'junit:junit:4.12'
+}

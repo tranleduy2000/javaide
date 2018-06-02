@@ -18,7 +18,7 @@ package com.android.builder.profile;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -96,6 +96,7 @@ public interface Recorder {
                     .add("value", value)
                     .toString();
         }
+
     }
 
     /**

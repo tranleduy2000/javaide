@@ -18,7 +18,7 @@ package com.android.builder.profile;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
@@ -56,4 +56,5 @@ public class ExecutionRecord {
                 .add("attributes", attributes)
                 .toString();
     }
+
 }

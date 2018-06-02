@@ -1,0 +1,938 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (C) 2012 The Android Open Source Project
+ *
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.eclipse.org/org/documents/epl-v10.php
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<xsd:schema
+    targetNamespace="http://schemas.android.com/sdk/devices/1"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:c="http://schemas.android.com/sdk/devices/1"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    version="1">
+
+    <xsd:element name="devices" type="c:devicesType" />
+
+    <xsd:complexType name="devicesType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                The "devices" element is the root element of this schema.
+
+                It must contain one or more "device" elements that each define the configurations
+                and states available for a given device.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="device" minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        A device element contains one hardware profile for a device, along with
+                        1 or more software profiles and 1 or more states. Each software profile
+                        defines the supported software for a given API release, and each state
+                        profile defines a different possible state of the device (screen in
+                        portrait orientation, screen in landscape orientation with the keyboard
+                        out, etc.)
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="name"         type= "xsd:token" />
+                        <xsd:element name="id"           type= "xsd:token"       minOccurs="0" />
+                        <xsd:element name="manufacturer" type= "xsd:token" />
+                        <xsd:element name="meta"         type= "c:metaType"      minOccurs="0" />
+                        <xsd:element name="hardware"     type= "c:hardwareType" />
+                        <xsd:element name="software"     type= "c:softwareType"
+                                     maxOccurs="unbounded" />
+                        <xsd:element name="state"        type= "c:stateType"
+                                     maxOccurs="unbounded" />
+                        <xsd:element name="tag-id"       type= "c:idType"        minOccurs="0" />
+                        <xsd:element name="boot-props"   type= "c:bootPropsType" minOccurs="0" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="idType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A tag string for a system image can only be a simple alphanumeric string.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:token">
+            <xsd:pattern value="[a-zA-Z0-9_-]+"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="bootPropsType" >
+        <xsd:annotation>
+            <xsd:documentation>
+                List of boot properties.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="boot-prop">
+                <xsd:complexType>
+                    <xsd:all>
+                        <xsd:element name="prop-name">
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:token">
+                                    <xsd:pattern value="[^\n\r\t =]+"/>
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="prop-value" type= "xsd:string" />
+                    </xsd:all>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="hardwareType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                The hardwareType contains all of the hardware information for
+                a given device. This includes things like the GPU type, screen
+                size, mic presence, etc.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="screen"            type= "c:screenType" />
+            <xsd:element name="networking"        type= "c:networkingType" />
+            <xsd:element name="sensors"           type= "c:sensorsType" />
+            <xsd:element name="mic"               type= "c:micType" />
+            <xsd:element name="camera"            type= "c:cameraType"
+                         minOccurs="0"            maxOccurs="unbounded" />
+            <xsd:element name="keyboard"          type= "c:keyboardType" />
+            <xsd:element name="nav"               type= "c:navType" />
+            <xsd:element name="ram"               type= "c:ramType" />
+            <xsd:element name="buttons"           type= "c:buttonsType" />
+            <xsd:element name="internal-storage"  type= "c:internalStorageType" />
+            <xsd:element name="removable-storage" type= "c:removableStorageType" />
+            <xsd:element name="cpu"               type= "c:cpuType" />
+            <xsd:element name="gpu"               type= "c:gpuType" />
+            <xsd:element name="abi"               type= "c:abiType" />
+            <xsd:element name="dock"              type= "c:dockType" />
+            <xsd:element name="power-type"        type= "c:powerType" />
+            <xsd:element name="skin"              minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Path to a custom skin directory.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="softwareType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                The softwareType contains all of the device's software
+                information for a given API version. This includes things like
+                live wallpaper support, OpenGL version, etc.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="api-level">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies which API version(s) this this element is
+                        defining. This can in the form of a single number
+                        or a range of low to high, separated with a dash and
+                        with either limit missing. The default lower limit is
+                        one, and the default upper limit is unbounded.
+                        The following are valid:
+                            10
+                            7-10
+                            -10
+                            7-
+                            -
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:token">
+                        <xsd:pattern value="[\d]*-[\d]*|[\d]+" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="live-wallpaper-support" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                       Specifies whether the device supports live wallpapers.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+
+            <xsd:element name="bluetooth-profiles">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies all of the available Bluetooth profiles.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:list>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:NMTOKEN">
+                                <xsd:enumeration value="A2DP" />
+                                <xsd:enumeration value="ATT" />
+                                <xsd:enumeration value="AVRCP" />
+                                <xsd:enumeration value="AVDTP" />
+                                <xsd:enumeration value="BIP" />
+                                <xsd:enumeration value="BPP" />
+                                <xsd:enumeration value="CIP" />
+                                <xsd:enumeration value="CTP" />
+                                <xsd:enumeration value="DIP" />
+                                <xsd:enumeration value="DUN" />
+                                <xsd:enumeration value="FAX" />
+                                <xsd:enumeration value="FTP" />
+                                <xsd:enumeration value="GAVDP" />
+                                <xsd:enumeration value="GAP" />
+                                <xsd:enumeration value="GATT" />
+                                <xsd:enumeration value="GOEP" />
+                                <xsd:enumeration value="HCRP" />
+                                <xsd:enumeration value="HDP" />
+                                <xsd:enumeration value="HFP" />
+                                <xsd:enumeration value="HID" />
+                                <xsd:enumeration value="HSP" />
+                                <xsd:enumeration value="ICP" />
+                                <xsd:enumeration value="LAP" />
+                                <xsd:enumeration value="MAP" />
+                                <xsd:enumeration value="OPP" />
+                                <xsd:enumeration value="PAN" />
+                                <xsd:enumeration value="PBA" />
+                                <xsd:enumeration value="PBAP" />
+                                <xsd:enumeration value="SPP" />
+                                <xsd:enumeration value="SDAP" />
+                                <xsd:enumeration value="SAP" />
+                                <xsd:enumeration value="SIM" />
+                                <xsd:enumeration value="rSAP" />
+                                <xsd:enumeration value="SYNCH" />
+                                <xsd:enumeration value="VDP" />
+                                <xsd:enumeration value="WAPB" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:list>
+                </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="gl-version">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies the OpenGL version supported for this release.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:decimal">
+                        <xsd:pattern value="[0-9]\.[0-9]" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="gl-extensions">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies all of the supported OpenGL extensions for
+                        this release.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:list itemType="xsd:NMTOKEN" />
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="status-bar" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies whether the device has a status bar in this
+                        software configuration.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="stateType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                The stateType contains the information for a given state of
+                of the device. States include things like portrait mode,
+                landscape with the keyboard exposed, etc. States can also
+                modify the hardware attributes of a device. For instance, if
+                sliding out the keyboard increased the available screen
+                real estate, you can define a new screenType to override the
+                default one defined in the device's hardwareType.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="description" type="xsd:token">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        A description of the defined state.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+
+            <xsd:element name="screen-orientation">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Defines the orientation of the screen. Use square if
+                        the device's screen has equal height and width,
+                        otherwise use landscape or portrait.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:token">
+                        <xsd:enumeration value="port" />
+                        <xsd:enumeration value="land" />
+                        <xsd:enumeration value="square" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="keyboard-state">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Defines the state of the keyboard. If the device has no
+                        keyboard use keysoft, otherwise use keysexposed or keyshidden.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:token">
+                        <xsd:enumeration value="keyssoft" />
+                        <xsd:enumeration value="keyshidden" />
+                        <xsd:enumeration value="keysexposed" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="nav-state">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Defines the state of the primary non-touchscreen
+                        navigation hardware on the devices. If the device
+                        doesn't have non-touchscreen navigation hardware use
+                        nonav, otherwise use navexposed or navhidden.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:token">
+                        <xsd:enumeration value="nonav" />
+                        <xsd:enumeration value="navhidden" />
+                        <xsd:enumeration value="navexposed" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="screen"            type="c:screenType" minOccurs="0" />
+            <xsd:element name="networking"        type="c:networkingType"
+                         minOccurs="0" />
+            <xsd:element name="sensors"           type="c:sensorsType" minOccurs="0" />
+            <xsd:element name="mic"               type="c:micType" minOccurs="0" />
+            <xsd:element name="camera"            type="c:cameraType"
+                         minOccurs="0"            maxOccurs="unbounded" />
+            <xsd:element name="keyboard"          type="c:keyboardType" minOccurs="0" />
+            <xsd:element name="nav"               type="c:navType" minOccurs="0" />
+            <xsd:element name="ram"               type="c:ramType" minOccurs="0" />
+            <xsd:element name="buttons"           type="c:buttonsType" minOccurs="0" />
+            <xsd:element name="internal-storage"  type="c:internalStorageType"
+                         minOccurs="0" />
+            <xsd:element name="removable-storage" type="c:removableStorageType"
+                         minOccurs="0" />
+            <xsd:element name="cpu"               type="c:cpuType" minOccurs="0" />
+            <xsd:element name="gpu"               type="c:gpuType" minOccurs="0" />
+            <xsd:element name="abi"               type="c:abiType" minOccurs="0" />
+            <xsd:element name="dock"              type="c:dockType" minOccurs="0" />
+            <xsd:element name="power-type"        type="c:powerType"
+                         minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="name"    use="required" type="xsd:token" />
+        <xsd:attribute name="default" use="optional" type="xsd:boolean" />
+    </xsd:complexType>
+
+    <xsd:complexType name="metaType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Details where more device information can be found, such as
+                icons and frame images.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="icons" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Contains the relative paths to the icon files for this
+                        device.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="sixty-four" type="xsd:normalizedString">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    Relative path for the 64x64 icon.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="sixteen" type="xsd:normalizedString"
+                                     minOccurs="0">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    Relative path for the 16x16 icon.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="frame" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Contains information about the frame for the device.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="path"
+                                     type="xsd:normalizedString">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    The relative path to the emulator frame for
+                                    the device.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="portrait-x-offset"
+                                     type="xsd:nonNegativeInteger">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    The offset for the frame in the x direction,
+                                    in portrait mode.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="portrait-y-offset"
+                                     type="xsd:nonNegativeInteger">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    The offset for the frame in the y direction,
+                                    in portrait mode.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="landscape-x-offset"
+                                     type="xsd:nonNegativeInteger">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    The offset for the frame in the x direction,
+                                    in landscape mode.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="landscape-y-offset"
+                                     type="xsd:nonNegativeInteger">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    The offset for the frame in the y direction,
+                                    in landscape mode.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="screenType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Contains the specifications for the device's screen.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="screen-size">
+                <xsd:simpleType>
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            Specifies the class of the screen.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:restriction base="xsd:token">
+                        <xsd:enumeration value="small" />
+                        <xsd:enumeration value="normal" />
+                        <xsd:enumeration value="large" />
+                        <xsd:enumeration value="xlarge" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="diagonal-length">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies the diagonal length of the screen in inches.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:decimal">
+                        <!-- Negative lengths are not valid -->
+                        <xsd:minInclusive value="0" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="pixel-density">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies the screen density of the device. The
+                        medium density of traditional HVGA screens (mdpi)
+                        is defined to be approximately 160dpi; low density
+                        (ldpi) is 120, and high density (hdpi) is 240. There
+                        is thus a 4:3 scaling factor between each density,
+                        so a 9x9 bitmap in ldpi would be 12x12 in mdpi and
+                        16x16 in hdpi.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:token">
+                        <xsd:enumeration value="ldpi" />
+                        <xsd:enumeration value="mdpi" />
+                        <xsd:enumeration value="tvdpi" />
+                        <xsd:enumeration value="hdpi" />
+                        <xsd:enumeration value="xhdpi" />
+                        <xsd:enumeration value="xxhdpi" />
+                        <xsd:enumeration value="xxxhdpi" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="screen-ratio">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies whether the configuration is for a taller or
+                        wider than traditional screen. This is based purely on
+                        the aspect ratio of the screen: QVGA, HVGA, and VGA are
+                        notlong; WQVGA, WVGA, FWVGA are long. Note that long may
+                        mean either wide or tall, depending on the current
+                        orientation.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:token">
+                        <xsd:enumeration value="notlong" />
+                        <xsd:enumeration value="long" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="dimensions">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies the device screen resolution in pixels.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="x-dimension">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    Specifies the x-dimension's resolution in
+                                    pixels.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:positiveInteger" />
+                            </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="y-dimension">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    Specifies the y-dimension's resolution in
+                                    pixels.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:positiveInteger" />
+                            </xsd:simpleType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="xdpi">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies the actual density in X of the device screen.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:decimal">
+                        <!-- Negative DPIs are not valid -->
+                        <xsd:minInclusive value="0" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="ydpi">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies the actual density in Y of the device screen.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:decimal">
+                        <!-- Negative DPIs are not valid -->
+                        <xsd:minInclusive value="0" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="touch">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies the touch properties of the device.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="multitouch">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    Specifies the multitouch capabilities of the
+                                    device. This can be none if multitouch is
+                                    not supported, basic if the device can track
+                                    only basic two finger gestures, distinct if
+                                    the device can track two or more fingers
+                                    simultaneously, or jazz-hands if the device
+                                    can track 5 or more fingers simultaneously.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:token">
+                                    <xsd:enumeration value="none" />
+                                    <xsd:enumeration value="basic" />
+                                    <xsd:enumeration value="distinct" />
+                                    <xsd:enumeration value="jazz-hands" />
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:element>
+
+                        <xsd:element name="mechanism">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    Specifies the mechanism the device was
+                                    created for.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:token">
+                                    <xsd:enumeration value="notouch" />
+                                    <xsd:enumeration value="stylus" />
+                                    <xsd:enumeration value="finger" />
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:element>
+
+                        <xsd:element name="screen-type">
+                            <xsd:annotation>
+                                <xsd:documentation xml:lang="en">
+                                    Specifies the type of touch screen on the
+                                    device.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:token">
+                                    <xsd:enumeration value="notouch" />
+                                    <xsd:enumeration value="capacitive" />
+                                    <xsd:enumeration value="resistive" />
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="networkingType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the available networking hardware.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:list>
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:token">
+                    <xsd:enumeration value="NFC" />
+                    <xsd:enumeration value="Bluetooth" />
+                    <xsd:enumeration value="Wifi" />
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:list>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="sensorsType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the available sensors.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:list>
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:token">
+                    <xsd:enumeration value="Accelerometer" />
+                    <xsd:enumeration value="Barometer" />
+                    <xsd:enumeration value="Compass" />
+                    <xsd:enumeration value="GPS" />
+                    <xsd:enumeration value="Gyroscope" />
+                    <xsd:enumeration value="LightSensor" />
+                    <xsd:enumeration value="ProximitySensor" />
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:list>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="micType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies whether the device has a mic or not.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:boolean" />
+    </xsd:simpleType>
+
+    <xsd:complexType name="cameraType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the attributes of the camera.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="location">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies the location of the camera.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:token">
+                        <xsd:enumeration value="front" />
+                        <xsd:enumeration value="back" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element name="autofocus" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies whether the camera can autofocus
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+
+            <xsd:element name="flash" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">
+                        Specifies whether the camera has flash.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="keyboardType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the type of keyboard on the device.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="qwerty" />
+            <xsd:enumeration value="12key"  />
+            <xsd:enumeration value="nokeys" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="navType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the primary non-touchscreen navigation
+                hardware on the device.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="dpad" />
+            <xsd:enumeration value="trackball" />
+            <xsd:enumeration value="wheel" />
+            <xsd:enumeration value="nonav" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="ramType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the amount of RAM on the device in the unit provided.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:positiveInteger">
+                <xsd:attribute name="unit" type="c:storageUnitType" use="required" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="buttonsType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies whether the device has physical (hard) buttons
+                (Home, Search, etc.), or uses soft buttons.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="hard" />
+            <xsd:enumeration value="soft" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="internalStorageType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                A list specifying the sizes of internal storage in
+                the device, in the storage size unit provided.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleContent>
+            <xsd:extension base="c:storageListType">
+                <xsd:attribute name="unit" type="c:storageUnitType"
+                               use="required" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="removableStorageType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the range of available removable storage sizes
+                in the unit provided. A positive value indicates the device is
+                available with that storage size included while a zero value
+                indicates an empty storage slot.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleContent>
+            <xsd:extension base="c:storageListType">
+                <xsd:attribute name="unit" type="c:storageUnitType"
+                               use="required" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="storageListType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Defines a list for storage configurations such as internal or
+                removable storage. A positive value indicates the the device
+                has a storage unit of that size, while a zero value indicates
+                there is an empty location for a storage unit (such as an empty
+                SD card slot).
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:list>
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:nonNegativeInteger" />
+            </xsd:simpleType>
+        </xsd:list>
+    </xsd:simpleType>
+    <xsd:simpleType name="gpuType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the device's GPU.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:token">
+            <xsd:minLength value="1" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="cpuType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the device's CPU.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:token">
+            <xsd:minLength value="1" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="abiType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies which ABIs the device conforms to.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:list>
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:token">
+                    <xsd:enumeration value="armeabi" />
+                    <xsd:enumeration value="armeabi-v7a" />
+                    <xsd:enumeration value="x86" />
+                    <xsd:enumeration value="mips" />
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:list>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="dockType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the official docks available for the device.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:list>
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:token">
+                    <xsd:enumeration value="desk" />
+                    <xsd:enumeration value="television" />
+                    <xsd:enumeration value="car" />
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:list>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="powerType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies whether the device is plugged in.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="plugged-in" />
+            <xsd:enumeration value="battery" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="storageUnitType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the unit of storage. This can be MiB, GiB, etc.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="B" />
+            <xsd:enumeration value="KiB" />
+            <xsd:enumeration value="MiB" />
+            <xsd:enumeration value="GiB" />
+            <xsd:enumeration value="TiB" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>

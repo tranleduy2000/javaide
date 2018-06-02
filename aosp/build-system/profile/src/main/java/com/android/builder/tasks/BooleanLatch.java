@@ -16,7 +16,7 @@
 
 package com.android.builder.tasks;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 

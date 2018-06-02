@@ -1,0 +1,19 @@
+Device Validator
+================
+  The device validator is a simple tool for validating XML that contains
+  information about a list of Android devices. Simply run the tool from the
+  command-line with the names of the XML files to validate as the arguments.
+  If an XML file fails to validate, the errors will be printed to standard
+  out and the program will terminate with a non-zero exit status.
+
+  See device_example.xml for an example valid XML file, and devices.xsd
+  for the schema the XML must conform to.
+
+Usage (Linux/OSX/BSD)
+---------------------
+  ./device_validator [files...]
+
+Usage (Windows)
+---------------
+  (from the untar'd directory)
+  java -cp . -jar device_validator.jar [files...]

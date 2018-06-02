@@ -16,9 +16,6 @@
 
 package com.android.ide.common.rendering.api;
 
-
-import java.awt.image.BufferedImage;
-
 public interface IAnimationListener {
     /**
      * Called when a new animation frame is available for display.
@@ -27,7 +24,7 @@ public interface IAnimationListener {
      * for the image through {@link RenderSession#getImage()}.
      *
      * <p>If no {@link IImageFactory} is used, then each new animation frame will be rendered
-     * in its own new {@link BufferedImage} object. However if an image factory is used, and it
+     * in its own new {@link Bitmap} object. However if an image factory is used, and it
      * always re-use the same object, then the image is only guaranteed to be valid during
      * this method call. As soon as this method return the image content will be overridden
      * with new drawing.

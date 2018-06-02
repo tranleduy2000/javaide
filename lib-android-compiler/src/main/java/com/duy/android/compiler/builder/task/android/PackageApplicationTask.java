@@ -7,15 +7,15 @@ import com.duy.android.compiler.project.AndroidAppProject;
 
 import java.io.File;
 
-public class BuildApkTask extends ABuildTask<AndroidAppProject> {
+public class PackageApplicationTask extends ABuildTask<AndroidAppProject> {
 
-    public BuildApkTask(AndroidAppBuilder builder) {
+    public PackageApplicationTask(AndroidAppBuilder builder) {
         super(builder);
     }
 
     @Override
     public String getTaskName() {
-        return "Build apk";
+        return "Package application";
     }
 
     @Override

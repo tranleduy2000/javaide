@@ -6,7 +6,7 @@ import com.duy.android.compiler.builder.model.BuildType;
 import com.duy.android.compiler.builder.model.KeyStore;
 import com.duy.android.compiler.builder.task.ABuildTask;
 import com.duy.android.compiler.builder.task.android.AAPTTask;
-import com.duy.android.compiler.builder.task.android.BuildApkTask;
+import com.duy.android.compiler.builder.task.android.PackageApplicationTask;
 import com.duy.android.compiler.builder.task.android.GenerateBuildConfigTask;
 import com.duy.android.compiler.builder.task.android.MergeManifestTask;
 import com.duy.android.compiler.builder.task.android.SignApkTask;
@@ -52,7 +52,7 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
 
         tasks.add(new DexTask(this));
 
-        tasks.add(new BuildApkTask(this));
+        tasks.add(new PackageApplicationTask(this));
 
         tasks.add(new SignApkTask(this, buildType));
 

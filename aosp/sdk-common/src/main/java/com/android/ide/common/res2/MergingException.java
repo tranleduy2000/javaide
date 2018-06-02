@@ -24,7 +24,7 @@ import com.android.ide.common.blame.SourceFile;
 import com.android.ide.common.blame.SourceFilePosition;
 import com.android.ide.common.blame.SourcePosition;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -57,84 +57,6 @@ public class MergingException extends Exception {
         mMessages = ImmutableList.copyOf(messages);
     }
 
-    public static class Builder {
-
-        @Nullable
-        private Throwable mCause = null;
-
-        @Nullable
-        private String mMessageText = null;
-
-        @Nullable
-        private String mOriginalMessageText = null;
-
-        @NonNull
-        private SourceFile mFile = SourceFile.UNKNOWN;
-
-        @NonNull
-        private SourcePosition mPosition = SourcePosition.UNKNOWN;
-
-        private Builder() {
-        }
-
-        public Builder wrapException(@NonNull Throwable cause) {
-            mCause = cause;
-            mOriginalMessageText = Throwables.getStackTraceAsString(cause);
-            return this;
-        }
-
-        public Builder withFile(@NonNull File file) {
-            mFile = new SourceFile(file);
-            return this;
-        }
-
-        public Builder withFile(@NonNull SourceFile file) {
-            mFile = file;
-            return this;
-        }
-
-        public Builder withPosition(@NonNull SourcePosition position) {
-            mPosition = position;
-            return this;
-        }
-
-        public Builder withMessage(@NonNull String messageText, Object... args) {
-            mMessageText = args.length == 0 ? messageText : String.format(messageText, args);
-            return this;
-        }
-
-        public MergingException build() {
-            if (mCause != null) {
-                if (mMessageText == null) {
-                    mMessageText = Objects.firstNonNull(
-                            mCause.getLocalizedMessage(), mCause.getClass().getCanonicalName());
-                }
-                if (mPosition == SourcePosition.UNKNOWN && mCause instanceof SAXParseException) {
-                    SAXParseException exception = (SAXParseException) mCause;
-                    int lineNumber = exception.getLineNumber();
-                    if (lineNumber != -1) {
-                        // Convert positions to be 0-based for SourceFilePosition.
-                        mPosition = new SourcePosition(lineNumber - 1,
-                                exception.getColumnNumber() - 1, -1);
-                    }
-                }
-            }
-
-            if (mMessageText == null) {
-                mMessageText = "Unknown error.";
-            }
-
-            return new MergingException(
-                    mCause,
-                    new Message(
-                            Kind.ERROR,
-                            mMessageText,
-                            Objects.firstNonNull(mOriginalMessageText, mMessageText),
-                            new SourceFilePosition(mFile, mPosition)));
-        }
-
-    }
-
     public static Builder wrapException(@NonNull Throwable cause) {
         return new Builder().wrapException(cause);
     }
@@ -142,7 +64,6 @@ public class MergingException extends Exception {
     public static Builder withMessage(@NonNull String message, Object... args) {
         return new Builder().withMessage(message, args);
     }
-
 
     public static void throwIfNonEmpty(Collection<Message> messages) throws MergingException {
         if (!messages.isEmpty()) {
@@ -217,5 +138,83 @@ public class MergingException extends Exception {
     @Override
     public String toString() {
         return getMessage();
+    }
+
+    public static class Builder {
+
+        @Nullable
+        private Throwable mCause = null;
+
+        @Nullable
+        private String mMessageText = null;
+
+        @Nullable
+        private String mOriginalMessageText = null;
+
+        @NonNull
+        private SourceFile mFile = SourceFile.UNKNOWN;
+
+        @NonNull
+        private SourcePosition mPosition = SourcePosition.UNKNOWN;
+
+        private Builder() {
+        }
+
+        public Builder wrapException(@NonNull Throwable cause) {
+            mCause = cause;
+            mOriginalMessageText = Throwables.getStackTraceAsString(cause);
+            return this;
+        }
+
+        public Builder withFile(@NonNull File file) {
+            mFile = new SourceFile(file);
+            return this;
+        }
+
+        public Builder withFile(@NonNull SourceFile file) {
+            mFile = file;
+            return this;
+        }
+
+        public Builder withPosition(@NonNull SourcePosition position) {
+            mPosition = position;
+            return this;
+        }
+
+        public Builder withMessage(@NonNull String messageText, Object... args) {
+            mMessageText = args.length == 0 ? messageText : String.format(messageText, args);
+            return this;
+        }
+
+        public MergingException build() {
+            if (mCause != null) {
+                if (mMessageText == null) {
+                    mMessageText = MoreObjects.firstNonNull(
+                            mCause.getLocalizedMessage(), mCause.getClass().getCanonicalName());
+                }
+                if (mPosition == SourcePosition.UNKNOWN && mCause instanceof SAXParseException) {
+                    SAXParseException exception = (SAXParseException) mCause;
+                    int lineNumber = exception.getLineNumber();
+                    if (lineNumber != -1) {
+                        // Convert positions to be 0-based for SourceFilePosition.
+                        mPosition = new SourcePosition(lineNumber - 1,
+                                exception.getColumnNumber() - 1, -1);
+                    }
+                }
+            }
+
+            if (mMessageText == null) {
+                mMessageText = "Unknown error.";
+            }
+
+            return new MergingException(
+                    mCause,
+                    new Message(
+                            Kind.ERROR,
+                            mMessageText,
+                            MoreObjects.firstNonNull(mOriginalMessageText, mMessageText),
+                            new SourceFilePosition(mFile, mPosition)));
+        }
+
     }
 }

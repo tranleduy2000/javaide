@@ -25,12 +25,12 @@ import com.android.xml.AndroidManifest;
 import com.android.xml.AndroidXPathFactory;
 import com.google.common.base.Optional;
 
-import org.apache.http.annotation.ThreadSafe;
 import org.xml.sax.InputSource;
 
 import java.io.File;
 import java.io.IOException;
 
+import javax.annotation.concurrent.ThreadSafe;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 

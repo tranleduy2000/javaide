@@ -21,18 +21,9 @@ android {
 }
 
 dependencies {
-    compile project(':aosp:common')
-    compile 'net.sf.kxml:kxml2:2.3.0'
-    compile project(':aosp:annotations')
-    compile 'com.intellij:annotations:12.0'
+    api project(':aosp:common')
+    api project(':aosp:annotations')
 
-    testCompile 'junit:junit:4.12'
+    api 'net.sf.kxml:kxml2:2.3.0'
+    api 'com.intellij:annotations:12.0'
 }
-//
-//project.ext.pomName = 'Android Tools layoutlib-api'
-//project.ext.pomDesc = 'Library to use the rendering library for Android layouts: layoutlib'
-//
-//apply from: "$rootDir/buildSrc/base/publish.gradle"
-//apply from: "$rootDir/buildSrc/base/bintray.gradle"
-//apply from: "$rootDir/buildSrc/base/javadoc.gradle"
-//

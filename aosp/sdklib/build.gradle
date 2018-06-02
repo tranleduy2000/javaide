@@ -3,6 +3,7 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -22,11 +23,10 @@ android {
 dependencies {
     api project(':jdk-1_7')
     api project(':aosp:layoutlib-api')
-    api project(':aosp:device_validator:dvlib')
+    api project(':aosp:dvlib')
 
     api 'com.google.code.gson:gson:2.8.1'
     api 'org.apache.commons:commons-compress:1.16.1'
-    api 'org.apache.httpcomponents:httpmime:4.5.2'
 
     api 'org.bouncycastle:bcpkix-jdk15on:1.56'
     api 'org.bouncycastle:bcprov-jdk15on:1.56'

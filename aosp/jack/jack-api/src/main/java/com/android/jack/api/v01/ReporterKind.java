@@ -20,5 +20,5 @@ package com.android.jack.api.v01;
  * Available reporters.
  */
 public enum ReporterKind {
-  DEFAULT, SDK
+    DEFAULT, SDK
 }

@@ -16,19 +16,24 @@
 
 package com.android.ide.common.vectordrawable;
 
+import android.graphics.Bitmap;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.ide.common.util.AssetUtil;
 import com.google.common.base.Charsets;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 
 /**
  * Generate a Image based on the VectorDrawable's XML content.
@@ -235,9 +240,9 @@ public class VdPreview {
      * @return an preview image according to the VectorDrawable's XML
      */
     @Nullable
-    public static BufferedImage getPreviewFromVectorXml(@NonNull TargetSize targetSize,
-                                                        @Nullable String xmlFileContent,
-                                                        @Nullable StringBuilder vdErrorLog) {
+    public static Bitmap getPreviewFromVectorXml(@NonNull TargetSize targetSize,
+                                                 @Nullable String xmlFileContent,
+                                                 @Nullable StringBuilder vdErrorLog) {
         if (xmlFileContent == null || xmlFileContent.isEmpty()) {
             return null;
         }
@@ -280,7 +285,7 @@ public class VdPreview {
 
         // Create the image according to the vectorDrawable's aspect ratio.
 
-        BufferedImage image = AssetUtil.newArgbBufferedImage((int)imageWidth, (int)imageHeight);
+        Bitmap image = AssetUtil.newArgbBitmap((int)imageWidth, (int)imageHeight);
         vdTree.drawIntoImage(image);
         return image;
     }

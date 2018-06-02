@@ -22,17 +22,17 @@ import javax.annotation.Nonnull;
  * Thrown when something is wrong in Jack's configuration.
  */
 public class ConfigurationException extends ChainedException {
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public ConfigurationException(@Nonnull String message) {
-    super(message);
-  }
+    public ConfigurationException(@Nonnull String message) {
+        super(message);
+    }
 
-  public ConfigurationException(@Nonnull String message, @Nonnull Throwable cause) {
-    super(message, cause);
-  }
+    public ConfigurationException(@Nonnull String message, @Nonnull Throwable cause) {
+        super(message, cause);
+    }
 
-  public ConfigurationException(@Nonnull Throwable cause) {
-    super(cause);
-  }
+    public ConfigurationException(@Nonnull Throwable cause) {
+        super(cause);
+    }
 }

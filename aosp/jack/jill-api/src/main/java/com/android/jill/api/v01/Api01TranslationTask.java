@@ -22,10 +22,11 @@ package com.android.jill.api.v01;
  */
 public interface Api01TranslationTask {
 
-  /**
-   * Runs the translation task. May be called only once.
-   * @throws TranslationException If a fatal error occurred during the translation
-   * @throws IllegalStateException If the translation task is run more than once
-   */
-  void run() throws TranslationException, IllegalStateException;
+    /**
+     * Runs the translation task. May be called only once.
+     *
+     * @throws TranslationException  If a fatal error occurred during the translation
+     * @throws IllegalStateException If the translation task is run more than once
+     */
+    void run() throws TranslationException, IllegalStateException;
 }

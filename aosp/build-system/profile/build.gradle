@@ -21,11 +21,9 @@ android {
 }
 
 dependencies {
-    compile project(':aosp:annotations')
-    compile project(':aosp:common')
-    compile 'com.google.guava:guava:23.0'
-    compile 'com.google.code.gson:gson:2.8.1'
+    api project(':aosp:annotations')
+    api project(':aosp:common')
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-all:1.9.5'
+    api 'com.google.guava:guava:25.1-android'
+    api 'com.google.code.gson:gson:2.8.1'
 }

@@ -21,8 +21,10 @@ android {
 }
 
 dependencies {
-    compile project(':aosp:sdklib')
-    compile project(':aosp:build-system:builder-test-api')
-    compile project(':aosp:build-system:builder-model')
+    api project(':aosp:sdklib')
+    api project(':aosp:build-system:builder-test-api')
+    api project(':aosp:build-system:builder-model')
+
+    api group: 'com.sun.org.apache', name: 'jaxp-ri', version: '1.4'
 }
 

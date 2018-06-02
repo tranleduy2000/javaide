@@ -20,18 +20,18 @@ package com.android.jack.api.v01;
  * The method to use to split in several dex files.
  */
 public enum MultiDexKind {
-  /**
-   * Do not split.
-   */
-  NONE,
+    /**
+     * Do not split.
+     */
+    NONE,
 
-  /**
-   * Multidex split targeting L-or-more platforms.
-   */
-  NATIVE,
+    /**
+     * Multidex split targeting L-or-more platforms.
+     */
+    NATIVE,
 
-  /**
-   * Multidex split targeting K-or-less platforms.
-   */
-  LEGACY
+    /**
+     * Multidex split targeting K-or-less platforms.
+     */
+    LEGACY
 }

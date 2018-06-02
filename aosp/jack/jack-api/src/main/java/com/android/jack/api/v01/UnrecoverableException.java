@@ -24,21 +24,21 @@ import javax.annotation.Nonnull;
  * and maybe just retry exactly the same thing as the one that has thrown.
  */
 public class UnrecoverableException extends Exception {
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public UnrecoverableException() {
-    super();
-  }
+    public UnrecoverableException() {
+        super();
+    }
 
-  public UnrecoverableException(@Nonnull String message) {
-    super(message);
-  }
+    public UnrecoverableException(@Nonnull String message) {
+        super(message);
+    }
 
-  public UnrecoverableException(@Nonnull String message, @Nonnull Throwable cause) {
-    super(message, cause);
-  }
+    public UnrecoverableException(@Nonnull String message, @Nonnull Throwable cause) {
+        super(message, cause);
+    }
 
-  public UnrecoverableException(@Nonnull Throwable cause) {
-    super(cause);
-  }
+    public UnrecoverableException(@Nonnull Throwable cause) {
+        super(cause);
+    }
 }

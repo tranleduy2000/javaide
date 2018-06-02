@@ -16,13 +16,15 @@
 
 package com.android.ide.common.vectordrawable;
 
-import java.awt.geom.Path2D;
+
+import android.graphics.Path;
+
 import java.util.Arrays;
 
 /**
  * Used to represent one VectorDrawble's path element.
  */
-class VdPath extends VdElement{
+class VdPath extends VdElement {
     Node[] mNode = null;
     int mStrokeColor = 0;
     int mFillColor = 0;
@@ -45,11 +47,23 @@ class VdPath extends VdElement{
     float mTrimPathEnd = 1;
     float mTrimPathOffset = 0;
 
-    public void toPath(Path2D path) {
+    public VdPath() {
+        mName = this.toString(); // to ensure paths have unique names
+    }
+
+    public void toPath(Path path) {
         path.reset();
         if (mNode != null) {
             VdNodeRender.creatPath(mNode, path);
         }
+    }
+
+    /**
+     * TODO: support rotation attribute for stroke width
+     */
+    public void transform(float a, float b, float c, float d, float e, float f) {
+        mStrokeWidth *= Math.hypot(a + b, c + d);
+        Node.transform(a, b, c, d, e, f, mNode);
     }
 
     public static class Node {
@@ -90,12 +104,12 @@ class VdPath extends VdElement{
         }
 
         public static void transform(float a,
-                float b,
-                float c,
-                float d,
-                float e,
-                float f,
-                Node[] nodes) {
+                                     float b,
+                                     float c,
+                                     float d,
+                                     float e,
+                                     float f,
+                                     Node[] nodes) {
             float[] pre = new float[2];
             for (int i = 0; i < nodes.length; i++) {
                 nodes[i].transform(a, b, c, d, e, f, pre);
@@ -103,12 +117,12 @@ class VdPath extends VdElement{
         }
 
         public void transform(float a,
-                float b,
-                float c,
-                float d,
-                float e,
-                float f,
-                float[] pre) {
+                              float b,
+                              float c,
+                              float d,
+                              float e,
+                              float f,
+                              float[] pre) {
             int incr = 0;
             float[] tempParams;
             float[] origParams;
@@ -232,13 +246,13 @@ class VdPath extends VdElement{
         }
 
         void matrix(float a,
-                float b,
-                float c,
-                float d,
-                float e,
-                float f,
-                int offx,
-                int offy) {
+                    float b,
+                    float c,
+                    float d,
+                    float e,
+                    float f,
+                    int offx,
+                    int offy) {
             float inx = (offx < 0) ? 1 : params[offx];
             float iny = (offy < 0) ? 1 : params[offy];
             float x = inx * a + iny * c + e;
@@ -250,17 +264,5 @@ class VdPath extends VdElement{
                 params[offy] = y;
             }
         }
-    }
-
-    public VdPath() {
-        mName = this.toString(); // to ensure paths have unique names
-    }
-
-    /**
-     * TODO: support rotation attribute for stroke width
-     */
-    public void transform(float a, float b, float c, float d, float e, float f) {
-        mStrokeWidth *= Math.hypot(a + b, c + d);
-        Node.transform(a, b, c, d, e, f, mNode);
     }
 }

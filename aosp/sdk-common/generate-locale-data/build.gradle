@@ -3,7 +3,7 @@ apply plugin: 'sdk-java-lib'
 
 dependencies {
     compile project(':base:sdk-common')
-    compile 'com.google.guava:guava:17.0'
+    api 'com.google.guava:guava:25.1-android'
     compile 'com.ibm.icu:icu4j:54.1.1'
 }
 

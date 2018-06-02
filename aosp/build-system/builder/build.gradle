@@ -23,22 +23,25 @@ dependencies {
 
     api project(':aosp:build-system:builder-model')
     api project(':aosp:build-system:builder-test-api')
-    api project(':aosp:build-system:manifest-merger')
+    api project(':aosp:build-system:profile')
+
+
     api project(':aosp:sdklib')
     api project(':aosp:sdk-common')
     api project(':aosp:common')
     api project(':aosp:ddmlib')
-//
-//    compile project(':aosp:jack:jack-api')
-//    compile project(':aosp:jack:jill-api')
+    api project(':aosp:build-system:manifest-merger')
+
+    api project(':aosp:jack:jack-api')
+    api project(':aosp:jack:jill-api')
+
     api "com.android.support:support-annotations:$supportLibVersion"
     api "com.android.support:support-v4:$supportLibVersion"
-    //noinspection GradleDependency
     api 'com.google.guava:guava:25.1-android'
 
     api 'com.squareup:javawriter:2.5.0'
     api 'org.bouncycastle:bcpkix-jdk15on:1.56'
     api 'org.bouncycastle:bcprov-jdk15on:1.56'
-    api 'org.ow2.asm:asm:6.0'
-    api 'org.ow2.asm:asm-tree:6.0'
+//    api 'org.ow2.asm:asm:6.0'
+//    api 'org.ow2.asm:asm-tree:6.0'
 }

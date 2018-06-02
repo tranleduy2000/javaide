@@ -16,8 +16,7 @@
 
 package com.android.sdklib.devices;
 
-import static com.android.SdkConstants.VALUE_FALSE;
-import static com.android.SdkConstants.VALUE_TRUE;
+import android.graphics.Point;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -34,15 +33,14 @@ import com.android.resources.ScreenSize;
 import com.android.resources.TouchScreen;
 import com.android.resources.UiMode;
 import com.google.common.base.Splitter;
-
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.awt.Point;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,6 +53,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.validation.Schema;
+
+import static com.android.SdkConstants.VALUE_FALSE;
+import static com.android.SdkConstants.VALUE_TRUE;
 
 public class DeviceParser {
 

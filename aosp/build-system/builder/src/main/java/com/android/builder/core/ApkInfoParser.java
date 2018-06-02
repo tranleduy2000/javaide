@@ -25,7 +25,7 @@ import com.android.ide.common.process.ProcessException;
 import com.android.ide.common.process.ProcessExecutor;
 import com.android.ide.common.process.ProcessInfoBuilder;
 import com.android.utils.SdkUtils;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
 
 import java.io.File;
@@ -45,6 +45,100 @@ public class ApkInfoParser {
     private final File mAaptFile;
     @NonNull
     private final ProcessExecutor mProcessExecutor;
+
+    /**
+     * Constructs a new parser
+     *
+     * @param aaptFile        aapt file to use to gather the info
+     * @param processExecutor a process Executor to call aapt
+     */
+    public ApkInfoParser(
+            @NonNull File aaptFile,
+            @NonNull ProcessExecutor processExecutor) {
+        mAaptFile = aaptFile;
+        mProcessExecutor = processExecutor;
+    }
+
+    /**
+     * Parses the aapt output and returns an ApkInfo object.
+     *
+     * @param aaptOutput the aapt output as a list of lines.
+     * @return an ApkInfo object.
+     */
+    @VisibleForTesting
+    @NonNull
+    static ApkInfo getApkInfo(@NonNull List<String> aaptOutput) {
+
+        String pkgName = null, versionCode = null, versionName = null;
+
+        for (String line : aaptOutput) {
+            Matcher m = PATTERN.matcher(line);
+            if (m.matches()) {
+                pkgName = m.group(1);
+                versionCode = m.group(2);
+                versionName = m.group(3);
+                break;
+            }
+        }
+
+        if (pkgName == null) {
+            throw new RuntimeException("Failed to find apk information with aapt");
+        }
+
+        Integer intVersionCode = null;
+        try {
+            intVersionCode = Integer.parseInt(versionCode);
+        } catch (NumberFormatException ignore) {
+            // leave the version code as null.
+        }
+
+        return new ApkInfo(pkgName, intVersionCode, versionName);
+    }
+
+    /**
+     * Computes and returns the info for an APK
+     *
+     * @param apkFile the APK to parse
+     * @return a non-null ApkInfo object.
+     * @throws ProcessException
+     */
+    @NonNull
+    public ApkInfo parseApk(@NonNull File apkFile)
+            throws ProcessException {
+
+        if (!mAaptFile.isFile()) {
+            throw new IllegalStateException(
+                    "aapt is missing from location: " + mAaptFile.getAbsolutePath());
+        }
+
+        return getApkInfo(getAaptOutput(apkFile));
+    }
+
+    /**
+     * Returns the aapt output.
+     *
+     * @param apkFile the apk file to call aapt on.
+     * @return the output as a list of files.
+     * @throws ProcessException
+     */
+    @NonNull
+    private List<String> getAaptOutput(@NonNull File apkFile)
+            throws ProcessException {
+        ProcessInfoBuilder builder = new ProcessInfoBuilder();
+
+        builder.setExecutable(mAaptFile);
+        builder.addArgs("dump", "badging", apkFile.getPath());
+
+        CachedProcessOutputHandler processOutputHandler = new CachedProcessOutputHandler();
+
+        mProcessExecutor.execute(
+                builder.createProcess(), processOutputHandler)
+                .rethrowFailure().assertNormalExitValue();
+
+        BaseProcessOutputHandler.BaseProcessOutput output = processOutputHandler.getProcessOutput();
+
+        return Splitter.on(SdkUtils.getLineSeparator()).splitToList(output.getStandardOutputAsString());
+    }
 
     /**
      * Information about an APK
@@ -86,95 +180,5 @@ public class ApkInfoParser {
                     .add("versionName", mVersionName)
                     .toString();
         }
-    }
-
-    /**
-     * Constructs a new parser
-     * @param aaptFile aapt file to use to gather the info
-     * @param processExecutor a process Executor to call aapt
-     */
-    public ApkInfoParser(
-            @NonNull File aaptFile,
-            @NonNull ProcessExecutor processExecutor) {
-        mAaptFile = aaptFile;
-        mProcessExecutor = processExecutor;
-    }
-
-    /**
-     * Computes and returns the info for an APK
-     * @param apkFile the APK to parse
-     * @return a non-null ApkInfo object.
-     * @throws ProcessException
-     */
-    @NonNull
-    public ApkInfo parseApk(@NonNull File apkFile)
-            throws ProcessException {
-
-        if (!mAaptFile.isFile()) {
-            throw new IllegalStateException(
-                    "aapt is missing from location: " + mAaptFile.getAbsolutePath());
-        }
-
-        return getApkInfo(getAaptOutput(apkFile));
-    }
-
-    /**
-     * Parses the aapt output and returns an ApkInfo object.
-     * @param aaptOutput the aapt output as a list of lines.
-     * @return an ApkInfo object.
-     */
-    @VisibleForTesting
-    @NonNull
-    static ApkInfo getApkInfo(@NonNull List<String> aaptOutput) {
-
-        String pkgName = null, versionCode = null, versionName = null;
-
-        for (String line : aaptOutput) {
-            Matcher m = PATTERN.matcher(line);
-            if (m.matches()) {
-                pkgName = m.group(1);
-                versionCode = m.group(2);
-                versionName = m.group(3);
-                break;
-            }
-        }
-
-        if (pkgName == null) {
-            throw new RuntimeException("Failed to find apk information with aapt");
-        }
-
-        Integer intVersionCode = null;
-        try {
-            intVersionCode = Integer.parseInt(versionCode);
-        } catch(NumberFormatException ignore) {
-            // leave the version code as null.
-        }
-
-        return new ApkInfo(pkgName, intVersionCode, versionName);
-    }
-
-    /**
-     * Returns the aapt output.
-     * @param apkFile the apk file to call aapt on.
-     * @return the output as a list of files.
-     * @throws ProcessException
-     */
-    @NonNull
-    private List<String> getAaptOutput(@NonNull File apkFile)
-            throws ProcessException {
-        ProcessInfoBuilder builder = new ProcessInfoBuilder();
-
-        builder.setExecutable(mAaptFile);
-        builder.addArgs("dump", "badging", apkFile.getPath());
-
-        CachedProcessOutputHandler processOutputHandler = new CachedProcessOutputHandler();
-
-        mProcessExecutor.execute(
-                builder.createProcess(), processOutputHandler)
-                .rethrowFailure().assertNormalExitValue();
-
-        BaseProcessOutputHandler.BaseProcessOutput output = processOutputHandler.getProcessOutput();
-
-        return Splitter.on(SdkUtils.getLineSeparator()).splitToList(output.getStandardOutputAsString());
     }
 }

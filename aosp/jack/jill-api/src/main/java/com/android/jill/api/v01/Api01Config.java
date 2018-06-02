@@ -24,41 +24,46 @@ import java.io.File;
 import javax.annotation.Nonnull;
 
 /**
-* A configuration implementation for API level 01 of Jill.
-*/
+ * A configuration implementation for API level 01 of Jill.
+ */
 public interface Api01Config extends JillConfig {
 
-  /**
-   * Sets verbosity mode.
-   * @param isVerbose the desired verbosity mode
-   */
-  void setVerbose(boolean isVerbose) throws ConfigurationException;
+    /**
+     * Sets verbosity mode.
+     *
+     * @param isVerbose the desired verbosity mode
+     */
+    void setVerbose(boolean isVerbose) throws ConfigurationException;
 
-  /**
-   * Sets jar file to apply the Jill translation onto. The file must exist.
-   * @param input jar file to translate
-   */
-  void setInputJavaBinaryFile(@Nonnull File input) throws ConfigurationException;
+    /**
+     * Sets jar file to apply the Jill translation onto. The file must exist.
+     *
+     * @param input jar file to translate
+     */
+    void setInputJavaBinaryFile(@Nonnull File input) throws ConfigurationException;
 
-  /**
-   * Sets the file where the output Jack library will be written. The file may already exist and
-   * will be overwritten.
-   * @param outputJackFile The output Jack library file
-   * @throws ConfigurationException
-   */
-  void setOutputJackFile(@Nonnull File outputJackFile) throws ConfigurationException;
+    /**
+     * Sets the file where the output Jack library will be written. The file may already exist and
+     * will be overwritten.
+     *
+     * @param outputJackFile The output Jack library file
+     * @throws ConfigurationException
+     */
+    void setOutputJackFile(@Nonnull File outputJackFile) throws ConfigurationException;
 
 
-  /**
-   * Sets whether debug info should be emitted.
-   * @param debugInfo the desired mode for debug info emission
-   */
-  void setDebugInfo(boolean debugInfo) throws ConfigurationException;
+    /**
+     * Sets whether debug info should be emitted.
+     *
+     * @param debugInfo the desired mode for debug info emission
+     */
+    void setDebugInfo(boolean debugInfo) throws ConfigurationException;
 
-  /**
-   * Creates an instance of the {@link Api01TranslationTask} according to this configuration.
-   * @return The {@link Api01TranslationTask}
-   */
-  @Nonnull
-  Api01TranslationTask getTask() throws ConfigurationException;
+    /**
+     * Creates an instance of the {@link Api01TranslationTask} according to this configuration.
+     *
+     * @return The {@link Api01TranslationTask}
+     */
+    @Nonnull
+    Api01TranslationTask getTask() throws ConfigurationException;
 }

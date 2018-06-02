@@ -23,7 +23,7 @@ import com.android.sdklib.BuildToolInfo;
 import com.android.sdklib.repository.FullRevision;
 import com.android.utils.ILogger;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
@@ -39,7 +39,7 @@ import java.util.ServiceLoader;
 
 /**
  * {@link ServiceLoader} helpers for tools located in the SDK's build-tools folders.
- *
+ * <p>
  * This utility will cache {@link ServiceLoader} instances per build-tools version and per target
  * service type.
  */
@@ -51,23 +51,20 @@ public enum BuildToolsServiceLoader {
     INSTANCE;
 
     /**
-     * private cache data for a particular build-tool version.
+     * Jack service description.
      */
-    private static final class LoadedBuildTool {
-        private final FullRevision version;
-        private final BuildToolServiceLoader serviceLoader;
-
-        private LoadedBuildTool(FullRevision version,
-                BuildToolServiceLoader serviceLoader) {
-            this.version = version;
-            this.serviceLoader = serviceLoader;
-        }
-    }
-
+    public static final Service<JackProvider> JACK =
+            new Service<JackProvider>(ImmutableList.of("jack.jar"), JackProvider.class);
+    /**
+     * Jill service description.
+     */
+    public static final Service<JillProvider> JILL =
+            new Service<JillProvider>(ImmutableList.of("jill.jar"), JillProvider.class);
     private final List<LoadedBuildTool> loadedBuildTools = new ArrayList<LoadedBuildTool>();
 
     /**
      * Load a built-tools version specific {@link ServiceLoader} helper.
+     *
      * @param buildToolInfo the requested build-tools information
      * @return an initialized {@link BuildToolsServiceLoader.BuildToolServiceLoader} to get
      * instances of {@link ServiceLoader} from.
@@ -83,7 +80,7 @@ public enum BuildToolsServiceLoader {
         }
 
         LoadedBuildTool loadedBuildTool = new LoadedBuildTool(buildToolInfo.getRevision(),
-                    new BuildToolServiceLoader(buildToolInfo));
+                new BuildToolServiceLoader(buildToolInfo));
         loadedBuildTools.add(loadedBuildTool);
         return loadedBuildTool.serviceLoader;
     }
@@ -96,6 +93,20 @@ public enum BuildToolsServiceLoader {
             }
         }
         return Optional.absent();
+    }
+
+    /**
+     * private cache data for a particular build-tool version.
+     */
+    private static final class LoadedBuildTool {
+        private final FullRevision version;
+        private final BuildToolServiceLoader serviceLoader;
+
+        private LoadedBuildTool(FullRevision version,
+                                BuildToolServiceLoader serviceLoader) {
+            this.version = version;
+            this.serviceLoader = serviceLoader;
+        }
     }
 
     /**
@@ -117,6 +128,7 @@ public enum BuildToolsServiceLoader {
         public Collection<String> getClasspath() {
             return classpath;
         }
+
         public Class<T> getServiceClass() {
             return serviceClass;
         }
@@ -131,40 +143,13 @@ public enum BuildToolsServiceLoader {
     }
 
     /**
-     * Jack service description.
-     */
-    public static final Service<JackProvider> JACK =
-            new Service<JackProvider>(ImmutableList.of("jack.jar"), JackProvider.class);
-
-    /**
-     * Jill service description.
-     */
-    public static final Service<JillProvider> JILL =
-            new Service<JillProvider>(ImmutableList.of("jill.jar"), JillProvider.class);
-
-    /**
      * build-tools version specific {@link ServiceLoader} helper.
      */
     public static final class BuildToolServiceLoader {
 
-        /**
-         * private cache data for a single {@link ServiceLoader} instance.
-         * @param <T> the service loader type.
-         */
-        private static final class LoadedServiceLoader<T> {
-            private final Class<T> serviceType;
-            private final ServiceLoader<T> serviceLoader;
-
-            private LoadedServiceLoader(Class<T> serviceType, ServiceLoader<T> serviceLoader) {
-                this.serviceType = serviceType;
-                this.serviceLoader = serviceLoader;
-            }
-        }
-
         private final BuildToolInfo buildToolInfo;
         private final List<LoadedServiceLoader> loadedServicesLoaders =
                 new ArrayList<LoadedServiceLoader>();
-
         private BuildToolServiceLoader(BuildToolInfo buildToolInfo) {
             this.buildToolInfo = buildToolInfo;
         }
@@ -175,12 +160,12 @@ public enum BuildToolsServiceLoader {
          * of the build-tools version this instance was created for.
          *
          * @param serviceType the requested service type encapsulation.
-         * @param <T> the type of service
+         * @param <T>         the type of service
          * @return a {@link ServiceLoader} instance for the T service type.
          * @throws ClassNotFoundException
          */
         @NonNull
-        public synchronized  <T> ServiceLoader<T> getServiceLoader(Service<T> serviceType)
+        public synchronized <T> ServiceLoader<T> getServiceLoader(Service<T> serviceType)
                 throws ClassNotFoundException {
 
             Optional<ServiceLoader<T>> serviceLoaderOptional =
@@ -213,9 +198,10 @@ public enum BuildToolsServiceLoader {
         /**
          * Return the first service instance for the requested service type or
          * {@link Optional#absent()} if none exist.
-         * @param logger to log resolution.
+         *
+         * @param logger      to log resolution.
          * @param serviceType the requested service type encapsulation.
-         * @param <T> the requested service class type.
+         * @param <T>         the requested service class type.
          * @return the instance of T or null of none exist in this context.
          * @throws ClassNotFoundException
          */
@@ -249,6 +235,21 @@ public enum BuildToolsServiceLoader {
                 }
             }
             return Optional.absent();
+        }
+
+        /**
+         * private cache data for a single {@link ServiceLoader} instance.
+         *
+         * @param <T> the service loader type.
+         */
+        private static final class LoadedServiceLoader<T> {
+            private final Class<T> serviceType;
+            private final ServiceLoader<T> serviceLoader;
+
+            private LoadedServiceLoader(Class<T> serviceType, ServiceLoader<T> serviceLoader) {
+                this.serviceType = serviceType;
+                this.serviceLoader = serviceLoader;
+            }
         }
     }
 }

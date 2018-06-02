@@ -23,21 +23,21 @@ import javax.annotation.Nonnull;
  * reported, so it is safe to ignore its message.
  */
 public class TranslationException extends Exception {
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public TranslationException() {
-    super();
-  }
+    public TranslationException() {
+        super();
+    }
 
-  public TranslationException(@Nonnull String message) {
-    super(message);
-  }
+    public TranslationException(@Nonnull String message) {
+        super(message);
+    }
 
-  public TranslationException(@Nonnull String message, @Nonnull Throwable cause) {
-    super(message, cause);
-  }
+    public TranslationException(@Nonnull String message, @Nonnull Throwable cause) {
+        super(message, cause);
+    }
 
-  public TranslationException(@Nonnull Throwable cause) {
-    super(cause);
-  }
+    public TranslationException(@Nonnull Throwable cause) {
+        super(cause);
+    }
 }

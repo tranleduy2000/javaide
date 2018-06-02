@@ -47,7 +47,7 @@ import com.android.resources.ResourceType;
 import com.android.utils.ILogger;
 import com.android.utils.SdkUtils;
 
-import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -369,7 +369,7 @@ public class LayoutLibrary {
 
     /**
      * Renders a Drawable. If the rendering is successful, the result image is accessible through
-     * {@link Result#getData()}. It is of type {@link BufferedImage}
+     * {@link Result#getData()}. It is of type {@link Bitmap}
      * @param params the rendering parameters.
      * @return the result of the action.
      */

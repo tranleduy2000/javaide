@@ -16,10 +16,6 @@
 
 package com.android.ide.common.res2;
 
-import static com.android.ide.common.res2.ResourceFile.ATTR_QUALIFIER;
-import static com.google.common.base.Objects.firstNonNull;
-import static com.google.common.base.Preconditions.checkState;
-
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -42,9 +38,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.android.ide.common.res2.ResourceFile.ATTR_QUALIFIER;
+import static com.google.common.base.MoreObjects.firstNonNull;
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * Implementation of {@link DataSet} for {@link ResourceItem} and {@link ResourceFile}.
- *
+ * <p>
  * This is able to detect duplicates from the same source folders (same resource coming from
  * the values folder in same or different files).
  */
@@ -60,6 +60,16 @@ public class ResourceSet extends DataSet<ResourceItem, ResourceFile> {
 
     public ResourceSet(String name, boolean validateEnabled) {
         super(name, validateEnabled);
+    }
+
+    @NonNull
+    private static String getNameForFile(@NonNull File file) {
+        String name = file.getName();
+        int pos = name.indexOf('.'); // get the resource name based on the filename
+        if (pos >= 0) {
+            name = name.substring(0, pos);
+        }
+        return name;
     }
 
     public void setNormalizeResources(boolean normalizeResources) {
@@ -136,8 +146,7 @@ public class ResourceSet extends DataSet<ResourceItem, ResourceFile> {
             }
 
             return ResourceFile.generatedFiles(file, resourceItems, qualifier);
-        }
-        else if (typeAttr == null) {
+        } else if (typeAttr == null) {
             // FileType.XML_VALUES
             List<ResourceItem> resourceList = Lists.newArrayList();
 
@@ -367,12 +376,10 @@ public class ResourceSet extends DataSet<ResourceItem, ResourceFile> {
      * Reads the content of a typed resource folder (sub folder to the root of res folder), and
      * loads the resources from it.
      *
-     *
      * @param sourceFolder the main res folder
-     * @param folder the folder to read.
-     * @param folderData the folder Data
-     * @param logger a logger object
-     *
+     * @param folder       the folder to read.
+     * @param folderData   the folder Data
+     * @param logger       a logger object
      * @throws MergingException if something goes wrong
      */
     private void parseFolder(File sourceFolder, File folder, FolderData folderData, ILogger logger)
@@ -403,7 +410,7 @@ public class ResourceSet extends DataSet<ResourceItem, ResourceFile> {
     }
 
     private ResourceFile createResourceFile(@NonNull File file,
-            @NonNull FolderData folderData, @NonNull ILogger logger) throws MergingException {
+                                            @NonNull FolderData folderData, @NonNull ILogger logger) throws MergingException {
         if (folderData.type != null) {
             FileResourceNameValidator.validate(file, folderData.type);
             String name = getNameForFile(file);
@@ -461,31 +468,12 @@ public class ResourceSet extends DataSet<ResourceItem, ResourceFile> {
         return resourceItems;
     }
 
-    @NonNull
-    private static String getNameForFile(@NonNull File file) {
-        String name = file.getName();
-        int pos = name.indexOf('.'); // get the resource name based on the filename
-        if (pos >= 0) {
-            name = name.substring(0, pos);
-        }
-        return name;
-    }
-
-    /**
-     * temp structure containing a qualifier string and a {@link com.android.resources.ResourceType}.
-     */
-    private static class FolderData {
-        String qualifiers = "";
-        ResourceType type = null;
-        ResourceFolderType folderType = null;
-    }
-
     /**
      * Returns a FolderData for the given folder.
      *
      * @param folder the folder.
      * @return the FolderData object, or null if we can't determine the {#link ResourceFolderType}
-     *         of the folder.
+     * of the folder.
      */
     @Nullable
     private FolderData getFolderData(File folder) throws MergingException {
@@ -527,7 +515,7 @@ public class ResourceSet extends DataSet<ResourceItem, ResourceFile> {
 
     @Override
     void appendToXml(@NonNull Node setNode, @NonNull Document document,
-            @NonNull MergeConsumer<ResourceItem> consumer) {
+                     @NonNull MergeConsumer<ResourceItem> consumer) {
         if (mGeneratedSet != null) {
             NodeUtils.addAttribute(
                     document,
@@ -537,5 +525,14 @@ public class ResourceSet extends DataSet<ResourceItem, ResourceFile> {
                     mGeneratedSet.getConfigName());
         }
         super.appendToXml(setNode, document, consumer);
+    }
+
+    /**
+     * temp structure containing a qualifier string and a {@link com.android.resources.ResourceType}.
+     */
+    private static class FolderData {
+        String qualifiers = "";
+        ResourceType type = null;
+        ResourceFolderType folderType = null;
     }
 }

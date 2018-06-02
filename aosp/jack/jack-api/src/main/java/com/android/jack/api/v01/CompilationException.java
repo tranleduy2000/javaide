@@ -23,21 +23,21 @@ import javax.annotation.Nonnull;
  * reported, so it is safe to ignore its message.
  */
 public class CompilationException extends Exception {
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public CompilationException() {
-    super();
-  }
+    public CompilationException() {
+        super();
+    }
 
-  public CompilationException(@Nonnull String message) {
-    super(message);
-  }
+    public CompilationException(@Nonnull String message) {
+        super(message);
+    }
 
-  public CompilationException(@Nonnull String message, @Nonnull Throwable cause) {
-    super(message, cause);
-  }
+    public CompilationException(@Nonnull String message, @Nonnull Throwable cause) {
+        super(message, cause);
+    }
 
-  public CompilationException(@Nonnull Throwable cause) {
-    super(cause);
-  }
+    public CompilationException(@Nonnull Throwable cause) {
+        super(cause);
+    }
 }

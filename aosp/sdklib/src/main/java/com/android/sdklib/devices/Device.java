@@ -16,13 +16,14 @@
 
 package com.android.sdklib.devices;
 
+import android.graphics.Point;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.dvlib.DeviceSchema;
 import com.android.resources.ScreenOrientation;
 import com.android.resources.ScreenRound;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,49 +42,97 @@ import java.util.regex.Pattern;
  */
 public final class Device {
 
-    /** Name of the device */
+    private static Pattern PATTERN = Pattern.compile(
+            "(\\d+\\.?\\d*)(?:in|\") (.+?)( \\(.*Nexus.*\\))?"); //$NON-NLS-1$
+    /**
+     * Name of the device
+     */
     @NonNull
     private final String mName;
-
-    /** ID of the device */
+    /**
+     * ID of the device
+     */
     @NonNull
     private final String mId;
-
-    /** Manufacturer of the device */
+    /**
+     * Manufacturer of the device
+     */
     @NonNull
     private final String mManufacturer;
-
-    /** A list of software capabilities, one for each API level range */
+    /**
+     * A list of software capabilities, one for each API level range
+     */
     @NonNull
     private final List<Software> mSoftware;
-
-    /** A list of phone states (landscape, portrait with keyboard out, etc.) */
+    /**
+     * A list of phone states (landscape, portrait with keyboard out, etc.)
+     */
     @NonNull
     private final List<State> mState;
-
-    /** Meta information such as icon files and device frames */
+    /**
+     * Meta information such as icon files and device frames
+     */
     @NonNull
     private final Meta mMeta;
-
-    /** Default state of the device */
+    /**
+     * Default state of the device
+     */
     @NonNull
     private final State mDefaultState;
-
-    /** Optional tag-id of the device. */
+    /**
+     * Optional tag-id of the device.
+     */
     @Nullable
     private String mTagId;
-
-    /** Optional boot.props of the device. */
+    /**
+     * Optional boot.props of the device.
+     */
     @NonNull
     private Map<String, String> mBootProps;
+
+    private Device(Builder b) {
+        mName = b.mName;
+        mId = b.mId;
+        mManufacturer = b.mManufacturer;
+        mSoftware = Collections.unmodifiableList(b.mSoftware);
+        mState = Collections.unmodifiableList(b.mState);
+        mMeta = b.mMeta;
+        mDefaultState = b.mDefaultState;
+        mTagId = b.mTagId;
+        mBootProps = Collections.unmodifiableMap(b.mBootProps);
+    }
+
+    /**
+     * Returns a comparator suitable to sort a device list using a sort-aware display name.
+     * The list is displayed in an order that is user friendly with devices using names
+     * first sorted alphabetically followed by all devices that use a numeric screen size
+     * sorted by actual size.
+     */
+    public static Comparator<Device> getDisplayComparator() {
+        return new Comparator<Device>() {
+            @Override
+            public int compare(Device d1, Device d2) {
+                String s1 = d1.getSortableName();
+                String s2 = d2.getSortableName();
+                if (s1.length() > 1 && s2.length() > 1) {
+                    int i1 = Character.isDigit(s1.charAt(0)) ? 1 : 0;
+                    int i2 = Character.isDigit(s2.charAt(0)) ? 1 : 0;
+                    if (i1 != i2) {
+                        return i1 - i2;
+                    }
+                }
+                return s1.compareTo(s2);
+            }
+        };
+    }
 
     /**
      * Returns the name of the {@link Device}. This is intended to be displayed by the user and
      * can vary over time. For a stable internal name of the device, use {@link #getId} instead.
      *
-     * @deprecated Use {@link #getId()} or {@link #getDisplayName()} instead based on whether
-     *     a stable identifier or a user visible name is needed
      * @return The name of the {@link Device}.
+     * @deprecated Use {@link #getId()} or {@link #getDisplayName()} instead based on whether
+     * a stable identifier or a user visible name is needed
      */
     @NonNull
     @Deprecated
@@ -179,10 +228,9 @@ public final class Device {
     /**
      * Returns the software configuration for the given API version.
      *
-     * @param apiVersion
-     *            The API version requested.
+     * @param apiVersion The API version requested.
      * @return The Software instance for the requested API version or null if
-     *         the API version is unsupported for this device.
+     * the API version is unsupported for this device.
      */
     @Nullable
     public Software getSoftware(int apiVersion) {
@@ -197,10 +245,9 @@ public final class Device {
     /**
      * Returns the state of the device with the given name.
      *
-     * @param name
-     *            The name of the state requested.
+     * @param name The name of the state requested.
      * @return The State object requested or null if there's no state with the
-     *         given name.
+     * given name.
      */
     @Nullable
     public State getState(String name) {
@@ -214,7 +261,7 @@ public final class Device {
 
     @SuppressWarnings("SuspiciousNameCombination") // Deliberately swapping orientations
     @Nullable
-    public Dimension getScreenSize(@NonNull ScreenOrientation orientation) {
+    public Point getScreenSize(@NonNull ScreenOrientation orientation) {
         Screen screen = getDefaultHardware().getScreen();
         if (screen == null) {
             return null;
@@ -229,24 +276,21 @@ public final class Device {
             if (orientation == ScreenOrientation.LANDSCAPE) {
                 screenWidth = x;
                 screenHeight = y;
-            }
-            else {
+            } else {
                 screenWidth = y;
                 screenHeight = x;
             }
-        }
-        else {
+        } else {
             if (orientation == ScreenOrientation.LANDSCAPE) {
                 screenWidth = y;
                 screenHeight = x;
-            }
-            else {
+            } else {
                 screenWidth = x;
                 screenHeight = y;
             }
         }
 
-        return new Dimension(screenWidth, screenHeight);
+        return new Point(screenWidth, screenHeight);
     }
 
     /**
@@ -283,18 +327,142 @@ public final class Device {
         return getDefaultHardware().getScreen().getChin();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Device)) {
+            return false;
+        }
+        Device d = (Device) o;
+        boolean ok = mName.equals(d.getDisplayName())
+                && mManufacturer.equals(d.getManufacturer())
+                && mSoftware.equals(d.getAllSoftware())
+                && mState.equals(d.getAllStates())
+                && mMeta.equals(d.getMeta())
+                && mDefaultState.equals(d.getDefaultState());
+        if (!ok) {
+            return false;
+        }
+
+        ok = (mTagId == null && d.mTagId == null) ||
+                (mTagId != null && mTagId.equals(d.mTagId));
+        if (!ok) {
+            return false;
+        }
+
+        ok = (mBootProps == null && d.mBootProps == null) ||
+                (mBootProps != null && mBootProps.equals(d.mBootProps));
+        return ok;
+    }
+
+    /**
+     * For *internal* usage only. Must not be serialized to disk.
+     */
+    @Override
+    public int hashCode() {
+        int hash = 17;
+        hash = 31 * hash + mName.hashCode();
+        hash = 31 * hash + mManufacturer.hashCode();
+        hash = 31 * hash + mSoftware.hashCode();
+        hash = 31 * hash + mState.hashCode();
+        hash = 31 * hash + mMeta.hashCode();
+        hash = 31 * hash + mDefaultState.hashCode();
+
+        // tag-id and boot-props are optional and should not change a device's hashcode
+        // which did not have them before.
+        if (mTagId != null) {
+            hash = 31 * hash + mTagId.hashCode();
+        }
+        if (mBootProps != null && !mBootProps.isEmpty()) {
+            hash = 31 * hash + mBootProps.hashCode();
+        }
+        return hash;
+    }
+
+    /**
+     * toString value suitable for debugging only.
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Device [mName=");
+        sb.append(mName);
+        sb.append(", mId=");
+        sb.append(mId);
+        sb.append(", mManufacturer=");
+        sb.append(mManufacturer);
+        sb.append(", mSoftware=");
+        sb.append(mSoftware);
+        sb.append(", mState=");
+        sb.append(mState);
+        sb.append(", mMeta=");
+        sb.append(mMeta);
+        sb.append(", mDefaultState=");
+        sb.append(mDefaultState);
+        sb.append(", mTagId=");
+        sb.append(mTagId);
+        sb.append(", mBootProps=");
+        sb.append(mBootProps);
+        sb.append("]");
+        return sb.toString();
+    }
+
+    /**
+     * Returns a "sortable" name for the device -- if a device list is sorted
+     * using this sort-aware display name, it will be displayed in an order that
+     * is user friendly with devices using names first sorted alphabetically
+     * followed by all devices that use a numeric screen size sorted by actual
+     * size.
+     * <p/>
+     * Note that although the name results in a proper sort, it is not a name
+     * that you actually want to display to the user.
+     * <p/>
+     * Extracted from DeviceMenuListener. Modified to remove the leading space
+     * insertion as it doesn't render neatly in the avd manager. Instead added
+     * the option to add leading zeroes to make the string names sort properly.
+     * <p>
+     * Replace "'in'" with '"' (e.g. 2.7" QVGA instead of 2.7in QVGA).
+     * Use the same precision for all devices (all but one specify decimals).
+     */
+    private String getSortableName() {
+        String sortableName = mName;
+        Matcher matcher = PATTERN.matcher(sortableName);
+        if (matcher.matches()) {
+            String size = matcher.group(1);
+            String n = matcher.group(2);
+            int dot = size.indexOf('.');
+            if (dot == -1) {
+                size = size + ".0";
+                dot = size.length() - 2;
+            }
+            if (dot < 3) {
+                // Pad to have at least 3 digits before the dot, for sorting
+                // purposes.
+                // We can revisit this once we get devices that are more than
+                // 999 inches wide.
+                size = "000".substring(dot) + size;
+            }
+            sortableName = size + "\" " + n;
+        }
+
+        return sortableName;
+    }
+
     public static class Builder {
+        private final List<Software> mSoftware = new ArrayList<Software>();
+        private final List<State> mState = new ArrayList<State>();
+        private final Map<String, String> mBootProps = new TreeMap<String, String>();
         private String mName;
         private String mId;
         private String mManufacturer;
-        private final List<Software> mSoftware = new ArrayList<Software>();
-        private final List<State> mState = new ArrayList<State>();
         private Meta mMeta;
         private State mDefaultState;
         private String mTagId;
-        private final Map<String, String> mBootProps = new TreeMap<String, String>();
 
-        public Builder() { }
+        public Builder() {
+        }
 
         public Builder(Device d) {
             mTagId = null;
@@ -351,6 +519,7 @@ public final class Device {
 
         /**
          * Removes the first {@link State} with the given name
+         *
          * @param stateName The name of the {@link State} to remove.
          * @return Whether a {@link State} was removed or not.
          */
@@ -414,170 +583,11 @@ public final class Device {
             if (mName != null) {
                 device += mName;
             } else {
-                device = "Unknown " + device +"Device";
+                device = "Unknown " + device + "Device";
             }
 
-            return new IllegalStateException("Error building " + device + ": " +err);
+            return new IllegalStateException("Error building " + device + ": " + err);
         }
-    }
-
-    private Device(Builder b) {
-        mName = b.mName;
-        mId = b.mId;
-        mManufacturer = b.mManufacturer;
-        mSoftware = Collections.unmodifiableList(b.mSoftware);
-        mState = Collections.unmodifiableList(b.mState);
-        mMeta = b.mMeta;
-        mDefaultState = b.mDefaultState;
-        mTagId = b.mTagId;
-        mBootProps = Collections.unmodifiableMap(b.mBootProps);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof Device)) {
-            return false;
-        }
-        Device d = (Device) o;
-        boolean ok = mName.equals(d.getDisplayName())
-                && mManufacturer.equals(d.getManufacturer())
-                && mSoftware.equals(d.getAllSoftware())
-                && mState.equals(d.getAllStates())
-                && mMeta.equals(d.getMeta())
-                && mDefaultState.equals(d.getDefaultState());
-        if (!ok) {
-            return false;
-        }
-
-        ok = (mTagId == null && d.mTagId == null) ||
-             (mTagId != null && mTagId.equals(d.mTagId));
-        if (!ok) {
-            return false;
-        }
-
-        ok = (mBootProps == null && d.mBootProps == null) ||
-             (mBootProps != null && mBootProps.equals(d.mBootProps));
-        return ok;
-    }
-
-    /**
-     * For *internal* usage only. Must not be serialized to disk.
-     */
-    @Override
-    public int hashCode() {
-        int hash = 17;
-        hash = 31 * hash + mName.hashCode();
-        hash = 31 * hash + mManufacturer.hashCode();
-        hash = 31 * hash + mSoftware.hashCode();
-        hash = 31 * hash + mState.hashCode();
-        hash = 31 * hash + mMeta.hashCode();
-        hash = 31 * hash + mDefaultState.hashCode();
-
-        // tag-id and boot-props are optional and should not change a device's hashcode
-        // which did not have them before.
-        if (mTagId != null) {
-            hash = 31 * hash + mTagId.hashCode();
-        }
-        if (mBootProps != null && !mBootProps.isEmpty()) {
-            hash = 31 * hash + mBootProps.hashCode();
-        }
-        return hash;
-    }
-
-    /** toString value suitable for debugging only. */
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Device [mName=");
-        sb.append(mName);
-        sb.append(", mId=");
-        sb.append(mId);
-        sb.append(", mManufacturer=");
-        sb.append(mManufacturer);
-        sb.append(", mSoftware=");
-        sb.append(mSoftware);
-        sb.append(", mState=");
-        sb.append(mState);
-        sb.append(", mMeta=");
-        sb.append(mMeta);
-        sb.append(", mDefaultState=");
-        sb.append(mDefaultState);
-        sb.append(", mTagId=");
-        sb.append(mTagId);
-        sb.append(", mBootProps=");
-        sb.append(mBootProps);
-        sb.append("]");
-        return sb.toString();
-    }
-
-    private static Pattern PATTERN = Pattern.compile(
-    "(\\d+\\.?\\d*)(?:in|\") (.+?)( \\(.*Nexus.*\\))?"); //$NON-NLS-1$
-
-    /**
-     * Returns a "sortable" name for the device -- if a device list is sorted
-     * using this sort-aware display name, it will be displayed in an order that
-     * is user friendly with devices using names first sorted alphabetically
-     * followed by all devices that use a numeric screen size sorted by actual
-     * size.
-     * <p/>
-     * Note that although the name results in a proper sort, it is not a name
-     * that you actually want to display to the user.
-     * <p/>
-     * Extracted from DeviceMenuListener. Modified to remove the leading space
-     * insertion as it doesn't render neatly in the avd manager. Instead added
-     * the option to add leading zeroes to make the string names sort properly.
-     *
-     * Replace "'in'" with '"' (e.g. 2.7" QVGA instead of 2.7in QVGA).
-     * Use the same precision for all devices (all but one specify decimals).
-     */
-    private String getSortableName() {
-        String sortableName = mName;
-        Matcher matcher = PATTERN.matcher(sortableName);
-        if (matcher.matches()) {
-            String size = matcher.group(1);
-            String n = matcher.group(2);
-            int dot = size.indexOf('.');
-            if (dot == -1) {
-                size = size + ".0";
-                dot = size.length() - 2;
-            }
-            if (dot < 3) {
-                // Pad to have at least 3 digits before the dot, for sorting
-                // purposes.
-                // We can revisit this once we get devices that are more than
-                // 999 inches wide.
-                size = "000".substring(dot) + size;
-            }
-            sortableName = size + "\" " + n;
-        }
-
-        return sortableName;
-    }
-
-    /**
-     * Returns a comparator suitable to sort a device list using a sort-aware display name.
-     * The list is displayed in an order that is user friendly with devices using names
-     * first sorted alphabetically followed by all devices that use a numeric screen size
-     * sorted by actual size.
-     */
-    public static Comparator<Device> getDisplayComparator() {
-        return new Comparator<Device>() {
-            @Override
-            public int compare(Device d1, Device d2) {
-                String s1 = d1.getSortableName();
-                String s2 = d2.getSortableName();
-                if (s1.length() > 1 && s2.length() > 1) {
-                    int i1 = Character.isDigit(s1.charAt(0)) ? 1 : 0;
-                    int i2 = Character.isDigit(s2.charAt(0)) ? 1 : 0;
-                    if (i1 != i2) {
-                        return i1 - i2;
-                    }
-                }
-                return s1.compareTo(s2);
-            }};
     }
 
 }

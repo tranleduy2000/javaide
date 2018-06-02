@@ -16,6 +16,17 @@
 
 package com.android.builder.dependency;
 
+import com.android.SdkConstants;
+import com.android.annotations.NonNull;
+import com.android.annotations.Nullable;
+import com.android.annotations.concurrency.Immutable;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+
+import java.io.File;
+import java.util.List;
+
 import static com.android.SdkConstants.FD_AIDL;
 import static com.android.SdkConstants.FD_ASSETS;
 import static com.android.SdkConstants.FD_JARS;
@@ -26,16 +37,6 @@ import static com.android.SdkConstants.FN_CLASSES_JAR;
 import static com.android.SdkConstants.FN_PUBLIC_TXT;
 import static com.android.SdkConstants.FN_RESOURCE_TEXT;
 import static com.android.SdkConstants.LIBS_FOLDER;
-
-import com.android.SdkConstants;
-import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
-import com.android.annotations.concurrency.Immutable;
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * Default implementation of the LibraryDependency interface that handles a default bundle project
@@ -54,10 +55,10 @@ public abstract class LibraryBundle implements LibraryDependency {
     /**
      * Creates the bundle dependency with an optional name
      *
-     * @param bundle the library's aar bundle file
+     * @param bundle       the library's aar bundle file
      * @param bundleFolder the folder containing the unarchived library content
-     * @param name an optional name
-     * @param projectPath an optional project path.
+     * @param name         an optional name
+     * @param projectPath  an optional project path.
      */
     protected LibraryBundle(
             @NonNull File bundle,

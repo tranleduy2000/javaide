@@ -22,21 +22,21 @@ import javax.annotation.Nonnull;
  * Thrown when the requested Jack configuration for a given API version is not supported.
  */
 public class ConfigNotSupportedException extends Exception {
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public ConfigNotSupportedException() {
-    super();
-  }
+    public ConfigNotSupportedException() {
+        super();
+    }
 
-  public ConfigNotSupportedException(@Nonnull String message) {
-    super(message);
-  }
+    public ConfigNotSupportedException(@Nonnull String message) {
+        super(message);
+    }
 
-  public ConfigNotSupportedException(@Nonnull String message, @Nonnull Throwable cause) {
-    super(message, cause);
-  }
+    public ConfigNotSupportedException(@Nonnull String message, @Nonnull Throwable cause) {
+        super(message, cause);
+    }
 
-  public ConfigNotSupportedException(@Nonnull Throwable cause) {
-    super(cause);
-  }
+    public ConfigNotSupportedException(@Nonnull Throwable cause) {
+        super(cause);
+    }
 }

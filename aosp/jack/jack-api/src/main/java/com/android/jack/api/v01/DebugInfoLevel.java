@@ -20,18 +20,18 @@ package com.android.jack.api.v01;
  * Various levels of debug information.
  */
 public enum DebugInfoLevel {
-  /**
-   * No debug info.
-   */
-  NONE,
+    /**
+     * No debug info.
+     */
+    NONE,
 
-  /**
-   * Line and source file debug info.
-   */
-  LINES,
+    /**
+     * Line and source file debug info.
+     */
+    LINES,
 
-  /**
-   * All debug info.
-   */
-  FULL
+    /**
+     * All debug info.
+     */
+    FULL
 }

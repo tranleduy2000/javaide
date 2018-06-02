@@ -20,10 +20,11 @@ android {
 
 }
 dependencies {
-    compile project(':aosp:common')
-    compile project(':aosp:sdklib')
-    compile project(':aosp:sdk-common')
-    compile 'net.sf.kxml:kxml2:2.3.0'
-    compile 'com.google.code.gson:gson:2.8.1'
+    api project(':aosp:common')
+    api project(':aosp:sdklib')
+    api project(':aosp:sdk-common')
+
+    api 'net.sf.kxml:kxml2:2.3.0'
+    api 'com.google.code.gson:gson:2.8.1'
 }
 

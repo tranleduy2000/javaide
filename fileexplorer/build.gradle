@@ -22,9 +22,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':common')
-    compile project(':styles')
-    compile 'com.makeramen:roundedimageview:2.2.1'
-    compile 'com.yqritc:recyclerview-flexibledivider:1.2.9'
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api project(':common')
+    api project(':styles')
+    api 'com.makeramen:roundedimageview:2.2.1'
+    api 'com.yqritc:recyclerview-flexibledivider:1.2.9'
 }

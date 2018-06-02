@@ -22,13 +22,14 @@ package com.android.jack.api.v01;
  */
 public interface Api01CompilationTask {
 
-  /**
-   * Runs the Jack compiler. May be called only once.
-   * @throws CompilationException If a fatal error occurred during the compilation
-   * @throws UnrecoverableException If an error out of Jack's control occurred
-   * @throws ConfigurationException If there is an error in the configuration
-   * @throws IllegalStateException If Jack is run more than once
-   */
-  void run() throws CompilationException, UnrecoverableException, ConfigurationException,
-      IllegalStateException;
+    /**
+     * Runs the Jack compiler. May be called only once.
+     *
+     * @throws CompilationException   If a fatal error occurred during the compilation
+     * @throws UnrecoverableException If an error out of Jack's control occurred
+     * @throws ConfigurationException If there is an error in the configuration
+     * @throws IllegalStateException  If Jack is run more than once
+     */
+    void run() throws CompilationException, UnrecoverableException, ConfigurationException,
+            IllegalStateException;
 }

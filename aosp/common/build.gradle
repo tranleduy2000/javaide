@@ -20,8 +20,6 @@ android {
 
 }
 dependencies {
-    compile project(':aosp:annotations')
-    compile 'com.google.guava:guava:23.0'
-
-    testCompile 'junit:junit:4.12'
+    api project(':aosp:annotations')
+    api 'com.google.guava:guava:25.1-android'
 }

@@ -20,13 +20,13 @@ package com.android.jack.api.v01;
  * How to handle type collisions.
  */
 public enum TypeCollisionPolicy {
-  /**
-   * In case of collision between types, keep the first type that was encountered.
-   */
-  KEEP_FIRST,
+    /**
+     * In case of collision between types, keep the first type that was encountered.
+     */
+    KEEP_FIRST,
 
-  /**
-   * In case of collision between types, fail.
-   */
-  FAIL
+    /**
+     * In case of collision between types, fail.
+     */
+    FAIL
 }

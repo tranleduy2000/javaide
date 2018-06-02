@@ -19,8 +19,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:support-annotations:$supportLibVersion"
-    compile project(':common')
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api "com.android.support:support-annotations:$supportLibVersion"
+    api project(':common')
 }
 

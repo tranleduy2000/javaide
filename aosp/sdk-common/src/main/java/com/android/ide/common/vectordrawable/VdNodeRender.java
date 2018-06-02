@@ -16,31 +16,33 @@
 
 package com.android.ide.common.vectordrawable;
 
-import java.awt.geom.Path2D;
+
+import android.graphics.Path;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Given an array of VdPath.Node, generate a Path2D object.
+ * Given an array of VdPath.Node, generate a Path object.
  * In another word, this is the engine which converts the pathData into
- * a Path2D object, which is able to draw on Swing components.
+ * a Path object, which is able to draw on Swing components.
  * The logic and math here are the same as PathParser.java in framework.
  */
 class VdNodeRender {
     private static Logger logger = Logger.getLogger(VdNodeRender.class
             .getSimpleName());
 
-    public static void creatPath(VdPath.Node[] node, Path2D path) {
+    public static void creatPath(VdPath.Node[] node, Path path) {
         float[] current = new float[6];
         char lastCmd = ' ';
         for (int i = 0; i < node.length; i++) {
-            addCommand(path, current, node[i].type, lastCmd,node[i].params);
+            addCommand(path, current, node[i].type, lastCmd, node[i].params);
             lastCmd = node[i].type;
         }
     }
 
-    private static void addCommand(Path2D path, float[] current, char cmd,
-            char lastCmd, float[] val) {
+    private static void addCommand(Path path, float[] current, char cmd,
+                                   char lastCmd, float[] val) {
 
         int incr = 2;
 
@@ -54,7 +56,7 @@ class VdNodeRender {
         switch (cmd) {
             case 'z':
             case 'Z':
-                path.closePath();
+                path.close();
                 cx = loopX;
                 cy = loopY;
             case 'm':
@@ -117,7 +119,7 @@ class VdNodeRender {
                     break;
                 case 'z':
                 case 'Z':
-                    path.closePath();
+                    path.close();
                     cx = loopX;
                     cy = loopY;
                     break;
@@ -138,7 +140,7 @@ class VdNodeRender {
                     cy = val[k + 0];
                     break;
                 case 'c':
-                    path.curveTo(cx + val[k + 0], cy + val[k + 1], cx + val[k + 2],
+                    path.addArc(cx + val[k + 0], cy + val[k + 1], cx + val[k + 2],
                             cy + val[k + 3], cx + val[k + 4], cy + val[k + 5]);
                     cpx = cx + val[k + 2];
                     cpy = cy + val[k + 3];
@@ -146,7 +148,7 @@ class VdNodeRender {
                     cy += val[k + 5];
                     break;
                 case 'C':
-                    path.curveTo(val[k + 0], val[k + 1], val[k + 2], val[k + 3],
+                    path.addArc(val[k + 0], val[k + 1], val[k + 2], val[k + 3],
                             val[k + 4], val[k + 5]);
                     cx = val[k + 4];
                     cy = val[k + 5];
@@ -155,7 +157,7 @@ class VdNodeRender {
                     break;
                 case 's':
                     reflectCtrl = (lastCmd == 'c' || lastCmd == 's' || lastCmd == 'C' || lastCmd == 'S');
-                    path.curveTo(reflectCtrl ? 2 * cx - cpx : cx, reflectCtrl ? 2
+                    path.addArc(reflectCtrl ? 2 * cx - cpx : cx, reflectCtrl ? 2
                             * cy - cpy : cy, cx + val[k + 0], cy + val[k + 1], cx
                             + val[k + 2], cy + val[k + 3]);
 
@@ -166,8 +168,8 @@ class VdNodeRender {
                     break;
                 case 'S':
                     reflectCtrl = (lastCmd == 'c' || lastCmd == 's' || lastCmd == 'C' || lastCmd == 'S');
-                    path.curveTo(reflectCtrl ? 2 * cx - cpx : cx, reflectCtrl ? 2
-                            * cy - cpy : cy, val[k + 0], val[k + 1], val[k + 2],
+                    path.addArc(reflectCtrl ? 2 * cx - cpx : cx, reflectCtrl ? 2
+                                    * cy - cpy : cy, val[k + 0], val[k + 1], val[k + 2],
                             val[k + 3]);
                     cpx = (val[k + 0]);
                     cpy = (val[k + 1]);
@@ -214,7 +216,7 @@ class VdNodeRender {
                     // (rx ry x-axis-rotation large-arc-flag sweep-flag x y)
                     drawArc(path, cx, cy, val[k + 5] + cx, val[k + 6] + cy,
                             val[k + 0], val[k + 1], val[k + 2], val[k + 3] != 0,
-                                    val[k + 4] != 0);
+                            val[k + 4] != 0);
                     cx += val[k + 5];
                     cy += val[k + 6];
                     cpx = cx;
@@ -224,7 +226,7 @@ class VdNodeRender {
                 case 'A':
                     drawArc(path, cx, cy, val[k + 5], val[k + 6], val[k + 0],
                             val[k + 1], val[k + 2], val[k + 3] != 0,
-                                    val[k + 4] != 0);
+                            val[k + 4] != 0);
                     cx = val[k + 5];
                     cy = val[k + 6];
                     cpx = cx;
@@ -243,9 +245,9 @@ class VdNodeRender {
 
     }
 
-    private static void drawArc(Path2D p, float x0, float y0, float x1,
-            float y1, float a, float b, float theta, boolean isMoreThanHalf,
-            boolean isPositiveArc) {
+    private static void drawArc(Path p, float x0, float y0, float x1,
+                                float y1, float a, float b, float theta, boolean isMoreThanHalf,
+                                boolean isPositiveArc) {
 
         logger.log(Level.FINE, "(" + x0 + "," + y0 + ")-(" + x1 + "," + y1
                 + ") {" + a + " " + b + "}");
@@ -317,7 +319,7 @@ class VdNodeRender {
         cy = tcx * sinTheta + cy * cosTheta;
         logger.log(
                 Level.FINE,
-                        "cx, cy, a, b, x0, y0, thetaD, eta0, sweep = " + cx + " , "
+                "cx, cy, a, b, x0, y0, thetaD, eta0, sweep = " + cx + " , "
                         + cy + " , " + a + " , " + b + " , " + x0 + " , " + y0
                         + " , " + Math.toDegrees(thetaD) + " , "
                         + Math.toDegrees(eta0) + " , " + Math.toDegrees(sweep));
@@ -328,20 +330,20 @@ class VdNodeRender {
     /**
      * Converts an arc to cubic Bezier segments and records them in p.
      *
-     * @param p The target for the cubic Bezier segments
-     * @param cx The x coordinate center of the ellipse
-     * @param cy The y coordinate center of the ellipse
-     * @param a The radius of the ellipse in the horizontal direction
-     * @param b The radius of the ellipse in the vertical direction
-     * @param e1x E(eta1) x coordinate of the starting point of the arc
-     * @param e1y E(eta2) y coordinate of the starting point of the arc
+     * @param p     The target for the cubic Bezier segments
+     * @param cx    The x coordinate center of the ellipse
+     * @param cy    The y coordinate center of the ellipse
+     * @param a     The radius of the ellipse in the horizontal direction
+     * @param b     The radius of the ellipse in the vertical direction
+     * @param e1x   E(eta1) x coordinate of the starting point of the arc
+     * @param e1y   E(eta2) y coordinate of the starting point of the arc
      * @param theta The angle that the ellipse bounding rectangle makes with the horizontal plane
      * @param start The start angle of the arc on the ellipse
      * @param sweep The angle (positive or negative) of the sweep of the arc on the ellipse
      */
-    private static void arcToBezier(Path2D p, double cx, double cy, double a,
-            double b, double e1x, double e1y, double theta, double start,
-            double sweep) {
+    private static void arcToBezier(Path p, double cx, double cy, double a,
+                                    double b, double e1x, double e1y, double theta, double start,
+                                    double sweep) {
         // Taken from equations at:
         // http://spaceroots.org/documents/ellipse/node8.html
         // and http://www.spaceroots.org/documents/ellipse/node22.html
@@ -376,7 +378,7 @@ class VdNodeRender {
             double q2x = e2x - alpha * ep2x;
             double q2y = e2y - alpha * ep2y;
 
-            p.curveTo((float) q1x, (float) q1y, (float) q2x, (float) q2y,
+            p.addArc((float) q1x, (float) q1y, (float) q2x, (float) q2y,
                     (float) e2x, (float) e2y);
             eta1 = eta2;
             e1x = e2x;

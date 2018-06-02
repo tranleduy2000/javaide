@@ -20,5 +20,5 @@ package com.android.jack.api.v01;
  * Supported Java source version.
  */
 public enum JavaSourceVersion {
-  JAVA_3, JAVA_4, JAVA_5, JAVA_6, JAVA_7
+    JAVA_3, JAVA_4, JAVA_5, JAVA_6, JAVA_7
 }

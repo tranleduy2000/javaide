@@ -20,13 +20,13 @@ package com.android.jack.api.v01;
  * How to handle resource collisions.
  */
 public enum ResourceCollisionPolicy {
-  /**
-   * In case of collision between resources, keep the first resource that was encountered.
-   */
-  KEEP_FIRST,
+    /**
+     * In case of collision between resources, keep the first resource that was encountered.
+     */
+    KEEP_FIRST,
 
-  /**
-   * In case of collision between resources, fail.
-   */
-  FAIL
+    /**
+     * In case of collision between resources, fail.
+     */
+    FAIL
 }

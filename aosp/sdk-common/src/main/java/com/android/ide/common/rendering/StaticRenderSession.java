@@ -16,17 +16,18 @@
 
 package com.android.ide.common.rendering;
 
+import android.graphics.Bitmap;
+
 import com.android.ide.common.rendering.api.RenderSession;
 import com.android.ide.common.rendering.api.Result;
 import com.android.ide.common.rendering.api.ViewInfo;
 
-import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Static {@link RenderSession} returning a given {@link Result}, {@link ViewInfo} and
- * {@link BufferedImage}.
+ * {@link Bitmap}.
  * <p/>
  * All other methods are untouched from the base implementation provided by the API.
  * <p/>
@@ -38,9 +39,9 @@ public class StaticRenderSession extends RenderSession {
 
     private final Result mResult;
     private final List<ViewInfo> mRootViewInfo;
-    private final BufferedImage mImage;
+    private final Bitmap mImage;
 
-    public StaticRenderSession(Result result, ViewInfo rootViewInfo, BufferedImage image) {
+    public StaticRenderSession(Result result, ViewInfo rootViewInfo, Bitmap image) {
         mResult = result;
         mRootViewInfo = Collections.singletonList(rootViewInfo);
         mImage = image;
@@ -57,7 +58,7 @@ public class StaticRenderSession extends RenderSession {
     }
 
     @Override
-    public BufferedImage getImage() {
+    public Bitmap getImage() {
         return mImage;
     }
 }

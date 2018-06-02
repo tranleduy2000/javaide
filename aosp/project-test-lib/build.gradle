@@ -21,7 +21,7 @@ android {
 }
 
 dependencies {
-    api project(':aosp:build-system:builder-model')
+    api project(':aosp:builder-model')
     api project(':aosp:common')
     // https://mvnrepository.com/artifact/org.gradle/gradle-tooling-api
     api group: 'org.gradle', name: 'gradle-tooling-api', version: '4.3'

@@ -19,5 +19,6 @@ android {
 }
 
 dependencies {
-    api project(':lib-android-compiler')
+    api project(':jdk-1_7')
+    api 'com.google.guava:guava:25.1-android'
 }

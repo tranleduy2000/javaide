@@ -58,7 +58,7 @@ dependencies {
     api group: 'org.eclipse.jdt.core.compiler', name: 'ecj', version: '4.6.1'
     api 'com.squareup:javawriter:2.5.0'
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.1'
+    api group: 'com.google.code.gson', name: 'gson', version: '2.8.1'
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
     api group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.5'
     api 'org.bouncycastle:bcpkix-jdk15on:1.56'
@@ -66,5 +66,5 @@ dependencies {
     api 'org.ow2.asm:asm:6.0'
     api 'org.ow2.asm:asm-tree:6.0'
     // https://mvnrepository.com/artifact/com.sun.org.apache/jaxp-ri
-    compile group: 'com.sun.org.apache', name: 'jaxp-ri', version: '1.4'
+    api group: 'com.sun.org.apache', name: 'jaxp-ri', version: '1.4'
 }

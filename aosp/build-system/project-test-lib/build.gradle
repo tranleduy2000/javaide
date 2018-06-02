@@ -22,7 +22,7 @@ android {
 
 def toolingApiVersion = gradle.gradleVersion
 dependencies {
-    compile project(':aosp:build-system:builder-model')
-    compile project(':aosp:common')
-    compile "org.gradle:gradle-tooling-api:${toolingApiVersion}"
+    api project(':aosp:build-system:builder-model')
+    api project(':aosp:common')
+   // compile "org.gradle:gradle-tooling-api:${toolingApiVersion}"
 }

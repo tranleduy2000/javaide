@@ -107,6 +107,8 @@ import java.util.regex.Pattern;
  * inserts android:versionName in to manifest.
  * --custom-package
  * generates R.java into a different package.
+ *
+ * @link https://elinux.org/Android_aapt
  */
 public class AAPTTask extends ABuildTask<AndroidAppProject> {
 

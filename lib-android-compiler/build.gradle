@@ -29,6 +29,7 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/plexus/components.xml'
+        exclude 'META-INF/INDEX.LIST'
     }
 }
 

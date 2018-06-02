@@ -178,6 +178,7 @@ public class HighlightEditor extends CodeSuggestsEditText
     }
 
     private void setup(Context context) {
+        setSaveEnabled(false);
         this.mContext = context;
 
         lineUtils = new LineUtils();
@@ -684,7 +685,9 @@ public class HighlightEditor extends CodeSuggestsEditText
 
     public void highlightText() {
         if (isFinding) return;
-
+        if (length() > 262144){
+            return;
+        }
         disableTextChangedListener();
         highlight(false);
         enableTextChangedListener();

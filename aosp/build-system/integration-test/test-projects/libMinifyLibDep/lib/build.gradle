@@ -1,0 +1,28 @@
+apply plugin: 'com.android.library'
+
+dependencies {
+    compile project(':lib2')
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        versionCode 12
+        versionName "2.0"
+        minSdkVersion 16
+        targetSdkVersion 16
+        proguardFile 'config.pro'
+        consumerProguardFiles 'consumerRules.pro'
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled true
+        }
+        release {
+            minifyEnabled true
+        }
+    }
+}

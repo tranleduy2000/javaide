@@ -1,0 +1,66 @@
+#
+# Test uses-sdk: it's an error for a library to require a minSdkVersion higher than the
+# one defined in the main manifest. However main manifest is overriding those libraries min sdk
+# so those libraries will get merged.
+#
+# Also a uses-sdk with a lack of minSdkVersion is equivalent to using version=1.
+#
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <!-- This is app min sdk should conflict with imported libraries, but overrideLibrary will
+         let these be merged -->
+    <uses-sdk android:targetSdkVersion="14" android:minSdkVersion="2"
+              tools:overrideLibrary="com.example.lib1, com.example.lib2"/>
+
+    <application />
+
+</manifest>
+
+
+@lib1
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib1">
+
+    <!-- The app can cope with API 2 but this library can only cope with API 4. -->
+    <!-- however, the application is explicitly overriding the value -->
+    <uses-sdk android:minSdkVersion="4" />
+
+</manifest>
+
+
+@lib2
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib2">
+
+    <!-- The app can cope with API 2 but this library can only cope with API 8. -->
+    <!-- however, the application is explicitly overriding the value -->
+    <uses-sdk android:minSdkVersion="8" />
+
+</manifest>
+
+@result
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <!-- This is app min sdk should conflict with imported libraries, but overrideLibrary will
+         let these be merged -->
+    <uses-sdk android:targetSdkVersion="14" android:minSdkVersion="2"/>
+
+    <application />
+
+</manifest>

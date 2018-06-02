@@ -1,0 +1,6 @@
+<resources>
+    <public name="mylib_app_name" type="string"/>
+    <public name="mylib_public_string" type="string"/>
+    <public name="shared_name" type="string"/>
+    <public name="shared_name" type="id"/>
+</resources>

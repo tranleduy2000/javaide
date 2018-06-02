@@ -1,0 +1,40 @@
+apply plugin: 'com.android.library'
+
+project.ext.fakeProvider = new com.android.tests.basic.buildscript.FakeProvider()
+project.ext.fakeServer = new com.android.tests.basic.buildscript.FakeServer()
+
+apply from: "../../commonLocalRepo.gradle"
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion = rootProject.buildToolsVersion
+
+    deviceProvider project.fakeProvider
+    testServer project.fakeServer
+
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
+    }
+}
+
+project.afterEvaluate {
+    configure(fakeDebugAndroidTest) {
+        doLast {
+            String error = project.fakeProvider.isValid()
+            if (error != null) {
+                throw new GradleException("Failed DeviceProvider usage: " + error)
+            }
+        }
+    }
+
+    configure(fake2Upload) {
+        doLast {
+            String error = project.fakeServer.isValid()
+            if (error != null) {
+                throw new GradleException("Failed TestServer usage: " + error)
+            }
+        }
+    }
+}

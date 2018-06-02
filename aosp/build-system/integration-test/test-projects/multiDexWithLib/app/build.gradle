@@ -1,0 +1,33 @@
+apply plugin: 'com.android.application'
+
+android {
+  compileSdkVersion 21
+  buildToolsVersion = rootProject.ext.buildToolsVersion
+
+  defaultConfig {
+    buildConfigField "String", "FOO", "\"foo\""
+
+    multiDexEnabled = true
+    useJack rootProject.ext.useJack
+  }
+
+  productFlavors {
+    ics {
+      minSdkVersion 14
+    }
+    lollipop {
+      minSdkVersion 21
+    }
+  }
+
+  buildTypes {
+    debug {
+      buildConfigField "String", "FOO", "\"bar\""
+      resValue "string", "foo", "foo2"
+    }
+  }
+}
+
+dependencies {
+  compile project(':lib')
+}

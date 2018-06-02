@@ -1,0 +1,29 @@
+apply plugin: 'com.android.application'
+
+android {
+  compileSdkVersion 21
+  buildToolsVersion = rootProject.ext.buildToolsVersion
+
+  productFlavors {
+     flavor1 {
+
+     }
+     flavor2 {
+
+     }
+  }
+
+  buildTypes {
+    custom.initWith(release)
+    custom {
+      applicationIdSuffix = '.custom'
+    }
+  }
+}
+
+dependencies {
+  wearApp project(':micro-apps:default')
+  flavor1WearApp project(':micro-apps:flavor1')
+  customWearApp project(':micro-apps:custom')
+}
+

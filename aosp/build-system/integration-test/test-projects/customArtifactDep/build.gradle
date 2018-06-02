@@ -1,0 +1,9 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+allprojects {
+    version = '1.0'
+}
+subprojects {
+    apply from: "../../commonLocalRepo.gradle"
+}

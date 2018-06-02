@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Basic App</string>
+    <string name="button_send">Go</string>
+    <string name="title_activity_display_message">People</string>
+</resources>

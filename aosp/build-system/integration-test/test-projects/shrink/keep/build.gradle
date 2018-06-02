@@ -1,0 +1,19 @@
+apply plugin: 'com.android.application'
+
+android {
+  compileSdkVersion 19
+  buildToolsVersion = rootProject.buildToolsVersion
+
+  defaultConfig {
+    versionCode 12
+    minSdkVersion 16
+    targetSdkVersion 20
+  }
+
+  buildTypes {
+      release {
+        shrinkResources true
+        minifyEnabled true
+      }
+  }
+}

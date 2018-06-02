@@ -1,0 +1,40 @@
+#
+# Test uses-sdk: when importing a library with a code name say "L", the application should
+# be L and a overrideLibrary statement should not impact.
+#
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <!-- This is the same as writing android:minSdkVersion="1" -->
+    <uses-sdk android:targetSdkVersion="14" android:minSdkVersion="2"
+              tools:overrideLibrary="com.example.lib1"/>
+
+    <application />
+
+</manifest>
+
+
+@lib1
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib1">
+
+    <!-- The app can cope with API 2 but this library can only cope with API code named L. -->
+    <!-- this will fail -->
+    <uses-sdk android:minSdkVersion="L" />
+
+</manifest>
+
+
+</manifest>
+
+@errors
+ERROR:uses-sdk:targetSdkVersion 14 cannot be different than version L declared in library .*ManifestMerger2Test1_lib1.xml

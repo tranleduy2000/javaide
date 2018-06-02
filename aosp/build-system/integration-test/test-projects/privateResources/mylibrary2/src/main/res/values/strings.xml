@@ -1,0 +1,4 @@
+<resources>
+    <string name="mylib2_app_name">My Library 2</string>
+    <string name="mylib2_private_string">Private String in Library 2</string>
+</resources>

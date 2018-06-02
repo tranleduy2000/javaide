@@ -1,0 +1,56 @@
+apply plugin: 'java'
+apply plugin: 'clone-artifacts'
+apply plugin: 'sdk-java-lib'
+
+dependencies {
+    compile project(':base:annotations')
+}
+
+group = 'com.android.tools.build'
+archivesBaseName = 'builder-model'
+version = rootProject.ext.buildVersion
+
+project.ext.pomName = 'Android Builder Model library'
+project.ext.pomDesc = 'Model for the Builder library.'
+
+project.ext.apiVersion = rootProject.ext.apiVersion ?: 0
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"
+
+["Model-Version": version, "Model-Api-Version": apiVersion].each { key, value ->
+    jar.manifest.attributes((key): value)
+    sdkJar.manifest.attributes((key): value)
+}
+
+def generated = new File("${project.buildDir}/generated/java")
+
+sourceSets {
+    main {
+        java {
+            srcDir generated
+        }
+    }
+}
+
+task generateVersionConstantsJava {
+    inputs.property("apiVersion", apiVersion)
+    inputs.property("version", version)
+    ext.versionFile = new File(generated, "com/android/builder/model/Version.java")
+    outputs.file(versionFile)
+}
+generateVersionConstantsJava << {
+    versionFile.parentFile.mkdirs()
+    versionFile.text = """
+package com.android.builder.model;
+
+public final class Version {
+    private Version() {}
+    public static final String ANDROID_GRADLE_PLUGIN_VERSION = "$version";
+    public static final int BUILDER_MODEL_API_VERSION = $apiVersion;
+}
+"""
+}
+
+tasks.compileJava.dependsOn generateVersionConstantsJava

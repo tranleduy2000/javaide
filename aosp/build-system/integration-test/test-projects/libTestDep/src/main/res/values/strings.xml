@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="lib1_name">LibsTest-lib1</string>
+    <string name="lib1_string">SUCCESS-LIB1</string>
+
+</resources>

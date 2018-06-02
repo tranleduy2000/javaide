@@ -1,0 +1,30 @@
+apply plugin: 'com.android.application'
+
+dependencies {
+    compile project(':lib')
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    generatePureSplits true
+
+    // This actual the app version code. Giving ourselves 100,000 values [0, 99999]
+    defaultConfig.versionCode = 123
+
+    productFlavors {
+        free {
+            minSdkVersion 21
+        }
+        paid {
+            minSdkVersion 21
+        }
+    }
+
+    splits {
+        abi {
+            enable = true
+            exclude "x86_64", "mips64", "arm64-v8a", "armeabi"
+        }
+    }
+}

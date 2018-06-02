@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/app_text1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_string" />
+
+    <TextView
+        android:id="@+id/app_text2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <include layout="@layout/lib1_main" />
+
+</LinearLayout>

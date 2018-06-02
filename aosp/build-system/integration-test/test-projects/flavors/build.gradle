@@ -1,0 +1,27 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    flavorDimensions   "group1", "group2"
+
+    productFlavors {
+        f1 {
+            flavorDimension   "group1"
+        }
+        f2 {
+            flavorDimension   "group1"
+        }
+
+        fa {
+            flavorDimension   "group2"
+        }
+        fb {
+            flavorDimension   "group2"
+        }
+    }
+}

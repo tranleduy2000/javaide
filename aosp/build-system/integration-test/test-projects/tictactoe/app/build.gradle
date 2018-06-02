@@ -1,0 +1,10 @@
+apply plugin: 'com.android.application'
+
+dependencies {
+    compile project(':lib')
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+}

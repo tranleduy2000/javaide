@@ -1,0 +1,29 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        versionCode 12
+        versionName "2.0"
+        minSdkVersion 16
+        targetSdkVersion 16
+        proguardFile 'config.pro'
+        consumerProguardFiles 'A.txt'
+    }
+
+    buildTypes {
+        debug {
+        }
+
+        release {
+            minifyEnabled true
+            consumerProguardFiles 'B.txt', 'C.txt'
+        }
+    }
+}

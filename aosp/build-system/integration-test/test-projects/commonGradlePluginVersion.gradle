@@ -1,0 +1,40 @@
+/*
+ * Copyright (C) 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+gradleVersion = System.env.CUSTOM_GRADLE
+experimentalGradleVersion = System.env.CUSTOM_EXPERIMENTAL_GRADLE
+
+if (gradleVersion == null && System.env.CUSTOM_REPO != null) {
+    // Extract the version from the top level buildSrc, relative to CUSTOM_REPO.
+    // Have a fake environment for buildSrc/base/version.gradle can insert the version info into.
+    def env = new Object() {
+        Object project = new Object() {
+            Object ext = new Object() {
+                String buildVersion
+                String baseVersion
+                String apiVersion
+                String experimentalVersion
+            }
+        }
+    }
+    apply from: "$System.env.CUSTOM_REPO/../../tools/buildSrc/base/version.gradle", to: env
+    gradleVersion = env.project.ext.buildVersion
+    experimentalGradleVersion = env.project.ext.experimentalVersion
+}
+
+if (gradleVersion == null) {
+    throw new RuntimeException("Android Gradle plugin version for tests 'CUSTOM_GRADLE' not set.")
+}

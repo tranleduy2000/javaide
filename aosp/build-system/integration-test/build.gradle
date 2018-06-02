@@ -1,0 +1,141 @@
+apply plugin: 'groovy'
+apply plugin: 'jacoco'
+
+repositories {
+    maven { url = uri(rootProject.cloneArtifacts.repository) }
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    testCompile project(':base:builder-model')
+    testCompile project(':base:builder')
+    testCompile project(':base:sdk-common')
+    testCompile 'com.google.truth:truth:0.26'
+    testCompile 'org.jacoco:org.jacoco.agent:0.7.4.201502262128'
+
+    // Add dependency on plugin code.  Exclude transitive dependencies to avoid conflict due to
+    // Groovy versions.
+    testCompile(project(':base:gradle-core')) {
+        transitive = false
+    }
+    testCompile(project(':base:gradle')) {
+        transitive = false
+    }
+    testCompile(project(':base:gradle-experimental')) {
+        transitive = false
+    }
+}
+
+def testEnvironment = [
+    PROJECT_BUILD_DIR: project.buildDir,
+    CUSTOM_REPO: rootProject.file("../out/repo"),
+    CUSTOM_GRADLE: System.env.CUSTOM_GRADLE ?: rootProject.ext.buildVersion,
+    CUSTOM_EXPERIMENTAL_GRADLE: System.env.CUSTOM_EXPERIMENTAL_GRADLE ?:rootProject.ext.experimentalVersion,
+    ANDROID_HOME: System.env.ANDROID_HOME,
+    ANDROID_NDK_HOME: System.env.ANDROID_NDK_HOME,
+    CUSTOM_BUILDTOOLS: System.env.CUSTOM_BUILDTOOLS,
+    CUSTOM_JACK: System.env.CUSTOM_JACK,
+    DEBUG_INNER_TEST: System.env.DEBUG_INNER_TEST,
+    RECORD_SPANS: System.env.RECORD_SPANS,
+].findAll { it.value != null }
+
+// These tasks will not depend on publishLocal, so they will run integration
+// tests against whatever version of the plugin is in ../../../out/repo. This
+// allows us to run integration tests with different versions of Java, without
+// rebuilding the plugin.
+task testPrebuilts(type: Test)
+task connectedIntegrationTestPrebuilts(type: Test)
+
+configure([test, testPrebuilts]) {
+    description =
+            "Runs the project integration tests. This requires an SDK either from the Android " +
+                    "source tree, under out/..., or an env var ANDROID_HOME."
+    systemProperties['jar.path'] = jar.archivePath
+    environment = testEnvironment
+
+    // Always run the task, when requested.
+    outputs.upToDateWhen { false }
+
+    forkEvery = 1
+    maxParallelForks = Runtime.runtime.availableProcessors() / 2
+
+    useJUnit {
+        if (System.properties['test.includeCategories'] != null) {
+            def categories = System.properties['test.includeCategories'].split(',')
+            String defaultPackage = "com.android.build.gradle.integration.common.category."
+            categories = categories.collect { it.charAt(0).isUpperCase() ? defaultPackage + it : it }
+            includeCategories categories as String[]
+        }
+        excludeCategories "com.android.build.gradle.integration.common.category.DeviceTests"
+    }
+    exclude "com/android/build/gradle/integration/performance/**"
+}
+
+task connectedIntegrationTest(type: Test)
+
+configure([connectedIntegrationTest, connectedIntegrationTestPrebuilts]) {
+    testClassesDir = sourceSets.test.output.classesDir
+    classpath = sourceSets.test.runtimeClasspath
+
+    description =
+            "Runs the project integration tests with device tests. This requires an SDK either " +
+                    "from the Android source tree, under out/..., or an env var ANDROID_HOME " +
+                    "and a device."
+    group = "verification"
+    systemProperties['jar.path'] = jar.archivePath
+    // Add to, rather than replace the environment, so that TEST_CLASSPATH_DEPENDENCY,
+    // REMOTE_TEST_PROVIDER, ADDITIONAL_TEST_CUSTOM_REPO and any dependencies of the remote test
+    // provider are present in the test environment only for these tests.
+    environment testEnvironment
+
+    // Always run the task, when requested.
+    outputs.upToDateWhen { false }
+
+    forkEvery= 1
+    maxParallelForks = System.env.containsKey("REMOTE_TEST_PROVIDER") ? Runtime.runtime.availableProcessors() : 1
+
+    useJUnit {
+        includeCategories "com.android.build.gradle.integration.common.category.DeviceTests"
+    }
+    exclude "com/android/build/gradle/integration/performance/**"
+}
+
+task performanceTest(type: Test) {
+    include "com/android/build/gradle/integration/performance/**"
+
+    testClassesDir = sourceSets.test.output.classesDir
+    classpath = sourceSets.test.runtimeClasspath
+
+    description =
+            "Runs the project performance tests. This requires an SDK either " +
+                    "from the Android source tree, under out/..., or an env var ANDROID_HOME."
+    group = "verification"
+    systemProperties['jar.path'] = jar.archivePath
+    environment = testEnvironment
+
+    reports {
+        junitXml.destination "${project.buildDir}/perf-results"
+    }
+}
+
+test.dependsOn ':publishLocal'
+connectedIntegrationTest.dependsOn ':publishLocal'
+performanceTest.dependsOn ':publishLocal'
+
+jacocoTestReport {
+    sourceSets project(':base:gradle-experimental').sourceSets.main
+    sourceSets project(':base:gradle').sourceSets.main
+    sourceSets project(':base:gradle-core').sourceSets.main
+    sourceSets project(':base:builder').sourceSets.main
+    sourceSets project(':base:builder-model').sourceSets.main
+    sourceSets project(':base:builder-test-api').sourceSets.main
+}
+
+// Due to memory constraints, apply jacoco only when jacocoTestReport is invoked.  Make sure to
+// rerun tests when generating report jacoco.
+gradle.taskGraph.whenReady { TaskExecutionGraph taskGraph ->
+    if (taskGraph.hasTask(jacocoTestReport)) {
+        test.environment("ATTACH_JACOCO_AGENT", "yes")
+    }
+}

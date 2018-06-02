@@ -1,0 +1,44 @@
+#
+# Test:
+# - Replace the package in the manifest.
+#
+
+@package
+com.example.app1.injected
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <application
+            android:label="@string/app_name"
+            android:name="com.example.app1.TheApp" >
+        <activity
+            android:name=".Main" />
+    </application>
+
+</manifest>
+
+@result
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1.injected"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <application
+            android:label="@string/app_name"
+            android:name="com.example.app1.TheApp" >
+        <activity
+                android:name="com.example.app1.Main" />
+    </application>
+
+</manifest>
+
+@errors
+

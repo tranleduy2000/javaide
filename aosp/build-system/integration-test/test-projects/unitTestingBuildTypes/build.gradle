@@ -1,0 +1,24 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+apply plugin: 'com.android.application'
+
+apply from: "../commonLocalRepo.gradle"
+
+android {
+    // We need an android.jar that contains Java 6 bytecode, since Jenkins runs on Java 6.
+    compileSdkVersion 19
+    buildToolsVersion = rootProject.buildToolsVersion
+
+    buildTypes {
+        buildTypeWithResource
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    testCompile "org.mockito:mockito-core:1.9.5"
+
+    testDebugCompile 'com.google.guava:guava:17.0'
+}
+

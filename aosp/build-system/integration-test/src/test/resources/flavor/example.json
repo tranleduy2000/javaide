@@ -1,0 +1,85 @@
+{
+
+"project_info": {
+  "project_id": "red-ant-1",
+  "project_number": "1234567890",
+  "name": "My Awesome App"
+},
+
+"client": [{
+  "client_info": {
+    "client_type": 1,
+    "android_client_info": {
+      "package_name": "com.example.app.free"
+    }
+  },
+
+  "oauth_client": [{
+    "client_type": 1,
+    "android_info": {
+      "package_name": "com.example.app.free",
+      "certificate_hash": "IUW99pi4cVA5vQ6D8gab7UNawhw="
+    }
+  },
+  {
+    "client_type": 1,
+    "android_info": {
+      "package_name": "com.example.app.free",
+      "certificate_hash": "AFDD9pi4klj5vQ6D8gab7UNawhw="
+    }
+  }],
+
+  "services": {
+    "analytics_service": {
+      "status": 2,
+      "analytics_property": {
+        "tracking_id": "UA-123456789"
+      }
+    },
+    "cloud_messaging_service": {
+      "status": 2
+    },
+    "appinvite_service": {
+      "status": 2
+    },
+    "google_signin_service": {
+      "status": 2
+    }
+  }
+},
+
+{
+  "client_info": {
+    "client_type": 1,
+    "android_client_info": {
+      "package_name": "com.example.app.paid"
+    }
+  },
+
+  "oauth_client": [{
+    "client_type": 1,
+    "android_info": {
+      "package_name": "com.example.app.paid",
+      "certificate_hash": "IUW99pi4cVA5vQ6D8gab7UNawhw="
+    }
+  }],
+  "services": {
+    "analytics_service": {
+      "status": 2,
+      "analytics_property": {
+        "tracking_id": "UA-1923912413"
+      }
+    },
+    "cloud_messaging_service": {
+      "status": 2
+    },
+    "appinvite_service": {
+      "status": 2
+    },
+    "google_signin_service": {
+      "status": 2
+    }
+  }
+}]
+
+}

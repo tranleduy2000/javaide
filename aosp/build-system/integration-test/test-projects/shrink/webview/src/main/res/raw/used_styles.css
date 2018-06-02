@@ -1,0 +1,32 @@
+/**
+ * Copyright 2014 Google Inc.
+ * Ignored: url(unused_icon.png)
+ */
+html, body {
+  margin: 0;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+#logo {
+  position: absolute;
+  left: 0;
+  top: 60px;
+  width: 250px;
+  height: 102px;
+  background-image: url(img2.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.7;
+  z-index: 100;
+}
+device-frame {
+  position: absolute;
+  right: -70px;
+  top: 0;
+  width: 420px;
+  height: 500px;
+  background-image: url(used_icon2.jpg);
+  background-size: cover;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}

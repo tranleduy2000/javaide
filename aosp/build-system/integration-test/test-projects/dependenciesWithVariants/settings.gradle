@@ -1,0 +1,2 @@
+include ':jarProject'
+include ':jarProject2'

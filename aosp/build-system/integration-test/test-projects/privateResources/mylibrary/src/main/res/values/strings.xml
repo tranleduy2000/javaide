@@ -1,0 +1,6 @@
+<resources>
+    <string name="mylib_app_name">My Library</string>
+    <string name="mylib_public_string">Public String in Library</string>
+    <string name="mylib_private_string">Private String in Library</string>
+    <string name="shared_name">String that has the same name as an ID</string>
+</resources>

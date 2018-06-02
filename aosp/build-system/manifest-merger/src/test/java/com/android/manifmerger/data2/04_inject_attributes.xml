@@ -1,0 +1,63 @@
+#
+# Test:
+# - Inject attributes in a main manifest.
+# The attributes are injected and then the merge is done. In this case the app
+# starts with a minSdkVersion of 20, which is higher than the lib1's 15 value.
+# However the injection replaces it by 10, which is now lower than the lib's
+# version and thus a warning will be generated.
+#
+
+@fails
+
+@inject
+/manifest/uses-sdk|http://schemas.android.com/apk/res/android minSdkVersion=10
+/manifest/uses-sdk|http://schemas.android.com/apk/res/android targetSdkVersion=14
+/manifest/application|http://schemas.android.com/apk/res/android label=null
+/manifest/application|http://schemas.android.com/apk/res/android icon=null
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <uses-sdk android:minSdkVersion="20" android:targetSdkVersion="21"/>
+
+    <application android:name="com.example.TheApp" />
+
+</manifest>
+
+@lib1
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <uses-sdk android:minSdkVersion="15" android:targetSdkVersion="16"/>
+
+    <application android:name="com.example.TheApp" />
+
+</manifest>
+
+@result
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="14"/>
+
+    <application android:name="com.example.TheApp" />
+
+</manifest>
+
+@errors
+
+E [ManifestMergerTest0_main.xml:3, ManifestMergerTest1_lib1.xml:3] Main manifest has <uses-sdk android:minSdkVersion='10'> but library uses minSdkVersion='15'
+W [ManifestMergerTest0_main.xml:3, ManifestMergerTest1_lib1.xml:3] Main manifest has <uses-sdk android:targetSdkVersion='14'> but library uses targetSdkVersion='16'

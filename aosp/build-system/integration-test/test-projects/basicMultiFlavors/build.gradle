@@ -1,0 +1,30 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion = rootProject.buildToolsVersion
+
+    flavorDimensions  "pricing", "releaseType"
+
+    productFlavors {
+
+        beta {
+            flavorDimension "releaseType"
+        }
+
+        normal {
+            flavorDimension "releaseType"
+        }
+
+        free {
+            flavorDimension "pricing"
+        }
+
+        paid {
+            flavorDimension "pricing"
+        }
+    }
+}

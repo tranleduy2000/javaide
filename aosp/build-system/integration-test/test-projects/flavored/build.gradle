@@ -1,0 +1,50 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    testBuildType = "staging"
+
+    defaultConfig {
+    }
+
+    productFlavors {
+        f1 {
+            applicationId = "com.android.tests.flavored.f1"
+            versionName = "1.0.0-f1"
+            ext.buildType = "F1PROD"
+        }
+        f2 {
+            applicationId = "com.android.tests.flavored.f2"
+            versionName = "1.0.0-f2"
+            ext.buildType = "F2PROD"
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = ".D"
+        }
+        staging {
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = ".S"
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    // This is not part of the test per se, it tests that adding dynamic properties on the
+    // flavor declaration can be retrieved later.
+    applicationVariants.all { variant ->
+        assert variant.productFlavors.size() == 1
+        def buildType = variant.productFlavors[0].buildType
+        if (!"F1PROD".equals(buildType)
+            && !"F2PROD".equals(buildType)) {
+            throw new RuntimeException("Invalid extension property value ${buildType}")
+        }
+    }
+}

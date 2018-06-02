@@ -1,0 +1,40 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    flavorDimensions  "pricing", "releaseType"
+
+    sourceSets {
+       beta.setRoot('movedSrc/beta')
+       free.setRoot('movedSrc/free')
+       debug.setRoot('movedSrc/debug')
+       freeBeta.setRoot('movedSrc/freeBeta')
+       freeBetaDebug.setRoot('movedSrc/freeBetaDebug')
+       freeNormal.setRoot('movedSrc/freeNormal')
+    }
+
+    productFlavors {
+
+        beta {
+            flavorDimension "releaseType"
+        }
+
+        normal {
+            flavorDimension "releaseType"
+        }
+
+        free {
+            flavorDimension "pricing"
+        }
+
+        paid {
+            flavorDimension "pricing"
+        }
+    }
+}

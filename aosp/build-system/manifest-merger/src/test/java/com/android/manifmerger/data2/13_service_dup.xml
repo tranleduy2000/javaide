@@ -1,0 +1,155 @@
+#
+# Test:
+# - Activities from libraries are merged in the main manifest.
+# - Acts on activity / activity-alias / service / receiver / provider.
+# - Elements are merged as-is with the first comment element preceding them.
+# - Whitespace preceding the merged elements is transfered over too.
+#
+# Note:
+# - New elements are always merged at the end of the application element.
+# - It's an error if an element with the same @name attribute is defined
+#   or merged more than once unless the definition is *exactly* the same,
+#   the "same" being defined by the exact XML elements, whitespace excluded.
+# - To no generate an error, a tools:replace instruction can be set to
+#   explicitely override lower priority nodes.
+#
+# The services definition although duplicated in their definition do not have
+# conflicting attributes or sub elements and therefore should be merged
+# successfully.
+#
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/app_icon"
+        android:backupAgent="com.example.app.BackupAgentClass"
+        android:restoreAnyVersion="true"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:name="com.example.TheApp"
+        tools:replace="label">
+
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService1" />
+
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService2" />
+
+    </application>
+
+</manifest>
+
+@lib1
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib1">
+
+    <application android:label="@string/lib_name1" >
+
+        <!-- Same as 1 in main -->
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService1" />
+
+        <!-- Differs from 2 in main -->
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService2" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </service>
+
+        <!-- A new one defined by lib1 -->
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService3" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </service>
+
+    </application>
+
+</manifest>
+
+@lib2
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib2">
+
+    <application android:label="@string/lib_name2" >
+
+        <!-- Conflicts with 3 from lib1, but with same values -->
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService3" />
+
+    </application>
+
+</manifest>
+
+
+@result
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/app_icon"
+        android:backupAgent="com.example.app.BackupAgentClass"
+        android:restoreAnyVersion="true"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:name="com.example.TheApp" >
+
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService1">
+        </service>
+
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService2" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </service>
+
+        <!-- A new one defined by lib1 -->
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService3" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </service>
+
+    </application>
+
+</manifest>
+
+@errors
+

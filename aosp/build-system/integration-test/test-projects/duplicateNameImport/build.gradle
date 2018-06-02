@@ -1,0 +1,26 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+allprojects {
+
+  version = '0.1'
+  group = 'a.b.c'
+
+  plugins.withId('android-library') {
+
+    android {
+      buildToolsVersion rootProject.ext.buildToolsVersion
+      compileSdkVersion 22
+
+      defaultConfig {
+        minSdkVersion 22
+        targetSdkVersion 22
+      }
+
+    }
+  }
+}
+
+
+
+

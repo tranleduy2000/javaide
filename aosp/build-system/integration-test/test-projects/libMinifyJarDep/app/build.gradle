@@ -1,0 +1,33 @@
+apply plugin: 'com.android.application'
+
+apply from: "../../commonLocalRepo.gradle"
+
+dependencies {
+    compile project(':lib')
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    testBuildType "proguard"
+
+    defaultConfig {
+        versionCode 12
+        versionName "2.0"
+        minSdkVersion 16
+        targetSdkVersion 16
+    }
+
+    buildTypes {
+        proguard.initWith(buildTypes.debug)
+        proguard {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'config.pro'
+        }
+    }
+
+    dexOptions {
+        incremental false
+    }
+}

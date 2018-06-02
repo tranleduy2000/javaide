@@ -1,0 +1,29 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+    compile 'com.example.android.multiproject:util:1.0'
+    releaseCompile 'com.google.guava:guava:15.0'
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion = rootProject.buildToolsVersion
+}
+
+group = 'com.example.android.multiproject'
+archivesBaseName = 'baseLib'
+version = '1.0'
+
+uploadArchives {
+  repositories {
+    mavenInstaller()
+  }
+}

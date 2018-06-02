@@ -1,0 +1,29 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+
+apply plugin: 'com.android.application'
+
+android {
+  compileSdkVersion 21
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+    generatePureSplits true
+
+  defaultConfig {
+    versionCode 12
+    minSdkVersion 21
+    targetSdkVersion 21
+  }
+
+  splits {
+    density {
+      enable true
+      exclude "ldpi", "tvdpi", "xxxhdpi"
+    }
+    language {
+        enable true
+        include "fr,fr-rBE", "fr-rCA", "en"
+    }
+  }
+}
+

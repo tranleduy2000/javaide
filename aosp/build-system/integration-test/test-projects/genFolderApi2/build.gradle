@@ -1,0 +1,27 @@
+// ATTENTION -- hash value of this file is checked in the corresponding
+// integration test. Please make sure any changes you make here are
+// backwards compatible.
+
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion = rootProject.buildToolsVersion
+}
+
+android.applicationVariants.all { variant ->
+    File sourceFolder = file("${buildDir}/customCode/${variant.dirName}")
+    variant.addJavaSourceFoldersToModel(sourceFolder)
+
+    def unitTestVariant = variant.unitTestVariant
+    File unitTestSourceFolder = file("${buildDir}/customCode/${unitTestVariant.dirName}-1")
+    unitTestVariant.addJavaSourceFoldersToModel(unitTestSourceFolder)
+}
+
+android.unitTestVariants.all { unitTestVariant ->
+    File unitTestSourceFolder = file("${buildDir}/customCode/${unitTestVariant.dirName}-2")
+    unitTestVariant.addJavaSourceFoldersToModel(unitTestSourceFolder)
+}

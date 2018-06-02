@@ -1,0 +1,5 @@
+include 'app'
+include 'lib1:libs'
+include 'lib2:libs'
+include 'lib2b:libs'
+include 'libapp:libs'

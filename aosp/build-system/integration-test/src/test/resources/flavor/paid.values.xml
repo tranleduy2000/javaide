@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ga_trackingId">UA-1923912413</string>
+    <string name="gcm_defaultSenderId">1234567890</string>
+</resources>

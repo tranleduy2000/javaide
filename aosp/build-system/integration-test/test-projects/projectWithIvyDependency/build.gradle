@@ -1,0 +1,24 @@
+apply from: "../commonHeader.gradle"
+buildscript { apply from: "../commonBuildScript.gradle", to: buildscript }
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+}
+
+repositories {
+    ivy {
+        url "ivy-repo/"
+        layout "pattern", {
+            ivy '[organisation]/[module]/[revision]/[module]-[revision].ivy'
+            artifact '[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
+            m2compatible = true
+        }
+    }
+}
+
+dependencies {
+    compile 'com.foo:sample:1.0'
+}

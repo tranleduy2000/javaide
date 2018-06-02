@@ -1,0 +1,25 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    productFlavors {
+        flavor1 {
+            applicationId = "com.android.tests.flavorlib.app.flavor1"
+        }
+        flavor2 {
+            applicationId = "com.android.tests.flavorlib.app.flavor2"
+        }
+    }
+
+    testOptions {
+        resultsDir = "$project.buildDir/foo/results"
+        reportDir = "$project.buildDir/foo/report"
+    }
+}
+
+dependencies {
+    flavor1Compile project(':lib1')
+    flavor2Compile project(':lib2')
+}

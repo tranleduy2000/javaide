@@ -1,0 +1,22 @@
+apply plugin: 'com.android.library'
+
+android {
+  compileSdkVersion 21
+  buildToolsVersion = rootProject.ext.buildToolsVersion
+
+  defaultConfig {
+    useJack rootProject.ext.useJack
+    minSdkVersion 4
+  }
+
+  buildTypes {
+    debug {
+      // needed for the test app.
+      multiDexEnabled = true
+    }
+  }
+}
+
+dependencies {
+  compile fileTree(dir: 'libs', include: '*.jar')
+}

@@ -1,0 +1,26 @@
+<project name="layoutlib tests" default="test" basedir=".">
+    <property environment="env"/>
+    <description>
+        Run Project tests from Jar
+    </description>
+    <target name="test" description="All the tests.">
+        <junit fork="true">
+            <env key="com.android.test.folder" path="${basedir}/tests"/>
+            <env key="com.android.test.sdk" path="${env.sdk_dir}"/>
+            <env key="com.android.test.ndk" path="${env.ndk_dir}"/>
+            <classpath>
+                <fileset dir="." >
+                    <include name="lib/*.jar" />
+                    <exclude name="project-test.jar" />
+                </fileset>
+            </classpath>
+            <batchtest haltonfailure="false" skipNonTests="true">
+                <zipfileset src="lib/project-test.jar">
+                    <include name="**/*.class" />
+                </zipfileset>
+                <!--<zipfileset src="layoutlib-create-tests.jar" includes="**/*Test.class" />-->
+            </batchtest>
+            <formatter type="xml" usefile="true" />
+        </junit>
+    </target>
+</project>

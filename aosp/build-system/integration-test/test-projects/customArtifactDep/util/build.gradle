@@ -1,0 +1,23 @@
+apply plugin: 'java'
+
+configurations {
+    custom
+}
+
+sourceSets {
+    custom {
+        java {
+            srcDirs = ['src/custom/java']
+        }
+    }
+}
+
+task customJar(type: Jar) {
+    from sourceSets.custom.output
+    classifier "custom"
+}
+
+// declare the new artifact
+artifacts {
+    custom customJar
+}

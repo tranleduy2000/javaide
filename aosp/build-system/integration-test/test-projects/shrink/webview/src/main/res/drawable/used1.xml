@@ -1,0 +1,3 @@
+<!-- Referenced from @drawable/used10 -->
+<color xmlns:android="http://schemas.android.com/apk/res/android" android:color="#ff0000" />
+<!--Comment reference, should not be considered a real reference:  @drawable/unused9 -->

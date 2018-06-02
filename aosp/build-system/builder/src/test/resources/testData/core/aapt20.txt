@@ -1,0 +1,17 @@
+package: name='com.android.tests.basic.debug' versionCode='12' versionName='2.0'
+sdkVersion:'16'
+targetSdkVersion:'16'
+uses-permission:'com.blah'
+application-label:'_Test-Basic'
+application-icon-160:'res/drawable/icon.png'
+application-icon-240:'res/drawable/icon.png'
+application: label='_Test-Basic' icon='res/drawable/icon.png'
+application-debuggable
+launchable-activity: name='com.android.tests.basic.Main'  label='_Test-Basic' icon=''
+uses-feature:'android.hardware.touchscreen'
+uses-implied-feature:'android.hardware.touchscreen','assumed you require a touch screen unless explicitly made optional'
+main
+supports-screens: 'small' 'normal' 'large' 'xlarge'
+supports-any-density: 'true'
+locales: '--_--'
+densities: '160' '240'

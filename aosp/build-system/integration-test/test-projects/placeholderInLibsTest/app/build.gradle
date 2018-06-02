@@ -1,0 +1,35 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.0"
+
+    defaultConfig {
+        applicationId "com.example.manifest_merger_example"
+        manifestPlaceholders = [ localApplicationId:"com.example.manifest_merger_example"]
+        minSdkVersion 15
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+    }
+    productFlavors {
+        flavor {
+            applicationId "com.example.manifest_merger_example.flavor"
+            manifestPlaceholders = [ localApplicationId:"com.example.manifest_merger_example.flavor"]
+            minSdkVersion 15
+            targetSdkVersion 21
+            versionCode 1
+            versionName "1.0"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+dependencies {
+    compile project(':examplelibrary')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

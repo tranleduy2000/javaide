@@ -1,0 +1,160 @@
+#
+# Test:
+# - Activities from libraries are merged in the main manifest.
+# - Acts on activity / activity-alias / service / receiver / provider.
+# - Elements are merged as-is with the first comment element preceding them.
+# - Whitespace preceding the merged elements is transfered over too.
+#
+# This tests passes since all conflicting attributes are explicitely replaced.
+#
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/app_icon"
+        android:backupAgent="com.example.app.BackupAgentClass"
+        android:restoreAnyVersion="true"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:name="com.example.TheApp"
+        tools:replace="label">
+
+        <receiver
+            android:name="com.example.AppReceiver1"
+            android:icon="@drawable/app_icon">
+            <intent-filter>
+                <action android:name="com.example.action.ACTION_CUSTOM" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.example.AppReceiver2"
+            android:icon="@drawable/app_icon">
+            <intent-filter>
+                <action android:name="com.example.action.ACTION_CUSTOM" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>
+
+@lib1
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib1">
+
+    <application android:label="@string/lib_name1" >
+
+        <!-- Same as 1 in main -->
+        <receiver
+            android:name="com.example.AppReceiver1"
+            android:icon="@drawable/app_icon">
+            <intent-filter>
+                <action android:name="com.example.action.ACTION_CUSTOM" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Differs from 2 in main but no conflicting attribute -->
+        <receiver
+            android:name="com.example.AppReceiver2" />
+
+        <!-- A new one defined by lib1 -->
+        <receiver
+            android:name="com.example.AppReceiver3"
+            android:icon="@drawable/app_icon">
+            <intent-filter>
+                <action android:name="com.example.action.ACTION_CUSTOM1" />
+                <action android:name="com.example.action.ACTION_CUSTOM2" />
+                <action android:name="com.example.action.ACTION_CUSTOM3" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>
+
+@lib2
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib2">
+
+    <application android:label="@string/lib_name2" >
+
+        <!-- also defined in lib1, but no conflicting actions.-->
+        <receiver
+            android:name="com.example.AppReceiver3"
+            android:icon="@drawable/app_icon">
+            <intent-filter>
+                <action android:name="com.example.action.ACTION_CUSTOM" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
+
+
+@result
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/app_icon"
+        android:backupAgent="com.example.app.BackupAgentClass"
+        android:restoreAnyVersion="true"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:name="com.example.TheApp" >
+
+        <receiver
+            android:name="com.example.AppReceiver1"
+            android:icon="@drawable/app_icon">
+            <intent-filter>
+                <action android:name="com.example.action.ACTION_CUSTOM" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.example.AppReceiver2"
+            android:icon="@drawable/app_icon">
+            <intent-filter>
+                <action android:name="com.example.action.ACTION_CUSTOM" />
+            </intent-filter>
+        </receiver>
+
+        <!-- A new one defined by lib1 -->
+        <receiver
+            android:name="com.example.AppReceiver3"
+            android:icon="@drawable/app_icon">
+            <intent-filter>
+                <action android:name="com.example.action.ACTION_CUSTOM"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.example.action.ACTION_CUSTOM1" />
+                <action android:name="com.example.action.ACTION_CUSTOM2" />
+                <action android:name="com.example.action.ACTION_CUSTOM3" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>
+
+@errors

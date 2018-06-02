@@ -1,0 +1,69 @@
+<book id="dsl">
+    <bookinfo>
+        <title>Android Plugin DSL Reference</title>
+    </bookinfo>
+
+    <section>
+        <title>Introduction</title>
+        <para>This is the DSL reference for Android Gradle Plugin.</para>
+    </section>
+
+    <!--
+      -
+      - 1. Adding new types:
+      - There are 2 ways to include a new types to this guide:
+      -     * Types referenced by a property are automatically included, if there is a corresponding ${typename}.xml in the DSL source directory.
+      -     * Types listed in one of the following tables are included. There must be a corresponding ${typename}.xml in the DSL source directory.
+      -
+      - 2. Adding new sections:
+      - The section title should end with 'types' (see AssembleDslDocTask.mergeContent)
+      -->
+
+    <section>
+        <title>Android configuration structure</title>
+        <table>
+            <title>Android configuration blocks</title>
+            <tr><td>aaptOptions</td></tr>
+            <tr><td>buildTypes</td></tr>
+            <tr><td>compileOptions</td></tr>
+            <tr><td>defaultConfig</td></tr>
+            <tr><td>dexOptions</td></tr>
+            <tr><td>jacoco</td></tr>
+            <tr><td>lintOptions</td></tr>
+            <tr><td>packagingOptions</td></tr>
+            <tr><td>productFlavors</td></tr>
+            <tr><td>signingConfigs</td></tr>
+            <tr><td>sourceSets</td></tr>
+            <tr><td>splits</td></tr>
+            <tr><td>testOptions</td></tr>
+        </table>
+    </section>
+
+    <section>
+        <title>DSL types</title>
+        <para>Listed below are some of the central types which are used in the Android plugin:</para>
+        <table>
+            <title>DSL types</title>
+            <tr><td>com.android.build.gradle.AppExtension</td></tr>
+            <tr><td>com.android.build.gradle.BaseExtension</td></tr>
+            <tr><td>com.android.build.gradle.LibraryExtension</td></tr>
+            <tr><td>com.android.build.gradle.TestExtension</td></tr>
+            <tr><td>com.android.build.gradle.api.AndroidSourceDirectorySet</td></tr>
+            <tr><td>com.android.build.gradle.api.AndroidSourceFile</td></tr>
+            <tr><td>com.android.build.gradle.api.AndroidSourceSet</td></tr>
+            <tr><td>com.android.build.gradle.internal.CompileOptions</td></tr>
+            <tr><td>com.android.build.gradle.internal.api.VariantFilter</td></tr>
+            <tr><td>com.android.build.gradle.internal.coverage.JacocoExtension</td></tr>
+            <tr><td>com.android.build.gradle.internal.dsl.AaptOptions</td></tr>
+            <tr><td>com.android.build.gradle.internal.dsl.BuildType</td></tr>
+            <tr><td>com.android.build.gradle.internal.dsl.DexOptions</td></tr>
+            <tr><td>com.android.build.gradle.internal.dsl.LintOptions</td></tr>
+            <tr><td>com.android.build.gradle.internal.dsl.PackagingOptions</td></tr>
+            <tr><td>com.android.build.gradle.internal.dsl.ProductFlavor</td></tr>
+            <tr><td>com.android.build.gradle.internal.dsl.SigningConfig</td></tr>
+            <tr><td>com.android.build.gradle.internal.dsl.Splits</td></tr>
+            <tr><td>com.android.build.gradle.internal.dsl.TestOptions.UnitTestOptions</td></tr>
+            <tr><td>com.android.build.gradle.internal.dsl.TestOptions</td></tr>
+        </table>
+    </section>
+</book>

@@ -1,5 +1,0 @@
-include 'app'
-include 'jar'
-include 'library'
-include 'library2'
-include 'localJarAsModule'

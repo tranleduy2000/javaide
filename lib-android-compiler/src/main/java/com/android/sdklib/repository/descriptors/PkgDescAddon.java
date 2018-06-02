@@ -20,13 +20,13 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.sdklib.AndroidTargetHash;
 import com.android.sdklib.AndroidVersion;
-import com.android.sdklib.internal.repository.packages.License;
+import com.android.sdklib.repository.License;
 import com.android.sdklib.repository.MajorRevision;
 
 /**
  * Implementation detail of {@link PkgDesc} for add-ons.
  * Do not use this class directly.
- * To create an instance use {@link PkgDesc.Builder#newAddon} instead.
+ * To create an instance use {@link Builder#newAddon} instead.
  */
 final class PkgDescAddon extends PkgDesc implements IPkgDescAddon {
 

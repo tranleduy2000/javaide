@@ -25,6 +25,12 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
+ */
+@Deprecated
 public class ArchFilter {
 
     private static final String PROP_HOST_OS         = "Archive.HostOs";      //$NON-NLS-1$
@@ -209,8 +215,6 @@ public class ArchFilter {
         } else if (os.startsWith("Windows")) {              //$NON-NLS-1$
             hostOS = HostOs.WINDOWS;
         } else if (os.startsWith("Linux")) {                //$NON-NLS-1$
-            hostOS = HostOs.LINUX;
-        } else if (os.startsWith("FreeBSD")) {              //$NON-NLS-1$
             hostOS = HostOs.LINUX;
         }
 

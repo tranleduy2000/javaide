@@ -1,0 +1,315 @@
+#
+# Test merge order:
+# - When activity / activity-alias / service / receiver / provider are merged,
+#   we do a comparison to check whether the elements are already present in the
+#   main manifest. The order of the elements must NOT matter in the comparison,
+#   nor does the whitespace between them.
+# - What this checks is that the order of the elements or attributes within
+#   the elements should not matter.
+#
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1">
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/app_icon"
+        android:backupAgent="com.example.app.BackupAgentClass"
+        android:restoreAnyVersion="true"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:name="com.example.TheApp" >
+
+        <activity
+            android:name="com.example.Activity1"
+            android:label="@string/activity_name"
+            android:icon="@drawable/activity_icon"
+            android:theme="@style/Some.Theme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="metaName"
+                android:value="metaValue"
+                android:resource="@color/someColor" />
+        </activity>
+
+        <!-- Receiver -->
+        <receiver
+            android:name="com.example.AppReceiver"
+            android:icon="@drawable/app_icon">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.example.intent.action.DO_THIS" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.example.intent.action.DO_THAT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE"/>
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.example.LibActivity"
+            android:label="@string/lib_activity_name"
+            android:icon="@drawable/lib_activity_icon"
+            android:theme="@style/Lib.Theme">
+
+            <!-- When comparing duplicate elements, whitespace and comments are ignored. -->
+
+            <intent-filter>
+                <action android:name="com.example.IN_APP_NOTIFY" />
+                <action android:name="com.example.RESPONSE_CODE" />
+                <action android:name="com.example.PURCHASE_STATE_CHANGED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="metaName2"
+                android:value="metaValue2"
+                android:resource="@color/someColor2"
+            />
+        </activity>
+    </application>
+</manifest>
+
+
+@lib1
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib1">
+
+    <!-- Redefine the same elements as in the main manifest except it changes
+         the attribute order and the the inner elements order. -->
+    <application
+        android:name="com.example.TheApp"
+        android:icon="@drawable/app_icon"
+        android:label="@string/app_name"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:restoreAnyVersion="true"
+        android:backupAgent="com.example.app.BackupAgentClass"
+        >
+
+        <!-- Receiver -->
+        <receiver
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppReceiver"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.example.intent.action.DO_THIS" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.example.intent.action.DO_THAT" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:theme="@style/Lib.Theme"
+            android:name="com.example.LibActivity"
+            android:icon="@drawable/lib_activity_icon"
+            android:label="@string/lib_activity_name"
+            >
+            <!-- When comparing duplicate elements, whitespace and comments are ignored. -->
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+            <meta-data
+                android:resource="@color/someColor2"
+                android:value="metaValue2"
+                android:name="metaName2">
+            </meta-data>
+            <intent-filter>
+                <action android:name="com.example.IN_APP_NOTIFY" />
+                <action android:name="com.example.PURCHASE_STATE_CHANGED" />
+                <action android:name="com.example.RESPONSE_CODE" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:icon="@drawable/activity_icon"
+            android:label="@string/activity_name"
+            android:name="com.example.Activity1"
+            android:theme="@style/Some.Theme">
+            <meta-data
+                android:value="metaValue"
+                android:name="metaName"
+                android:resource="@color/someColor" />
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+
+
+@lib2
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib2">
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/app_icon"
+        android:backupAgent="com.example.app.BackupAgentClass"
+        android:restoreAnyVersion="true"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:name="com.example.TheApp" >
+
+        <!-- The whitespace and alignment is also drastically different here and has
+             no impact whatsoever on the content's comparison.
+             Some empty elements have been 'uncollapsed' with their closing element separated. -->
+        <activity android:label="@string/activity_name" android:icon="@drawable/activity_icon" android:theme="@style/Some.Theme" android:name="com.example.Activity1">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+            <meta-data android:value="metaValue" android:resource="@color/someColor" android:name="metaName" />
+        </activity>
+        <activity android:label="@string/lib_activity_name" android:icon="@drawable/lib_activity_icon" android:name="com.example.LibActivity" android:theme="@style/Lib.Theme"><intent-filter>
+            <action android:name="com.example.IN_APP_NOTIFY" /> <action android:name="com.example.RESPONSE_CODE" /> <action android:name="com.example.PURCHASE_STATE_CHANGED" />
+            </intent-filter>
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data android:name="metaName2" android:value="metaValue2" android:resource="@color/someColor2"
+            />
+        </activity>
+
+        <!-- Receiver -->
+        <receiver android:icon="@drawable/app_icon" android:name="com.example.AppReceiver" >
+            <intent-filter><action android:name="android.intent.action.TIME_SET"></action>
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" /></intent-filter>
+            <intent-filter><action android:name="android.intent.action.PHONE_STATE" >
+                </action></intent-filter>
+            <intent-filter><action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter><action android:name="com.example.intent.action.DO_THIS" /></intent-filter>
+            <intent-filter><action android:name="com.example.intent.action.DO_THAT" /></intent-filter>
+        </receiver>
+    </application>
+</manifest>
+
+
+
+@result
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1">
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/app_icon"
+        android:backupAgent="com.example.app.BackupAgentClass"
+        android:restoreAnyVersion="true"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:name="com.example.TheApp" >
+
+        <activity
+            android:name="com.example.Activity1"
+            android:label="@string/activity_name"
+            android:icon="@drawable/activity_icon"
+            android:theme="@style/Some.Theme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="metaName"
+                android:value="metaValue"
+                android:resource="@color/someColor" />
+        </activity>
+
+        <!-- Receiver -->
+        <receiver
+            android:name="com.example.AppReceiver"
+            android:icon="@drawable/app_icon">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.example.intent.action.DO_THIS" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.example.intent.action.DO_THAT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE"/>
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.example.LibActivity"
+            android:label="@string/lib_activity_name"
+            android:icon="@drawable/lib_activity_icon"
+            android:theme="@style/Lib.Theme">
+
+            <!-- When comparing duplicate elements, whitespace and comments are ignored. -->
+
+            <intent-filter>
+                <action android:name="com.example.IN_APP_NOTIFY" />
+                <action android:name="com.example.RESPONSE_CODE" />
+                <action android:name="com.example.PURCHASE_STATE_CHANGED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="metaName2"
+                android:value="metaValue2"
+                android:resource="@color/someColor2"
+            />
+        </activity>
+    </application>
+</manifest>
+
+@errors
+
+WARNING:Element intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER at ManifestMerger2Test0_main.xml:23:13 duplicated with element declared at ManifestMerger2Test0_main.xml:19:13
+WARNING:Element intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER at ManifestMerger2Test1_lib1.xml:76:13 duplicated with element declared at ManifestMerger2Test1_lib1.xml:72:13
+WARNING:Element intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER at ManifestMerger2Test2_lib2.xml:19:13 duplicated with element declared at ManifestMerger2Test2_lib2.xml:18:13

@@ -1,0 +1,18 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+evaluationDependsOn(':base:dvlib')
+
+group = 'com.android.tools'
+archivesBaseName = 'sdklib-test'
+version = rootProject.ext.baseVersion
+
+dependencies {
+    compile project(':base:sdklib')
+    compile project(':base:dvlib').sourceSets.test.output
+    compile 'junit:junit:4.12'
+}
+
+sourceSets {
+    main.resources.srcDirs = [ 'src/test/java' ]
+}

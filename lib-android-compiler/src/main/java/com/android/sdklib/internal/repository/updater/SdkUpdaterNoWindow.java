@@ -40,7 +40,12 @@ import java.util.Properties;
 
 /**
  * Performs an update using only a non-interactive console output with no GUI.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class SdkUpdaterNoWindow {
 
     /** The {@link UpdaterData} to use. */
@@ -114,13 +119,37 @@ public class SdkUpdaterNoWindow {
      * @param dryMode True to check what would be updated/installed but do not actually
      *   download or install anything.
      * @param acceptLicense SDK licenses to automatically accept.
+     * @deprecated Use {@link #updateAll(ArrayList, boolean, boolean, String, boolean)}
+     *   instead
      */
+    @Deprecated
     public void updateAll(
             ArrayList<String> pkgFilter,
             boolean includeAll,
             boolean dryMode,
             String acceptLicense) {
-        mUpdaterData.updateOrInstallAll_NoGUI(pkgFilter, includeAll, dryMode, acceptLicense);
+        updateAll(pkgFilter, includeAll, dryMode, acceptLicense, false);
+    }
+
+    /**
+     * Performs the actual update.
+     *
+     * @param pkgFilter A list of {@link SdkRepoConstants#NODES} to limit the type of packages
+     *   we can update. A null or empty list means to update everything possible.
+     * @param includeAll True to list and install all packages, including obsolete ones.
+     * @param dryMode True to check what would be updated/installed but do not actually
+     *   download or install anything.
+     * @param acceptLicense SDK licenses to automatically accept.
+     * @param includeDependencies If true, also include any required dependencies
+     */
+    public void updateAll(
+            ArrayList<String> pkgFilter,
+            boolean includeAll,
+            boolean dryMode,
+            String acceptLicense,
+            boolean includeDependencies) {
+        mUpdaterData.updateOrInstallAll_NoGUI(pkgFilter, includeAll, dryMode, acceptLicense,
+                includeDependencies);
     }
 
     /**
@@ -197,11 +226,11 @@ public class SdkUpdaterNoWindow {
 
         Properties props = System.getProperties();
 
-        if (proxyHost != null && proxyHost.length() > 0) {
+        if (proxyHost != null && !proxyHost.isEmpty()) {
             props.setProperty(JAVA_PROP_HTTP_PROXY_HOST,  proxyHost);
             props.setProperty(JAVA_PROP_HTTPS_PROXY_HOST, proxyHost);
         }
-        if (proxyPort != null && proxyPort.length() > 0) {
+        if (proxyPort != null && !proxyPort.isEmpty()) {
             props.setProperty(JAVA_PROP_HTTP_PROXY_PORT,  proxyPort);
             props.setProperty(JAVA_PROP_HTTPS_PROXY_PORT, proxyPort);
         }
@@ -424,7 +453,7 @@ public class SdkUpdaterNoWindow {
                     byte[] readBuffer = new byte[2048];
                     String reply = readLine(readBuffer).trim();
                     mSdkLog.info("\n");               //$NON-NLS-1$
-                    if (reply.length() > 0 && reply.length() <= 3) {
+                    if (!reply.isEmpty() && reply.length() <= 3) {
                         char c = reply.charAt(0);
                         if (c == 'y' || c == 'Y') {
                             return true;
@@ -549,7 +578,7 @@ public class SdkUpdaterNoWindow {
     }
 
     private interface IConsoleSubTaskMonitor extends ITaskMonitor {
-        public void subIncProgress(double realDelta);
+        void subIncProgress(double realDelta);
     }
 
     private static class ConsoleSubTaskMonitor implements IConsoleSubTaskMonitor {

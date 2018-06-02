@@ -19,10 +19,11 @@ package com.android.sdklib.repository.descriptors;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.sdklib.AndroidVersion;
-import com.android.sdklib.internal.repository.IListDescription;
-import com.android.sdklib.internal.repository.packages.License;
+import com.android.sdklib.repository.IListDescription;
+import com.android.sdklib.repository.License;
 import com.android.sdklib.repository.FullRevision;
 import com.android.sdklib.repository.MajorRevision;
+import com.android.sdklib.repository.PreciseRevision;
 
 import java.io.File;
 
@@ -45,46 +46,55 @@ public interface IPkgDesc extends Comparable<IPkgDesc>, IPkgCapabilities, IListD
      * @return Returns one of the {@link PkgType} constants.
      */
     @NonNull
-    public abstract PkgType getType();
+    PkgType getType();
 
     /**
      * Returns the list-display meta data of this package.
      * @return The list-display data, if available, or null.
      */
     @Nullable
-    public String getListDisplay();
+    String getListDisplay();
 
     @Nullable
-    public String getDescriptionShort();
+    String getDescriptionShort();
 
     @Nullable
-    public String getDescriptionUrl();
+    String getDescriptionUrl();
 
     @Nullable
-    public License getLicense();
+    License getLicense();
 
-    public boolean isObsolete();
+    boolean isObsolete();
 
     /**
      * Returns the package's {@link FullRevision} or null.
      * @return A non-null value if {@link #hasFullRevision()} is true; otherwise a null value.
      */
     @Nullable
-    public FullRevision getFullRevision();
+    FullRevision getFullRevision();
 
     /**
      * Returns the package's {@link MajorRevision} or null.
      * @return A non-null value if {@link #hasMajorRevision()} is true; otherwise a null value.
      */
     @Nullable
-    public MajorRevision getMajorRevision();
+    MajorRevision getMajorRevision();
 
     /**
+     * Returns the package's revision or null. This will come from the {@link FullRevision} or
+     * {@link MajorRevision}, with the precision set as appropriate.
+     * @return A representation of {@link #getMajorRevision()} or {@link #getFullRevision()},
+     * depending on which one exists.
+     */
+    @NonNull
+    PreciseRevision getPreciseRevision();
+
+  /**
      * Returns the package's {@link AndroidVersion} or null.
      * @return A non-null value if {@link #hasAndroidVersion()} is true; otherwise a null value.
      */
     @Nullable
-    public AndroidVersion getAndroidVersion();
+    AndroidVersion getAndroidVersion();
 
     /**
      * Returns the package's path string or null.
@@ -97,7 +107,7 @@ public interface IPkgDesc extends Comparable<IPkgDesc>, IPkgCapabilities, IListD
      * @return A non-null value if {@link #hasPath()} is true; otherwise a null value.
      */
     @Nullable
-    public String getPath();
+    String getPath();
 
     /**
      * Returns the package's tag id-display tuple or null.
@@ -105,44 +115,63 @@ public interface IPkgDesc extends Comparable<IPkgDesc>, IPkgCapabilities, IListD
      * @return A non-null tag if {@link #hasTag()} is true; otherwise a null value.
      */
     @Nullable
-    public IdDisplay getTag();
+    IdDisplay getTag();
 
     /**
      * Returns the package's vendor-id string or null.
      * @return A non-null value if {@link #hasVendor()} is true; otherwise a null value.
      */
     @Nullable
-    public IdDisplay getVendor();
+    IdDisplay getVendor();
 
     /**
      * Returns the package's {@code min-tools-rev} or null.
      * @return A non-null value if {@link #hasMinToolsRev()} is true; otherwise a null value.
      */
     @Nullable
-    public FullRevision getMinToolsRev();
+    FullRevision getMinToolsRev();
 
     /**
      * Returns the package's {@code min-platform-tools-rev} or null.
      * @return A non-null value if {@link #hasMinPlatformToolsRev()} is true; otherwise null.
      */
     @Nullable
-    public FullRevision getMinPlatformToolsRev();
+    FullRevision getMinPlatformToolsRev();
 
     /**
      * Indicates whether <em>this</em> package descriptor is an update for the given
-     * existing descriptor.
+     * existing descriptor. Preview versions are never considered updates for non-
+     * previews, and vice versa.
      *
      * @param existingDesc A non-null existing descriptor.
      * @return True if this package is an update for the given one.
      */
-    public boolean isUpdateFor(@NonNull IPkgDesc existingDesc);
+    boolean isUpdateFor(@NonNull IPkgDesc existingDesc);
+
+  /**
+   * Indicates whether <em>this</em> package descriptor is an update for the given
+   * existing descriptor, using the given comparison method.
+   *
+   * @param existingDesc A non-null existing descriptor.
+   * @param previewComparison The {@link FullRevision.PreviewComparison} method to use
+   *                          when comparing the packages.
+   * @return True if this package is an update for the given one.
+   */
+    boolean isUpdateFor(@NonNull IPkgDesc existingDesc,
+                        @NonNull FullRevision.PreviewComparison previewComparison);
 
     /**
-     * Returns a stable string id that can be used to reference this package.
-     * @return A stable string id that can be used to reference this package.
+     * Returns a stable string id that can be used to reference this package, including
+     * a suffix indicating that this package is a preview if it is.
      */
     @NonNull
-    public String getInstallId();
+    String getInstallId();
+
+    /**
+     * Returns a stable string id that can be used to reference this package, which
+     * excludes the preview suffix.
+     */
+    String getBaseInstallId();
 
     /**
      * Returns the canonical location where such a package would be installed.
@@ -150,6 +179,11 @@ public interface IPkgDesc extends Comparable<IPkgDesc>, IPkgCapabilities, IListD
      * @return the canonical location where such a package would be installed.
      */
     @NonNull
-    public File getCanonicalInstallFolder(@NonNull File sdkLocation);
+    File getCanonicalInstallFolder(@NonNull File sdkLocation);
+
+    /**
+     * @return True if the revision of this package is a preview.
+     */
+    boolean isPreview();
 }
 

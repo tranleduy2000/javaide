@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'clone-artifacts'
+apply plugin: 'idea'
+
+def toolingApiVersion = gradle.gradleVersion
+dependencies {
+    compile project(':base:builder-model')
+    compile project(':base:common')
+
+    testCompile 'junit:junit:4.12'
+
+    // Need an SLF4J implementation at runtime
+    testRuntime 'org.slf4j:slf4j-simple:1.7.2'
+
+    compile "org.gradle:gradle-tooling-api:${toolingApiVersion}"
+
+}
+
+test.dependsOn ':publishLocal'

@@ -1,0 +1,68 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'sdk-java-lib'
+
+evaluationDependsOn(':base:dvlib')
+
+group = 'com.android.tools'
+archivesBaseName = 'sdklib'
+version = rootProject.ext.baseVersion
+
+dependencies {
+    compile project(':base:layoutlib-api')
+    compile project(':base:dvlib')
+
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.apache.commons:commons-compress:1.8.1'
+    compile 'org.apache.httpcomponents:httpclient:4.1.1'
+    compile 'org.apache.httpcomponents:httpmime:4.1'
+
+    testCompile project(':base:dvlib').sourceSets.test.output
+    testCompile 'junit:junit:4.12'
+}
+
+test {
+  testLogging {
+    showStandardStreams = true
+    showStackTraces = true
+    exceptionFormat = "full"
+  }
+}
+
+sourceSets {
+    main.resources.srcDir 'src/main/java'
+    test.resources.srcDir 'src/test/java'
+}
+
+task copyXsd(type: Copy) {
+    from sourceSets.main.resources.srcDirs
+    include '**/*.xsd'
+
+    into new File(rootProject.buildDir, "repository-xsd")
+    eachFile { details ->
+        details.path = details.name
+    }
+}
+
+// delete the destination folder first
+copyXsd.doFirst {
+    File destFolder = file(rootProject.buildDir + "/repository-xsd")
+    destFolder.deleteDir()
+    destFolder.mkdirs()
+}
+
+// clean up after the copy task which creates empty folders.
+copyXsd.doLast {
+    File destFolder = file(rootProject.buildDir + "/repository-xsd/com")
+    destFolder.deleteDir()
+}
+
+//packageJavaLib.dependsOn copyXsd
+
+project.ext.pomName = 'Android Tools sdklib'
+project.ext.pomDesc = 'A library to parse and download the Android SDK.'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"
+

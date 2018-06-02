@@ -1,0 +1,131 @@
+#
+# Tests merging application/meta-data.
+# Several APIs provide app-specific keys (e.g. Android Backup API, Google Maps API.)
+# and the key needs to be placed in the <application> element as meta-data.
+#
+# This tests the default behavior which is to conflict when a library tries to
+# add a meta-data which is has the same name but not the same value as one already
+# defined in the application.
+#
+# The application can also override a meta-data using the tools:merge="override" attribute.
+# This lets the main application define a meta-data and prevent any library ones from being
+# merged and potentially conflict.
+#
+
+@fails
+
+@main
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="11"/>
+
+    <application
+            android:name="TheApp"
+            android:backupAgent=".MyBackupAgent" >
+        <activity android:name=".MainActivity" />
+        <receiver android:name="AppReceiver" />
+        <activity android:name="com.example.lib2.LibActivity" />
+
+        <!-- This key is defined in the main application. -->
+        <meta-data
+            android:name="name.for.yet.another.api.key"
+            android:value="your_yet_another_api_key"/>
+
+        <!-- The library has a maps API key that would conflict but it will
+             actually be ignored since the merge-override flag is set. -->
+        <meta-data
+            tools:merge="override"
+            android:name="name.for.maps.api.key"
+            android:value="the_apps_maps_api_key"/>
+
+        <!-- The library has a backup API key will conflict since it has a
+              different value and the merge operation isn't overridden. -->
+        <meta-data
+            android:name="name.for.backup.api.key"
+            android:value="the_apps_backup_api_key" />
+
+        <!-- Merged elements will be appended here at the end. -->
+    </application>
+
+</manifest>
+
+
+@lib1
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1">
+
+    <application android:name="TheApp" >
+        <activity android:name=".Library1" />
+
+        <!-- The library maps API key doesn't get merged in the main application. -->
+        <meta-data
+            android:name="name.for.maps.api.key"
+            android:value="the_library1_maps_api_key"/>
+
+        <!-- The library backup key doesn't get merged in the main application. -->
+        <meta-data
+            android:name="name.for.backup.api.key"
+            android:value="the_library1_backup_api_key" />
+    </application>
+
+</manifest>
+
+
+@result
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="11"/>
+
+    <application
+            android:name="com.example.app1.TheApp"
+            android:backupAgent="com.example.app1.MyBackupAgent" >
+        <activity android:name="com.example.app1.MainActivity" />
+        <receiver android:name="com.example.app1.AppReceiver" />
+        <activity android:name="com.example.lib2.LibActivity" />
+
+        <!-- This key is defined in the main application. -->
+        <meta-data
+            android:name="name.for.yet.another.api.key"
+            android:value="your_yet_another_api_key"/>
+
+        <!-- The library has a maps API key that would conflict but it will
+             actually be ignored since the merge-override flag is set. -->
+        <meta-data
+            android:name="name.for.maps.api.key"
+            android:value="the_apps_maps_api_key"/>
+
+        <!-- The library has a backup API key will conflict since it has a
+              different value and the merge operation isn't overridden. -->
+        <meta-data
+            android:name="name.for.backup.api.key"
+            android:value="the_apps_backup_api_key" />
+
+        <!-- Merged elements will be appended here at the end. -->
+        <activity android:name="com.example.app1.Library1" />
+    </application>
+
+</manifest>
+
+
+@errors
+
+E [ManifestMergerTest0_main.xml:17, ManifestMergerTest1_lib1.xml:10] Trying to merge incompatible /manifest/application/meta-data[@name=name.for.backup.api.key] element:
+  <meta-data
+      @android:name="name.for.backup.api.key"
+--    @android:value="the_apps_backup_api_key">
+  <meta-data
+      @android:name="name.for.backup.api.key"
+++    @android:value="the_library1_backup_api_key">

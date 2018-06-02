@@ -19,7 +19,6 @@ package com.android.ide.common.blame;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.annotations.concurrency.Immutable;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
@@ -188,7 +187,7 @@ public final class Message {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("kind", mKind).add("text", mText).add("sources",
+        return Objects.toStringHelper(this).add("kind", mKind).add("text", mText).add("sources",
                 mSourceFilePositions).toString();
     }
 }

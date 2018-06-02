@@ -1,0 +1,48 @@
+apply plugin: 'groovy'
+apply plugin: 'clone-artifacts'
+apply plugin: 'idea'
+apply plugin: 'jacoco'
+
+dependencies {
+    compile gradleApi()
+    compile project(':base:gradle')
+
+    testCompile 'junit:junit:4.12'
+}
+
+ext {
+
+}
+
+group = 'com.google.gms'
+archivesBaseName = 'google-services'
+version = rootProject.ext.buildVersion
+
+project.ext.pomName = 'Gradle Plug-in for Google Services'
+project.ext.pomDesc = 'Gradle plug-in for Google Services'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+
+groovydoc {
+    exclude     "**/internal/**"
+    includePrivate false
+
+    docTitle "Gradle Plugin for Google Services"
+    header ""
+    footer "Copyright (C) 2015 The Android Open Source Project"
+    overview ""
+}
+
+task javadocJar(type: Jar, dependsOn:groovydoc) {
+    classifier  'javadoc'
+    from        groovydoc.destinationDir
+}
+
+// Only package JavaDoc if using --init-script=buildSrc/base/release.gradle
+if (project.has("release")) {
+  artifacts {
+    archives javadocJar
+  }
+}
+

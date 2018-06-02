@@ -28,7 +28,12 @@ import com.android.sdklib.AndroidVersion;
  * Note that although this interface looks like {@link IAndroidVersionProvider}, it does
  * not convey the same semantic since {@link IAndroidVersionProvider} does <em>not</em>
  * imply any dependency being a limiting factor as far as installation is concerned.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public interface IPlatformDependency {
 
     /** Returns the version of the platform dependency of this package. */

@@ -1,1 +1,0 @@
--adaptresourcefilenames    !**another.properties,**.properties

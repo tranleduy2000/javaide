@@ -1,3 +1,4 @@
 include ':app', ':treeview', ':dx'
 include ':lib-google-java-format', ':lib-android-compiler', ':androidlogcat'
 include ':fileexplorer', ':common', ':styles'
+

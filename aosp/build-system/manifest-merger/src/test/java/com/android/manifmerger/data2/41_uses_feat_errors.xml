@@ -1,0 +1,203 @@
+#
+# Test merge of uses-feature:
+# - Merge is OK if destination already has one with the same @name.
+# - required defaults to "true"
+# - when merging, a required=true (explicit or implicit) overwrites a required=false.
+#
+# Note: uses-feature with android:glEsVersion is dealt with in another test case.
+#
+
+@fails
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <!-- A feature that is implicitly marked as required=true -->
+    <uses-feature
+        android:name="com.example.SomeFeature0_DefaultTrue" />
+
+    <!-- A feature that is implicitly marked as required=true -->
+    <uses-feature
+        android:name="com.example.SomeFeature1_DefaultTrue" />
+
+    <!-- A feature that is explicitly marked as required=true -->
+    <uses-feature
+        android:name="com.example.SomeFeature2_RequiredTrue"
+        android:required="true" />
+
+    <!-- A feature that is explicitly marked as required=false -->
+    <uses-feature
+        android:name="com.example.SomeFeature3_RequiredFalse"
+        android:required="false" />
+
+    <!-- A feature that is explicitly marked as required=false. Duplicated. -->
+    <uses-feature
+        android:name="com.example.SomeFeature3_RequiredFalse"
+        android:required="false" />
+
+    <!-- A feature that is explicitly marked as required=false -->
+    <uses-feature
+        android:name="com.example.SomeFeature4_RequiredFalse"
+        android:required="false" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/app_icon"
+        android:backupAgent="com.example.app.BackupAgentClass"
+        android:restoreAnyVersion="true"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:name="com.example.TheApp" >
+
+    </application>
+
+</manifest>
+
+
+@lib1
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib1">
+
+    <!-- Error: android:name attribute is missing. -->
+    <uses-feature />
+    <uses-feature android:required="false" />
+    <uses-feature android:required="true" />
+
+    <!-- Same as 2 from main. Warning/ignore because dest required isn't true/false. -->
+    <uses-feature
+        android:name="com.example.SomeFeature2_RequiredTrue"
+        android:required="true" />
+
+    <!-- Same as 3 from main. Warning because destination as a duplicate. -->
+    <uses-feature
+        android:name="com.example.SomeFeature3_RequiredFalse"
+        android:required="booh!" />
+
+    <!-- Same as 4 from main. Warning because required isn't true or false. -->
+    <uses-feature
+        android:name="com.example.SomeFeature4_RequiredFalse"
+        android:required="foo" />
+
+    <!-- Add a new feature that is implicitly marked as required=true -->
+    <uses-feature
+        android:name="com.example.SomeFeature5_RequiredTrue"
+        android:required="true" />
+
+    <!-- Add a new feature that is implicitly marked as required=false -->
+    <uses-feature
+        android:name="com.example.SomeFeature6_RequiredFalse"
+        android:required="false" />
+
+    <application android:label="@string/lib_name1" >
+
+    </application>
+</manifest>
+
+
+@lib2
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib2">
+
+    <!-- Overrides 3, changing it from required=false to true -->
+    <uses-feature
+        android:name="com.example.SomeFeature3_RequiredFalse"
+        android:required="true" />
+
+    <!-- Same as 4 from main -->
+    <uses-feature
+        android:name="com.example.SomeFeature4_RequiredFalse"
+        android:required="false" />
+
+    <!-- Overrides 6, but implicitly declaring required=True -->
+    <uses-feature
+        android:name="com.example.SomeFeature6_RequiredFalse"  />
+
+    <application android:label="@string/lib_name2" >
+
+    </application>
+</manifest>
+
+
+
+@result
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <!-- A feature that is implicitly marked as required=true -->
+    <uses-feature
+        android:name="com.example.SomeFeature0_DefaultTrue" />
+
+    <!-- A feature that is implicitly marked as required=true -->
+    <uses-feature
+        android:name="com.example.SomeFeature1_DefaultTrue" />
+
+    <!-- A feature that is explicitly marked as required=true -->
+    <uses-feature
+        android:name="com.example.SomeFeature2_RequiredTrue"
+        android:required="booh!" />
+
+    <!-- A feature that is explicitly marked as required=false -->
+# lib1 keeps it required=false but lib2 makes it switch to required=true
+    <uses-feature
+        android:name="com.example.SomeFeature3_RequiredFalse"
+        android:required="true" />
+
+    <!-- A feature that is explicitly marked as required=false. Duplicated. -->
+# in case of duplicated name, they are all modified.
+    <uses-feature
+        android:name="com.example.SomeFeature3_RequiredFalse"
+        android:required="true" />
+
+    <!-- A feature that is explicitly marked as required=false -->
+    <uses-feature
+        android:name="com.example.SomeFeature4_RequiredFalse"
+        android:required="false" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/app_icon"
+        android:backupAgent="com.example.app.BackupAgentClass"
+        android:restoreAnyVersion="true"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:name="com.example.TheApp" >
+
+    </application>
+
+# new from lib1
+    <!-- Add a new feature that is implicitly marked as required=true -->
+    <uses-feature
+        android:name="com.example.SomeFeature5_RequiredTrue"
+        android:required="true" />
+
+# new from lib1, but lib2 makes it switch to required=true
+    <!-- Add a new feature that is implicitly marked as required=false -->
+    <uses-feature
+        android:name="com.example.SomeFeature6_RequiredFalse"
+        android:required="true" />
+
+</manifest>
+
+
+@errors
+
+ERROR:Missing one of the key attributes 'name,glEsVersion' on element uses-feature at ManifestMerger2Test1_lib1.xml:6:5-21
+ERROR:Missing one of the key attributes 'name,glEsVersion' on element uses-feature at ManifestMerger2Test1_lib1.xml:7:5-46
+ERROR:Missing one of the key attributes 'name,glEsVersion' on element uses-feature at ManifestMerger2Test1_lib1.xml:8:5-45
+ERROR:Attribute uses-feature#com.example.SomeFeature3_RequiredFalse@required at ManifestMerger2Test1_lib1.xml:18:9-33 has an illegal value=\(booh!\), expected 'true' or 'false'
+ERROR:Attribute uses-feature#com.example.SomeFeature4_RequiredFalse@required at ManifestMerger2Test1_lib1.xml:23:9-31 has an illegal value=\(foo\), expected 'true' or 'false'
+ERROR:Validation failed, exiting
+WARNING:Element uses-feature#com.example.SomeFeature3_RequiredFalse at ManifestMerger2Test0_main.xml:26:5-28:36 duplicated with element declared at ManifestMerger2Test0_main.xml:21:5-23:36

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
+	<classpathentry kind="var" path="ANDROID_SRC/prebuilts/tools/common/m2/repository/com/google/guava/guava/15.0/guava-15.0.jar" sourcepath="/ANDROID_SRC/prebuilts/tools/common/m2/repository/com/google/guava/guava/15.0/guava-15.0-sources.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

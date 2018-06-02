@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <title>Properties</title>
+        <table>
+            <thead>
+                <tr><td>Name</td></tr>
+            </thead>
+            <tr><td>enable</td></tr>
+            <tr><td>applicableFilters</td></tr>
+        </table>
+    </section>
+    <section>
+        <title>Methods</title>
+        <table>
+            <thead>
+                <tr><td>Name</td></tr>
+            </thead>
+            <tr><td>exclude</td></tr>
+            <tr><td>include</td></tr>
+            <tr><td>reset</td></tr>
+        </table>
+    </section>
+</section>

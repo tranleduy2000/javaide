@@ -22,7 +22,7 @@ import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
 import com.android.annotations.VisibleForTesting.Visibility;
 import com.android.sdklib.SdkManager;
-import com.android.sdklib.internal.repository.IDescription;
+import com.android.sdklib.repository.IDescription;
 import com.android.sdklib.internal.repository.ITaskMonitor;
 import com.android.sdklib.internal.repository.archives.Archive;
 import com.android.sdklib.internal.repository.sources.SdkSource;
@@ -44,7 +44,12 @@ import java.util.Properties;
 
 /**
  * Represents a tool XML node in an SDK repository.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class ToolPackage extends FullRevisionPackage implements IMinPlatformToolsDependency {
 
     /** The value returned by {@link ToolPackage#installId()}. */
@@ -91,10 +96,8 @@ public class ToolPackage extends FullRevisionPackage implements IMinPlatformTool
             }
         }
 
-        mPkgDesc = PkgDesc.Builder
-                .newTool(getRevision(),
-                         mMinPlatformToolsRevision)
-                .setDescriptions(this)
+        mPkgDesc = setDescriptions(PkgDesc.Builder
+                .newTool(getRevision(), mMinPlatformToolsRevision))
                 .create();
     }
 
@@ -146,10 +149,8 @@ public class ToolPackage extends FullRevisionPackage implements IMinPlatformTool
 
         mMinPlatformToolsRevision = rev;
 
-        mPkgDesc = PkgDesc.Builder
-                .newTool(getRevision(),
-                         mMinPlatformToolsRevision)
-                .setDescriptions(this)
+        mPkgDesc = setDescriptions(PkgDesc.Builder
+                .newTool(getRevision(), mMinPlatformToolsRevision))
                 .create();
     }
 
@@ -214,7 +215,7 @@ public class ToolPackage extends FullRevisionPackage implements IMinPlatformTool
     @Override
     public String getLongDescription() {
         String s = getDescription();
-        if (s == null || s.length() == 0) {
+        if (s == null || s.isEmpty()) {
             s = getShortDescription();
         }
 

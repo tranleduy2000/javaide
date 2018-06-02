@@ -26,9 +26,9 @@ import com.android.prefs.AndroidLocation.AndroidLocationException;
 import com.android.sdklib.io.FileOp;
 import com.android.sdklib.io.IFileOp;
 import com.android.utils.Pair;
-import com.google.common.net.HttpHeaders;
 
 import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.message.BasicHeader;
@@ -58,7 +58,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * default and tries to update resources if they are older than 10 minutes by respecting
  * either ETag or Last-Modified, and finally server-cache is a strategy to always serve
  * cached entries if present.)
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class DownloadCache {
 
     /*

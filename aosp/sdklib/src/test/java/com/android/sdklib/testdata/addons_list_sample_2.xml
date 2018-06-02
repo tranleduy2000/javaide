@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (C) 2012 The Android Open Source Project
+ *
+ * Licensed under the Apache License, version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<sdk:sdk-addons-list
+    xmlns:sdk="http://schemas.android.com/sdk/android/addons-list/2">
+
+    <sdk:addon-site>
+        <sdk:url>http://www.example.com/my_addons.xml</sdk:url>
+        <sdk:name> <!-- we'll ignore leading/trailing spacing -->
+            My Example Add-ons.
+        </sdk:name>
+    </sdk:addon-site>
+
+    <sdk:addon-site>
+        <sdk:url>http://www.example.co.jp/addons.xml</sdk:url>
+        <!-- this file is UTF-8 so we support character sets -->
+        <sdk:name>ありがとうございます。</sdk:name>
+    </sdk:addon-site>
+
+    <sdk:addon-site>
+        <sdk:url>http://www.example.com/</sdk:url>
+        <sdk:name>Example of directory URL.</sdk:name>
+    </sdk:addon-site>
+
+    <sdk:sys-img-site>
+        <sdk:url>http://www.example.com/</sdk:url>
+        <sdk:name>Example of sys-img URL using the default xml filename.</sdk:name>
+    </sdk:sys-img-site>
+
+    <sdk:sys-img-site>
+        <sdk:url>http://www.example.com/specific_file.xml</sdk:url>
+        <sdk:name>Example of sys-img URL using a specific xml filename.</sdk:name>
+    </sdk:sys-img-site>
+
+    <sdk:addon-site>
+        <sdk:url>relative/url.xml</sdk:url>
+        <sdk:name>Relative URL.</sdk:name>
+    </sdk:addon-site>
+
+</sdk:sdk-addons-list>

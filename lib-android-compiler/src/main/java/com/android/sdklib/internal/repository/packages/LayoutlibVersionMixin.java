@@ -26,7 +26,12 @@ import java.util.Properties;
 
 /**
  * Helper class to handle the layoutlib version provided by a package.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class LayoutlibVersionMixin implements ILayoutlibVersion {
 
     /**

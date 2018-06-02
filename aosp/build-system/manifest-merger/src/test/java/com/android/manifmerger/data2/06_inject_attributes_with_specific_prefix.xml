@@ -1,0 +1,57 @@
+#
+# Test:
+# - Inject attributes in a main manifest.
+#
+
+@inject
+versionCode=101
+versionName=1.0.1
+minSdkVersion=10
+targetSdkVersion=14
+
+@main
+
+<manifest
+    xmlns:t="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    t:versionCode="100"
+    t:versionName="1.0.0">
+
+    <application
+        t:label="@string/app_name"
+        t:icon="@drawable/app_icon"
+        t:backupAgent="com.example.app.BackupAgentClass"
+        t:restoreAnyVersion="true"
+        t:allowBackup="true"
+        t:killAfterRestore="true"
+        t:name="com.example.TheApp" >
+    </application>
+
+</manifest>
+
+@result
+
+<manifest
+    xmlns:t="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    t:versionCode="101"
+    t:versionName="1.0.1">
+    <uses-sdk
+        t:minSdkVersion="10"
+        t:targetSdkVersion="14">
+    </uses-sdk>
+
+    <application
+        t:label="@string/app_name"
+        t:icon="@drawable/app_icon"
+        t:backupAgent="com.example.app.BackupAgentClass"
+        t:restoreAnyVersion="true"
+        t:allowBackup="true"
+        t:killAfterRestore="true"
+        t:name="com.example.TheApp" >
+    </application>
+
+</manifest>
+
+@errors
+

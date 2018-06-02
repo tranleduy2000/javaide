@@ -1,0 +1,79 @@
+apply plugin: 'groovy'
+apply plugin: 'jacoco'
+apply plugin: 'clone-artifacts'
+
+configurations {
+    provided
+}
+
+sourceSets {
+    main {
+        groovy.srcDirs = ['src/main/groovy', 'src/fromGradle/groovy']
+        resources.srcDirs = ['src/main/resources', 'src/fromGradle/resources']
+        compileClasspath += configurations.provided
+    }
+}
+
+ext.proguardVersion = "5.2.1"
+
+dependencies {
+    compile project(':base:builder')
+    compile project(':base:lint')
+    compile "net.sf.proguard:proguard-gradle:${project.ext.proguardVersion}"
+
+    // Add gradleApi to classpath for compilation, but use provided configuration so that groovy is
+    // not exposed as a runtime dependency.
+    provided gradleApi()
+    testCompile gradleApi()
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:1.9.5'
+    testCompile project(':base:project-test-lib')
+    testCompile project(':base:testutils')
+}
+
+tasks.compileJava.dependsOn ":setupGradleInIde"
+
+group = 'com.android.tools.build'
+archivesBaseName = 'gradle-core'
+version = rootProject.ext.buildVersion
+
+project.ext.pomName = 'Core Library for Android Gradle Plug-in'
+project.ext.pomDesc = 'Core library to build Android Gradle plugin.'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+
+test {
+    environment("CUSTOM_REPO", rootProject.file("../out/repo"))
+
+    testLogging {
+        events "failed"
+    }
+
+    maxParallelForks = Runtime.runtime.availableProcessors() / 2
+}
+
+groovydoc {
+    exclude     "**/internal/**"
+    includePrivate false
+
+    docTitle "Gradle Plugin for Android"
+    header ""
+    footer "Copyright (C) 2012 The Android Open Source Project"
+    overview ""
+
+    groovyClasspath = configurations.provided
+}
+
+task javadocJar(type: Jar, dependsOn:groovydoc) {
+    classifier  'javadoc'
+    from        groovydoc.destinationDir
+}
+
+// Only package JavaDoc if using --init-script=buildSrc/base/release.gradle
+if (project.has("release")) {
+  artifacts {
+    archives javadocJar
+  }
+}

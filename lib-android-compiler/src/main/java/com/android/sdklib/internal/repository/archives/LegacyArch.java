@@ -27,7 +27,12 @@ package com.android.sdklib.internal.repository.archives;
  * by the &lt;host-bit&gt; and &lt;jvm-bit&gt; elements and {@link ArchFilter}.
  *
  * @see HostOs
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public enum LegacyArch {
     ANY("Any"),
     PPC("PowerPC"),
@@ -36,7 +41,7 @@ public enum LegacyArch {
 
     private final String mUiName;
 
-    private LegacyArch(String uiName) {
+    LegacyArch(String uiName) {
         mUiName = uiName;
     }
 

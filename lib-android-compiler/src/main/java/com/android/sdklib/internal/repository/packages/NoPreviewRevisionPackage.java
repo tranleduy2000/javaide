@@ -29,7 +29,12 @@ import java.util.Properties;
 /**
  * Represents a package in an SDK repository that has a {@link NoPreviewRevision},
  * which is a single major.minor.micro revision number and no preview.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public abstract class NoPreviewRevisionPackage extends Package {
 
     private final NoPreviewRevision mRevision;

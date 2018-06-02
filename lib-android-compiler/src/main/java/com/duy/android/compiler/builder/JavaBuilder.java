@@ -5,7 +5,7 @@ import android.content.Context;
 import com.duy.android.compiler.builder.model.BuildType;
 import com.duy.android.compiler.builder.task.ABuildTask;
 import com.duy.android.compiler.builder.task.java.BuildJarTask;
-import com.duy.android.compiler.builder.task.java.CleanTask;
+import com.duy.android.compiler.builder.task.CleanTask;
 import com.duy.android.compiler.builder.task.java.CompileJavaTask;
 import com.duy.android.compiler.builder.task.java.DexTask;
 import com.duy.android.compiler.project.JavaProject;

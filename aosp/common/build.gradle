@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'sdk-java-lib'
+
+dependencies {
+    compile project(':base:annotations')
+    compile 'com.google.guava:guava:17.0'
+
+    testCompile 'junit:junit:4.12'
+}
+
+group = 'com.android.tools'
+archivesBaseName = 'common'
+version = rootProject.ext.baseVersion
+
+project.ext.pomName = 'Android Tools common library'
+project.ext.pomDesc = 'common library used by other Android tools libraries.'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"

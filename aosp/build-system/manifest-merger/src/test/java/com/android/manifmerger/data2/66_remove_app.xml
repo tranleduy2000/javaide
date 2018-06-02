@@ -1,0 +1,53 @@
+#
+# Test how elements are removed by tools:merge="remove".
+#
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <!-- The "remove" tag will eradicate this element from the output. -->
+    <application
+            tools:node="remove"
+            android:name="TheApp"
+            android:backupAgent=".MyBackupAgent" >
+        <activity android:name=".MainActivity" />
+        <receiver android:name="AppReceiver" />
+        <activity android:name="com.example.lib2.LibActivity" />
+    </application>
+</manifest>
+
+
+@lib1_widget
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lib1">
+
+    <!-- This  application and all its activities or content is ignored because the
+         main manifest requested to remove the application element. -->
+    <application android:name="TheApp" >
+        <activity android:name=".WidgetLibrary1" />
+    </application>
+</manifest>
+
+
+
+@result
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <!-- The "remove" tag will eradicate this element from the output. -->
+</manifest>
+
+@errors
+

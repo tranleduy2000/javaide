@@ -1,0 +1,100 @@
+#
+# Tests merging application/meta-data.
+# Several APIs provide app-specific keys (e.g. Android Backup API, Google Maps API.)
+# and the key needs to be placed in the <application> element as meta-data.
+#
+# This tests the default behavior which is to merge the elements from the library which are new.
+#
+
+@main
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="11"/>
+
+    <application
+            android:name="TheApp"
+            android:backupAgent=".MyBackupAgent" >
+        <activity android:name=".MainActivity" />
+        <receiver android:name="AppReceiver" />
+        <activity android:name="com.example.lib2.LibActivity" />
+
+        <!-- This key is defined in the main application. -->
+        <meta-data
+            android:name="name.for.yet.another.api.key"
+            android:value="your_yet_another_api_key"/>
+
+        <!-- Merged elements will be appended here at the end. -->
+    </application>
+
+</manifest>
+
+
+@lib1
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1">
+
+    <application android:name="TheApp" >
+        <activity android:name=".Library1" />
+
+        <!-- The library maps API key gets merged in the main application. -->
+        <meta-data
+            android:name="name.for.maps.api.key"
+            android:value="your_maps_api_key"/>
+
+        <!-- The library backup key gets merged in the main application. -->
+        <meta-data
+            android:name="name.for.backup.api.key"
+            android:value="your_backup_api_key" />
+    </application>
+
+</manifest>
+
+
+@result
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app1"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="11"/>
+
+    <application
+            android:name="com.example.app1.TheApp"
+            android:backupAgent="com.example.app1.MyBackupAgent" >
+        <activity android:name="com.example.app1.MainActivity" />
+        <receiver android:name="com.example.app1.AppReceiver" />
+        <activity android:name="com.example.lib2.LibActivity" />
+
+        <!-- This key is defined in the main application. -->
+        <meta-data
+            android:name="name.for.yet.another.api.key"
+            android:value="your_yet_another_api_key"/>
+
+        <!-- Merged elements will be appended here at the end. -->
+        <activity android:name="com.example.app1.Library1" />
+
+        <!-- The library maps API key gets merged in the main application. -->
+        <meta-data
+            android:name="name.for.maps.api.key"
+            android:value="your_maps_api_key"/>
+
+        <!-- The library backup key gets merged in the main application. -->
+        <meta-data
+            android:name="name.for.backup.api.key"
+            android:value="your_backup_api_key" />
+    </application>
+
+</manifest>
+
+
+@errors

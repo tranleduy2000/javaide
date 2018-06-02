@@ -38,7 +38,12 @@ import java.util.Properties;
  * All instances of {@link SdkSourceProperties} share the same singleton storage.
  * The persisted setting file is loaded as necessary, however callers must persist
  * it at some point by calling {@link #save()}.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class SdkSourceProperties {
 
     /**

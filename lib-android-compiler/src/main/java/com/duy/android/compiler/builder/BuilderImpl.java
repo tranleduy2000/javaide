@@ -3,6 +3,7 @@ package com.duy.android.compiler.builder;
 import android.content.Context;
 
 import com.duy.android.compiler.builder.task.ABuildTask;
+import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.JavaProject;
 
 import java.io.PrintStream;
@@ -42,8 +43,14 @@ public abstract class BuilderImpl<T extends JavaProject> implements IBuilder<T> 
         }
         return true;
     }
+
     @Override
     public PrintStream getStderr() {
         return mStderr;
+    }
+
+    @Override
+    public String getBootClassPath() {
+        return Environment.getClasspathFile(mContext).getAbsolutePath();
     }
 }

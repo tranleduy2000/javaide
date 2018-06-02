@@ -39,7 +39,12 @@ import java.util.Properties;
  * them when modified.
  * <p/>
  * Settings are enumerated by constants in {@link ISettingsPage}.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class SettingsController {
 
     private static final String SETTINGS_FILENAME = "androidtool.cfg"; //$NON-NLS-1$
@@ -49,8 +54,8 @@ public class SettingsController {
     private final Settings mSettings;
 
     public interface OnChangedListener {
-        public void onSettingsChanged(@NonNull SettingsController controller,
-                                      @NonNull Settings oldSettings);
+        void onSettingsChanged(@NonNull SettingsController controller,
+                               @NonNull Settings oldSettings);
     }
     private final List<OnChangedListener> mChangedListeners = new ArrayList<OnChangedListener>(1);
 
@@ -188,7 +193,10 @@ public class SettingsController {
          * @see ISettingsPage#KEY_ENABLE_PREVIEWS
          */
         public boolean getEnablePreviews() {
-            return Boolean.parseBoolean(mProperties.getProperty(ISettingsPage.KEY_ENABLE_PREVIEWS));
+            return Boolean.parseBoolean(
+                    mProperties.getProperty(
+                            ISettingsPage.KEY_ENABLE_PREVIEWS,
+                            Boolean.TRUE.toString()));
         }
 
         /**
@@ -283,6 +291,7 @@ public class SettingsController {
             setShowUpdateOnly(mSettings.getShowUpdateOnly());
             setSetting(ISettingsPage.KEY_ASK_ADB_RESTART, mSettings.getAskBeforeAdbRestart());
             setSetting(ISettingsPage.KEY_USE_DOWNLOAD_CACHE, mSettings.getUseDownloadCache());
+            setSetting(ISettingsPage.KEY_ENABLE_PREVIEWS, mSettings.getEnablePreviews());
 
         } catch (Exception e) {
             if (mSdkLog != null) {
@@ -370,11 +379,11 @@ public class SettingsController {
 
         // Only change the proxy if have something in the preferences.
         // Do not erase the default settings by empty values.
-        if (proxyHost != null && proxyHost.length() > 0) {
+        if (proxyHost != null && !proxyHost.isEmpty()) {
             props.setProperty(JAVA_PROP_HTTP_PROXY_HOST,  proxyHost);
             props.setProperty(JAVA_PROP_HTTPS_PROXY_HOST, proxyHost);
         }
-        if (proxyPort != null && proxyPort.length() > 0) {
+        if (proxyPort != null && !proxyPort.isEmpty()) {
             props.setProperty(JAVA_PROP_HTTP_PROXY_PORT,  proxyPort);
             props.setProperty(JAVA_PROP_HTTPS_PROXY_PORT, proxyPort);
         }

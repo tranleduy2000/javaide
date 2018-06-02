@@ -16,10 +16,9 @@
 
 package com.android.sdklib.devices;
 
-import android.graphics.Point;
-
 import com.android.annotations.Nullable;
 
+import java.awt.*;
 import java.io.File;
 
 public class Meta {

@@ -54,7 +54,12 @@ import javax.xml.validation.Validator;
  * <p/>
  * This returns information stored on the repository in a different XML file
  * and isn't directly tied to the existence of the listed platforms.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class SdkStats {
 
     public static class PlatformStatBase {
@@ -134,7 +139,7 @@ public class SdkStats {
         }
     }
 
-    private final SparseArray<PlatformStat> mStats = new SparseArray<SdkStats.PlatformStat>();
+    private final SparseArray<PlatformStat> mStats = new SparseArray<PlatformStat>();
 
     public SdkStats() {
     }
@@ -517,7 +522,7 @@ public class SdkStats {
             }
         }
 
-        SparseArray<PlatformStatBase> platforms = new SparseArray<SdkStats.PlatformStatBase>();
+        SparseArray<PlatformStatBase> platforms = new SparseArray<PlatformStatBase>();
         int maxApi = 0;
 
         Node root = getFirstChild(doc, nsUri, SdkStatsConstants.NODE_SDK_STATS);
@@ -551,7 +556,7 @@ public class SdkStats {
                                 getTextContent().trim();
 
                         if (codeName == null || versName == null ||
-                                codeName.length() == 0 || versName.length() == 0) {
+                                codeName.isEmpty() || versName.isEmpty()) {
                             // bad names. ignore.
                             continue;
                         }

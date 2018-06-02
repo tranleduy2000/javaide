@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <title>Properties</title>
+        <table>
+            <thead>
+                <tr><td>Name</td></tr>
+            </thead>
+            <tr><td>resultsDir</td></tr>
+            <tr><td>reportDir</td></tr>
+            <tr><td>unitTests</td></tr>
+        </table>
+    </section>
+    <section>
+        <title>Methods</title>
+        <table>
+            <thead>
+                <tr><td>Name</td></tr>
+            </thead>
+            <tr><td>unitTests</td></tr>
+        </table>
+    </section>
+</section>

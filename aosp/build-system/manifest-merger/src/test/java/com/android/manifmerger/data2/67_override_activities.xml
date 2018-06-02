@@ -1,0 +1,159 @@
+#
+# Test how elements are overriden by tools:merge="override".
+# The override only blocks elements that would be merged.
+#
+
+@main
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <application
+            android:name="TheApp"
+            android:backupAgent=".MyBackupAgent" >
+        <activity android:name=".MainActivity" tools:node="replace" />
+        <receiver android:name="AppReceiver"   tools:node="replace"/>
+        <activity android:name="com.example.lib2.LibActivity" />
+        <service  android:name="com.example.AppService1" tools:node="replace" />
+        <provider android:name="com.example.Provider1"   tools:node="replace"  />
+        <activity-alias android:name="AliasActivity1"    tools:node="replace" />
+
+    </application>
+</manifest>
+
+
+@lib1
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example">
+
+    <application>
+        <!-- Activity merged -->
+        <activity android:name=".WidgetLibrary1" />
+
+        <!-- Conflicting activity ignored by override -->
+        <activity
+            android:name="com.example.MainActivity"
+            android:label="@string/activity_name"
+            android:icon="@drawable/activity_icon"
+            android:theme="@style/Some.Theme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Conflicting receiver ignored by override -->
+        <receiver
+            android:name="com.example.AppReceiver"
+            android:icon="@drawable/app_icon">
+            <intent-filter>
+                <action android:name="com.example.action.ACTION_CUSTOM" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Receiver merged -->
+        <receiver android:name="LibReceiver" />
+
+        <!-- Conflicting alias activity ignored by override -->
+        <activity-alias
+            android:name="com.example.AliasActivity1"
+            android:targetActivity="com.example.MainActivity1"
+            android:label="@string/alias_name1"
+            android:icon="@drawable/alias_icon1">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Alias activity merged -->
+        <activity-alias
+            android:name="com.example.alias.MyActivity2"
+            android:targetActivity="com.example.MainActivity2"
+            android:label="@string/alias_name2"
+            android:icon="@drawable/alias_icon2">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Conflicting service ignored by override -->
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService1" />
+
+        <!-- Service merged -->
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService2" />
+
+        <!-- Conflicting provider ignored by override -->
+        <provider
+            android:name="com.example.Provider1"
+            android:authorities="com.example.android.apis.app.thingy1"
+            android:enabled="@bool/someConditionalValue" />
+
+        <!-- Provider merged -->
+        <provider
+            android:name="com.example.Provider2" />
+
+    </application>
+</manifest>
+
+
+@result
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example"
+    android:versionCode="100"
+    android:versionName="1.0.0">
+
+    <application
+            android:name="com.example.TheApp"
+            android:backupAgent="com.example.MyBackupAgent" >
+        <activity android:name="com.example.MainActivity" />
+        <receiver android:name="com.example.AppReceiver" />
+        <activity android:name="com.example.lib2.LibActivity" />
+        <service  android:name="com.example.AppService1" />
+        <provider android:name="com.example.Provider1" />
+        <activity-alias android:name="com.example.AliasActivity1" />
+        <!-- Activity merged -->
+        <activity android:name="com.example.WidgetLibrary1" />
+
+        <!-- Alias activity merged -->
+        <activity-alias
+            android:name="com.example.alias.MyActivity2"
+            android:targetActivity="com.example.MainActivity2"
+            android:label="@string/alias_name2"
+            android:icon="@drawable/alias_icon2">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Service merged -->
+        <service
+            android:icon="@drawable/app_icon"
+            android:name="com.example.AppService2" />
+
+        <!-- Receiver merged -->
+        <receiver android:name="com.example.LibReceiver" />
+
+        <!-- Provider merged -->
+        <provider
+            android:name="com.example.Provider2" />
+
+    </application>
+</manifest>
+
+@errors
+

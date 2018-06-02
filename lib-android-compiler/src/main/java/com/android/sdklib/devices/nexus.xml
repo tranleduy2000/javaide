@@ -54,7 +54,7 @@
                 armeabi
             </d:abi>
             <d:dock> </d:dock>
-            <d:power-type>plugged-in</d:power-type>
+            <d:power-type>battery</d:power-type>
             <d:skin>nexus_one</d:skin>
         </d:hardware>
         <d:software>
@@ -137,7 +137,7 @@
                 armeabi
             </d:abi>
             <d:dock> </d:dock>
-            <d:power-type>plugged-in</d:power-type>
+            <d:power-type>battery</d:power-type>
             <d:skin>nexus_s</d:skin>
         </d:hardware>
         <d:software>

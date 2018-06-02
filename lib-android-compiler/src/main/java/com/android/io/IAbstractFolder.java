@@ -26,7 +26,7 @@ public interface IAbstractFolder extends IAbstractResource {
      * Instances of classes that implement this interface are used to
      * filter filenames.
      */
-    public interface FilenameFilter {
+    interface FilenameFilter {
         /**
          * Tests if a specified file should be included in a file list.
          *

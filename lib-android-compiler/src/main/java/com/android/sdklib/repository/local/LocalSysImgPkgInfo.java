@@ -16,17 +16,25 @@
 
 package com.android.sdklib.repository.local;
 
+import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.sdklib.AndroidVersion;
+import com.android.sdklib.ISystemImage;
 import com.android.sdklib.SystemImage;
+import com.android.sdklib.io.FileOp;
+import com.android.sdklib.io.IFileOp;
 import com.android.sdklib.repository.MajorRevision;
 import com.android.sdklib.repository.PkgProps;
 import com.android.sdklib.repository.descriptors.IPkgDesc;
 import com.android.sdklib.repository.descriptors.IdDisplay;
 import com.android.sdklib.repository.descriptors.PkgDesc;
+import com.google.common.base.Objects;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -39,15 +47,16 @@ import java.util.Properties;
 public class LocalSysImgPkgInfo extends LocalPkgInfo {
 
 
-    private final @NonNull IPkgDesc mDesc;
+    @NonNull
+    private final IPkgDesc mDesc;
 
     public LocalSysImgPkgInfo(@NonNull  LocalSdk localSdk,
-                              @NonNull  File localDir,
-                              @NonNull  Properties sourceProps,
-                              @NonNull  AndroidVersion version,
-                              @Nullable IdDisplay tag,
-                              @NonNull  String abi,
-                              @NonNull  MajorRevision revision) {
+      @NonNull  File localDir,
+      @NonNull  Properties sourceProps,
+      @NonNull  AndroidVersion version,
+      @Nullable IdDisplay tag,
+      @NonNull  String abi,
+      @NonNull  MajorRevision revision) {
         super(localSdk, localDir, sourceProps);
         mDesc = PkgDesc.Builder.newSysImg(version, tag, abi, revision).create();
     }
@@ -65,8 +74,7 @@ public class LocalSysImgPkgInfo extends LocalPkgInfo {
     @NonNull
     public static IdDisplay extractTagFromProps(Properties props) {
         if (props != null) {
-            String tagId   = props.getProperty(PkgProps.SYS_IMG_TAG_ID,
-                                               SystemImage.DEFAULT_TAG.getId());
+            String tagId   = props.getProperty(PkgProps.SYS_IMG_TAG_ID, SystemImage.DEFAULT_TAG.getId());
             String tagDisp = props.getProperty(PkgProps.SYS_IMG_TAG_DISPLAY, "");      //$NON-NLS-1$
             if (tagDisp == null || tagDisp.isEmpty()) {
                 tagDisp = tagIdToDisplay(tagId);
@@ -92,7 +100,7 @@ public class LocalSysImgPkgInfo extends LocalPkgInfo {
         name = name.replaceAll(" +", " ");                  //$NON-NLS-1$ //$NON-NLS-2$
         name = name.trim();
 
-        if (name.length() > 0) {
+        if (!name.isEmpty()) {
             char c = name.charAt(0);
             if (!Character.isUpperCase(c)) {
                 StringBuilder sb = new StringBuilder(name);
@@ -103,6 +111,25 @@ public class LocalSysImgPkgInfo extends LocalPkgInfo {
         return name;
     }
 
-    // TODO create package on demand if needed. This might not be needed
-    // since typically system-images are retrieved via IAndroidTarget.
+    public SystemImage getSystemImage() {
+        return getSystemImage(mDesc, getLocalDir(), getLocalSdk().getFileOp());
+    }
+
+    static SystemImage getSystemImage(IPkgDesc desc, File localDir, @NonNull IFileOp fileOp) {
+        final IdDisplay tag = desc.getTag();
+        final String abi = desc.getPath();
+        List<File> parsedSkins = PackageParserUtils.parseSkinFolder(new File(localDir, SdkConstants.FD_SKINS), fileOp);
+        File[] skins = FileOp.EMPTY_FILE_ARRAY;
+        if (!parsedSkins.isEmpty()) {
+            skins = parsedSkins.toArray(new File[parsedSkins.size()]);
+        }
+
+        return new SystemImage(
+          localDir,
+          ISystemImage.LocationType.IN_SYSTEM_IMAGE,
+          tag,
+          desc.getVendor(),
+          abi,
+          skins);
+    }
 }

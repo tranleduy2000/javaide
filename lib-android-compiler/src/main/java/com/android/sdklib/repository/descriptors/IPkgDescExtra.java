@@ -40,12 +40,12 @@ public interface IPkgDescExtra extends IPkgDesc {
      * Returns an optional list of older paths for this extra package.
      * @return A non-null, possibly empty, for old paths previously used for the same extra.
      */
-    @NonNull public String[] getOldPaths();
+    @NonNull String[] getOldPaths();
 
     /**
      * Returns the display name of the Extra.
      * @return A non-null name for the Extra, used for display purposes.
      */
-    @NonNull public String getNameDisplay();
+    @NonNull String getNameDisplay();
 
 }

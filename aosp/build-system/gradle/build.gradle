@@ -1,0 +1,59 @@
+apply plugin: 'groovy'
+apply plugin: 'clone-artifacts'
+apply plugin: 'idea'
+apply plugin: 'jacoco'
+apply plugin: 'license-report'
+
+dependencies {
+    compile project(':base:gradle-core')
+    compile gradleApi()
+
+    testCompile 'junit:junit:4.12'
+    testCompile project(':base:project-test-lib')
+}
+
+group = 'com.android.tools.build'
+archivesBaseName = 'gradle'
+version = rootProject.ext.buildVersion
+
+project.ext.pomName = 'Gradle Plug-in for Android'
+project.ext.pomDesc = 'Gradle plug-in to build Android applications.'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+
+jar.manifest.attributes("Plugin-Version": version)
+jar.manifest.attributes("Inception-Date":"${Calendar.getInstance().get(Calendar.YEAR)}:" +
+        "${Calendar.getInstance().get(Calendar.MONTH)}:${Calendar.getInstance().get(Calendar.DATE)}")
+
+test {
+    environment("CUSTOM_REPO", rootProject.file("../out/repo"))
+
+    testLogging {
+        events "failed"
+    }
+
+    maxParallelForks = Runtime.runtime.availableProcessors() / 2
+}
+
+groovydoc {
+    exclude     "**/internal/**"
+    includePrivate false
+
+    docTitle "Gradle Plugin for Android"
+    header ""
+    footer "Copyright (C) 2012 The Android Open Source Project"
+    overview ""
+}
+
+task javadocJar(type: Jar, dependsOn:groovydoc) {
+    classifier  'javadoc'
+    from        groovydoc.destinationDir
+}
+
+// Only package JavaDoc if using --init-script=buildSrc/base/release.gradle
+if (project.has("release")) {
+  artifacts {
+    archives javadocJar
+  }
+}

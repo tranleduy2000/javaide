@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (C) 2012 The Android Open Source Project
+ *
+ * Licensed under the Apache License, version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<sdk:sdk-stats
+    xmlns:sdk="http://schemas.android.com/sdk/android/stats/1">
+
+    <sdk:platform>
+        <sdk:api-level>3</sdk:api-level>
+        <sdk:codename>Vanilla</sdk:codename>
+        <sdk:version>Android 0.5</sdk:version>
+        <sdk:share>0.1</sdk:share>
+    </sdk:platform>
+
+    <sdk:platform>
+        <sdk:api-level>5</sdk:api-level>
+        <sdk:codename>Coffee</sdk:codename>
+        <sdk:version>Android 42.0</sdk:version>
+        <sdk:share>25.8</sdk:share>
+    </sdk:platform>
+
+    <sdk:platform>
+        <sdk:api-level>42</sdk:api-level>
+        <sdk:codename>Chocolate</sdk:codename>
+        <sdk:version>Android 32.64</sdk:version>
+        <sdk:share>74.1</sdk:share>
+    </sdk:platform>
+
+    <sdk:platform>
+        <sdk:api-level>5</sdk:api-level>
+        <sdk:codename>Ignored</sdk:codename>
+        <sdk:version>API 5 was already seen above</sdk:version>
+        <sdk:share>99.9</sdk:share>
+    </sdk:platform>
+
+</sdk:sdk-stats>

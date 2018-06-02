@@ -17,17 +17,16 @@
 package com.android.sdklib.repository;
 
 
-import com.android.sdklib.internal.repository.sources.SdkSource;
-
 import java.io.InputStream;
 
 /**
  * Public constants for the sdk-sys-img XML Schema.
+ * @deprecated moved to studio
  */
 public class SdkSysImgConstants extends RepoConstants {
 
     /**
-     * The default name looked for by {@link SdkSource} when trying to load an
+     * The default name looked for by SdkSource when trying to load an
      * sdk-sys-img XML if the URL doesn't match an existing resource.
      */
     public static final String URL_DEFAULT_FILENAME = "sys-img.xml";       //$NON-NLS-1$

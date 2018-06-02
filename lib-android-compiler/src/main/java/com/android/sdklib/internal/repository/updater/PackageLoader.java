@@ -43,7 +43,12 @@ import java.util.Map;
 /**
  * Loads packages fetched from the remote SDK Repository and keeps track
  * of their state compared with the current local SDK installation.
+ *
+ * @deprecated
+ * com.android.sdklib.internal.repository has moved into Studio as
+ * com.android.tools.idea.sdk.remote.internal.
  */
+@Deprecated
 public class PackageLoader {
 
     /** The update data context. Never null. */
@@ -93,13 +98,13 @@ public class PackageLoader {
          * @param packages All the packages loaded from the source. Never null.
          * @return True if the load operation should continue, false if it should stop.
          */
-        public boolean onUpdateSource(SdkSource source, Package[] packages);
+        boolean onUpdateSource(SdkSource source, Package[] packages);
 
         /**
          * This method is guaranteed to be called at the end, no matter how the
          * loader stopped, so that the client can clean up or perform any final action.
          */
-        public void onLoadCompleted();
+        void onLoadCompleted();
     }
 
     /**
@@ -119,7 +124,7 @@ public class PackageLoader {
          * @param source The source of the packages. Null for the locally installed packages.
          * @param packages The packages found in the source.
          */
-        public Package[] filterLoadedSource(SdkSource source, Package[] packages);
+        Package[] filterLoadedSource(SdkSource source, Package[] packages);
 
         /**
          * Called by the install task for every package available (new ones, updates as well
@@ -130,7 +135,7 @@ public class PackageLoader {
          * to access any UI widgets must wrap their calls into {@code Display.syncExec(Runnable)}
          * or {@code Display.asyncExec(Runnable)}.
          */
-        public boolean acceptPackage(Package pkg);
+        boolean acceptPackage(Package pkg);
 
         /**
          * Called when the accepted package has been installed, successfully or not.
@@ -141,12 +146,12 @@ public class PackageLoader {
          * to access any UI widgets must wrap their calls into {@code Display.syncExec(Runnable)}
          * or {@code Display.asyncExec(Runnable)}.
          */
-        public void setResult(boolean success, Map<Package, File> installPaths);
+        void setResult(boolean success, Map<Package, File> installPaths);
 
         /**
          * Called when the task is done iterating and completed.
          */
-        public void taskCompleted();
+        void taskCompleted();
     }
 
     /**
@@ -440,7 +445,7 @@ public class PackageLoader {
         // We override SdkRepoConstants.URL_GOOGLE_SDK_SITE if this is defined
         String baseUrl = System.getenv("SDK_TEST_BASE_URL");            //$NON-NLS-1$
         if (baseUrl != null) {
-            if (baseUrl.length() > 0 && baseUrl.endsWith("/")) {        //$NON-NLS-1$
+            if (!baseUrl.isEmpty() && baseUrl.endsWith("/")) {        //$NON-NLS-1$
                 if (url.startsWith(SdkRepoConstants.URL_GOOGLE_SDK_SITE)) {
                     url = baseUrl + url.substring(SdkRepoConstants.URL_GOOGLE_SDK_SITE.length());
                 }

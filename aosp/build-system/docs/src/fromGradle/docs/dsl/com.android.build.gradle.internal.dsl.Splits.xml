@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <title>Properties</title>
+        <table>
+            <thead>
+                <tr><td>Name</td></tr>
+            </thead>
+            <tr><td>density</td></tr>
+            <tr><td>densityFilters</td></tr>
+            <tr><td>abi</td></tr>
+            <tr><td>abiFilters</td></tr>
+        </table>
+    </section>
+    <section>
+        <title>Methods</title>
+        <table>
+            <thead>
+                <tr><td>Name</td></tr>
+            </thead>
+            <tr><td>abi</td></tr>
+            <tr><td>density</td></tr>
+        </table>
+    </section>
+</section>

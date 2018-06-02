@@ -45,7 +45,7 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
 
         Argument argument = new Argument();
         argument.add(builder.isVerbose() ? "-verbose" : "-warn:");
-        argument.add("-bootclasspath", project.getBootClassPath(context));
+        argument.add("-bootclasspath", builder.getBootClassPath());
         argument.add("-classpath", project.getClasspath());
         argument.add("-sourcepath", project.getSourcePath());
         argument.add("-" + CompilerOptions.VERSION_1_7); //host

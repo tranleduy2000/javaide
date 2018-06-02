@@ -35,48 +35,48 @@ public interface IPkgCapabilities {
      * Indicates whether this package type has a {@link FullRevision}.
      * @return True if this package type has a {@link FullRevision}.
      */
-    public boolean hasFullRevision();
+    boolean hasFullRevision();
 
     /**
      * Indicates whether this package type has a {@link MajorRevision}.
      * @return True if this package type has a {@link MajorRevision}.
      */
-    public boolean hasMajorRevision();
+    boolean hasMajorRevision();
 
     /**
      * Indicates whether this package type has a {@link AndroidVersion}.
      * @return True if this package type has a {@link AndroidVersion}.
      */
-    public boolean hasAndroidVersion();
+    boolean hasAndroidVersion();
 
     /**
      * Indicates whether this package type has a path.
      * @return True if this package type has a path.
      */
-    public boolean hasPath();
+    boolean hasPath();
 
     /**
      * Indicates whether this package type has a tag.
      * @return True if this package type has a tag id-display tuple.
      */
-    public boolean hasTag();
+    boolean hasTag();
 
     /**
      * Indicates whether this package type has a vendor id.
      * @return True if this package type has a vendor id.
      */
-    public boolean hasVendor();
+    boolean hasVendor();
 
     /**
      * Indicates whether this package type has a {@code min-tools-rev} attribute.
      * @return True if this package type has a {@code min-tools-rev} attribute.
      */
-    public boolean hasMinToolsRev();
+    boolean hasMinToolsRev();
 
     /**
      * Indicates whether this package type has a {@code min-platform-tools-rev} attribute.
      * @return True if this package type has a {@code min-platform-tools-rev} attribute.
      */
-    public boolean hasMinPlatformToolsRev();
+    boolean hasMinPlatformToolsRev();
 }
 

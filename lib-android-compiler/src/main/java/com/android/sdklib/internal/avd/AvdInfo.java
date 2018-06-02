@@ -39,7 +39,7 @@ public final class AvdInfo implements Comparable<AvdInfo> {
     /**
      * Status for an {@link AvdInfo}. Indicates whether or not this AVD is valid.
      */
-    public static enum AvdStatus {
+    public enum AvdStatus {
         /** No error */
         OK,
         /** Missing 'path' property in the ini file */
@@ -57,7 +57,9 @@ public final class AvdInfo implements Comparable<AvdInfo> {
         /** The {@link Device} this AVD is based on has changed from its original configuration*/
         ERROR_DEVICE_CHANGED,
         /** The {@link Device} this AVD is based on is no longer available */
-        ERROR_DEVICE_MISSING
+        ERROR_DEVICE_MISSING,
+        /** the {@link SystemImage} this AVD is based on is no longer available */
+        ERROR_IMAGE_MISSING
     }
 
     private final String mName;
@@ -253,13 +255,31 @@ public final class AvdInfo implements Comparable<AvdInfo> {
      *
      * @param manager The AVD Manager, used to get the AVD storage path.
      * @param avdName The name of the desired AVD.
+     * @param unique Whether to return the default or a unique variation of the default.
      * @throws AndroidLocationException if there's a problem getting android root directory.
      */
     @NonNull
-    public static File getDefaultAvdFolder(@NonNull AvdManager manager, @NonNull String avdName)
+    public static File getDefaultAvdFolder(@NonNull AvdManager manager, @NonNull String avdName,
+            boolean unique)
             throws AndroidLocationException {
-        return new File(manager.getBaseAvdFolder(),
-                        avdName + AvdManager.AVD_FOLDER_EXTENSION);
+        String base = manager.getBaseAvdFolder();
+        File result = new File(base, avdName + AvdManager.AVD_FOLDER_EXTENSION);
+        if (unique) {
+            int suffix = 0;
+            while (result.exists()) {
+                result = new File(base, String.format("%s_%d%s", avdName, (++suffix),
+                        AvdManager.AVD_FOLDER_EXTENSION));
+            }
+        }
+        return result;
+    }
+
+    /** Compatibility forwarding until the usages in tools/swt are updated */
+    @Deprecated
+    @NonNull
+    public static File getDefaultAvdFolder(@NonNull AvdManager manager, @NonNull String avdName)
+            throws AndroidLocationException{
+        return getDefaultAvdFolder(manager, avdName, false);
     }
 
     /**
@@ -352,15 +372,6 @@ public final class AvdInfo implements Comparable<AvdInfo> {
         }
 
         return null;
-    }
-
-    /**
-     * Returns whether an emulator is currently running the AVD.
-     */
-    public boolean isRunning() {
-        // this is a file on Unix, and a directory on Windows.
-        File f = new File(mFolderPath, "userdata-qemu.img.lock");   //$NON-NLS-1$
-        return f.exists();
     }
 
     /**

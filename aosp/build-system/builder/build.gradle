@@ -20,11 +20,10 @@ android {
 
 }
 dependencies {
-
+    api project(':bouncycastle')
     api project(':aosp:build-system:builder-model')
     api project(':aosp:build-system:builder-test-api')
     api project(':aosp:build-system:profile')
-
 
     api project(':aosp:sdklib')
     api project(':aosp:sdk-common')

@@ -1,6 +1,7 @@
 include ':app', ':treeview', ':dx'
 include ':lib-google-java-format', ':lib-android-compiler', ':androidlogcat'
 include ':fileexplorer', ':common', ':styles'
+include ':bouncycastle'
 include ':jdk-1_7'
 //include ':android-buildsystem-gradle:gradle'
 //include ':android-buildsystem-gradle:gradle-core'

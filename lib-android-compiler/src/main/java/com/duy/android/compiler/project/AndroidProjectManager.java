@@ -127,12 +127,12 @@ public class AndroidProjectManager {
     private void copyLibrary(AndroidApplicationProject project, boolean useCompatLibrary, AssetManager assets) throws IOException, StreamException, SAXException, ParserConfigurationException {
         if (useCompatLibrary) {
             //v7
-            addLib(project, "libs/27.1.1/appcompat-v7-27.1.1.aar", "appcompat-v7-27.1.1");
-            addLib(project, "libs/27.1.1/animated-vector-drawable-27.1.1.aar", "animated-vector-drawable-27.1.1");
             addLib(project, "libs/27.1.1/livedata-core-1.1.0.aar", "livedata-core-1.1.0");
             addLib(project, "libs/27.1.1/runtime-1.1.0.aar", "runtime-1.1.0");
             addLib(project, "libs/27.1.1/common-1.1.0.jar", "common-1.1.0.jar");
-            addLib(project, "libs/27.1.1/viewmodel-1.1.1.aar", "viewmodel-1.1.1");
+            addLib(project, "libs/27.1.1/viewmodel-1.1.0.aar", "viewmodel-1.1.0");
+            addLib(project, "libs/27.1.1/appcompat-v7-27.1.1.aar", "appcompat-v7-27.1.1");
+            addLib(project, "libs/27.1.1/animated-vector-drawable-27.1.1.aar", "animated-vector-drawable-27.1.1");
             addLib(project, "libs/27.1.1/support-compat-27.1.1.aar", "support-compat-27.1.1");
             addLib(project, "libs/27.1.1/support-core-ui-27.1.1.aar", "support-core-ui-27.1.1");
             addLib(project, "libs/27.1.1/support-core-utils-27.1.1.aar", "support-core-utils-27.1.1");

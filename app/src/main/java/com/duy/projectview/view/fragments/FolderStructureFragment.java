@@ -132,7 +132,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     @Nullable
     private TreeNode createFileStructure(@Nullable JavaProject projectFile) {
         if (projectFile == null) return null;
-        File rootDir = projectFile.getAppDir();
+        File rootDir = projectFile.getRootDir();
         TreeNode root = new TreeNode(new FolderHolder.TreeItem(rootDir, rootDir, listener));
         try {
             root.addChildren(getNode(rootDir, rootDir));
@@ -153,8 +153,8 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
                     ArrayList<File> dirs = new ArrayList<>();
                     ArrayList<File> files = new ArrayList<>();
                     for (File file : child) {
-                        if (file.isFile()) files.add(file);
-                        if (file.isDirectory()) dirs.add(file);
+                        if (file.isFile() && !file.isHidden()) files.add(file);
+                        if (file.isDirectory() && !file.isHidden()) dirs.add(file);
                     }
                     Collections.sort(dirs, new Comparator<File>() {
                         @Override

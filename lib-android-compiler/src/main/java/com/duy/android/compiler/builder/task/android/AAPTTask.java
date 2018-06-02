@@ -163,9 +163,7 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
                 args.add("p"); //package
                 args.add("-f"); //force overwrite of existing files
                 args.add("--auto-add-overlay");
-                if (builder.isVerbose()) {
-                    args.add("-v"); //debug
-                }
+                if (builder.isVerbose()) args.add("-v"); //verbose output
                 args.add("--non-constant-id"); //non constant for library
                 args.add("-M", library.getXmlManifest().getAbsolutePath());  //manifest file
                 args.add("-A", library.getAssetsDir().getAbsolutePath()); //input assets dir
@@ -194,6 +192,7 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
         args.add("-m"); // make package directories under location specified by -J
         //specify where to output R.java resource constant definitions
         args.add("-J", project.getDirGeneratedSource().getAbsolutePath());
+        args.add("-P", project.getDirGeneratedSource().getAbsolutePath() + "/R.txt");
 
         for (AndroidLibraryProject library : project.getDependencies()) {
             args.add("-S", library.getResDir().getAbsolutePath());

@@ -685,7 +685,7 @@ public class HighlightEditor extends CodeSuggestsEditText
 
     public void highlightText() {
         if (isFinding) return;
-        if (length() > 262144){
+        if (length() > 3000) {
             return;
         }
         disableTextChangedListener();

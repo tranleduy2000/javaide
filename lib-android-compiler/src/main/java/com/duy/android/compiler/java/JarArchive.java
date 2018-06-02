@@ -28,10 +28,10 @@ public class JarArchive {
         this.mVerbose = verbose;
     }
 
-    public void createJarArchive(JavaProject projectFolder) throws IOException {
+    public void createJarArchive(JavaProject project) throws IOException {
         //input file
-        File dirBuildClasses = projectFolder.getDirBuildClasses();
-        File archiveFile = projectFolder.getOutJarArchive();
+        File dirBuildClasses = project.getDirBuildClasses();
+        File archiveFile = project.getOutJarArchive();
 
         // Open archive file
         FileOutputStream stream = new FileOutputStream(archiveFile);

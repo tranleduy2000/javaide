@@ -39,6 +39,7 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
 
 
     private boolean runEcj() {
+        builder.stdout(TAG + ": Compile java with javac");
         PrintWriter outWriter = new PrintWriter(builder.getStdout());
         PrintWriter errWriter = new PrintWriter(builder.getStderr());
         org.eclipse.jdt.internal.compiler.batch.Main main =
@@ -58,7 +59,7 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
         String[] sourceFiles = getAllSourceFiles(project);
         argument.add(sourceFiles);
 
-        System.err.println("argument = " + argument);
+        builder.stdout(TAG + ": Compiler arguments " + argument);
         return main.compile(argument.toArray());
     }
 

@@ -184,7 +184,7 @@ public class QueuedCruncher implements PngCruncher {
 
                         @Override
                         public String toString() {
-                            return Objects.toStringHelper(this)
+                            return MoreObjects.toStringHelper(this)
                                     .add("from", from.getAbsolutePath())
                                     .add("to", to.getAbsolutePath())
                                     .toString();

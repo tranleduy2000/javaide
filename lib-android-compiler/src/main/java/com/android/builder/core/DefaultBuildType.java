@@ -21,6 +21,7 @@ import com.android.annotations.Nullable;
 import com.android.builder.internal.BaseConfigImpl;
 import com.android.builder.model.BuildType;
 import com.android.builder.model.SigningConfig;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class DefaultBuildType extends BaseConfigImpl implements BuildType {
@@ -313,7 +314,7 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
     @Override
     @NonNull
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("name", mName)
                 .add("debuggable", mDebuggable)
                 .add("testCoverageEnabled", mTestCoverageEnabled)

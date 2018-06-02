@@ -23,8 +23,8 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.annotations.concurrency.Immutable;
 import com.android.utils.ILogger;
-import com.android.utils.XmlUtils;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -86,7 +86,7 @@ public class ToolsInstructionsCleaner {
                 if (SdkConstants.TOOLS_URI.equals(attribute.getNamespaceURI())) {
                     // we need to special case when the element contained tools:node="remove"
                     // since it also needs to be deleted unless it had a selector.
-                    // if this is tools:node="removeAll", we always delete the element whether or
+                    // if this is ools:node="removeAll", we always delete the element whether or
                     // not there is a tools:selector.
                     boolean hasSelector = namedNodeMap.getNamedItemNS(
                             SdkConstants.TOOLS_URI, "selector") != null;
@@ -118,13 +118,19 @@ public class ToolsInstructionsCleaner {
                 }
             }
         }
+        // make a copy of the element children since we will be removing some during
+        // this process, we don't want side effects.
         NodeList childNodes = element.getChildNodes();
+        ImmutableList.Builder<Element> childElements = ImmutableList.builder();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                if (cleanToolsReferences((Element) node, logger) == ERROR) {
-                    return ERROR;
-                }
+                childElements.add((Element) node);
+            }
+        }
+        for (Element childElement : childElements.build()) {
+            if (cleanToolsReferences(childElement, logger) == ERROR) {
+                return ERROR;
             }
         }
         return MergingReport.Result.SUCCESS;

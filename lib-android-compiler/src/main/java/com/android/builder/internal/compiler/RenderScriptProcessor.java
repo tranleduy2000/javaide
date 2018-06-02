@@ -17,9 +17,6 @@
 
 package com.android.builder.internal.compiler;
 
-import static com.android.SdkConstants.EXT_BC;
-import static com.android.SdkConstants.FN_RENDERSCRIPT_V8_JAR;
-
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -41,76 +38,41 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import static com.android.SdkConstants.EXT_BC;
+import static com.android.SdkConstants.FN_RENDERSCRIPT_V8_JAR;
+
 /**
  * Compiles Renderscript files.
  */
 public class RenderScriptProcessor {
 
-    // ABI list, as pairs of (android-ABI, toolchain-ABI)
-    private static final class Abi {
-
-        @NonNull
-        private final String mDevice;
-        @NonNull
-        private final String mToolchain;
-        @NonNull
-        private final BuildToolInfo.PathId mLinker;
-        @NonNull
-        private final String[] mLinkerArgs;
-
-        Abi(@NonNull String device,
-            @NonNull String toolchain,
-            @NonNull BuildToolInfo.PathId linker,
-            @NonNull String... linkerArgs) {
-
-            mDevice = device;
-            mToolchain = toolchain;
-            mLinker = linker;
-            mLinkerArgs = linkerArgs;
-        }
-    }
-
+    public static final String RS_DEPS = "rsDeps";
     private static final Abi[] ABIS = {
             new Abi("armeabi-v7a", "armv7-none-linux-gnueabi", BuildToolInfo.PathId.LD_ARM,
                     "-dynamic-linker", "/system/bin/linker", "-X", "-m", "armelf_linux_eabi"),
             new Abi("mips", "mipsel-unknown-linux", BuildToolInfo.PathId.LD_MIPS, "-EL"),
-            new Abi("x86", "i686-unknown-linux", BuildToolInfo.PathId.LD_X86, "-m", "elf_i386") };
-
-    public static final String RS_DEPS = "rsDeps";
-
+            new Abi("x86", "i686-unknown-linux", BuildToolInfo.PathId.LD_X86, "-m", "elf_i386")};
     @NonNull
     private final List<File> mSourceFolders;
-
     @NonNull
     private final List<File> mImportFolders;
-
     @NonNull
     private final File mSourceOutputDir;
-
     @NonNull
     private final File mResOutputDir;
-
     @NonNull
     private final File mObjOutputDir;
-
     @NonNull
     private final File mLibOutputDir;
-
     @NonNull
     private final BuildToolInfo mBuildToolInfo;
-
     private final int mTargetApi;
-
     private final int mOptimizationLevel;
-
     private final boolean mNdkMode;
-
     private final boolean mSupportMode;
     private final Set<String> mAbiFilters;
-
     private final File mRsLib;
     private final Map<String, File> mLibClCore = Maps.newHashMap();
-
     public RenderScriptProcessor(
             @NonNull List<File> sourceFolders,
             @NonNull List<File> importFolders,
@@ -282,7 +244,7 @@ public class RenderScriptProcessor {
         FileGatherer fileGatherer = new FileGatherer();
         searcher.search(fileGatherer);
 
-        WaitableExecutor<Void> mExecutor  = new WaitableExecutor<Void>();
+        WaitableExecutor<Void> mExecutor = new WaitableExecutor<Void>();
 
         for (final File bcFile : fileGatherer.getFiles()) {
             String name = bcFile.getName();
@@ -406,5 +368,29 @@ public class RenderScriptProcessor {
         processExecutor.execute(
                 builder.createProcess(), processOutputHandler)
                 .rethrowFailure().assertNormalExitValue();
+    }
+
+    // ABI list, as pairs of (android-ABI, toolchain-ABI)
+    private static final class Abi {
+
+        @NonNull
+        private final String mDevice;
+        @NonNull
+        private final String mToolchain;
+        @NonNull
+        private final BuildToolInfo.PathId mLinker;
+        @NonNull
+        private final String[] mLinkerArgs;
+
+        Abi(@NonNull String device,
+            @NonNull String toolchain,
+            @NonNull BuildToolInfo.PathId linker,
+            @NonNull String... linkerArgs) {
+
+            mDevice = device;
+            mToolchain = toolchain;
+            mLinker = linker;
+            mLinkerArgs = linkerArgs;
+        }
     }
 }

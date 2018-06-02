@@ -33,12 +33,9 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +82,7 @@ class MergerXmlUtils {
             @NonNull ManifestMerger merger) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            Reader reader = new BufferedReader(new FileReader(xmlFile));
+            Reader reader = XmlUtils.getUtfReader(xmlFile);
             InputSource is = new InputSource(reader);
             factory.setNamespaceAware(true);
             factory.setValidating(false);
@@ -156,12 +153,7 @@ class MergerXmlUtils {
             @NonNull IMergerLog log,
             @NonNull FileAndLine errorContext) {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            InputSource is = new InputSource(new StringReader(xml));
-            factory.setNamespaceAware(true);
-            factory.setValidating(false);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(is);
+            Document doc = XmlUtils.parseDocument(xml, true);
             findLineNumbers(doc, 1);
             if (errorContext.getFileName() != null) {
                 setSource(doc, new File(errorContext.getFileName()));
@@ -268,7 +260,7 @@ class MergerXmlUtils {
 
             if (node.getNodeType() == Node.TEXT_NODE) {
                 String text = node.getNodeValue();
-                if (text.length() > 0) {
+                if (!text.isEmpty()) {
                     for (int pos = 0; (pos = text.indexOf('\n', pos)) != -1; pos++) {
                         ++line;
                     }
@@ -435,7 +427,7 @@ class MergerXmlUtils {
                     break;
                 case Node.TEXT_NODE:
                         String txt = node.getNodeValue().trim();
-                         if (txt.length() == 0) {
+                         if (txt.isEmpty()) {
                              // Keep this for debugging. TODO make it a flag
                              // to dump whitespace on debugging. Otherwise ignore it.
                              // txt = "[whitespace]";
@@ -720,7 +712,7 @@ class MergerXmlUtils {
                 // If there are, just dump them as-is into the element representation.
                 // We do trim whitespace and ignore all-whitespace or empty text nodes.
                 String s = child.getNodeValue().trim();
-                if (s.length() > 0) {
+                if (!s.isEmpty()) {
                     sb.append(s);
                     hasText = true;
                 }
@@ -853,7 +845,7 @@ class MergerXmlUtils {
                         for (int kE = iE-1; kE >= 0; kE--) {
                             if (!aE[kE].startsWith(p)) {
                                 sE.insert(0, '\n').insert(0, diffReplaceNs(aE[kE], nsPrefixE)).insert(0, "  ");
-                                if (p.length() == 0) {
+                                if (p.isEmpty()) {
                                     break;
                                 }
                                 p = diffGetPrefix(aE[kE]);
@@ -880,7 +872,7 @@ class MergerXmlUtils {
                             if (!aA[kA].startsWith(p)) {
                                 sA.insert(0, '\n').insert(0, diffReplaceNs(aA[kA], nsPrefixA)).insert(0, "  ");
                                 p = diffGetPrefix(aA[kA]);
-                                if (p.length() == 0) {
+                                if (p.isEmpty()) {
                                     break;
                                 }
                             } else if (aA[kA].contains(keyAttr) || kA == 0) {

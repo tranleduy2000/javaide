@@ -16,6 +16,8 @@
 
 package com.android.manifmerger;
 
+import static com.android.SdkConstants.ANDROID_URI;
+
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.xml.AndroidManifest;
@@ -25,8 +27,6 @@ import org.w3c.dom.Attr;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-
-import static com.android.SdkConstants.ANDROID_URI;
 
 /**
  * Trims the document from unwanted, repeated elements.

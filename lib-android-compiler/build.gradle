@@ -43,8 +43,7 @@ dependencies {
 
     api "com.android.support:support-annotations:$supportLibVersion"
     api "com.android.support:support-v4:$supportLibVersion"
-    //noinspection GradleDependency
-    api 'com.google.guava:guava:22.0-android'
+    api 'com.google.guava:guava:25.1-android'
     // https://mvnrepository.com/artifact/commons-io/commons-io
     api group: 'commons-io', name: 'commons-io', version: '2.6'
     // https://mvnrepository.com/artifact/org.apache.maven/maven-project
@@ -56,4 +55,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.eclipse.jdt.core.compiler/ecj
     api group: 'org.eclipse.jdt.core.compiler', name: 'ecj', version: '4.6.1'
     api 'com.squareup:javawriter:2.5.0'
+
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
+    api group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.5'
 }

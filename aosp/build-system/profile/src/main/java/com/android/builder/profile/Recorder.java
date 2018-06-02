@@ -91,7 +91,7 @@ public interface Recorder {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this)
+            return MoreObjects.toStringHelper(this)
                     .add("name", name)
                     .add("value", value)
                     .toString();

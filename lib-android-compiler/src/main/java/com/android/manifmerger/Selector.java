@@ -18,6 +18,7 @@ package com.android.manifmerger;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.concurrency.Immutable;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 /**
@@ -42,7 +43,8 @@ public class Selector {
      * selector decorated will be applied to the element.
      */
     boolean appliesTo(XmlElement element) {
-       return mPackageName.equals(element.getDocument().getPackageName());
+        Optional<XmlAttribute> packageName = element.getDocument().getPackage();
+        return packageName.isPresent() && mPackageName.equals(packageName.get().getValue());
     }
 
     /**

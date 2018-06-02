@@ -17,13 +17,15 @@
 package com.android.manifmerger;
 
 import com.android.annotations.NonNull;
+import com.android.annotations.VisibleForTesting;
 import com.android.annotations.concurrency.Immutable;
+import com.android.ide.common.blame.SourceFile;
+import com.android.ide.common.blame.SourceFilePosition;
+import com.android.ide.common.blame.SourcePosition;
 import com.android.utils.ILogger;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-
-import static com.android.manifmerger.XmlLoader.SourceLocation;
 
 /**
  * Contains the result of 2 files merging.
@@ -65,13 +67,18 @@ public class MergingReport {
                     logger.error(null /* throwable */, record.toString());
                     break;
                 case INFO:
-                    logger.info(record.toString());
+                    logger.verbose(record.toString());
                     break;
                 default:
                     logger.error(null /* throwable */, "Unhandled record type " + record.mSeverity);
             }
         }
         mActions.log(logger);
+
+        if (!mResult.isSuccess()) {
+            logger.warning("\nSee http://g.co/androidstudio/manifest-merger for more information"
+                    + " about the manifest merger.\n");
+        }
     }
 
     /**
@@ -149,28 +156,21 @@ public class MergingReport {
     /**
      * Log record. This is used to give users some information about what is happening and
      * what might have gone wrong.
-     *
-     * TODO: need to enhance to add SourceLocation, and make this more machine readable.
      */
     public static class Record {
+
 
         public enum Severity {WARNING, ERROR, INFO }
 
         private final Severity mSeverity;
         private final String mLog;
-        private final SourceLocation mSourceLocation;
-        private final int mLineNumber;
-        private final int mColumnNumber;
+        private final SourceFilePosition mSourceLocation;
 
         private Record(
-                @NonNull SourceLocation sourceLocation,
-                int lineNumber,
-                int columnNumber,
+                @NonNull SourceFilePosition sourceLocation,
                 @NonNull Severity severity,
                 @NonNull String mLog) {
             this.mSourceLocation = sourceLocation;
-            this.mLineNumber = lineNumber;
-            this.mColumnNumber = columnNumber;
             this.mSeverity = severity;
             this.mLog = mLog;
         }
@@ -185,8 +185,8 @@ public class MergingReport {
 
         @Override
         public String toString() {
-            return mSourceLocation.print(false)
-                    + ":" + mLineNumber + ":" + mColumnNumber + " "
+            return mSourceLocation.toString() // needs short string.
+                    + " "
                     + CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, mSeverity.toString())
                     + ":\n\t"
                     + mLog;
@@ -221,12 +221,31 @@ public class MergingReport {
             return this;
         }
 
-        Builder addMessage(@NonNull SourceLocation errorLocation,
+        @VisibleForTesting
+        Builder addMessage(@NonNull SourceFile sourceFile,
                 int line,
                 int column,
                 @NonNull Record.Severity severity,
                 @NonNull String message) {
+            // The line and column used are 1-based, but SourcePosition uses zero-based.
+            return addMessage(
+                    new SourceFilePosition(sourceFile, new SourcePosition(line - 1, column -1, -1)),
+                    severity,
+                    message);
+        }
 
+        Builder addMessage(@NonNull SourceFile sourceFile,
+                @NonNull Record.Severity severity,
+                @NonNull String message) {
+            return addMessage(
+                    new SourceFilePosition(sourceFile, SourcePosition.UNKNOWN),
+                    severity,
+                    message);
+        }
+
+        Builder addMessage(@NonNull SourceFilePosition sourceFilePosition,
+                    @NonNull Record.Severity severity,
+                    @NonNull String message) {
             switch (severity) {
                 case ERROR:
                     mHasErrors = true;
@@ -235,8 +254,7 @@ public class MergingReport {
                     mHasWarnings = true;
                     break;
             }
-            mRecordBuilder.add(new Record(
-                    errorLocation, line, column, severity, message));
+            mRecordBuilder.add(new Record(sourceFilePosition,  severity, message));
             return this;
         }
 

@@ -19,7 +19,6 @@ package com.android.manifmerger;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,7 +84,7 @@ class AttributeModel {
     }
 
     /**
-     * Returns the attribute's {@link com.android.manifmerger.AttributeModel.Validator} to
+     * Returns the attribute's {@link Validator} to
      * validate its value when read from xml files or null if no validation is necessary.
      */
     @Nullable
@@ -94,7 +93,7 @@ class AttributeModel {
     }
 
     /**
-     * Returns the attribute's {@link com.android.manifmerger.AttributeModel.Validator} to
+     * Returns the attribute's {@link Validator} to
      * validate its value when the merged file is about to be persisted.
      */
     @Nullable
@@ -103,7 +102,7 @@ class AttributeModel {
     }
 
     /**
-     * Returns the {@link com.android.manifmerger.AttributeModel.MergingPolicy} for this
+     * Returns the {@link MergingPolicy} for this
      * attribute.
      */
     @NonNull
@@ -152,7 +151,7 @@ class AttributeModel {
         }
 
         /**
-         * Sets a {@link com.android.manifmerger.AttributeModel.Validator} to validate the
+         * Sets a {@link Validator} to validate the
          * attribute's values coming from xml files.
          */
         Builder setOnReadValidator(Validator validator) {
@@ -161,7 +160,7 @@ class AttributeModel {
         }
 
         /**
-         * Sets a {@link com.android.manifmerger.AttributeModel.Validator} to validate values
+         * Sets a {@link Validator} to validate values
          * before they are written to the final merged document.
          */
         Builder setOnWriteValidator(Validator validator) {
@@ -175,7 +174,7 @@ class AttributeModel {
         }
 
         /**
-         * Build an immutable {@link com.android.manifmerger.AttributeModel}
+         * Build an immutable {@link AttributeModel}
          */
         AttributeModel build() {
             return new AttributeModel(
@@ -193,7 +192,7 @@ class AttributeModel {
      * strict when it is illegal to try to merge or override a value by another. Another example
      * is a OR merging policy on boolean attribute values.
      */
-    static interface MergingPolicy {
+    interface MergingPolicy {
 
         /**
          * Returns true if it should be attempted to merge this attribute value with
@@ -248,10 +247,10 @@ class AttributeModel {
     };
 
     /**
-     * Merging policy that will return the higher priority value if it is numerically greater than
-     * the lower priority value, otherwise null.
+     * Merging policy that will return the higher priority value regardless of the lower priority
+     * value
      */
-    static final MergingPolicy NUMERICAL_SUPERIORITY_POLICY = new MergingPolicy() {
+    static final MergingPolicy NO_MERGING_POLICY = new MergingPolicy() {
 
         @Override
         public boolean shouldMergeDefaultValues() {
@@ -261,9 +260,7 @@ class AttributeModel {
         @Nullable
         @Override
         public String merge(@NonNull String higherPriority, @NonNull String lowerPriority) {
-            return decodeDecOrHexString(higherPriority) >= decodeDecOrHexString(lowerPriority)
-                    ? higherPriority
-                    : null;
+            return higherPriority;
         }
     };
 
@@ -291,7 +288,7 @@ class AttributeModel {
      * This is a poor-mans replacement for not having a proper XML Schema do perform such
      * validations.
      */
-    static interface Validator {
+    interface Validator {
 
         /**
          * Validates a value, issuing a warning or error in case of failure through the passed
@@ -341,42 +338,7 @@ class AttributeModel {
     }
 
     /**
-     * A {@link com.android.manifmerger.AttributeModel.Validator} that validates a reference.
-     * The referenced item must be present in the same document for a successful validation.
-     */
-    static class ReferenceValidator implements Validator {
-
-        private final ManifestModel.NodeTypes referencedType;
-
-        ReferenceValidator(ManifestModel.NodeTypes referencedType) {
-            this.referencedType = referencedType;
-        }
-
-
-        @Override
-        public boolean validates(@NonNull MergingReport.Builder mergingReport,
-                @NonNull XmlAttribute attribute, @NonNull String value) {
-
-            Optional<XmlElement> referencedElement = attribute.getOwnerElement().getDocument()
-                    .getByTypeAndKey(referencedType, value);
-            if (!referencedElement.isPresent()) {
-                attribute.addMessage(mergingReport, MergingReport.Record.Severity.ERROR,
-                        String.format(
-                                "Referenced element %1$s=%2$s, in element %3$s declared at %4$s "
-                                        + "does not exist",
-                                attribute.getName(),
-                                value,
-                                attribute.getOwnerElement().getId(),
-                                attribute.printPosition()
-                        ));
-                return false;
-            }
-            return true;
-        }
-    }
-
-    /**
-     * A {@link com.android.manifmerger.AttributeModel.Validator} for verifying that a proposed
+     * A {@link Validator} for verifying that a proposed
      * value is part of the acceptable list of possible values.
      */
     static class MultiValueValidator implements Validator {
@@ -412,7 +374,7 @@ class AttributeModel {
     }
 
     /**
-     * A {@link com.android.manifmerger.AttributeModel.Validator} for verifying that a proposed
+     * A {@link Validator} for verifying that a proposed
      * value is a numerical integer value.
      */
     static class IntegerValueValidator implements Validator {
@@ -436,7 +398,7 @@ class AttributeModel {
     }
 
     /**
-     * A {@link com.android.manifmerger.AttributeModel.Validator} to validate that a string is
+     * A {@link Validator} to validate that a string is
      * a valid 32 bits hexadecimal representation.
      */
     static class Hexadecimal32Bits implements Validator {
@@ -462,7 +424,7 @@ class AttributeModel {
     }
 
     /**
-     * A {@link com.android.manifmerger.AttributeModel.Validator} to validate that a string is
+     * A {@link Validator} to validate that a string is
      * a valid 32 positive hexadecimal representation with a minimum value requirement.
      */
     static class Hexadecimal32BitsWithMinimumValue extends Hexadecimal32Bits {

@@ -16,9 +16,13 @@
 
 package com.android.manifmerger;
 
+import static com.android.manifmerger.XmlNode.NodeKey;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.annotations.concurrency.GuardedBy;
+import com.android.ide.common.blame.SourceFilePosition;
+import com.android.ide.common.blame.SourcePosition;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
@@ -26,12 +30,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.android.manifmerger.XmlNode.NodeKey;
-
 /**
  * Records all the actions taken by the merging tool.
  * <p>
- * Each action generates at least one {@link com.android.manifmerger.Actions.Record}
+ * Each action generates at least one {@link Actions.Record}
  * containing enough information to generate a machine or human readable report.
  * <p>
  *
@@ -54,9 +56,9 @@ import static com.android.manifmerger.XmlNode.NodeKey;
  * <p>
  *
  * <ul>
- *     <li>{@link com.android.manifmerger.Actions.ActionType} to identify whether the action
+ *     <li>{@link Actions.ActionType} to identify whether the action
  *     applies to an attribute or an element.</li>
- *     <li>{@link com.android.manifmerger.Actions.ActionLocation} to identify the source xml
+ *     <li>{@link SourceFilePosition} to identify the source xml
  *     location for the node.</li>
  * </ul>
  *
@@ -93,7 +95,7 @@ public class ActionRecorder {
      * @param xmlElement xml element added to the initial merged document.
      */
     void recordDefaultNodeAction(XmlElement xmlElement) {
-        if (!mRecords.containsKey(xmlElement.getId())) {
+        if (!mRecords.containsKey(xmlElement.getOriginalId())) {
             recordNodeAction(xmlElement, Actions.ActionType.ADDED);
             for (XmlAttribute xmlAttribute : xmlElement.getAttributes()) {
                 AttributeOperationType attributeOperation = xmlElement
@@ -115,17 +117,17 @@ public class ActionRecorder {
      * @param reason optional contextual information whey the implied element was added.
      */
     void recordImpliedNodeAction(XmlElement xmlElement, String reason) {
-        NodeKey storageKey = xmlElement.getId();
+        NodeKey storageKey = xmlElement.getOriginalId();
         Actions.DecisionTreeRecord nodeDecisionTree = mRecords.get(storageKey);
         if (nodeDecisionTree == null) {
             nodeDecisionTree = new Actions.DecisionTreeRecord();
             mRecords.put(storageKey, nodeDecisionTree);
         }
         Actions.NodeRecord record = new Actions.NodeRecord(Actions.ActionType.IMPLIED,
-                new Actions.ActionLocation(
-                        xmlElement.getDocument().getSourceLocation(),
+                new SourceFilePosition(
+                        xmlElement.getDocument().getSourceFile(),
                         xmlElement.getDocument().getRootNode().getPosition()),
-                xmlElement.getId(),
+                xmlElement.getOriginalId(),
                 reason,
                 xmlElement.getOperationType()
         );
@@ -158,10 +160,10 @@ public class ActionRecorder {
             XmlElement targetElement) {
 
         Actions.NodeRecord record = new Actions.NodeRecord(actionType,
-                new Actions.ActionLocation(
-                        targetElement.getDocument().getSourceLocation(),
+                new SourceFilePosition(
+                        targetElement.getDocument().getSourceFile(),
                         targetElement.getPosition()),
-                targetElement.getId(),
+                targetElement.getOriginalId(),
                 null, /* reason */
                 mergedElement.getOperationType()
         );
@@ -169,7 +171,7 @@ public class ActionRecorder {
     }
 
     /**
-     * Records a {@link com.android.manifmerger.Actions.NodeRecord} action on a xml element.
+     * Records a {@link Actions.NodeRecord} action on a xml element.
      * @param mergedElement the target element of the action.
      * @param nodeRecord the record of the action.
      */
@@ -177,7 +179,7 @@ public class ActionRecorder {
             XmlElement mergedElement,
             Actions.NodeRecord nodeRecord) {
 
-        NodeKey storageKey = mergedElement.getId();
+        NodeKey storageKey = mergedElement.getOriginalId();
         Actions.DecisionTreeRecord nodeDecisionTree = mRecords.get(storageKey);
         if (nodeDecisionTree == null) {
             nodeDecisionTree = new Actions.DecisionTreeRecord();
@@ -199,13 +201,32 @@ public class ActionRecorder {
             @NonNull Actions.ActionType actionType,
             @Nullable AttributeOperationType attributeOperationType) {
 
+        recordAttributeAction(
+                attribute, attribute.getPosition(), actionType, attributeOperationType);
+    }
+
+    /**
+     * Records an attribute action taken by the merging tool
+     *
+     * @param attribute              the attribute in question.
+     * @param attributePosition      the attribute's position.
+     * @param actionType             the action's type
+     * @param attributeOperationType the original tool annotation leading to the merging tool
+     *                               decision.
+     */
+    synchronized void recordAttributeAction(
+            @NonNull XmlAttribute attribute,
+            @NonNull SourcePosition attributePosition,
+            @NonNull Actions.ActionType actionType,
+            @Nullable AttributeOperationType attributeOperationType) {
+
         XmlElement originElement = attribute.getOwnerElement();
         Actions.AttributeRecord attributeRecord = new Actions.AttributeRecord(
                 actionType,
-                new Actions.ActionLocation(
-                        originElement.getDocument().getSourceLocation(),
-                        attribute.getPosition()),
-                attribute.getId(),
+                new SourceFilePosition(
+                        originElement.getDocument().getSourceFile(),
+                        attributePosition),
+                attribute.getOriginalId(),
                 null, /* reason */
                 attributeOperationType
         );
@@ -213,7 +234,7 @@ public class ActionRecorder {
     }
 
     /**
-     * Record a {@link com.android.manifmerger.Actions.AttributeRecord} action for an attribute of
+     * Record a {@link Actions.AttributeRecord} action for an attribute of
      * an xml element.
      * @param attribute the attribute in question.
      * @param attributeRecord the record of the action.
@@ -240,10 +261,10 @@ public class ActionRecorder {
         List<Actions.AttributeRecord> attributeRecords = getAttributeRecords(attribute);
         Actions.AttributeRecord attributeRecord = new Actions.AttributeRecord(
                 Actions.ActionType.REJECTED,
-                new Actions.ActionLocation(
-                        implicitAttributeOwner.getDocument().getSourceLocation(),
+                new SourceFilePosition(
+                        implicitAttributeOwner.getDocument().getSourceFile(),
                         implicitAttributeOwner.getPosition()),
-                attribute.getId(),
+                attribute.getOriginalId(),
                 null, /* reason */
                 AttributeOperationType.REPLACE
         );
@@ -266,7 +287,7 @@ public class ActionRecorder {
 
     private List<Actions.AttributeRecord> getAttributeRecords(XmlAttribute attribute) {
         XmlElement originElement = attribute.getOwnerElement();
-        NodeKey storageKey = originElement.getId();
+        NodeKey storageKey = originElement.getOriginalId();
         Actions.DecisionTreeRecord nodeDecisionTree = mRecords.get(storageKey);
         // by now the node should have been added for this element.
         assert (nodeDecisionTree != null);

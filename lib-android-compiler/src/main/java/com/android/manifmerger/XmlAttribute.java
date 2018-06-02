@@ -16,11 +16,17 @@
 
 package com.android.manifmerger;
 
+import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.android.utils.PositionXmlParser;
+import com.android.ide.common.blame.SourceFile;
+import com.android.ide.common.blame.SourceFilePosition;
+import com.android.ide.common.blame.SourcePosition;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
 
 import org.w3c.dom.Attr;
 
@@ -55,17 +61,20 @@ public class XmlAttribute extends XmlNode {
         this.mAttributeModel = attributeModel;
         if (mAttributeModel != null && mAttributeModel.isPackageDependent()) {
             String value = mXml.getValue();
-            String pkg = mOwnerElement.getDocument().getPackageName();
-            // We know it's a shortened FQCN if it starts with a dot
-            // or does not contain any dot.
-            if (value != null && !value.isEmpty() &&
-                    (value.indexOf('.') == -1 || value.charAt(0) == '.')) {
-                if (value.charAt(0) == '.') {
-                    value = pkg + value;
-                } else {
-                    value = pkg + '.' + value;
+            if (value == null || value.isEmpty()) return;
+            // placeholders are never expanded.
+            if (!PlaceholderHandler.isPlaceHolder(value)) {
+                String pkg = mOwnerElement.getDocument().getPackageNameForAttributeExpansion();
+                // We know it's a shortened FQCN if it starts with a dot
+                // or does not contain any dot.
+                if (value.indexOf('.') == -1 || value.charAt(0) == '.') {
+                    if (value.charAt(0) == '.') {
+                        value = pkg + value;
+                    } else {
+                        value = pkg + '.' + value;
+                    }
+                    mXml.setValue(value);
                 }
-                mXml.setValue(value);
             }
         }
     }
@@ -92,12 +101,18 @@ public class XmlAttribute extends XmlNode {
     @Override
     public NodeKey getId() {
         // (Id of the parent element)@(my name)
-        return new NodeKey(mOwnerElement.getId() + "@" + mXml.getLocalName());
+        String myName = mXml.getNamespaceURI() == null ? mXml.getName() : mXml.getLocalName();
+        return new NodeKey(mOwnerElement.getId() + "@" + myName);
     }
 
+    @NonNull
     @Override
-    public PositionXmlParser.Position getPosition() {
-        return mOwnerElement.getDocument().getNodePosition(this);
+    public SourcePosition getPosition() {
+        try {
+            return mOwnerElement.getDocument().getNodePosition(this);
+        } catch(Exception e) {
+            return SourcePosition.UNKNOWN;
+        }
     }
 
     @NonNull
@@ -173,6 +188,14 @@ public class XmlAttribute extends XmlNode {
             XmlAttribute higherPriority,
             AttributeOperationType operationType) {
 
+        // handles tools: attribute separately.
+
+        if (getXml().getNamespaceURI() != null
+                && getXml().getNamespaceURI().equals(SdkConstants.TOOLS_URI)) {
+            handleBothToolsAttributePresent(higherPriority);
+            return;
+        }
+
         // the attribute is present on both elements, there are 2 possibilities :
         // 1. tools:replace was specified, replace the value.
         // 2. nothing was specified, the values should be equal or this is an error.
@@ -199,6 +222,26 @@ public class XmlAttribute extends XmlNode {
         if (!getValue().equals(higherPriority.getValue())) {
             addConflictingValueMessage(report, higherPriority);
         }
+    }
+
+    /**
+     * Handles tools: namespace attributes presence in both documents.
+     * @param higherPriority the higherPriority attribute
+     */
+    private void handleBothToolsAttributePresent(
+            XmlAttribute higherPriority) {
+
+        // do not merge tools:node attributes, the higher priority one wins.
+        if (getName().getLocalName().equals(NodeOperationType.NODE_LOCAL_NAME)) {
+            return;
+        }
+
+        // everything else should be merged, duplicates should be eliminated.
+        Splitter splitter = Splitter.on(',');
+        ImmutableSet.Builder<String> targetValues = ImmutableSet.builder();
+        targetValues.addAll(splitter.split(higherPriority.getValue()));
+        targetValues.addAll(splitter.split(getValue()));
+        higherPriority.getXml().setValue(Joiner.on(',').join(targetValues.build()));
     }
 
     /**
@@ -242,7 +285,7 @@ public class XmlAttribute extends XmlNode {
     /**
      * Merge this attribute value with a lower priority node attribute default value.
      * The attribute is not explicitly set on the implicitNode, yet it exist on this attribute
-     * {@link com.android.manifmerger.XmlElement} higher priority owner.
+     * {@link XmlElement} higher priority owner.
      *
      * @param mergingReport report to log errors and actions.
      * @param implicitNode the lower priority node where the implicit attribute value resides.
@@ -294,35 +337,62 @@ public class XmlAttribute extends XmlNode {
         Actions.AttributeRecord attributeRecord = report.getActionRecorder()
                 .getAttributeCreationRecord(higherPriority);
 
-        String error = String.format(
-                "Attribute %1$s value=(%2$s) from %3$s\n"
-                        + "\tis also present at %4$s value=(%5$s)\n"
-                        + "\tSuggestion: add 'tools:replace=\"%6$s\"' to <%7$s> element "
-                        + "at %8$s to override",
-                higherPriority.getId(),
-                higherPriority.getValue(),
+        String error;
+        if (getOwnerElement().getType().getMergeType() == MergeType.MERGE_CHILDREN_ONLY) {
+            error = String.format(
+                    "Attribute %1$s value=(%2$s) from %3$s\n"
+                            + "\tis also present at %4$s value=(%5$s).\n"
+                            + "\tAttributes of <%6$s> elements are not merged.",
+                    higherPriority.getId(),
+                    higherPriority.getValue(),
+                    attributeRecord != null
+                            ? attributeRecord.getActionLocation().print(true /*shortFormat*/)
+                            : "(unknown)",
+                    printPosition(),
+                    getValue(),
+                    getOwnerElement().getType().toXmlName());
+        } else {
+            error = String.format(
+                    "Attribute %1$s value=(%2$s) from %3$s\n"
+                            + "\tis also present at %4$s value=(%5$s).\n"
+                            + "\tSuggestion: add 'tools:replace=\"%6$s\"' to <%7$s> element "
+                            + "at %8$s to override.",
+                    higherPriority.getId(),
+                    higherPriority.getValue(),
+                    attributeRecord != null
+                            ? attributeRecord.getActionLocation().print(true /*shortFormat*/)
+                            : "(unknown)",
+                    printPosition(),
+                    getValue(),
+                    mXml.getName(),
+                    getOwnerElement().getType().toXmlName(),
+                    higherPriority.getOwnerElement().printPosition());
+        }
+        higherPriority.addMessage(report,
                 attributeRecord != null
-                        ? attributeRecord.getActionLocation().toString()
-                        : "(unknown)",
-                printPosition(),
-                getValue(),
-                mXml.getLocalName(),
-                getOwnerElement().getType().toXmlName(),
-                higherPriority.getOwnerElement().printPosition(true)
-        );
-        higherPriority.addMessage(report, MergingReport.Record.Severity.ERROR, error);
+                        ? attributeRecord.getActionLocation().getPosition()
+                        : SourcePosition.UNKNOWN,
+                MergingReport.Record.Severity.ERROR, error);
     }
 
     void addMessage(MergingReport.Builder report,
             MergingReport.Record.Severity severity,
             String message) {
-        report.addMessage(getOwnerElement().getDocument().getSourceLocation(),
-                getLine(), getColumn(), severity, message);
+        addMessage(report, getPosition(), severity, message);
+    }
+
+    void addMessage(MergingReport.Builder report,
+            SourcePosition position,
+            MergingReport.Record.Severity severity,
+            String message) {
+        report.addMessage(
+                new SourceFilePosition(getOwnerElement().getDocument().getSourceFile(), position),
+                severity, message);
     }
 
     @NonNull
     @Override
-    public XmlLoader.SourceLocation getSourceLocation() {
-        return getOwnerElement().getSourceLocation();
+    public SourceFile getSourceFile() {
+        return getOwnerElement().getSourceFile();
     }
 }

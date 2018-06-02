@@ -77,12 +77,12 @@ public enum NodeOperationType implements ConvertibleName {
     // specifies whether the node operation can support an associated {@link Selector}
     private final boolean mIsSelectable;
 
-    private NodeOperationType(boolean isSelectable) {
+    NodeOperationType(boolean isSelectable) {
         mIsSelectable = isSelectable;
     }
 
     /**
-     * Returns true if this operation supports a {@link com.android.manifmerger.Selector}
+     * Returns true if this operation supports a {@link Selector}
      */
     public boolean isSelectable() {
         return mIsSelectable;
@@ -109,4 +109,9 @@ public enum NodeOperationType implements ConvertibleName {
      * Local xml name of node operation types.
      */
     static final String NODE_LOCAL_NAME = "node"; //$NON-NLS-1$
+
+    /**
+     * local xml name for overriding uses-sdk operation types.
+     */
+    static final String OVERRIDE_USES_SDK = "overrideLibrary";
 }

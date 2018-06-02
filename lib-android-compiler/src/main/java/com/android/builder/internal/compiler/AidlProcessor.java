@@ -52,7 +52,7 @@ public class AidlProcessor implements SourceSearcher.SourceFileProcessor {
     @NonNull
     private final ProcessExecutor mProcessExecutor;
     @NonNull
-    private  final ProcessOutputHandler mProcessOutputHandler;
+    private final ProcessOutputHandler mProcessOutputHandler;
 
     public AidlProcessor(
             @NonNull String aidlExecutable,

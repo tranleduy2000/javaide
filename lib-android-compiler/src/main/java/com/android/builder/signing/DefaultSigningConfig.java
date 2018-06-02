@@ -183,7 +183,7 @@ public class DefaultSigningConfig implements SigningConfig {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("storeFile", mStoreFile.getAbsolutePath())
                 .add("storePassword", mStorePassword)
                 .add("keyAlias", mKeyAlias)

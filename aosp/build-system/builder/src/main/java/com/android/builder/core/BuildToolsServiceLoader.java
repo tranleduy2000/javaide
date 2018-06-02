@@ -123,7 +123,7 @@ public enum BuildToolsServiceLoader {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this)
+            return MoreObjects.toStringHelper(this)
                     .add("serviceClass", serviceClass)
                     .add("classpath", Joiner.on(",").join(classpath))
                     .toString();

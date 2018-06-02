@@ -187,7 +187,7 @@ public final class Message {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("kind", mKind).add("text", mText).add("sources",
+        return MoreObjects.toStringHelper(this).add("kind", mKind).add("text", mText).add("sources",
                 mSourceFilePositions).toString();
     }
 }

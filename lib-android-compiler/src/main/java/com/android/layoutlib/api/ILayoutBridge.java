@@ -51,7 +51,7 @@ import java.util.Map;
 @Deprecated
 public interface ILayoutBridge {
 
-    final int API_CURRENT = 4;
+    int API_CURRENT = 4;
 
     /**
      * Returns the API level of the layout library.

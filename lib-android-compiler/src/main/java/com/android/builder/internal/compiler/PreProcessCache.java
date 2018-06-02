@@ -67,226 +67,26 @@ public abstract class PreProcessCache<T extends PreProcessCache.Key> {
     private static final String ATTR_REVISION = "revision";
 
     private static final String XML_VERSION = "2";
-
-    protected interface BaseItem {
-        @NonNull
-        File getSourceFile();
-
-        @NonNull
-        List<File> getOutputFiles();
-
-        @Nullable
-        HashCode getSourceHash();
-
-        boolean areOutputFilesPresent();
-
-    }
-
-    /**
-     * Items representing jar/dex files that have been processed during a build.
-     */
-    @Immutable
-    protected static class Item implements BaseItem {
-        @NonNull
-        private final File mSourceFile;
-        @NonNull
-        private final List<File> mOutputFiles;
-        @NonNull
-        private final CountDownLatch mLatch;
-
-        Item(
-                @NonNull File sourceFile,
-                @NonNull List<File> outputFiles,
-                @NonNull CountDownLatch latch) {
-            mSourceFile = sourceFile;
-            mOutputFiles = Lists.newArrayList(outputFiles);
-            mLatch = latch;
-        }
-
-        Item(
-                @NonNull File sourceFile,
-                @NonNull CountDownLatch latch) {
-            mSourceFile = sourceFile;
-            mOutputFiles = Lists.newArrayList();
-            mLatch = latch;
-        }
-
-        @Override
-        @NonNull
-        public File getSourceFile() {
-            return mSourceFile;
-        }
-
-        @Override
-        @NonNull
-        public List<File> getOutputFiles() {
-            return mOutputFiles;
-        }
-
-        @Nullable
-        @Override
-        public HashCode getSourceHash() {
-            return null;
-        }
-
-        @NonNull
-        protected CountDownLatch getLatch() {
-            return mLatch;
-        }
-
-        @Override
-        public boolean areOutputFilesPresent() {
-            boolean filesOk = !mOutputFiles.isEmpty();
-            for (File outputFile : mOutputFiles) {
-                filesOk &= outputFile.isFile();
-            }
-            return filesOk;
-        }
-
-        @Override
-        public String toString() {
-            return "Item{" +
-                    "mOutputFiles=" + mOutputFiles +
-                    ", mSourceFile=" + mSourceFile +
-                    '}';
-        }
-    }
-
-    /**
-     * Items representing jar/dex files that have been processed in a previous build, then were
-     * stored in a cache file and then reloaded during the current build.
-     */
-    @Immutable
-    protected static class StoredItem implements BaseItem {
-        @NonNull
-        private final File mSourceFile;
-        @NonNull
-        private final List<File> mOutputFiles;
-        @NonNull
-        private final HashCode mSourceHash;
-
-        StoredItem(
-                @NonNull File sourceFile,
-                @NonNull List<File> outputFiles,
-                @NonNull HashCode sourceHash) {
-            mSourceFile = sourceFile;
-            mOutputFiles = Lists.newArrayList(outputFiles);
-            mSourceHash = sourceHash;
-        }
-
-        @Override
-        @NonNull
-        public File getSourceFile() {
-            return mSourceFile;
-        }
-
-        @Override
-        @NonNull
-        public List<File> getOutputFiles() {
-            return mOutputFiles;
-        }
-
-        @Override
-        @NonNull
-        public HashCode getSourceHash() {
-            return mSourceHash;
-        }
-
-        @Override
-        public boolean areOutputFilesPresent() {
-            boolean filesOk = !mOutputFiles.isEmpty();
-            for (File outputFile : mOutputFiles) {
-                filesOk &= outputFile.isFile();
-            }
-            return filesOk;
-        }
-
-        @Override
-        public String toString() {
-            return "StoredItem{" +
-                    "mSourceFile=" + mSourceFile +
-                    ", mOutputFiles=" + mOutputFiles +
-                    ", mSourceHash=" + mSourceHash +
-                    '}';
-        }
-    }
-
-    /**
-     * Key to store Item/StoredItem in maps.
-     * The key contains the element that are used for the dex call:
-     * - source file
-     * - build tools revision
-     * - jumbo mode
-     */
-    @Immutable
-    protected static class Key {
-        @NonNull
-        private final File mSourceFile;
-        @NonNull
-        private final FullRevision mBuildToolsRevision;
-
-        public static Key of(@NonNull File sourceFile, @NonNull FullRevision buildToolsRevision) {
-            return new Key(sourceFile, buildToolsRevision);
-        }
-
-        protected Key(@NonNull File sourceFile, @NonNull FullRevision buildToolsRevision) {
-            mSourceFile = sourceFile;
-            mBuildToolsRevision = buildToolsRevision;
-        }
-
-        @NonNull
-        public FullRevision getBuildToolsRevision() {
-            return mBuildToolsRevision;
-        }
-
-        @NonNull
-        public File getSourceFile() {
-            return mSourceFile;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof Key)) {
-                return false;
-            }
-
-            Key key = (Key) o;
-
-            if (!mBuildToolsRevision.equals(key.mBuildToolsRevision)) {
-                return false;
-            }
-            if (!mSourceFile.equals(key.mSourceFile)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(mSourceFile, mBuildToolsRevision);
-        }
-    }
-
-    protected interface KeyFactory<T> {
-        T of(@NonNull File sourceFile, @NonNull FullRevision revision, @NonNull NamedNodeMap attrMap);
-    }
-
-    @GuardedBy("this")
-    private boolean mLoaded = false;
-
     @GuardedBy("this")
     private final Map<T, Item> mMap = Maps.newHashMap();
     @GuardedBy("this")
     private final Map<T, StoredItem> mStoredItems = Maps.newHashMap();
-
+    @GuardedBy("this")
+    private boolean mLoaded = false;
     @GuardedBy("this")
     private int mMisses = 0;
     @GuardedBy("this")
     private int mHits = 0;
+
+    @Nullable
+    private static HashCode getHash(@NonNull File file) {
+        try {
+            return Files.hash(file, Hashing.sha1());
+        } catch (IOException ignored) {
+        }
+
+        return null;
+    }
 
     @NonNull
     protected abstract KeyFactory<T> getKeyFactory();
@@ -356,16 +156,6 @@ public abstract class PreProcessCache<T extends PreProcessCache.Key> {
         }
 
         return Pair.of(item, newItem);
-    }
-
-    @Nullable
-    private static HashCode getHash(@NonNull File file) {
-        try {
-            return Files.hash(file, Hashing.sha1());
-        } catch (IOException ignored) {
-        }
-
-        return null;
     }
 
     public synchronized void clear(@Nullable File itemStorage, @Nullable ILogger logger) throws
@@ -576,6 +366,213 @@ public abstract class PreProcessCache<T extends PreProcessCache.Key> {
     @VisibleForTesting
     /*package*/ synchronized int getHits() {
         return mHits;
+    }
+
+    protected interface BaseItem {
+        @NonNull
+        File getSourceFile();
+
+        @NonNull
+        List<File> getOutputFiles();
+
+        @Nullable
+        HashCode getSourceHash();
+
+        boolean areOutputFilesPresent();
+
+    }
+
+    protected interface KeyFactory<T> {
+        T of(@NonNull File sourceFile, @NonNull FullRevision revision, @NonNull NamedNodeMap attrMap);
+    }
+
+    /**
+     * Items representing jar/dex files that have been processed during a build.
+     */
+    @Immutable
+    protected static class Item implements BaseItem {
+        @NonNull
+        private final File mSourceFile;
+        @NonNull
+        private final List<File> mOutputFiles;
+        @NonNull
+        private final CountDownLatch mLatch;
+
+        Item(
+                @NonNull File sourceFile,
+                @NonNull List<File> outputFiles,
+                @NonNull CountDownLatch latch) {
+            mSourceFile = sourceFile;
+            mOutputFiles = Lists.newArrayList(outputFiles);
+            mLatch = latch;
+        }
+
+        Item(
+                @NonNull File sourceFile,
+                @NonNull CountDownLatch latch) {
+            mSourceFile = sourceFile;
+            mOutputFiles = Lists.newArrayList();
+            mLatch = latch;
+        }
+
+        @Override
+        @NonNull
+        public File getSourceFile() {
+            return mSourceFile;
+        }
+
+        @Override
+        @NonNull
+        public List<File> getOutputFiles() {
+            return mOutputFiles;
+        }
+
+        @Nullable
+        @Override
+        public HashCode getSourceHash() {
+            return null;
+        }
+
+        @NonNull
+        protected CountDownLatch getLatch() {
+            return mLatch;
+        }
+
+        @Override
+        public boolean areOutputFilesPresent() {
+            boolean filesOk = !mOutputFiles.isEmpty();
+            for (File outputFile : mOutputFiles) {
+                filesOk &= outputFile.isFile();
+            }
+            return filesOk;
+        }
+
+        @Override
+        public String toString() {
+            return "Item{" +
+                    "mOutputFiles=" + mOutputFiles +
+                    ", mSourceFile=" + mSourceFile +
+                    '}';
+        }
+    }
+
+    /**
+     * Items representing jar/dex files that have been processed in a previous build, then were
+     * stored in a cache file and then reloaded during the current build.
+     */
+    @Immutable
+    protected static class StoredItem implements BaseItem {
+        @NonNull
+        private final File mSourceFile;
+        @NonNull
+        private final List<File> mOutputFiles;
+        @NonNull
+        private final HashCode mSourceHash;
+
+        StoredItem(
+                @NonNull File sourceFile,
+                @NonNull List<File> outputFiles,
+                @NonNull HashCode sourceHash) {
+            mSourceFile = sourceFile;
+            mOutputFiles = Lists.newArrayList(outputFiles);
+            mSourceHash = sourceHash;
+        }
+
+        @Override
+        @NonNull
+        public File getSourceFile() {
+            return mSourceFile;
+        }
+
+        @Override
+        @NonNull
+        public List<File> getOutputFiles() {
+            return mOutputFiles;
+        }
+
+        @Override
+        @NonNull
+        public HashCode getSourceHash() {
+            return mSourceHash;
+        }
+
+        @Override
+        public boolean areOutputFilesPresent() {
+            boolean filesOk = !mOutputFiles.isEmpty();
+            for (File outputFile : mOutputFiles) {
+                filesOk &= outputFile.isFile();
+            }
+            return filesOk;
+        }
+
+        @Override
+        public String toString() {
+            return "StoredItem{" +
+                    "mSourceFile=" + mSourceFile +
+                    ", mOutputFiles=" + mOutputFiles +
+                    ", mSourceHash=" + mSourceHash +
+                    '}';
+        }
+    }
+
+    /**
+     * Key to store Item/StoredItem in maps.
+     * The key contains the element that are used for the dex call:
+     * - source file
+     * - build tools revision
+     * - jumbo mode
+     */
+    @Immutable
+    protected static class Key {
+        @NonNull
+        private final File mSourceFile;
+        @NonNull
+        private final FullRevision mBuildToolsRevision;
+
+        protected Key(@NonNull File sourceFile, @NonNull FullRevision buildToolsRevision) {
+            mSourceFile = sourceFile;
+            mBuildToolsRevision = buildToolsRevision;
+        }
+
+        public static Key of(@NonNull File sourceFile, @NonNull FullRevision buildToolsRevision) {
+            return new Key(sourceFile, buildToolsRevision);
+        }
+
+        @NonNull
+        public FullRevision getBuildToolsRevision() {
+            return mBuildToolsRevision;
+        }
+
+        @NonNull
+        public File getSourceFile() {
+            return mSourceFile;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof Key)) {
+                return false;
+            }
+
+            Key key = (Key) o;
+
+            if (!mBuildToolsRevision.equals(key.mBuildToolsRevision)) {
+                return false;
+            }
+            if (!mSourceFile.equals(key.mSourceFile)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(mSourceFile, mBuildToolsRevision);
+        }
     }
 
 }

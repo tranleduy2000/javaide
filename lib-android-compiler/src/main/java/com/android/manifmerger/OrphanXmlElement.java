@@ -16,20 +16,21 @@
 
 package com.android.manifmerger;
 
+import static com.android.manifmerger.ManifestModel.NodeTypes;
+
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.android.utils.PositionXmlParser;
+import com.android.ide.common.blame.SourceFile;
+import com.android.ide.common.blame.SourcePosition;
 import com.android.utils.XmlUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import org.w3c.dom.Element;
 
-import static com.android.manifmerger.ManifestModel.NodeTypes;
-
 /**
- * An xml element that does not belong to a {@link com.android.manifmerger.XmlDocument}
+ * An xml element that does not belong to a {@link XmlDocument}
  */
 public class OrphanXmlElement extends XmlNode {
 
@@ -105,15 +106,16 @@ public class OrphanXmlElement extends XmlNode {
         return mType.getNodeKeyResolver().getKey(mXml);
     }
 
+    @NonNull
     @Override
-    public PositionXmlParser.Position getPosition() {
-        return PositionImpl.UNKNOWN;
+    public SourcePosition getPosition() {
+        return SourcePosition.UNKNOWN;
     }
 
     @Override
     @NonNull
-    public XmlLoader.SourceLocation getSourceLocation() {
-        return XmlLoader.UNKNOWN;
+    public SourceFile getSourceFile() {
+        return SourceFile.UNKNOWN;
     }
 }
 

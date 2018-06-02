@@ -38,11 +38,6 @@ public class SourceSearcher {
     @Nullable
     private WaitableExecutor<Void> mExecutor;
 
-    public interface SourceFileProcessor {
-        void processFile(@NonNull File sourceFolder, @NonNull File sourceFile)
-                throws ProcessException, IOException;
-    }
-
     public SourceSearcher(@NonNull List<File> sourceFolders, String... extensions) {
         mSourceFolders = sourceFolders;
         mExtensions = extensions;
@@ -116,5 +111,10 @@ public class SourceSearcher {
         }
 
         return false;
+    }
+
+    public interface SourceFileProcessor {
+        void processFile(@NonNull File sourceFolder, @NonNull File sourceFile)
+                throws ProcessException, IOException;
     }
 }

@@ -65,7 +65,7 @@ public class Job<T> {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("title", mJobTitle)
                 .add("task", mTask)
                 .add("latch", mBooleanLatch)

@@ -19,7 +19,9 @@ package com.android.manifmerger;
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.concurrency.Immutable;
-import com.android.utils.PositionXmlParser;
+import com.android.ide.common.blame.SourceFile;
+import com.android.ide.common.blame.SourceFilePosition;
+import com.android.ide.common.blame.SourcePosition;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -32,8 +34,6 @@ import org.w3c.dom.Node;
  */
 public abstract class XmlNode {
 
-    private static final String UNKNOWN_POSITION = "Unknown position";
-
     protected static final Function<Node, String> NODE_TO_NAME =
             new Function<Node, String>() {
                 @Override
@@ -41,6 +41,20 @@ public abstract class XmlNode {
                     return input.getNodeName();
                 }
             };
+
+    private NodeKey mOriginalId = null;
+
+    /**
+     * Returns a constant Nodekey that can be used throughout the lifecycle of the xml element.
+     * The {@link #getId} can return different values over time as the key of the element can be
+     * for instance, changed through placeholder replacement.
+     */
+    public synchronized NodeKey getOriginalId() {
+        if (mOriginalId == null) {
+            mOriginalId = getId();
+        }
+        return mOriginalId;
+    }
 
     /**
      * Returns an unique id within the manifest file for the element.
@@ -50,13 +64,21 @@ public abstract class XmlNode {
     /**
      * Returns the element's position
      */
-    public abstract PositionXmlParser.Position getPosition();
+    @NonNull
+    public abstract SourcePosition getPosition();
 
     /**
      * Returns the element's document xml source file location.
      */
     @NonNull
-    public abstract XmlLoader.SourceLocation getSourceLocation();
+    public abstract SourceFile getSourceFile();
+
+    /**
+     * Returns the element's document xml source file location.
+     */
+    public SourceFilePosition getSourceFilePosition() {
+        return new SourceFilePosition(getSourceFile(), getPosition());
+    }
 
     /**
      * Returns the element's xml
@@ -88,16 +110,16 @@ public abstract class XmlNode {
         void addToNode(Element to, String withValue);
 
         /**
-         * Persist itself inside a {@link Element}
+         * The local name.
          */
-        void persistTo(Element node);
+        String getLocalName();
     }
 
     /**
-     * Factory method to create an instance of {@link com.android.manifmerger.XmlNode.NodeName}
+     * Factory method to create an instance of {@link NodeName}
      * for an existing xml node.
      * @param node the xml definition.
-     * @return an instance of {@link com.android.manifmerger.XmlNode.NodeName} providing
+     * @return an instance of {@link NodeName} providing
      * namespace handling.
      */
     public static NodeName unwrapName(Node node) {
@@ -119,50 +141,20 @@ public abstract class XmlNode {
     }
 
     /**
-     * Return the line number in the original xml file this element or attribute was declared.
-     */
-    public int getLine() {
-        PositionXmlParser.Position position = getPosition();
-        return position != null ? position.getLine() : 0;
-    }
-
-    /**
-     * Return the column number in the original xml file this element or attribute was declared.
-     */
-    public int getColumn() {
-        PositionXmlParser.Position position = getPosition();
-        return position != null ? position.getColumn() : 0;
-    }
-
-    /**
      * Returns the position of this attribute in the original xml file. This may return an invalid
      * location as this xml fragment does not exist in any xml file but is the temporary result
      * of the merging process.
-     * @return a human readable position or {@link #UNKNOWN_POSITION}
+     * @return a human readable position.
      */
     public String printPosition() {
-        return printPosition(true);
-    }
-
-    public String printPosition(boolean shortFormat) {
-        PositionXmlParser.Position position = getPosition();
-        if (position == null) {
-            return UNKNOWN_POSITION;
-        }
-        return new StringBuilder()
-                .append(getSourceLocation() != null
-                        ? getSourceLocation().print(shortFormat)
-                        : "Unknown location")
-                .append(":").append(position.getLine())
-                .append(":").append(position.getColumn())
-                .toString();
+        return getSourceFilePosition().print(true /*shortFormat*/);
     }
 
     /**
-     * Implementation of {@link com.android.manifmerger.XmlNode.NodeName} for an
+     * Implementation of {@link NodeName} for an
      * node's declaration not using a namespace.
      */
-    private static final class Name implements NodeName {
+    public static final class Name implements NodeName {
         private final String mName;
 
         private Name(@NonNull String name) {
@@ -195,16 +187,18 @@ public abstract class XmlNode {
         }
 
         @Override
-        public void persistTo(Element node) {
-            node.setAttribute("name", mName);
+        public String getLocalName() {
+            return mName;
         }
     }
 
     /**
-     * Implementation of the {@link com.android.manifmerger.XmlNode.NodeName} for a namespace aware attribute.
+     * Implementation of the {@link NodeName} for a namespace aware attribute.
      */
-    private static final class NamespaceAwareName implements NodeName {
+    public static final class NamespaceAwareName implements NodeName {
+
         private final String mNamespaceURI;
+
         // ignore for comparison and hashcoding since different documents can use different
         // prefixes for the same namespace URI.
         private final String mPrefix;
@@ -253,10 +247,8 @@ public abstract class XmlNode {
         }
 
         @Override
-        public void persistTo(Element node) {
-            node.setAttribute("prefix", mPrefix);
-            node.setAttribute("local-name", mLocalName);
-            node.setAttribute("namespace-uri", mNamespaceURI);
+        public String getLocalName() {
+            return mLocalName;
         }
     }
 

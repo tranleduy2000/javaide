@@ -54,7 +54,7 @@ public class BooleanLatch {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("signaled", isSignalled())
                 .toString();
 

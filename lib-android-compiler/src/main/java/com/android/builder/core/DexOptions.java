@@ -21,10 +21,14 @@ import com.android.annotations.Nullable;
 public interface DexOptions {
 
     boolean getIncremental();
+
     boolean getPreDexLibraries();
+
     boolean getJumboMode();
+
     @Nullable
     String getJavaMaxHeapSize();
+
     @Nullable
     Integer getThreadCount();
 }

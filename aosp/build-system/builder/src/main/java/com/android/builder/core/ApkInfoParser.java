@@ -80,7 +80,7 @@ public class ApkInfoParser {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this)
+            return MoreObjects.toStringHelper(this)
                     .add("packageName", mPackageName)
                     .add("versionCode", mVersionCode)
                     .add("versionName", mVersionName)

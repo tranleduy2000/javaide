@@ -631,7 +631,7 @@ public class DefaultProductFlavor extends BaseConfigImpl implements ProductFlavo
     @Override
     @NonNull
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("name", mName)
                 .add("dimension", mDimension)
                 .add("minSdkVersion", mMinSdkVersion)

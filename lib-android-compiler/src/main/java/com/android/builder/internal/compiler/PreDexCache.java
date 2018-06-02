@@ -16,8 +16,6 @@
 
 package com.android.builder.internal.compiler;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.core.AndroidBuilder;
@@ -40,22 +38,24 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * Pre Dexing cache.
- *
+ * <p>
  * Since we cannot yet have a single task for each library that needs to be pre-dexed (because
  * there is no task-level parallelization), this class allows reusing the output of the pre-dexing
  * of a library in a project to write the output of the pre-dexing of the same library in
  * a different project.
- *
+ * <p>
  * Because different project could use different build-tools, both the library to pre-dex and the
  * version of the build tools are used as keys in the cache.
- *
+ * <p>
  * The API is fairly simple, just call {@link #preDexLibrary(File, File, boolean, DexOptions, BuildToolInfo, boolean, JavaProcessExecutor, ProcessOutputHandler)}
- *
+ * <p>
  * The call will be blocking until the pre-dexing happened, either through actual pre-dexing or
  * through copying the output of a previous pre-dex run.
- *
+ * <p>
  * After a build a call to {@link #clear(java.io.File, com.android.utils.ILogger)} with a file
  * will allow saving the known pre-dexed libraries for future reuse.
  */
@@ -69,13 +69,20 @@ public class PreDexCache extends PreProcessCache<DexKey> {
         return sSingleton;
     }
 
+    private static void checkSame(@NonNull File source, @NonNull File dest) {
+        if (source.equals(dest)) {
+            Logger.getAnonymousLogger().info(
+                    String.format("%s l:%d ts:%d", source, source.length(), source.lastModified()));
+        }
+    }
+
     @Override
     @NonNull
     protected KeyFactory<DexKey> getKeyFactory() {
         return new KeyFactory<DexKey>() {
             @Override
             public DexKey of(@NonNull File sourceFile, @NonNull FullRevision revision,
-                    @NonNull NamedNodeMap attrMap) {
+                             @NonNull NamedNodeMap attrMap) {
                 return DexKey.of(sourceFile, revision,
                         Boolean.parseBoolean(attrMap.getNamedItem(ATTR_JUMBO_MODE).getNodeValue()));
             }
@@ -84,12 +91,13 @@ public class PreDexCache extends PreProcessCache<DexKey> {
 
     /**
      * Pre-dex a given library to a given output with a specific version of the build-tools.
-     * @param inputFile the jar to pre-dex
-     * @param outFile the output file or folder (if multi-dex is enabled). must exist
-     * @param multiDex whether mutli-dex is enabled.
-     * @param dexOptions the dex options to run pre-dex
-     * @param buildToolInfo the build tools info
-     * @param verbose verbose flag
+     *
+     * @param inputFile       the jar to pre-dex
+     * @param outFile         the output file or folder (if multi-dex is enabled). must exist
+     * @param multiDex        whether mutli-dex is enabled.
+     * @param dexOptions      the dex options to run pre-dex
+     * @param buildToolInfo   the build tools info
+     * @param verbose         verbose flag
      * @param processExecutor the process executor
      * @throws IOException
      * @throws ProcessException
@@ -98,7 +106,7 @@ public class PreDexCache extends PreProcessCache<DexKey> {
     public void preDexLibrary(
             @NonNull File inputFile,
             @NonNull File outFile,
-                     boolean multiDex,
+            boolean multiDex,
             @NonNull DexOptions dexOptions,
             @NonNull BuildToolInfo buildToolInfo,
             boolean verbose,
@@ -186,12 +194,5 @@ public class PreDexCache extends PreProcessCache<DexKey> {
         }
 
         return itemNode;
-    }
-
-    private static void checkSame(@NonNull File source, @NonNull File dest) {
-        if (source.equals(dest)) {
-            Logger.getAnonymousLogger().info(
-                String.format("%s l:%d ts:%d", source, source.length(), source.lastModified()));
-        }
     }
 }

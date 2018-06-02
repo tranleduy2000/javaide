@@ -113,7 +113,7 @@ public class ResourceFile extends DataFile<ResourceItem> {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(getClass())
+        return MoreObjects.toStringHelper(getClass())
                 .add("mFile", mFile)
                 .add("mQualifiers", mQualifiers)
                 .toString();

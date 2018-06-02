@@ -23,7 +23,7 @@ import com.android.annotations.NonNull;
  */
 public interface ICallback {
 
-    public static final int UNKNOWN_CODENAME = 0;
+    int UNKNOWN_CODENAME = 0;
 
     /**
      * Queries the caller to find the API level for a given provisional API codename,
@@ -32,6 +32,6 @@ public interface ICallback {
      * @param codename A non-null codename string.
      * @return The integer API > 0 for the given codename, or {@link #UNKNOWN_CODENAME}.
      */
-    public int queryCodenameApiLevel(@NonNull String codename);
+    int queryCodenameApiLevel(@NonNull String codename);
 
 }

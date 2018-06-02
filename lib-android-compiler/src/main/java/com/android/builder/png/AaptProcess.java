@@ -111,7 +111,7 @@ public class AaptProcess {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("ready", mReady.get())
                 .add("process", mProcess.hashCode())
                 .toString();

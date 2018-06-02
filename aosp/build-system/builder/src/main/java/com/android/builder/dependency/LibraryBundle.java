@@ -230,7 +230,7 @@ public abstract class LibraryBundle implements LibraryDependency {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("mBundle", mBundle)
                 .add("mBundleFolder", mBundleFolder)
                 .add("mName", mName)

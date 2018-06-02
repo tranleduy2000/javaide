@@ -16,14 +16,13 @@
 
 package com.android.builder.core;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.internal.BaseConfigImpl;
 import com.android.builder.model.ApiVersion;
 import com.android.builder.model.ProductFlavor;
 import com.android.builder.model.SigningConfig;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -34,6 +33,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The configuration of a product flavor.
@@ -631,7 +632,7 @@ public class DefaultProductFlavor extends BaseConfigImpl implements ProductFlavo
     @Override
     @NonNull
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("name", mName)
                 .add("dimension", mDimension)
                 .add("minSdkVersion", mMinSdkVersion)

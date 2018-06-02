@@ -36,19 +36,19 @@ import java.util.List;
 
 /**
  * Cache for jar -> jack conversion, using the Jill tool.
- *
+ * <p>
  * Since we cannot yet have a single task for each library that needs to be run through Jill
  * (because there is no task-level parallelization), this class allows reusing the output of
  * the jill process for a library in a project in other projects.
- *
+ * <p>
  * Because different project could use different build-tools, both the library to be converted
  * and the version of the build tools are used as keys in the cache.
- *
+ * <p>
  * The API is fairly simple, just call {@link #convertLibrary(File, File, DexOptions, BuildToolInfo, boolean, JavaProcessExecutor, ProcessOutputHandler)}
- *
+ * <p>
  * The call will be blocking until the conversion happened, either through actually running Jill or
  * through copying the output of a previous Jill run.
- *
+ * <p>
  * After a build a call to {@link #clear(java.io.File, com.android.utils.ILogger)} with a file
  * will allow saving the known converted libraries for future reuse.
  */
@@ -66,7 +66,7 @@ public class JackConversionCache extends PreProcessCache<PreProcessCache.Key> {
         return new KeyFactory<Key>() {
             @Override
             public Key of(@NonNull File sourceFile, @NonNull FullRevision revision,
-                    @NonNull NamedNodeMap attrMap) {
+                          @NonNull NamedNodeMap attrMap) {
                 return Key.of(sourceFile, revision);
             }
         };
@@ -76,11 +76,11 @@ public class JackConversionCache extends PreProcessCache<PreProcessCache.Key> {
      * Converts a given library to a given output with Jill, using a specific version of the
      * build-tools.
      *
-     * @param inputFile the jar to pre-dex
-     * @param outFile the output file.
-     * @param dexOptions the dex options to run pre-dex
-     * @param buildToolInfo the build tools info
-     * @param verbose verbose flag
+     * @param inputFile       the jar to pre-dex
+     * @param outFile         the output file.
+     * @param dexOptions      the dex options to run pre-dex
+     * @param buildToolInfo   the build tools info
+     * @param verbose         verbose flag
      * @param processExecutor the java process executor.
      * @throws ProcessException
      */

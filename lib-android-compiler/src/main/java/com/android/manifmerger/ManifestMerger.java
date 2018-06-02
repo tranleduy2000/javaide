@@ -342,6 +342,10 @@ public class ManifestMerger {
 
         cleanupToolsAttributes(mainDoc);
 
+        if (mExtractPackagePrefix) {
+            extractFqcns(mainDoc);
+        }
+
         if (mInsertSourceMarkers) {
             insertSourceMarkers(mainDoc);
         }
@@ -478,7 +482,7 @@ public class ManifestMerger {
             pkg = manifest.getAttribute("package");
         }
 
-        if (pkg == null || pkg.length() == 0) {
+        if (pkg == null || pkg.isEmpty()) {
             // We can't adjust FQCNs if we don't know the root package name.
             // It's not a proper manifest if this is missing anyway.
             assert manifest != null;
@@ -505,7 +509,7 @@ public class ManifestMerger {
 
                         // We know it's a shortened FQCN if it starts with a dot
                         // or does not contain any dot.
-                        if (value != null && value.length() > 0 &&
+                        if (value != null && !value.isEmpty() &&
                                 (value.indexOf('.') == -1 || value.charAt(0) == '.')) {
                             if (value.charAt(0) == '.') {
                                 value = pkg + value;
@@ -536,7 +540,7 @@ public class ManifestMerger {
             pkg = manifest.getAttribute("package");
         }
 
-        if (pkg == null || pkg.length() == 0) {
+        if (pkg == null || pkg.isEmpty()) {
             return;
         }
 
@@ -598,7 +602,7 @@ public class ManifestMerger {
 
         for (String attrName : new String[] { "name", "backupAgent" }) {
             String libValue  = getAttributeValue(libApp, attrName);
-            if (libValue == null || libValue.length() == 0) {
+            if (libValue == null || libValue.isEmpty()) {
                 // Nothing to do if the attribute is not defined in the lib.
                 continue;
             }
@@ -708,7 +712,7 @@ public class ManifestMerger {
 
         nextSource: for (Element src : findElements(libDoc, path)) {
             String name = getAttributeValue(src, keyAttr);
-            if (name.length() == 0) {
+            if (name.isEmpty()) {
                 mLog.error(Severity.ERROR,
                         xmlFileAndLine(src),
                         "Undefined '%1$s' attribute in %2$s.",
@@ -828,11 +832,11 @@ public class ManifestMerger {
         for (Element src : findElements(libDoc, path)) {
             Attr attr = src.getAttributeNodeNS(NS_URI, keyAttr);
             String name = attr == null ? "" : attr.getNodeValue().trim();  //$NON-NLS-1$
-            if (name.length() == 0) {
+            if (name.isEmpty()) {
                 if (alternateKeyAttr != null) {
                     attr = src.getAttributeNodeNS(NS_URI, alternateKeyAttr);
                     String s = attr == null ? "" : attr.getNodeValue().trim(); //$NON-NLS-1$
-                    if (s.length() != 0) {
+                    if (!s.isEmpty()) {
                         // This element lacks the keyAttr but has the alternateKeyAttr. Skip it.
                         continue;
                     }
@@ -855,7 +859,7 @@ public class ManifestMerger {
                         "Manifest has more than one %1$s[@%2$s=%3$s] element.",
                         path, keyAttr, name);
             }
-            if (dests.size() > 0) {
+            if (!dests.isEmpty()) {
 
                 attr = src.getAttributeNodeNS(NS_URI, requiredAttr);
                 String value = attr == null ? "true" : attr.getNodeValue();    //$NON-NLS-1$
@@ -983,7 +987,7 @@ public class ManifestMerger {
         for (Element dest : findElements(mMainDoc, path)) {
             Attr attr = dest.getAttributeNodeNS(NS_URI, keyAttr);
             String value = attr == null ? "" : attr.getNodeValue().trim();   //$NON-NLS-1$
-            if (value.length() != 0) {
+            if (!value.isEmpty()) {
                 try {
                     // Note that the value can be an hex number such as 0x00020001 so we
                     // need Integer.decode instead of Integer.parseInt.
@@ -1026,7 +1030,7 @@ public class ManifestMerger {
         for (Element src : findElements(libDoc, path)) {
             Attr attr = src.getAttributeNodeNS(NS_URI, keyAttr);
             String value = attr == null ? "" : attr.getNodeValue().trim();   //$NON-NLS-1$
-            if (value.length() != 0) {
+            if (!value.isEmpty()) {
                 try {
                     // See comment on Long.decode above.
                     long version = Long.decode(value);
@@ -1191,7 +1195,7 @@ public class ManifestMerger {
         assert s != null;
         s = s.trim();
         try {
-            if (s.length() > 0) {
+            if (!s.isEmpty()) {
                 destValue.set(Integer.parseInt(s));
                 destImplied.set(false);
             }
@@ -1224,7 +1228,7 @@ public class ManifestMerger {
         assert s != null;
         s = s.trim();
         try {
-            if (s.length() > 0) {
+            if (!s.isEmpty()) {
                 srcValue.set(Integer.parseInt(s));
                 srcImplied.set(false);
             }
@@ -1273,7 +1277,7 @@ public class ManifestMerger {
             short t = prev.getNodeType();
             if (t == Node.TEXT_NODE) {
                 String text = prev.getNodeValue();
-                if (text == null || text.trim().length() != 0) {
+                if (text == null || !text.trim().isEmpty()) {
                     // Not whitespace, we don't want it.
                     break;
                 }
@@ -1318,7 +1322,7 @@ public class ManifestMerger {
         while (target != null) {
             if (target.getNodeType() == Node.TEXT_NODE) {
                 String text = target.getNodeValue();
-                if (text == null || text.trim().length() != 0) {
+                if (text == null || !text.trim().isEmpty()) {
                     // Not whitespace, insert after.
                     break;
                 }
@@ -1595,7 +1599,7 @@ public class ManifestMerger {
                 root.removeChild(child);
                 // If there's some whitespace just before that element, clean it up too.
                 while (prev != null && prev.getNodeType() == Node.TEXT_NODE) {
-                    if (prev.getNodeValue().trim().length() == 0) {
+                    if (prev.getNodeValue().trim().isEmpty()) {
                         Node prevPrev = prev.getPreviousSibling();
                         root.removeChild(prev);
                         prev = prevPrev;

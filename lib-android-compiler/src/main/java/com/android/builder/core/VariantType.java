@@ -38,18 +38,7 @@ public enum VariantType {
             "UnitTest",
             false,
             AndroidProject.ARTIFACT_UNIT_TEST,
-            ArtifactMetaData.TYPE_JAVA),
-    ;
-
-    public static ImmutableList<VariantType> getTestingTypes() {
-        ImmutableList.Builder<VariantType> result = ImmutableList.builder();
-        for (VariantType variantType : values()) {
-            if (variantType.isForTesting()) {
-                result.add(variantType);
-            }
-        }
-        return result.build();
-    }
+            ArtifactMetaData.TYPE_JAVA),;
 
     private final boolean mIsForTesting;
     private final String mPrefix;
@@ -57,8 +46,9 @@ public enum VariantType {
     private final boolean isSingleBuildType;
     private final String mArtifactName;
     private final int mArtifactType;
-
-    /** App or library variant. */
+    /**
+     * App or library variant.
+     */
     VariantType() {
         this.mIsForTesting = false;
         this.mPrefix = "";
@@ -68,7 +58,9 @@ public enum VariantType {
         this.isSingleBuildType = false;
     }
 
-    /** Testing variant. */
+    /**
+     * Testing variant.
+     */
     VariantType(
             String prefix,
             String suffix,
@@ -81,6 +73,16 @@ public enum VariantType {
         this.mPrefix = prefix;
         this.mSuffix = suffix;
         this.isSingleBuildType = isSingleBuildType;
+    }
+
+    public static ImmutableList<VariantType> getTestingTypes() {
+        ImmutableList.Builder<VariantType> result = ImmutableList.builder();
+        for (VariantType variantType : values()) {
+            if (variantType.isForTesting()) {
+                result.add(variantType);
+            }
+        }
+        return result.build();
     }
 
     /**

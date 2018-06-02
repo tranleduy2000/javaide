@@ -515,7 +515,7 @@ abstract class DataSet<I extends DataItem<F>, F extends DataFile<I>> implements 
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(getClass())
+        return MoreObjects.toStringHelper(getClass())
                 .addValue(mConfigName)
                 .add("sources", Arrays.toString(mSourceFiles.toArray()))
                 .toString();

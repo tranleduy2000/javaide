@@ -313,7 +313,7 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
     @Override
     @NonNull
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("name", mName)
                 .add("debuggable", mDebuggable)
                 .add("testCoverageEnabled", mTestCoverageEnabled)

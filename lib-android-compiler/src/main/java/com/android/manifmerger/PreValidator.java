@@ -16,13 +16,12 @@
 
 package com.android.manifmerger;
 
-import static com.android.manifmerger.MergingReport.Record.Severity.*;
+import static com.android.manifmerger.MergingReport.Record.Severity.ERROR;
+import static com.android.manifmerger.MergingReport.Record.Severity.WARNING;
 import static com.android.manifmerger.XmlNode.NodeKey;
 
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
-import com.android.utils.SdkUtils;
-import com.android.utils.XmlUtils;
 import com.android.xml.AndroidManifest;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -55,7 +54,7 @@ public class PreValidator {
     }
 
     /**
-     * Validates a loaded {@link com.android.manifmerger.XmlDocument} and return a status of the
+     * Validates a loaded {@link XmlDocument} and return a status of the
      * merging model.
      *
      * Will return one the following status :
@@ -80,7 +79,8 @@ public class PreValidator {
             @NonNull MergingReport.Builder mergingReport,
             @NonNull XmlDocument xmlDocument) {
 
-        validateManifestAttribute(mergingReport, xmlDocument.getRootNode());
+        validateManifestAttribute(
+                mergingReport, xmlDocument.getRootNode(), xmlDocument.getFileType());
         return validate(mergingReport, xmlDocument.getRootNode());
     }
 
@@ -104,7 +104,7 @@ public class PreValidator {
             } else {
                 if (checkKeyPresence(mergingReport, childElement)) {
                     XmlElement twin = childrenKeys.get(childElement.getId());
-                    if (twin != null) {
+                    if (twin != null && !childElement.getType().areMultipleDeclarationAllowed()) {
                         // we have 2 elements with the same identity, if they are equals,
                         // issue a warning, if not, issue an error.
                         String message = String.format(
@@ -160,7 +160,7 @@ public class PreValidator {
 
         Attr selectorAttribute =
                 element.getXml().getAttributeNodeNS(SdkConstants.TOOLS_URI, Selector.SELECTOR_LOCAL_NAME);
-        if (selectorAttribute!=null && !element.getOperationType().isSelectable()) {
+        if (selectorAttribute!=null && !element.supportsSelector()) {
             String message = String.format(
                     "Unsupported tools:selector=\"%1$s\" found on node %2$s at %3$s",
                     selectorAttribute.getValue(),
@@ -171,12 +171,16 @@ public class PreValidator {
     }
 
     private static void validateManifestAttribute(
-            MergingReport.Builder mergingReport, XmlElement manifest) {
+            MergingReport.Builder mergingReport, XmlElement manifest, XmlDocument.Type fileType) {
         Attr attributeNode = manifest.getXml().getAttributeNode(AndroidManifest.ATTRIBUTE_PACKAGE);
-        if (attributeNode == null) {
-            manifest.addMessage(mergingReport, WARNING, String.format(
-                    "Missing 'package' declaration in manifest at %1$s",
-                    manifest.printPosition()));
+        // it's ok for an overlay to not have a package name, it's not ok for a main manifest
+        // and it's a warning for a library.
+        if (attributeNode == null && fileType != XmlDocument.Type.OVERLAY) {
+            manifest.addMessage(mergingReport,
+                    fileType == XmlDocument.Type.MAIN ? ERROR : WARNING,
+                    String.format(
+                        "Missing 'package' declaration in manifest at %1$s",
+                        manifest.printPosition()));
         }
     }
 
@@ -249,23 +253,25 @@ public class PreValidator {
                 case REMOVE:
                     // check we are not provided a new value.
                     if (attribute.isPresent()) {
+                        // Add one to startLine so the first line is displayed as 1.
                         xmlElement.addMessage(mergingReport, ERROR, String.format(
                                 "tools:remove specified at line:%d for attribute %s, but "
                                         + "attribute also declared at line:%d, "
                                         + "do you want to use tools:replace instead ?",
-                                xmlElement.getLine(),
+                                xmlElement.getPosition().getStartLine() + 1,
                                 attributeOperationTypeEntry.getKey(),
-                                attribute.get().getPosition().getLine()
+                                attribute.get().getPosition().getStartLine() + 1
                         ));
                     }
                     break;
                 case REPLACE:
                     // check we are provided a new value
                     if (!attribute.isPresent()) {
+                        // Add one to startLine so the first line is displayed as 1.
                         xmlElement.addMessage(mergingReport, ERROR, String.format(
                                 "tools:replace specified at line:%d for attribute %s, but "
                                         + "no new value specified",
-                                xmlElement.getLine(),
+                                xmlElement.getPosition().getStartLine() + 1,
                                 attributeOperationTypeEntry.getKey()
                         ));
                     }

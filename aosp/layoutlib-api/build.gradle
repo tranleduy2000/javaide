@@ -1,0 +1,24 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'sdk-java-lib'
+
+group = 'com.android.tools.layoutlib'
+archivesBaseName = 'layoutlib-api'
+version = rootProject.ext.baseVersion
+
+dependencies {
+    compile project(':base:common')
+    compile 'net.sf.kxml:kxml2:2.3.0'
+    compile project(':base:annotations')
+    compile 'com.intellij:annotations:12.0'
+
+    testCompile 'junit:junit:4.12'
+}
+
+project.ext.pomName = 'Android Tools layoutlib-api'
+project.ext.pomDesc = 'Library to use the rendering library for Android layouts: layoutlib'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"
+

@@ -33,15 +33,15 @@ import java.io.File;
 class DexKey extends PreProcessCache.Key {
     private final boolean mJumboMode;
 
-    static DexKey of(@NonNull File sourceFile, @NonNull FullRevision buildToolsRevision,
-            boolean jumboMode) {
-        return new DexKey(sourceFile, buildToolsRevision, jumboMode);
-    }
-
     private DexKey(@NonNull File sourceFile, @NonNull FullRevision buildToolsRevision,
-            boolean jumboMode) {
+                   boolean jumboMode) {
         super(sourceFile, buildToolsRevision);
         mJumboMode = jumboMode;
+    }
+
+    static DexKey of(@NonNull File sourceFile, @NonNull FullRevision buildToolsRevision,
+                     boolean jumboMode) {
+        return new DexKey(sourceFile, buildToolsRevision, jumboMode);
     }
 
     boolean isJumboMode() {

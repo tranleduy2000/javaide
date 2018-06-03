@@ -65,62 +65,25 @@
     <string name="font.lucida_sans_typewriter" translatable="false">Lucida Sans Typewriter</string>
     <string name="font.source_code_pro" translatable="false">Source Code Pro</string>
     <string name="font.monospace" translatable="false">Monospace</string>
-
     <string name="key_console_frame_rate" translatable="false">key_frame_rate</string>
     <string name="key_bg_console" translatable="false">key_bg_console</string>
     <string name="key_full_screen" translatable="false">key_full_screen</string>
-
     <string name="key_console_text_color" translatable="false">key_text_color_console</string>
     <string name="key_console_max_buffer_size" translatable="false">key_max_buffer_size</string>
-
     <string name="tab" translatable="false">tab</string>
     <string name="copy_right" translatable="false">Copyright © 2016–2017 by Trần Lê Duy\nAll right reserve</string>
     <string name="key_pref_auto_compile" translatable="false">key_pref_auto_compile</string>
     <string name="key_pref_control" translatable="false">key_pref_control</string>
-
-
     <string name="volume_down" translatable="false">Volume down (-)</string>
     <string name="volume_up" translatable="false">Volume up (+)</string>
     <string name="camera" translatable="false">Camera</string>
     <string name="key_show_symbol" translatable="false">key_show_symbol</string>
-    <string-array name="control_key">
-        <item>@string/volume_down</item>
-        <item>@string/volume_up</item>
-        <item>@string/camera</item>
-        <item>@string/none</item>
-    </string-array>
     <string name="key_max_page" translatable="false">key_max_tab</string>
     <string name="key_max_history_edit" translatable="false">key_max_history_edit</string>
-    <string name="code_preview" translatable="false">
-        <![CDATA[
-unit Sample;
-
-interface
-
-uses SysUtils;
-
-type
-  TArr = array[0..100] of Integer;
-
-  TRec = record
-    a : TArr;
-    b : Integer;
-  end;
-
-
-  TAlias = TArr;
-  procedure routine();
-
-implementation
-
-uses unix;
-
-
-procedure routine();
-begin
-end;
-end.]]></string>
     <string name="default_classpath" translatable="false">default</string>
     <string name="key_classpath" translatable="false">pref_key_classpath</string>
     <string name="key_format_type" translatable="false">key_format_type</string>
+    <string name="key_pref_source_compatibility">key_pref_source_compatibility</string>
+    <string name="key_pref_target_compatibility">key_pref_target_compatibility</string>
+    <string name="key_pref_source_encoding">key_pref_source_encoding</string>
 </resources>

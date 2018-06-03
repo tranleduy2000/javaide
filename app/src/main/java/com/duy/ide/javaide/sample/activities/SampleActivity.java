@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.duy.ide.R;
-import com.duy.ide.activities.AbstractAppCompatActivity;
+import com.duy.ide.activities.BaseActivity;
 import com.duy.ide.javaide.sample.fragments.SelectCategoryFragment;
 import com.duy.ide.javaide.sample.fragments.SelectProjectFragment;
 import com.duy.ide.javaide.sample.model.AssetUtil;
@@ -39,7 +39,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by Duy on 27-Jul-17.
  */
 
-public class SampleActivity extends AbstractAppCompatActivity implements
+public class SampleActivity extends BaseActivity implements
         SelectCategoryFragment.CategoryClickListener, SelectProjectFragment.ProjectClickListener {
     public static final String PROJECT_FILE = "project_file";
     private static final String TAG = "SampleActivity";

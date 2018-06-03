@@ -27,6 +27,7 @@ import android.view.MenuItem;
 
 import com.duy.ide.editor.code.MainActivity;
 import com.duy.ide.javaide.sample.activities.SampleActivity;
+import com.duy.ide.javaide.setting.CompilerSettingActivity;
 import com.duy.ide.setting.SettingsActivity;
 import com.duy.ide.utils.DonateUtils;
 import com.duy.ide.utils.StoreUtil;
@@ -147,6 +148,10 @@ public class MenuEditor {
                 break;
             case R.id.action_install_cpp_nide:
                 StoreUtil.gotoPlayStore(activity, "com.duy.c.cpp.compiler");
+                break;
+
+            case R.id.action_compiler_setting:
+                activity.startActivity(new Intent(activity, CompilerSettingActivity.class));
                 break;
         }
         return true;

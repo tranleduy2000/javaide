@@ -47,8 +47,7 @@
 
 
         <activity android:name="com.spartacusrex.spartacuside.keyboard.KeyboardPrefs" />
-        <activity android:name=".editor.code.ProjectManagerActivity" />
-
+        <activity android:name=".javaide.setting.CompilerSettingActivity" />
 
         <service
             android:name="com.spartacusrex.spartacuside.keyboard.TerminalKeyboard"

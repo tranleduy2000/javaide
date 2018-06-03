@@ -24,7 +24,7 @@ import java.io.IOException;
  * Created by Duy on 16-Jul-17.
  */
 
-public class InstallActivity extends AbstractAppCompatActivity implements View.OnClickListener {
+public class InstallActivity extends BaseActivity implements View.OnClickListener {
     public static final String SYSTEM_VERSION = "System v3.0";
     private static final int REQUEST_CODE_SELECT_FILE = 1101;
     private AppSetting mPreferences;

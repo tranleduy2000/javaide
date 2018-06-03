@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Java options">
+        <ListPreference
+            android:defaultValue="1.7"
+            android:entries="@array/entries_java_versions"
+            android:entryValues="@array/entries_java_versions"
+            android:key="@string/key_pref_source_compatibility"
+            android:title="Source compatibility">
+
+        </ListPreference>
+        <ListPreference
+            android:defaultValue="1.7"
+            android:entries="@array/entries_java_versions"
+            android:entryValues="@array/entries_java_versions"
+            android:key="@string/key_pref_target_compatibility"
+            android:title="Target compatibility">
+
+        </ListPreference>
+        <EditTextPreference
+            android:defaultValue="UTF-8"
+            android:enabled="false"
+            android:key="@string/key_pref_source_encoding"
+            android:title="Encoding" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

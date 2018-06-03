@@ -20,13 +20,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.duy.ide.R;
-import com.duy.ide.activities.AbstractAppCompatActivity;
+import com.duy.ide.activities.BaseActivity;
 
 /**
  * Created by Duy on 27-Feb-17.
  */
 
-public class DocumentActivity extends AbstractAppCompatActivity {
+public class DocumentActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

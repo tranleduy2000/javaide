@@ -487,5 +487,6 @@
     <string name="copy_from_asset">Copy from asset</string>
     <string name="console_running">Running</string>
     <string name="console_stopped">Stopped</string>
+    <string name="compiler_setting">Compiler setting</string>
 
 </resources>

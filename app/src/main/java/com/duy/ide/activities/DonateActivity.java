@@ -25,7 +25,7 @@ import static com.duy.ide.utils.DonateUtils.REQUEST_DONATE;
  * Created by Duy on 11-Aug-17.
  */
 
-public class DonateActivity extends AbstractAppCompatActivity implements IabBroadcastReceiver.IabBroadcastListener, View.OnClickListener {
+public class DonateActivity extends BaseActivity implements IabBroadcastReceiver.IabBroadcastListener, View.OnClickListener {
     private static final String SKU_DONATE_ONE = "java_nide_donate_one_dollar";
     private static final String SKU_DONATE_TWO = "java_nide_donate_two_dollar";
     private static final String SKU_DONATE_THREE = "java_nide_donate_three_dollar";

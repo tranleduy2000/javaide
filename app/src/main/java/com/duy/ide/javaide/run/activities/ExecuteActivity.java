@@ -13,7 +13,7 @@ import com.duy.JavaApplication;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.java.Java;
 import com.duy.ide.R;
-import com.duy.ide.activities.AbstractAppCompatActivity;
+import com.duy.ide.activities.BaseActivity;
 import com.duy.ide.javaide.run.view.ConsoleEditText;
 
 import java.io.File;
@@ -23,7 +23,7 @@ import java.io.InputStream;
  * Created by Duy on 30-Jul-17.
  */
 
-public class ExecuteActivity extends AbstractAppCompatActivity {
+public class ExecuteActivity extends BaseActivity {
     public static final String PROJECT_FILE = "project_file";
     private static final String TAG = "ExecuteActivity";
     private final Handler mHandler = new Handler();

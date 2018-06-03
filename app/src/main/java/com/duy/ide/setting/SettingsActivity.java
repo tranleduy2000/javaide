@@ -21,10 +21,10 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 
 import com.duy.ide.R;
-import com.duy.ide.activities.AbstractAppCompatActivity;
+import com.duy.ide.activities.BaseActivity;
 
 
-public class SettingsActivity extends AbstractAppCompatActivity {
+public class SettingsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

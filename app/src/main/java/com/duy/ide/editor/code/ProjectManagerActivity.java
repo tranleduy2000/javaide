@@ -59,7 +59,7 @@ import com.duy.ide.EditPageContract;
 import com.duy.ide.EditorControl;
 import com.duy.ide.PagePresenter;
 import com.duy.ide.R;
-import com.duy.ide.activities.AbstractAppCompatActivity;
+import com.duy.ide.activities.BaseActivity;
 import com.duy.ide.adapters.BottomPageAdapter;
 import com.duy.ide.diagnostic.DiagnosticFragment;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
@@ -98,7 +98,7 @@ import static com.duy.projectview.view.fragments.FolderStructureFragment.newInst
 /**
  * Created by Duy on 09-Mar-17.
  */
-public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
+public abstract class ProjectManagerActivity extends BaseActivity
         implements SymbolListView.OnKeyListener,
         EditorControl,
         FileActionListener,

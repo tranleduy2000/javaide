@@ -15,7 +15,7 @@ import com.duy.ide.setting.AppSetting;
  * Created by duy on 18/07/2017.
  */
 
-public class AbstractAppCompatActivity extends AppCompatActivity
+public class BaseActivity extends AppCompatActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     private AppSetting mPreferences;
 

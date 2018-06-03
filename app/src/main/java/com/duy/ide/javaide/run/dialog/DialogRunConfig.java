@@ -45,7 +45,6 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     private OnConfigChangeListener listener;
 
     public static DialogRunConfig newInstance(JavaProject project) {
-
         Bundle args = new Bundle();
         args.putSerializable(ExecuteActivity.PROJECT_FILE, project);
         DialogRunConfig fragment = new DialogRunConfig();

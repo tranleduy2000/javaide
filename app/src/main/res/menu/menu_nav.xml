@@ -39,6 +39,11 @@
 
     <item android:title="@string/setting">
         <menu>
+            <item
+                android:id="@+id/action_compiler_setting"
+                android:enabled="true"
+                android:icon="@drawable/ic_settings_white_24dp"
+                android:title="@string/compiler_setting" />
 
             <item
                 android:id="@+id/action_setting"

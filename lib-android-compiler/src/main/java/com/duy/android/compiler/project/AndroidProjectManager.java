@@ -67,15 +67,16 @@ public class AndroidProjectManager implements IAndroidProjectManager {
      * @param rootDir     - root dir
      * @param tryToImport -  if not found gradle file, try to create it instead of throw exception
      */
+    @Override
     public AndroidAppProject loadProject(File rootDir, boolean tryToImport) throws IOException {
         AndroidAppProject project = new AndroidAppProject(rootDir, null, null);
-        File file = new File(rootDir, GradleFileGenerator.DEFAULT_SETTING_FILE);
+        File file = new File(rootDir, AndroidGradleFileGenerator.DEFAULT_SETTING_FILE);
         if (!file.exists()) {
             if (!tryToImport) {
                 throw new IOException("Can not find setting.gradle, try to create new project");
             } else {
-                GradleFileGenerator gradleFileGenerator = new GradleFileGenerator(context, project);
-                gradleFileGenerator.generate();
+                AndroidGradleFileGenerator generator = new AndroidGradleFileGenerator(context, project);
+                generator.generate();
             }
         }
 
@@ -96,7 +97,6 @@ public class AndroidProjectManager implements IAndroidProjectManager {
                 if (launcherActivity != null) {
                     project.setMainClass(new ClassFile(launcherActivity.getName()));
                     project.setPackageName(manifestData.getPackage());
-                    project.createClassR();
                 }
                 Log.d(TAG, "importAndroidProject launcherActivity = " + launcherActivity);
             } else {
@@ -111,7 +111,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
     }
 
     private void createGradleFile(AndroidAppProject project) throws IOException {
-        GradleFileGenerator generator = new GradleFileGenerator(context, project);
+        AndroidGradleFileGenerator generator = new AndroidGradleFileGenerator(context, project);
         generator.generate();
     }
 

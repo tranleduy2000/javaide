@@ -60,7 +60,7 @@ public class FileManager {
 
     static {
         EXTERNAL_DIR_SRC = Environment.getExternalStorageDirectory() + "/JavaNIDE/src/";
-        EXTERNAL_DIR = Environment.getExternalStorageDirectory() + "/JavaNIDE/";
+        EXTERNAL_DIR = new File(Environment.getExternalStorageDirectory(), "JavaNIDE").getAbsolutePath();
     }
 
     private final String FILE_TEMP_NAME = "tmp.pas";

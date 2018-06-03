@@ -488,5 +488,7 @@
     <string name="console_running">Running</string>
     <string name="console_stopped">Stopped</string>
     <string name="compiler_setting">Compiler setting</string>
+    <string name="message_open_examples">This action will be create new project, previous project will be close</string>
+    <string name="warning">Warning</string>
 
 </resources>

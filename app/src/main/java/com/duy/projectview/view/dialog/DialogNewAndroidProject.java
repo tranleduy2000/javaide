@@ -22,11 +22,10 @@ import com.duy.android.compiler.project.AndroidProjectManager;
 import com.duy.ide.R;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.javaide.autocomplete.Patterns;
-import com.duy.ide.javaide.sample.model.AssetUtil;
+import com.duy.ide.javaide.sample.AssetUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -131,18 +130,18 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
         }
     }
 
-    private void copyResources(AndroidAppProject projectFile, boolean useAppCompat, AssetManager assets) throws FileNotFoundException {
+    private void copyResources(AndroidAppProject projectFile, boolean useAppCompat, AssetManager assets) throws IOException {
         String resourcePath = projectFile.getResDirs().getPath();
-        AssetUtil.copyAssetFolder(assets, "templates/src/main/res", resourcePath);
+        AssetUtil.copyAssetSample(assets, "templates/src/main/res", resourcePath);
         File file = new File(resourcePath, "values/styles.xml");
         String content = FileManager.streamToString(new FileInputStream(file)).toString();
         content = content.replace("{APP_STYLE}", useAppCompat ? "Theme.AppCompat.Light" : "@android:style/Theme.Holo.Light");
         FileManager.saveFile(file, content);
     }
 
-    private void copyLibrary(AndroidAppProject projectFile, AssetManager assets) {
+    private void copyLibrary(AndroidAppProject projectFile, AssetManager assets) throws IOException {
         //copy android support library
-        AssetUtil.copyAssetFolder(assets, "templates/libs", projectFile.getDirLibs().getPath());
+        AssetUtil.copyAssetSample(assets, "templates/libs", projectFile.getDirLibs().getPath());
     }
 
     private void createStringXml(AndroidAppProject projectFile, String appName) throws Exception {

@@ -54,6 +54,7 @@ import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.AndroidProjectManager;
 import com.duy.android.compiler.project.ClassFile;
 import com.duy.android.compiler.project.JavaProject;
+import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.ide.EditPageContract;
 import com.duy.ide.EditorControl;
 import com.duy.ide.PagePresenter;
@@ -69,7 +70,6 @@ import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.AppSetting;
 import com.duy.ide.view.SymbolListView;
 import com.duy.projectview.ProjectFilePresenter;
-import com.duy.projectview.ProjectManager;
 import com.duy.projectview.view.dialog.DialogManager;
 import com.duy.projectview.view.dialog.DialogNewAndroidProject;
 import com.duy.projectview.view.dialog.DialogNewAndroidResource;
@@ -155,7 +155,7 @@ public abstract class ProjectManagerActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (mProject == null) {
-            this.mProject = ProjectManager.getLastProject(this);
+            this.mProject = JavaProjectManager.getLastProject(this);
         }
         bindView();
         setupToolbar();
@@ -285,7 +285,7 @@ public abstract class ProjectManagerActivity extends BaseActivity
         super.onPause();
         mPagePresenter.pause();
         if (mProject != null) {
-            ProjectManager.saveProject(this, mProject);
+            JavaProjectManager.saveProject(this, mProject);
         }
     }
 
@@ -432,7 +432,7 @@ public abstract class ProjectManagerActivity extends BaseActivity
 
         //save project
         this.mProject = projectFile;
-        ProjectManager.saveProject(this, projectFile);
+        JavaProjectManager.saveProject(this, projectFile);
 
         //remove all edit page
         while (mPageAdapter.getCount() > 0) {
@@ -583,11 +583,14 @@ public abstract class ProjectManagerActivity extends BaseActivity
             case REQUEST_OPEN_JAVA_PROJECT: {
                 if (resultCode == RESULT_OK) {
                     String file = FileExplorerActivity.getFile(data);
-                    JavaProject pf = ProjectManager.createProjectIfNeed(getApplicationContext(),
-                            new File(file));
-                    if (pf != null) onProjectCreated(pf);
-                    else
+                    JavaProjectManager javaProjectManager = new JavaProjectManager(this);
+                    try {
+                        JavaProject javaProject = javaProjectManager.loadProject(new File(file), true);
+                        onProjectCreated(javaProject);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                         Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
             }

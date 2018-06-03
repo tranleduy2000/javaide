@@ -11,16 +11,16 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.duy.android.compiler.project.JavaProject;
+import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.ide.R;
 import com.duy.ide.activities.BaseActivity;
+import com.duy.ide.file.FileManager;
+import com.duy.ide.javaide.sample.AssetUtil;
 import com.duy.ide.javaide.sample.fragments.SelectCategoryFragment;
 import com.duy.ide.javaide.sample.fragments.SelectProjectFragment;
-import com.duy.ide.javaide.sample.model.AssetUtil;
 import com.duy.ide.javaide.sample.model.CodeCategory;
 import com.duy.ide.javaide.sample.model.CodeProjectSample;
-import com.duy.ide.file.FileManager;
-import com.duy.android.compiler.project.JavaProject;
-import com.duy.projectview.ProjectManager;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,7 +39,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by Duy on 27-Jul-17.
  */
 
-public class SampleActivity extends BaseActivity implements
+public class JavaSampleActivity extends BaseActivity implements
         SelectCategoryFragment.CategoryClickListener, SelectProjectFragment.ProjectClickListener {
     public static final String PROJECT_FILE = "project_file";
     private static final String TAG = "SampleActivity";
@@ -114,31 +114,14 @@ public class SampleActivity extends BaseActivity implements
 
     @Override
     public void onProjectClick(final CodeProjectSample codeProjectSample) {
-        final String projectName = codeProjectSample.getName();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Warning");
-        builder.setMessage("This action will be create new project");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.warning);
+        builder.setMessage(R.string.message_open_examples);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                File out = new File(FileManager.EXTERNAL_DIR, projectName);
-                int count = 1;
-                while (out.exists()) {
-                    out = new File(FileManager.EXTERNAL_DIR, projectName + count);
-                    count++;
-                }
-                boolean success = AssetUtil.copyAssetFolder(getAssets(),
-                        codeProjectSample.getPath(),
-                        out.getPath());
-                if (success) {
-                    JavaProject pf = ProjectManager.createProjectIfNeed(getApplicationContext(), out);
-                    Intent intent = getIntent();
-                    intent.putExtra(PROJECT_FILE, pf);
-                    setResult(RESULT_OK, intent);
-                    finish();
-                } else {
-                    Toast.makeText(SampleActivity.this, "Can not copy project!", Toast.LENGTH_SHORT).show();
-                }
+                dialog.cancel();
+                openExample(codeProjectSample);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -148,6 +131,23 @@ public class SampleActivity extends BaseActivity implements
             }
         });
         builder.create().show();
+
+    }
+
+    private void openExample(CodeProjectSample codeProjectSample) {
+        try {
+            File projectDir = new File(FileManager.EXTERNAL_DIR);
+            JavaProject javaProject = JavaProjectManager.createNewProject(getApplicationContext(), projectDir, codeProjectSample.getName());
+            File appDir = javaProject.getAppDir();
+            AssetUtil.copyAssetSample(getAssets(), codeProjectSample.getPath(), appDir.getAbsolutePath());
+            Intent intent = getIntent();
+            intent.putExtra(PROJECT_FILE, javaProject);
+            setResult(RESULT_OK, intent);
+            finish();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(JavaSampleActivity.this, "Can not copy project!", Toast.LENGTH_SHORT).show();
+        }
 
     }
 }

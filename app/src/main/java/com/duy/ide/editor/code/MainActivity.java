@@ -67,10 +67,10 @@ import com.duy.ide.javaide.autocomplete.AutoCompleteProvider;
 import com.duy.ide.javaide.autocomplete.model.Description;
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;
 import com.duy.ide.javaide.sample.activities.DocumentActivity;
-import com.duy.ide.javaide.sample.activities.SampleActivity;
+import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
 import com.duy.ide.setting.AppSetting;
 import com.duy.ide.utils.RootUtils;
-import com.duy.projectview.ProjectManager;
+import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -612,7 +612,7 @@ public class MainActivity extends ProjectManagerActivity implements
             case REQUEST_CODE_SAMPLE:
                 if (resultCode == RESULT_OK) {
                     final JavaProject projectFile = (JavaProject)
-                            data.getSerializableExtra(SampleActivity.PROJECT_FILE);
+                            data.getSerializableExtra(JavaSampleActivity.PROJECT_FILE);
                     if (projectFile != null) {
                         mHandler.postDelayed(new Runnable() {
                             @Override
@@ -750,7 +750,7 @@ public class MainActivity extends ProjectManagerActivity implements
     public void onConfigChange(JavaProject projectFile) {
         this.mProject = projectFile;
         if (projectFile != null) {
-            ProjectManager.saveProject(this, projectFile);
+            JavaProjectManager.saveProject(this, projectFile);
         }
     }
 

@@ -8,13 +8,13 @@ import com.duy.android.compiler.utils.IOUtils;
 import java.io.File;
 import java.io.IOException;
 
-public class GradleFileGenerator {
+public class AndroidGradleFileGenerator {
     public static final String DEFAULT_BUILD_FILE = "build.gradle";
     public static final String DEFAULT_SETTING_FILE = "setting.gradle";
     private Context context;
     private AndroidAppProject project;
 
-    public GradleFileGenerator(Context context, AndroidAppProject project) {
+    public AndroidGradleFileGenerator(Context context, AndroidAppProject project) {
         this.context = context;
         this.project = project;
     }

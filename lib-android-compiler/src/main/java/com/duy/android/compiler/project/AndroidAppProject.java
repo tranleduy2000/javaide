@@ -24,7 +24,6 @@ public class AndroidAppProject extends JavaProject {
     /* PROJECT */
     private ArrayList<File> resDirs;
     private ArrayList<File> assetsDirs;
-    private File classR;
 
     private ManifestData.Activity launcherActivity;
 
@@ -50,9 +49,6 @@ public class AndroidAppProject extends JavaProject {
 
         apkUnsigned = new File(dirBuildOutput, "app-unsigned-debug.apk");
         apkSigned = new File(dirBuildOutput, "app-debug.apk");
-
-        createClassR();
-
         outResourceFile = new File(dirBuild, "resources.ap_");
     }
 
@@ -65,14 +61,6 @@ public class AndroidAppProject extends JavaProject {
             return launcherActivity;
         } catch (Exception e) {
             return null;
-        }
-    }
-
-
-    public void createClassR() {
-        if (packageName != null) {
-            String path = packageName.replace(".", File.separator) + File.separator + "R.java";
-            classR = new File(dirGeneratedSource, path);
         }
     }
 
@@ -159,11 +147,6 @@ public class AndroidAppProject extends JavaProject {
     public File getAssetsDirs() {
         mkdirs(assetsDirs);
         return assetsDirs.get(0);
-    }
-
-    public File getClassR() {
-        classR.getParentFile().mkdirs();
-        return classR;
     }
 
     public File getDirLayout() {

@@ -4,12 +4,11 @@ import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 
+import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.android.compiler.env.Environment;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -33,7 +32,6 @@ public class JavaProject implements Serializable, Cloneable {
     protected File dirGeneratedSource;
     /* Project */
     protected File dirRoot;
-    // TODO: 02-Jun-18 remove
     protected File dirApp;
     @Nullable
     protected String packageName;
@@ -257,21 +255,11 @@ public class JavaProject implements Serializable, Cloneable {
         return dirApp;
     }
 
-    public JSONObject writeToJson() {
-        JSONObject json = new JSONObject();
-        try {
-            if (mainClass != null) json.put("main_class_mame", mainClass.getName());
-            json.put("root_dir", dirRoot);
-            json.put("package_name", packageName);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return json;
-    }
-
     /**
      * @return the string contains all file *.jar in dirLibs
      */
+    @NonNull
+    @CallSuper
     public ArrayList<File> getJavaLibraries() {
         File[] files = getDirLibs().listFiles(new FileFilter() {
             @Override
@@ -282,6 +270,7 @@ public class JavaProject implements Serializable, Cloneable {
         return new ArrayList<>(Arrays.asList(files));
     }
 
+    @NonNull
     public String getClasspath() {
         ArrayList<File> javaLibraries = getJavaLibraries();
         StringBuilder classpath = new StringBuilder(".");
@@ -294,10 +283,12 @@ public class JavaProject implements Serializable, Cloneable {
         return classpath.toString();
     }
 
+    @NonNull
     public String getBootClassPath(Context context) {
         return Environment.getClasspathFile(context).getAbsolutePath();
     }
 
+    @CallSuper
     public String getSourcePath() {
         StringBuilder srcPath = new StringBuilder();
         for (File javaSrcDir : javaSrcDirs) {

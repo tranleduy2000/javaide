@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".javaide.sample.activities.SampleActivity" />
+        <activity android:name=".javaide.sample.activities.JavaSampleActivity" />
         <activity android:name=".activities.DonateActivity" />
         <activity
             android:name=".javaide.run.activities.ExecuteActivity"

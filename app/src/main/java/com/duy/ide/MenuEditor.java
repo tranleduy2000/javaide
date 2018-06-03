@@ -26,7 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.duy.ide.editor.code.MainActivity;
-import com.duy.ide.javaide.sample.activities.SampleActivity;
+import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
 import com.duy.ide.javaide.setting.CompilerSettingActivity;
 import com.duy.ide.setting.SettingsActivity;
 import com.duy.ide.utils.DonateUtils;
@@ -137,7 +137,7 @@ public class MenuEditor {
                 activity.buildApk();
                 break;
             case R.id.action_sample:
-                activity.startActivityForResult(new Intent(activity, SampleActivity.class),
+                activity.startActivityForResult(new Intent(activity, JavaSampleActivity.class),
                         MainActivity.REQUEST_CODE_SAMPLE);
                 break;
             case R.id.action_see_logcat:

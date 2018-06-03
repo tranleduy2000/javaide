@@ -31,7 +31,7 @@ public class AndroidLibraryProject extends JavaProject {
     private File classR;
 
     public AndroidLibraryProject(File libraryDir, String libraryName) throws IOException, SAXException, StreamException, ParserConfigurationException {
-        super(libraryDir, null, null);
+        super(libraryDir, null);
         parseAndroidManifest();
 
         resDir = new File(dirRoot, "res");

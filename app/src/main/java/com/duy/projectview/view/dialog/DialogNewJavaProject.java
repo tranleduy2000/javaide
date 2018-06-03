@@ -96,9 +96,9 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
             String mainClassName = editPackage.getText() + "." + editMainClass.getText();
             String projectName = editAppName.getText().toString();
             String packageName = editPackage.getText().toString();
-            JavaProject projectFile = new JavaProject(root, mainClassName, packageName);
+            JavaProject projectFile = new JavaProject(root, packageName);
             try {
-                projectFile.createMainClass();
+                projectFile.createClass(packageName, mainClassName);
                 if (listener != null) {
                     listener.onProjectCreated(projectFile);
                 }

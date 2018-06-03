@@ -95,7 +95,6 @@ public class AndroidProjectManager implements IAndroidProjectManager {
                 ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(project.getXmlManifest()));
                 ManifestData.Activity launcherActivity = manifestData.getLauncherActivity();
                 if (launcherActivity != null) {
-                    project.setMainClass(new ClassFile(launcherActivity.getName()));
                     project.setPackageName(manifestData.getPackage());
                 }
                 Log.d(TAG, "importAndroidProject launcherActivity = " + launcherActivity);

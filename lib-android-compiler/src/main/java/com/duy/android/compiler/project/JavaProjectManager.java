@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -67,9 +69,9 @@ public class JavaProjectManager implements IProjectManager<JavaProject> {
         try {
             projectName = projectName.replaceAll("\\s+", "");
             File rootDir = new File(dirToCreate, projectName);
-            JavaProject projectFile = new JavaProject(rootDir, null, null);
-            projectFile.createMainClass();
-            return projectFile;
+            JavaProject javaProject = new JavaProject(rootDir, null);
+            javaProject.mkdirs();
+            return javaProject;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -78,7 +80,22 @@ public class JavaProjectManager implements IProjectManager<JavaProject> {
 
     @Override
     public JavaProject loadProject(File rootDir, boolean tryToImport) throws IOException {
-        JavaProject projectFile = new JavaProject(rootDir, null, null);
-        return projectFile;
+        JavaProject project = new JavaProject(rootDir, null);
+
+        //compatible with old version
+        if (tryToImport) {
+            File oldSrcDir = new File(project.getRootDir(), "src/main/java");
+            if (oldSrcDir.exists()) {
+                FileUtils.copyDirectory(oldSrcDir, project.getJavaSrcDir());
+                FileUtils.deleteDirectory(oldSrcDir);
+            }
+            File oldLibs = new File(project.getRootDir(), "libs");
+            if (oldLibs.exists()) {
+                FileUtils.copyDirectory(oldLibs, project.getDirLibs());
+                FileUtils.deleteDirectory(oldLibs);
+            }
+        }
+
+        return project;
     }
 }

@@ -18,6 +18,7 @@ import com.duy.ide.javaide.run.view.ConsoleEditText;
 import com.sun.tools.javac.tree.JCTree;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -65,7 +66,7 @@ public class ExecuteActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    exec(mProjectFile, mainClassFile);
+                    exec(mainClassFile);
                 } catch (Error error) {
                     error.printStackTrace(mConsoleEditText.getErrorStream());
                 } catch (Exception e) {
@@ -96,22 +97,34 @@ public class ExecuteActivity extends BaseActivity {
     }
 
     @WorkerThread
-    private void exec(JavaProject projectFile, File mainClassFile) throws Throwable {
+    private void exec(File mainClassFile) throws Throwable {
+        String mainClass = resolveMainClass(mainClassFile);
+        InputStream stdin = mConsoleEditText.getInputStream();
+        File tempDir = getDir("dex", MODE_PRIVATE);
+        File dex = mProjectFile.getDexFile();
+        executeDex(stdin, dex, tempDir, mainClass);
+    }
+
+    private String resolveMainClass(File mainClassFile) throws IOException {
+        if (!mainClassFile.getName().endsWith(".java")){
+            return null;
+        }
 
         JavaParser parser = new JavaParser();
         JCTree.JCCompilationUnit unit = parser.parse(IOUtils.toStringAndClose(mainClassFile));
         JCTree.JCExpression packageName = unit.getPackageName();
-        InputStream in = mConsoleEditText.getInputStream();
-        File tempDir = getDir("dex", MODE_PRIVATE);
-        File dex = mProjectFile.getDexFile();
-        if (dex != null) {
-            String mainClass = projectFile.getMainClass().getName();
-            executeDex(in, dex, tempDir, mainClass);
-        }
+        String simpleName = mainClassFile.getName().substring(0, mainClassFile.getName().indexOf("."));
+        return packageName + "." + simpleName;
     }
 
-    private void executeDex(InputStream in, File outDex, File tempDir, String mainClass) throws Throwable {
-        String[] args = new String[]{"-jar", outDex.getPath(), mainClass};
+    private void executeDex(InputStream in, File dex, File tempDir, String mainClass) throws Throwable {
+        if (dex == null) {
+            throw new RuntimeException("Dex file must be not null");
+        }
+        if (mainClass == null) {
+            throw new RuntimeException("Main class must be not null");
+        }
+        String[] args = new String[]{"-jar", dex.getPath(), mainClass};
         Java.run(args, tempDir.getPath(), in);
     }
 

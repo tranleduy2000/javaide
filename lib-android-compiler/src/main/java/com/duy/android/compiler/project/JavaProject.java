@@ -59,13 +59,10 @@ public class JavaProject implements Serializable, Cloneable {
     private File dirBuildDexedClass;
     private File dirBuildIntermediates;
     private File dexFile;
-    /*Main class*/
-    private ClassFile mainClass;
     private File outJarArchive;
     private File dirGenerated;
 
-    public JavaProject(File root, @Nullable String mainClassName, @Nullable String packageName) {
-        this.mainClass = new ClassFile(mainClassName);
+    public JavaProject(File root, @Nullable String packageName) {
         this.packageName = packageName;
         this.dirRoot = root;
         init();
@@ -113,29 +110,14 @@ public class JavaProject implements Serializable, Cloneable {
         outJarArchive = new File(dirBuildOutputJar, getProjectName() + ".jar");
 
 
-        if (!dirRoot.exists()) {
-            dirRoot.mkdirs();
-        }
-        if (!dirApp.exists()) {
-            dirApp.mkdirs();
-        }
-        if (!dirLibs.exists()) {
-            dirLibs.mkdirs();
-        }
-        if (!dirSrcMain.exists()) {
-            dirSrcMain.mkdirs();
-        }
+        dirRoot.mkdirs();
+        dirApp.mkdirs();
+        dirLibs.mkdirs();
+        dirSrcMain.mkdirs();
         mkdirs(javaSrcDirs);
-        if (!dirBuildClasses.exists()) {
-            dirBuildClasses.mkdirs();
-        }
-        if (!dirGenerated.exists()) {
-            dirGenerated.mkdirs();
-        }
-        if (!dirGeneratedSource.exists()) {
-            dirGeneratedSource.mkdirs();
-        }
-
+        dirBuildClasses.mkdirs();
+        dirGenerated.mkdirs();
+        dirGeneratedSource.mkdirs();
     }
 
     protected void mkdirs(ArrayList<File> srcDirs) {
@@ -146,10 +128,6 @@ public class JavaProject implements Serializable, Cloneable {
         }
     }
 
-    public File getDirGenerated() {
-        return dirGenerated;
-    }
-
     public File getOutJarArchive() throws IOException {
         if (!outJarArchive.exists()) {
             outJarArchive.getParentFile().mkdirs();
@@ -158,7 +136,6 @@ public class JavaProject implements Serializable, Cloneable {
         return outJarArchive;
 
     }
-
 
     public File getDexFile() {
         dexFile.getParentFile().mkdirs();
@@ -206,48 +183,25 @@ public class JavaProject implements Serializable, Cloneable {
         }
     }
 
-    public JavaProject createMainClass() throws IOException {
-        this.mkdirs();
-        if (packageName != null) {
-            //create package file
-            File packageF = new File(javaSrcDirs.get(0), packageName.replace(".", File.separator));
-            if (!packageF.exists()) {
-                packageF.getParentFile().mkdirs();
-                packageF.mkdirs();
-            }
-
-            File mainFile = new File(packageF, mainClass.getSimpleName() + ".java");
-            if (!mainFile.exists()) {
-
-                String content = Template.createClass(packageName, mainClass.getSimpleName());
-
-                FileOutputStream output = new FileOutputStream(mainFile);
-                IOUtils.write(content, output);
-                output.close();
-            }
-        } else { //find package name
-            File[] files = javaSrcDirs.get(0).listFiles();
-            packageName = "";
-            if (files == null) {
-            } else if (files.length > 0) {
-                File f = files[0];
-                while (f != null && f.isDirectory()) {
-                    packageName += f.getName() + ".";
-
-                    files = f.listFiles();
-                    if (files == null || files.length == 0) {
-                        f = null;
-                    } else {
-                        f = files[0];
-                    }
-                }
-                if (packageName.charAt(packageName.length() - 1) == '.') {
-                    packageName = packageName.substring(0, packageName.length() - 1);
-                }
-            }
-
+    /**
+     * @param packageName - package name, can empty but not null
+     * @param simpleName   - simple name
+     */
+    public void createClass(String packageName, String simpleName) throws IOException {
+        if (packageName == null || simpleName == null) {
+            return;
         }
-        return this;
+        //create package file
+        File pkgPath = new File(javaSrcDirs.get(0), this.packageName.replace(".", File.separator));
+        pkgPath.mkdirs();
+
+        File mainFile = new File(pkgPath, simpleName + ".java");
+        if (!mainFile.exists()) {
+            String content = Template.createClass(this.packageName, simpleName);
+            FileOutputStream output = new FileOutputStream(mainFile);
+            IOUtils.write(content, output);
+            output.close();
+        }
     }
 
     public File getAppDir() {
@@ -302,14 +256,6 @@ public class JavaProject implements Serializable, Cloneable {
 
     public File getRootDir() {
         return dirRoot;
-    }
-
-    public ClassFile getMainClass() {
-        return mainClass;
-    }
-
-    public void setMainClass(ClassFile classFile) {
-        this.mainClass = classFile;
     }
 
     public String getPackageName() {

@@ -32,7 +32,7 @@ public class AndroidAppProject extends JavaProject {
     public AndroidAppProject(File dirRoot,
                              @Nullable String mainClassName,
                              @Nullable String packageName) {
-        super(dirRoot, mainClassName, packageName);
+        super(dirRoot, packageName);
         dependencies = new ArrayList<>();
     }
 
@@ -155,23 +155,6 @@ public class AndroidAppProject extends JavaProject {
             file.mkdirs();
         }
         return file;
-    }
-
-    /**
-     * use for javac
-     *
-     * @return main class
-     */
-    @Override
-    public ClassFile getMainClass() {
-        if (launcherActivity == null) {
-            getLauncherActivity();
-        }
-        if (launcherActivity != null) {
-            return new ClassFile(this.launcherActivity.getName());
-        } else {
-            return null;
-        }
     }
 
 

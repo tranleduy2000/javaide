@@ -325,7 +325,7 @@ public class MainActivity extends ProjectManagerActivity implements
                     @Override
                     public void run() {
                         File currentFile = getCurrentFile();
-                        if (currentFile == null) {
+                        if (currentFile == null || !currentFile.getName().endsWith(".java")) {
                             String message = getString(R.string.main_class_not_found);
                             Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
                         }

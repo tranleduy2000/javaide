@@ -110,6 +110,8 @@ public class MainActivity extends ProjectManagerActivity implements
                     }
                 }).start();
             }
+        } else {
+            populateAutoCompleteService(mAutoCompleteProvider);
         }
     }
 

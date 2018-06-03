@@ -70,7 +70,18 @@ public class AutoCompleteProvider {
     public static final int CONTEXT_IMPORT_STATIC = CONTEXT_IMPORT + 4;
     public static final int CONTEXT_PACKAGE_DECL = CONTEXT_IMPORT_STATIC + 6;
     public static final int CONTEXT_NEED_TYPE = CONTEXT_PACKAGE_DECL + 7;
+    /**
+     * Suggest class constructor
+     */
     public static final int CONTEXT_NEED_CONSTRUCTOR = CONTEXT_NEED_TYPE + 1;
+    /**
+     * Suggest class name
+     */
+    public static final int CONTEXT_NEED_CLASS = CONTEXT_NEED_CONSTRUCTOR + 1;
+    /**
+     * Suggest interface name
+     */
+    public static final int CONTEXT_NEED_INTERFACE = CONTEXT_NEED_CLASS + 1;
 
     private static final String TAG = "AutoCompleteProvider";
     private JavaDexClassLoader mClassLoader;
@@ -84,7 +95,7 @@ public class AutoCompleteProvider {
     private int cursor;
 
     private String statement = ""; //statement before cursor
-    private String dotExpr = ""; //expression end with .
+    private String mDotExpr = ""; //expression end with .
     /**
      * incomplete word
      * 1. dotExpr.method(|)
@@ -93,9 +104,9 @@ public class AutoCompleteProvider {
      * 4. ja
      * 5. method(
      */
-    private String incomplete = "";
+    private String mIcompleteWord = "";
     @ContextType
-    private int contextType = CONTEXT_OTHER;
+    private int mContextType = CONTEXT_OTHER;
 
     public AutoCompleteProvider(Context context) {
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
@@ -104,7 +115,11 @@ public class AutoCompleteProvider {
         mJavaParser = new JavaParser();
     }
 
-    private void initializer(EditText editor) {
+    private static boolean not(boolean b) {
+        return !b;
+    }
+
+    private void resolveContextType(EditText editor) {
         this.cursor = editor.getSelectionStart();
         this.source = editor.getText().toString();
         try {
@@ -114,9 +129,9 @@ public class AutoCompleteProvider {
         }
 
         //reset environment
-        dotExpr = "";
-        incomplete = "";
-        contextType = CONTEXT_OTHER;
+        mDotExpr = "";
+        mIcompleteWord = "";
+        mContextType = CONTEXT_OTHER;
 
         statement = getStatement(editor);
         Log.d(TAG, "findStart statement = " + statement);
@@ -128,49 +143,59 @@ public class AutoCompleteProvider {
             }
             if (!valid) return;
 
-            contextType = CONTEXT_AFTER_DOT;
+            mContextType = CONTEXT_AFTER_DOT;
             //import or package declaration
             if (compile("^\\s*(import|package)\\s+").matcher(statement).find()) {
                 progressImportPackage();
             }
+
             //String literal
             else if (compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
-                dotExpr = statement.replaceAll("\\s*\\.\\s*$", ".");
+                mDotExpr = statement.replaceAll("\\s*\\.\\s*$", ".");
                 return;
             }
             //" type declaration		NOTE: not supported generic yet.
             else {
-                Matcher matcher = compile("^\\s*" + Patterns.RE_TYPE_DECL).matcher(statement);
+                Matcher matcher = compile("^\\s?" + Patterns.RE_TYPE_DECL).matcher(statement);
                 if (matcher.find()) {
-                    dotExpr = statement.substring(matcher.start());
-                    if (!compile("^\\s*(extend|implements)\\s+").matcher(dotExpr).find()) {
+                    mDotExpr = statement.substring(matcher.start());
+                    matcher = compile("\\s+(extends|implements)(\\s+)(" + Patterns.RE_QUALID + ")").matcher(mDotExpr);
+                    if (not(matcher.find())) {
                         // TODO: 13-Aug-17 suggest class
                         return;
 
                     }
-                    contextType = CONTEXT_NEED_TYPE;
+                    mDotExpr = matcher.group(3);
+                    mContextType = CONTEXT_NEED_TYPE;
+                    //need class name or interface name
+                    if (matcher.group(1).equals("extends")) {
+                        mContextType = CONTEXT_NEED_CLASS;
+
+                    } else {
+                        mContextType = CONTEXT_NEED_INTERFACE;
+                    }
                 } else {
                     matcher = compile("(\\s*new\\s+)(" + Patterns.RE_QUALID + ")$").matcher(statement);
                     if (matcher.find()) {
                         statement = matcher.group(2);
                         if (!Patterns.RE_KEYWORDS.matcher(statement).find()) {
-                            incomplete = statement;
-                            dotExpr = "";
-                            contextType = CONTEXT_NEED_CONSTRUCTOR;
+                            mIcompleteWord = statement;
+                            mDotExpr = "";
+                            mContextType = CONTEXT_NEED_CONSTRUCTOR;
                             return;
                         }
                     }
+                    mDotExpr = extractCleanExpr(statement);
                 }
-                dotExpr = extractCleanExpr(statement);
             }
 
             //" all cases: " java.ut|" or " java.util.|" or "ja|"
-            if (dotExpr.contains(".")) {
-                incomplete = dotExpr.substring(dotExpr.lastIndexOf(".") + 1);
-                dotExpr = dotExpr.substring(0, dotExpr.lastIndexOf(".") + 1); //include "." character
+            if (mDotExpr.contains(".")) {
+                mIcompleteWord = mDotExpr.substring(mDotExpr.lastIndexOf(".") + 1);
+                mDotExpr = mDotExpr.substring(0, mDotExpr.lastIndexOf(".") + 1); //include "." character
             } else {
-                incomplete = dotExpr;
-                dotExpr = "";
+                mIcompleteWord = mDotExpr;
+                mDotExpr = "";
             }
             //incomplete
             return;
@@ -179,7 +204,7 @@ public class AutoCompleteProvider {
         //	" method parameters, treat methodname or 'new' as an incomplete word
         else if (compile("\\(\\s*$").matcher(statement).find()) {
             //" TODO: Need to exclude method declaration?
-            contextType = CONTEXT_METHOD_PARAM;
+            mContextType = CONTEXT_METHOD_PARAM;
             int pos = statement.lastIndexOf("(");
             statement = statement.replaceAll("\\s*\\(\\s*$", "");
             //" new ClassName?
@@ -187,9 +212,9 @@ public class AutoCompleteProvider {
             if (compile("\\s*new\\s+" + Patterns.RE_QUALID + "$").matcher(statement).find()) {
                 statement = statement.replaceAll("^\\s*new\\s+", "");
                 if (!Patterns.KEYWORDS.matcher(statement).find()) {
-                    incomplete = "+";
-                    dotExpr = statement;
-                    contextType = CONTEXT_NEED_CONSTRUCTOR;
+                    mIcompleteWord = "+";
+                    mDotExpr = statement;
+                    mContextType = CONTEXT_NEED_CONSTRUCTOR;
                     return;
 
                 }
@@ -202,12 +227,12 @@ public class AutoCompleteProvider {
                     statement = statement.replaceAll("^\\s*", "");
                     //treat "this" or "super" as a type name
                     if (statement.equals("this") || statement.equals("supper")) {
-                        dotExpr = statement;
-                        incomplete = "+";
+                        mDotExpr = statement;
+                        mIcompleteWord = "+";
                         return;
 
                     } else if (!Patterns.KEYWORDS.matcher(statement).find()) {
-                        incomplete = statement;
+                        mIcompleteWord = statement;
                         return;
 
                     }
@@ -215,8 +240,8 @@ public class AutoCompleteProvider {
                 //case expr.method(|)
                 else if (statement.charAt(pos - 1) == '.' &&
                         !Patterns.KEYWORDS.matcher(statement.substring(0, statement.lastIndexOf("."))).find()) {
-                    dotExpr = extractCleanExpr(statement.substring(0, statement.lastIndexOf(".")));
-                    incomplete = statement.substring(statement.lastIndexOf(".") + 1);
+                    mDotExpr = extractCleanExpr(statement.substring(0, statement.lastIndexOf(".")));
+                    mIcompleteWord = statement.substring(statement.lastIndexOf(".") + 1);
                     return;
                 }
             }
@@ -229,51 +254,52 @@ public class AutoCompleteProvider {
         if (compile("^\\s*(import)\\s+").matcher(statement).find()) {
             //static import
             if (compile("^\\s*(import)\\s+(static)\\s+").matcher(statement).find()) {
-                contextType = CONTEXT_IMPORT_STATIC;
+                mContextType = CONTEXT_IMPORT_STATIC;
             } else { //normal import
-                contextType = CONTEXT_IMPORT;
+                mContextType = CONTEXT_IMPORT;
             }
             Pattern importStatic = compile("^\\s*(import)\\s+(static\\s+)?");
             Matcher matcher = importStatic.matcher(statement);
             if (matcher.find()) {
-                dotExpr = statement.substring(matcher.end());
+                mDotExpr = statement.substring(matcher.end());
             }
         } else {
-            contextType = CONTEXT_PACKAGE_DECL;
+            mContextType = CONTEXT_PACKAGE_DECL;
             Pattern _package = compile("^\\s*(package)\\s+?");
             Matcher matcher = _package.matcher(statement);
             if (matcher.find()) {
-                dotExpr = statement.substring(matcher.end());
+                mDotExpr = statement.substring(matcher.end());
             }
         }
     }
 
     public ArrayList<Description> complete() {
+        System.out.println("contextType = " + mContextType);
         //" Return list of matches.
         //case: all is empty
-        if (dotExpr.isEmpty() && incomplete.isEmpty()) {
+        if (mDotExpr.isEmpty() && mIcompleteWord.isEmpty()) {
             return new ArrayList<>();
         }
 
         //the result
         ArrayList<Description> result = new ArrayList<>();
 
-        if (!dotExpr.isEmpty()) {
-            switch (contextType) {
+        if (!mDotExpr.isEmpty()) {
+            switch (mContextType) {
                 case CONTEXT_AFTER_DOT:
-                    result = completeAfterDot(source, dotExpr, incomplete);
+                    result = completeAfterDot(source, mDotExpr, mIcompleteWord);
                     break;
                 case CONTEXT_IMPORT:
                 case CONTEXT_IMPORT_STATIC:
                 case CONTEXT_PACKAGE_DECL:
                 case CONTEXT_NEED_TYPE:
-                    result = getMember(dotExpr, incomplete);
+                    result = getMember(mDotExpr, mIcompleteWord);
                     break;
                 case CONTEXT_METHOD_PARAM:
-                    result = completeAfterDot(source, dotExpr, incomplete);
+                    result = completeAfterDot(source, mDotExpr, mIcompleteWord);
                     break;
                 case CONTEXT_NEED_CONSTRUCTOR:
-                    result = getConstructorList(dotExpr);
+                    result = getConstructorList(mDotExpr);
                     break;
                 case CONTEXT_OTHER:
                     result = new ArrayList<>();
@@ -295,17 +321,17 @@ public class AutoCompleteProvider {
 //            }
         }
         //only complete word
-        else if (!incomplete.isEmpty()) {
+        else if (!mIcompleteWord.isEmpty()) {
             //only need method
-            switch (contextType) {
+            switch (mContextType) {
                 case CONTEXT_METHOD_PARAM:
-                    result = completeMethodParams(incomplete);
+                    result = completeMethodParams(mIcompleteWord);
                     break;
                 case CONTEXT_NEED_CONSTRUCTOR:
-                    result = getConstructorList(incomplete);
+                    result = getConstructorList(mIcompleteWord);
                     break;
                 default:
-                    result = completeWord(source, incomplete);
+                    result = completeWord(source, mIcompleteWord);
                     break;
             }
         }
@@ -333,7 +359,7 @@ public class AutoCompleteProvider {
         }
         incomplete = incomplete.trim();
         ArrayList<Description> result = new ArrayList<>();
-        if (contextType != CONTEXT_PACKAGE_DECL) {
+        if (mContextType != CONTEXT_PACKAGE_DECL) {
             //parse current file
             if (unit != null) {
                 //add import current file
@@ -998,7 +1024,7 @@ public class AutoCompleteProvider {
 
     public ArrayList<Description> getSuggestions(EditText editor) {
         try {
-            this.initializer(editor);
+            this.resolveContextType(editor);
             ArrayList<Description> complete = complete();
             return complete;
         } catch (Exception e) {

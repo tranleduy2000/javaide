@@ -446,6 +446,8 @@ public abstract class ProjectManagerActivity extends BaseActivity
         mDiagnosticPresenter.clear();
 
         openDrawer(GravityCompat.START);
+
+        startAutoCompleteService();
     }
 
     protected abstract void startAutoCompleteService();

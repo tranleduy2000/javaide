@@ -60,7 +60,6 @@ public class JavaProject implements Serializable, Cloneable {
     private File dirBuildIntermediates;
     private File dexFile;
     /*Main class*/
-    @Nullable
     private ClassFile mainClass;
     private File outJarArchive;
     private File dirGenerated;

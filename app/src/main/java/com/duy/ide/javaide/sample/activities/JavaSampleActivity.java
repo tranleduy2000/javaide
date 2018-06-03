@@ -137,7 +137,8 @@ public class JavaSampleActivity extends BaseActivity implements
     private void openExample(CodeProjectSample codeProjectSample) {
         try {
             File projectDir = new File(FileManager.EXTERNAL_DIR);
-            JavaProject javaProject = JavaProjectManager.createNewProject(getApplicationContext(), projectDir, codeProjectSample.getName());
+            JavaProjectManager javaProjectManager = new JavaProjectManager(this);
+            JavaProject javaProject = javaProjectManager.createNewProject(projectDir, codeProjectSample.getName());
             File appDir = javaProject.getAppDir();
             AssetUtil.copyAssetSample(getAssets(), codeProjectSample.getPath(), appDir.getAbsolutePath());
             Intent intent = getIntent();

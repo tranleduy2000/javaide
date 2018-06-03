@@ -25,7 +25,7 @@ public class JavaProjectManager implements IProjectManager<JavaProject> {
 
 
     public static void saveProject(@NonNull Context context, JavaProject project) {
-        if (project == null){
+        if (project == null) {
             return;
         }
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -64,8 +64,9 @@ public class JavaProjectManager implements IProjectManager<JavaProject> {
     }
 
     @Nullable
-    public static JavaProject createNewProject(Context context, File dirToCreate, String projectName) {
+    public  JavaProject createNewProject(File dirToCreate, String projectName) {
         try {
+            projectName = projectName.replaceAll("\\s+", "");
             File rootDir = new File(dirToCreate, projectName);
             JavaProject projectFile = new JavaProject(rootDir, null, null);
             projectFile.createMainClass();
@@ -78,6 +79,7 @@ public class JavaProjectManager implements IProjectManager<JavaProject> {
 
     @Override
     public JavaProject loadProject(File rootDir, boolean tryToImport) throws IOException {
-        return null;
+        JavaProject projectFile = new JavaProject(rootDir, null, null);
+        return projectFile;
     }
 }

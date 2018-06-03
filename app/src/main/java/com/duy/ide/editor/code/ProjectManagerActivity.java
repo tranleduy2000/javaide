@@ -584,11 +584,15 @@ public abstract class ProjectManagerActivity extends BaseActivity
                 if (resultCode == RESULT_OK) {
                     String file = FileExplorerActivity.getFile(data);
                     JavaProjectManager javaProjectManager = new JavaProjectManager(this);
+                    JavaProject javaProject = null;
                     try {
-                        JavaProject javaProject = javaProjectManager.loadProject(new File(file), true);
-                        onProjectCreated(javaProject);
+                        javaProject = javaProjectManager.loadProject(new File(file), true);
                     } catch (IOException e) {
                         e.printStackTrace();
+                    }
+                    if (javaProject != null){
+                        onProjectCreated(javaProject);
+                    } else {
                         Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
                     }
                 }

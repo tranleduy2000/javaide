@@ -1,8 +1,12 @@
 package com.duy.projectview.view.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -104,19 +108,34 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
 
 
     private void setIcon(ImageView view, File fileDetail) {
+        Integer colorFilter = null;
+        Integer iconRes;
         String fileName = fileDetail.getName();
         if (fileDetail.isDirectory()) {
-            view.setImageResource(R.drawable.ic_folder_green);
+            colorFilter = Color.GREEN;
+            iconRes = (R.drawable.ic_folder_green);
         } else if (fileName.endsWith(".java")) {
-            view.setImageResource(R.drawable.ic_java_file_yellow);
+            colorFilter = Color.YELLOW;
+            iconRes = (R.drawable.ic_java_file_yellow);
         } else if (fileName.endsWith(".jar")) {
-            view.setImageResource(R.drawable.ic_jar_file_white);
+            iconRes = (R.drawable.ic_jar_file_white);
         } else if (fileName.endsWith(".class")) {
-            view.setImageResource(R.drawable.ic_class_file_white);
+            iconRes = (R.drawable.ic_class_file_white);
         } else if (fileName.endsWith(".xml")) {
-            view.setImageResource(R.drawable.ic_xml_file_white);
+            iconRes = (R.drawable.ic_xml_file_white);
+            colorFilter = Color.YELLOW;
+        } else if (fileName.endsWith(".gradle")) {
+            colorFilter = Color.GREEN;
+            iconRes = (R.drawable.ic_gradle_file);
         } else {
-            view.setImageResource(R.drawable.ic_insert_drive_file_white_24dp);
+            iconRes = (R.drawable.ic_insert_drive_file_white_24dp);
+        }
+        if (iconRes != null) {
+            Drawable drawable = ContextCompat.getDrawable(context, iconRes);
+            if (colorFilter != null) {
+                drawable.setColorFilter(colorFilter, PorterDuff.Mode.SRC_ATOP);
+            }
+            view.setImageDrawable(drawable);
         }
     }
 

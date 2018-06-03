@@ -48,7 +48,8 @@ public class FileUtils {
     }
 
     public static boolean canEdit(File file) {
-        return file.canWrite() && com.duy.ide.file.FileUtils.hasExtension(file, ".java", ".xml", ".txt");
+        String[] exts = {".java", ".xml", ".txt", ".gradle"};
+        return file.canWrite() && hasExtension(file, exts);
     }
 
 }

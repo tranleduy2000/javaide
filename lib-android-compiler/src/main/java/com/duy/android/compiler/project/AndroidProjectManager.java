@@ -2,7 +2,10 @@ package com.duy.android.compiler.project;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.util.Log;
 
+import com.android.ide.common.xml.AndroidManifestParser;
+import com.android.ide.common.xml.ManifestData;
 import com.android.io.StreamException;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.library.AndroidLibraryExtractor;
@@ -21,6 +24,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class AndroidProjectManager implements IAndroidProjectManager {
+    private static final String TAG = "AndroidProjectManager";
     private Context context;
 
     public AndroidProjectManager(Context context) {
@@ -59,7 +63,8 @@ public class AndroidProjectManager implements IAndroidProjectManager {
 
     /**
      * Load previous project
-     *  @param rootDir     - root dir
+     *
+     * @param rootDir     - root dir
      * @param tryToImport -  if not found gradle file, try to create it instead of throw exception
      */
     public AndroidAppProject loadProject(File rootDir, boolean tryToImport) throws IOException {
@@ -82,6 +87,26 @@ public class AndroidProjectManager implements IAndroidProjectManager {
             return project;
         }
         String module = matcher.group(2);
+
+
+        //find AndroidManifest
+        try {
+            if (project.getXmlManifest().exists()) {
+                ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(project.getXmlManifest()));
+                ManifestData.Activity launcherActivity = manifestData.getLauncherActivity();
+                if (launcherActivity != null) {
+                    project.setMainClass(new ClassFile(launcherActivity.getName()));
+                    project.setPackageName(manifestData.getPackage());
+                    project.createClassR();
+                }
+                Log.d(TAG, "importAndroidProject launcherActivity = " + launcherActivity);
+            } else {
+                return null;
+            }
+            return project;
+        } catch (Exception e) {
+
+        }
 
         return project;
     }

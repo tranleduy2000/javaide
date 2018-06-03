@@ -40,4 +40,6 @@ dependencies {
     api 'com.google.guava:guava:25.1-android'
 
     api 'com.squareup:javawriter:2.5.0'
+    api 'org.bouncycastle:bcpkix-jdk15on:1.56'
+    api 'org.bouncycastle:bcprov-jdk15on:1.56'
 }

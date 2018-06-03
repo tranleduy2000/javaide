@@ -21,5 +21,7 @@ android {
 }
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
+    api 'org.bouncycastle:bcpkix-jdk15on:1.56'
+    api 'org.bouncycastle:bcprov-jdk15on:1.56'
 }
 

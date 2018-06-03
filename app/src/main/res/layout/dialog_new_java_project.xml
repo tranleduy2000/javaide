@@ -4,7 +4,9 @@
     android:layout_height="wrap_content"
     android:minHeight="200dp"
     android:minWidth="200dp"
-    android:padding="16dp">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"

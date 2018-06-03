@@ -444,6 +444,7 @@ public abstract class ProjectManagerActivity extends BaseActivity
         mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         mMessagePresenter.clear();
         mDiagnosticPresenter.clear();
+
         openDrawer(GravityCompat.START);
     }
 
@@ -583,7 +584,7 @@ public abstract class ProjectManagerActivity extends BaseActivity
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    if (javaProject != null){
+                    if (javaProject != null) {
                         onProjectCreated(javaProject);
                     } else {
                         Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
@@ -593,19 +594,18 @@ public abstract class ProjectManagerActivity extends BaseActivity
             }
             case REQUEST_OPEN_ANDROID_PROJECT: {
                 if (resultCode == RESULT_OK) {
-                    AndroidProjectManager androidProjectManager = new AndroidProjectManager(this);
+                    AndroidProjectManager manager = new AndroidProjectManager(this);
                     String file = FileExplorerActivity.getFile(data);
                     AndroidAppProject project;
                     try {
-                        project = androidProjectManager.loadProject(new File(file), true);
+                        project = manager.loadProject(new File(file), true);
+                        if (project != null) {
+                            onProjectCreated(project);
+                        }
                     } catch (IOException e) {
                         project = null;
                         e.printStackTrace();
-                    }
-                    if (project != null) {
-                        onProjectCreated(project);
-                    } else {
-                        Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Can not import project. Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;

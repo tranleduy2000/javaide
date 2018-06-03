@@ -10,6 +10,7 @@ import com.android.io.StreamException;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.library.AndroidLibraryExtractor;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 
@@ -79,6 +80,39 @@ public class AndroidProjectManager implements IAndroidProjectManager {
                 generator.generate();
             }
         }
+
+        //compatible with old version
+        if (tryToImport) {
+            File oldLibs = new File(project.getRootDir(), "libs");
+            if (oldLibs.exists()) {
+                FileUtils.copyDirectory(oldLibs, project.getDirLibs());
+                FileUtils.deleteDirectory(oldLibs);
+            }
+
+            File oldJavaDir = new File(project.getRootDir(), "src/main/java");
+            if (oldJavaDir.exists()) {
+                FileUtils.copyDirectory(oldJavaDir, project.getJavaSrcDir());
+                FileUtils.deleteDirectory(oldJavaDir);
+            }
+            File oldResDir = new File(project.getRootDir(), "src/main/res");
+            if (oldResDir.exists()) {
+                FileUtils.copyDirectory(oldResDir, project.getResDir());
+                FileUtils.deleteDirectory(oldResDir);
+            }
+
+            File oldAssetsDir = new File(project.getRootDir(), "src/main/assets");
+            if (oldAssetsDir.exists()) {
+                FileUtils.copyDirectory(oldAssetsDir, project.getAssetsDirs());
+                FileUtils.deleteDirectory(oldAssetsDir);
+            }
+
+            File oldManifest = new File(project.getRootDir(), "src/main/AndroidManifest.xml");
+            if (oldManifest.exists()) {
+                FileUtils.copyFile(oldManifest, project.getXmlManifest());
+                FileUtils.deleteQuietly(oldManifest);
+            }
+        }
+
 
         // TODO: 03-Jun-18 parse groovy file
         String content = IOUtils.toString(new FileInputStream(file));

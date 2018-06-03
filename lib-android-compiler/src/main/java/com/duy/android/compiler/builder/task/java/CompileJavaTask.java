@@ -115,7 +115,6 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
                 if (child.getName().endsWith(".java")) {
                     toAdd.add(child.getAbsolutePath());
                 }
-                return;
             }
         }
     }

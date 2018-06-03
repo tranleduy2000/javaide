@@ -508,14 +508,14 @@ public class HighlightEditor extends CodeSuggestsEditText
     /**
      * move cursor to lineInfo
      *
-     * @param line - lineInfo in editor, start at 0
+     * @param virtualLine - lineInfo in editor, start at 0
      */
-    public void goToLine(int line) {
+    public void goToLine(int virtualLine) {
         Layout layout = getLayout();
-        line = Math.min(line - 1, getLineCount() - 1);
-        line = Math.max(0, line);
+        virtualLine = Math.min(virtualLine, getLineCount() - 1);
+        virtualLine = Math.max(0, virtualLine);
         if (layout != null) {
-            int index = layout.getLineEnd(line);
+            int index = layout.getLineStart(virtualLine);
             setSelection(index);
         }
     }

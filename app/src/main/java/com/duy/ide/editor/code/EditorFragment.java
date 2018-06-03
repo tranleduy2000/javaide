@@ -37,8 +37,8 @@ import com.duy.ide.R;
 import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
-import com.duy.ide.javaide.formatter.FormatFactory;
 import com.duy.ide.javaide.autocomplete.AutoCompleteProvider;
+import com.duy.ide.javaide.formatter.FormatFactory;
 import com.duy.ide.view.LockableScrollView;
 
 import java.io.File;
@@ -158,7 +158,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     @Override
     public void gotoLine(int line, int col) {
-        // TODO: 19/07/2017
+        mCodeEditor.goToLine(line);
     }
 
     @Override
@@ -216,21 +216,6 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         String filePath = getArguments().getString(CompileManager.FILE_PATH);
         if (filePath != null) {
             new FormatSource(getContext(), FormatFactory.getType(new File(filePath))).execute(getCode());
-        }
-    }
-
-    @Override
-    public void highlightError(long startPosition, long endPosition) {
-        if (mCodeEditor != null) {
-            mCodeEditor.highlightError(startPosition, endPosition);
-        }
-    }
-
-    @Override
-    public void setCursorPosition(int endPosition) {
-        if (mCodeEditor != null) {
-            mCodeEditor.requestFocus();
-            mCodeEditor.setSelection(Math.min(endPosition, mCodeEditor.length()));
         }
     }
 

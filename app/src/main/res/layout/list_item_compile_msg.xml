@@ -4,35 +4,46 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
     android:clickable="true"
     android:foreground="?selectableItemBackground"
-    android:orientation="horizontal">
-
-    <ImageView
-        android:id="@+id/img_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:padding="4dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_error_red" />
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/txt_line"
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/img_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:padding="4dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_error_red" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/txt_postion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/dark.color_diagnostic_file"
+            android:padding="2dp"
             tools:text="0:1" />
 
-        <TextView
-            android:id="@+id/txt_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/txt_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:singleLine="true"
+            tools:text="Sdasdasd" />
+
     </LinearLayout>
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/txt_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        tools:text="asasdasddasdasdasdas" />
 
 </LinearLayout>

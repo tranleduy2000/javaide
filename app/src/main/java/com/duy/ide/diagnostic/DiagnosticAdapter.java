@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.ide.common.blame.Message;
+import com.android.ide.common.blame.SourceFile;
 import com.android.ide.common.blame.SourceFilePosition;
 import com.android.ide.common.blame.SourcePosition;
 import com.duy.ide.R;
@@ -48,12 +49,20 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Er
     public void onBindViewHolder(ErrorHolder holder, int position) {
         final Message message = mDiagnostics.get(position);
 
-        //line:col
         SourceFilePosition sourceFilePosition = message.getSourceFilePositions().get(0);
+
+        //line:col
         SourcePosition sourcePosition = sourceFilePosition.getPosition();
         holder.txtPosition.setText(String.valueOf(sourcePosition.getStartLine()));
         if (sourcePosition.getStartColumn() >= 0) {
             holder.txtPosition.append(":" + sourcePosition.getStartColumn());
+        }
+
+        SourceFile file = sourceFilePosition.getFile();
+        if (file != null) {
+            holder.txtFile.setText(file.getSourceFile().getName());
+        } else {
+            holder.txtFile.setText("");
         }
 
         switch (message.getKind()) {
@@ -67,8 +76,8 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Er
                 holder.icon.setImageResource(R.drawable.ic_warning_yellow);
                 break;
         }
-        holder.message.setTypeface(FontManager.getFontFromAsset(mContext, "Roboto-Light.ttf"));
-        holder.message.setText(message.getText());
+        holder.txtMessage.setTypeface(FontManager.getFontFromAsset(mContext, "Roboto-Light.ttf"));
+        holder.txtMessage.setText(message.getText());
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,14 +114,15 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Er
 
     public static class ErrorHolder extends RecyclerView.ViewHolder {
         ImageView icon;
-        TextView message, txtPosition;
+        TextView txtMessage, txtPosition, txtFile;
         View root;
 
         public ErrorHolder(View itemView) {
             super(itemView);
             icon = itemView.findViewById(R.id.img_icon);
-            message = itemView.findViewById(R.id.txt_message);
-            txtPosition = itemView.findViewById(R.id.txt_line);
+            txtMessage = itemView.findViewById(R.id.txt_message);
+            txtPosition = itemView.findViewById(R.id.txt_postion);
+            txtFile = itemView.findViewById(R.id.txt_file);
             root = itemView.findViewById(R.id.container);
         }
     }

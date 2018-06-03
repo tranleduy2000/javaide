@@ -49,8 +49,8 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         SourceFilePosition source = sourceFilePositions.get(0);
         SourceFile file = source.getFile();
         if (file != null) {
-            int i = mPagePresenter.gotoPage(file.getSourceFile());
-            if (i == -1) {
+            int index = mPagePresenter.gotoPage(file.getSourceFile());
+            if (index == -1) {
                 mPagePresenter.addPage(file.getSourceFile(), true);
             }
             EditPageContract.SourceView editor = mPagePresenter.getCurrentPage();
@@ -59,9 +59,9 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
                 return;
             }
             SourcePosition position = source.getPosition();
-            int startPosition = position.getStartLine();
+            int startLine = position.getStartLine();
             int startColumn = position.getStartColumn();
-            editor.gotoLine(startPosition, startColumn);
+            editor.gotoLine(startLine, startColumn);
         }
     }
 

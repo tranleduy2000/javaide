@@ -103,12 +103,10 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
 
     @Override
     public void appendMessages(List<Message> messages) {
-        messages = applyFilter(messages);
-        final List<Message> finalMessages = messages;
+        final List<Message> finalMessages = applyFilter(messages);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mAdapter.clear();
                 mAdapter.addAll(finalMessages);
             }
         });

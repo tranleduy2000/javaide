@@ -30,10 +30,6 @@ public class EditPageContract {
 
         void formatCode();
 
-        void highlightError(long startPosition, long endPosition);
-
-        void setCursorPosition(int endPosition);
-
         File getCurrentFile();
     }
 

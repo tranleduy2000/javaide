@@ -230,7 +230,7 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
                 if (s == null) {
                     break;
                 }
-                builder.stdout("AAPT: " + s);
+                builder.stdout(s);
             } catch (Exception e) {
                 break;
             }
@@ -243,7 +243,7 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
                 if (s == null) {
                     break;
                 }
-                builder.stderr("AAPT: " + s);
+                builder.stderr(s);
                 // TODO: 03-Jun-18 improve it , use com.android.ide.common.blame.parser.aapt.AaptOutputParser
                 if (s.startsWith("ERROR")) {
                     return false;

@@ -9,13 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.ide.common.blame.Message;
+import com.android.ide.common.blame.SourceFilePosition;
+import com.android.ide.common.blame.SourcePosition;
 import com.duy.ide.R;
 import com.duy.ide.themefont.fonts.FontManager;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.tools.Diagnostic;
 
 /**
  * Created by duy on 19/07/2017.
@@ -23,12 +24,12 @@ import javax.tools.Diagnostic;
 
 public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.ErrorHolder> {
 
-    private List<Diagnostic> mDiagnostics = new ArrayList<>();
+    private List<Message> mDiagnostics = new ArrayList<>();
     private Context mContext;
     private LayoutInflater mInflater;
     private OnItemClickListener listener;
 
-    public DiagnosticAdapter(Context context, @Nullable List<Diagnostic> diagnostics) {
+    public DiagnosticAdapter(Context context, @Nullable List<Message> diagnostics) {
         this.mContext = context;
         if (diagnostics != null) {
             this.mDiagnostics = diagnostics;
@@ -44,34 +45,32 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Er
 
     @Override
     public void onBindViewHolder(ErrorHolder holder, int position) {
-        final Diagnostic diagnostic = mDiagnostics.get(position);
-        holder.line.setText(SpanUtil.createSrcSpan(mContext.getResources(), diagnostic));
-        switch (diagnostic.getKind()) {
+        final Message message = mDiagnostics.get(position);
+        SourceFilePosition sourceFilePosition = message.getSourceFilePositions().get(0);
+        SourcePosition sourcePosition = sourceFilePosition.getPosition();
+        holder.line.setText(sourcePosition.getStartLine());
+        if (sourcePosition.getStartColumn() >= 0) {
+            holder.line.append(":" + sourcePosition.getStartColumn());
+        }
+        switch (message.getKind()) {
             case ERROR:
                 holder.icon.setImageResource(R.drawable.ic_error_red);
                 break;
             case WARNING:
                 holder.icon.setImageResource(R.drawable.ic_warning_yellow);
                 break;
-            case MANDATORY_WARNING:
-                holder.icon.setImageResource(R.drawable.ic_warning_yellow);
-                break;
-            case NOTE:
-                holder.icon.setImageResource(R.drawable.ic_note_organe_24dp);
-                break;
-            case OTHER:
+            default:
                 holder.icon.setImageResource(R.drawable.ic_warning_yellow);
                 break;
         }
         holder.message.setTypeface(FontManager.getFontFromAsset(mContext, "Roboto-Light.ttf"));
-        holder.message.setText(diagnostic.getMessage(null));
+        holder.message.setText(message.getText());
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (listener != null) listener.onClick(diagnostic);
+                if (listener != null) listener.onClick(message);
             }
         });
-        String code = diagnostic.getCode();
     }
 
     @Override
@@ -84,7 +83,7 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Er
         notifyDataSetChanged();
     }
 
-    public void addAll(List<Diagnostic> diagnostics) {
+    public void addAll(List<Message> diagnostics) {
         this.mDiagnostics.addAll(diagnostics);
         notifyDataSetChanged();
     }
@@ -95,7 +94,7 @@ public class DiagnosticAdapter extends RecyclerView.Adapter<DiagnosticAdapter.Er
 
 
     public interface OnItemClickListener {
-        void onClick(Diagnostic diagnostic);
+        void onClick(Message diagnostic);
     }
 
     public static class ErrorHolder extends RecyclerView.ViewHolder {

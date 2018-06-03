@@ -1,8 +1,8 @@
 package com.duy.ide.diagnostic;
 
-import java.util.List;
+import com.android.ide.common.blame.Message;
 
-import javax.tools.Diagnostic;
+import java.util.List;
 
 /**
  * Created by duy on 19/07/2017.
@@ -10,7 +10,7 @@ import javax.tools.Diagnostic;
 
 public class DiagnosticContract {
     public interface View {
-        public void display(List<Diagnostic> diagnostics);
+        public void display(List<Message> diagnostics);
 
         public void clear();
 
@@ -18,11 +18,12 @@ public class DiagnosticContract {
     }
 
     public interface Presenter {
-        public void click(Diagnostic diagnostic);
+        public void click(Message diagnostic);
 
         public void clear();
 
-        public void display(List<Diagnostic> diagnostics);
+        public void display(List<Message> diagnostics);
 
+        void add(List<Message> message);
     }
 }

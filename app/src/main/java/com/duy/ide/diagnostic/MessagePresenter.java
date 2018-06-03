@@ -3,18 +3,20 @@ package com.duy.ide.diagnostic;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.android.ide.common.blame.Message;
 import com.android.ide.common.blame.parser.PatternAwareOutputParser;
 import com.android.ide.common.blame.parser.aapt.AaptOutputParser;
 import com.android.utils.ILogger;
 import com.duy.JavaApplication;
 import com.duy.ide.adapters.BottomPageAdapter;
-import com.duy.ide.diagnostic.parser.JavaOutputParser;
 import com.duy.ide.diagnostic.parser.ToolOutputParser;
+import com.duy.ide.diagnostic.parser.java.JavaOutputParser;
 import com.duy.ide.editor.code.ProjectManagerActivity;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 /**
  * Created by duy on 19/07/2017.
@@ -58,9 +60,7 @@ public class MessagePresenter implements MessageContract.Presenter, ILogger {
 
             @Override
             public void write(@NonNull byte[] b, int off, int len) throws IOException {
-                if (mLogView != null) {
-                    mLogView.appendErr(b, off, len);
-                }
+                onNewErrorMessage(b, off, len);
             }
         });
         stdOut = new PrintStream(new OutputStream() {
@@ -71,9 +71,7 @@ public class MessagePresenter implements MessageContract.Presenter, ILogger {
 
             @Override
             public void write(@NonNull byte[] b, int off, int len) throws IOException {
-                if (mLogView != null) {
-                    mLogView.appendOut(b, off, len);
-                }
+                onNewMessage(b, off, len);
             }
         });
 
@@ -81,7 +79,27 @@ public class MessagePresenter implements MessageContract.Presenter, ILogger {
                 new AaptOutputParser(),
                 new JavaOutputParser()
         };
-        mToolOutputParser = new ToolOutputParser(patternAwareOutputParsers, getILogger());
+        mToolOutputParser = new ToolOutputParser(patternAwareOutputParsers, this);
+    }
+
+    private void onNewMessage(byte[] b, int off, int len) {
+        String message = new String(b, off, len);
+        System.out.println("message = " + message);
+        List<Message> messages = mToolOutputParser.parseToolOutput(message);
+        mDiagnosticPresenter.add(messages);
+        if (mLogView != null) {
+            mLogView.append(message);
+        }
+    }
+
+
+    private void onNewErrorMessage(byte[] b, int off, int len) {
+        String message = new String(b, off, len);
+        System.out.println("message = " + message);
+        List<Message> messages = mToolOutputParser.parseToolOutput(message);
+        if (mLogView != null) {
+            mLogView.append(message);
+        }
     }
 
     @Override
@@ -104,16 +122,16 @@ public class MessagePresenter implements MessageContract.Presenter, ILogger {
     public void resume(JavaApplication application) {
         Log.d(TAG, "resume() called with: application = [" + application + "]");
 
-        application.addStdOut(stdOut);
-        application.addStdErr(stdErr);
+//        application.addStdOut(stdOut);
+//        application.addStdErr(stdErr);
     }
 
     @Override
     public void pause(JavaApplication application) {
         Log.d(TAG, "pause() called with: application = [" + application + "]");
 
-        application.removeOutStream(stdOut);
-        application.removeErrStream(stdErr);
+//        application.removeOutStream(stdOut);
+//        application.removeErrStream(stdErr);
     }
 
     public ILogger getILogger() {

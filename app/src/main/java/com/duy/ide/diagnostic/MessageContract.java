@@ -14,12 +14,6 @@ public class MessageContract {
         void append(String text);
 
         @WorkerThread
-        void appendOut(byte[] chars, int start, int end);
-
-        @WorkerThread
-        void appendErr(byte[] chars, int start, int end);
-
-        @WorkerThread
         void clear();
 
         void setPresenter(Presenter presenter);

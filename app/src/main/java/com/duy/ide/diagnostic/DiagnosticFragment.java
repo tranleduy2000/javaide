@@ -10,12 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.ide.common.blame.Message;
 import com.duy.ide.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.tools.Diagnostic;
 
 /**
  * Created by duy on 19/07/2017.
@@ -49,21 +48,21 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new DiagnosticAdapter(getContext(), new ArrayList<Diagnostic>());
+        mAdapter = new DiagnosticAdapter(getContext(), new ArrayList<Message>());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
         mAdapter.setListener(new DiagnosticAdapter.OnItemClickListener() {
             @Override
-            public void onClick(Diagnostic diagnostic) {
+            public void onClick(Message diagnostic) {
                 if (presenter != null) presenter.click(diagnostic);
             }
         });
     }
 
     @Override
-    public void display(List<Diagnostic> diagnostics) {
+    public void display(List<Message> diagnostics) {
         mAdapter.clear();
         mAdapter.addAll(diagnostics);
     }

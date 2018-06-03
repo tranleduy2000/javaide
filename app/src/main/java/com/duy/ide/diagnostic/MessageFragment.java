@@ -92,16 +92,6 @@ public class MessageFragment extends android.support.v4.app.Fragment implements 
     }
 
     @Override
-    public void appendOut(final byte[] chars, final int start, final int end) {
-        append(new String(chars, start, end));
-    }
-
-    @Override
-    public void appendErr(byte[] chars, int start, int end) {
-        appendOut(chars, start, end);
-    }
-
-    @Override
     public void clear() {
         mHandler.post(new Runnable() {
             @Override

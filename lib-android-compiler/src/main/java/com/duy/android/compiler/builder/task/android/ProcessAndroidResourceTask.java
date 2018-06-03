@@ -118,7 +118,7 @@ public class ProcessAndroidResourceTask extends ATask<AndroidAppProject> {
 
     @Override
     public String getTaskName() {
-        return "AAPT";
+        return "Process android resource";
     }
 
     public boolean run() throws Exception {

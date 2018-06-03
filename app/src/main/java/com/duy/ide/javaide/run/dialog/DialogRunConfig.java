@@ -41,13 +41,6 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     @Nullable
     private OnConfigChangeListener listener;
 
-    public static DialogRunConfig newInstance(JavaProject project) {
-        Bundle args = new Bundle();
-        args.putSerializable(ExecuteActivity.PROJECT_FILE, project);
-        DialogRunConfig fragment = new DialogRunConfig();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -82,7 +75,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        projectFile = (JavaProject) getArguments().getSerializable(ExecuteActivity.PROJECT_FILE);
+        projectFile = (JavaProject) getArguments().getSerializable(ExecuteActivity.DEX_FILE);
         mPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         if (projectFile == null) {
             return;

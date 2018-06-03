@@ -41,7 +41,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class JavaSampleActivity extends BaseActivity implements
         SelectCategoryFragment.CategoryClickListener, SelectProjectFragment.ProjectClickListener {
-    public static final String PROJECT_FILE = "project_file";
+    public static final String PROJECT_PATH = "project_file";
     private static final String TAG = "SampleActivity";
     private CodeCategory category = null;
 
@@ -142,7 +142,7 @@ public class JavaSampleActivity extends BaseActivity implements
             File appDir = javaProject.getAppDir();
             AssetUtil.copyAssetSample(getAssets(), codeProjectSample.getPath(), appDir.getAbsolutePath());
             Intent intent = getIntent();
-            intent.putExtra(PROJECT_FILE, javaProject);
+            intent.putExtra(PROJECT_PATH, javaProject.getRootDir().getAbsolutePath());
             setResult(RESULT_OK, intent);
             finish();
         } catch (IOException e) {

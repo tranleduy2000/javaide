@@ -15,7 +15,6 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,7 +23,7 @@ import java.util.Arrays;
  */
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class JavaProject implements Serializable, Cloneable {
+public class JavaProject {
     private static final String TAG = "ProjectFile";
 
     protected ArrayList<File> javaSrcDirs;
@@ -185,7 +184,7 @@ public class JavaProject implements Serializable, Cloneable {
 
     /**
      * @param packageName - package name, can empty but not null
-     * @param simpleName   - simple name
+     * @param simpleName  - simple name
      */
     public void createMainClass(String packageName, String simpleName) throws IOException {
         if (packageName == null || simpleName == null) {

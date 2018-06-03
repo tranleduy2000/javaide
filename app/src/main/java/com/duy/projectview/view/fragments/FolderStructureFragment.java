@@ -36,7 +36,7 @@ import static android.widget.FrameLayout.LayoutParams;
 public class FolderStructureFragment extends Fragment implements ProjectFileContract.View {
     public static final String TAG = "FolderStructureFragment";
     private final android.os.Handler mHandler = new android.os.Handler();
-    private JavaProject mProjectFile;
+
     @Nullable
     private ProjectFileContract.FileActionListener listener;
 
@@ -67,14 +67,16 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     private ProjectFileContract.Presenter presenter;
     private AndroidTreeView mTreeView;
     private SharedPreferences mPref;
+    private JavaProject mProject;
 
     public static FolderStructureFragment newInstance(@NonNull JavaProject projectFile) {
-
-        Bundle args = new Bundle();
-        args.putSerializable(ExecuteActivity.PROJECT_FILE, projectFile);
         FolderStructureFragment fragment = new FolderStructureFragment();
-        fragment.setArguments(args);
+        fragment.setProject(projectFile);
         return fragment;
+    }
+
+    public void setProject(JavaProject mProject) {
+        this.mProject = mProject;
     }
 
     @Override
@@ -91,7 +93,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mProjectFile = (JavaProject) getArguments().getSerializable(ExecuteActivity.PROJECT_FILE);
+        mProject = (JavaProject) getArguments().getSerializable(ExecuteActivity.DEX_FILE);
         mContainerView = view.findViewById(R.id.container);
         view.findViewById(R.id.img_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +102,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
             }
         });
 
-        display(mProjectFile, true);
+        display(mProject, true);
         view.findViewById(R.id.img_expand_all).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -222,7 +224,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
 
     @Override
     public void display(JavaProject projectFile, boolean expand) {
-        this.mProjectFile = projectFile;
+        this.mProject = projectFile;
         TreeNode root = refresh();
         if (expand && mTreeView != null) {
             expand(root);
@@ -230,7 +232,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     }
 
     private void expand(TreeNode root) {
-        if (mTreeView == null || mProjectFile == null) {
+        if (mTreeView == null || mProject == null) {
             return;
         }
         expandRecursive(root, new Predicate<TreeNode>() {
@@ -261,9 +263,9 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
 
     @Override
     public TreeNode refresh() {
-        if (mProjectFile == null) return null;
+        if (mProject == null) return null;
         TreeNode root = TreeNode.root();
-        TreeNode fileStructure = createFileStructure(mProjectFile);
+        TreeNode fileStructure = createFileStructure(mProject);
         if (fileStructure != null) {
             root.addChildren(fileStructure);
         }

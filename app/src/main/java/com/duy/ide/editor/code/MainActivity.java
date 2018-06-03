@@ -67,6 +67,7 @@ import com.duy.ide.utils.RootUtils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.tools.DiagnosticCollector;
@@ -326,7 +327,7 @@ public class MainActivity extends ProjectManagerActivity implements
                             Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
                         Intent intent = new Intent(MainActivity.this, ExecuteActivity.class);
-                        intent.putExtra(ExecuteActivity.PROJECT_FILE, mProject);
+                        intent.putExtra(ExecuteActivity.DEX_FILE, mProject.getDexFile());
                         intent.putExtra(ExecuteActivity.MAIN_CLASS_FILE, currentFile);
                         startActivity(intent);
                     }
@@ -533,15 +534,16 @@ public class MainActivity extends ProjectManagerActivity implements
         switch (requestCode) {
             case REQUEST_CODE_SAMPLE:
                 if (resultCode == RESULT_OK) {
-                    final JavaProject projectFile = (JavaProject)
-                            data.getSerializableExtra(JavaSampleActivity.PROJECT_FILE);
-                    if (projectFile != null) {
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                onProjectCreated(projectFile);
-                            }
-                        }, 100);
+                    String projectPath = data.getStringExtra(JavaSampleActivity.PROJECT_PATH);
+                    JavaProjectManager manager = new JavaProjectManager(this);
+                    JavaProject javaProject = null;
+                    try {
+                        javaProject = manager.loadProject(new File(projectPath), true);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (javaProject != null) {
+                        onProjectCreated(javaProject);
                     }
                 }
                 break;

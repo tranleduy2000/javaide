@@ -31,25 +31,26 @@ import static android.view.ViewGroup.LayoutParams;
 
 public class DialogNewClass extends AppCompatDialogFragment implements View.OnClickListener {
     public static final String TAG = "DialogNewClass";
-    private static final String KEY_PROJECT_FILE = "project_file";
-    private static final String KEY_PARENT_FILE = "parent_file";
-    private static final String KEY_PACKAGE = "current_package";
     private EditText mEditName;
     private Spinner mKind;
     private RadioGroup mModifiers, mVisibility;
     @Nullable
     private ProjectFileContract.FileActionListener listener;
     private EditText mPackage;
+    @NonNull
+    private JavaProject project;
+    @Nullable
+    private String currentPackage;
+    @Nullable
+    private File currentFolder;
 
-    public static DialogNewClass newInstance(@NonNull JavaProject p,
+    public static DialogNewClass newInstance(@NonNull JavaProject project,
                                              @Nullable String currentPackage,
                                              @Nullable File currentFolder) {
-        Bundle args = new Bundle();
-        args.putSerializable(KEY_PROJECT_FILE, p);
-        args.putString(KEY_PACKAGE, currentPackage);
-        args.putSerializable(KEY_PARENT_FILE, currentFolder);
         DialogNewClass fragment = new DialogNewClass();
-        fragment.setArguments(args);
+        fragment.setProject(project);
+        fragment.setCurrentFolder(currentFolder);
+        fragment.setCurrentPackage(currentPackage);
         return fragment;
     }
 
@@ -107,16 +108,13 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     }
 
     private void initPackage() {
-        String packageName = getArguments().getString(KEY_PACKAGE);
-        if (packageName == null || packageName.isEmpty()) {
-            File currentFolder = (File) getArguments().getSerializable(KEY_PARENT_FILE);
-            JavaProject projectFile = (JavaProject) getArguments().getSerializable(KEY_PROJECT_FILE);
-            if (currentFolder != null && projectFile != null) {
-                packageName = ProjectFileUtil.findPackage(projectFile.getJavaSrcDirs().get(0), currentFolder);
+        if (currentPackage == null || currentPackage.isEmpty()) {
+            if (currentFolder != null) {
+                currentPackage = ProjectFileUtil.findPackage(project.getJavaSrcDirs().get(0), currentFolder);
             }
         }
 
-        mPackage.setText(packageName);
+        mPackage.setText(currentPackage);
     }
 
     private void createNewClass() {
@@ -143,17 +141,23 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         String content = Template.createJava(currentPackage, className, kind, visibility, modifier, false);
 
 
-        Bundle arguments = getArguments();
-        JavaProject projectFile = (JavaProject) arguments.getSerializable(KEY_PROJECT_FILE);
-
-        if (projectFile != null) {
-            File classf = projectFile.createClass(currentPackage, className, content);
-            if (listener != null) {
-                listener.onNewFileCreated(classf);
-                Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();
-                this.dismiss();
-            }
+        File classf = project.createClass(currentPackage, className, content);
+        if (listener != null) {
+            listener.onNewFileCreated(classf);
+            Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();
+            this.dismiss();
         }
     }
 
+    public void setProject(@NonNull JavaProject project) {
+        this.project = project;
+    }
+
+    public void setCurrentFolder(@Nullable File currentFolder) {
+        this.currentFolder = currentFolder;
+    }
+
+    public void setCurrentPackage(@Nullable String currentPackage) {
+        this.currentPackage = currentPackage;
+    }
 }

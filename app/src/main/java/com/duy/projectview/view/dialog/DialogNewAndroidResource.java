@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.duy.ide.R;
-import com.duy.ide.file.FileManager;
-import com.duy.projectview.ProjectFileContract;
 import com.duy.android.compiler.project.JavaProject;
+import com.duy.android.compiler.utils.IOUtils;
+import com.duy.ide.R;
+import com.duy.projectview.ProjectFileContract;
 
 import java.io.File;
 
@@ -27,21 +27,23 @@ import static android.view.ViewGroup.LayoutParams;
 
 public class DialogNewAndroidResource extends AppCompatDialogFragment implements View.OnClickListener {
     public static final String TAG = "DialogNewClass";
-    private static final String KEY_PROJECT_FILE = "project_file";
-    private static final String KEY_PARENT_FILE = "parent_file";
     private EditText mEditName;
-    //    private Spinner mKind;
     @Nullable
     private ProjectFileContract.FileActionListener listener;
+    @Nullable
+    private File currentFolder;
 
-    public static DialogNewAndroidResource newInstance(@NonNull JavaProject p, @Nullable File currentFolder) {
-        Bundle args = new Bundle();
-        args.putSerializable(KEY_PROJECT_FILE, p);
-        args.putSerializable(KEY_PARENT_FILE, currentFolder);
+    @NonNull
+    private JavaProject project;
+
+    public static DialogNewAndroidResource newInstance(@NonNull JavaProject project, @Nullable File currentFolder) {
         DialogNewAndroidResource fragment = new DialogNewAndroidResource();
-        fragment.setArguments(args);
+        fragment.setProject(project);
+        fragment.setCurrentFolder(currentFolder);
+        ;
         return fragment;
     }
+
 
     @Nullable
     @Override
@@ -97,12 +99,11 @@ public class DialogNewAndroidResource extends AppCompatDialogFragment implements
         }
         try {
 
-            File parent = (File) getArguments().getSerializable(KEY_PARENT_FILE);
-            File xmlFile = new File(parent, fileName);
-            if (!parent.exists()) parent.mkdirs();
-            xmlFile.createNewFile();
+            File xmlFile = new File(currentFolder, fileName);
+            currentFolder.mkdirs();
+
             String header = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-            FileManager.saveFile(xmlFile, header);
+            IOUtils.writeAndClose(header, xmlFile);
             if (listener != null) {
                 listener.onNewFileCreated(xmlFile);
             }
@@ -112,4 +113,11 @@ public class DialogNewAndroidResource extends AppCompatDialogFragment implements
         }
     }
 
+    public void setCurrentFolder(@Nullable File currentFolder) {
+        this.currentFolder = currentFolder;
+    }
+
+    public void setProject(@NonNull JavaProject project) {
+        this.project = project;
+    }
 }

@@ -7,9 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
+import com.android.annotations.NonNull;
 import com.duy.JavaApplication;
 import com.duy.android.compiler.java.Java;
-import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.utils.IOUtils;
 import com.duy.ide.R;
 import com.duy.ide.activities.BaseActivity;
@@ -26,13 +26,15 @@ import java.io.InputStream;
  */
 
 public class ExecuteActivity extends BaseActivity {
-    public static final String PROJECT_FILE = "PROJECT_FILE";
+    public static final String DEX_FILE = "DEX_FILE";
     public static final String MAIN_CLASS_FILE = "MAIN_CLASS_FILE";
 
     private static final String TAG = "ExecuteActivity";
     private final Handler mHandler = new Handler();
     private ConsoleEditText mConsoleEditText;
-    private JavaProject mProjectFile;
+    @NonNull
+    private File mDexFile;
+    private File mMainClass;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,25 +50,25 @@ public class ExecuteActivity extends BaseActivity {
             return;
         }
 
-        mProjectFile = (JavaProject) intent.getSerializableExtra(PROJECT_FILE);
-        if (mProjectFile == null) {
+        mDexFile = (File) intent.getSerializableExtra(DEX_FILE);
+        if (mDexFile == null) {
             finish();
             return;
         }
-        final File mainClassFile = (File) getIntent().getSerializableExtra(MAIN_CLASS_FILE);
-        if (mainClassFile == null) {
+        mMainClass = (File) getIntent().getSerializableExtra(MAIN_CLASS_FILE);
+        if (mMainClass == null) {
             finish();
             return;
         }
 
-        setTitle(mainClassFile.getName());
+        setTitle(mMainClass.getName());
         getSupportActionBar().setSubtitle(R.string.console_running);
 
         Thread runThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    exec(mainClassFile);
+                    exec(mMainClass);
                 } catch (Error error) {
                     error.printStackTrace(mConsoleEditText.getErrorStream());
                 } catch (Exception e) {
@@ -101,12 +103,11 @@ public class ExecuteActivity extends BaseActivity {
         String mainClass = resolveMainClass(mainClassFile);
         InputStream stdin = mConsoleEditText.getInputStream();
         File tempDir = getDir("dex", MODE_PRIVATE);
-        File dex = mProjectFile.getDexFile();
-        executeDex(stdin, dex, tempDir, mainClass);
+        executeDex(stdin, mDexFile, tempDir, mainClass);
     }
 
     private String resolveMainClass(File mainClassFile) throws IOException {
-        if (!mainClassFile.getName().endsWith(".java")){
+        if (!mainClassFile.getName().endsWith(".java")) {
             return null;
         }
 

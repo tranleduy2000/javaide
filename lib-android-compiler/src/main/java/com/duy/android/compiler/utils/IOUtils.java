@@ -27,4 +27,10 @@ public class IOUtils {
         input.close();
         return s;
     }
+
+    public static void writeAndClose(String content, File file) throws IOException {
+        FileOutputStream output = new FileOutputStream(file);
+        org.apache.commons.io.IOUtils.write(content, output);
+        output.close();
+    }
 }

@@ -11,13 +11,16 @@ import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-public class AndroidProjectManager {
+public class AndroidProjectManager implements IAndroidProjectManager {
     private Context context;
 
     public AndroidProjectManager(Context context) {
@@ -32,6 +35,7 @@ public class AndroidProjectManager {
      * @param projectName      - Name of project, it will be used for create root directory
      * @param useCompatLibrary - <code>true</code> if need copy android compat library
      */
+    @Override
     public AndroidAppProject createNewProject(Context context, File dir, String projectName,
                                               String packageName, String activityName, String mainLayoutName,
                                               String appName, boolean useCompatLibrary) throws Exception {
@@ -43,7 +47,7 @@ public class AndroidProjectManager {
         project.mkdirs();
 
         AssetManager assets = context.getAssets();
-
+        createGradleFile(project);
         createRes(project, useCompatLibrary, appName);
         createManifest(project, activityClass, packageName, assets);
         createMainActivity(project, activityClass, packageName, activityName, appName, useCompatLibrary, assets);
@@ -51,6 +55,40 @@ public class AndroidProjectManager {
         copyLibrary(project, useCompatLibrary);
 
         return project;
+    }
+
+    /**
+     * Load previous project
+     *  @param rootDir     - root dir
+     * @param tryToImport -  if not found gradle file, try to create it instead of throw exception
+     */
+    public AndroidAppProject loadProject(File rootDir, boolean tryToImport) throws IOException {
+        AndroidAppProject project = new AndroidAppProject(rootDir, null, null);
+        File file = new File(rootDir, GradleFileGenerator.DEFAULT_SETTING_FILE);
+        if (!file.exists()) {
+            if (!tryToImport) {
+                throw new IOException("Can not find setting.gradle, try to create new project");
+            } else {
+                GradleFileGenerator gradleFileGenerator = new GradleFileGenerator(context, project);
+                gradleFileGenerator.generate();
+            }
+        }
+
+        // TODO: 03-Jun-18 parse groovy file
+        String content = IOUtils.toString(new FileInputStream(file));
+        Pattern pattern = Pattern.compile("(include\\s+')(.*)'");
+        Matcher matcher = pattern.matcher(content);
+        if (!matcher.find()) {
+            return project;
+        }
+        String module = matcher.group(2);
+
+        return project;
+    }
+
+    private void createGradleFile(AndroidAppProject project) throws IOException {
+        GradleFileGenerator generator = new GradleFileGenerator(context, project);
+        generator.generate();
     }
 
 

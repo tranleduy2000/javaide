@@ -111,7 +111,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             String mainLayoutName = layoutName.getText().toString();
             String appName = editAppName.getText().toString();
             String projectName = appName.replaceAll("\\s+", "");
-            boolean useAppCompat = /*mAppCompat.isChecked()*/ true;
+            boolean useAppCompat = /*mAppCompat.isChecked()*/ false;
             File dir = new File(Environment.getSdkAppDir(), projectName);
             try {
                 AndroidProjectManager projectManager = new AndroidProjectManager(getContext());

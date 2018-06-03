@@ -51,16 +51,20 @@ import android.widget.Toast;
 
 import com.commonsware.cwac.pager.PageDescriptor;
 import com.commonsware.cwac.pager.SimplePageDescriptor;
-import com.duy.ide.diagnostic.DiagnosticFragment;
-import com.duy.ide.diagnostic.DiagnosticPresenter;
-import com.duy.ide.diagnostic.MessageFragment;
-import com.duy.ide.diagnostic.MessagePresenter;
+import com.duy.android.compiler.project.AndroidAppProject;
+import com.duy.android.compiler.project.AndroidProjectManager;
+import com.duy.android.compiler.project.ClassFile;
+import com.duy.android.compiler.project.JavaProject;
 import com.duy.ide.EditPageContract;
 import com.duy.ide.EditorControl;
 import com.duy.ide.PagePresenter;
 import com.duy.ide.R;
 import com.duy.ide.activities.AbstractAppCompatActivity;
 import com.duy.ide.adapters.BottomPageAdapter;
+import com.duy.ide.diagnostic.DiagnosticFragment;
+import com.duy.ide.diagnostic.DiagnosticPresenter;
+import com.duy.ide.diagnostic.MessageFragment;
+import com.duy.ide.diagnostic.MessagePresenter;
 import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
@@ -68,9 +72,6 @@ import com.duy.ide.setting.AppSetting;
 import com.duy.ide.view.SymbolListView;
 import com.duy.projectview.ProjectFilePresenter;
 import com.duy.projectview.ProjectManager;
-import com.duy.android.compiler.project.AndroidAppProject;
-import com.duy.android.compiler.project.ClassFile;
-import com.duy.android.compiler.project.JavaProject;
 import com.duy.projectview.view.dialog.DialogManager;
 import com.duy.projectview.view.dialog.DialogNewAndroidProject;
 import com.duy.projectview.view.dialog.DialogNewAndroidResource;
@@ -638,11 +639,20 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
             }
             case REQUEST_OPEN_ANDROID_PROJECT: {
                 if (resultCode == RESULT_OK) {
+                    AndroidProjectManager androidProjectManager = new AndroidProjectManager(this);
                     String file = FileExplorerActivity.getFile(data);
-                    AndroidAppProject pf = ProjectManager.importAndroidProject(getApplicationContext(),
-                            new File(file));
-                    if (pf != null) onProjectCreated(pf);
-                    else Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                    AndroidAppProject project;
+                    try {
+                        project = androidProjectManager.loadProject(new File(file), true);
+                    } catch (IOException e) {
+                        project = null;
+                        e.printStackTrace();
+                    }
+                    if (project != null) {
+                        onProjectCreated(project);
+                    } else {
+                        Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
             }

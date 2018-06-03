@@ -33,8 +33,6 @@ public class ProjectFileContract {
          */
         void onFileClick(@NonNull File file, @Nullable Callback callBack);
 
-        void onFileLongClick(@NonNull File file, @Nullable Callback callBack);
-
         void onNewFileCreated(@NonNull File file);
 
         boolean clickRemoveFile(File file, Callback callBack);

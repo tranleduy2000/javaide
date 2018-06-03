@@ -46,7 +46,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.commonsware.cwac.pager.PageDescriptor;
@@ -65,7 +64,6 @@ import com.duy.ide.diagnostic.DiagnosticFragment;
 import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.MessageFragment;
 import com.duy.ide.diagnostic.MessagePresenter;
-import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.file.FileManager;
 import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.AppSetting;
@@ -472,19 +470,11 @@ public abstract class ProjectManagerActivity extends BaseActivity
             //close drawer
             mDrawerLayout.closeDrawers();
         } else {
-            boolean success = openFileByAnotherApp(file);
-            if (!success) {
-                showFileInfo(file);
-            }
+            openFileByAnotherApp(file);
         }
     }
 
     private boolean openFileByAnotherApp(File file) {
-        //don't open compiled file
-        if (FileUtils.hasExtension(file, "class", "dex", "jar")) {
-            Toast.makeText(this, "Unable to open file", Toast.LENGTH_SHORT).show();
-            return false;
-        }
         try {
             Uri uri;
             if (Build.VERSION.SDK_INT >= 24) {
@@ -508,17 +498,6 @@ public abstract class ProjectManagerActivity extends BaseActivity
     }
 
     @Override
-    public void onFileLongClick(@NonNull File file, Callback callBack) {
-        if (FileUtils.canRead(file)) {
-            showFileInfo(file);
-        } else {
-            if (!openFileByAnotherApp(file)) {
-                showFileInfo(file);
-            }
-        }
-    }
-
-    @Override
     public boolean clickCreateNewFile(File file, Callback callBack) {
         showDialogSelectFileType(file);
         return false;
@@ -533,26 +512,6 @@ public abstract class ProjectManagerActivity extends BaseActivity
         }
     }
 
-    /**
-     * show dialog with file info
-     * filePath, path, size, extension ...
-     *
-     * @param file - file to show info
-     */
-    private void showFileInfo(File file) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(file.getName());
-        builder.setView(R.layout.dialog_view_file);
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        TextView txtInfo = dialog.findViewById(R.id.txt_info);
-        txtInfo.setText(file.getPath() + "\n" +
-                file.length() + " byte");
-        EditorView editorView = dialog.findViewById(R.id.editor_view);
-        if (editorView != null && FileUtils.canEdit(file)) {
-            editorView.setTextHighlighted(mFileManager.fileToString(file));
-        }
-    }
 
     public void showDialogCreateJavaProject() {
         DialogNewJavaProject dialogNewProject = DialogNewJavaProject.newInstance();

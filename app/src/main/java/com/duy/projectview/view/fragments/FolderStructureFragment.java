@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -48,16 +49,19 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
             }
         }
     };
+
     private TreeNode.TreeNodeLongClickListener nodeLongClickListener = new TreeNode.TreeNodeLongClickListener() {
         @Override
         public boolean onLongClick(TreeNode node, Object value) {
             FolderHolder.TreeItem i = (FolderHolder.TreeItem) value;
-            if (listener != null && i.getFile().isFile()) {
-                listener.onFileLongClick(i.getFile(), null);
+            File file = i.getFile();
+            if (listener != null && file.isFile()) {
+                showFileInfo(file);
             }
             return true;
         }
     };
+
 
     private ViewGroup mContainerView;
     private ProjectFileContract.Presenter presenter;
@@ -293,5 +297,20 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
         super.onDestroyView();
     }
 
+    /**
+     * show dialog with file info
+     * filePath, path, size, extension ...
+     *
+     * @param file - file to show info
+     */
+    private void showFileInfo(File file) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(file.getName());
+        String message =
+                "Path: " + file.getPath() + "\n" +
+                        "Size: " + file.length() + " byte";
+        builder.setMessage(message);
+        builder.create().show();
+    }
 
 }

@@ -53,4 +53,14 @@ public abstract class BuilderImpl<T extends JavaProject> implements IBuilder<T> 
     public String getBootClassPath() {
         return Environment.getClasspathFile(mContext).getAbsolutePath();
     }
+
+    @Override
+    public void setStdOut(PrintStream stdOut) {
+        mStdout = stdOut;
+    }
+
+    @Override
+    public void setStdErr(PrintStream stdErr) {
+        mStderr = stdErr;
+    }
 }

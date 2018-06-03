@@ -46,9 +46,9 @@ public class JsonEncodedGradleMessageParser implements PatternAwareOutputParser 
 
     @Override
     public boolean parse(@NonNull String line,
-            @NonNull OutputLineReader reader,
-            @NonNull List<Message> messages,
-            @NonNull ILogger logger) throws ParsingFailedException {
+                         @NonNull OutputLineReader reader,
+                         @NonNull List<Message> messages,
+                         @NonNull ILogger logger) throws ParsingFailedException {
         Matcher m = MSG_PATTERN.matcher(line);
         if (!m.matches()) {
             return false;

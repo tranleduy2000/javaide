@@ -26,4 +26,8 @@ public interface IBuilder<T extends JavaProject> {
     PrintStream getStderr();
 
     String getBootClassPath();
+
+    void setStdErr(PrintStream stdErr);
+
+    void setStdOut(PrintStream stdOut);
 }

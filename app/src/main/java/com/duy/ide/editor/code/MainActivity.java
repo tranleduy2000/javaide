@@ -42,7 +42,6 @@ import android.widget.Toast;
 
 import com.duy.JavaApplication;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
-import com.duy.android.compiler.builder.BuildJar;
 import com.duy.android.compiler.builder.BuildTask;
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.JavaBuilder;
@@ -50,7 +49,6 @@ import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.ide.Builder;
-import com.duy.ide.CompileManager;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
 import com.duy.ide.diagnostic.DiagnosticFragment;
@@ -70,9 +68,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
-import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 
 public class MainActivity extends ProjectManagerActivity implements
@@ -83,7 +79,6 @@ public class MainActivity extends ProjectManagerActivity implements
 
     private static final String TAG = "MainActivity";
 
-    private CompileManager mCompileManager;
     private MenuEditor mMenuEditor;
     private Dialog mDialog;
     private MenuItem mActionRun;
@@ -97,7 +92,6 @@ public class MainActivity extends ProjectManagerActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCompileManager = new CompileManager(this);
         mMenuEditor = new MenuEditor(this, this);
         initView(savedInstanceState);
         startAutoCompleteService();
@@ -262,6 +256,9 @@ public class MainActivity extends ProjectManagerActivity implements
 
             final DiagnosticCollector mDiagnosticCollector = new DiagnosticCollector();
             final IBuilder<AndroidAppProject> builder = new AndroidAppBuilder(this, (AndroidAppProject) mProject, mDiagnosticCollector);
+            builder.setStdOut(mMessagePresenter.getStdOut());
+            builder.setStdErr(mMessagePresenter.getStdErr());
+
             final BuildTask<AndroidAppProject> buildTask = new BuildTask<>(builder, new BuildTask.CompileListener<AndroidAppProject>() {
                 @Override
                 public void onStart() {
@@ -301,6 +298,8 @@ public class MainActivity extends ProjectManagerActivity implements
     private void compileJavaProject() {
         final DiagnosticCollector mDiagnosticCollector = new DiagnosticCollector();
         final IBuilder<JavaProject> builder = new JavaBuilder(this, mProject, mDiagnosticCollector);
+        builder.setStdOut(mMessagePresenter.getStdOut());
+        builder.setStdErr(mMessagePresenter.getStdErr());
         final BuildTask.CompileListener<JavaProject> listener = new BuildTask.CompileListener<JavaProject>() {
             @Override
             public void onStart() {
@@ -339,46 +338,6 @@ public class MainActivity extends ProjectManagerActivity implements
         };
         BuildTask<JavaProject> buildTask = new BuildTask<>(builder, listener);
         buildTask.execute();
-    }
-
-    @Override
-    public void buildJar() {
-        saveAllFile();
-        if (mProject != null) {
-            new BuildJar(this, new BuildJar.CompileListener() {
-                @Override
-                public void onStart() {
-                    updateUiStartCompile();
-                }
-
-                @Override
-                public void onError(Exception e, List<Diagnostic> diagnostics) {
-                    Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
-                    openDrawer(GravityCompat.START);
-                    mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
-                    mDiagnosticPresenter.display(diagnostics);
-                    mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-                    updateUIFinish();
-                }
-
-                @Override
-                public void onComplete(File jarfile, List<Diagnostic> diagnostics) {
-                    Toast.makeText(MainActivity.this, R.string.build_success + " " + jarfile.getPath(),
-                            Toast.LENGTH_SHORT).show();
-                    mFilePresenter.refresh(mProject);
-                    mDiagnosticPresenter.display(diagnostics);
-                    mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    updateUIFinish();
-                }
-
-            }).execute(mProject);
-        } else {
-            toast("You need create project");
-        }
-    }
-
-    public void buildApk() {
-        compileAndroidProject();
     }
 
     /**
@@ -649,9 +608,6 @@ public class MainActivity extends ProjectManagerActivity implements
 
     @Override
     public void createKeyStore() {
-        // TODO: 22-Aug-17 support this feature
-//        Intent intent = new Intent(this, CreateKeyStoreActivity.class);
-//        intent.putExtra("project_path", mProjectFile.getProjectDir());
     }
 
     @Override

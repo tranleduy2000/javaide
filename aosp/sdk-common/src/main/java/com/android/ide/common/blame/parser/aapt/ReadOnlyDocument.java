@@ -109,7 +109,7 @@ class ReadOnlyDocument {
     SourcePosition sourcePosition(int offset) {
         for (int i = 0; i < myOffsets.size(); i++) {
             if (offset < myOffsets.get(i)) {
-                int lineStartOffset = i==0 ? 0 : myOffsets.get(i-1);
+                int lineStartOffset = i == 0 ? 0 : myOffsets.get(i - 1);
                 return new SourcePosition(i, offset - lineStartOffset, offset);
             }
         }
@@ -119,7 +119,7 @@ class ReadOnlyDocument {
     /**
      * Finds the given text in the document, starting from the given offset.
      *
-     * @param needle   the text to find.
+     * @param needle the text to find.
      * @param offset the starting point of the search.
      * @return the offset of the found result, or -1 if no match was found.
      */

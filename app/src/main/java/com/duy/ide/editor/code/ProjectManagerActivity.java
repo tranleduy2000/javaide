@@ -171,8 +171,8 @@ public abstract class ProjectManagerActivity extends BaseActivity
         mBottomPage.setAdapter(bottomAdapter);
         mBottomPage.setOffscreenPageLimit(bottomAdapter.getCount());
 
-        mMessagePresenter = new MessagePresenter(this, bottomAdapter);
         mDiagnosticPresenter = new DiagnosticPresenter(this, bottomAdapter, mPagePresenter);
+        mMessagePresenter = new MessagePresenter(this, bottomAdapter, mDiagnosticPresenter);
 
         TabLayout bottomTab = findViewById(R.id.bottom_tab);
         bottomTab.setupWithViewPager(mBottomPage);

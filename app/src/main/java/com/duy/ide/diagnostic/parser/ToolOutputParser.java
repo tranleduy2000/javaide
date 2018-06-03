@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2015 The Android Open Source Project
  *
@@ -14,11 +15,13 @@
  * limitations under the License.
  */
 
-package com.android.ide.common.blame.parser;
+package com.duy.ide.diagnostic.parser;
 
 import com.android.annotations.NonNull;
 import com.android.ide.common.blame.Message;
 import com.android.ide.common.blame.SourceFilePosition;
+import com.android.ide.common.blame.parser.ParsingFailedException;
+import com.android.ide.common.blame.parser.PatternAwareOutputParser;
 import com.android.ide.common.blame.parser.util.OutputLineReader;
 import com.android.utils.ILogger;
 import com.google.common.collect.ImmutableList;

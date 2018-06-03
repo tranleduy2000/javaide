@@ -107,7 +107,6 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     private static final String TAG = "BaseEditorActivity";
 
     /*Constants*/
-    private static final String KEY_PROJECT_FILE = "KEY_PROJECT_FILE";
     private static final int REQUEST_OPEN_JAVA_PROJECT = 2;
     private static final int REQUEST_OPEN_ANDROID_PROJECT = 3;
     private static final int REQUEST_PICK_FILE = 4;
@@ -157,10 +156,7 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (savedInstanceState != null) {
-            this.mProject = (JavaProject) savedInstanceState.getSerializable(KEY_PROJECT_FILE);
-        } else {
+        if (mProject == null) {
             this.mProject = ProjectManager.getLastProject(this);
         }
         bindView();
@@ -422,7 +418,6 @@ public abstract class ProjectManagerActivity extends AbstractAppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(KEY_PROJECT_FILE, mProject);
     }
 
     public void openDrawer(int gravity) {

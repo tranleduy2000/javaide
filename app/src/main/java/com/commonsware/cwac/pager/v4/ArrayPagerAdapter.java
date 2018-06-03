@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011 The Android Open Source Project
- * Portions copyright (c) 2013 CommonsWare, LLC 
+ * Portions copyright (c) 2013 CommonsWare, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,6 +129,9 @@ abstract public class ArrayPagerAdapter<T extends Fragment> extends PagerAdapter
         }
 
         retentionStrategy.detach((Fragment) object, currTransaction);
+        if (currPrimaryItem == object) {
+            currPrimaryItem = null;
+        }
     }
 
     @SuppressWarnings("unchecked")

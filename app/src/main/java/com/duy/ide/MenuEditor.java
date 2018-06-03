@@ -130,12 +130,6 @@ public class MenuEditor {
             case R.id.action_open_android_project:
                 activity.showDialogOpenAndroidProject();
                 break;
-            case R.id.action_build_jar:
-                activity.buildJar();
-                break;
-            case R.id.action_build_apk:
-                activity.buildApk();
-                break;
             case R.id.action_sample:
                 activity.startActivityForResult(new Intent(activity, JavaSampleActivity.class),
                         MainActivity.REQUEST_CODE_SAMPLE);

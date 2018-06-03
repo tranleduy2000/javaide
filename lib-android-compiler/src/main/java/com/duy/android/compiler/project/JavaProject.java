@@ -187,17 +187,17 @@ public class JavaProject implements Serializable, Cloneable {
      * @param packageName - package name, can empty but not null
      * @param simpleName   - simple name
      */
-    public void createClass(String packageName, String simpleName) throws IOException {
+    public void createMainClass(String packageName, String simpleName) throws IOException {
         if (packageName == null || simpleName == null) {
             return;
         }
         //create package file
-        File pkgPath = new File(javaSrcDirs.get(0), this.packageName.replace(".", File.separator));
+        File pkgPath = new File(javaSrcDirs.get(0), packageName.replace(".", File.separator));
         pkgPath.mkdirs();
 
         File mainFile = new File(pkgPath, simpleName + ".java");
         if (!mainFile.exists()) {
-            String content = Template.createClass(this.packageName, simpleName);
+            String content = Template.createClass(packageName, simpleName);
             FileOutputStream output = new FileOutputStream(mainFile);
             IOUtils.write(content, output);
             output.close();

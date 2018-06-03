@@ -430,7 +430,7 @@ public abstract class ProjectManagerActivity extends BaseActivity
         Log.d(TAG, "onProjectCreated() called with: projectFile = [" + projectFile + "]");
 
         //save project
-        this.mProject = projectFile;
+        mProject = projectFile;
         JavaProjectManager.saveProject(this, projectFile);
 
         //remove all edit page
@@ -445,12 +445,6 @@ public abstract class ProjectManagerActivity extends BaseActivity
         mMessagePresenter.clear();
         mDiagnosticPresenter.clear();
         openDrawer(GravityCompat.START);
-
-//        ClassFile mainClass = projectFile.getMainClass();
-//        if (mainClass != null && mainClass.exist(projectFile)) {
-//            //add to database
-//            addNewPageEditor(new File(mainClass.getPath(projectFile)), true);
-//        }
     }
 
     protected abstract void startAutoCompleteService();

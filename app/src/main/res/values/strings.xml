@@ -422,7 +422,7 @@
     <string name="final_">Final</string>
     <string name="project_name">Project name</string>
     <string name="create_new_java_project">Create new Java project</string>
-    <string name="java_package_name_com_example">Java package name (com.example)</string>
+    <string name="java_package_name_com_example">Package name (com.example)</string>
     <string name="main_class_name_main">Main class name (Main)</string>
     <string name="system_info">System info</string>
     <string name="project_file">Project file</string>

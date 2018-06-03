@@ -24,7 +24,7 @@ import java.lang.reflect.Modifier;
  * Created by Duy on 22-May-17.
  */
 public class Template {
-    public static final String CLASS_TEMPLATE =
+    public static final String MAIN_CLASS_TEMPLATE =
             "package %2$s;\n" +
                     "\n" +
                     "public class %1$s {\n\n" +
@@ -56,7 +56,7 @@ public class Template {
 
     @NonNull
     public static String createClass(String packageName, String name) {
-        return String.format(CLASS_TEMPLATE, name, packageName);
+        return String.format(MAIN_CLASS_TEMPLATE, name, packageName);
     }
 
     @NonNull

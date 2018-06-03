@@ -3,20 +3,22 @@ package com.duy.projectview.view.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.duy.ide.R;
-import com.duy.ide.javaide.autocomplete.Patterns;
-import com.duy.ide.file.FileManager;
 import com.duy.android.compiler.project.JavaProject;
+import com.duy.android.compiler.project.JavaProjectManager;
+import com.duy.ide.DLog;
+import com.duy.ide.R;
+import com.duy.ide.file.FileManager;
+import com.duy.ide.javaide.autocomplete.Patterns;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,10 +29,9 @@ import java.io.IOException;
 
 public class DialogNewJavaProject extends AppCompatDialogFragment implements View.OnClickListener {
     public static final String TAG = "DialogNewProject";
-    private EditText editAppName, editMainClass, editPackage;
-    private Button btnCreate, btnCancel;
     @Nullable
     private OnCreateProjectListener listener;
+    private EditText mEditAppName, mEditMainClass, mEditPackage;
 
     public static DialogNewJavaProject newInstance() {
 
@@ -55,25 +56,27 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
         super.onStart();
         Dialog dialog = getDialog();
         if (dialog != null) {
-            dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.dialog_new_java_project, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        editMainClass = view.findViewById(R.id.edit_main_class);
-        editPackage = view.findViewById(R.id.edit_package_name);
-        editAppName = view.findViewById(R.id.edit_project_name);
-        btnCreate = view.findViewById(R.id.btn_create);
-        btnCancel = view.findViewById(R.id.btn_cancel);
+        mEditMainClass = view.findViewById(R.id.edit_main_class);
+        mEditPackage = view.findViewById(R.id.edit_package_name);
+        mEditAppName = view.findViewById(R.id.edit_project_name);
+
+        Button btnCreate = view.findViewById(R.id.btn_create);
+        Button btnCancel = view.findViewById(R.id.btn_cancel);
         btnCreate.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
     }
@@ -85,63 +88,74 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
                 dismiss();
                 break;
             case R.id.btn_create:
-                doCreateProject();
+                if (doCreateProject()) {
+                    dismiss();
+                }
                 break;
         }
     }
 
-    private void doCreateProject() {
-        if (isOk()) {
-            File root = new File(FileManager.EXTERNAL_DIR);
-            String mainClassName = editPackage.getText() + "." + editMainClass.getText();
-            String projectName = editAppName.getText().toString();
-            String packageName = editPackage.getText().toString();
-            JavaProject projectFile = new JavaProject(root, packageName);
+    private boolean doCreateProject() {
+        if (isValid()) {
             try {
-                projectFile.createClass(packageName, mainClassName);
+                File dirToCreate = new File(FileManager.EXTERNAL_DIR);
+                String projectName = mEditAppName.getText().toString();
+
+                JavaProjectManager manager = new JavaProjectManager(getContext());
+                JavaProject project = manager.createNewProject(dirToCreate, projectName);
+
+                String mainClassName = mEditMainClass.getText().toString();
+                String packageName = mEditPackage.getText().toString();
+
+                project.createMainClass(packageName, mainClassName);
+
                 if (listener != null) {
-                    listener.onProjectCreated(projectFile);
+                    listener.onProjectCreated(project);
                 }
-                this.dismiss();
+                return true;
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(getContext(), "Can not create project. Error " + e.getMessage(),
                         Toast.LENGTH_SHORT).show();
             }
         }
+        return false;
     }
 
     /**
      * check input data
      *
-     * @return true if all is ok
+     * @return true if package name, class name,... are valid.
      */
-    private boolean isOk() {
+    private boolean isValid() {
         //check project name
-        if (editAppName.getText().toString().isEmpty()) {
-            editAppName.setError(getString(R.string.enter_name));
+        if (mEditAppName.getText().toString().isEmpty()) {
+            if (DLog.DEBUG) DLog.d(TAG, "isValid: app name");
+            mEditAppName.setError(getString(R.string.enter_name));
             return false;
         }
 
         //check package name
-        String packageName = editPackage.getText().toString();
-        if (editPackage.getText().toString().isEmpty()) {
-            editPackage.setError(getString(R.string.enter_package));
+        String packageName = mEditPackage.getText().toString();
+        if (mEditPackage.getText().toString().isEmpty()) {
+            if (DLog.DEBUG) DLog.d(TAG, "isValid: package name");
+            mEditPackage.setError(getString(R.string.enter_package));
             return false;
         }
+
         if (!Patterns.PACKAGE_NAME.matcher(packageName).find()) {
-            editPackage.setError("Invalid package name");
+            mEditPackage.setError("Invalid package name");
             return false;
         }
 
         //check class name
-        String mainClasName = editMainClass.getText().toString();
-        if (mainClasName.isEmpty()) {
-            editMainClass.setError(getString(R.string.enter_name));
+        String mainClassName = mEditMainClass.getText().toString();
+        if (mainClassName.isEmpty()) {
+            mEditMainClass.setError(getString(R.string.enter_name));
             return false;
         }
-        if (!Patterns.RE_IDENTIFIER.matcher(mainClasName).find()) {
-            this.editMainClass.setText("Invalid name");
+        if (!Patterns.RE_IDENTIFIER.matcher(mainClassName).find()) {
+            mEditMainClass.setError("Invalid name");
             return false;
         }
 

@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="200dp"
-    android:minWidth="200dp">
+    android:minWidth="200dp"
+    android:padding="16dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -11,11 +12,12 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@string/create_new_java_project" />
+            android:text="@string/create_new_java_project"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -57,15 +59,16 @@
             android:gravity="end"
             android:orientation="horizontal">
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_cancel"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@android:string/cancel" />
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_create"
-                style="@style/Base.Widget.AppCompat.Button.Colored"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@android:string/ok" />

@@ -64,18 +64,13 @@ public class JavaProjectManager implements IProjectManager<JavaProject> {
         }
     }
 
-    @Nullable
+    @NonNull
     public JavaProject createNewProject(File dirToCreate, String projectName) {
-        try {
-            projectName = projectName.replaceAll("\\s+", "");
-            File rootDir = new File(dirToCreate, projectName);
-            JavaProject javaProject = new JavaProject(rootDir, null);
-            javaProject.mkdirs();
-            return javaProject;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        projectName = projectName.replaceAll("\\s+", "");
+        File rootDir = new File(dirToCreate, projectName);
+        JavaProject javaProject = new JavaProject(rootDir, null);
+        javaProject.mkdirs();
+        return javaProject;
     }
 
     @Override

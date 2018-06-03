@@ -14,10 +14,10 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.duy.ide.R;
-import com.duy.android.compiler.project.Template;
-import com.duy.projectview.ProjectFileContract;
 import com.duy.android.compiler.project.JavaProject;
+import com.duy.android.compiler.project.Template;
+import com.duy.ide.R;
+import com.duy.projectview.ProjectFileContract;
 import com.duy.projectview.utils.ProjectFileUtil;
 
 import java.io.File;
@@ -147,7 +147,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         JavaProject projectFile = (JavaProject) arguments.getSerializable(KEY_PROJECT_FILE);
 
         if (projectFile != null) {
-            File classf = projectFile.createClass( currentPackage, className, content);
+            File classf = projectFile.createClass(currentPackage, className, content);
             if (listener != null) {
                 listener.onNewFileCreated(classf);
                 Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();

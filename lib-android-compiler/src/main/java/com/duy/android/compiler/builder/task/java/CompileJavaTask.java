@@ -11,6 +11,8 @@ import com.duy.android.compiler.builder.util.Argument;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.javacompiler.R;
 
+import org.eclipse.jdt.internal.compiler.batch.Main;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -76,7 +78,7 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
                         false, null, null);
 
         Argument argument = new Argument();
-        argument.add(builder.isVerbose() ? "-verbose" : "-warn:");
+//        argument.add(builder.isVerbose() ? "-verbose" : "-warn:");
         argument.add("-bootclasspath", builder.getBootClassPath());
         argument.add("-classpath", project.getClasspath());
         argument.add("-sourcepath", project.getSourcePath());
@@ -88,7 +90,11 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
         String[] sourceFiles = getAllSourceFiles(project);
         argument.add(sourceFiles);
 
-        builder.stdout(TAG + ": Compiler arguments " + argument);
+        Main.Logger logger = main.logger;
+        //default output
+        logger.setEmacs();
+
+        System.out.println(TAG + ": Compiler arguments " + argument);
         return main.compile(argument.toArray());
     }
 

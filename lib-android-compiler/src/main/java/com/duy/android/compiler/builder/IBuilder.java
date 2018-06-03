@@ -22,6 +22,7 @@ public interface IBuilder<T extends JavaProject> {
     Context getContext();
 
     boolean isVerbose();
+
     PrintStream getStderr();
 
     String getBootClassPath();

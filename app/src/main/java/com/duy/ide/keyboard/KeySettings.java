@@ -22,8 +22,6 @@ import android.view.KeyEvent;
 
 import com.duy.ide.R;
 
-import java.util.Arrays;
-
 public class KeySettings {
     /**
      * An integer not in the range of real key codes.
@@ -36,7 +34,6 @@ public class KeySettings {
             KEYCODE_NONE
     };
     private SharedPreferences mPrefs;
-    private int mControlKeyId = 0; // Default to Volume Down
     private Context context;
 
     public KeySettings(SharedPreferences prefs, Context context) {
@@ -47,20 +44,14 @@ public class KeySettings {
     public void readPrefs(SharedPreferences prefs) {
         mPrefs = prefs;
         String s = readStringPref(context.getString(R.string.key_pref_control), context.getString(R.string.volume_down));
-        String[] array = context.getResources().getStringArray(R.array.control_key);
-        mControlKeyId = Arrays.asList(array).indexOf(s);
     }
 
     private String readStringPref(String key, String defaultValue) {
         return mPrefs.getString(key, defaultValue);
     }
 
-    public int getControlKeyId() {
-        return mControlKeyId;
-    }
-
     public int getControlKeyCode() {
-        return CONTROL_KEY_SCHEMES[mControlKeyId];
+        return CONTROL_KEY_SCHEMES[0];
     }
 
     public String getTabStr() {

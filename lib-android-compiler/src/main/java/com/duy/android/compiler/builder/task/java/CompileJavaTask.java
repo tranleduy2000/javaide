@@ -1,28 +1,28 @@
 package com.duy.android.compiler.builder.task.java;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import com.duy.android.compiler.builder.IBuilder;
+import com.duy.android.compiler.builder.internal.CompileOptions;
+import com.duy.android.compiler.builder.internal.JavaVersion;
 import com.duy.android.compiler.builder.task.ABuildTask;
 import com.duy.android.compiler.builder.util.Argument;
-import com.duy.android.compiler.java.Javac;
 import com.duy.android.compiler.project.JavaProject;
-
-import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
+import com.duy.javacompiler.R;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.tools.DiagnosticListener;
 
 public class CompileJavaTask extends ABuildTask<JavaProject> {
 
     private static final String TAG = "CompileJavaTask";
-    private DiagnosticListener listener;
+    private CompileOptions mCompileOptions;
 
-    public CompileJavaTask(IBuilder<? extends JavaProject> builder, DiagnosticListener listener) {
+    public CompileJavaTask(IBuilder<? extends JavaProject> builder) {
         super(builder);
-        this.listener = listener;
     }
 
     @Override
@@ -31,7 +31,39 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
     }
 
     public boolean run() {
+        loadCompilerOptions();
         return runEcj();
+    }
+
+    private void loadCompilerOptions() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        mCompileOptions = new CompileOptions();
+
+        String sourceCompatibility = pref.getString(context.getString(R.string.key_pref_source_compatibility), null);
+        if (sourceCompatibility == null || sourceCompatibility.isEmpty()) {
+            sourceCompatibility = JavaVersion.VERSION_1_7.toString();
+        }
+        mCompileOptions.setSourceCompatibility(sourceCompatibility);
+
+
+        String targetCompatibility = pref.getString(context.getString(R.string.key_pref_target_compatibility), null);
+        if (targetCompatibility == null || targetCompatibility.isEmpty()) {
+            targetCompatibility = JavaVersion.VERSION_1_7.toString();
+        }
+        mCompileOptions.setTargetCompatibility(targetCompatibility);
+
+        String encoding = pref.getString(context.getString(R.string.key_pref_source_encoding), null);
+        if (encoding == null || encoding.isEmpty()) {
+            encoding = Charset.forName("UTF-8").toString();
+        } else {
+            try {
+                Charset charset = Charset.forName(encoding);
+                encoding = charset.toString();
+            } catch (Exception e) {
+                encoding = Charset.forName("UTF-8").toString();
+            }
+        }
+        mCompileOptions.setEncoding(encoding);
     }
 
 
@@ -48,8 +80,8 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
         argument.add("-bootclasspath", builder.getBootClassPath());
         argument.add("-classpath", project.getClasspath());
         argument.add("-sourcepath", project.getSourcePath());
-        argument.add("-" + CompilerOptions.VERSION_1_7); //host
-        argument.add("-target", CompilerOptions.VERSION_1_7); //target
+        argument.add("-" + mCompileOptions.getSourceCompatibility().toString()); //host
+        argument.add("-target", mCompileOptions.getTargetCompatibility().toString()); //target
         argument.add("-proc:none"); // Disable annotation processors...
         argument.add("-d", project.getDirBuildClasses().getAbsolutePath()); // The location of the output folder
 
@@ -86,24 +118,6 @@ public class CompileJavaTask extends ABuildTask<JavaProject> {
                 return;
             }
         }
-    }
-
-    private boolean runOldJavaCompiler() {
-        ArrayList<File> javaLibraries = project.getJavaLibraries();
-        StringBuilder classpath = new StringBuilder(".");
-        for (File javaLibrary : javaLibraries) {
-            classpath.append(File.pathSeparator).append(javaLibrary.getParent());
-        }
-        String[] args = new String[]{
-                "-verbose",
-                "-cp", classpath.toString() + File.pathSeparator + project.getBootClassPath(context),
-                "-sourcepath", project.getSourcePath(), //sourcepath
-                "-d", project.getDirBuildClasses().getPath(), //output dir
-                project.getMainClass().getPath(project) //main class
-        };
-        System.out.println("args = " + Arrays.toString(args));
-        int resultCode = Javac.compile(args, listener);
-        return resultCode == 0;
     }
 
 }

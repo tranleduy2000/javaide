@@ -37,7 +37,7 @@ public class JavaBuilder extends BuilderImpl<JavaProject> {
 
         tasks.add(new CleanTask(this));
 
-        tasks.add(new CompileJavaTask(this, mDiagnosticListener));
+        tasks.add(new CompileJavaTask(this));
 
         tasks.add(new BuildJarTask(this));
 

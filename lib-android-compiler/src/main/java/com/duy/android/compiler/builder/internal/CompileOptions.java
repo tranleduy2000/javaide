@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.javaide.setting;
+package com.duy.android.compiler.builder.internal;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;

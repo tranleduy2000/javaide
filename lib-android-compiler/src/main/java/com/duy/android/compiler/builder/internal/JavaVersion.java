@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.duy.ide.javaide.setting;
+package com.duy.android.compiler.builder.internal;
 
 import com.google.common.annotations.VisibleForTesting;
 

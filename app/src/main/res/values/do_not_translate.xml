@@ -83,7 +83,5 @@
     <string name="default_classpath" translatable="false">default</string>
     <string name="key_classpath" translatable="false">pref_key_classpath</string>
     <string name="key_format_type" translatable="false">key_format_type</string>
-    <string name="key_pref_source_compatibility">key_pref_source_compatibility</string>
-    <string name="key_pref_target_compatibility">key_pref_target_compatibility</string>
-    <string name="key_pref_source_encoding">key_pref_source_encoding</string>
+
 </resources>

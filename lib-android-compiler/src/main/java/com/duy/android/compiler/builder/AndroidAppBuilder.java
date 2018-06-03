@@ -45,7 +45,7 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
 
         tasks.add(new AAPTTask(this));
 
-        tasks.add(new CompileJavaTask(this, mDiagnosticListener));
+        tasks.add(new CompileJavaTask(this));
 
         tasks.add(new DexTask(this));
 

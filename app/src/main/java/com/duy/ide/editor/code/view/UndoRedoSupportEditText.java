@@ -151,7 +151,6 @@ public class UndoRedoSupportEditText extends HighlightEditor {
     private boolean handleControlKey(int keyCode, KeyEvent event, boolean down) {
         if (keyCode == mSettings.getControlKeyCode()
                 || event.isCtrlPressed()) {
-//            Log.w(TAG, "handler control key: ");
             mKeyListener.handleControlKey(down);
             return true;
         }

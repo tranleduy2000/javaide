@@ -199,7 +199,7 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
         args.add("-m");  // make package directories under location specified by -J
         //specify where to output R.java resource constant definitions
         args.add("-J", project.getDirGeneratedSource().getAbsolutePath());
-        args.add(AAPTOptions.OUTPUT_TEXT_SYMBOL, project.getDirGeneratedSource().getAbsolutePath() + "/R.txt");
+        args.add(AAPTOptions.OUTPUT_TEXT_SYMBOL, project.getDirGeneratedSource().getAbsolutePath());
 
         //--custom-package project.getPackageName()
 

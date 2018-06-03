@@ -86,7 +86,8 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         if (!matcher.find()) {
             return project;
         }
-        String moduleDir = matcher.group(2);
+        /// TODO: 03-Jun-18 dynamic change it
+        String appDir = matcher.group(2);
         //find AndroidManifest
         try {
             if (project.getXmlManifest().exists()) {
@@ -127,7 +128,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         //styles
         File style = new File(resDir, "values/styles.xml");
         String content = IOUtils.toString(context.getAssets().open("templates/app/styles.xml"));
-        content = content.replace("APP_STYLE", useAppCompat ? "Theme.AppCompat.Light" : "@android:style/Theme.Holo.Light");
+        content = content.replace("APP_STYLE", useAppCompat ? "Theme.AppCompat.Light" : "@android:style/Theme.Light");
         saveFile(style, content);
 
         File string = new File(resDir, "values/strings.xml");

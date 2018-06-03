@@ -12,21 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.duy.ide.R;
-import com.duy.ide.CompileManager;
-import com.duy.ide.file.FileManager;
 import com.duy.android.compiler.project.ClassFile;
-import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.ClassUtil;
+import com.duy.android.compiler.project.JavaProject;
+import com.duy.ide.CompileManager;
+import com.duy.ide.R;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -123,7 +120,6 @@ public class DialogRunConfig extends AppCompatDialogFragment {
             if (!ClassUtil.hasMainFunction(new File(path))) {
                 Toast.makeText(getContext(), "Can not find main function", Toast.LENGTH_SHORT).show();
             }
-            projectFile.setMainClass(classFile);
             projectFile.setPackageName(mPackage.getText().toString());
 
             if (listener != null) listener.onConfigChange(projectFile);
@@ -132,23 +128,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     }
 
     private void setupSpinnerMainClass(View view, JavaProject projectFile) {
-        ArrayList<String> names = FileManager.listClassName(projectFile.getJavaSrcDirs().get(0));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_list_item_1, names);
-        adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
-        mClasses = view.findViewById(R.id.spinner_main_class);
-        mClasses.setAdapter(adapter);
 
-        if (projectFile.getMainClass() != null) {
-            String mainClassName = projectFile.getMainClass().getName();
-            for (int i = 0; i < names.size(); i++) {
-                String s = names.get(i);
-                if (s.equalsIgnoreCase(mainClassName)) {
-                    mClasses.setSelection(i);
-                    break;
-                }
-            }
-        }
     }
 
     public interface OnConfigChangeListener {

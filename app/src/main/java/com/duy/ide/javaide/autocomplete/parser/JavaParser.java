@@ -57,7 +57,7 @@ public class JavaParser {
 
         SimpleJavaFileObject source = new SimpleJavaFileObject(URI.create("source"), JavaFileObject.Kind.SOURCE) {
             @Override
-            public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+            public CharSequence getCharContent(boolean ignoreEncodingErrors) {
                 return src;
             }
         };

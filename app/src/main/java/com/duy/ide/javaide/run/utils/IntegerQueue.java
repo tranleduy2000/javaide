@@ -56,13 +56,10 @@ public class IntegerQueue {
         int b = text[front];
         front++;
         if (front >= text.length) front = 0;
-        Log.d(TAG, "read() returned: " + (char) b);
         return b;
     }
 
     public synchronized void write(int b) {
-        Log.d(TAG, "write() called with: b = [" + (char) b + "]");
-
         text[rear] = b;
         rear++;
         if (rear >= text.length) rear = 0;

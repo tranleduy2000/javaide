@@ -54,17 +54,16 @@ public class JavaProjectManager implements IProjectManager<JavaProject> {
         } else {
             try {
                 JavaProjectManager projectManager = new JavaProjectManager(context);
-                projectManager.loadProject(new File(rootDir), true);
+                return projectManager.loadProject(new File(rootDir), true);
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
             }
         }
-        return null;
     }
 
     @Nullable
-    public  JavaProject createNewProject(File dirToCreate, String projectName) {
+    public JavaProject createNewProject(File dirToCreate, String projectName) {
         try {
             projectName = projectName.replaceAll("\\s+", "");
             File rootDir = new File(dirToCreate, projectName);

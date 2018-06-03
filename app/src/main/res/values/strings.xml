@@ -450,7 +450,7 @@
     <string name="build">Build</string>
     <string name="config">Config</string>
     <string name="can_not_find_main_func">"Could not find main function in class "</string>
-    <string name="main_class_not_define">Main class is not defined</string>
+    <string name="main_class_not_found">Main class is not found, please open file to run</string>
     <string name="project">Project</string>
     <string name="classpath_desc">Classpath is a parameter in the Java Virtual Machine or the Java compiler that specifies the location of user-defined classes and packages</string>
     <string name="expand_collapse">expand/collapse</string>

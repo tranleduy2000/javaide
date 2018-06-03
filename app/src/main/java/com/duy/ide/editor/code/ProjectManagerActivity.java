@@ -52,7 +52,6 @@ import com.commonsware.cwac.pager.PageDescriptor;
 import com.commonsware.cwac.pager.SimplePageDescriptor;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.AndroidProjectManager;
-import com.duy.android.compiler.project.ClassFile;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.ide.EditPageContract;
@@ -447,11 +446,11 @@ public abstract class ProjectManagerActivity extends BaseActivity
         mDiagnosticPresenter.clear();
         openDrawer(GravityCompat.START);
 
-        ClassFile mainClass = projectFile.getMainClass();
-        if (mainClass != null && mainClass.exist(projectFile)) {
-            //add to database
-            addNewPageEditor(new File(mainClass.getPath(projectFile)), true);
-        }
+//        ClassFile mainClass = projectFile.getMainClass();
+//        if (mainClass != null && mainClass.exist(projectFile)) {
+//            //add to database
+//            addNewPageEditor(new File(mainClass.getPath(projectFile)), true);
+//        }
     }
 
     protected abstract void startAutoCompleteService();

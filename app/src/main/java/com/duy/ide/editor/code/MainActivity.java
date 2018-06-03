@@ -25,16 +25,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputType;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,15 +41,14 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.duy.JavaApplication;
+import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.builder.BuildJar;
 import com.duy.android.compiler.builder.BuildTask;
-import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.JavaBuilder;
 import com.duy.android.compiler.project.AndroidAppProject;
-import com.duy.android.compiler.project.ClassFile;
-import com.duy.android.compiler.project.ClassUtil;
 import com.duy.android.compiler.project.JavaProject;
+import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.ide.Builder;
 import com.duy.ide.CompileManager;
 import com.duy.ide.MenuEditor;
@@ -66,13 +60,12 @@ import com.duy.ide.editor.uidesigner.inflate.DialogLayoutPreview;
 import com.duy.ide.javaide.autocomplete.AutoCompleteProvider;
 import com.duy.ide.javaide.autocomplete.model.Description;
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;
+import com.duy.ide.javaide.run.activities.ExecuteActivity;
+import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.duy.ide.javaide.sample.activities.DocumentActivity;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
 import com.duy.ide.setting.AppSetting;
 import com.duy.ide.utils.RootUtils;
-import com.duy.android.compiler.project.JavaProjectManager;
-import com.duy.ide.javaide.run.activities.ExecuteActivity;
-import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -306,38 +299,6 @@ public class MainActivity extends ProjectManagerActivity implements
 
 
     private void compileJavaProject() {
-        //check main class exist
-        if (mProject.getMainClass() == null
-                || mProject.getPackageName() == null
-                || mProject.getPackageName().isEmpty()
-                || !mProject.getMainClass().exist(mProject)) {
-            String msg = getString(R.string.main_class_not_define);
-            Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.select, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            showDialogRunConfig();
-                        }
-                    }).show();
-            return;
-        }
-        //check main function exist
-        if (!ClassUtil.hasMainFunction(new File(mProject.getMainClass().getPath(mProject)))) {
-            SpannableStringBuilder msg = new SpannableStringBuilder(getString(R.string.can_not_find_main_func));
-            Spannable clasz = new SpannableString(mProject.getMainClass().getName());
-            clasz.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.dark_color_accent))
-                    , 0, clasz.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            msg.append(clasz);
-            Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.config, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            showDialogRunConfig();
-                        }
-                    }).show();
-            return;
-        }
-
         final DiagnosticCollector mDiagnosticCollector = new DiagnosticCollector();
         final IBuilder<JavaProject> builder = new JavaBuilder(this, mProject, mDiagnosticCollector);
         final BuildTask.CompileListener<JavaProject> listener = new BuildTask.CompileListener<JavaProject>() {
@@ -363,10 +324,15 @@ public class MainActivity extends ProjectManagerActivity implements
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        File currentFile = getCurrentFile();
+                        if (currentFile == null) {
+                            String message = getString(R.string.main_class_not_found);
+                            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                        }
                         Intent intent = new Intent(MainActivity.this, ExecuteActivity.class);
                         intent.putExtra(ExecuteActivity.PROJECT_FILE, mProject);
+                        intent.putExtra(ExecuteActivity.MAIN_CLASS_FILE, currentFile);
                         startActivity(intent);
-
                     }
                 }, 200);
             }
@@ -661,17 +627,11 @@ public class MainActivity extends ProjectManagerActivity implements
     public void runFile(String filePath) {
         saveCurrentFile();
         if (mProject == null) return;
-        boolean canRun = ClassUtil.hasMainFunction(new File(filePath));
-        if (!canRun) {
-            Toast.makeText(this, (getString(R.string.main_not_found)), Toast.LENGTH_SHORT).show();
-            return;
-        }
         String className = JavaUtil.getClassName(mProject.getJavaSrcDirs().get(0), filePath);
         if (className == null) {
             Toast.makeText(this, ("Class \"" + filePath + "\"" + "invalid"), Toast.LENGTH_SHORT).show();
             return;
         }
-        mProject.setMainClass(new ClassFile(className));
         runProject();
     }
 
@@ -711,14 +671,6 @@ public class MainActivity extends ProjectManagerActivity implements
                 return;
             }
         }
-
-//        /*
-//          check can undo
-//         */
-//        if (getPreferences().getBoolean(getString(R.string.key_back_undo))) {
-//            undo();
-//            return;
-//        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.exit)

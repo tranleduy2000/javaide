@@ -1,20 +1,21 @@
 package com.duy.ide.javaide.run.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.duy.JavaApplication;
-import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.java.Java;
+import com.duy.android.compiler.project.JavaProject;
+import com.duy.android.compiler.utils.IOUtils;
 import com.duy.ide.R;
 import com.duy.ide.activities.BaseActivity;
+import com.duy.ide.javaide.autocomplete.parser.JavaParser;
 import com.duy.ide.javaide.run.view.ConsoleEditText;
+import com.sun.tools.javac.tree.JCTree;
 
 import java.io.File;
 import java.io.InputStream;
@@ -24,23 +25,13 @@ import java.io.InputStream;
  */
 
 public class ExecuteActivity extends BaseActivity {
-    public static final String PROJECT_FILE = "project_file";
+    public static final String PROJECT_FILE = "PROJECT_FILE";
+    public static final String MAIN_CLASS_FILE = "MAIN_CLASS_FILE";
+
     private static final String TAG = "ExecuteActivity";
     private final Handler mHandler = new Handler();
     private ConsoleEditText mConsoleEditText;
     private JavaProject mProjectFile;
-
-    private void showDialogError(String message) {
-        if (isFinishing()) return;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message).setPositiveButton("Close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.create().show();
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +40,7 @@ public class ExecuteActivity extends BaseActivity {
         setupToolbar();
 
         bindView();
-        initInOut();
+        initInOutStream();
         final Intent intent = getIntent();
         if (intent == null) {
             finish();
@@ -61,14 +52,20 @@ public class ExecuteActivity extends BaseActivity {
             finish();
             return;
         }
-        setTitle(mProjectFile.getMainClass().getSimpleName());
+        final File mainClassFile = (File) getIntent().getSerializableExtra(MAIN_CLASS_FILE);
+        if (mainClassFile == null) {
+            finish();
+            return;
+        }
+
+        setTitle(mainClassFile.getName());
         getSupportActionBar().setSubtitle(R.string.console_running);
 
         Thread runThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    runProgram(mProjectFile, intent);
+                    exec(mProjectFile, mainClassFile);
                 } catch (Error error) {
                     error.printStackTrace(mConsoleEditText.getErrorStream());
                 } catch (Exception e) {
@@ -76,25 +73,34 @@ public class ExecuteActivity extends BaseActivity {
                 } catch (Throwable e) {
                     e.printStackTrace(mConsoleEditText.getErrorStream());
                 }
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        getSupportActionBar().setSubtitle(R.string.console_stopped);
-                    }
-                });
+                consoleStopped();
             }
         });
         runThread.start();
     }
 
-    private void initInOut() {
+    @WorkerThread
+    private void consoleStopped() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                getSupportActionBar().setSubtitle(R.string.console_stopped);
+            }
+        });
+    }
+
+    private void initInOutStream() {
         JavaApplication application = (JavaApplication) getApplication();
         application.addStdErr(mConsoleEditText.getErrorStream());
         application.addStdOut(mConsoleEditText.getOutputStream());
     }
 
     @WorkerThread
-    private void runProgram(JavaProject projectFile, Intent intent) throws Throwable {
+    private void exec(JavaProject projectFile, File mainClassFile) throws Throwable {
+
+        JavaParser parser = new JavaParser();
+        JCTree.JCCompilationUnit unit = parser.parse(IOUtils.toStringAndClose(mainClassFile));
+        JCTree.JCExpression packageName = unit.getPackageName();
         InputStream in = mConsoleEditText.getInputStream();
         File tempDir = getDir("dex", MODE_PRIVATE);
         File dex = mProjectFile.getDexFile();

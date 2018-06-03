@@ -16,16 +16,9 @@ import dalvik.system.DexClassLoader;
  */
 
 public class Java {
-    public static void usage() {
-        System.out.println("Usage : java -v -jar [List of Jar files] CLASSNAME");
-    }
-
-    public static void main(String[] zArgs) throws Throwable {
-        run(zArgs, null, null);
-    }
 
     public static void run(String[] zArgs, @Nullable String tempDir, @Nullable InputStream in) throws Throwable {
-        InputStream stdin = System.in;
+        InputStream oldStdIn = System.in;
         if (in != null) System.setIn(in);
         try {
             String jarfile = "";
@@ -95,45 +88,39 @@ public class Java {
 
             //Now load this class..
             DexClassLoader loader = new DexClassLoader(jarfile, tempDir, null, ClassLoader.getSystemClassLoader());
-//            DexClassLoader loader = new DexClassLoader(jarfile, tempDir, null, ClassLoader.getSystemClassLoader(), verbose);
-            Class loadedclass = loader.loadClass(classname);
+            Class loadedClass = loader.loadClass(classname);
 
             //Now sort the command line inputs
-            String[] mainargs;
+            String[] mainArgs;
             if (pargspos != -1) {
                 int args = argnum - pargspos;
-                mainargs = new String[args];
-                for (int i = 0; i < args; i++) {
-                    mainargs[i] = zArgs[pargspos + i];
-                }
+                mainArgs = new String[args];
+                System.arraycopy(zArgs, pargspos, mainArgs, 0, args);
             } else {
-                mainargs = new String[0];
+                mainArgs = new String[0];
             }
 
             //Gat public static void main
-            Class[] ptypes = new Class[]{mainargs.getClass()};
-            Method main = loadedclass.getDeclaredMethod("main", ptypes);
-            //String[] pargs = new String[mainargs.length - 1];
-            //System.arraycopy(mainargs, 1, pargs, 0, pargs.length);
+            @SuppressWarnings({"unchecked", "RedundantArrayCreation"})
+            Method main = loadedClass.getDeclaredMethod("main", new Class[]{mainArgs.getClass()});
 
             //Invoke main method..
             if (verbose) {
-                System.out.println("Main parameters : " + mainargs.length + " parameters");
-                for (String par : mainargs) {
+                System.out.println("Main parameters : " + mainArgs.length + " parameters");
+                for (String par : mainArgs) {
                     System.out.println("Param : " + par);
                 }
             }
+            //invoke static
+            main.invoke(null, new Object[]{mainArgs});
 
-            main.invoke(null, new Object[]{mainargs});
-
-            //restore std
             FileUtils.emptyFolder(new File(tempDir));
         } catch (InvocationTargetException e) {
             throw e.getCause();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            usage();
+        } catch (Throwable internal) {
+            internal.printStackTrace();
         }
-        System.setIn(stdin);
+        //restore std
+        System.setIn(oldStdIn);
     }
 }

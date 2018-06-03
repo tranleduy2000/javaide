@@ -1,6 +1,7 @@
 package com.duy.android.compiler.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,5 +19,12 @@ public class IOUtils {
             input.close();
         } catch (Exception ignored) {
         }
+    }
+
+    public static String toStringAndClose(File file) throws IOException {
+        FileInputStream input = new FileInputStream(file);
+        String s = org.apache.commons.io.IOUtils.toString(input);
+        input.close();
+        return s;
     }
 }

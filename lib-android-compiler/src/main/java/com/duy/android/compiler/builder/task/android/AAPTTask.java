@@ -244,11 +244,16 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
                     break;
                 }
                 builder.stderr("AAPT: " + s);
+                // TODO: 03-Jun-18 improve it , use com.android.ide.common.blame.parser.aapt.AaptOutputParser
+                if (s.startsWith("ERROR")) {
+                    return false;
+                }
             } catch (Exception e) {
                 break;
             }
         } while (thread.isAlive());
         thread.join();
+
 
         builder.stdout("AAPT exit code " + exitCode[0]);
         return exitCode[0] == 0;

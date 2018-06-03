@@ -1,9 +1,0 @@
-apply plugin: 'java'
-
-dependencies {
-    compile project(':android-buildsystem-gradle:gradle-core')
-    compile group: 'org.gradle', name: 'gradle-core', version: '2.2.1'
-
-    testCompile 'junit:junit:4.12'
-}
-

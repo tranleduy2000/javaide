@@ -41,8 +41,6 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
 
         tasks.add(new CleanTask(this));
 
-//        tasks.add(new MergeManifestTask(this, mLogger));
-
         tasks.add(new GenerateBuildConfigTask(this));
 
         tasks.add(new AAPTTask(this));

@@ -22,7 +22,7 @@ public class GradleFileGenerator {
     public void generate() throws IOException {
         generateSettingFile();
         File rootGradle = new File(project.getRootDir(), DEFAULT_BUILD_FILE);
-        IOUtils.copyNotIfExistAndClose(context.getAssets().open("templates/build.gradle.root"), rootGradle);
+        IOUtils.copyNotIfExistAndClose(context.getAssets().open("templates/app/build.gradle.root"), rootGradle);
 
 
         File appGradle = new File(project.getAppDir(), DEFAULT_BUILD_FILE);
@@ -31,7 +31,7 @@ public class GradleFileGenerator {
 
     public void generateSettingFile() throws IOException {
         File settingGradle = new File(project.getRootDir(), DEFAULT_SETTING_FILE);
-        IOUtils.copyNotIfExistAndClose(context.getAssets().open("templates/settings.gradle.root"), settingGradle);
+        IOUtils.copyNotIfExistAndClose(context.getAssets().open("templates/app/settings.gradle.root"), settingGradle);
     }
 
 }

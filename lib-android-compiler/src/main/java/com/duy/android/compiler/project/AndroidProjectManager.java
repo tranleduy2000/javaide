@@ -86,9 +86,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         if (!matcher.find()) {
             return project;
         }
-        String module = matcher.group(2);
-
-
+        String moduleDir = matcher.group(2);
         //find AndroidManifest
         try {
             if (project.getXmlManifest().exists()) {
@@ -121,19 +119,19 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         File resDir = project.getResDir();
 
         //drawable
-        copyAssets("templates/ic_launcher_hdpi.png", new File(resDir, "drawable-xhdpi/ic_launcher.png"));
-        copyAssets("templates/ic_launcher_ldpi.png", new File(resDir, "drawable-ldpi/ic_launcher.png"));
-        copyAssets("templates/ic_launcher_mdpi.png", new File(resDir, "drawable-mdpi/ic_launcher.png"));
-        copyAssets("templates/ic_launcher_xhdpi.png", new File(resDir, "drawable-xhdpi/ic_launcher.png"));
+        copyAssets("templates/app/ic_launcher_hdpi.png", new File(resDir, "drawable-xhdpi/ic_launcher.png"));
+        copyAssets("templates/app/ic_launcher_ldpi.png", new File(resDir, "drawable-ldpi/ic_launcher.png"));
+        copyAssets("templates/app/ic_launcher_mdpi.png", new File(resDir, "drawable-mdpi/ic_launcher.png"));
+        copyAssets("templates/app/ic_launcher_xhdpi.png", new File(resDir, "drawable-xhdpi/ic_launcher.png"));
 
         //styles
         File style = new File(resDir, "values/styles.xml");
-        String content = IOUtils.toString(context.getAssets().open("templates/styles.xml"));
+        String content = IOUtils.toString(context.getAssets().open("templates/app/styles.xml"));
         content = content.replace("APP_STYLE", useAppCompat ? "Theme.AppCompat.Light" : "@android:style/Theme.Holo.Light");
         saveFile(style, content);
 
         File string = new File(resDir, "values/strings.xml");
-        content = IOUtils.toString(context.getAssets().open("templates/strings.xml"));
+        content = IOUtils.toString(context.getAssets().open("templates/app/strings.xml"));
         content = content.replace("APP_NAME", appName);
         content = content.replace("MAIN_ACTIVITY_NAME", appName);
         saveFile(string, content);
@@ -142,7 +140,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
     private void createManifest(AndroidAppProject project, String activityClass, String packageName,
                                 AssetManager assets) throws IOException {
         File manifest = project.getXmlManifest();
-        String content = IOUtils.toString(assets.open("templates/AndroidManifest.xml"));
+        String content = IOUtils.toString(assets.open("templates/app/AndroidManifest.xml"));
 
         content = content.replace("PACKAGE", packageName);
         content = content.replace("MAIN_ACTIVITY", activityClass);
@@ -156,7 +154,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         File activityFile = new File(project.getJavaSrcDir(),
                 activityClass.replace(".", File.separator) + ".java");
 
-        String name = useAppCompat ? "templates/MainActivityAppCompat.java" : "templates/MainActivity.java";
+        String name = useAppCompat ? "templates/app/MainActivityAppCompat.java" : "templates/app/MainActivity.java";
         String content = IOUtils.toString(assets.open(name));
         content = content.replace("PACKAGE", packageName);
         content = content.replace("ACTIVITY_NAME", activityName);
@@ -169,7 +167,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         }
 
         File layoutMain = new File(project.getResDir(), "layout/" + layoutName);
-        copyAssets("templates/activity_main.xml", layoutMain);
+        copyAssets("templates/app/activity_main.xml", layoutMain);
     }
 
     private void copyAssets(String assetsPath, File outFile) throws IOException {

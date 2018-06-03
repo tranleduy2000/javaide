@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import com.android.annotations.NonNull;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
 import com.android.io.StreamException;
@@ -68,8 +69,9 @@ public class AndroidProjectManager implements IAndroidProjectManager {
      * @param rootDir     - root dir
      * @param tryToImport -  if not found gradle file, try to create it instead of throw exception
      */
+    @NonNull
     @Override
-    public AndroidAppProject loadProject(File rootDir, boolean tryToImport) throws IOException {
+    public AndroidAppProject loadProject(File rootDir, boolean tryToImport) throws Exception {
         AndroidAppProject project = new AndroidAppProject(rootDir, null, null);
         File file = new File(rootDir, AndroidGradleFileGenerator.DEFAULT_SETTING_FILE);
         if (!file.exists()) {
@@ -124,22 +126,16 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         /// TODO: 03-Jun-18 dynamic change it
         String appDir = matcher.group(2);
         //find AndroidManifest
-        try {
-            if (project.getXmlManifest().exists()) {
-                ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(project.getXmlManifest()));
-                ManifestData.Activity launcherActivity = manifestData.getLauncherActivity();
-                if (launcherActivity != null) {
-                    project.setPackageName(manifestData.getPackage());
-                }
-                Log.d(TAG, "importAndroidProject launcherActivity = " + launcherActivity);
-            } else {
-                return null;
+        if (project.getXmlManifest().exists()) {
+            ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(project.getXmlManifest()));
+            ManifestData.Activity launcherActivity = manifestData.getLauncherActivity();
+            if (launcherActivity != null) {
+                project.setPackageName(manifestData.getPackage());
             }
-            return project;
-        } catch (Exception e) {
-
+            Log.d(TAG, "importAndroidProject launcherActivity = " + launcherActivity);
+        } else {
+            throw new IOException("Can not find AndroidManifest.xml");
         }
-
         return project;
     }
 

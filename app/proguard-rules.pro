@@ -83,10 +83,8 @@
 -dontwarn org.apache.commons.**
 -dontwarn java.awt.**
 
-#-keep class com.android.** { *; }
-#-keep class com.duy.** { *; }
-#-keep class proguard.**
-#-keep class com.simplecityapps.**
+-keep class com.android.** { *; }
+-keep class com.duy.** { *; }
 -keep class org.apache.commons.codec.**
 -keep class org.apache.commons.compress.**
 -keep class kellinwood.**
@@ -101,6 +99,13 @@
 -keep class com.sun.**
 -keep class com.spartacusrex.spartacuside.**
 
+-keep class org.eclipse.**
+-dontwarn org.eclipse.**
+
+-keep class com.sun.org.apache.**
+-dontwarn com.sun.org.apache.**
+
+
 -dontwarn com.android.sdklib.**
 -dontwarn com.google.android.gms.**
 -dontwarn com.google.common.util.**
@@ -109,7 +114,6 @@
 -dontwarn org.apache.log4j.**
 -dontwarn org.spongycastle.**
 -dontwarn com.squareup.picasso.**
-
 -keep class org.xmlpull.v1.** { *;}
 -dontwarn org.xmlpull.v1.**
 

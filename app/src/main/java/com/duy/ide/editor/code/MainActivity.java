@@ -93,7 +93,7 @@ public class MainActivity extends ProjectManagerActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMenuEditor = new MenuEditor(this, this);
-        initView(savedInstanceState);
+        initView();
         startAutoCompleteService();
     }
 
@@ -113,8 +113,7 @@ public class MainActivity extends ProjectManagerActivity implements
         }
     }
 
-
-    public void initView(Bundle savedInstanceState) {
+    public void initView() {
         mDrawerLayout.addDrawerListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -168,7 +167,7 @@ public class MainActivity extends ProjectManagerActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         boolean r = mMenuEditor.onCreateOptionsMenu(menu);
-        mActionRun = menu.findItem(R.id.action_edit_run);
+        mActionRun = menu.findItem(R.id.action_run);
         return r;
     }
 
@@ -641,15 +640,6 @@ public class MainActivity extends ProjectManagerActivity implements
                 }).create().show();
     }
 
-    public void showDialogRunConfig() {
-        if (mProject != null) {
-            DialogRunConfig dialogRunConfig = DialogRunConfig.newInstance(mProject);
-            dialogRunConfig.show(getSupportFragmentManager(), DialogRunConfig.TAG);
-        } else {
-            Toast.makeText(this, "Please create project", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
     public void onConfigChange(JavaProject projectFile) {
         this.mProject = projectFile;
@@ -657,7 +647,6 @@ public class MainActivity extends ProjectManagerActivity implements
             JavaProjectManager.saveProject(this, projectFile);
         }
     }
-
 
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
@@ -686,7 +675,6 @@ public class MainActivity extends ProjectManagerActivity implements
 
     private void updateUIFinish() {
         mMessagePresenter.pause((JavaApplication) getApplication());
-
         if (mActionRun != null) mActionRun.setEnabled(true);
         if (mCompileProgress != null) {
             mHandler.postDelayed(new Runnable() {

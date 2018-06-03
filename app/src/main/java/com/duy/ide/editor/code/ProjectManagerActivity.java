@@ -578,16 +578,12 @@ public abstract class ProjectManagerActivity extends BaseActivity
                 if (resultCode == RESULT_OK) {
                     String file = FileExplorerActivity.getFile(data);
                     JavaProjectManager javaProjectManager = new JavaProjectManager(this);
-                    JavaProject javaProject = null;
                     try {
-                        javaProject = javaProjectManager.loadProject(new File(file), true);
+                        JavaProject javaProject = javaProjectManager.loadProject(new File(file), true);
+                        onProjectCreated(javaProject);
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
-                    if (javaProject != null) {
-                        onProjectCreated(javaProject);
-                    } else {
-                        Toast.makeText(this, "Can not import project", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Can not import project. Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -596,14 +592,10 @@ public abstract class ProjectManagerActivity extends BaseActivity
                 if (resultCode == RESULT_OK) {
                     AndroidProjectManager manager = new AndroidProjectManager(this);
                     String file = FileExplorerActivity.getFile(data);
-                    AndroidAppProject project;
                     try {
-                        project = manager.loadProject(new File(file), true);
-                        if (project != null) {
-                            onProjectCreated(project);
-                        }
-                    } catch (IOException e) {
-                        project = null;
+                        AndroidAppProject project = manager.loadProject(new File(file), true);
+                        onProjectCreated(project);
+                    } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(this, "Can not import project. Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }

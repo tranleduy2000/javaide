@@ -121,9 +121,7 @@ public class MenuEditor {
             case R.id.action_new_class:
                 activity.showDialogCreateNewClass(null);
                 break;
-            case R.id.action_edit_run:
-                activity.showDialogRunConfig();
-                break;
+
             case R.id.action_open_project:
                 activity.showDialogOpenJavaProject();
                 break;
@@ -136,9 +134,6 @@ public class MenuEditor {
                 break;
             case R.id.action_see_logcat:
                 activity.startActivity(new Intent(activity, LogcatActivity.class));
-                break;
-            case R.id.action_create_keystore:
-                activity.createKeyStore();
                 break;
             case R.id.action_install_cpp_nide:
                 StoreUtil.gotoPlayStore(activity, "com.duy.c.cpp.compiler");

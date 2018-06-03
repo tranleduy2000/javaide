@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.duy.android.compiler.project.JavaProject;
+import com.duy.common.interfaces.Predicate;
 import com.duy.ide.R;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.projectview.ProjectFileContract;
@@ -25,7 +26,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 import static android.widget.FrameLayout.LayoutParams;
 
@@ -104,7 +104,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
         view.findViewById(R.id.img_expand_all).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mTreeView != null) expandSrcDir(mTreeView.getRoot());
+                if (mTreeView != null) expand(mTreeView.getRoot());
             }
         });
         view.findViewById(R.id.img_collapse).setOnClickListener(new View.OnClickListener() {
@@ -224,23 +224,40 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     public void display(JavaProject projectFile, boolean expand) {
         this.mProjectFile = projectFile;
         TreeNode root = refresh();
-        if (expand && mTreeView != null) expandSrcDir(root);
+        if (expand && mTreeView != null) {
+            expand(root);
+        }
     }
 
-    private void expandSrcDir(TreeNode root) {
-        if (mTreeView == null || mProjectFile == null) return;
-        TreeNode treeNode = root.getChildren().get(0);
-        mTreeView.expandNode(treeNode, false);
-        List<TreeNode> children = treeNode.getChildren();
-        for (TreeNode child : children) {
-            FolderHolder.TreeItem value = (FolderHolder.TreeItem) child.getValue();
-            File file = value.getFile();
-            if (file.getName().equals("src")) {
-                mTreeView.expandNode(child, true);
-                return;
+    private void expand(TreeNode root) {
+        if (mTreeView == null || mProjectFile == null) {
+            return;
+        }
+        expandRecursive(root, new Predicate<TreeNode>() {
+            @Override
+            public boolean accept(TreeNode node) {
+                FolderHolder.TreeItem value = (FolderHolder.TreeItem) node.getValue();
+                if (value == null) {
+                    return true;
+                }
+                File file = value.getFile();
+                return !(file.getName().equals("build"));
+            }
+        });
+
+    }
+
+    private void expandRecursive(TreeNode node, Predicate<TreeNode> test) {
+        if (test.accept(node)) {
+            mTreeView.expandNode(node, false);
+            if (node.getChildren().size() > 0) {
+                for (TreeNode treeNode : node.getChildren()) {
+                    expandRecursive(treeNode, test);
+                }
             }
         }
     }
+
 
     @Override
     public TreeNode refresh() {

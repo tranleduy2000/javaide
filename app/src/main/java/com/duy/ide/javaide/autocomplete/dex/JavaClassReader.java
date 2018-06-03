@@ -5,12 +5,12 @@ import android.support.v4.util.Pair;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
+import com.duy.android.compiler.project.AndroidAppProject;
+import com.duy.android.compiler.project.JavaProject;
 import com.duy.ide.javaide.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.autocomplete.model.ConstructorDescription;
 import com.duy.ide.javaide.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.autocomplete.model.MethodDescription;
-import com.duy.android.compiler.project.AndroidAppProject;
-import com.duy.android.compiler.project.JavaProject;
 
 import java.io.File;
 import java.io.IOException;
@@ -149,7 +149,7 @@ public class JavaClassReader {
         });
 
         for (Class mClass : mClasses) {
-//            mSimpleClasses.add(new Pair<>(mClass.getSimpleName(), mClass));
+            mSimpleClasses.add(new Pair<>(mClass.getSimpleName(), mClass));
         }
         Collections.sort(mSimpleClasses, new Comparator<Pair<String, Class>>() {
             @Override

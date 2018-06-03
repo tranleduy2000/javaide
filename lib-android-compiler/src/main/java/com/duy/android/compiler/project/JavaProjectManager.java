@@ -49,7 +49,7 @@ public class JavaProjectManager implements IProjectManager<JavaProject> {
             try {
                 AndroidProjectManager manager = new AndroidProjectManager(context);
                 return manager.loadProject(new File(rootDir), true);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
@@ -57,7 +57,7 @@ public class JavaProjectManager implements IProjectManager<JavaProject> {
             try {
                 JavaProjectManager projectManager = new JavaProjectManager(context);
                 return projectManager.loadProject(new File(rootDir), true);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
@@ -73,6 +73,7 @@ public class JavaProjectManager implements IProjectManager<JavaProject> {
         return javaProject;
     }
 
+    @NonNull
     @Override
     public JavaProject loadProject(File rootDir, boolean tryToImport) throws IOException {
         JavaProject project = new JavaProject(rootDir, null);

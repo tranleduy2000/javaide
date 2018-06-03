@@ -558,7 +558,7 @@ public class LogcatActivity extends AppCompatActivity implements FilterListener,
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_logcat, menu);
 
         //used to workaround issue where the search text is cleared on expanding the SearchView
 

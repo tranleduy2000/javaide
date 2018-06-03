@@ -26,7 +26,7 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
     private BottomPageAdapter adapter;
     private EditPageContract.Presenter mPagePresenter;
     @Nullable
-    private DiagnosticContract.View view;
+    private DiagnosticContract.View mView;
 
     public DiagnosticPresenter(ProjectManagerActivity mainActivity,
                                @NonNull BottomPageAdapter adapter,
@@ -34,9 +34,9 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
         this.mMainActivity = mainActivity;
         this.adapter = adapter;
         this.mPagePresenter = pagePresenter;
-        this.view = (DiagnosticFragment) adapter.getExistingFragment(1);
-        if (view != null) {
-            view.setPresenter(this);
+        this.mView = (DiagnosticFragment) adapter.getExistingFragment(1);
+        if (mView != null) {
+            mView.setPresenter(this);
         }
     }
 
@@ -62,29 +62,39 @@ public class DiagnosticPresenter implements DiagnosticContract.Presenter {
             int startPosition = position.getStartLine();
             int startColumn = position.getStartColumn();
             editor.gotoLine(startPosition, startColumn);
-        } else {
-            // TODO: 19/07/2017 implement other
         }
     }
 
     @Override
     public void clear() {
-        this.view = (DiagnosticContract.View) adapter.getExistingFragment(1);
-        if (view != null) {
-            view.setPresenter(this);
-            view.clear();
+        this.mView = getView();
+        if (mView != null) {
+            mView.setPresenter(this);
+            mView.clear();
         }
     }
 
     public void display(List<Message> diagnostics) {
-        this.view = (DiagnosticContract.View) adapter.getExistingFragment(1);
-        if (view != null) {
-            view.setPresenter(this);
-            view.display(diagnostics);
+        this.mView = getView();
+        if (mView != null) {
+            mView.setPresenter(this);
+            mView.display(diagnostics);
         }
     }
 
     @Override
-    public void add(List<Message> message) {
+    public void appendMessages(List<Message> messages) {
+        this.mView = getView();
+        if (mView != null) {
+            try {
+                mView.appendMessages(messages);
+            } catch (Exception ignored) {
+                ignored.printStackTrace();
+            }
+        }
+    }
+
+    private DiagnosticContract.View getView() {
+        return (DiagnosticContract.View) adapter.getExistingFragment(1);
     }
 }

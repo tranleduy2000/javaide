@@ -1,7 +1,6 @@
 package com.duy.ide.diagnostic;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.android.ide.common.blame.Message;
 import com.android.ide.common.blame.parser.PatternAwareOutputParser;
@@ -83,22 +82,21 @@ public class MessagePresenter implements MessageContract.Presenter, ILogger {
     }
 
     private void onNewMessage(byte[] b, int off, int len) {
-        String message = new String(b, off, len);
-        System.out.println("message = " + message);
-        List<Message> messages = mToolOutputParser.parseToolOutput(message);
-        mDiagnosticPresenter.add(messages);
+        String output = new String(b, off, len);
+        List<Message> messages = mToolOutputParser.parseToolOutput(output);
+        mDiagnosticPresenter.appendMessages(messages);
         if (mLogView != null) {
-            mLogView.append(message);
+            mLogView.append(output);
         }
     }
 
 
     private void onNewErrorMessage(byte[] b, int off, int len) {
-        String message = new String(b, off, len);
-        System.out.println("message = " + message);
-        List<Message> messages = mToolOutputParser.parseToolOutput(message);
+        String output = new String(b, off, len);
+        List<Message> messages = mToolOutputParser.parseToolOutput(output);
+        mDiagnosticPresenter.appendMessages(messages);
         if (mLogView != null) {
-            mLogView.append(message);
+            mLogView.append(output);
         }
     }
 
@@ -120,18 +118,10 @@ public class MessagePresenter implements MessageContract.Presenter, ILogger {
 
     @Override
     public void resume(JavaApplication application) {
-        Log.d(TAG, "resume() called with: application = [" + application + "]");
-
-//        application.addStdOut(stdOut);
-//        application.addStdErr(stdErr);
     }
 
     @Override
     public void pause(JavaApplication application) {
-        Log.d(TAG, "pause() called with: application = [" + application + "]");
-
-//        application.removeOutStream(stdOut);
-//        application.removeErrStream(stdErr);
     }
 
     public ILogger getILogger() {

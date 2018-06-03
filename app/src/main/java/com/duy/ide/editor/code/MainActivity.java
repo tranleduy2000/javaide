@@ -269,7 +269,6 @@ public class MainActivity extends ProjectManagerActivity implements
                 public void onError(Exception e) {
                     Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                     openDrawer(GravityCompat.START);
-                    mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
                     updateUIFinish();
                 }
 
@@ -278,7 +277,6 @@ public class MainActivity extends ProjectManagerActivity implements
                     updateUIFinish();
                     Toast.makeText(MainActivity.this, R.string.build_success, Toast.LENGTH_SHORT).show();
                     mFilePresenter.refresh(mProject);
-                    mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
                     mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                     RootUtils.installApk(MainActivity.this, ((AndroidAppProject) mProject).getApkSigned());
                 }
@@ -311,7 +309,6 @@ public class MainActivity extends ProjectManagerActivity implements
                 Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                 openDrawer(GravityCompat.START);
                 mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
-                mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
                 updateUIFinish();
             }
 
@@ -319,7 +316,6 @@ public class MainActivity extends ProjectManagerActivity implements
             public void onComplete() {
                 updateUIFinish();
                 Toast.makeText(MainActivity.this, R.string.compile_success, Toast.LENGTH_SHORT).show();
-                mDiagnosticPresenter.display(mDiagnosticCollector.getDiagnostics());
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

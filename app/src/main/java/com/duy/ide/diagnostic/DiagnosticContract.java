@@ -1,5 +1,7 @@
 package com.duy.ide.diagnostic;
 
+import android.support.annotation.WorkerThread;
+
 import com.android.ide.common.blame.Message;
 
 import java.util.List;
@@ -10,20 +12,26 @@ import java.util.List;
 
 public class DiagnosticContract {
     public interface View {
-        public void display(List<Message> diagnostics);
+        @WorkerThread
+        void display(List<Message> diagnostics);
 
-        public void clear();
+        @WorkerThread
+        void clear();
 
-        public void setPresenter(Presenter presenter);
+        void setPresenter(Presenter presenter);
+
+        @WorkerThread
+        void appendMessages(List<Message> messages);
     }
 
+
     public interface Presenter {
-        public void click(Message diagnostic);
+        void click(Message diagnostic);
 
-        public void clear();
+        void clear();
 
-        public void display(List<Message> diagnostics);
+        void display(List<Message> diagnostics);
 
-        void add(List<Message> message);
+        void appendMessages(List<Message> message);
     }
 }

@@ -1,6 +1,7 @@
 package com.duy.ide.diagnostic;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -23,6 +24,20 @@ import java.util.List;
 public class DiagnosticFragment extends Fragment implements DiagnosticContract.View {
     public static final String TAG = "DiagnosticFragment";
     public static final int INDEX = 1;
+    private final Filter<Message> mFilter = new Filter<Message>() {
+        @Override
+        public boolean test(Message message) {
+            switch (message.getKind()) {
+                case ERROR:
+                case WARNING:
+                case INFO:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    };
+    private final Handler mHandler = new Handler();
     private RecyclerView mRecyclerView;
     private DiagnosticAdapter mAdapter;
     @Nullable
@@ -30,7 +45,6 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
 
     public static DiagnosticFragment newInstance() {
         Bundle args = new Bundle();
-
         DiagnosticFragment fragment = new DiagnosticFragment();
         fragment.setArguments(args);
         return fragment;
@@ -62,18 +76,55 @@ public class DiagnosticFragment extends Fragment implements DiagnosticContract.V
     }
 
     @Override
-    public void display(List<Message> diagnostics) {
-        mAdapter.clear();
-        mAdapter.addAll(diagnostics);
+    public void display(final List<Message> diagnostics) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.clear();
+                mAdapter.addAll(diagnostics);
+            }
+        });
     }
 
     @Override
     public void clear() {
-        mAdapter.clear();
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.clear();
+            }
+        });
     }
 
     @Override
     public void setPresenter(@Nullable DiagnosticContract.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void appendMessages(List<Message> messages) {
+        messages = applyFilter(messages);
+        final List<Message> finalMessages = messages;
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.clear();
+                mAdapter.addAll(finalMessages);
+            }
+        });
+    }
+
+    private List<Message> applyFilter(List<Message> messages) {
+        ArrayList<Message> filtered = new ArrayList<>();
+        for (Message message : messages) {
+            if (mFilter.test(message)) {
+                filtered.add(message);
+            }
+        }
+        return filtered;
+    }
+
+    interface Filter<T> {
+        boolean test(T t);
     }
 }

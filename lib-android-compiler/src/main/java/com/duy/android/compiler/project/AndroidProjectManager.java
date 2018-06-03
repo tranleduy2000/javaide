@@ -5,11 +5,14 @@ import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
+import com.android.builder.dependency.LibraryBundle;
+import com.android.builder.dependency.LibraryDependency;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
 import com.android.io.StreamException;
+import com.duy.android.compiler.builder.gradle.internal.LibraryDependencyImpl;
 import com.duy.android.compiler.env.Environment;
-import com.duy.android.compiler.library.AndroidLibraryExtractor;
+import com.duy.android.compiler.library.LibraryCache;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -20,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -235,30 +239,36 @@ public class AndroidProjectManager implements IAndroidProjectManager {
             addLib(project, "libs/27.1.1/support-vector-drawable-27.1.1.aar", "support-vector-drawable-27.1.1");
             addLib(project, "libs/27.1.1/support-annotations-27.1.1.jar", "support-annotations-27.1.1.jar");
             addLib(project, "libs/27.1.1/support-media-compat-27.1.1.aar", "support-media-compat-27.1.1");
-            addLib(project, "libs/27.1.1/support-v4-27.1.1.aar", "support-v4-27.1.1.aar");
+            addLib(project, "libs/27.1.1/support-v4-27.1.1.aar", "support-v4-27.1.1");
         }
     }
 
-    private void addLib(AndroidAppProject project, String assetsPath, String libName)
+    private void addLib(AndroidAppProject project, String assetsPath, String bundleFolderName)
             throws SAXException, StreamException, ParserConfigurationException, IOException {
         if (assetsPath.endsWith(".jar")) {
-            File javaLib = new File(project.getDirLibs(), libName);
+            File javaLib = new File(project.getDirLibs(), bundleFolderName);
             FileOutputStream output = new FileOutputStream(javaLib);
             IOUtils.copy(context.getAssets().open(assetsPath), output);
             output.close();
+
         } else if (assetsPath.endsWith(".aar")) {
-            File aarFile = new File(project.getRootDir(), libName + "/" + assetsPath);
-            aarFile.getParentFile().mkdirs();
-            FileOutputStream output = new FileOutputStream(aarFile);
+            File libraryExtractedFolder = Environment.getSdCardLibraryExtractedFolder();
+            File libraryBundleFolder = Environment.getSdCardLibraryBundleFolder();
+
+            String bundleName = assetsPath.substring(assetsPath.lastIndexOf("/"));
+            File bundle = new File(libraryBundleFolder, bundleName);
+            bundle.getParentFile().mkdirs();
+            FileOutputStream output = new FileOutputStream(bundle);
             IOUtils.copy(context.getAssets().open(assetsPath), output);
             output.close();
 
-            AndroidLibraryExtractor extractor = new AndroidLibraryExtractor(context);
-            extractor.extract(aarFile, libName);
+            LibraryCache extractor = new LibraryCache(context);
+            File folderOut = new File(libraryExtractedFolder, bundleFolderName);
+            extractor.extractAar(bundle, folderOut);
 
-            File dirLib = new File(Environment.getSdCardLibraryCachedDir(context), libName);
-            AndroidLibraryProject androidLib = new AndroidLibraryProject(dirLib, libName);
-            project.addDependence(androidLib);
+            LibraryBundle androidLib = new LibraryDependencyImpl(bundle, folderOut, new ArrayList<LibraryDependency>(),
+                    bundleFolderName, null, project.getRootDir().getAbsolutePath(), null, null, true);
+            project.addLibrary(androidLib);
         }
     }
 

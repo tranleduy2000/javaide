@@ -1,12 +1,23 @@
 package com.duy.android.compiler.project;
 
 import com.android.annotations.Nullable;
+import com.android.builder.dependency.LibraryBundle;
+import com.android.builder.dependency.LibraryDependency;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
+import com.duy.android.compiler.builder.gradle.internal.LibraryDependencyImpl;
+import com.duy.android.compiler.utils.IOUtils;
 import com.google.common.base.MoreObjects;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -27,14 +38,22 @@ public class AndroidAppProject extends JavaProject {
 
     private ManifestData.Activity launcherActivity;
 
-    private ArrayList<AndroidLibraryProject> dependencies;
+    private ArrayList<LibraryBundle> libraries;
 
     public AndroidAppProject(File dirRoot,
                              @Nullable String mainClassName,
                              @Nullable String packageName) {
         super(dirRoot, packageName);
-        dependencies = new ArrayList<>();
+        libraries = new ArrayList<>();
+        try {
+            readLibraries();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
+
 
     @Override
     public void init() {
@@ -112,18 +131,15 @@ public class AndroidAppProject extends JavaProject {
     @Override
     public String getSourcePath() {
         StringBuilder sourcePath = new StringBuilder(super.getSourcePath());
-//        for (AndroidLibraryProject library : getDependencies()) {
-//            sourcePath.append(File.pathSeparator).append(library.getDirGeneratedSource());
-//        }
         return sourcePath.toString();
     }
 
     @Override
     public ArrayList<File> getJavaLibraries() {
         ArrayList<File> libraries = (super.getJavaLibraries());
-        for (AndroidLibraryProject dependency : dependencies) {
-            if (dependency.getClassesJar() != null) {
-                libraries.add(dependency.getClassesJar());
+        for (LibraryDependency dependency : this.libraries) {
+            if (dependency.getJarFile().exists()) {
+                libraries.add(dependency.getJarFile());
             }
         }
         return libraries;
@@ -158,11 +174,50 @@ public class AndroidAppProject extends JavaProject {
     }
 
 
-    public ArrayList<AndroidLibraryProject> getDependencies() {
-        return dependencies;
+    public ArrayList<LibraryBundle> getLibraries() {
+        return libraries;
     }
 
-    public void addDependence(AndroidLibraryProject androidLibrary) {
-        dependencies.add(androidLibrary);
+    public void addLibrary(LibraryBundle androidLibrary) {
+        libraries.add(androidLibrary);
+        try {
+            writeToLibraryFile();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readLibraries() throws IOException, JSONException {
+        File file = new File(getAppDir(), "libraries.json");
+        JSONObject jsonObject = new JSONObject(IOUtils.toStringAndClose(file));
+        JSONArray array = jsonObject.getJSONArray("libraries");
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject lib = array.getJSONObject(i);
+            String bundle = lib.getString("bundle");
+            String bundleFolder = lib.getString("bundleFolder");
+            LibraryDependencyImpl androidLibrary
+                    = new LibraryDependencyImpl(new File(bundle), new File(bundleFolder), new ArrayList<LibraryDependency>(),
+                    null, null, getRootDir().getAbsolutePath(), null, null, true);
+            addLibrary(androidLibrary);
+        }
+    }
+
+    private void writeToLibraryFile() throws JSONException, IOException {
+        File file = new File(getAppDir(), "libraries.json");
+        JSONObject jsonObject = new JSONObject();
+        JSONArray array = new JSONArray();
+        jsonObject.put("libraries", array);
+        for (LibraryBundle library : libraries) {
+            JSONObject item = new JSONObject();
+            item.put("bundle", library.getBundle().getAbsolutePath());
+            item.put("bundleFolder", library.getBundleFolder().getAbsolutePath());
+            array.put(item);
+        }
+        String str = jsonObject.toString(1);
+        org.apache.commons.io.IOUtils.write(str, new FileOutputStream(file), "UTF-8");
     }
 }

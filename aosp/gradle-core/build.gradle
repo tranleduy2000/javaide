@@ -13,8 +13,6 @@ android {
     sourceSets {
         main {
             java.srcDirs = ['src/main/java', 'src/fromGradle/java']
-//        resources.srcDirs = ['src/main/resources', 'src/fromGradle/resources']
-//        compileClasspath += configurations.provided
         }
     }
     buildTypes {
@@ -26,18 +24,10 @@ android {
 
 }
 
-
-
 ext.proguardVersion = "5.2.1"
-
 dependencies {
     api project(':aosp:builder')
-//    api project(':base:lint')
     api "net.sf.proguard:proguard-gradle:${project.ext.proguardVersion}"
     api 'org.gradle:gradle-core:2.2.1'
-
-    // Add gradleApi to classpath for compilation, but use provided configuration so that groovy is
-    // not exposed as a runtime dependency.
-//    provided gradleApi()
 }
 

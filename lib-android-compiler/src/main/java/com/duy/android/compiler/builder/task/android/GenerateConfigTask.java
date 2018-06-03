@@ -3,19 +3,19 @@ package com.duy.android.compiler.builder.task.android;
 import com.android.builder.compiling.BuildConfigGenerator;
 import com.android.builder.model.ClassField;
 import com.duy.android.compiler.builder.IBuilder;
-import com.duy.android.compiler.builder.task.ABuildTask;
+import com.duy.android.compiler.builder.task.ATask;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.google.common.collect.Lists;
 
 import java.io.File;
 import java.util.List;
 
-public class GenerateBuildConfigTask extends ABuildTask<AndroidAppProject> {
+public class GenerateConfigTask extends ATask<AndroidAppProject> {
     List<Object> items;
     private boolean debuggable = true;
     private int versionCode;
 
-    public GenerateBuildConfigTask(IBuilder<? extends AndroidAppProject> builder) {
+    public GenerateConfigTask(IBuilder<? extends AndroidAppProject> builder) {
         super(builder);
     }
 

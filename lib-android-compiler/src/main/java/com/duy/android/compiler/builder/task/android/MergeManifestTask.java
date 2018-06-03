@@ -14,7 +14,7 @@ import com.android.utils.SdkUtils;
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.sdk.SdkInfo;
 import com.duy.android.compiler.builder.sdk.TargetInfo;
-import com.duy.android.compiler.builder.task.ABuildTask;
+import com.duy.android.compiler.builder.task.ATask;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -29,7 +29,7 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-public class MergeManifestTask extends ABuildTask<AndroidAppProject> {
+public class MergeManifestTask extends ATask<AndroidAppProject> {
     private static final String TAG = "MergeManifestTask";
 
     private static final FullRevision MIN_BUILD_TOOLS_REV = new FullRevision(19, 0, 0);

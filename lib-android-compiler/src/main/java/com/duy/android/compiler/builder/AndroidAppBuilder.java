@@ -4,10 +4,10 @@ import android.content.Context;
 
 import com.duy.android.compiler.builder.model.BuildType;
 import com.duy.android.compiler.builder.model.KeyStore;
-import com.duy.android.compiler.builder.task.ABuildTask;
+import com.duy.android.compiler.builder.task.ATask;
 import com.duy.android.compiler.builder.task.CleanTask;
-import com.duy.android.compiler.builder.task.android.AAPTTask;
-import com.duy.android.compiler.builder.task.android.GenerateBuildConfigTask;
+import com.duy.android.compiler.builder.task.android.ProcessAndroidResourceTask;
+import com.duy.android.compiler.builder.task.android.GenerateConfigTask;
 import com.duy.android.compiler.builder.task.android.PackageApplicationTask;
 import com.duy.android.compiler.builder.task.android.SignApkTask;
 import com.duy.android.compiler.builder.task.java.CompileJavaTask;
@@ -37,13 +37,13 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
             mStdout.println("Build type " + buildType);
         }
 
-        ArrayList<ABuildTask> tasks = new ArrayList<>();
+        ArrayList<ATask> tasks = new ArrayList<>();
 
         tasks.add(new CleanTask(this));
 
-        tasks.add(new GenerateBuildConfigTask(this));
+        tasks.add(new GenerateConfigTask(this));
 
-        tasks.add(new AAPTTask(this));
+        tasks.add(new ProcessAndroidResourceTask(this));
 
         tasks.add(new CompileJavaTask(this));
 

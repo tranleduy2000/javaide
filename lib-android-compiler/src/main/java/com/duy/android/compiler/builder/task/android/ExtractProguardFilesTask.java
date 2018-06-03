@@ -1,10 +1,10 @@
 package com.duy.android.compiler.builder.task.android;
 
 import com.duy.android.compiler.builder.IBuilder;
-import com.duy.android.compiler.builder.task.ABuildTask;
+import com.duy.android.compiler.builder.task.ATask;
 import com.duy.android.compiler.project.AndroidAppProject;
 
-public class ExtractProguardFilesTask extends ABuildTask<AndroidAppProject> {
+public class ExtractProguardFilesTask extends ATask<AndroidAppProject> {
     public ExtractProguardFilesTask(IBuilder<? extends AndroidAppProject> builder) {
         super(builder);
     }

@@ -23,5 +23,13 @@
             android:key="@string/key_pref_source_encoding"
             android:title="Encoding" />
 
+
+        <EditTextPreference
+            android:defaultValue="@string/default_classpath"
+            android:key="@string/key_classpath"
+            android:summary="@string/classpath_desc"
+            android:title="Classpath (android.jar)">
+
+        </EditTextPreference>
     </PreferenceCategory>
 </PreferenceScreen>

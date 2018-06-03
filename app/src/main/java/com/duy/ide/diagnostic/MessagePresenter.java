@@ -83,6 +83,7 @@ public class MessagePresenter implements MessageContract.Presenter, ILogger {
 
     private void onNewMessage(byte[] b, int off, int len) {
         String output = new String(b, off, len);
+        System.out.println(output);
         List<Message> messages = mToolOutputParser.parseToolOutput(output);
         mDiagnosticPresenter.appendMessages(messages);
         if (mLogView != null) {
@@ -93,6 +94,7 @@ public class MessagePresenter implements MessageContract.Presenter, ILogger {
 
     private void onNewErrorMessage(byte[] b, int off, int len) {
         String output = new String(b, off, len);
+        System.err.println(output);
         List<Message> messages = mToolOutputParser.parseToolOutput(output);
         mDiagnosticPresenter.appendMessages(messages);
         if (mLogView != null) {

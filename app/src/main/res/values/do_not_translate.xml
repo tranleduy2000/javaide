@@ -80,8 +80,6 @@
     <string name="key_show_symbol" translatable="false">key_show_symbol</string>
     <string name="key_max_page" translatable="false">key_max_tab</string>
     <string name="key_max_history_edit" translatable="false">key_max_history_edit</string>
-    <string name="default_classpath" translatable="false">default</string>
-    <string name="key_classpath" translatable="false">pref_key_classpath</string>
     <string name="key_format_type" translatable="false">key_format_type</string>
 
 </resources>

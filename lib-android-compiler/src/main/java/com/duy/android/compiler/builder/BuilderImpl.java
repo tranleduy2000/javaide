@@ -2,7 +2,7 @@ package com.duy.android.compiler.builder;
 
 import android.content.Context;
 
-import com.duy.android.compiler.builder.task.ABuildTask;
+import com.duy.android.compiler.builder.task.ATask;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.JavaProject;
 
@@ -26,8 +26,8 @@ public abstract class BuilderImpl<T extends JavaProject> implements IBuilder<T> 
         mVerbose = true;
     }
 
-    protected boolean runTasks(ArrayList<ABuildTask> tasks) {
-        for (ABuildTask task : tasks) {
+    protected boolean runTasks(ArrayList<ATask> tasks) {
+        for (ATask task : tasks) {
             try {
                 stdout("Run " + task.getTaskName() + " task");
                 boolean result = task.run();

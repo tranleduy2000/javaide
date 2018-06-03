@@ -2,12 +2,12 @@ package com.duy.android.compiler.builder.task.android;
 
 import android.os.Build;
 
+import com.android.builder.dependency.LibraryDependency;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
-import com.duy.android.compiler.builder.task.ABuildTask;
+import com.duy.android.compiler.builder.task.ATask;
 import com.duy.android.compiler.builder.util.Argument;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.AndroidAppProject;
-import com.duy.android.compiler.project.AndroidLibraryProject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -111,8 +111,8 @@ import java.util.regex.Pattern;
  * @link https://elinux.org/Android_aapt
  * @link https://android.googlesource.com/platform/frameworks/base.git/+/master/tools/aapt/Main.cpp
  */
-public class AAPTTask extends ABuildTask<AndroidAppProject> {
-    public AAPTTask(AndroidAppBuilder builder) {
+public class ProcessAndroidResourceTask extends ATask<AndroidAppProject> {
+    public ProcessAndroidResourceTask(AndroidAppBuilder builder) {
         super(builder);
     }
 
@@ -153,11 +153,11 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
         }
         File aaptFile = new File(Environment.getBinDir(context), aaptName);
 
-        if (project.getDependencies().size() > 0) {
+        if (project.getLibraries().size() > 0) {
             builder.stdout("Run AAPT for all libraries");
             //run aapt for library
-            for (AndroidLibraryProject library : project.getDependencies()) {
-                builder.stdout("AAPT for library " + library.getProjectName());
+            for (LibraryDependency library : project.getLibraries()) {
+                builder.stdout("AAPT for library " + library.getName());
                 Argument args = new Argument();
                 args.add(aaptFile.getAbsolutePath());
                 args.add("package"); //package
@@ -166,10 +166,10 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
                 args.add("--auto-add-overlay");
                 if (builder.isVerbose()) args.add("-v"); //verbose output
                 args.add("--non-constant-id"); //non constant for library
-                args.add("-M", library.getXmlManifest().getAbsolutePath());  //manifest file
-                args.add("-A", library.getAssetsDir().getAbsolutePath()); //input assets dir
+                args.add("-M", library.getManifest().getAbsolutePath());  //manifest file
+                args.add("-A", library.getAssetsFolder().getAbsolutePath()); //input assets dir
                 args.add("-I", project.getBootClassPath(context));//The location of the android.jar resource
-                args.add("-S", library.getResDir().getAbsolutePath());  //input resource dir
+                args.add("-S", library.getResFolder().getAbsolutePath());  //input resource dir
                 args.add("-m"); // make package directories under location specified by -J
                 //specify where to output R.java resource constant definitions
                 args.add("-J", project.getDirGeneratedSource().getAbsolutePath());
@@ -203,9 +203,9 @@ public class AAPTTask extends ABuildTask<AndroidAppProject> {
 
         //--custom-package project.getPackageName()
 
-        for (AndroidLibraryProject library : project.getDependencies()) {
-            args.add("-S", library.getResDir().getAbsolutePath());
-            args.add("-A", library.getAssetsDir().getAbsolutePath()); //input assets dir
+        for (LibraryDependency library : project.getLibraries()) {
+            args.add("-S", library.getResFolder().getAbsolutePath());
+            args.add("-A", library.getAssetsFolder().getAbsolutePath()); //input assets dir
         }
         return execAapt(args);
     }

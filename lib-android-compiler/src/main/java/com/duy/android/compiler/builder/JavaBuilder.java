@@ -3,8 +3,8 @@ package com.duy.android.compiler.builder;
 import android.content.Context;
 
 import com.duy.android.compiler.builder.model.BuildType;
-import com.duy.android.compiler.builder.task.ABuildTask;
-import com.duy.android.compiler.builder.task.java.BuildJarTask;
+import com.duy.android.compiler.builder.task.ATask;
+import com.duy.android.compiler.builder.task.java.JarTask;
 import com.duy.android.compiler.builder.task.CleanTask;
 import com.duy.android.compiler.builder.task.java.CompileJavaTask;
 import com.duy.android.compiler.builder.task.java.DexTask;
@@ -33,13 +33,13 @@ public class JavaBuilder extends BuilderImpl<JavaProject> {
             mStdout.println("Build type " + buildType);
         }
 
-        ArrayList<ABuildTask> tasks = new ArrayList<>();
+        ArrayList<ATask> tasks = new ArrayList<>();
 
         tasks.add(new CleanTask(this));
 
         tasks.add(new CompileJavaTask(this));
 
-        tasks.add(new BuildJarTask(this));
+        tasks.add(new JarTask(this));
 
         tasks.add(new DexTask(this));
 

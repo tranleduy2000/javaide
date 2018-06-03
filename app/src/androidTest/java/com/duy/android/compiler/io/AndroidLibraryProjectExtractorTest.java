@@ -7,7 +7,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.builder.model.BuildType;
 import com.duy.android.compiler.env.Environment;
-import com.duy.android.compiler.library.AndroidLibraryExtractor;
+import com.duy.android.compiler.library.LibraryCache;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.AndroidProjectManager;
 import com.duy.android.compiler.repo.maven.ArtifactDownloader;
@@ -48,12 +48,12 @@ public class AndroidLibraryProjectExtractorTest {
         output.close();
 
         String libraryName = "appcompat-v7-25.2.0";
-        AndroidLibraryExtractor extractor = new AndroidLibraryExtractor(context);
-        boolean result = extractor.extract(file, libraryName);
+        LibraryCache extractor = new LibraryCache(context);
+        boolean result = extractor.extractAar(file, libraryName);
 
         assertTrue(result);
 
-        File libDir = new File(Environment.getSdCardLibraryCachedDir(context), libraryName);
+        File libDir = new File(Environment.getSdCardLibraryExtractedFolder(), libraryName);
     }
 
     @Test

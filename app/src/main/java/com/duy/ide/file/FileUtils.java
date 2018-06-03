@@ -48,7 +48,7 @@ public class FileUtils {
     }
 
     public static boolean canEdit(File file) {
-        String[] exts = {".java", ".xml", ".txt", ".gradle"};
+        String[] exts = {".java", ".xml", ".txt", ".gradle", ".json"};
         return file.canWrite() && hasExtension(file, exts);
     }
 

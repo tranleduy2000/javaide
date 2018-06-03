@@ -59,3 +59,5 @@ freeline_project_description.json
 !/aosp/gradle-core/src/main/groovy/com/android/build/
 !/aosp/gradle-core/src/main/java/
 !/aosp/gradle-core/src/main/java/com/android/build/
+!/aosp/gradle/src/main/java/com/android/build/
+!/aosp/gradle/src/test/java/com/android/build/

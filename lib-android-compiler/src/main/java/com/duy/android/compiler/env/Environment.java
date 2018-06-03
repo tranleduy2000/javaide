@@ -54,8 +54,13 @@ public class Environment {
         return new File(getPlatformApiDir(context, ANDROID_API), "android.jar");
     }
 
-    public static File getSdCardLibraryCachedDir(Context context) {
-        File dir = new File(getSdkAppDir(), ".cached");
+    public static File getSdCardLibraryExtractedFolder() {
+        File dir = new File(getSdkAppDir(), ".cached/bundleFolder");
+        return mkdirsIfNotExist(dir);
+    }
+
+    public static File getSdCardLibraryBundleFolder() {
+        File dir = new File(getSdkAppDir(), ".cached/bundle");
         return mkdirsIfNotExist(dir);
     }
 

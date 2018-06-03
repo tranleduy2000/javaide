@@ -1,10 +1,10 @@
 package com.duy.android.compiler.builder.task.android;
 
 import com.duy.android.compiler.builder.IBuilder;
-import com.duy.android.compiler.builder.task.ABuildTask;
+import com.duy.android.compiler.builder.task.ATask;
 import com.duy.android.compiler.project.AndroidAppProject;
 
-public class MergeAssetTask extends ABuildTask<AndroidAppProject> {
+public class MergeAssetTask extends ATask<AndroidAppProject> {
 
     public MergeAssetTask(IBuilder<? extends AndroidAppProject> builder) {
         super(builder);

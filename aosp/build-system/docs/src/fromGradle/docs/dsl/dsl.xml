@@ -53,7 +53,6 @@
             <tr><td>com.android.build.gradle.api.AndroidSourceSet</td></tr>
             <tr><td>com.android.build.gradle.internal.CompileOptions</td></tr>
             <tr><td>com.android.build.gradle.internal.api.VariantFilter</td></tr>
-            <tr><td>com.android.build.gradle.internal.coverage.JacocoExtension</td></tr>
             <tr><td>com.android.build.gradle.internal.dsl.AaptOptions</td></tr>
             <tr><td>com.android.build.gradle.internal.dsl.BuildType</td></tr>
             <tr><td>com.android.build.gradle.internal.dsl.DexOptions</td></tr>

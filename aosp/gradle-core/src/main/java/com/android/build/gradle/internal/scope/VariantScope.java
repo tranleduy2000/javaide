@@ -24,7 +24,6 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.core.Abi;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
-import com.android.build.gradle.internal.coverage.JacocoInstrumentTask;
 import com.android.build.gradle.internal.tasks.CheckManifest;
 import com.android.build.gradle.internal.tasks.FileSupplier;
 import com.android.build.gradle.internal.tasks.MergeJavaResourcesTask;
@@ -108,8 +107,6 @@ public class VariantScope {
 
     @Nullable
     private AndroidTask<Dex> dexTask;
-    @Nullable
-    private AndroidTask jacocoIntrumentTask;
 
     private AndroidTask<Sync> processJavaResourcesTask;
     private AndroidTask<MergeJavaResourcesTask> mergeJavaResourcesTask;
@@ -124,7 +121,6 @@ public class VariantScope {
 
     // empty anchor compile task to set all compilations tasks as dependents.
     private AndroidTask<Task> compileTask;
-    private AndroidTask<JacocoInstrumentTask> jacocoInstrumentTask;
 
     private FileSupplier mappingFileProviderTask;
     private AndroidTask<BinaryFileProviderTask> binayFileProviderTask;

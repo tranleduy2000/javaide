@@ -1756,10 +1756,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
         return fullList;
     }
 
-    public boolean isTestCoverageEnabled() {
-        return false;
-    }
-
     /**
      * Returns the merged manifest placeholders. All product flavors are merged first, then build
      * type specific placeholders are added and potentially overrides product flavors values.

@@ -26,7 +26,6 @@ import com.android.build.gradle.internal.ExtraModelInfo;
 import com.android.build.gradle.internal.LoggingUtil;
 import com.android.build.gradle.internal.SdkHandler;
 import com.android.build.gradle.internal.SourceSetSourceProviderWrapper;
-import com.android.build.gradle.internal.coverage.JacocoExtension;
 import com.android.build.gradle.internal.dsl.AaptOptions;
 import com.android.build.gradle.internal.dsl.AdbOptions;
 import com.android.build.gradle.internal.dsl.AndroidSourceSetFactory;
@@ -117,7 +116,6 @@ public abstract class BaseExtension implements AndroidConfig {
     /**
      * JaCoCo options.
      */
-    final JacocoExtension jacoco;
     /**
      * APK splits options.
      * <p>
@@ -198,7 +196,6 @@ public abstract class BaseExtension implements AndroidConfig {
         compileOptions = instantiator.newInstance(CompileOptions.class);
         packagingOptions = instantiator.newInstance(PackagingOptions.class);
         preprocessingOptions = instantiator.newInstance(PreprocessingOptions.class);
-        jacoco = instantiator.newInstance(JacocoExtension.class);
         adbOptions = instantiator.newInstance(AdbOptions.class);
         splits = instantiator.newInstance(Splits.class, instantiator);
 
@@ -446,14 +443,6 @@ public abstract class BaseExtension implements AndroidConfig {
     public void preprocessingOptions(Action<PreprocessingOptions> action) {
         checkWritability();
         action.execute(preprocessingOptions);
-    }
-
-    /**
-     * Configures JaCoCo options.
-     */
-    public void jacoco(Action<JacocoExtension> action) {
-        checkWritability();
-        action.execute(jacoco);
     }
 
     /**
@@ -769,14 +758,6 @@ public abstract class BaseExtension implements AndroidConfig {
     @Override
     public DexOptions getDexOptions() {
         return dexOptions;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JacocoExtension getJacoco() {
-        return jacoco;
     }
 
     /**

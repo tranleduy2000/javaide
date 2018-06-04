@@ -18,7 +18,6 @@ package com.android.build.gradle.managed;
 
 import com.android.build.gradle.api.VariantFilter;
 import com.android.build.gradle.internal.CompileOptions;
-import com.android.build.gradle.internal.coverage.JacocoExtension;
 import com.android.build.gradle.internal.dsl.AaptOptions;
 import com.android.build.gradle.internal.dsl.AdbOptions;
 import com.android.build.gradle.internal.dsl.DexOptions;
@@ -36,132 +35,190 @@ import com.android.sdklib.repository.FullRevision;
 import org.gradle.api.Action;
 import org.gradle.model.Managed;
 import org.gradle.model.ModelMap;
-import org.gradle.model.Unmanaged;
 
 import java.util.Collection;
 import java.util.List;
 
-import groovy.lang.Closure;
-
 /**
  * Component model for all Android plugin.
  */
-@Managed
 public interface AndroidConfig {
 
-    /** Build tool version */
+    /**
+     * Build tool version
+     */
     String getBuildToolsVersion();
+
     void setBuildToolsVersion(String buildToolsVersion);
 
-    /** Compile SDK version */
+    /**
+     * Compile SDK version
+     */
     String getCompileSdkVersion();
+
     void setCompileSdkVersion(String compileSdkVersion);
 
-    /** Build tool revisions */
-    @Unmanaged
+    /**
+     * Build tool revisions
+     */
+
     FullRevision getBuildToolsRevision();
+
     void setBuildToolsRevision(FullRevision fullRevision);
 
-    /** Default config, shared by all flavors. */
+    /**
+     * Default config, shared by all flavors.
+     */
     ProductFlavor getDefaultConfig();
 
-    /** List of device providers */
-    @Unmanaged
+    /**
+     * List of device providers
+     */
+
     List<DeviceProvider> getDeviceProviders();
+
     void setDeviceProviders(List<DeviceProvider> providers);
 
-    /** List of remote CI servers */
-    @Unmanaged
+    /**
+     * List of remote CI servers
+     */
+
     List<TestServer> getTestServers();
+
     void setTestServers(List<TestServer> providers);
 
-    /** Name of the variant to publish */
+    /**
+     * Name of the variant to publish
+     */
     String getDefaultPublishConfig();
+
     void setDefaultPublishConfig(String defaultPublishConfig);
 
-    /** Whether to also publish non-default variants */
+    /**
+     * Whether to also publish non-default variants
+     */
     Boolean getPublishNonDefault();
+
     void setPublishNonDefault(Boolean publishNonDefault);
 
-    /** Filter to determine which variants to build */
-    @Unmanaged
+    /**
+     * Filter to determine which variants to build
+     */
+
     Action<VariantFilter> getVariantFilter();
+
     void setVariantFilter(Action<VariantFilter> filter);
 
-    /** A prefix to be used when creating new resources. Used by Studio */
+    /**
+     * A prefix to be used when creating new resources. Used by Studio
+     */
     String getResourcePrefix();
+
     void setResourcePrefix(String resourcePrefix);
 
-    /** Whether to generate pure splits or multi apk */
+    /**
+     * Whether to generate pure splits or multi apk
+     */
     Boolean getGeneratePureSplits();
+
     void setGeneratePureSplits(Boolean generateSplits);
 
-    /** Whether to preprocess resources */
-    @Unmanaged
+    /**
+     * Whether to preprocess resources
+     */
+
     PreprocessingOptions getPreProcessingOptions();
+
     void setPreProcessingOptions(PreprocessingOptions preprocessingOptions);
 
-    /** Build types used by this project. */
+    /**
+     * Build types used by this project.
+     */
     ModelMap<BuildType> getBuildTypes();
 
-    /** All product flavors used by this project. */
+    /**
+     * All product flavors used by this project.
+     */
     ModelMap<ProductFlavor> getProductFlavors();
 
-    /** Signing configs used by this project. */
+    /**
+     * Signing configs used by this project.
+     */
     ModelMap<SigningConfig> getSigningConfigs();
 
-    @Unmanaged
+
     AndroidComponentModelSourceSet getSources();
+
     void setSources(AndroidComponentModelSourceSet sources);
 
     NdkConfig getNdk();
 
-    /** Adb options */
-    @Unmanaged
+    /**
+     * Adb options
+     */
+
     AdbOptions getAdbOptions();
+
     void setAdbOptions(AdbOptions adbOptions);
 
-    /** Options for aapt, tool for packaging resources. */
-    @Unmanaged
+    /**
+     * Options for aapt, tool for packaging resources.
+     */
+
     AaptOptions getAaptOptions();
+
     void setAaptOptions(AaptOptions aaptOptions);
 
-    /** Compile options */
-    @Unmanaged
+    /**
+     * Compile options
+     */
+
     CompileOptions getCompileOptions();
+
     void setCompileOptions(CompileOptions compileOptions);
 
-    /** Dex options. */
-    @Unmanaged
+    /**
+     * Dex options.
+     */
+
     DexOptions getDexOptions();
+
     void setDexOptions(DexOptions dexOptions);
 
-    /** JaCoCo options. */
-    @Unmanaged
-    JacocoExtension getJacoco();
-    void setJacoco(JacocoExtension jacoco);
+    /**
+     * Lint options.
+     */
 
-    /** Lint options. */
-    @Unmanaged
     LintOptions getLintOptions();
+
     void setLintOptions(LintOptions lintOptions);
 
-    /** Packaging options. */
-    @Unmanaged
+    /**
+     * Packaging options.
+     */
+
     PackagingOptions getPackagingOptions();
+
     void setPackagingOptions(PackagingOptions packagingOptions);
 
-    /** Options for running tests. */
-    @Unmanaged
+    /**
+     * Options for running tests.
+     */
+
     TestOptions getTestOptions();
+
     void setTestOptions(TestOptions testOptions);
 
-    /** APK splits */
-    @Unmanaged
+    /**
+     * APK splits
+     */
+
     Splits getSplits();
+
     void setSplits(Splits splits);
 
-    @Unmanaged
+
     Collection<LibraryRequest> getLibraryRequests();
+
     void setLibraryRequests(Collection<LibraryRequest> libraryRequests);
 }

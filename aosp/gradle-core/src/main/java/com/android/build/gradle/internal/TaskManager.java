@@ -24,9 +24,6 @@ import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.AndroidGradleOptions;
 import com.android.build.gradle.internal.core.Abi;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
-import com.android.build.gradle.internal.coverage.JacocoInstrumentTask;
-import com.android.build.gradle.internal.coverage.JacocoPlugin;
-import com.android.build.gradle.internal.coverage.JacocoReportTask;
 import com.android.build.gradle.internal.dependency.LibraryDependencyImpl;
 import com.android.build.gradle.internal.dependency.ManifestDependencyImpl;
 import com.android.build.gradle.internal.dependency.VariantDependencies;
@@ -104,7 +101,6 @@ import com.android.builder.core.AndroidBuilder;
 import com.android.builder.core.VariantConfiguration;
 import com.android.builder.core.VariantType;
 import com.android.builder.dependency.LibraryDependency;
-import com.android.builder.internal.testing.SimpleTestCallable;
 import com.android.builder.model.AndroidProject;
 import com.android.builder.sdk.TargetInfo;
 import com.android.builder.signing.SignedJarBuilder;
@@ -114,7 +110,6 @@ import com.android.builder.testing.api.TestServer;
 import com.android.sdklib.IAndroidTarget;
 import com.android.utils.StringHelper;
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -129,8 +124,6 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.execution.TaskExecutionGraph;
 import org.gradle.api.file.ConfigurableFileCollection;
-import org.gradle.api.file.FileCollection;
-import org.gradle.api.file.FileTree;
 import org.gradle.api.internal.file.collections.DefaultConfigurableFileCollection;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
@@ -150,7 +143,6 @@ import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -177,8 +169,6 @@ import static com.google.common.base.Preconditions.checkState;
  * Manages tasks creation.
  */
 public abstract class TaskManager {
-
-    public static final String FILE_JACOCO_AGENT = "jacocoagent.jar";
 
     public static final String DEFAULT_PROGUARD_CONFIG_FILE = "proguard-android.txt";
 
@@ -210,8 +200,6 @@ public abstract class TaskManager {
     private DependencyManager dependencyManager;
     private AndroidTaskRegistry androidTasks = new AndroidTaskRegistry();
     private Logger logger;
-    // Tasks
-    private Copy jacocoAgentTask;
 
     public TaskManager(
             Project project,
@@ -1817,55 +1805,6 @@ public abstract class TaskManager {
                 retraceTask);
     }
 
-    public PostCompilationData createJacocoTask(
-            @NonNull TaskFactory tasks,
-            @NonNull final VariantScope scope,
-            @NonNull final PostCompilationData pcData) {
-        AndroidTask<JacocoInstrumentTask> jacocoTask =
-                androidTasks.create(tasks, new JacocoInstrumentTask.ConfigAction(scope, pcData));
-
-        jacocoTask.optionalDependsOn(tasks, pcData.getClassGeneratingTasks());
-
-        final Copy agentTask = getJacocoAgentTask();
-        jacocoTask.dependsOn(tasks, agentTask);
-
-        // update dependency.
-        PostCompilationData pcData2 = new PostCompilationData();
-        pcData2.setClassGeneratingTasks(Collections.singletonList(jacocoTask.getName()));
-        pcData2.setLibraryGeneratingTasks(
-                Arrays.asList(pcData.getLibraryGeneratingTasks(), agentTask));
-
-        // update inputs
-        pcData2.setInputFilesCallable(new Callable<List<File>>() {
-            @Override
-            public List<File> call() {
-                return new ArrayList<File>(
-                        project.files(scope.getVariantData().jacocoInstrumentTask.getOutputDir())
-                                .getFiles());
-            }
-
-        });
-        pcData2.setInputDirCallable(new Callable<File>() {
-            @Override
-            public File call() {
-                return scope.getVariantData().jacocoInstrumentTask.getOutputDir();
-            }
-
-        });
-        pcData2.setInputLibrariesCallable(new Callable<List<File>>() {
-            @Override
-            public List<File> call() throws Exception {
-                List<File> files = null;
-                files = new ArrayList<File>(pcData.getInputLibrariesCallable().call());
-                files.add(new File(agentTask.getDestinationDir(), FILE_JACOCO_AGENT));
-                return files;
-            }
-
-        });
-
-        return pcData2;
-    }
-
     /**
      * Creates the final packaging task, and optionally the zipalign task (if the variant is signed)
      *
@@ -2095,30 +2034,6 @@ public abstract class TaskManager {
         Task assembleTask =
                 project.getTasks().create(variantData.getScope().getTaskName("assemble"));
         return assembleTask;
-    }
-
-    public Copy getJacocoAgentTask() {
-        if (jacocoAgentTask == null) {
-            jacocoAgentTask = project.getTasks().create("unzipJacocoAgent", Copy.class);
-            jacocoAgentTask.from(new Callable<List<FileTree>>() {
-                @Override
-                public List<FileTree> call() throws Exception {
-                    return Lists.newArrayList(Iterables.transform(
-                            project.getConfigurations().getByName(
-                                    JacocoPlugin.AGENT_CONFIGURATION_NAME),
-                            new Function<Object, FileTree>() {
-                                @Override
-                                public FileTree apply(@Nullable Object it) {
-                                    return project.zipTree(it);
-                                }
-                            }));
-                }
-            });
-            jacocoAgentTask.include(FILE_JACOCO_AGENT);
-            jacocoAgentTask.into(new File(getGlobalScope().getIntermediatesDir(), "jacoco"));
-        }
-
-        return jacocoAgentTask;
     }
 
     /**

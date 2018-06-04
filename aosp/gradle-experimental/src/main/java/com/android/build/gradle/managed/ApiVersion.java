@@ -16,17 +16,16 @@
 
 package com.android.build.gradle.managed;
 
-import org.gradle.model.Managed;
-
 /**
  * A Managed ApiVersion.
  */
-@Managed
 public interface ApiVersion {
 
     Integer getApiLevel();
+
     void setApiLevel(Integer apiLevel);
 
     String getCodename();
+
     void setCodename(String codename);
 }

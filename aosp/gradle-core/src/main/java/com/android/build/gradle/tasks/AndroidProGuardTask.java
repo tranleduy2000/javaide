@@ -218,13 +218,6 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
                     proguardTask.configuration(
                             testedVariantData.getVariantConfiguration().getTestProguardFiles());
                 } else {
-                    if (variantConfig.isTestCoverageEnabled()) {
-                        // when collecting coverage, don't remove the JaCoCo runtime
-                        proguardTask.keep("class com.vladium.** {*;}");
-                        proguardTask.keep("class org.jacoco.** {*;}");
-                        proguardTask.keep("interface org.jacoco.** {*;}");
-                        proguardTask.dontwarn("org.jacoco.**");
-                    }
 
                     proguardTask.configuration(new Callable<Collection<File>>() {
                         @Override

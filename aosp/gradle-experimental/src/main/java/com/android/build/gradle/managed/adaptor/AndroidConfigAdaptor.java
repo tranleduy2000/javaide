@@ -29,7 +29,6 @@ import com.android.build.gradle.internal.CompileOptions;
 import com.android.build.gradle.internal.ProductFlavorData;
 import com.android.build.gradle.internal.VariantManager;
 import com.android.build.gradle.internal.dsl.CoreNdkOptions;
-import com.android.build.gradle.internal.coverage.JacocoExtension;
 import com.android.build.gradle.internal.dsl.AaptOptions;
 import com.android.build.gradle.internal.dsl.AdbOptions;
 import com.android.build.gradle.internal.dsl.CoreBuildType;
@@ -49,7 +48,6 @@ import com.android.builder.core.BuilderConstants;
 import com.android.builder.core.LibraryRequest;
 import com.android.builder.testing.api.DeviceProvider;
 import com.android.builder.testing.api.TestServer;
-import com.android.ide.common.rendering.api.ActionBarCallback;
 import com.android.sdklib.repository.FullRevision;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
@@ -232,11 +230,6 @@ public class AndroidConfigAdaptor implements com.android.build.gradle.AndroidCon
     @Override
     public DexOptions getDexOptions() {
         return model.getDexOptions();
-    }
-
-    @Override
-    public JacocoExtension getJacoco() {
-        return model.getJacoco();
     }
 
     @Override

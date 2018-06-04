@@ -21,20 +21,11 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.prefs.AndroidLocation;
 import com.android.prefs.AndroidLocation.AndroidLocationException;
-import com.android.resources.Keyboard;
-import com.android.resources.KeyboardState;
-import com.android.resources.Navigation;
-import com.android.sdklib.internal.avd.AvdManager;
-import com.android.sdklib.internal.avd.HardwareProperties;
 import com.android.sdklib.io.FileOp;
 import com.android.sdklib.repository.PkgProps;
 import com.android.utils.ILogger;
-import com.google.common.base.Charsets;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hasher;
-import com.google.common.hash.Hashing;
 import com.google.common.io.Closeables;
 
 import org.xml.sax.SAXException;
@@ -50,12 +41,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -522,127 +508,6 @@ public class DeviceManager {
         }
     }
 
-    /**
-     * Returns hardware properties (defined in hardware.ini) as a {@link Map}.
-     *
-     * @param s The {@link State} from which to derive the hardware properties.
-     * @return A {@link Map} of hardware properties.
-     */
-    @NonNull
-    public static Map<String, String> getHardwareProperties(@NonNull State s) {
-        Hardware hw = s.getHardware();
-        Map<String, String> props = new HashMap<String, String>();
-        props.put(HardwareProperties.HW_MAINKEYS,
-                getBooleanVal(hw.getButtonType().equals(ButtonType.HARD)));
-        props.put(HardwareProperties.HW_TRACKBALL,
-                getBooleanVal(hw.getNav().equals(Navigation.TRACKBALL)));
-        props.put(HardwareProperties.HW_KEYBOARD,
-                getBooleanVal(hw.getKeyboard().equals(Keyboard.QWERTY)));
-        props.put(HardwareProperties.HW_DPAD,
-                getBooleanVal(hw.getNav().equals(Navigation.DPAD)));
-
-        Set<Sensor> sensors = hw.getSensors();
-        props.put(HardwareProperties.HW_GPS, getBooleanVal(sensors.contains(Sensor.GPS)));
-        props.put(HardwareProperties.HW_BATTERY,
-                getBooleanVal(hw.getChargeType().equals(PowerType.BATTERY)));
-        props.put(HardwareProperties.HW_ACCELEROMETER,
-                getBooleanVal(sensors.contains(Sensor.ACCELEROMETER)));
-        props.put(HardwareProperties.HW_ORIENTATION_SENSOR,
-                getBooleanVal(sensors.contains(Sensor.GYROSCOPE)));
-        props.put(HardwareProperties.HW_AUDIO_INPUT, getBooleanVal(hw.hasMic()));
-        props.put(HardwareProperties.HW_SDCARD, getBooleanVal(!hw.getRemovableStorage().isEmpty()));
-        props.put(HardwareProperties.HW_LCD_DENSITY,
-                Integer.toString(hw.getScreen().getPixelDensity().getDpiValue()));
-        props.put(HardwareProperties.HW_PROXIMITY_SENSOR,
-                getBooleanVal(sensors.contains(Sensor.PROXIMITY_SENSOR)));
-        return props;
-    }
-
-    /**
-     * Returns the hardware properties defined in
-     * {@link AvdManager#HARDWARE_INI} as a {@link Map}.
-     *
-     * This is intended to be dumped in the config.ini and already contains
-     * the device name, manufacturer and device hash.
-     *
-     * @param d The {@link Device} from which to derive the hardware properties.
-     * @return A {@link Map} of hardware properties.
-     */
-    @NonNull
-    public static Map<String, String> getHardwareProperties(@NonNull Device d) {
-        Map<String, String> props = getHardwareProperties(d.getDefaultState());
-        for (State s : d.getAllStates()) {
-            if (s.getKeyState().equals(KeyboardState.HIDDEN)) {
-                props.put("hw.keyboard.lid", getBooleanVal(true));
-            }
-        }
-
-        HashFunction md5 = Hashing.md5();
-        Hasher hasher = md5.newHasher();
-
-        ArrayList<String> keys = new ArrayList<String>(props.keySet());
-        Collections.sort(keys);
-        for (String key : keys) {
-            if (key != null) {
-                hasher.putString(key, Charsets.UTF_8);
-                String value = props.get(key);
-                hasher.putString(value == null ? "null" : value, Charsets.UTF_8);
-            }
-        }
-        // store the hash method for potential future compatibility
-        String hash = "MD5:" + hasher.hash().toString();
-        props.put(AvdManager.AVD_INI_DEVICE_HASH_V2, hash);
-        props.remove(AvdManager.AVD_INI_DEVICE_HASH_V1);
-
-        props.put(AvdManager.AVD_INI_DEVICE_NAME, d.getId());
-        props.put(AvdManager.AVD_INI_DEVICE_MANUFACTURER, d.getManufacturer());
-        return props;
-    }
-
-    /**
-     * Checks whether the the hardware props have changed.
-     * If the hash is the same, returns null for success.
-     * If the hash is not the same or there's not enough information to indicate it's
-     * the same (e.g. if in the future we change the digest method), simply return the
-     * new hash, indicating it would be best to update it.
-     *
-     * @param d The device.
-     * @param hashV2 The previous saved AvdManager.AVD_INI_DEVICE_HASH_V2 property.
-     * @return Null if the same, otherwise returns the new and different hash.
-     */
-    @Nullable
-    public static String hasHardwarePropHashChanged(@NonNull Device d, @NonNull String hashV2) {
-        Map<String, String> props = getHardwareProperties(d);
-        String newHash = props.get(AvdManager.AVD_INI_DEVICE_HASH_V2);
-
-        // Implementation detail: don't just return the hash and let the caller decide whether
-        // the hash is the same. That's because the hash contains the digest method so if in
-        // the future we decide to change it, we could potentially recompute the hash here
-        // using an older digest method here and still determine its validity, whereas the
-        // caller cannot determine that.
-
-        if (newHash != null && newHash.equals(hashV2)) {
-            return null;
-        }
-        return newHash;
-    }
-
-
-    /**
-     * Takes a boolean and returns the appropriate value for
-     * {@link HardwareProperties}
-     *
-     * @param bool The boolean value to turn into the appropriate
-     *            {@link HardwareProperties} value.
-     * @return {@code HardwareProperties#BOOLEAN_YES} if true,
-     *         {@code HardwareProperties#BOOLEAN_NO} otherwise.
-     */
-    private static String getBooleanVal(boolean bool) {
-        if (bool) {
-            return HardwareProperties.BOOLEAN_YES;
-        }
-        return HardwareProperties.BOOLEAN_NO;
-    }
 
     @NonNull
     private Table<String, String, Device> loadDevices(@NonNull File deviceXml) {

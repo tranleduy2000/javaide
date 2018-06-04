@@ -29,8 +29,6 @@ import org.gradle.api.Project;
 import org.gradle.internal.reflect.Instantiator;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
 
-import java.io.IOException;
-
 /**
  * Gradle plugin class for 'application' projects.
  */
@@ -41,7 +39,7 @@ class AppPlugin extends BasePlugin implements Plugin<Project> {
 
     @Override
     protected Class<? extends BaseExtension> getExtensionClass() {
-        return AppExtension.class
+        return AppExtension.class;
     }
 
     @Override

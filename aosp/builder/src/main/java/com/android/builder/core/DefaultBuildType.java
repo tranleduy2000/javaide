@@ -87,7 +87,7 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
     @Override
     public boolean isDebuggable() {
         // Accessing coverage data requires a debuggable package.
-        return mDebuggable || mTestCoverageEnabled;
+        return mDebuggable;
     }
 
     /**
@@ -273,7 +273,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
 
         return Objects.equal(mName, buildType.mName) &&
                 mDebuggable == buildType.mDebuggable &&
-                mTestCoverageEnabled == buildType.mTestCoverageEnabled &&
                 mJniDebuggable == buildType.mJniDebuggable &&
                 mPseudoLocalesEnabled == buildType.mPseudoLocalesEnabled &&
                 mRenderscriptDebuggable == buildType.mRenderscriptDebuggable &&
@@ -292,7 +291,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
                 super.hashCode(),
                 mName,
                 mDebuggable,
-                mTestCoverageEnabled,
                 mJniDebuggable,
                 mPseudoLocalesEnabled,
                 mRenderscriptDebuggable,
@@ -311,7 +309,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
         return MoreObjects.toStringHelper(this)
                 .add("name", mName)
                 .add("debuggable", mDebuggable)
-                .add("testCoverageEnabled", mTestCoverageEnabled)
                 .add("jniDebuggable", mJniDebuggable)
                 .add("pseudoLocalesEnabled", mPseudoLocalesEnabled)
                 .add("renderscriptDebuggable", mRenderscriptDebuggable)

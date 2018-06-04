@@ -28,6 +28,6 @@ ext.proguardVersion = "5.2.1"
 dependencies {
     api project(':aosp:builder')
     api "net.sf.proguard:proguard-gradle:${project.ext.proguardVersion}"
-    api 'org.gradle:gradle-core:2.2.1'
+    api 'org.gradle:gradle-core:3.0'
 }
 

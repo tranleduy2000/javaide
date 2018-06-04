@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.internal.CompileOptions;
 import com.duy.android.compiler.builder.internal.JavaVersion;
-import com.duy.android.compiler.builder.task.ATask;
+import com.duy.android.compiler.builder.task.Task;
 import com.duy.android.compiler.builder.util.Argument;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.javacompiler.R;
@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
-public class CompileJavaTask extends ATask<JavaProject> {
+public class CompileJavaTask extends Task<JavaProject> {
 
     private static final String TAG = "CompileJavaTask";
     private CompileOptions mCompileOptions;

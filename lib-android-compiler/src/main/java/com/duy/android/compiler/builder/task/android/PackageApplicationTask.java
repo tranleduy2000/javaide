@@ -2,12 +2,12 @@ package com.duy.android.compiler.builder.task.android;
 
 import com.android.sdklib.build.ApkBuilder;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
-import com.duy.android.compiler.builder.task.ATask;
+import com.duy.android.compiler.builder.task.Task;
 import com.duy.android.compiler.project.AndroidAppProject;
 
 import java.io.File;
 
-public class PackageApplicationTask extends ATask<AndroidAppProject> {
+public class PackageApplicationTask extends Task<AndroidAppProject> {
 
     public PackageApplicationTask(AndroidAppBuilder builder) {
         super(builder);

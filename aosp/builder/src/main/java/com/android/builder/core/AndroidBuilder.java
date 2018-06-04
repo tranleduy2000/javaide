@@ -66,7 +66,6 @@ import com.android.manifmerger.XmlDocument;
 import com.android.sdklib.BuildToolInfo;
 import com.android.sdklib.IAndroidTarget;
 import com.android.sdklib.IAndroidTarget.OptionalLibrary;
-import com.android.sdklib.repository.FullRevision;
 import com.android.utils.ILogger;
 import com.android.utils.Pair;
 import com.google.common.base.Charsets;
@@ -127,7 +126,6 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public class AndroidBuilder {
 
-    private static final FullRevision MIN_BUILD_TOOLS_REV = new FullRevision(19, 1, 0);
     private static final DependencyFileProcessor sNoOpDependencyFileProcessor = new DependencyFileProcessor() {
         @Override
         public DependencyData processFile(@NonNull File dependencyFile) {
@@ -151,7 +149,6 @@ public class AndroidBuilder {
 
     @Nullable
     private String mCreatedBy;
-
 
     private SdkInfo mSdkInfo;
     private TargetInfo mTargetInfo;
@@ -452,13 +449,6 @@ public class AndroidBuilder {
             @NonNull Collection<LibraryRequest> libraryRequests) {
         mSdkInfo = sdkInfo;
         mTargetInfo = targetInfo;
-
-        if (mTargetInfo.getBuildTools().getRevision().compareTo(MIN_BUILD_TOOLS_REV) < 0) {
-            throw new IllegalArgumentException(String.format(
-                    "The SDK Build Tools revision (%1$s) is too low for project '%2$s'. Minimum required is %3$s",
-                    mTargetInfo.getBuildTools().getRevision(), mProjectId, MIN_BUILD_TOOLS_REV));
-        }
-
         mLibraryRequests = ImmutableList.copyOf(libraryRequests);
     }
 

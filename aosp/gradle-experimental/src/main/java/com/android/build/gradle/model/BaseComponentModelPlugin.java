@@ -91,7 +91,6 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.util.List;
 
-import javax.inject.Inject;
 
 import groovy.lang.Closure;
 
@@ -108,7 +107,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
 
     private ModelRegistry modelRegistry;
 
-    @Inject
     protected BaseComponentModelPlugin(ToolingModelBuilderRegistry toolingRegistry,
                                        ModelRegistry modelRegistry) {
         this.toolingRegistry = toolingRegistry;

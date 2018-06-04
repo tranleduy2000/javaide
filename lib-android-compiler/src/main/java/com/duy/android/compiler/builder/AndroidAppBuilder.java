@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.android.annotations.NonNull;
 import com.duy.android.compiler.builder.model.BuildType;
-import com.duy.android.compiler.builder.task.ATask;
+import com.duy.android.compiler.builder.task.Task;
 import com.duy.android.compiler.builder.task.CleanTask;
 import com.duy.android.compiler.builder.task.android.GenerateConfigTask;
 import com.duy.android.compiler.builder.task.android.PackageApplicationTask;
@@ -21,6 +21,7 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
 
 
     private AndroidAppProject mProject;
+
     public AndroidAppBuilder(@NonNull Context context,
                              @NonNull AndroidAppProject project) {
         super(context);
@@ -29,7 +30,6 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
     }
 
     private void setDefaultValues() {
-
     }
 
     @Override
@@ -40,7 +40,7 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
             mStdout.println("Build type " + buildType);
         }
 
-        ArrayList<ATask> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = new ArrayList<>();
 
         tasks.add(new CleanTask(this));
 

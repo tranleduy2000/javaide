@@ -4,7 +4,7 @@ import android.os.Build;
 
 import com.android.builder.dependency.LibraryDependency;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
-import com.duy.android.compiler.builder.task.ATask;
+import com.duy.android.compiler.builder.task.Task;
 import com.duy.android.compiler.builder.util.Argument;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.AndroidAppProject;
@@ -111,7 +111,7 @@ import java.util.regex.Pattern;
  * @link https://elinux.org/Android_aapt
  * @link https://android.googlesource.com/platform/frameworks/base.git/+/master/tools/aapt/Main.cpp
  */
-public class ProcessAndroidResourceTask extends ATask<AndroidAppProject> {
+public class ProcessAndroidResourceTask extends Task<AndroidAppProject> {
     public ProcessAndroidResourceTask(AndroidAppBuilder builder) {
         super(builder);
     }

@@ -6,12 +6,12 @@ import android.support.annotation.WorkerThread;
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.project.JavaProject;
 
-public abstract class ATask<T extends JavaProject> {
+public abstract class Task<T extends JavaProject> {
     protected final IBuilder mBuilder;
     protected final T project;
     protected final Context context;
 
-    public ATask(IBuilder<? extends T> builder) {
+    public Task(IBuilder<? extends T> builder) {
         this.mBuilder = builder;
         this.project = builder.getProject();
         this.context = builder.getContext();

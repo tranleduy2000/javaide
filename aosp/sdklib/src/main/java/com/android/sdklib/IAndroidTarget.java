@@ -25,52 +25,91 @@ import java.util.List;
 import java.util.Map;
 
 
-
 /**
  * A version of Android that applications can target when building.
  */
 public interface IAndroidTarget extends Comparable<IAndroidTarget> {
 
-    /** OS Path to the "android.jar" file. */
-    int ANDROID_JAR         = 1;
-    /** OS Path to the "framework.aidl" file. */
-    int ANDROID_AIDL        = 2;
-    /** OS Path to the "samples" folder which contains sample projects. */
-    int SAMPLES             = 4;
-    /** OS Path to the "skins" folder which contains the emulator skins. */
-    int SKINS               = 5;
-    /** OS Path to the "templates" folder which contains the templates for new projects. */
-    int TEMPLATES           = 6;
-    /** OS Path to the "data" folder which contains data & libraries for the SDK tools. */
-    int DATA                = 7;
-    /** OS Path to the "attrs.xml" file. */
-    int ATTRIBUTES          = 8;
-    /** OS Path to the "attrs_manifest.xml" file. */
+    /**
+     * OS Path to the "android.jar" file.
+     */
+    int ANDROID_JAR = 1;
+    /**
+     * OS Path to the "framework.aidl" file.
+     */
+    int ANDROID_AIDL = 2;
+    /**
+     * OS Path to the "samples" folder which contains sample projects.
+     */
+    int SAMPLES = 4;
+    /**
+     * OS Path to the "skins" folder which contains the emulator skins.
+     */
+    int SKINS = 5;
+    /**
+     * OS Path to the "templates" folder which contains the templates for new projects.
+     */
+    int TEMPLATES = 6;
+    /**
+     * OS Path to the "data" folder which contains data & libraries for the SDK tools.
+     */
+    int DATA = 7;
+    /**
+     * OS Path to the "attrs.xml" file.
+     */
+    int ATTRIBUTES = 8;
+    /**
+     * OS Path to the "attrs_manifest.xml" file.
+     */
     int MANIFEST_ATTRIBUTES = 9;
-    /** OS Path to the "data/layoutlib.jar" library. */
-    int LAYOUT_LIB          = 10;
-    /** OS Path to the "data/res" folder. */
-    int RESOURCES           = 11;
-    /** OS Path to the "data/fonts" folder. */
-    int FONTS               = 12;
-    /** OS Path to the "data/widgets.txt" file. */
-    int WIDGETS             = 13;
-    /** OS Path to the "data/activity_actions.txt" file. */
-    int ACTIONS_ACTIVITY    = 14;
-    /** OS Path to the "data/broadcast_actions.txt" file. */
-    int ACTIONS_BROADCAST   = 15;
-    /** OS Path to the "data/service_actions.txt" file. */
-    int ACTIONS_SERVICE     = 16;
-    /** OS Path to the "data/categories.txt" file. */
-    int CATEGORIES          = 17;
-    /** OS Path to the "sources" folder. */
-    int SOURCES             = 18;
-    /** OS Path to the target specific docs */
-    int DOCS                = 19;
-    /** OS Path to the "ant" folder which contains the ant build rules (ver 2 and above) */
-    int ANT                 = 24;
-    /** OS Path to the "uiautomator.jar" file. */
-    int UI_AUTOMATOR_JAR    = 27;
+    /**
+     * OS Path to the "data/layoutlib.jar" library.
+     */
+    int LAYOUT_LIB = 10;
+    /**
+     * OS Path to the "data/res" folder.
+     */
+    int RESOURCES = 11;
+    /**
+     * OS Path to the "data/fonts" folder.
+     */
+    int FONTS = 12;
+    /**
+     * OS Path to the "data/widgets.txt" file.
+     */
+    int WIDGETS = 13;
+    /**
+     * OS Path to the "data/activity_actions.txt" file.
+     */
+    int ACTIONS_ACTIVITY = 14;
+    /**
+     * OS Path to the "data/broadcast_actions.txt" file.
+     */
+    int ACTIONS_BROADCAST = 15;
+    /**
+     * OS Path to the "data/service_actions.txt" file.
+     */
+    int ACTIONS_SERVICE = 16;
+    /**
+     * OS Path to the "data/categories.txt" file.
+     */
+    int CATEGORIES = 17;
+    /**
+     * OS Path to the "sources" folder.
+     */
+    int SOURCES = 18;
+    /**
+     * OS Path to the target specific docs
+     */
+    int DOCS = 19;
+    /**
+     * OS Path to the "ant" folder which contains the ant build rules (ver 2 and above)
+     */
+    int ANT = 24;
+    /**
+     * OS Path to the "uiautomator.jar" file.
+     */
+    int UI_AUTOMATOR_JAR = 27;
 
 
     /**
@@ -78,21 +117,6 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
      * Android target.
      */
     int NO_USB_ID = 0;
-
-    /** An optional library provided by an Android Target */
-    interface OptionalLibrary {
-        /** The name of the library, as used in the manifest (&lt;uses-library&gt;). */
-        @NonNull
-        String getName();
-        /** Location of the jar file. */
-        @NonNull
-        File getJar();
-        /** Description of the library. */
-        @NonNull
-        String getDescription();
-        /** Whether the library requires a manifest entry */
-        boolean isManifestEntryRequired();
-    }
 
     /**
      * Returns the target location.
@@ -140,7 +164,9 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
      */
     String getVersionName();
 
-    /** Returns the revision number for the target. */
+    /**
+     * Returns the revision number for the target.
+     */
     int getRevision();
 
     /**
@@ -156,8 +182,9 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
 
     /**
      * Returns the path of a platform component.
+     *
      * @param pathId the id representing the path to return.
-     *        Any of the constants defined in the {@link IAndroidTarget} interface can be used.
+     *               Any of the constants defined in the {@link IAndroidTarget} interface can be used.
      */
     String getPath(int pathId);
 
@@ -167,7 +194,7 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
      * This is like the legacy {@link #getPath(int)} method except it returns a {@link File}.
      *
      * @param pathId the id representing the path to return.
-     *        Any of the constants defined in the {@link IAndroidTarget} interface can be used.
+     *               Any of the constants defined in the {@link IAndroidTarget} interface can be used.
      */
     File getFile(int pathId);
 
@@ -175,6 +202,7 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
      * Returns a BuildToolInfo for backward compatibility. If an older SDK is used this will return
      * paths located in the platform-tools, otherwise it'll return paths located in the latest
      * build-tools.
+     *
      * @return a BuildToolInfo or null if none are available.
      */
     BuildToolInfo getBuildToolInfo();
@@ -191,12 +219,11 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
 
     /**
      * Returns a list of optional libraries for this target.
-     *
+     * <p>
      * These libraries are not automatically added to the classpath.
      * Using them requires adding a <code>uses-library</code> entry in the manifest.
      *
      * @return a list of libraries.
-     *
      * @see OptionalLibrary#getName()
      */
     @NonNull
@@ -204,12 +231,11 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
 
     /**
      * Returns the additional libraries for this target.
-     *
+     * <p>
      * These libraries are automatically added to the classpath, but using them requires
      * adding a <code>uses-library</code> entry in the manifest.
      *
      * @return a list of libraries.
-     *
      * @see OptionalLibrary#getName()
      */
     @NonNull
@@ -252,6 +278,7 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
 
     /**
      * Return the value of a given property for this target.
+     *
      * @return the property value or <code>null</code> if it was not found.
      */
     String getProperty(String name);
@@ -260,9 +287,9 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
      * Returns the value of a given property for this target as an Integer value.
      * <p/> If the value is missing or is not an integer, the method will return the given default
      * value.
-     * @param name the name of the property to return
-     * @param defaultValue the default value to return.
      *
+     * @param name         the name of the property to return
+     * @param defaultValue the default value to return.
      * @see Integer#decode(String)
      */
     Integer getProperty(String name, Integer defaultValue);
@@ -272,9 +299,8 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
      * <p/> If the value is missing or is not an boolean, the method will return the given default
      * value.
      *
-     * @param name the name of the property to return
+     * @param name         the name of the property to return
      * @param defaultValue the default value to return.
-     *
      * @see Boolean#valueOf(String)
      */
 
@@ -301,10 +327,10 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
     /**
      * Returns the system image information for the given {@code tag} and {@code abiType}.
      *
-     * @param tag A tag id-display.
+     * @param tag     A tag id-display.
      * @param abiType An ABI type string.
      * @return An existing {@link ISystemImage} for the requested {@code abiType}
-     *         or null if none exists for this type.
+     * or null if none exists for this type.
      */
     @Nullable
     ISystemImage getSystemImage(@NonNull IdDisplay tag, @NonNull String abiType);
@@ -331,4 +357,32 @@ public interface IAndroidTarget extends Comparable<IAndroidTarget> {
      * See {@link AndroidTargetHash} for helper methods to manipulate hash strings.
      */
     String hashString();
+
+    /**
+     * An optional library provided by an Android Target
+     */
+    interface OptionalLibrary {
+        /**
+         * The name of the library, as used in the manifest (&lt;uses-library&gt;).
+         */
+        @NonNull
+        String getName();
+
+        /**
+         * Location of the jar file.
+         */
+        @NonNull
+        File getJar();
+
+        /**
+         * Description of the library.
+         */
+        @NonNull
+        String getDescription();
+
+        /**
+         * Whether the library requires a manifest entry
+         */
+        boolean isManifestEntryRequired();
+    }
 }

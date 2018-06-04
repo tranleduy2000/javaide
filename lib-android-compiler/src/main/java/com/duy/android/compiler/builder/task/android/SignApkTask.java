@@ -2,7 +2,7 @@ package com.duy.android.compiler.builder.task.android;
 
 import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.builder.model.BuildType;
-import com.duy.android.compiler.builder.task.ATask;
+import com.duy.android.compiler.builder.task.Task;
 import com.duy.android.compiler.project.AndroidAppProject;
 
 import java.io.File;
@@ -11,7 +11,7 @@ import java.security.GeneralSecurityException;
 
 import kellinwood.security.zipsigner.ZipSigner;
 
-public class SignApkTask extends ATask<AndroidAppProject> {
+public class SignApkTask extends Task<AndroidAppProject> {
     private final BuildType type;
 
     public SignApkTask(AndroidAppBuilder builder, BuildType type) {

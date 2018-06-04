@@ -3,14 +3,14 @@ package com.duy.android.compiler.builder.task.android;
 import com.android.builder.compiling.BuildConfigGenerator;
 import com.android.builder.model.ClassField;
 import com.duy.android.compiler.builder.IBuilder;
-import com.duy.android.compiler.builder.task.ATask;
+import com.duy.android.compiler.builder.task.Task;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.google.common.collect.Lists;
 
 import java.io.File;
 import java.util.List;
 
-public class GenerateConfigTask extends ATask<AndroidAppProject> {
+public class GenerateConfigTask extends Task<AndroidAppProject> {
     List<Object> items;
     private boolean debuggable = true;
     private int versionCode;

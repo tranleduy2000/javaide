@@ -3,7 +3,7 @@ package com.duy.android.compiler.builder.task;
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.project.JavaProject;
 
-public class CleanTask extends ATask<JavaProject> {
+public class CleanTask extends Task<JavaProject> {
 
     public CleanTask(IBuilder<? extends JavaProject> builder) {
         super(builder);

@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.duy.android.compiler.builder.IBuilder;
-import com.duy.android.compiler.builder.task.ATask;
+import com.duy.android.compiler.builder.task.Task;
 import com.duy.android.compiler.builder.util.MD5Hash;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.dex.Dex;
@@ -16,7 +16,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class DexTask extends ATask<JavaProject> {
+public class DexTask extends Task<JavaProject> {
     private static final String TAG = "Dexer";
 
     public DexTask(IBuilder<? extends JavaProject> builder) {

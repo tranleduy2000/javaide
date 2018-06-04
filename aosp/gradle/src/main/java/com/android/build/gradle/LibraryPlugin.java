@@ -1,5 +1,7 @@
 package com.android.build.gradle;
 
+import android.support.annotation.NonNull;
+
 import com.android.build.gradle.internal.DependencyManager;
 import com.android.build.gradle.internal.LibraryTaskManager;
 import com.android.build.gradle.internal.SdkHandler;
@@ -49,7 +51,7 @@ public class LibraryPlugin extends BasePlugin implements Plugin<Project> {
     }
 
     @Override
-    public void apply(Project project) {
+    public void apply(@NonNull Project project) {
         super.apply(project);
 
         assembleDefault = project.getTasks().create("assembleDefault");

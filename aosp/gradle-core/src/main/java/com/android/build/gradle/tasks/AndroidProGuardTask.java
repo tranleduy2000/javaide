@@ -16,8 +16,6 @@
 
 package com.android.build.gradle.tasks;
 
-import static com.android.builder.model.AndroidProject.FD_OUTPUTS;
-
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -61,6 +59,8 @@ import groovy.lang.Closure;
 import proguard.ParseException;
 import proguard.gradle.ProGuardTask;
 
+import static com.android.builder.model.AndroidProject.FD_OUTPUTS;
+
 /**
  * Decoration for the {@link ProGuardTask} so it implements shared interfaces with our custom
  * tasks.
@@ -93,7 +93,7 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
     }
 
     @Override
-    public void applymapping(Object applyMapping) throws ParseException {
+    public void applymapping(Object applyMapping) {
         testedAppMappingFile = (File) applyMapping;
     }
 
@@ -110,12 +110,12 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
 
     @Override
     @TaskAction
-    public void proguard() throws IOException, ParseException {
+    public void proguard() {
         final Job<Void> job = new Job<Void>(getName(),
                 new com.android.builder.tasks.Task<Void>() {
                     @Override
                     public void run(@NonNull Job<Void> job,
-                            @NonNull JobContext<Void> context) throws IOException {
+                                    @NonNull JobContext<Void> context) throws IOException {
                         try {
                             AndroidProGuardTask.this.doMinification();
                         } catch (ParseException e) {
@@ -150,6 +150,7 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
         return ImmutableList.of(new JavaResourcesLocation(Type.JAR, obfuscatedClassesJar));
     }
 
+    @SuppressWarnings("unchecked")
     public static class ConfigAction implements TaskConfigAction<AndroidProGuardTask> {
 
         private VariantScope scope;
@@ -221,7 +222,7 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
 
                     proguardTask.configuration(new Callable<Collection<File>>() {
                         @Override
-                        public Collection<File> call() throws Exception {
+                        public Collection<File> call() {
                             List<File> proguardFiles = variantConfig.getProguardFiles(true,
                                     Collections.singletonList(getDefaultProguardFile(
                                             TaskManager.DEFAULT_PROGUARD_CONFIG_FILE)));
@@ -263,7 +264,7 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
                     // injar: the local dependencies
                     Callable inJars = new Callable<List<File>>() {
                         @Override
-                        public List<File> call() throws Exception {
+                        public List<File> call() {
                             return DependencyManager
                                     .getPackagedLocalJarFileList(variantData.getVariantDependency());
                         }
@@ -275,7 +276,7 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
                     // dependencies
                     Callable libJars = new Callable<Iterable<File>>() {
                         @Override
-                        public Iterable<File> call() throws Exception {
+                        public Iterable<File> call() {
                             // get all the compiled jar.
                             Set<File> compiledJars = scope.getGlobalScope().getAndroidBuilder()
                                     .getCompileClasspath(variantConfig);
@@ -320,7 +321,7 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
                     // the provided-only jars as libraries.
                     Callable<List<File>> libJars = new Callable<List<File>>() {
                         @Override
-                        public List<File> call() throws Exception {
+                        public List<File> call() {
                             return variantData.getVariantConfiguration().getProvidedOnlyJars();
                         }
                     };
@@ -336,7 +337,7 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
                         for (String runtimeJar : scope.getGlobalScope().getAndroidBuilder()
                                 .getBootClasspathAsStrings()) {
                             try {
-                                ((AndroidProGuardTask)proguardTask).libraryjars(runtimeJar);
+                                ((AndroidProGuardTask) proguardTask).libraryjars(runtimeJar);
                             } catch (ParseException e) {
                                 throw new RuntimeException(e);
                             }
@@ -350,7 +351,7 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
                     // including its dependencies
                     Callable testedPackagedJars = new Callable<Set<File>>() {
                         @Override
-                        public Set<File> call() throws Exception {
+                        public Set<File> call() {
                             return scope.getGlobalScope().getAndroidBuilder()
                                     .getPackagedJars(testedVariantData.getVariantConfiguration());
                         }

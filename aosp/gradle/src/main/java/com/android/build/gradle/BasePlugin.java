@@ -16,7 +16,6 @@
 
 package com.android.build.gradle;
 
-import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
 import com.android.build.gradle.internal.ApiObjectFactory;
 import com.android.build.gradle.internal.DependencyManager;
@@ -48,9 +47,6 @@ import com.android.builder.profile.Recorder;
 import com.android.builder.profile.ThreadRecorder;
 import com.android.builder.sdk.TargetInfo;
 import com.android.utils.ILogger;
-import com.google.common.base.CharMatcher;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -61,50 +57,26 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.execution.TaskExecutionGraph;
 import org.gradle.api.execution.TaskExecutionGraphListener;
 import org.gradle.api.logging.LogLevel;
-import org.gradle.api.plugins.JavaBasePlugin;
 import org.gradle.api.tasks.StopExecutionException;
 import org.gradle.internal.reflect.Instantiator;
-import org.gradle.tooling.BuildException;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.jar.Manifest;
-import java.util.regex.Pattern;
 
 import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
 import static com.google.common.base.Preconditions.checkState;
-import static java.io.File.separator;
 
 /**
  * Base class for all Android plugins
  */
 public abstract class BasePlugin {
 
-    public static final Pattern GRADLE_ACCEPTABLE_VERSIONS = Pattern.compile("2\\.[2-9].*");
-    private static final String GRADLE_MIN_VERSION = "2.2";
-    private static final String GRADLE_VERSION_CHECK_OVERRIDE_PROPERTY =
-            "com.android.build.gradle.overrideVersionCheck";
-    private static final String SKIP_PATH_CHECK_PROPERTY =
-            "com.android.build.gradle.overridePathCheck";
     /**
      * default retirement age in days since its inception date for RC or beta versions.
      */
     private static final int DEFAULT_RETIREMENT_AGE_FOR_NON_RELEASE_IN_DAYS = 40;
-
-
     protected BaseExtension extension;
 
     protected VariantManager variantManager;
@@ -131,84 +103,6 @@ public abstract class BasePlugin {
     protected BasePlugin(Instantiator instantiator, ToolingModelBuilderRegistry registry) {
         this.instantiator = instantiator;
         this.registry = registry;
-        verifyRetirementAge();
-    }
-
-    private static int getRetirementAgeInDays(@Nullable String version) {
-        if (version == null || version.contains("rc") || version.contains("beta")
-                || version.contains("alpha")) {
-            return DEFAULT_RETIREMENT_AGE_FOR_NON_RELEASE_IN_DAYS;
-        }
-        return -1;
-    }
-
-    /**
-     * Verify that this plugin execution is within its public time range.
-     */
-    private void verifyRetirementAge() {
-
-        Manifest manifest;
-        URLClassLoader cl = (URLClassLoader) getClass().getClassLoader();
-        try {
-            URL url = cl.findResource("META-INF/MANIFEST.MF");
-            manifest = new Manifest(url.openStream());
-        } catch (IOException ignore) {
-            return;
-        }
-
-        String inceptionDateAttr = manifest.getMainAttributes().getValue("Inception-Date");
-        // when running in unit tests, etc... the manifest entries are absent.
-        if (inceptionDateAttr == null) {
-            return;
-        }
-        List<String> items = ImmutableList.copyOf(Splitter.on(':').split(inceptionDateAttr));
-        GregorianCalendar inceptionDate = new GregorianCalendar(Integer.parseInt(items.get(0)),
-                Integer.parseInt(items.get(1)), Integer.parseInt(items.get(2)));
-
-        int retirementAgeInDays =
-                getRetirementAgeInDays(manifest.getMainAttributes().getValue("Plugin-Version"));
-
-        if (retirementAgeInDays == -1) {
-            return;
-        }
-        Calendar now = GregorianCalendar.getInstance();
-        long nowTimestamp = now.getTimeInMillis();
-        long inceptionTimestamp = inceptionDate.getTimeInMillis();
-        long days = TimeUnit.DAYS.convert(nowTimestamp - inceptionTimestamp, TimeUnit.MILLISECONDS);
-        if (days > retirementAgeInDays) {
-            // this plugin is too old.
-            String dailyOverride = System.getenv("ANDROID_DAILY_OVERRIDE");
-            final MessageDigest crypt;
-            try {
-                crypt = MessageDigest.getInstance("SHA-1");
-            } catch (NoSuchAlgorithmException e) {
-                return;
-            }
-            crypt.reset();
-            // encode the day, not the current time.
-            try {
-                crypt.update(String.format("%1$s:%2$s:%3$s",
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DATE)).getBytes("utf8"));
-            } catch (UnsupportedEncodingException e) {
-                return;
-            }
-            String overrideValue = new BigInteger(1, crypt.digest()).toString(16);
-            if (dailyOverride == null) {
-                String message = "Plugin is too old, please update to a more recent version, or " +
-                        "set ANDROID_DAILY_OVERRIDE environment variable to \"" + overrideValue + '"';
-                System.err.println(message);
-                throw new RuntimeException(message);
-            } else {
-                if (!dailyOverride.equals(overrideValue)) {
-                    String message = "Plugin is too old and ANDROID_DAILY_OVERRIDE value is " +
-                            "also outdated, please use new value :\"" + overrideValue + '"';
-                    System.err.println(message);
-                    throw new RuntimeException(message);
-                }
-            }
-        }
     }
 
     protected abstract Class<? extends BaseExtension> getExtensionClass();
@@ -246,17 +140,13 @@ public abstract class BasePlugin {
 
     protected void apply(Project project) {
         this.project = project;
-
-        checkPathForErrors();
         checkModulesForErrors();
-
         configureProject();
         createExtension();
         createTasks();
     }
 
     protected void configureProject() {
-        checkGradleVersion();
         extraModelInfo = new ExtraModelInfo(project, isLibrary());
         sdkHandler = new SdkHandler(project, getLogger());
         androidBuilder = new AndroidBuilder(
@@ -268,7 +158,7 @@ public abstract class BasePlugin {
                 getLogger(),
                 isVerbose());
 
-        project.getPlugins().apply(JavaBasePlugin.class);
+//        project.getPlugins().apply(JavaBasePlugin.class);
 
         // call back on execution. This is called after the whole build is done (not
         // after the current project is done).
@@ -382,55 +272,10 @@ public abstract class BasePlugin {
     }
 
     private void createTasks() {
-        ThreadRecorder.get().record(ExecutionType.TASK_MANAGER_CREATE_TASKS,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        taskManager.createTasksBeforeEvaluate(
-                                new TaskContainerAdaptor(project.getTasks()));
-                        return null;
-                    }
-                },
-                new Recorder.Property("project", project.getName()));
-
-        project.afterEvaluate(new Action<Project>() {
-            @Override
-            public void execute(Project project) {
-                ThreadRecorder.get().record(ExecutionType.BASE_PLUGIN_CREATE_ANDROID_TASKS,
-                        new Recorder.Block<Void>() {
-                            @Override
-                            public Void call() throws Exception {
-                                createAndroidTasks(false);
-                                return null;
-                            }
-                        },
-                        new Recorder.Property("project", project.getName()));
-            }
-        });
+        taskManager.createTasksBeforeEvaluate(new TaskContainerAdaptor(project.getTasks()));
+        createAndroidTasks(false);
     }
 
-    private void checkGradleVersion() {
-        if (!GRADLE_ACCEPTABLE_VERSIONS.matcher(project.getGradle().getGradleVersion()).matches()) {
-            boolean allowNonMatching = Boolean.getBoolean(GRADLE_VERSION_CHECK_OVERRIDE_PROPERTY);
-            File file = new File("gradle" + separator + "wrapper" + separator +
-                    "gradle-wrapper.properties");
-            String errorMessage = String.format(
-                    "Gradle version %s is required. Current version is %s. " +
-                            "If using the gradle wrapper, try editing the distributionUrl in %s " +
-                            "to gradle-%s-all.zip",
-                    GRADLE_MIN_VERSION, project.getGradle().getGradleVersion(), file.getAbsolutePath(),
-                    GRADLE_MIN_VERSION);
-            if (allowNonMatching) {
-                getLogger().warning(errorMessage);
-                getLogger().warning("As %s is set, continuing anyways.",
-                        GRADLE_VERSION_CHECK_OVERRIDE_PROPERTY);
-            } else {
-                throw new BuildException(errorMessage, null);
-            }
-        }
-    }
-
-    @VisibleForTesting
     final void createAndroidTasks(boolean force) {
         // Make sure unit tests set the required fields.
         checkState(extension.getBuildToolsRevision() != null, "buildToolsVersion is not specified.");
@@ -530,39 +375,6 @@ public abstract class BasePlugin {
                 subProjectsById.put(id, subProject);
             }
         }
-    }
-
-    private void checkPathForErrors() {
-        // See if the user disabled the check:
-        if (Boolean.getBoolean(SKIP_PATH_CHECK_PROPERTY)) {
-            return;
-        }
-
-        if (project.hasProperty(SKIP_PATH_CHECK_PROPERTY)
-                && project.property(SKIP_PATH_CHECK_PROPERTY) instanceof String
-                && Boolean.valueOf((String) project.property(SKIP_PATH_CHECK_PROPERTY))) {
-            return;
-        }
-
-        // See if we're on Windows:
-        if (!System.getProperty("os.name").toLowerCase().contains("windows")) {
-            return;
-        }
-
-        // See if the path contains non-ASCII characters.
-        if (CharMatcher.ASCII.matchesAllOf(project.getRootDir().getAbsolutePath())) {
-            return;
-        }
-
-        String message = "Your project path contains non-ASCII characters. This will most likely " +
-                "cause the build to fail on Windows. Please move your project to a different " +
-                "directory. See http://b.android.com/95744 for details. " +
-                "This warning can be disabled by using the command line flag -D" +
-                SKIP_PATH_CHECK_PROPERTY + "=true, or adding the line " +
-                SKIP_PATH_CHECK_PROPERTY + "=true' to gradle.properties file " +
-                "in the project directory.";
-
-        throw new StopExecutionException(message);
     }
 
     private static class UnsupportedAction implements Action<Object> {

@@ -130,7 +130,7 @@ import static com.google.common.base.Preconditions.checkState;
  * build steps.
  * <p>
  * To use:
- * create a builder with {@link #AndroidBuilder(String, String, ProcessExecutor, JavaProcessExecutor, ErrorReporter, ILogger, boolean)}
+ * create a builder with {link #AndroidBuilder(String, String, ProcessExecutor, JavaProcessExecutor, ErrorReporter, ILogger, boolean)}
  * <p>
  * then build steps can be done with
  * {@link #mergeManifests(File, List, List, String, int, String, String, String, Integer, String, String, ManifestMerger2.MergeType, Map, File)}

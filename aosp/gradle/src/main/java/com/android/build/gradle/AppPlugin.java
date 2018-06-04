@@ -63,11 +63,7 @@ class AppPlugin extends BasePlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        try {
-            super.apply(project);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        super.apply(project);
     }
 
     @Override

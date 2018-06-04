@@ -1,4 +1,4 @@
-package com.duy.android.compiler.builder.gradle;
+package com.android.build.gradle;
 
 /**
  * Gradle plugin class for 'application' projects.

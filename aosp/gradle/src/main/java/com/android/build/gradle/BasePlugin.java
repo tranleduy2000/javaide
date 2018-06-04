@@ -16,10 +16,6 @@
 
 package com.android.build.gradle;
 
-import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
-import static com.google.common.base.Preconditions.checkState;
-import static java.io.File.separator;
-
 import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
 import com.android.build.gradle.internal.ApiObjectFactory;
@@ -35,7 +31,6 @@ import com.android.build.gradle.internal.SdkHandler;
 import com.android.build.gradle.internal.TaskContainerAdaptor;
 import com.android.build.gradle.internal.TaskManager;
 import com.android.build.gradle.internal.VariantManager;
-import com.android.build.gradle.internal.coverage.JacocoPlugin;
 import com.android.build.gradle.internal.dsl.BuildType;
 import com.android.build.gradle.internal.dsl.BuildTypeFactory;
 import com.android.build.gradle.internal.dsl.ProductFlavor;
@@ -45,12 +40,10 @@ import com.android.build.gradle.internal.dsl.SigningConfigFactory;
 import com.android.build.gradle.internal.model.ModelBuilder;
 import com.android.build.gradle.internal.process.GradleJavaProcessExecutor;
 import com.android.build.gradle.internal.process.GradleProcessExecutor;
-import com.android.build.gradle.internal.profile.RecordingBuildListener;
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.build.gradle.internal.variant.VariantFactory;
 import com.android.build.gradle.tasks.JillTask;
 import com.android.build.gradle.tasks.PreDex;
-import com.android.builder.Version;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.core.BuilderConstants;
 import com.android.builder.internal.compiler.JackConversionCache;
@@ -65,7 +58,6 @@ import com.android.utils.ILogger;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 import org.gradle.BuildListener;
 import org.gradle.BuildResult;
@@ -104,18 +96,24 @@ import java.util.concurrent.TimeUnit;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
+import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
+import static com.google.common.base.Preconditions.checkState;
+import static java.io.File.separator;
+
 /**
  * Base class for all Android plugins
  */
 public abstract class BasePlugin {
 
-    private static final String GRADLE_MIN_VERSION = "2.2";
     public static final Pattern GRADLE_ACCEPTABLE_VERSIONS = Pattern.compile("2\\.[2-9].*");
+    private static final String GRADLE_MIN_VERSION = "2.2";
     private static final String GRADLE_VERSION_CHECK_OVERRIDE_PROPERTY =
             "com.android.build.gradle.overrideVersionCheck";
     private static final String SKIP_PATH_CHECK_PROPERTY =
             "com.android.build.gradle.overridePathCheck";
-    /** default retirement age in days since its inception date for RC or beta versions. */
+    /**
+     * default retirement age in days since its inception date for RC or beta versions.
+     */
     private static final int DEFAULT_RETIREMENT_AGE_FOR_NON_RELEASE_IN_DAYS = 40;
 
 
@@ -128,18 +126,11 @@ public abstract class BasePlugin {
     protected Project project;
 
     protected SdkHandler sdkHandler;
-
-    private NdkHandler ndkHandler;
-
     protected AndroidBuilder androidBuilder;
-
     protected Instantiator instantiator;
-
     protected VariantFactory variantFactory;
-
+    private NdkHandler ndkHandler;
     private ToolingModelBuilderRegistry registry;
-
-    private JacocoPlugin jacocoPlugin;
 
     private LoggerWrapper loggerWrapper;
 
@@ -152,10 +143,18 @@ public abstract class BasePlugin {
     protected BasePlugin(Instantiator instantiator, ToolingModelBuilderRegistry registry) {
         this.instantiator = instantiator;
         this.registry = registry;
-        creator = "Android Gradle " + Version.ANDROID_GRADLE_PLUGIN_VERSION;
+        creator = "Android Gradle " + /*Version.ANDROID_GRADLE_PLUGIN_VERSION*/ "Java N-IDE";
         verifyRetirementAge();
 
         ModelBuilder.clearCaches();
+    }
+
+    private static int getRetirementAgeInDays(@Nullable String version) {
+        if (version == null || version.contains("rc") || version.contains("beta")
+                || version.contains("alpha")) {
+            return DEFAULT_RETIREMENT_AGE_FOR_NON_RELEASE_IN_DAYS;
+        }
+        return -1;
     }
 
     /**
@@ -213,13 +212,13 @@ public abstract class BasePlugin {
             String overrideValue = new BigInteger(1, crypt.digest()).toString(16);
             if (dailyOverride == null) {
                 String message = "Plugin is too old, please update to a more recent version, or " +
-                    "set ANDROID_DAILY_OVERRIDE environment variable to \"" + overrideValue + '"';
+                        "set ANDROID_DAILY_OVERRIDE environment variable to \"" + overrideValue + '"';
                 System.err.println(message);
                 throw new RuntimeException(message);
             } else {
                 if (!dailyOverride.equals(overrideValue)) {
                     String message = "Plugin is too old and ANDROID_DAILY_OVERRIDE value is " +
-                    "also outdated, please use new value :\"" + overrideValue + '"';
+                            "also outdated, please use new value :\"" + overrideValue + '"';
                     System.err.println(message);
                     throw new RuntimeException(message);
                 }
@@ -227,16 +226,10 @@ public abstract class BasePlugin {
         }
     }
 
-    private static int getRetirementAgeInDays(@Nullable String version) {
-        if (version == null || version.contains("rc") || version.contains("beta")
-                || version.contains("alpha")) {
-            return DEFAULT_RETIREMENT_AGE_FOR_NON_RELEASE_IN_DAYS;
-        }
-        return -1;
-    }
-
     protected abstract Class<? extends BaseExtension> getExtensionClass();
+
     protected abstract VariantFactory createVariantFactory();
+
     protected abstract TaskManager createTaskManager(
             Project project,
             AndroidBuilder androidBuilder,
@@ -266,60 +259,16 @@ public abstract class BasePlugin {
     }
 
 
-    protected void apply(Project project) throws IOException {
+    protected void apply(Project project) {
         this.project = project;
 
         ExecutionConfigurationUtil.setThreadPoolSize(project);
         checkPathForErrors();
         checkModulesForErrors();
 
-        List<Recorder.Property> propertyList = Lists.newArrayList(
-                new Recorder.Property("plugin_version", Version.ANDROID_GRADLE_PLUGIN_VERSION),
-                new Recorder.Property("next_gen_plugin", "false"),
-                new Recorder.Property("gradle_version", project.getGradle().getGradleVersion())
-        );
-        String benchmarkName = AndroidGradleOptions.getBenchmarkName(project);
-        if (benchmarkName != null) {
-            propertyList.add(new Recorder.Property("benchmark_name", benchmarkName));
-        }
-        String benchmarkMode = AndroidGradleOptions.getBenchmarkMode(project);
-        if (benchmarkMode != null) {
-            propertyList.add(new Recorder.Property("benchmark_mode", benchmarkMode));
-        }
-
-        ProcessRecorderFactory.initialize(
-                getLogger(),
-                project.getRootProject().file("profiler" + System.currentTimeMillis() + ".json"),
-                propertyList);
-        project.getGradle().addListener(new RecordingBuildListener(ThreadRecorder.get()));
-
-
-        ThreadRecorder.get().record(ExecutionType.BASE_PLUGIN_PROJECT_CONFIGURE,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        configureProject();
-                        return null;
-                    }
-                }, new Recorder.Property("project", project.getName()));
-
-        ThreadRecorder.get().record(ExecutionType.BASE_PLUGIN_PROJECT_BASE_EXTENSTION_CREATION,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        createExtension();
-                        return null;
-                    }
-                }, new Recorder.Property("project", project.getName()));
-
-        ThreadRecorder.get().record(ExecutionType.BASE_PLUGIN_PROJECT_TASKS_CREATION,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        createTasks();
-                        return null;
-                    }
-                }, new Recorder.Property("project", project.getName()));
+        configureProject();
+        createExtension();
+        createTasks();
     }
 
     protected void configureProject() {
@@ -337,8 +286,6 @@ public abstract class BasePlugin {
 
         project.getPlugins().apply(JavaBasePlugin.class);
 
-        jacocoPlugin = project.getPlugins().apply(JacocoPlugin.class);
-
         project.getTasks().getByName("assemble").setDescription(
                 "Assembles all variants of all applications and secondary packages.");
 
@@ -348,16 +295,20 @@ public abstract class BasePlugin {
         // being called 2+ times.
         project.getGradle().addBuildListener(new BuildListener() {
             @Override
-            public void buildStarted(Gradle gradle) { }
+            public void buildStarted(Gradle gradle) {
+            }
 
             @Override
-            public void settingsEvaluated(Settings settings) { }
+            public void settingsEvaluated(Settings settings) {
+            }
 
             @Override
-            public void projectsLoaded(Gradle gradle) { }
+            public void projectsLoaded(Gradle gradle) {
+            }
 
             @Override
-            public void projectsEvaluated(Gradle gradle) { }
+            public void projectsEvaluated(Gradle gradle) {
+            }
 
             @Override
             public void buildFinished(BuildResult buildResult) {
@@ -416,7 +367,7 @@ public abstract class BasePlugin {
         final NamedDomainObjectContainer<ProductFlavor> productFlavorContainer = project.container(
                 ProductFlavor.class,
                 new ProductFlavorFactory(instantiator, project, project.getLogger()));
-        final NamedDomainObjectContainer<SigningConfig>  signingConfigContainer = project.container(
+        final NamedDomainObjectContainer<SigningConfig> signingConfigContainer = project.container(
                 SigningConfig.class,
                 new SigningConfigFactory(instantiator));
 
@@ -479,9 +430,9 @@ public abstract class BasePlugin {
         buildTypeContainer.whenObjectAdded(new Action<BuildType>() {
             @Override
             public void execute(BuildType buildType) {
-            SigningConfig signingConfig = signingConfigContainer.findByName(BuilderConstants.DEBUG);
-            buildType.init(signingConfig);
-            variantManager.addBuildType(buildType);
+                SigningConfig signingConfig = signingConfigContainer.findByName(BuilderConstants.DEBUG);
+                buildType.init(signingConfig);
+                variantManager.addBuildType(buildType);
             }
         });
 
@@ -503,20 +454,6 @@ public abstract class BasePlugin {
         // create default Objects, signingConfig first as its used by the BuildTypes.
         variantFactory.createDefaultComponents(
                 buildTypeContainer, productFlavorContainer, signingConfigContainer);
-    }
-
-    private static class UnsupportedAction implements Action<Object> {
-
-        private final String message;
-
-        UnsupportedAction(String message) {
-            this.message = message;
-        }
-
-        @Override
-        public void execute(Object o) {
-            throw new UnsupportedOperationException(message);
-        }
     }
 
     private void createTasks() {
@@ -553,11 +490,11 @@ public abstract class BasePlugin {
             File file = new File("gradle" + separator + "wrapper" + separator +
                     "gradle-wrapper.properties");
             String errorMessage = String.format(
-                "Gradle version %s is required. Current version is %s. " +
-                "If using the gradle wrapper, try editing the distributionUrl in %s " +
-                "to gradle-%s-all.zip",
-                GRADLE_MIN_VERSION, project.getGradle().getGradleVersion(), file.getAbsolutePath(),
-                GRADLE_MIN_VERSION);
+                    "Gradle version %s is required. Current version is %s. " +
+                            "If using the gradle wrapper, try editing the distributionUrl in %s " +
+                            "to gradle-%s-all.zip",
+                    GRADLE_MIN_VERSION, project.getGradle().getGradleVersion(), file.getAbsolutePath(),
+                    GRADLE_MIN_VERSION);
             if (allowNonMatching) {
                 getLogger().warning(errorMessage);
                 getLogger().warning("As %s is set, continuing anyways.",
@@ -589,7 +526,7 @@ public abstract class BasePlugin {
         // This is because project don't get evaluated in the unit test setup.
         // See AppPluginDslTest
         if (!force
-                && (!project.getState().getExecuted() ||  project.getState().getFailure()!= null)
+                && (!project.getState().getExecuted() || project.getState().getFailure() != null)
                 && SdkHandler.sTestSdkFolder == null) {
             return;
         }
@@ -625,7 +562,7 @@ public abstract class BasePlugin {
                         variantManager.createAndroidTasks();
                         ApiObjectFactory apiObjectFactory = new ApiObjectFactory(
                                 androidBuilder, extension, variantFactory, instantiator);
-                        for (BaseVariantData variantData : variantManager.getVariantDataList())  {
+                        for (BaseVariantData variantData : variantManager.getVariantDataList()) {
                             apiObjectFactory.create(variantData);
                         }
                         return null;
@@ -665,13 +602,13 @@ public abstract class BasePlugin {
             if (subProjectsById.containsKey(id)) {
                 String message = String.format(
                         "Your project contains 2 or more modules with the same " +
-                        "identification %1$s\n" +
-                        "at \"%2$s\" and \"%3$s\".\n" +
-                        "You must use different identification (either name or group) for " +
-                        "each modules.",
+                                "identification %1$s\n" +
+                                "at \"%2$s\" and \"%3$s\".\n" +
+                                "You must use different identification (either name or group) for " +
+                                "each modules.",
                         id,
                         subProjectsById.get(id).getPath(),
-                        subProject.getPath() );
+                        subProject.getPath());
                 throw new StopExecutionException(message);
             } else {
                 subProjectsById.put(id, subProject);
@@ -710,5 +647,19 @@ public abstract class BasePlugin {
                 "in the project directory.";
 
         throw new StopExecutionException(message);
+    }
+
+    private static class UnsupportedAction implements Action<Object> {
+
+        private final String message;
+
+        UnsupportedAction(String message) {
+            this.message = message;
+        }
+
+        @Override
+        public void execute(Object o) {
+            throw new UnsupportedOperationException(message);
+        }
     }
 }

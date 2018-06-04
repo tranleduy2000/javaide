@@ -20,7 +20,6 @@ import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
-import com.android.annotations.VisibleForTesting.Visibility;
 import com.android.prefs.AndroidLocation;
 import com.android.prefs.AndroidLocation.AndroidLocationException;
 import com.android.sdklib.internal.androidTarget.AddOnTarget;
@@ -47,6 +46,7 @@ import java.util.TreeSet;
 
 /**
  * The SDK manager parses the SDK folder and gives access to the content.
+ *
  * @see PlatformTarget
  * @see AddOnTarget
  */
@@ -55,15 +55,19 @@ public class SdkManager {
     @SuppressWarnings("unused")
     private static final boolean DEBUG = System.getenv("SDKMAN_DEBUG") != null;        //$NON-NLS-1$
 
-    /** Preference file containing the usb ids for adb */
+    /**
+     * Preference file containing the usb ids for adb
+     */
     private static final String ADB_INI_FILE = "adb_usb.ini";                          //$NON-NLS-1$
-       //0--------90--------90--------90--------90--------90--------90--------90--------9
-       private static final String ADB_INI_HEADER =
-        "# ANDROID 3RD PARTY USB VENDOR ID LIST -- DO NOT EDIT.\n" +                   //$NON-NLS-1$
-        "# USE 'android update adb' TO GENERATE.\n" +                                  //$NON-NLS-1$
-        "# 1 USB VENDOR ID PER LINE.\n";                                               //$NON-NLS-1$
+    //0--------90--------90--------90--------90--------90--------90--------90--------9
+    private static final String ADB_INI_HEADER =
+            "# ANDROID 3RD PARTY USB VENDOR ID LIST -- DO NOT EDIT.\n" +                   //$NON-NLS-1$
+                    "# USE 'android update adb' TO GENERATE.\n" +                                  //$NON-NLS-1$
+                    "# 1 USB VENDOR ID PER LINE.\n";                                               //$NON-NLS-1$
 
-    /** Embedded reference to the new local SDK object. */
+    /**
+     * Embedded reference to the new local SDK object.
+     */
     private final LocalSdk mLocalSdk;
 
     /**
@@ -72,7 +76,7 @@ public class SdkManager {
      *
      * @param osSdkPath the location of the SDK.
      */
-    @VisibleForTesting(visibility=Visibility.PRIVATE)
+    @VisibleForTesting()
     protected SdkManager(@NonNull String osSdkPath) {
         mLocalSdk = new LocalSdk(new File(osSdkPath));
     }
@@ -88,8 +92,9 @@ public class SdkManager {
 
     /**
      * Creates an {@link SdkManager} for a given sdk location.
+     *
      * @param osSdkPath the location of the SDK.
-     * @param log the ILogger object receiving warning/error from the parsing.
+     * @param log       the ILogger object receiving warning/error from the parsing.
      * @return the created {@link SdkManager} or null if the location is not valid.
      */
     @Nullable
@@ -153,8 +158,8 @@ public class SdkManager {
      */
     public boolean hasChanged(@Nullable ILogger log) {
         return mLocalSdk.hasChanged(EnumSet.of(PkgType.PKG_PLATFORM,
-                                               PkgType.PKG_ADDON,
-                                               PkgType.PKG_BUILD_TOOLS));
+                PkgType.PKG_ADDON,
+                PkgType.PKG_BUILD_TOOLS));
     }
 
     /**
@@ -213,7 +218,7 @@ public class SdkManager {
      *
      * @param revision The requested revision.
      * @return A {@link BuildToolInfo}. Can be null if {@code revision} is null or is
-     *  not part of the known set returned by {@link #getBuildTools()}.
+     * not part of the known set returned by {@link #getBuildTools()}.
      */
     @Nullable
     public BuildToolInfo getBuildTool(@Nullable FullRevision revision) {
@@ -233,6 +238,7 @@ public class SdkManager {
 
     /**
      * Updates adb with the USB devices declared in the SDK add-ons.
+     *
      * @throws AndroidLocationException
      * @throws IOException
      */
@@ -303,7 +309,7 @@ public class SdkManager {
      * The map is { File: Samples root directory => String: Extra package display name. }
      *
      * @return A non-null possibly empty map of extra samples directories and their associated
-     *   extra package display name.
+     * extra package display name.
      */
     @NonNull
     public Map<File, String> getExtraSamples() {
@@ -340,8 +346,8 @@ public class SdkManager {
      *
      * @return A non-null possibly empty map of { string "vendor/path" => integer major revision }
      * @deprecated Starting with add-on schema 6, extras can have full revisions instead of just
-     *   major revisions. This API only returns the major revision. Callers should be modified
-     *   to use the new {code LocalSdk.getPkgInfo(PkgType.PKG_EXTRAS)} API instead.
+     * major revisions. This API only returns the major revision. Callers should be modified
+     * to use the new {code LocalSdk.getPkgInfo(PkgType.PKG_EXTRAS)} API instead.
      */
     @Deprecated
     @NonNull
@@ -355,8 +361,8 @@ public class SdkManager {
                 LocalExtraPkgInfo ei = (LocalExtraPkgInfo) info;
                 IPkgDesc d = ei.getDesc();
                 String vendor = d.getVendor().getId();
-                String path   = d.getPath();
-                int majorRev  = d.getFullRevision().getMajor();
+                String path = d.getPath();
+                int majorRev = d.getFullRevision().getMajor();
 
                 extraVersions.put(vendor + '/' + path, majorRev);
             }
@@ -365,7 +371,9 @@ public class SdkManager {
         return extraVersions;
     }
 
-    /** Returns the platform tools version if installed, null otherwise. */
+    /**
+     * Returns the platform tools version if installed, null otherwise.
+     */
     @Nullable
     public String getPlatformToolsVersion() {
         LocalPkgInfo info = mLocalSdk.getPkgInfo(PkgType.PKG_PLATFORM_TOOLS);
@@ -381,10 +389,9 @@ public class SdkManager {
     // -------------
 
     public static class LayoutlibVersion implements Comparable<LayoutlibVersion> {
+        public static final int NOT_SPECIFIED = 0;
         private final int mApi;
         private final int mRevision;
-
-        public static final int NOT_SPECIFIED = 0;
 
         public LayoutlibVersion(int api, int revision) {
             mApi = api;
@@ -403,7 +410,7 @@ public class SdkManager {
         public int compareTo(@NonNull LayoutlibVersion rhs) {
             boolean useRev = this.mRevision > NOT_SPECIFIED && rhs.mRevision > NOT_SPECIFIED;
             int lhsValue = (this.mApi << 16) + (useRev ? this.mRevision : 0);
-            int rhsValue = (rhs.mApi  << 16) + (useRev ? rhs.mRevision  : 0);
+            int rhsValue = (rhs.mApi << 16) + (useRev ? rhs.mRevision : 0);
             return lhsValue - rhsValue;
         }
     }

@@ -10,7 +10,7 @@ import com.android.builder.dependency.LibraryDependency;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
 import com.android.io.StreamException;
-import com.duy.android.compiler.builder.gradle.internal.LibraryDependencyImpl;
+import com.android.build.gradle.internal.LibraryDependencyImpl;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.library.LibraryCache;
 

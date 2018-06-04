@@ -3,6 +3,7 @@ package com.duy.android.compiler.builder;
 import android.content.Context;
 
 import com.android.annotations.NonNull;
+import com.android.build.gradle.internal.process.GradleProcessExecutor;
 import com.android.builder.core.LibraryRequest;
 import com.android.builder.sdk.SdkInfo;
 import com.android.builder.sdk.TargetInfo;
@@ -45,7 +46,7 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
         mProject = project;
         mProjectId = mProject.getProjectName();
 
-        mProcessExecutor = new GradleProcessExecutor(project);
+        mProcessExecutor =      new GradleProcessExecutor(project);
         setDefaultValues();
     }
 

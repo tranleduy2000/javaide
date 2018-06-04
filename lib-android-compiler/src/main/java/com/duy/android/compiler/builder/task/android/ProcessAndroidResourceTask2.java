@@ -20,7 +20,7 @@ import com.android.ide.common.process.ProcessResult;
 import com.android.utils.FileUtils;
 import com.android.utils.ILogger;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
-import com.duy.android.compiler.builder.gradle.internal.AaptOptionsImpl;
+import com.android.build.gradle.internal.AaptOptionsImpl;
 import com.duy.android.compiler.builder.task.ATask;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.AndroidAppProject;

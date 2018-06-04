@@ -1,4 +1,4 @@
-package com.duy.android.compiler.builder.gradle;
+package com.android.build.gradle;
 
 import com.android.builder.core.DexOptions;
 import com.android.builder.model.AaptOptions;

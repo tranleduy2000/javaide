@@ -2,7 +2,7 @@ package com.duy.android.compiler.builder;
 
 import android.content.Context;
 
-import com.android.builder.sdk.TargetInfo;
+import com.android.ide.common.process.ProcessExecutor;
 import com.android.utils.ILogger;
 import com.duy.android.compiler.builder.model.BuildType;
 import com.duy.android.compiler.project.JavaProject;

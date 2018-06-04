@@ -5,7 +5,7 @@ import com.android.builder.dependency.LibraryBundle;
 import com.android.builder.dependency.LibraryDependency;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
-import com.android.build.gradle.internal.LibraryDependencyImpl;
+import com.duy.android.compiler.builder.internal.dependency.LibraryDependencyImpl;
 import com.duy.android.compiler.utils.IOUtils;
 import com.google.common.base.MoreObjects;
 
@@ -201,7 +201,7 @@ public class AndroidAppProject extends JavaProject {
             String bundleFolder = lib.getString("bundleFolder");
             LibraryDependencyImpl androidLibrary
                     = new LibraryDependencyImpl(new File(bundle), new File(bundleFolder), new ArrayList<LibraryDependency>(),
-                    null, null, getRootDir().getAbsolutePath(), null, null, true);
+                    null, null, getRootDir().getAbsolutePath(), null, null, false);
             addLibrary(androidLibrary);
         }
     }

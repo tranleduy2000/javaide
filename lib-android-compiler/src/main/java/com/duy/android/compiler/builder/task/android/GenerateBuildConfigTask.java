@@ -10,12 +10,12 @@ import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.List;
 
-public class GenerateConfigTask extends Task<AndroidAppProject> {
+public class GenerateBuildConfigTask extends Task<AndroidAppProject> {
     List<Object> items;
     private boolean debuggable = true;
     private int versionCode;
 
-    public GenerateConfigTask(IBuilder<? extends AndroidAppProject> builder) {
+    public GenerateBuildConfigTask(IBuilder<? extends AndroidAppProject> builder) {
         super(builder);
     }
 
@@ -25,9 +25,9 @@ public class GenerateConfigTask extends Task<AndroidAppProject> {
     }
 
     @Override
-    public boolean run() throws Exception {
-        String packageName = project.getPackageName();
-        File genFolder = project.getDirGeneratedSource();
+    public boolean doFullTaskAction() throws Exception {
+        String packageName = mProject.getPackageName();
+        File genFolder = mProject.getDirGeneratedSource();
         BuildConfigGenerator generator = new BuildConfigGenerator(genFolder, packageName);
         // Hack (see IDEA-100046): We want to avoid reporting "condition is always true"
         // from the data flow inspection, so use a non-constant value. However, that defeats

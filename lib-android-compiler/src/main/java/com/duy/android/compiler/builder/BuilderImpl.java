@@ -28,7 +28,7 @@ public abstract class BuilderImpl<T extends JavaProject> implements IBuilder<T> 
         for (Task task : tasks) {
             try {
                 stdout("Run " + task.getTaskName() + " task");
-                boolean result = task.run();
+                boolean result = task.doFullTaskAction();
                 if (!result) {
                     stdout(task.getTaskName() + " failed");
                     return false;

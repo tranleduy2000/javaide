@@ -10,7 +10,7 @@ import com.android.builder.dependency.LibraryDependency;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
 import com.android.io.StreamException;
-import com.android.build.gradle.internal.LibraryDependencyImpl;
+import com.duy.android.compiler.builder.internal.dependency.LibraryDependencyImpl;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.library.LibraryCache;
 
@@ -267,7 +267,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
             extractor.extractAar(bundle, folderOut);
 
             LibraryBundle androidLib = new LibraryDependencyImpl(bundle, folderOut, new ArrayList<LibraryDependency>(),
-                    bundleFolderName, null, project.getRootDir().getAbsolutePath(), null, null, true);
+                    bundleFolderName, null, project.getRootDir().getAbsolutePath(), null, null, false);
             project.addLibrary(androidLib);
         }
     }

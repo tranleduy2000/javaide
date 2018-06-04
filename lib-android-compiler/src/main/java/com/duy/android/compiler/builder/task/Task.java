@@ -8,17 +8,17 @@ import com.duy.android.compiler.project.JavaProject;
 
 public abstract class Task<T extends JavaProject> {
     protected final IBuilder mBuilder;
-    protected final T project;
+    protected final T mProject;
     protected final Context context;
 
     public Task(IBuilder<? extends T> builder) {
         this.mBuilder = builder;
-        this.project = builder.getProject();
+        this.mProject = builder.getProject();
         this.context = builder.getContext();
     }
 
     public abstract String getTaskName();
 
     @WorkerThread
-    public abstract boolean run() throws Exception;
+    public abstract boolean doFullTaskAction() throws Exception;
 }

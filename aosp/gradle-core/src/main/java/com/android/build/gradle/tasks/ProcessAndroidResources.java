@@ -147,8 +147,6 @@ public class ProcessAndroidResources extends IncrementalTask {
                     processOutputHandler);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } catch (ProcessException e) {
             throw new RuntimeException(e);
         }
@@ -204,22 +202,17 @@ public class ProcessAndroidResources extends IncrementalTask {
             processResources.setAndroidBuilder(scope.getGlobalScope().getAndroidBuilder());
             processResources.setVariantName(config.getFullName());
 
-            if (variantData.getSplitHandlingPolicy() ==
-                    BaseVariantData.SplitHandlingPolicy.RELEASE_21_AND_AFTER_POLICY) {
+            if (variantData.getSplitHandlingPolicy() == BaseVariantData.SplitHandlingPolicy.RELEASE_21_AND_AFTER_POLICY) {
                 Set<String> allFilters = new HashSet<String>();
-                allFilters.addAll(
-                        variantData.getFilters(com.android.build.OutputFile.FilterType.DENSITY));
-                allFilters.addAll(
-                        variantData.getFilters(com.android.build.OutputFile.FilterType.LANGUAGE));
+                allFilters.addAll(variantData.getFilters(com.android.build.OutputFile.FilterType.DENSITY));
+                allFilters.addAll(variantData.getFilters(com.android.build.OutputFile.FilterType.LANGUAGE));
                 processResources.splits = allFilters;
             }
 
             // only generate code if the density filter is null, and if we haven't generated
             // it yet (if you have abi + density splits, then several abi output will have no
             // densityFilter)
-            if (variantOutputData.getMainOutputFile()
-                    .getFilter(com.android.build.OutputFile.DENSITY) == null
-                    && variantData.generateRClassTask == null) {
+            if (variantOutputData.getMainOutputFile().getFilter(com.android.build.OutputFile.DENSITY) == null && variantData.generateRClassTask == null) {
                 variantData.generateRClassTask = processResources;
                 processResources.enforceUniquePackageName = scope.getGlobalScope().getExtension()
                         .getEnforceUniquePackageName();
@@ -239,19 +232,12 @@ public class ProcessAndroidResources extends IncrementalTask {
                             }
                         });
 
-                // TODO: unify with generateBuilderConfig, compileAidl, and library packaging somehow?
-                processResources
-                        .setSourceOutputDir(scope.getVariantScope().getRClassSourceOutputDir());
+                processResources.setSourceOutputDir(scope.getVariantScope().getRClassSourceOutputDir());
                 processResources.setTextSymbolOutputDir(symbolLocation);
-
                 if (config.getBuildType().isMinifyEnabled()) {
-                    processResources.setProguardOutputFile(
-                            scope.getVariantScope().getProcessAndroidResourcesProguardOutputFile());
-
+                    processResources.setProguardOutputFile(scope.getVariantScope().getProcessAndroidResourcesProguardOutputFile());
                 } else if (config.getBuildType().isShrinkResources()) {
-                    LoggingUtil.displayWarning(Logging.getLogger(getClass()),
-                            scope.getGlobalScope().getProject(),
-                            "To shrink resources you must also enable ProGuard");
+                    LoggingUtil.displayWarning(Logging.getLogger(getClass()), scope.getGlobalScope().getProject(), "To shrink resources you must also enable ProGuard");
                 }
             }
 
@@ -283,18 +269,14 @@ public class ProcessAndroidResources extends IncrementalTask {
             processResources.setType(config.getType());
             processResources.setDebuggable(config.getBuildType().isDebuggable());
             processResources.setAaptOptions(scope.getGlobalScope().getExtension().getAaptOptions());
-            processResources
-                    .setPseudoLocalesEnabled(config.getBuildType().isPseudoLocalesEnabled());
+            processResources.setPseudoLocalesEnabled(config.getBuildType().isPseudoLocalesEnabled());
 
             ConventionMappingHelper.map(processResources, "resourceConfigs",
                     new Callable<Collection<String>>() {
                         @Override
                         public Collection<String> call() throws Exception {
-                            Collection<String> resConfigs =
-                                    config.getMergedFlavor().getResourceConfigurations();
-                            if (resConfigs.size() == 1 &&
-                                    Iterators.getOnlyElement(resConfigs.iterator())
-                                            .equals("auto")) {
+                            Collection<String> resConfigs = config.getMergedFlavor().getResourceConfigurations();
+                            if (resConfigs.size() == 1 && Iterators.getOnlyElement(resConfigs.iterator()).equals("auto")) {
                                 return variantData.discoverListOfResourceConfigs();
                             }
                             return config.getMergedFlavor().getResourceConfigurations();
@@ -304,19 +286,15 @@ public class ProcessAndroidResources extends IncrementalTask {
             ConventionMappingHelper.map(processResources, "preferredDensity",
                     new Callable<String>() {
                         @Override
-                        public String call() throws Exception {
-                            return variantOutputData.getMainOutputFile()
-                                    .getFilter(com.android.build.OutputFile.DENSITY);
+                        public String call() {
+                            return variantOutputData.getMainOutputFile().getFilter(com.android.build.OutputFile.DENSITY);
                         }
                     });
 
 
         }
-
         @NonNull
-        private static List<SymbolFileProviderImpl> getTextSymbolDependencies(
-                List<LibraryDependency> libraries) {
-
+        private static List<SymbolFileProviderImpl> getTextSymbolDependencies(List<LibraryDependency> libraries) {
             List<SymbolFileProviderImpl> list = Lists.newArrayListWithCapacity(libraries.size());
 
             for (LibraryDependency lib : libraries) {
@@ -376,8 +354,6 @@ public class ProcessAndroidResources extends IncrementalTask {
         this.textSymbolOutputDir = textSymbolOutputDir;
     }
 
-    @OutputFile
-    @Optional
     public File getPackageOutputFile() {
         return packageOutputFile;
     }

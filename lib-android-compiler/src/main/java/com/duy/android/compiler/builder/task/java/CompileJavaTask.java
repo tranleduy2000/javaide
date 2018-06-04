@@ -32,7 +32,7 @@ public class CompileJavaTask extends Task<JavaProject> {
         return "Compile java source";
     }
 
-    public boolean run() {
+    public boolean doFullTaskAction() {
         loadCompilerOptions();
         return runEcj();
     }
@@ -80,14 +80,14 @@ public class CompileJavaTask extends Task<JavaProject> {
         Argument argument = new Argument();
         argument.add(mBuilder.isVerbose() ? "-verbose" : "-warn:");
         argument.add("-bootclasspath", mBuilder.getBootClassPath());
-        argument.add("-classpath", project.getClasspath());
-        argument.add("-sourcepath", project.getSourcePath());
+        argument.add("-classpath", mProject.getClasspath());
+        argument.add("-sourcepath", mProject.getSourcePath());
         argument.add("-" + mCompileOptions.getSourceCompatibility().toString()); //host
         argument.add("-target", mCompileOptions.getTargetCompatibility().toString()); //target
         argument.add("-proc:none"); // Disable annotation processors...
-        argument.add("-d", project.getDirBuildClasses().getAbsolutePath()); // The location of the output folder
+        argument.add("-d", mProject.getDirBuildClasses().getAbsolutePath()); // The location of the output folder
 
-        String[] sourceFiles = getAllSourceFiles(project);
+        String[] sourceFiles = getAllSourceFiles(mProject);
         argument.add(sourceFiles);
 
         Main.Logger logger = main.logger;

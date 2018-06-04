@@ -667,12 +667,8 @@ public abstract class TaskManager {
             @NonNull TaskFactory tasks,
             @NonNull VariantScope scope,
             boolean generateResourcePackage) {
-        createProcessResTask(
-                tasks,
-                scope,
-                new File(globalScope.getIntermediatesDir(),
-                        "symbols/" + scope.getVariantData().getVariantConfiguration().getDirName()),
-                generateResourcePackage);
+        File symbolLocation = new File(globalScope.getIntermediatesDir(), "symbols/" + scope.getVariantData().getVariantConfiguration().getDirName());
+        createProcessResTask(tasks, scope, symbolLocation, generateResourcePackage);
     }
 
     public void createProcessResTask(
@@ -688,10 +684,8 @@ public abstract class TaskManager {
         // of the generated data.
         for (BaseVariantOutputData vod : variantData.getOutputs()) {
             final VariantOutputScope variantOutputScope = vod.getScope();
-
-            variantOutputScope.setProcessResourcesTask(androidTasks.create(tasks,
-                    new ProcessAndroidResources.ConfigAction(variantOutputScope, symbolLocation,
-                            generateResourcePackage)));
+            ProcessAndroidResources.ConfigAction configAction = new ProcessAndroidResources.ConfigAction(variantOutputScope, symbolLocation, generateResourcePackage);
+            variantOutputScope.setProcessResourcesTask(androidTasks.create(tasks, configAction));
             variantOutputScope.getProcessResourcesTask().dependsOn(tasks,
                     variantOutputScope.getManifestProcessorTask(),
                     scope.getMergeResourcesTask(),
@@ -699,8 +693,7 @@ public abstract class TaskManager {
 
             if (vod.getMainOutputFile().getFilter(DENSITY) == null) {
                 scope.setGenerateRClassTask(variantOutputScope.getProcessResourcesTask());
-                scope.getSourceGenTask().optionalDependsOn(tasks,
-                        variantOutputScope.getProcessResourcesTask());
+                scope.getSourceGenTask().optionalDependsOn(tasks, variantOutputScope.getProcessResourcesTask());
             }
 
         }

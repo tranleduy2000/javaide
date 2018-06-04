@@ -15,8 +15,8 @@ public class CleanTask extends Task<JavaProject> {
     }
 
     @Override
-    public boolean run() throws Exception {
-        project.clean();
+    public boolean doFullTaskAction() throws Exception {
+        mProject.clean();
         return true;
     }
 }

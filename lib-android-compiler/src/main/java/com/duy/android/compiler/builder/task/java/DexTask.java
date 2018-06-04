@@ -29,18 +29,18 @@ public class DexTask extends Task<JavaProject> {
     }
 
     @Override
-    public boolean run() throws Exception {
-        Log.d(TAG, "convertToDexFormat() called with: projectFile = [" + project + "]");
+    public boolean doFullTaskAction() throws Exception {
+        Log.d(TAG, "convertToDexFormat() called with: projectFile = [" + mProject + "]");
 
         mBuilder.stdout("Android dx");
 
-        if (!dexLibs(project)) {
+        if (!dexLibs(mProject)) {
             return false;
         }
-        if (!dexBuildClasses(project)) {
+        if (!dexBuildClasses(mProject)) {
             return false;
         }
-        if (!dexMerge(project)) {
+        if (!dexMerge(mProject)) {
             return false;
         }
         return true;

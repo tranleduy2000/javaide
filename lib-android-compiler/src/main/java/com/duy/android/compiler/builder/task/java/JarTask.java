@@ -16,10 +16,10 @@ public class JarTask extends Task<JavaProject> {
     }
 
     @Override
-    public boolean run() throws Exception {
+    public boolean doFullTaskAction() throws Exception {
         //now create normal jar file
         JarArchive jarArchive = new JarArchive(mBuilder.isVerbose());
-        jarArchive.createJarArchive(project);
+        jarArchive.createJarArchive(mProject);
         return true;
     }
 }

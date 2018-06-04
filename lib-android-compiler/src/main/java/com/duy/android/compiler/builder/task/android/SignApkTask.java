@@ -25,7 +25,7 @@ public class SignApkTask extends Task<AndroidAppProject> {
     }
 
     @Override
-    public boolean run() throws Exception {
+    public boolean doFullTaskAction() throws Exception {
         if (type == BuildType.DEBUG) {
             return signDebug();
         } else {
@@ -47,14 +47,14 @@ public class SignApkTask extends Task<AndroidAppProject> {
         ZipSigner signer = new ZipSigner();
         signer.setKeymode(mode);
 
-        File apkUnsigned = project.getApkUnsigned();
+        File apkUnsigned = mProject.getApkUnsigned();
         String in = apkUnsigned.getAbsolutePath();
-        File apkSigned = project.getApkSigned();
+        File apkSigned = mProject.getApkSigned();
         apkSigned.delete();
         String out = apkSigned.getAbsolutePath();
         signer.signZip(in, out);
 
-        mBuilder.stdout("Signed debug apk " + project.getApkUnsigned().getName() + " => " + project.getApkSigned().getName());
+        mBuilder.stdout("Signed debug apk " + mProject.getApkUnsigned().getName() + " => " + mProject.getApkSigned().getName());
 
 
         return apkSigned.exists();

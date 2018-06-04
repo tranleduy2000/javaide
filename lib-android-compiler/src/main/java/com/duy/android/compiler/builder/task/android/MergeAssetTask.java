@@ -16,7 +16,7 @@ public class MergeAssetTask extends Task<AndroidAppProject> {
     }
 
     @Override
-    public boolean run() throws Exception {
+    public boolean doFullTaskAction() throws Exception {
         // TODO: 02-Jun-18 impl
         return true;
     }

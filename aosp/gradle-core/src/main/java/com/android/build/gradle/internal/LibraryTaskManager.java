@@ -16,11 +16,6 @@
 
 package com.android.build.gradle.internal;
 
-import static com.android.SdkConstants.FN_ANNOTATIONS_ZIP;
-import static com.android.SdkConstants.LIBS_FOLDER;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -68,6 +63,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static com.android.SdkConstants.FN_ANNOTATIONS_ZIP;
+import static com.android.SdkConstants.LIBS_FOLDER;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * TaskManager for creating tasks in an Android library project.
  */
@@ -77,7 +77,7 @@ public class LibraryTaskManager extends TaskManager {
 
     private Task assembleDefault;
 
-    public LibraryTaskManager (
+    public LibraryTaskManager(
             Project project,
             AndroidBuilder androidBuilder,
             AndroidConfig extension,
@@ -104,34 +104,13 @@ public class LibraryTaskManager extends TaskManager {
         createCheckManifestTask(tasks, variantScope);
 
         // Add a task to create the res values
-        ThreadRecorder.get().record(ExecutionType.LIB_TASK_MANAGER_CREATE_GENERATE_RES_VALUES_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        createGenerateResValuesTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+        createGenerateResValuesTask(tasks, variantScope);
 
         // Add a task to process the manifest(s)
-        ThreadRecorder.get().record(ExecutionType.LIB_TASK_MANAGER_CREATE_MERGE_MANIFEST_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        createMergeLibManifestsTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+        createMergeLibManifestsTask(tasks, variantScope);
 
         // Add a task to compile renderscript files.
-        ThreadRecorder.get().record(ExecutionType.LIB_TASK_MANAGER_CREATE_CREATE_RENDERSCRIPT_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        createRenderscriptTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+        createRenderscriptTask(tasks, variantScope);
 
         AndroidTask<MergeResources> packageRes = ThreadRecorder.get().record(
                 ExecutionType.LIB_TASK_MANAGER_CREATE_MERGE_RESOURCES_TASK,
@@ -177,61 +156,28 @@ public class LibraryTaskManager extends TaskManager {
                 });
 
         // Add a task to merge the assets folders
-        ThreadRecorder.get().record(ExecutionType.LIB_TASK_MANAGER_CREATE_MERGE_ASSETS_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        createMergeAssetsTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+
+        createMergeAssetsTask(tasks, variantScope);
 
         // Add a task to create the BuildConfig class
-        ThreadRecorder.get().record(ExecutionType.LIB_TASK_MANAGER_CREATE_BUILD_CONFIG_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        createBuildConfigTask(tasks, variantScope);
-                        return null;
-                    }
-                });
 
-        ThreadRecorder.get().record(ExecutionType.LIB_TASK_MANAGER_CREATE_PROCESS_RES_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        // Add a task to generate resource source files, directing the location
-                        // of the r.txt file to be directly in the bundle.
-                        createProcessResTask(tasks, variantScope,
-                                new File(variantScope.getGlobalScope().getIntermediatesDir(),
-                                        DIR_BUNDLES + "/" + dirName),
-                                false /*generateResourcePackage*/);
+        createBuildConfigTask(tasks, variantScope);
 
-                        // process java resources
-                        createProcessJavaResTasks(tasks, variantScope);
-                        return null;
-                    }
-                });
+        // Add a task to generate resource source files, directing the location
+        // of the r.txt file to be directly in the bundle.
+        createProcessResTask(tasks, variantScope,
+                new File(variantScope.getGlobalScope().getIntermediatesDir(),
+                        DIR_BUNDLES + "/" + dirName),
+                false /*generateResourcePackage*/);
 
-        ThreadRecorder.get().record(ExecutionType.LIB_TASK_MANAGER_CREATE_AIDL_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        createAidlTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+        // process java resources
+        createProcessJavaResTasks(tasks, variantScope);
 
+
+        createAidlTask(tasks, variantScope);
         // Add a compile task
-        ThreadRecorder.get().record(ExecutionType.LIB_TASK_MANAGER_CREATE_COMPILE_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        AndroidTask<JavaCompile> javacTask = createJavacTask(tasks, variantScope);
-                        TaskManager.setJavaCompilerTask(javacTask, tasks, variantScope);
-                        return null;
-                    }
-                });
+        AndroidTask<JavaCompile> javacTask = createJavacTask(tasks, variantScope);
+        TaskManager.setJavaCompilerTask(javacTask, tasks, variantScope);
 
         // package the prebuilt native libs into the bundle folder
         final Sync packageJniLibs = project.getTasks().create(
@@ -241,17 +187,10 @@ public class LibraryTaskManager extends TaskManager {
         // Add dependencies on NDK tasks if NDK plugin is applied.
         if (isNdkTaskNeeded) {
             // Add NDK tasks
-            ThreadRecorder.get().record(ExecutionType.LIB_TASK_MANAGER_CREATE_NDK_TASK,
-                    new Recorder.Block<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            createNdkTasks(variantScope);
-                            packageJniLibs.dependsOn(variantData.ndkCompileTask);
-                            packageJniLibs.from(variantData.ndkCompileTask.getSoFolder())
-                                    .include("**/*.so");
-                            return null;
-                        }
-                    });
+            createNdkTasks(variantScope);
+            packageJniLibs.dependsOn(variantData.ndkCompileTask);
+            packageJniLibs.from(variantData.ndkCompileTask.getSoFolder())
+                    .include("**/*.so");
         } else {
             if (variantData.compileTask != null) {
                 variantData.compileTask.dependsOn(getNdkBuildable(variantData));

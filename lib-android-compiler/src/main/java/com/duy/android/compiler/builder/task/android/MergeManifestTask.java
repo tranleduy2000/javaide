@@ -114,7 +114,7 @@ public class MergeManifestTask extends Task<AndroidAppProject> {
     }
 
     @Override
-    public boolean run() throws Exception {
+    public boolean doFullTaskAction() throws Exception {
         mBuilder.stderr(TAG + ": Not impalement yet");
         return true;
     }

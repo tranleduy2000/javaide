@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.build.gradle.internal.dependency;
+package com.duy.android.compiler.builder.internal.dependency;
 
 import com.android.annotations.NonNull;
 import com.android.builder.dependency.LibraryDependency;

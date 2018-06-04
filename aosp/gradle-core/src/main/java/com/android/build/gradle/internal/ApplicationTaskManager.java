@@ -67,100 +67,43 @@ public class ApplicationTaskManager extends TaskManager {
         handleMicroApp(tasks, variantScope);
 
         // Add a task to process the manifest(s)
-        ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_MERGE_MANIFEST_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        createMergeAppManifestsTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+        createMergeAppManifestsTask(tasks, variantScope);
 
         // Add a task to create the res values
-        ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_GENERATE_RES_VALUES_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        createGenerateResValuesTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+        createGenerateResValuesTask(tasks, variantScope);
 
         // Add a task to compile renderscript files.
-        ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_CREATE_RENDERSCRIPT_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        createRenderscriptTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+        createRenderscriptTask(tasks, variantScope);
 
         // Add a task to merge the resource folders
-        ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_MERGE_RESOURCES_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        createMergeResourcesTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+        createMergeResourcesTask(tasks, variantScope);
 
         // Add a task to merge the asset folders
-        ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_MERGE_ASSETS_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        createMergeAssetsTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+
+        createMergeAssetsTask(tasks, variantScope);
 
         // Add a task to create the BuildConfig class
-        ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_BUILD_CONFIG_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        createBuildConfigTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+        createBuildConfigTask(tasks, variantScope);
 
-        ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_PROCESS_RES_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        // Add a task to process the Android Resources and generate source files
-                        createProcessResTask(tasks, variantScope, true /*generateResourcePackage*/);
 
-                        // Add a task to process the java resources
-                        createProcessJavaResTasks(tasks, variantScope);
-                        return null;
-                    }
-                });
+        // Add a task to process the Android Resources and generate source files
+        createProcessResTask(tasks, variantScope, true );
 
-        ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_AIDL_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        createAidlTask(tasks, variantScope);
-                        return null;
-                    }
-                });
+        // Add a task to process the java resources
+        createProcessJavaResTasks(tasks, variantScope);
+
+
+        createAidlTask(tasks, variantScope);
+
 
         // Add a compile task
-        ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_COMPILE_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        AndroidTask<JavaCompile> javacTask = createJavacTask(tasks, variantScope);
 
-                        setJavaCompilerTask(javacTask, tasks, variantScope);
-                        createJarTask(tasks, variantScope);
-                        createPostCompilationTasks(tasks, variantScope);
-                        return null;
-                    }
-                });
+        AndroidTask<JavaCompile> javacTask = createJavacTask(tasks, variantScope);
+
+        setJavaCompilerTask(javacTask, tasks, variantScope);
+        createJarTask(tasks, variantScope);
+        createPostCompilationTasks(tasks, variantScope);
+
 
         // Add NDK tasks
         if (isNdkTaskNeeded) {

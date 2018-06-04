@@ -15,7 +15,7 @@ public class ExtractProguardFilesTask extends Task<AndroidAppProject> {
     }
 
     @Override
-    public boolean run() throws Exception {
+    public boolean doFullTaskAction() throws Exception {
         return false;
     }
 }

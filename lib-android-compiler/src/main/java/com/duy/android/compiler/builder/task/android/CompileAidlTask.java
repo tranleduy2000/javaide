@@ -4,9 +4,9 @@ import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.task.Task;
 import com.duy.android.compiler.project.AndroidAppProject;
 
-public class AidlCompileTask extends Task<AndroidAppProject> {
+public class CompileAidlTask extends Task<AndroidAppProject> {
 
-    public AidlCompileTask(IBuilder<? extends AndroidAppProject> builder) {
+    public CompileAidlTask(IBuilder<? extends AndroidAppProject> builder) {
         super(builder);
     }
 
@@ -16,7 +16,7 @@ public class AidlCompileTask extends Task<AndroidAppProject> {
     }
 
     @Override
-    public boolean run() throws Exception {
+    public boolean doFullTaskAction() throws Exception {
         // TODO: 02-Jun-18 impl
         return true;
     }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.build.gradle.internal;
+package com.duy.android.compiler.builder.internal.dependency;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;

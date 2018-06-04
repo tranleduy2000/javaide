@@ -121,13 +121,68 @@ public class ProcessAndroidResourceTask extends Task<AndroidAppProject> {
         return "Process android resource";
     }
 
-    public boolean run() throws Exception {
+    public boolean doFullTaskAction() throws Exception {
+        File aaptFile = getAaptFile();
+        if (mProject.getLibraries().size() > 0) {
+            mBuilder.stdout("Run AAPT for all libraries");
+            //run aapt for library
+            for (LibraryDependency library : mProject.getLibraries()) {
+                mBuilder.stdout("AAPT for library " + library.getName());
+                Argument args = new Argument();
+                args.add(aaptFile.getAbsolutePath());
+                args.add("package"); //package
+                args.add("--no-crunch");
+                args.add("-f"); //force overwrite of existing files
+                args.add("--auto-add-overlay");
+                if (mBuilder.isVerbose()) args.add("-v"); //verbose output
+                args.add("--non-constant-id"); //non constant for library
+                args.add("-M", library.getManifest().getAbsolutePath());  //manifest file
+                args.add("-A", library.getAssetsFolder().getAbsolutePath()); //input assets dir
+                args.add("-I", mProject.getBootClassPath(context));//The location of the android.jar resource
+                args.add("-S", library.getResFolder().getAbsolutePath());  //input resource dir
+                args.add("-m"); // make package directories under location specified by -J
+                //specify where to output R.java resource constant definitions
+                args.add("-J", mProject.getDirGeneratedSource().getAbsolutePath());
+
+                boolean complete = execAapt(args);
+                if (!complete) {
+                    return false;
+                }
+            }
+        }
+
+        Argument args = new Argument();
+        args.add(aaptFile.getAbsolutePath());
+        args.add("p");
+        args.add("-f");
+        args.add("--auto-add-overlay");
+        args.add("-v");
+        args.add("-M", mProject.getManifestFile().getAbsolutePath());  //manifest file
+        args.add("-F", mProject.getProcessResourcePackageOutputFile().getAbsolutePath());  //output resources.ap_
+        args.add("-I", mProject.getBootClassPath(context));//The location of the android.jar resource
+        args.add("-A", mProject.getAssetsDir().getAbsolutePath()); //input assets dir
+        args.add("-S", mProject.getResDirs().getAbsolutePath());  //input resource dir
+
+        //-G A file to output proguard options into.\n"
+        //-D A file to output proguard options for the main dex into
+
+        args.add("-m");  // make package directories under location specified by -J
+        //specify where to output R.java resource constant definitions
+        args.add("-J", mProject.getDirGeneratedSource().getAbsolutePath());
+        args.add(AAPTOptions.OUTPUT_TEXT_SYMBOL, mProject.getDirGeneratedSource().getAbsolutePath());
+
+        //--custom-package project.getPackageName()
+
+        for (LibraryDependency library : mProject.getLibraries()) {
+            args.add("-S", library.getResFolder().getAbsolutePath());
+            args.add("-A", library.getAssetsFolder().getAbsolutePath()); //input assets dir
+        }
+        return execAapt(args);
+    }
+
+    private File getAaptFile() {
         String arch = Build.CPU_ABI.substring(0, 3).toLowerCase(Locale.US);
         String aaptName;
-
-        int numCores = getNumCores();
-        mBuilder.stdout("Available cores " + numCores);
-
         // Position Independent Executables (PIE) were first supported in Jelly Bean 4.1 (API level 16)
         // In Android 5.0, they are required
         // Android versions before 4.1 still need the old binary...
@@ -151,63 +206,7 @@ public class ProcessAndroidResourceTask extends Task<AndroidAppProject> {
                 }
                 break;
         }
-        File aaptFile = new File(Environment.getBinDir(context), aaptName);
-
-        if (project.getLibraries().size() > 0) {
-            mBuilder.stdout("Run AAPT for all libraries");
-            //run aapt for library
-            for (LibraryDependency library : project.getLibraries()) {
-                mBuilder.stdout("AAPT for library " + library.getName());
-                Argument args = new Argument();
-                args.add(aaptFile.getAbsolutePath());
-                args.add("package"); //package
-                args.add("--no-crunch");
-                args.add("-f"); //force overwrite of existing files
-                args.add("--auto-add-overlay");
-                if (mBuilder.isVerbose()) args.add("-v"); //verbose output
-                args.add("--non-constant-id"); //non constant for library
-                args.add("-M", library.getManifest().getAbsolutePath());  //manifest file
-                args.add("-A", library.getAssetsFolder().getAbsolutePath()); //input assets dir
-                args.add("-I", project.getBootClassPath(context));//The location of the android.jar resource
-                args.add("-S", library.getResFolder().getAbsolutePath());  //input resource dir
-                args.add("-m"); // make package directories under location specified by -J
-                //specify where to output R.java resource constant definitions
-                args.add("-J", project.getDirGeneratedSource().getAbsolutePath());
-
-                boolean complete = execAapt(args);
-                if (!complete) {
-                    return false;
-                }
-            }
-        }
-
-        Argument args = new Argument();
-        args.add(aaptFile.getAbsolutePath());
-        args.add("p");
-        args.add("-f");
-        args.add("--auto-add-overlay");
-        args.add("-v");
-        args.add("-M", project.getManifestFile().getAbsolutePath());  //manifest file
-        args.add("-F", project.getProcessResourcePackageOutputFile().getAbsolutePath());  //output resources.ap_
-        args.add("-I", project.getBootClassPath(context));//The location of the android.jar resource
-        args.add("-A", project.getAssetsDir().getAbsolutePath()); //input assets dir
-        args.add("-S", project.getResDirs().getAbsolutePath());  //input resource dir
-
-        //-G A file to output proguard options into.\n"
-        //-D A file to output proguard options for the main dex into
-
-        args.add("-m");  // make package directories under location specified by -J
-        //specify where to output R.java resource constant definitions
-        args.add("-J", project.getDirGeneratedSource().getAbsolutePath());
-        args.add(AAPTOptions.OUTPUT_TEXT_SYMBOL, project.getDirGeneratedSource().getAbsolutePath());
-
-        //--custom-package project.getPackageName()
-
-        for (LibraryDependency library : project.getLibraries()) {
-            args.add("-S", library.getResFolder().getAbsolutePath());
-            args.add("-A", library.getAssetsFolder().getAbsolutePath()); //input assets dir
-        }
-        return execAapt(args);
+        return new File(Environment.getBinDir(context), aaptName);
     }
 
     private boolean execAapt(Argument args) throws InterruptedException, IOException {

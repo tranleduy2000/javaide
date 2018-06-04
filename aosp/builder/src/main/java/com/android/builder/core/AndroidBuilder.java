@@ -926,7 +926,7 @@ public class AndroidBuilder {
             @NonNull AaptPackageProcessBuilder aaptCommand,
             boolean enforceUniquePackageName,
             @NonNull ProcessOutputHandler processOutputHandler)
-            throws IOException, InterruptedException, ProcessException {
+            throws IOException, ProcessException {
 
         checkState(mTargetInfo != null,
                 "Cannot call processResources() before setTargetInfo() is called.");

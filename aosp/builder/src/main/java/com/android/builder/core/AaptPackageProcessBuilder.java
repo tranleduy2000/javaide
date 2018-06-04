@@ -465,6 +465,199 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         return builder.createProcess();
     }
 
+    public ProcessInfo build2(@NonNull File aaptFile,
+                              @NonNull String androidJarPath,
+                              @NonNull BuildToolInfo buildToolInfo,
+                              @NonNull ILogger logger) {
+
+        // if both output types are empty, then there's nothing to do and this is an error
+        checkArgument(mSourceOutputDir != null || mResPackageOutput != null,
+                "No output provided for aapt task");
+        if (mSymbolOutputDir != null || mSourceOutputDir != null) {
+            checkNotNull(mLibraries,
+                    "libraries cannot be null if symbolOutputDir or sourceOutputDir is non-null");
+        }
+
+        // check resConfigs and split settings coherence.
+        checkResConfigsVersusSplitSettings(logger);
+
+        ProcessInfoBuilder builder = new ProcessInfoBuilder();
+        builder.addEnvironments(mEnvironment);
+
+        String aapt = aaptFile.getAbsolutePath();
+        if (aapt == null || !new File(aapt).isFile()) {
+            throw new IllegalStateException("aapt is missing");
+        }
+
+        builder.setExecutable(aapt);
+        builder.addArgs("package");
+
+        if (mVerboseExec) {
+            builder.addArgs("-v");
+        }
+
+        builder.addArgs("-f");
+        builder.addArgs("--no-crunch");
+
+        // inputs
+        builder.addArgs("-I", androidJarPath);
+
+        builder.addArgs("-M", mManifestFile.getAbsolutePath());
+
+        if (mResFolder != null) {
+            builder.addArgs("-S", mResFolder.getAbsolutePath());
+        }
+
+        if (mAssetsFolder != null) {
+            builder.addArgs("-A", mAssetsFolder.getAbsolutePath());
+        }
+
+        // outputs
+        if (mSourceOutputDir != null) {
+            builder.addArgs("-m");
+            builder.addArgs("-J", mSourceOutputDir);
+        }
+
+        if (mResPackageOutput != null) {
+            builder.addArgs("-F", mResPackageOutput);
+        }
+
+        if (mProguardOutput != null) {
+            builder.addArgs("-G", mProguardOutput);
+        }
+
+        if (mSplits != null) {
+            for (String split : mSplits) {
+
+                builder.addArgs("--split", split);
+            }
+        }
+
+        // options controlled by build variants
+
+        if (mDebuggable) {
+            builder.addArgs("--debug-mode");
+        }
+
+        if (mType != VariantType.ANDROID_TEST) {
+            if (mPackageForR != null) {
+                builder.addArgs("--custom-package", mPackageForR);
+                logger.verbose("Custom package for R class: '%s'", mPackageForR);
+            }
+        }
+
+        if (mPseudoLocalesEnabled) {
+            if (buildToolInfo.getRevision().getMajor() >= 21) {
+                builder.addArgs("--pseudo-localize");
+            } else {
+                throw new RuntimeException(
+                        "Pseudolocalization is only available since Build Tools version 21.0.0,"
+                                + " please upgrade or turn it off.");
+            }
+        }
+
+        // library specific options
+        if (mType == VariantType.LIBRARY) {
+            builder.addArgs("--non-constant-id");
+        }
+
+        // AAPT options
+        String ignoreAssets = mOptions.getIgnoreAssets();
+        if (ignoreAssets != null) {
+            builder.addArgs("--ignore-assets", ignoreAssets);
+        }
+
+        if (mOptions.getFailOnMissingConfigEntry()) {
+            if (buildToolInfo.getRevision().getMajor() > 20) {
+                builder.addArgs("--error-on-missing-config-entry");
+            } else {
+                throw new IllegalStateException("aaptOptions:failOnMissingConfigEntry cannot be used"
+                        + " with SDK Build Tools revision earlier than 21.0.0");
+            }
+        }
+
+        // never compress apks.
+        builder.addArgs("-0", "apk");
+
+        // add custom no-compress extensions
+        Collection<String> noCompressList = mOptions.getNoCompress();
+        if (noCompressList != null) {
+            for (String noCompress : noCompressList) {
+                builder.addArgs("-0", noCompress);
+            }
+        }
+        List<String> additionalParameters = mOptions.getAdditionalParameters();
+        if (!isNullOrEmpty(additionalParameters)) {
+            builder.addArgs(additionalParameters);
+        }
+
+        List<String> resourceConfigs = new ArrayList<String>();
+        if (!isNullOrEmpty(mResourceConfigs)) {
+            resourceConfigs.addAll(mResourceConfigs);
+        }
+        if (buildToolInfo.getRevision().getMajor() < 21 && mPreferredDensity != null) {
+            resourceConfigs.add(mPreferredDensity);
+            // when adding a density filter, also always add the nodpi option.
+            resourceConfigs.add(Density.NODPI.getResourceValue());
+        }
+
+
+        // separate the density and language resource configs, since starting in 21, the
+        // density resource configs should be passed with --preferred-density to ensure packaging
+        // of scalable resources when no resource for the preferred density is present.
+        List<String> otherResourceConfigs = new ArrayList<String>();
+        List<String> densityResourceConfigs = new ArrayList<String>();
+        if (!resourceConfigs.isEmpty()) {
+            if (buildToolInfo.getRevision().getMajor() >= 21) {
+                for (String resourceConfig : resourceConfigs) {
+                    if (Density.getEnum(resourceConfig) != null) {
+                        densityResourceConfigs.add(resourceConfig);
+                    } else {
+                        otherResourceConfigs.add(resourceConfig);
+                    }
+                }
+            } else {
+                // before 21, everything is passed with -c option.
+                otherResourceConfigs = resourceConfigs;
+            }
+        }
+        if (!otherResourceConfigs.isEmpty()) {
+            Joiner joiner = Joiner.on(',');
+            builder.addArgs("-c", joiner.join(otherResourceConfigs));
+        }
+        for (String densityResourceConfig : densityResourceConfigs) {
+            builder.addArgs("--preferred-density", densityResourceConfig);
+        }
+
+        if (buildToolInfo.getRevision().getMajor() >= 21 && mPreferredDensity != null) {
+            if (!isNullOrEmpty(mResourceConfigs)) {
+                Collection<String> densityResConfig = getDensityResConfigs(mResourceConfigs);
+                if (!densityResConfig.isEmpty()) {
+                    throw new RuntimeException(String.format(
+                            "When using splits in tools 21 and above, resConfigs should not contain "
+                                    + "any densities. Right now, it contains \"%1$s\"\n"
+                                    + "Suggestion: remove these from resConfigs from build.gradle",
+                            Joiner.on("\",\"").join(densityResConfig)));
+                }
+            }
+            builder.addArgs("--preferred-density", mPreferredDensity);
+        }
+
+        if (buildToolInfo.getRevision().getMajor() < 21 && mPreferredDensity != null) {
+            logger.warning(String.format("Warning : Project is building density based multiple APKs"
+                            + " but using tools version %1$s, you should upgrade to build-tools 21 or above"
+                            + " to ensure proper packaging of resources.",
+                    buildToolInfo.getRevision().getMajor()));
+        }
+
+        if (mSymbolOutputDir != null &&
+                (mType == VariantType.LIBRARY || !mLibraries.isEmpty())) {
+            builder.addArgs("--output-text-symbols", mSymbolOutputDir);
+        }
+
+        return builder.createProcess();
+    }
+
     private void checkResConfigsVersusSplitSettings(ILogger logger) {
         if (isNullOrEmpty(mResourceConfigs) || isNullOrEmpty(mSplits)) {
             return;

@@ -7,9 +7,9 @@ import com.duy.android.compiler.project.AndroidAppProject;
 
 import java.io.File;
 
-public class PackageApplicationTask extends Task<AndroidAppProject> {
+public class PackageApkTask extends Task<AndroidAppProject> {
 
-    public PackageApplicationTask(AndroidAppBuilder builder) {
+    public PackageApkTask(AndroidAppBuilder builder) {
         super(builder);
     }
 
@@ -19,15 +19,15 @@ public class PackageApplicationTask extends Task<AndroidAppProject> {
     }
 
     @Override
-    public boolean run() throws Exception {
+    public boolean doFullTaskAction() throws Exception {
         ApkBuilder apkBuilder = new ApkBuilder(
-                project.getApkUnsigned(),
-                project.getProcessResourcePackageOutputFile(),
-                project.getDexFile(),
+                mProject.getApkUnsigned(),
+                mProject.getProcessResourcePackageOutputFile(),
+                mProject.getDexFile(),
                 null,
                 null);
 
-        for (File file : project.getJavaSrcDirs()) {
+        for (File file : mProject.getJavaSrcDirs()) {
             apkBuilder.addSourceFolder(file);
         }
 

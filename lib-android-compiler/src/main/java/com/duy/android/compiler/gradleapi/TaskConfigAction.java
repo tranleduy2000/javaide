@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 the original author or authors.
+ * Copyright (C) 2015 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.duy.android2.logging;
+
+package com.duy.android.compiler.gradleapi;
 
 /**
- * The log levels supported by Gradle.
+ * Interface of Task configuration Actions.
  */
-public enum LogLevel {
-    DEBUG,
-    INFO,
-    LIFECYCLE,
-    WARN,
-    QUIET,
-    ERROR
+public interface TaskConfigAction<T> extends Action<T> {
+
+    /**
+     * Return the name of the task to be configured.
+     */
+    String getName();
+
+    /**
+     * Return the class type of the task to be configured.
+     */
+    Class<T> getType();
 }

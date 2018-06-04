@@ -52,7 +52,7 @@ class TestPlugin extends BasePlugin implements Plugin<Project> {
             SdkHandler sdkHandler,
             DependencyManager dependencyManager,
             ToolingModelBuilderRegistry toolingRegistry) {
-        return new TestApplicationTaskManager (
+        return new TestApplicationTaskManager(
                 project,
                 androidBuilder,
                 extension,

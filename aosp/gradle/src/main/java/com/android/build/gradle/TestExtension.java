@@ -28,11 +28,11 @@ public class TestExtension extends BaseExtension implements TestAndroidConfig {
     private String targetVariant = "debug";
 
     public TestExtension(@NonNull ProjectInternal project, @NonNull Instantiator instantiator,
-            @NonNull AndroidBuilder androidBuilder, @NonNull SdkHandler sdkHandler,
-            @NonNull NamedDomainObjectContainer<BuildType> buildTypes,
-            @NonNull NamedDomainObjectContainer<ProductFlavor> productFlavors,
-            @NonNull NamedDomainObjectContainer<SigningConfig> signingConfigs,
-            @NonNull ExtraModelInfo extraModelInfo, boolean isLibrary) {
+                         @NonNull AndroidBuilder androidBuilder, @NonNull SdkHandler sdkHandler,
+                         @NonNull NamedDomainObjectContainer<BuildType> buildTypes,
+                         @NonNull NamedDomainObjectContainer<ProductFlavor> productFlavors,
+                         @NonNull NamedDomainObjectContainer<SigningConfig> signingConfigs,
+                         @NonNull ExtraModelInfo extraModelInfo, boolean isLibrary) {
         super(project, instantiator, androidBuilder, sdkHandler, buildTypes, productFlavors,
                 signingConfigs, extraModelInfo, isLibrary);
     }
@@ -69,7 +69,7 @@ public class TestExtension extends BaseExtension implements TestAndroidConfig {
 
     /**
      * Returns the variant of the tested project.
-     *
+     * <p>
      * Default is 'debug'
      */
     @Override

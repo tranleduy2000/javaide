@@ -23,7 +23,6 @@ import com.android.build.gradle.internal.BadPluginException;
 import com.android.build.gradle.internal.DependencyManager;
 import com.android.build.gradle.internal.ExecutionConfigurationUtil;
 import com.android.build.gradle.internal.ExtraModelInfo;
-import com.android.build.gradle.internal.LibraryCache;
 import com.android.build.gradle.internal.LoggerWrapper;
 import com.android.build.gradle.internal.NativeLibraryFactoryImpl;
 import com.android.build.gradle.internal.NdkHandler;
@@ -49,18 +48,14 @@ import com.android.builder.core.BuilderConstants;
 import com.android.builder.internal.compiler.JackConversionCache;
 import com.android.builder.internal.compiler.PreDexCache;
 import com.android.builder.profile.ExecutionType;
-import com.android.builder.profile.ProcessRecorderFactory;
 import com.android.builder.profile.Recorder;
 import com.android.builder.profile.ThreadRecorder;
 import com.android.builder.sdk.TargetInfo;
-import com.android.ide.common.internal.ExecutorSingleton;
 import com.android.utils.ILogger;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 
-import org.gradle.BuildListener;
-import org.gradle.BuildResult;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.NamedDomainObjectContainer;
@@ -69,8 +64,6 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.execution.TaskExecutionGraph;
 import org.gradle.api.execution.TaskExecutionGraphListener;
-import org.gradle.api.initialization.Settings;
-import org.gradle.api.invocation.Gradle;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.plugins.JavaBasePlugin;
 import org.gradle.api.plugins.JavaPlugin;
@@ -286,58 +279,10 @@ public abstract class BasePlugin {
 
         project.getPlugins().apply(JavaBasePlugin.class);
 
-        project.getTasks().getByName("assemble").setDescription(
-                "Assembles all variants of all applications and secondary packages.");
-
         // call back on execution. This is called after the whole build is done (not
         // after the current project is done).
         // This is will be called for each (android) projects though, so this should support
         // being called 2+ times.
-        project.getGradle().addBuildListener(new BuildListener() {
-            @Override
-            public void buildStarted(Gradle gradle) {
-            }
-
-            @Override
-            public void settingsEvaluated(Settings settings) {
-            }
-
-            @Override
-            public void projectsLoaded(Gradle gradle) {
-            }
-
-            @Override
-            public void projectsEvaluated(Gradle gradle) {
-            }
-
-            @Override
-            public void buildFinished(BuildResult buildResult) {
-                ExecutorSingleton.shutdown();
-                sdkHandler.unload();
-                ThreadRecorder.get().record(ExecutionType.BASE_PLUGIN_BUILD_FINISHED,
-                        new Recorder.Block() {
-                            @Override
-                            public Void call() throws Exception {
-                                PreDexCache.getCache().clear(
-                                        new File(project.getRootProject().getBuildDir(),
-                                                FD_INTERMEDIATES + "/dex-cache/cache.xml"),
-                                        getLogger());
-                                JackConversionCache.getCache().clear(
-                                        new File(project.getRootProject().getBuildDir(),
-                                                FD_INTERMEDIATES + "/jack-cache/cache.xml"),
-                                        getLogger());
-                                LibraryCache.getCache().unload();
-                                return null;
-                            }
-                        }, new Recorder.Property("project", project.getName()));
-
-                try {
-                    ProcessRecorderFactory.shutdown();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
         project.getGradle().getTaskGraph().addTaskExecutionGraphListener(
                 new TaskExecutionGraphListener() {
                     @Override
@@ -375,12 +320,6 @@ public abstract class BasePlugin {
                 project, instantiator, androidBuilder, sdkHandler,
                 buildTypeContainer, productFlavorContainer, signingConfigContainer,
                 extraModelInfo, isLibrary());
-
-        // create the default mapping configuration.
-        project.getConfigurations().create("default-mapping")
-                .setDescription("Configuration for default mapping artifacts.");
-        project.getConfigurations().create("default-metadata")
-                .setDescription("Metadata for the produced APKs.");
 
         DependencyManager dependencyManager = new DependencyManager(project, extraModelInfo);
         taskManager = createTaskManager(

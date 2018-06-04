@@ -37,8 +37,8 @@ public class ProductFlavorFactory implements NamedDomainObjectFactory<ProductFla
     private final Logger logger;
 
     public ProductFlavorFactory(@NonNull Instantiator instantiator,
-            @NonNull Project project,
-            @NonNull Logger logger) {
+                                @NonNull Project project,
+                                @NonNull Logger logger) {
         this.instantiator = instantiator;
         this.project = project;
         this.logger = logger;

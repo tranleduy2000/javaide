@@ -27,11 +27,11 @@ public class LibraryExtension extends TestedExtension {
     private boolean packageBuildConfig = true;
 
     public LibraryExtension(@NonNull ProjectInternal project, @NonNull Instantiator instantiator,
-            @NonNull AndroidBuilder androidBuilder, @NonNull SdkHandler sdkHandler,
-            @NonNull NamedDomainObjectContainer<BuildType> buildTypes,
-            @NonNull NamedDomainObjectContainer<ProductFlavor> productFlavors,
-            @NonNull NamedDomainObjectContainer<SigningConfig> signingConfigs,
-            @NonNull ExtraModelInfo extraModelInfo, boolean isLibrary) {
+                            @NonNull AndroidBuilder androidBuilder, @NonNull SdkHandler sdkHandler,
+                            @NonNull NamedDomainObjectContainer<BuildType> buildTypes,
+                            @NonNull NamedDomainObjectContainer<ProductFlavor> productFlavors,
+                            @NonNull NamedDomainObjectContainer<SigningConfig> signingConfigs,
+                            @NonNull ExtraModelInfo extraModelInfo, boolean isLibrary) {
         super(project, instantiator, androidBuilder, sdkHandler, buildTypes, productFlavors,
                 signingConfigs, extraModelInfo, isLibrary);
     }
@@ -62,12 +62,12 @@ public class LibraryExtension extends TestedExtension {
         packageBuildConfig = value;
     }
 
-    public void setPackageBuildConfig(boolean value) {
-        packageBuildConfig(value);
-    }
-
     @Override
     public Boolean getPackageBuildConfig() {
         return packageBuildConfig;
+    }
+
+    public void setPackageBuildConfig(boolean value) {
+        packageBuildConfig(value);
     }
 }

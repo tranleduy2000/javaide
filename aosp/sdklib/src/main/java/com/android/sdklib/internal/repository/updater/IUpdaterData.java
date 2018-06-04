@@ -17,7 +17,6 @@
 package com.android.sdklib.internal.repository.updater;
 
 import com.android.sdklib.SdkManager;
-import com.android.sdklib.internal.avd.AvdManager;
 import com.android.sdklib.internal.repository.DownloadCache;
 import com.android.sdklib.internal.repository.ITaskFactory;
 import com.android.utils.ILogger;
@@ -41,8 +40,6 @@ public interface IUpdaterData {
     DownloadCache getDownloadCache();
 
     SdkManager getSdkManager();
-
-    AvdManager getAvdManager();
 
     SettingsController getSettingsController();
 

@@ -33,11 +33,11 @@ public abstract class TestedExtension extends BaseExtension implements TestedAnd
     private String testBuildType = "debug";
 
     public TestedExtension(@NonNull ProjectInternal project, @NonNull Instantiator instantiator,
-            @NonNull AndroidBuilder androidBuilder, @NonNull SdkHandler sdkHandler,
-            @NonNull NamedDomainObjectContainer<BuildType> buildTypes,
-            @NonNull NamedDomainObjectContainer<ProductFlavor> productFlavors,
-            @NonNull NamedDomainObjectContainer<SigningConfig> signingConfigs,
-            @NonNull ExtraModelInfo extraModelInfo, boolean isLibrary) {
+                           @NonNull AndroidBuilder androidBuilder, @NonNull SdkHandler sdkHandler,
+                           @NonNull NamedDomainObjectContainer<BuildType> buildTypes,
+                           @NonNull NamedDomainObjectContainer<ProductFlavor> productFlavors,
+                           @NonNull NamedDomainObjectContainer<SigningConfig> signingConfigs,
+                           @NonNull ExtraModelInfo extraModelInfo, boolean isLibrary) {
         super(project, instantiator, androidBuilder, sdkHandler, buildTypes, productFlavors,
                 signingConfigs, extraModelInfo, isLibrary);
 
@@ -75,7 +75,7 @@ public abstract class TestedExtension extends BaseExtension implements TestedAnd
 
     /**
      * Name of the build type that will be used when running Android (on-device) tests.
-     *
+     * <p>
      * <p>Defaults to "debug".
      */
     @Override

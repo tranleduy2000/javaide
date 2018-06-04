@@ -23,6 +23,7 @@ import com.android.builder.dependency.LibraryDependency;
 import com.android.builder.dependency.ManifestDependency;
 import com.android.builder.model.AndroidLibrary;
 import com.android.builder.model.MavenCoordinates;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import java.io.File;
@@ -152,7 +153,7 @@ public class LibraryDependencyImpl extends LibraryBundle {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("dependencies", dependencies)
                 .add("variantName", variantName)
                 .add("requestedCoordinates", requestedCoordinates)

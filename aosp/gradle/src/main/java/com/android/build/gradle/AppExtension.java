@@ -24,11 +24,11 @@ public class AppExtension extends TestedExtension {
             = new DefaultDomainObjectSet<ApplicationVariant>(ApplicationVariant.class);
 
     public AppExtension(@NonNull ProjectInternal project, @NonNull Instantiator instantiator,
-            @NonNull AndroidBuilder androidBuilder, @NonNull SdkHandler sdkHandler,
-            @NonNull NamedDomainObjectContainer<BuildType> buildTypes,
-            @NonNull NamedDomainObjectContainer<ProductFlavor> productFlavors,
-            @NonNull NamedDomainObjectContainer<SigningConfig> signingConfigs,
-            @NonNull ExtraModelInfo extraModelInfo, boolean isLibrary) {
+                        @NonNull AndroidBuilder androidBuilder, @NonNull SdkHandler sdkHandler,
+                        @NonNull NamedDomainObjectContainer<BuildType> buildTypes,
+                        @NonNull NamedDomainObjectContainer<ProductFlavor> productFlavors,
+                        @NonNull NamedDomainObjectContainer<SigningConfig> signingConfigs,
+                        @NonNull ExtraModelInfo extraModelInfo, boolean isLibrary) {
         super(project, instantiator, androidBuilder, sdkHandler, buildTypes, productFlavors,
                 signingConfigs, extraModelInfo, isLibrary);
     }

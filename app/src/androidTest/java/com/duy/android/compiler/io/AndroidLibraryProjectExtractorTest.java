@@ -27,9 +27,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticListener;
-
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
@@ -49,7 +46,8 @@ public class AndroidLibraryProjectExtractorTest {
 
         String libraryName = "appcompat-v7-25.2.0";
         LibraryCache extractor = new LibraryCache(context);
-        boolean result = extractor.extractAar(file, libraryName);
+        File fdOut = new File(Environment.getSdCardLibraryExtractedFolder(), libraryName);
+        boolean result = extractor.extractAar(file, fdOut);
 
         assertTrue(result);
 

@@ -71,9 +71,9 @@ import java.util.List;
 
 /**
  * Base 'android' extension for all android plugins.
- *
+ * <p>
  * <p>This is never used directly. Instead,
- *<ul>
+ * <ul>
  * <li>Plugin <code>com.android.application</code> uses {@link AppExtension}</li>
  * <li>Plugin <code>com.android.library</code> uses {@link LibraryExtension}</li>
  * <li>Plugin <code>com.android.test</code> uses {@link TestedExtension}</li>
@@ -82,85 +82,90 @@ import java.util.List;
 @SuppressWarnings("UnnecessaryInheritDoc")
 public abstract class BaseExtension implements AndroidConfig {
 
-    private String target;
-    private FullRevision buildToolsRevision;
-    private List<LibraryRequest> libraryRequests = Lists.newArrayList();
-
-    /** Default config, shared by all flavors. */
+    /**
+     * Default config, shared by all flavors.
+     */
     final ProductFlavor defaultConfig;
-
-    /** Options for aapt, tool for packaging resources. */
+    /**
+     * Options for aapt, tool for packaging resources.
+     */
     final AaptOptions aaptOptions;
-
-    /** Lint options. */
+    /**
+     * Lint options.
+     */
     final LintOptions lintOptions;
-
-    /** Dex options. */
+    /**
+     * Dex options.
+     */
     final DexOptions dexOptions;
-
-    /** Options for running tests. */
+    /**
+     * Options for running tests.
+     */
     final TestOptions testOptions;
-
-    /** Compile options */
+    /**
+     * Compile options
+     */
     final CompileOptions compileOptions;
-
-    /** Packaging options. */
+    /**
+     * Packaging options.
+     */
     final PackagingOptions packagingOptions;
-
-    /** Options to control resources preprocessing. Not finalized yet.*/
+    /**
+     * Options to control resources preprocessing. Not finalized yet.
+     */
     final PreprocessingOptions preprocessingOptions;
-
-    /** JaCoCo options. */
+    /**
+     * JaCoCo options.
+     */
     final JacocoExtension jacoco;
-
     /**
      * APK splits options.
-     *
+     * <p>
      * <p>See <a href="http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits">APK Splits</a>.
      */
     final Splits splits;
-
-    /** All product flavors used by this project. */
+    /**
+     * All product flavors used by this project.
+     */
     final NamedDomainObjectContainer<CoreProductFlavor> productFlavors;
-
-    /** Build types used by this project. */
+    /**
+     * Build types used by this project.
+     */
     final NamedDomainObjectContainer<BuildType> buildTypes;
-
-    /** Signing configs used by this project. */
+    /**
+     * Signing configs used by this project.
+     */
     final NamedDomainObjectContainer<SigningConfig> signingConfigs;
-
-    private ExtraModelInfo extraModelInfo;
-
-    protected Project project;
-
-    /** Adb options */
+    /**
+     * Adb options
+     */
     final AdbOptions adbOptions;
-
-    /** A prefix to be used when creating new resources. Used by Studio */
-    String resourcePrefix;
-
-    List<String> flavorDimensionList;
-
-    private String defaultPublishConfig = "release";
-    private boolean publishNonDefault = false;
-
-    private Action<VariantFilter> variantFilter;
-
-    private final List<DeviceProvider> deviceProviderList = Lists.newArrayList();
-    private final List<TestServer> testServerList = Lists.newArrayList();
-
-    private final AndroidBuilder androidBuilder;
-
-    private final SdkHandler sdkHandler;
-
-    protected Logger logger;
-
-    private boolean isWritable = true;
-
     /**
      * The source sets container.
      */
     final NamedDomainObjectContainer<AndroidSourceSet> sourceSetsContainer;
+    private final List<DeviceProvider> deviceProviderList = Lists.newArrayList();
+    private final List<TestServer> testServerList = Lists.newArrayList();
+    private final AndroidBuilder androidBuilder;
+    private final SdkHandler sdkHandler;
+    protected Project project;
+    protected Logger logger;
+    /**
+     * A prefix to be used when creating new resources. Used by Studio
+     */
+    String resourcePrefix;
+    List<String> flavorDimensionList;
+    // by default, we do not generate pure splits
+    boolean generatePureSplits = false;
+    private String target;
+    private FullRevision buildToolsRevision;
+    private List<LibraryRequest> libraryRequests = Lists.newArrayList();
+    private ExtraModelInfo extraModelInfo;
+    private String defaultPublishConfig = "release";
+    private boolean publishNonDefault = false;
+    private Action<VariantFilter> variantFilter;
+    private boolean isWritable = true;
+    private boolean enforceUniquePackageName = true;
 
     BaseExtension(
             @NonNull final ProjectInternal project,
@@ -292,12 +297,9 @@ public abstract class BaseExtension implements AndroidConfig {
         compileSdkVersion(apiLevel);
     }
 
-    public void setCompileSdkVersion(String target) {
-        compileSdkVersion(target);
-    }
-
     /**
      * Request the use a of Library. The library is then added to the classpath.
+     *
      * @param name the name of the library.
      */
     public void useLibrary(String name) {
@@ -306,9 +308,10 @@ public abstract class BaseExtension implements AndroidConfig {
 
     /**
      * Request the use a of Library. The library is then added to the classpath.
-     * @param name the name of the library.
+     *
+     * @param name     the name of the library.
      * @param required if using the library requires a manifest entry, the  entry will
-     * indicate that the library is not required.
+     *                 indicate that the library is not required.
      */
     public void useLibrary(String name, boolean required) {
         libraryRequests.add(new LibraryRequest(name, required));
@@ -321,7 +324,7 @@ public abstract class BaseExtension implements AndroidConfig {
 
     /**
      * <strong>Required.</strong> Version of the build tools to use.
-     *
+     * <p>
      * <p>Value assigned to this property is parsed and stored in a normalized form, so reading it
      * back may give a slightly different string.
      */
@@ -413,7 +416,9 @@ public abstract class BaseExtension implements AndroidConfig {
         action.execute(lintOptions);
     }
 
-    /** Configures the test options. */
+    /**
+     * Configures the test options.
+     */
     public void testOptions(Action<TestOptions> action) {
         checkWritability();
         action.execute(testOptions);
@@ -489,19 +494,25 @@ public abstract class BaseExtension implements AndroidConfig {
         return testServerList;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<? extends CoreProductFlavor> getProductFlavors() {
         return productFlavors;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<? extends CoreBuildType> getBuildTypes() {
         return buildTypes;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<? extends com.android.builder.model.SigningConfig> getSigningConfigs() {
         return signingConfigs;
@@ -517,7 +528,7 @@ public abstract class BaseExtension implements AndroidConfig {
 
     /**
      * Name of the configuration used to build the default artifact of this project.
-     *
+     * <p>
      * <p>See <a href="http://tools.android.com/tech-docs/new-build-system/user-guide#TOC-Referencing-a-Library">
      * Referencing a Library</a>
      */
@@ -532,7 +543,7 @@ public abstract class BaseExtension implements AndroidConfig {
 
     /**
      * Whether to publish artifacts for all configurations, not just the default one.
-     *
+     * <p>
      * <p>See <a href="http://tools.android.com/tech-docs/new-build-system/user-guide#TOC-Referencing-a-Library">
      * Referencing a Library</a>
      */
@@ -543,10 +554,6 @@ public abstract class BaseExtension implements AndroidConfig {
 
     public void variantFilter(Action<VariantFilter> filter) {
         setVariantFilter(filter);
-    }
-
-    public void setVariantFilter(Action<VariantFilter> filter) {
-        variantFilter = filter;
     }
 
     /**
@@ -560,12 +567,18 @@ public abstract class BaseExtension implements AndroidConfig {
         return variantFilter;
     }
 
+    public void setVariantFilter(Action<VariantFilter> filter) {
+        variantFilter = filter;
+    }
+
     @Override
     public AdbOptions getAdbOptions() {
         return adbOptions;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getResourcePrefix() {
         return resourcePrefix;
@@ -581,7 +594,9 @@ public abstract class BaseExtension implements AndroidConfig {
         return generatePureSplits;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Beta
     public PreprocessingOptions getPreprocessingOptions() {
@@ -644,19 +659,23 @@ public abstract class BaseExtension implements AndroidConfig {
 
     /**
      * <strong>Required.</strong> Compile SDK version.
-     *
+     * <p>
      * <p>Your code will be compiled against the android.jar from this API level. You should
      * generally use the most up-to-date SDK version here. Use the Lint tool to make sure you don't
      * use APIs not available in earlier platform version without checking.
-     *
+     * <p>
      * <p>Setter can be called with a string like "android-21" or a number.
-     *
+     * <p>
      * <p>Value assigned to this property is parsed and stored in a normalized form, so reading it
      * back may give a slightly different string.
      */
     @Override
     public String getCompileSdkVersion() {
         return target;
+    }
+
+    public void setCompileSdkVersion(String target) {
+        compileSdkVersion(target);
     }
 
     @Override
@@ -682,6 +701,9 @@ public abstract class BaseExtension implements AndroidConfig {
         return androidBuilder.getBootClasspath();
     }
 
+    // ---------------
+    // TEMP for compatibility
+
     public File getAdbExe() {
         return sdkHandler.getSdkInfo().getAdb();
     }
@@ -694,20 +716,12 @@ public abstract class BaseExtension implements AndroidConfig {
                         + name);
     }
 
-    // ---------------
-    // TEMP for compatibility
-
-    // by default, we do not generate pure splits
-    boolean generatePureSplits = false;
-
     public void generatePureSplits(boolean flag) {
         if (flag) {
             logger.warn("Pure splits are not supported by PlayStore yet.");
         }
         this.generatePureSplits = flag;
     }
-
-    private boolean enforceUniquePackageName = true;
 
     public void enforceUniquePackageName(boolean value) {
         if (!value) {
@@ -716,64 +730,82 @@ public abstract class BaseExtension implements AndroidConfig {
         enforceUniquePackageName = value;
     }
 
-    public void setEnforceUniquePackageName(boolean value) {
-        enforceUniquePackageName(value);
-    }
-
     @Override
     public boolean getEnforceUniquePackageName() {
         return enforceUniquePackageName;
     }
 
-    /** {@inheritDoc} */
+    public void setEnforceUniquePackageName(boolean value) {
+        enforceUniquePackageName(value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CoreProductFlavor getDefaultConfig() {
         return defaultConfig;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AaptOptions getAaptOptions() {
         return aaptOptions;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompileOptions getCompileOptions() {
         return compileOptions;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DexOptions getDexOptions() {
         return dexOptions;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JacocoExtension getJacoco() {
         return jacoco;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LintOptions getLintOptions() {
         return lintOptions;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PackagingOptions getPackagingOptions() {
         return packagingOptions;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Splits getSplits() {
         return splits;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TestOptions getTestOptions() {
         return testOptions;

@@ -19,7 +19,6 @@ package com.android.build.gradle;
 import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
 import com.android.build.gradle.internal.ApiObjectFactory;
-import com.android.build.gradle.internal.BadPluginException;
 import com.android.build.gradle.internal.DependencyManager;
 import com.android.build.gradle.internal.ExecutionConfigurationUtil;
 import com.android.build.gradle.internal.ExtraModelInfo;
@@ -66,7 +65,6 @@ import org.gradle.api.execution.TaskExecutionGraph;
 import org.gradle.api.execution.TaskExecutionGraphListener;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.plugins.JavaBasePlugin;
-import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.StopExecutionException;
 import org.gradle.internal.reflect.Instantiator;
 import org.gradle.tooling.BuildException;
@@ -129,14 +127,13 @@ public abstract class BasePlugin {
 
     private ExtraModelInfo extraModelInfo;
 
-    private String creator;
+    private String creator = "Android Gradle Java N-IDE";
 
     private boolean hasCreatedTasks = false;
 
     protected BasePlugin(Instantiator instantiator, ToolingModelBuilderRegistry registry) {
         this.instantiator = instantiator;
         this.registry = registry;
-        creator = "Android Gradle " + /*Version.ANDROID_GRADLE_PLUGIN_VERSION*/ "Java N-IDE";
         verifyRetirementAge();
 
         ModelBuilder.clearCaches();
@@ -452,21 +449,12 @@ public abstract class BasePlugin {
 
         ndkHandler.setCompileSdkVersion(extension.getCompileSdkVersion());
 
-        // get current plugins and look for the default Java plugin.
-        if (project.getPlugins().hasPlugin(JavaPlugin.class)) {
-            throw new BadPluginException(
-                    "The 'java' plugin has been applied, but it is not compatible with the Android plugins.");
-        }
-
-        ensureTargetSetup();
 
         // don't do anything if the project was not initialized.
         // Unless TEST_SDK_DIR is set in which case this is unit tests and we don't return.
         // This is because project don't get evaluated in the unit test setup.
         // See AppPluginDslTest
-        if (!force
-                && (!project.getState().getExecuted() || project.getState().getFailure() != null)
-                && SdkHandler.sTestSdkFolder == null) {
+        if (!force && SdkHandler.sTestSdkFolder == null) {
             return;
         }
 

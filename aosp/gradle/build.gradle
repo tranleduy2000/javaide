@@ -21,5 +21,4 @@ android {
 }
 dependencies {
     api project(':aosp:gradle-core')
-//    compile gradleApi()
 }

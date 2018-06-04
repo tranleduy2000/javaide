@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.interfaces.Predicate;
 import com.duy.ide.R;
-import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.projectview.ProjectFileContract;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
@@ -93,7 +92,6 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mProject = (JavaProject) getArguments().getSerializable(ExecuteActivity.DEX_FILE);
         mContainerView = view.findViewById(R.id.container);
         view.findViewById(R.id.img_refresh).setOnClickListener(new View.OnClickListener() {
             @Override

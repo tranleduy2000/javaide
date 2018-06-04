@@ -70,16 +70,16 @@ public class CompileJavaTask extends ATask<JavaProject> {
 
 
     private boolean runEcj() {
-        builder.stdout(TAG + ": Compile java with javac");
-        PrintWriter outWriter = new PrintWriter(builder.getStdout());
-        PrintWriter errWriter = new PrintWriter(builder.getStderr());
+        mBuilder.stdout(TAG + ": Compile java with javac");
+        PrintWriter outWriter = new PrintWriter(mBuilder.getStdout());
+        PrintWriter errWriter = new PrintWriter(mBuilder.getStderr());
         org.eclipse.jdt.internal.compiler.batch.Main main =
                 new org.eclipse.jdt.internal.compiler.batch.Main(outWriter, errWriter,
                         false, null, null);
 
         Argument argument = new Argument();
-        argument.add(builder.isVerbose() ? "-verbose" : "-warn:");
-        argument.add("-bootclasspath", builder.getBootClassPath());
+        argument.add(mBuilder.isVerbose() ? "-verbose" : "-warn:");
+        argument.add("-bootclasspath", mBuilder.getBootClassPath());
         argument.add("-classpath", project.getClasspath());
         argument.add("-sourcepath", project.getSourcePath());
         argument.add("-" + mCompileOptions.getSourceCompatibility().toString()); //host

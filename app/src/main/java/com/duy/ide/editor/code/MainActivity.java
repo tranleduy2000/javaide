@@ -239,7 +239,7 @@ public class MainActivity extends ProjectManagerActivity implements
 
     private void compileAndroidProject() {
         if (mProject instanceof AndroidAppProject) {
-            if (!((AndroidAppProject) mProject).getXmlManifest().exists()) {
+            if (!((AndroidAppProject) mProject).getManifestFile().exists()) {
                 Toast.makeText(this, "Can not find AndroidManifest.xml", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -257,9 +257,10 @@ public class MainActivity extends ProjectManagerActivity implements
 
 
             final DiagnosticCollector mDiagnosticCollector = new DiagnosticCollector();
-            final IBuilder<AndroidAppProject> builder = new AndroidAppBuilder(this, (AndroidAppProject) mProject, mDiagnosticCollector);
+            final AndroidAppBuilder builder = new AndroidAppBuilder(this, (AndroidAppProject) mProject);
             builder.setStdOut(mMessagePresenter.getStdOut());
             builder.setStdErr(mMessagePresenter.getStdErr());
+            builder.setLogger(mMessagePresenter);
 
             final BuildTask<AndroidAppProject> buildTask = new BuildTask<>(builder, new BuildTask.CompileListener<AndroidAppProject>() {
                 @Override

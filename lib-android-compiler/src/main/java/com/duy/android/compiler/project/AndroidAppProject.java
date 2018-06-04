@@ -74,7 +74,7 @@ public class AndroidAppProject extends JavaProject {
     @Nullable
     public ManifestData.Activity getLauncherActivity() {
         try {
-            ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(getXmlManifest()));
+            ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(getManifestFile()));
             ManifestData.Activity launcherActivity = manifestData.getLauncherActivity();
             this.launcherActivity = launcherActivity;
             return launcherActivity;
@@ -83,7 +83,7 @@ public class AndroidAppProject extends JavaProject {
         }
     }
 
-    public File getXmlManifest() {
+    public File getManifestFile() {
         return xmlManifest;
     }
 
@@ -92,7 +92,7 @@ public class AndroidAppProject extends JavaProject {
         return apkSigned;
     }
 
-    public File getOutResourceFile() {
+    public File getProcessResourcePackageOutputFile() {
         outResourceFile.getParentFile().mkdirs();
         return outResourceFile;
     }
@@ -108,7 +108,7 @@ public class AndroidAppProject extends JavaProject {
     public void mkdirs() {
         super.mkdirs();
         getResDirs();
-        getAssetsDirs();
+        getAssetsDir();
 
         File resDir = resDirs.get(0);
         new File(resDir, "menu").mkdirs();
@@ -160,7 +160,7 @@ public class AndroidAppProject extends JavaProject {
         return resDirs.get(0);
     }
 
-    public File getAssetsDirs() {
+    public File getAssetsDir() {
         mkdirs(assetsDirs);
         return assetsDirs.get(0);
     }
@@ -219,5 +219,13 @@ public class AndroidAppProject extends JavaProject {
         }
         String str = jsonObject.toString(1);
         org.apache.commons.io.IOUtils.write(str, new FileOutputStream(file), "UTF-8");
+    }
+
+    public String getPackageForR() {
+        return packageName;
+    }
+
+    public File getRClassSourceOutputDir() {
+        return getDirGeneratedSource();
     }
 }

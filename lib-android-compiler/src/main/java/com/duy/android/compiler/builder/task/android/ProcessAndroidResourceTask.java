@@ -126,7 +126,7 @@ public class ProcessAndroidResourceTask extends ATask<AndroidAppProject> {
         String aaptName;
 
         int numCores = getNumCores();
-        builder.stdout("Available cores " + numCores);
+        mBuilder.stdout("Available cores " + numCores);
 
         // Position Independent Executables (PIE) were first supported in Jelly Bean 4.1 (API level 16)
         // In Android 5.0, they are required
@@ -154,17 +154,17 @@ public class ProcessAndroidResourceTask extends ATask<AndroidAppProject> {
         File aaptFile = new File(Environment.getBinDir(context), aaptName);
 
         if (project.getLibraries().size() > 0) {
-            builder.stdout("Run AAPT for all libraries");
+            mBuilder.stdout("Run AAPT for all libraries");
             //run aapt for library
             for (LibraryDependency library : project.getLibraries()) {
-                builder.stdout("AAPT for library " + library.getName());
+                mBuilder.stdout("AAPT for library " + library.getName());
                 Argument args = new Argument();
                 args.add(aaptFile.getAbsolutePath());
                 args.add("package"); //package
                 args.add("--no-crunch");
                 args.add("-f"); //force overwrite of existing files
                 args.add("--auto-add-overlay");
-                if (builder.isVerbose()) args.add("-v"); //verbose output
+                if (mBuilder.isVerbose()) args.add("-v"); //verbose output
                 args.add("--non-constant-id"); //non constant for library
                 args.add("-M", library.getManifest().getAbsolutePath());  //manifest file
                 args.add("-A", library.getAssetsFolder().getAbsolutePath()); //input assets dir
@@ -187,10 +187,10 @@ public class ProcessAndroidResourceTask extends ATask<AndroidAppProject> {
         args.add("-f");
         args.add("--auto-add-overlay");
         args.add("-v");
-        args.add("-M", project.getXmlManifest().getAbsolutePath());  //manifest file
-        args.add("-F", project.getOutResourceFile().getAbsolutePath());  //output resources.ap_
+        args.add("-M", project.getManifestFile().getAbsolutePath());  //manifest file
+        args.add("-F", project.getProcessResourcePackageOutputFile().getAbsolutePath());  //output resources.ap_
         args.add("-I", project.getBootClassPath(context));//The location of the android.jar resource
-        args.add("-A", project.getAssetsDirs().getAbsolutePath()); //input assets dir
+        args.add("-A", project.getAssetsDir().getAbsolutePath()); //input assets dir
         args.add("-S", project.getResDirs().getAbsolutePath());  //input resource dir
 
         //-G A file to output proguard options into.\n"
@@ -230,7 +230,7 @@ public class ProcessAndroidResourceTask extends ATask<AndroidAppProject> {
                 if (s == null) {
                     break;
                 }
-                builder.stdout(s);
+                mBuilder.stdout(s);
             } catch (Exception e) {
                 break;
             }
@@ -243,7 +243,7 @@ public class ProcessAndroidResourceTask extends ATask<AndroidAppProject> {
                 if (s == null) {
                     break;
                 }
-                builder.stderr(s);
+                mBuilder.stderr(s);
                 // TODO: 03-Jun-18 improve it , use com.android.ide.common.blame.parser.aapt.AaptOutputParser
                 if (s.startsWith("ERROR")) {
                     return false;
@@ -255,7 +255,7 @@ public class ProcessAndroidResourceTask extends ATask<AndroidAppProject> {
         thread.join();
 
 
-        builder.stdout("AAPT exit code " + exitCode[0]);
+        mBuilder.stdout("AAPT exit code " + exitCode[0]);
         return exitCode[0] == 0;
     }
 

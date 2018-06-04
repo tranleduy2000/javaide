@@ -115,7 +115,7 @@ public class MergeManifestTask extends ATask<AndroidAppProject> {
 
     @Override
     public boolean run() throws Exception {
-        builder.stderr(TAG + ": Not impalement yet");
+        mBuilder.stderr(TAG + ": Not impalement yet");
         return true;
     }
 

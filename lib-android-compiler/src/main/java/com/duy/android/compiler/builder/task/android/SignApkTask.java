@@ -40,7 +40,7 @@ public class SignApkTask extends ATask<AndroidAppProject> {
 
     private boolean signDebug() throws IOException, GeneralSecurityException, IllegalAccessException,
             InstantiationException, ClassNotFoundException {
-        builder.stdout("Sign debug apk");
+        mBuilder.stdout("Sign debug apk");
 
         String mode = "testkey";
 
@@ -54,7 +54,7 @@ public class SignApkTask extends ATask<AndroidAppProject> {
         String out = apkSigned.getAbsolutePath();
         signer.signZip(in, out);
 
-        builder.stdout("Signed debug apk " + project.getApkUnsigned().getName() + " => " + project.getApkSigned().getName());
+        mBuilder.stdout("Signed debug apk " + project.getApkUnsigned().getName() + " => " + project.getApkSigned().getName());
 
 
         return apkSigned.exists();

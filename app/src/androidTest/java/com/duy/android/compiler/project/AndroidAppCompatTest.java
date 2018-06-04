@@ -12,9 +12,6 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticListener;
-
 @RunWith(AndroidJUnit4.class)
 public class AndroidAppCompatTest {
     public void test() throws Exception {
@@ -25,12 +22,7 @@ public class AndroidAppCompatTest {
                 , "com.duy.example", "MainActivity", "activity_main.xml",
                 "TestLibrary", true);
 
-        AndroidAppBuilder builder = new AndroidAppBuilder(context, project, new DiagnosticListener() {
-            @Override
-            public void report(Diagnostic diagnostic) {
-                System.out.println("diagnostic = " + diagnostic);
-            }
-        });
+        AndroidAppBuilder builder = new AndroidAppBuilder(context, project);
         builder.build(BuildType.DEBUG);
     }
 }

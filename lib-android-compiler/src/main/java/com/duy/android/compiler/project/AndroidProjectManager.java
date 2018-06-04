@@ -108,13 +108,13 @@ public class AndroidProjectManager implements IAndroidProjectManager {
 
             File oldAssetsDir = new File(project.getRootDir(), "src/main/assets");
             if (oldAssetsDir.exists()) {
-                FileUtils.copyDirectory(oldAssetsDir, project.getAssetsDirs());
+                FileUtils.copyDirectory(oldAssetsDir, project.getAssetsDir());
                 FileUtils.deleteDirectory(oldAssetsDir);
             }
 
             File oldManifest = new File(project.getRootDir(), "src/main/AndroidManifest.xml");
             if (oldManifest.exists()) {
-                FileUtils.copyFile(oldManifest, project.getXmlManifest());
+                FileUtils.copyFile(oldManifest, project.getManifestFile());
                 FileUtils.deleteQuietly(oldManifest);
             }
         }
@@ -130,8 +130,8 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         /// TODO: 03-Jun-18 dynamic change it
         String appDir = matcher.group(2);
         //find AndroidManifest
-        if (project.getXmlManifest().exists()) {
-            ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(project.getXmlManifest()));
+        if (project.getManifestFile().exists()) {
+            ManifestData manifestData = AndroidManifestParser.parse(new FileInputStream(project.getManifestFile()));
             ManifestData.Activity launcherActivity = manifestData.getLauncherActivity();
             if (launcherActivity != null) {
                 project.setPackageName(manifestData.getPackage());
@@ -173,7 +173,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
 
     private void createManifest(AndroidAppProject project, String activityClass, String packageName,
                                 AssetManager assets) throws IOException {
-        File manifest = project.getXmlManifest();
+        File manifest = project.getManifestFile();
         String content = IOUtils.toString(assets.open("templates/app/AndroidManifest.xml"));
 
         content = content.replace("PACKAGE", packageName);

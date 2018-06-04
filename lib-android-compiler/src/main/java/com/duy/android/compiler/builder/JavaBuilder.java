@@ -21,7 +21,7 @@ public class JavaBuilder extends BuilderImpl<JavaProject> {
     private JavaProject mProject;
 
     public JavaBuilder(Context context, JavaProject project, DiagnosticListener listener) {
-        super(context, listener);
+        super(context);
         mProject = project;
 
     }

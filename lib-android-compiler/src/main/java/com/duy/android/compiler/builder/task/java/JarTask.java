@@ -18,7 +18,7 @@ public class JarTask extends ATask<JavaProject> {
     @Override
     public boolean run() throws Exception {
         //now create normal jar file
-        JarArchive jarArchive = new JarArchive(builder.isVerbose());
+        JarArchive jarArchive = new JarArchive(mBuilder.isVerbose());
         jarArchive.createJarArchive(project);
         return true;
     }

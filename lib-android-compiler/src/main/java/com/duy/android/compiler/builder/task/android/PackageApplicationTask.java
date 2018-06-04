@@ -22,7 +22,7 @@ public class PackageApplicationTask extends ATask<AndroidAppProject> {
     public boolean run() throws Exception {
         ApkBuilder apkBuilder = new ApkBuilder(
                 project.getApkUnsigned(),
-                project.getOutResourceFile(),
+                project.getProcessResourcePackageOutputFile(),
                 project.getDexFile(),
                 null,
                 null);

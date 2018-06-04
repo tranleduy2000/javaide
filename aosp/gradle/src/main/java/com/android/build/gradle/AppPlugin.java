@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package com.android.build.gradle
+package com.android.build.gradle;
 
-import com.android.build.gradle.internal.ApplicationTaskManager
-import com.android.build.gradle.internal.DependencyManager
-import com.android.build.gradle.internal.SdkHandler
-import com.android.build.gradle.internal.TaskManager
-import com.android.build.gradle.internal.variant.ApplicationVariantFactory
-import com.android.build.gradle.internal.variant.VariantFactory
-import com.android.builder.core.AndroidBuilder
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.internal.reflect.Instantiator
-import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry
+import com.android.build.gradle.internal.ApplicationTaskManager;
+import com.android.build.gradle.internal.DependencyManager;
+import com.android.build.gradle.internal.SdkHandler;
+import com.android.build.gradle.internal.TaskManager;
+import com.android.build.gradle.internal.variant.ApplicationVariantFactory;
+import com.android.build.gradle.internal.variant.VariantFactory;
+import com.android.builder.core.AndroidBuilder;
 
-import javax.inject.Inject
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+import org.gradle.internal.reflect.Instantiator;
+import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
+
+import java.io.IOException;
 
 /**
  * Gradle plugin class for 'application' projects.
  */
 class AppPlugin extends BasePlugin implements Plugin<Project> {
-    @Inject
     public AppPlugin(Instantiator instantiator, ToolingModelBuilderRegistry registry) {
-        super(instantiator, registry)
+        super(instantiator, registry);
     }
 
     @Override
@@ -58,16 +58,20 @@ class AppPlugin extends BasePlugin implements Plugin<Project> {
                 extension,
                 sdkHandler,
                 dependencyManager,
-                toolingRegistry)
+                toolingRegistry);
     }
 
     @Override
-    void apply(Project project) {
-        super.apply(project)
+    public void apply(Project project) {
+        try {
+            super.apply(project);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected VariantFactory createVariantFactory() {
-        return new ApplicationVariantFactory(instantiator, androidBuilder, extension)
+        return new ApplicationVariantFactory(instantiator, androidBuilder, extension);
     }
 }

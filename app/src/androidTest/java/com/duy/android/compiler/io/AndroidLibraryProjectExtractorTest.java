@@ -65,12 +65,7 @@ public class AndroidLibraryProjectExtractorTest {
                 , "com.duy.example", "MainActivity", "activity_main.xml",
                 "TestLibrary", true);
 
-        AndroidAppBuilder builder = new AndroidAppBuilder(context, project, new DiagnosticListener() {
-            @Override
-            public void report(Diagnostic diagnostic) {
-                System.out.println("diagnostic = " + diagnostic);
-            }
-        });
+        AndroidAppBuilder builder = new AndroidAppBuilder(context, project);
         builder.build(BuildType.DEBUG);
     }
 

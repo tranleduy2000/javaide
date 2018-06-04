@@ -2,6 +2,8 @@ package com.duy.android.compiler.builder;
 
 import android.content.Context;
 
+import com.android.builder.sdk.TargetInfo;
+import com.android.utils.ILogger;
 import com.duy.android.compiler.builder.model.BuildType;
 import com.duy.android.compiler.project.JavaProject;
 
@@ -13,21 +15,24 @@ public interface IBuilder<T extends JavaProject> {
 
     boolean build(BuildType buildType);
 
-    void stdout(String message);
-
-    PrintStream getStdout();
-
-    void stderr(String message);
-
     Context getContext();
 
     boolean isVerbose();
 
+    String getBootClassPath();
+
     PrintStream getStderr();
 
-    String getBootClassPath();
+    PrintStream getStdout();
 
     void setStdErr(PrintStream stdErr);
 
     void setStdOut(PrintStream stdOut);
+
+    void stdout(String message);
+
+    void stderr(String message);
+
+    ILogger getLogger();
+
 }

@@ -16,9 +16,6 @@
 
 package com.android.builder.core;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.dependency.SymbolFileProvider;
@@ -40,33 +37,49 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Builds the ProcessInfo necessary for an aapt package invocation
  */
 public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProcessBuilder> {
 
-    @NonNull private final File mManifestFile;
-    @NonNull private final AaptOptions mOptions;
-    @Nullable private File mResFolder;
-    @Nullable private File mAssetsFolder;
+    @NonNull
+    private final File mManifestFile;
+    @NonNull
+    private final AaptOptions mOptions;
+    @Nullable
+    Collection<String> mSplits;
+    @Nullable
+    String mPackageForR;
+    @Nullable
+    String mPreferredDensity;
+    @Nullable
+    private File mResFolder;
+    @Nullable
+    private File mAssetsFolder;
     private boolean mVerboseExec = false;
-    @Nullable private String mSourceOutputDir;
-    @Nullable private String mSymbolOutputDir;
-    @Nullable private List<? extends SymbolFileProvider> mLibraries;
-    @Nullable private String mResPackageOutput;
-    @Nullable private String mProguardOutput;
-    @Nullable private VariantType mType;
+    @Nullable
+    private String mSourceOutputDir;
+    @Nullable
+    private String mSymbolOutputDir;
+    @Nullable
+    private List<? extends SymbolFileProvider> mLibraries;
+    @Nullable
+    private String mResPackageOutput;
+    @Nullable
+    private String mProguardOutput;
+    @Nullable
+    private VariantType mType;
     private boolean mDebuggable = false;
     private boolean mPseudoLocalesEnabled = false;
-    @Nullable private Collection<String> mResourceConfigs;
-    @Nullable Collection<String> mSplits;
-    @Nullable String mPackageForR;
-    @Nullable String mPreferredDensity;
+    @Nullable
+    private Collection<String> mResourceConfigs;
 
     /**
-     *
      * @param manifestFile the location of the manifest file
-     * @param options the {@link com.android.builder.model.AaptOptions}
+     * @param options      the {@link com.android.builder.model.AaptOptions}
      */
     public AaptPackageProcessBuilder(
             @NonNull File manifestFile,
@@ -75,6 +88,20 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         checkNotNull(options, "options cannot be null.");
         mManifestFile = manifestFile;
         mOptions = options;
+    }
+
+    private static boolean isNullOrEmpty(@Nullable Collection<?> collection) {
+        return collection == null || collection.isEmpty();
+    }
+
+    private static Collection<String> getDensityResConfigs(Collection<String> resourceConfigs) {
+        return Collections2.filter(new ArrayList<String>(resourceConfigs),
+                new Predicate<String>() {
+                    @Override
+                    public boolean apply(@Nullable String input) {
+                        return Density.getEnum(input) != null;
+                    }
+                });
     }
 
     @NonNull
@@ -106,6 +133,11 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         return this;
     }
 
+    @Nullable
+    public String getSourceOutputDir() {
+        return mSourceOutputDir;
+    }
+
     /**
      * @param sourceOutputDir optional source folder to generate R.java
      * @return itself
@@ -116,8 +148,8 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
     }
 
     @Nullable
-    public String getSourceOutputDir() {
-        return mSourceOutputDir;
+    public String getSymbolOutputDir() {
+        return mSymbolOutputDir;
     }
 
     /**
@@ -129,9 +161,9 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         return this;
     }
 
-    @Nullable
-    public String getSymbolOutputDir() {
-        return mSymbolOutputDir;
+    @NonNull
+    public List<? extends SymbolFileProvider> getLibraries() {
+        return mLibraries == null ? ImmutableList.<SymbolFileProvider>of() : mLibraries;
     }
 
     /**
@@ -142,11 +174,6 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
             @NonNull List<? extends SymbolFileProvider> libraries) {
         mLibraries = libraries;
         return this;
-    }
-
-    @NonNull
-    public List<? extends SymbolFileProvider> getLibraries() {
-        return mLibraries == null ? ImmutableList.<SymbolFileProvider>of() : mLibraries;
     }
 
     /**
@@ -167,6 +194,11 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         return this;
     }
 
+    @Nullable
+    public VariantType getType() {
+        return mType;
+    }
+
     /**
      * @param type the type of the variant being built
      * @return itself
@@ -174,11 +206,6 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
     public AaptPackageProcessBuilder setType(@NonNull VariantType type) {
         this.mType = type;
         return this;
-    }
-
-    @Nullable
-    public VariantType getType() {
-        return mType;
     }
 
     /**
@@ -209,18 +236,8 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         return this;
     }
 
-
     public AaptPackageProcessBuilder setVerbose() {
         mVerboseExec = true;
-        return this;
-    }
-
-    /**
-     * @param packageForR Package override to generate the R class in a different package.
-     * @return itself
-     */
-    public AaptPackageProcessBuilder setPackageForR(@NonNull String packageForR) {
-        this.mPackageForR = packageForR;
         return this;
     }
 
@@ -232,6 +249,7 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
     /**
      * Specifies a preference for a particular density. Resources that do not match this density
      * and have variants that are a closer match are removed.
+     *
      * @param density the preferred density
      * @return itself
      */
@@ -241,8 +259,17 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
     }
 
     @Nullable
-    String getPackageForR() {
+    public String getPackageForR() {
         return mPackageForR;
+    }
+
+    /**
+     * @param packageForR Package override to generate the R class in a different package.
+     * @return itself
+     */
+    public AaptPackageProcessBuilder setPackageForR(@NonNull String packageForR) {
+        this.mPackageForR = packageForR;
+        return this;
     }
 
     public ProcessInfo build(
@@ -480,19 +507,5 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
                     Joiner.on(",").join(resConfigs),
                     Joiner.on("\",\"").join(mSplits)));
         }
-    }
-
-    private static boolean isNullOrEmpty(@Nullable Collection<?> collection) {
-        return collection == null || collection.isEmpty();
-    }
-
-    private static Collection<String> getDensityResConfigs(Collection<String> resourceConfigs) {
-        return Collections2.filter(new ArrayList<String>(resourceConfigs),
-                new Predicate<String>() {
-                    @Override
-                    public boolean apply(@Nullable String input) {
-                        return Density.getEnum(input) != null;
-                    }
-                });
     }
 }

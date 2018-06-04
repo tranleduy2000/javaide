@@ -2,6 +2,7 @@ package com.duy.android.compiler.builder;
 
 import android.content.Context;
 
+import com.android.utils.ILogger;
 import com.duy.android.compiler.builder.task.ATask;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.JavaProject;
@@ -9,18 +10,15 @@ import com.duy.android.compiler.project.JavaProject;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import javax.tools.DiagnosticListener;
-
 public abstract class BuilderImpl<T extends JavaProject> implements IBuilder<T> {
     protected Context mContext;
     protected boolean mVerbose;
     protected PrintStream mStdout;
     protected PrintStream mStderr;
-    protected DiagnosticListener mDiagnosticListener;
+    private ILogger mLogger;
 
-    public BuilderImpl(Context context, DiagnosticListener listener) {
+    public BuilderImpl(Context context) {
         mContext = context;
-        mDiagnosticListener = listener;
         mStdout = new PrintStream(System.out);
         mStderr = new PrintStream(System.err);
         mVerbose = true;
@@ -57,6 +55,15 @@ public abstract class BuilderImpl<T extends JavaProject> implements IBuilder<T> 
     @Override
     public void setStdOut(PrintStream stdOut) {
         mStdout = stdOut;
+    }
+
+    public void setLogger(ILogger logger) {
+        this.mLogger = logger;
+    }
+
+    @Override
+    public ILogger getLogger() {
+        return mLogger;
     }
 
     @Override

@@ -157,7 +157,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
 
     private void createManifest(AndroidAppProject projectFile, String activityClass, String packageName,
                                 AssetManager assets) throws IOException {
-        File manifest = projectFile.getXmlManifest();
+        File manifest = projectFile.getManifestFile();
         InputStream manifestTemplate = assets.open("templates/src/main/AndroidManifest.xml");
         String contentManifest = FileManager.streamToString(manifestTemplate).toString();
         contentManifest = contentManifest.replace("{PACKAGE}", packageName);

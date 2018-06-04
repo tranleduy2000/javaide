@@ -20,7 +20,6 @@ import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
 import com.android.build.gradle.internal.ApiObjectFactory;
 import com.android.build.gradle.internal.DependencyManager;
-import com.android.build.gradle.internal.ExecutionConfigurationUtil;
 import com.android.build.gradle.internal.ExtraModelInfo;
 import com.android.build.gradle.internal.LoggerWrapper;
 import com.android.build.gradle.internal.NativeLibraryFactoryImpl;
@@ -40,11 +39,9 @@ import com.android.build.gradle.internal.process.GradleJavaProcessExecutor;
 import com.android.build.gradle.internal.process.GradleProcessExecutor;
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.build.gradle.internal.variant.VariantFactory;
-import com.android.build.gradle.tasks.JillTask;
 import com.android.build.gradle.tasks.PreDex;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.core.BuilderConstants;
-import com.android.builder.internal.compiler.JackConversionCache;
 import com.android.builder.internal.compiler.PreDexCache;
 import com.android.builder.profile.ExecutionType;
 import com.android.builder.profile.Recorder;
@@ -135,8 +132,6 @@ public abstract class BasePlugin {
         this.instantiator = instantiator;
         this.registry = registry;
         verifyRetirementAge();
-
-        ModelBuilder.clearCaches();
     }
 
     private static int getRetirementAgeInDays(@Nullable String version) {
@@ -252,7 +247,6 @@ public abstract class BasePlugin {
     protected void apply(Project project) {
         this.project = project;
 
-        ExecutionConfigurationUtil.setThreadPoolSize(project);
         checkPathForErrors();
         checkModulesForErrors();
 
@@ -289,11 +283,6 @@ public abstract class BasePlugin {
                                 PreDexCache.getCache().load(
                                         new File(project.getRootProject().getBuildDir(),
                                                 FD_INTERMEDIATES + "/dex-cache/cache.xml"));
-                                break;
-                            } else if (task instanceof JillTask) {
-                                JackConversionCache.getCache().load(
-                                        new File(project.getRootProject().getBuildDir(),
-                                                FD_INTERMEDIATES + "/jack-cache/cache.xml"));
                                 break;
                             }
                         }

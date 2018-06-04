@@ -88,7 +88,6 @@ public class BuildTypeTest extends BaseTest {
         object1.setSigningConfig(new SigningConfig("blah"))
         object1.setZipAlignEnabled(false)
         object1.setShrinkResources(true)
-        object1.setUseJack(Boolean.FALSE)
 
         com.android.build.gradle.internal.dsl.BuildType object2 =
                 new com.android.build.gradle.internal.dsl.BuildType(object1.name, project, project.getLogger())

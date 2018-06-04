@@ -29,7 +29,4 @@ public interface CoreProductFlavor extends ProductFlavor, Named {
     @Nullable
     CoreNdkOptions getNdkConfig();
 
-    @Nullable
-    Boolean getUseJack();
-
 }

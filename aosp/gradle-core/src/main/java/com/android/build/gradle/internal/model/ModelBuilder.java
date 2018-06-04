@@ -119,9 +119,6 @@ public class ModelBuilder implements ToolingModelBuilder {
         this.isLibrary = isLibrary;
     }
 
-    public static void clearCaches() {
-        DependenciesImpl.clearCaches();
-    }
 
     @Override
     public boolean canBuild(String modelName) {
@@ -430,9 +427,7 @@ public class ModelBuilder implements ToolingModelBuilder {
                 scope.getCompileTask() == null ? scope.getTaskName("compile", "Sources") : scope.getCompileTask().getName(),
                 getGeneratedSourceFolders(variantData),
                 getGeneratedResourceFolders(variantData),
-                (variantData.javacTask != null) ?
-                        variantData.javacTask.getDestinationDir() :
-                        scope.getJavaOutputDir(),
+                (variantData.javacTask != null) ? variantData.javacTask.getDestinationDir() : scope.getJavaOutputDir(),
                 scope.getJavaResourcesDestinationDir(),
                 DependenciesImpl.cloneDependencies(variantData, androidBuilder),
                 sourceProviders.variantSourceProvider,

@@ -36,7 +36,6 @@ import com.android.build.gradle.tasks.AidlCompile;
 import com.android.build.gradle.tasks.BinaryFileProviderTask;
 import com.android.build.gradle.tasks.GenerateBuildConfig;
 import com.android.build.gradle.tasks.GenerateResValues;
-import com.android.build.gradle.tasks.JackTask;
 import com.android.build.gradle.tasks.MergeAssets;
 import com.android.build.gradle.tasks.MergeResources;
 import com.android.build.gradle.tasks.NdkCompile;
@@ -70,43 +69,23 @@ import java.util.Set;
  */
 public abstract class BaseVariantData<T extends BaseVariantOutputData> {
 
-    public enum SplitHandlingPolicy {
-        /**
-         * Any release before L will create fake splits where each split will be the entire
-         * application with the split specific resources.
-         */
-        PRE_21_POLICY,
-
-        /**
-         * Android L and after, the splits are pure splits where splits only contain resources
-         * specific to the split characteristics.
-         */
-        RELEASE_21_AND_AFTER_POLICY
-    }
-
-
     @NonNull
     protected final AndroidConfig androidConfig;
     @NonNull
     protected final TaskManager taskManager;
     @NonNull
     private final GradleVariantConfiguration variantConfiguration;
-
-    private VariantDependencies variantDependency;
-
     // Needed for ModelBuilder.  Should be removed once VariantScope can replace BaseVariantData.
     @NonNull
     private final VariantScope scope;
-
+    private final List<T> outputs = Lists.newArrayListWithExpectedSize(4);
     public Task preBuildTask;
     public PrepareDependenciesTask prepareDependenciesTask;
     public ProcessAndroidResources generateRClassTask;
-
     public Task sourceGenTask;
     public Task resourceGenTask;
     public Task assetGenTask;
     public CheckManifest checkManifestTask;
-
     public RenderscriptCompile renderscriptCompileTask;
     public AidlCompile aidlCompileTask;
     public MergeResources mergeResourcesTask;
@@ -115,47 +94,38 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
     public GenerateResValues generateResValuesTask;
     public Copy copyApkTask;
     public GenerateApkDataTask generateApkDataTask;
-
     public Sync processJavaResourcesTask;
     public NdkCompile ndkCompileTask;
-
-    /** Can be JavaCompile or JackTask depending on user's settings. */
+    /**
+     * Can be JavaCompile depending on user's settings.
+     */
     public AbstractCompile javaCompilerTask;
+
+    // TODO: 04-Jun-18 implemet this
     public JavaCompile javacTask;
-    public JackTask jackTask;
     public Jar classesJarTask;
     // empty anchor compile task to set all compilations tasks as dependents.
     public Task compileTask;
     public JacocoInstrumentTask jacocoInstrumentTask;
-
     public FileSupplier mappingFileProviderTask;
     public BinaryFileProviderTask binayFileProviderTask;
-
     // TODO : why is Jack not registered as the obfuscationTask ???
     public Task obfuscationTask;
-
     // Task to assemble the variant and all its output.
     public Task assembleVariantTask;
-
-    private Object[] javaSources;
-
-    private List<File> extraGeneratedSourceFolders;
-    private List<File> extraGeneratedResFolders;
-
-    private final List<T> outputs = Lists.newArrayListWithExpectedSize(4);
-
-    private Set<String> densityFilters;
-    private Set<String> languageFilters;
-    private Set<String> abiFilters;
-
     /**
      * If true, variant outputs will be considered signed. Only set if you manually set the outputs
      * to point to signed files built by other tasks.
      */
     public boolean outputsAreSigned = false;
-
+    private VariantDependencies variantDependency;
+    private Object[] javaSources;
+    private List<File> extraGeneratedSourceFolders;
+    private List<File> extraGeneratedResFolders;
+    private Set<String> densityFilters;
+    private Set<String> languageFilters;
+    private Set<String> abiFilters;
     private SplitHandlingPolicy mSplitHandlingPolicy;
-
 
     public BaseVariantData(
             @NonNull AndroidConfig androidConfig,
@@ -168,9 +138,9 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
         // eventually, this will require a more open ended comparison.
         mSplitHandlingPolicy =
                 androidConfig.getGeneratePureSplits()
-                    && variantConfiguration.getMinSdkVersion().getApiLevel() >= 21
-                    ? SplitHandlingPolicy.RELEASE_21_AND_AFTER_POLICY
-                    : SplitHandlingPolicy.PRE_21_POLICY;
+                        && variantConfiguration.getMinSdkVersion().getApiLevel() >= 21
+                        ? SplitHandlingPolicy.RELEASE_21_AND_AFTER_POLICY
+                        : SplitHandlingPolicy.PRE_21_POLICY;
 
         // warn the user in case we are forced to ignore the generatePureSplits flag.
         if (androidConfig.getGeneratePureSplits()
@@ -185,6 +155,58 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
         taskManager.configureScopeForNdk(scope);
     }
 
+    /**
+     * Gets the list of filter values for a filter type either from the user specified build.gradle
+     * settings or through a discovery mechanism using folders names.
+     *
+     * @param resourceSets the list of source folders to discover from.
+     * @param filterType   the filter type
+     * @param splits       the variant's configuration for splits.
+     * @return a possibly empty list of filter value for this filter type.
+     */
+    @NonNull
+    private static Set<String> getFilters(
+            @NonNull List<ResourceSet> resourceSets,
+            @NonNull DiscoverableFilterType filterType,
+            @NonNull Splits splits) {
+
+        Set<String> filtersList = new HashSet<String>();
+        if (filterType.isAuto(splits)) {
+            filtersList.addAll(getAllFilters(resourceSets, filterType.folderPrefix));
+        } else {
+            filtersList.addAll(filterType.getConfiguredFilters(splits));
+        }
+        return filtersList;
+    }
+
+    /**
+     * Discover all sub-folders of all the {@link ResourceSet#getSourceFiles()} which names are
+     * starting with one of the provided prefixes.
+     *
+     * @param resourceSets the list of sources {@link ResourceSet}
+     * @param prefixes     the list of prefixes to look for folders.
+     * @return a possibly empty list of folders.
+     */
+    @NonNull
+    private static List<String> getAllFilters(List<ResourceSet> resourceSets, String... prefixes) {
+        List<String> providedResFolders = new ArrayList<String>();
+        for (ResourceSet resourceSet : resourceSets) {
+            for (File resFolder : resourceSet.getSourceFiles()) {
+                File[] subResFolders = resFolder.listFiles();
+                if (subResFolders != null) {
+                    for (File subResFolder : subResFolders) {
+                        for (String prefix : prefixes) {
+                            if (subResFolder.getName().startsWith(prefix)) {
+                                providedResFolders
+                                        .add(subResFolder.getName().substring(prefix.length()));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return providedResFolders;
+    }
 
     public SplitHandlingPolicy getSplitHandlingPolicy() {
         return mSplitHandlingPolicy;
@@ -197,7 +219,7 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
 
     @NonNull
     public T createOutput(OutputFile.OutputType outputType,
-            Collection<FilterData> filters) {
+                          Collection<FilterData> filters) {
         T data = doCreateOutput(outputType, filters);
 
         // if it's the first time we add an output, mark previous output as part of a multi-output
@@ -223,13 +245,13 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
         return variantConfiguration;
     }
 
-    public void setVariantDependency(@NonNull VariantDependencies variantDependency) {
-        this.variantDependency = variantDependency;
-    }
-
     @NonNull
     public VariantDependencies getVariantDependency() {
         return variantDependency;
+    }
+
+    public void setVariantDependency(@NonNull VariantDependencies variantDependency) {
+        this.variantDependency = variantDependency;
     }
 
     @NonNull
@@ -290,11 +312,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
 
         for (File f : generatedSourceFolders) {
             javacTask.source(f);
-
-            // Jack task is not always created.
-            if (jackTask != null) {
-                jackTask.source(f);
-            }
         }
 
         addJavaSourceFoldersToModel(generatedSourceFolders);
@@ -305,11 +322,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
 
         for (File f : generatedSourceFolders) {
             javacTask.source(f);
-
-            // Jack task is not always created.
-            if (jackTask != null) {
-                jackTask.source(f);
-            }
         }
 
         addJavaSourceFoldersToModel(generatedSourceFolders);
@@ -343,7 +355,7 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
      * Calculates the filters for this variant. The filters can either be manually specified by
      * the user within the build.gradle or can be automatically discovered using the variant
      * specific folders.
-     *
+     * <p>
      * This method must be called before {@link #getFilters(OutputFile.FilterType)}.
      *
      * @param splits the splits configuration from the build.gradle.
@@ -360,17 +372,18 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
     /**
      * Returns the filters values (as manually specified or automatically discovered) for a
      * particular {@link com.android.build.OutputFile.FilterType}
+     *
      * @param filterType the type of filter in question
      * @return a possibly empty set of filter values.
      * @throws IllegalStateException if {@link #calculateFilters(Splits)} has not been called prior
-     * to invoking this method.
+     *                               to invoking this method.
      */
     @NonNull
     public Set<String> getFilters(OutputFile.FilterType filterType) {
         if (densityFilters == null || languageFilters == null || abiFilters == null) {
             throw new IllegalStateException("calculateFilters method not called");
         }
-        switch(filterType) {
+        switch (filterType) {
             case DENSITY:
                 return densityFilters;
             case LANGUAGE:
@@ -409,6 +422,142 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
                 DiscoverableFilterType.LANGUAGE.folderPrefix,
                 DiscoverableFilterType.DENSITY.folderPrefix));
         return resFoldersOnDisk;
+    }
+
+    /**
+     * Computes the Java sources to use for compilation. This Object[] contains
+     * {@link org.gradle.api.file.FileCollection} and {@link File} instances
+     */
+    @NonNull
+    public Object[] getJavaSources() {
+        if (javaSources == null) {
+            // Build the list of source folders.
+            List<Object> sourceList = Lists.newArrayList();
+
+            // First the actual source folders.
+            List<SourceProvider> providers = variantConfiguration.getSortedSourceProviders();
+            for (SourceProvider provider : providers) {
+                sourceList.add(((AndroidSourceSet) provider).getJava().getSourceFiles());
+            }
+
+            // then all the generated src folders.
+            if (getScope().getGenerateRClassTask() != null) {
+                sourceList.add(getScope().getRClassSourceOutputDir());
+            }
+
+            // for the other, there's no duplicate so no issue.
+            if (getScope().getGenerateBuildConfigTask() != null) {
+                sourceList.add(scope.getBuildConfigSourceOutputDir());
+            }
+
+            if (getScope().getAidlCompileTask() != null) {
+                sourceList.add(scope.getAidlSourceOutputDir());
+            }
+
+            if (!variantConfiguration.getRenderscriptNdkModeEnabled()
+                    && getScope().getRenderscriptCompileTask() != null) {
+                sourceList.add(scope.getRenderscriptSourceOutputDir());
+            }
+
+            javaSources = sourceList.toArray();
+        }
+
+        return javaSources;
+    }
+
+    /**
+     * Returns the Java folders needed for code coverage report.
+     * <p>
+     * This includes all the source folders except for the ones containing R and buildConfig.
+     */
+    @NonNull
+    public List<File> getJavaSourceFoldersForCoverage() {
+        // Build the list of source folders.
+        List<File> sourceFolders = Lists.newArrayList();
+
+        // First the actual source folders.
+        List<SourceProvider> providers = variantConfiguration.getSortedSourceProviders();
+        for (SourceProvider provider : providers) {
+            for (File sourceFolder : provider.getJavaDirectories()) {
+                if (sourceFolder.isDirectory()) {
+                    sourceFolders.add(sourceFolder);
+                }
+            }
+        }
+
+        File sourceFolder;
+        // then all the generated src folders, except the ones for the R/Manifest and
+        // BuildConfig classes.
+        sourceFolder = aidlCompileTask.getSourceOutputDir();
+        if (sourceFolder.isDirectory()) {
+            sourceFolders.add(sourceFolder);
+        }
+
+        if (!variantConfiguration.getRenderscriptNdkModeEnabled()) {
+            sourceFolder = renderscriptCompileTask.getSourceOutputDir();
+            if (sourceFolder.isDirectory()) {
+                sourceFolders.add(sourceFolder);
+            }
+        }
+
+        return sourceFolders;
+    }
+
+    /**
+     * Returns a list of configuration name for wear connection, from highest to lowest priority.
+     *
+     * @return list of config.
+     */
+    @NonNull
+    public List<String> getWearConfigNames() {
+        List<SourceProvider> providers = variantConfiguration.getSortedSourceProviders();
+
+        // this is the wrong order, so let's reverse it as we gather the names.
+        final int count = providers.size();
+        List<String> names = Lists.newArrayListWithCapacity(count);
+        for (int i = count - 1; i >= 0; i--) {
+            DefaultAndroidSourceSet sourceSet = (DefaultAndroidSourceSet) providers.get(i);
+
+            names.add(sourceSet.getWearAppConfigurationName());
+        }
+
+        return names;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .addValue(variantConfiguration.getFullName())
+                .toString();
+    }
+
+    @Nullable
+    public FileSupplier getMappingFileProvider() {
+        return mappingFileProviderTask;
+    }
+
+    @Nullable
+    public File getMappingFile() {
+        return mappingFileProviderTask != null ? mappingFileProviderTask.get() : null;
+    }
+
+    @NonNull
+    public VariantScope getScope() {
+        return scope;
+    }
+
+    public enum SplitHandlingPolicy {
+        /**
+         * Any release before L will create fake splits where each split will be the entire
+         * application with the split specific resources.
+         */
+        PRE_21_POLICY,
+
+        /**
+         * Android L and after, the splits are pure splits where splits only contain resources
+         * specific to the split characteristics.
+         */
+        RELEASE_21_AND_AFTER_POLICY
     }
 
     /**
@@ -464,6 +613,7 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
 
         /**
          * Returns the applicable filters configured in the build.gradle for this filter type.
+         *
          * @param splits the build.gradle splits configuration
          * @return a list of filters.
          */
@@ -473,182 +623,10 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
         /**
          * Returns true if the user wants the build system to auto discover the splits for this
          * split type.
+         *
          * @param splits the build.gradle splits configuration.
          * @return true to use auto-discovery, false to use the build.gradle configuration.
          */
         abstract boolean isAuto(@NonNull Splits splits);
-    }
-
-    /**
-     * Gets the list of filter values for a filter type either from the user specified build.gradle
-     * settings or through a discovery mechanism using folders names.
-     * @param resourceSets the list of source folders to discover from.
-     * @param filterType the filter type
-     * @param splits the variant's configuration for splits.
-     * @return a possibly empty list of filter value for this filter type.
-     */
-    @NonNull
-    private static Set<String> getFilters(
-            @NonNull List<ResourceSet> resourceSets,
-            @NonNull DiscoverableFilterType filterType,
-            @NonNull Splits splits) {
-
-        Set<String> filtersList = new HashSet<String>();
-        if (filterType.isAuto(splits)) {
-            filtersList.addAll(getAllFilters(resourceSets, filterType.folderPrefix));
-        } else {
-            filtersList.addAll(filterType.getConfiguredFilters(splits));
-        }
-        return filtersList;
-    }
-
-    /**
-     * Discover all sub-folders of all the {@link ResourceSet#getSourceFiles()} which names are
-     * starting with one of the provided prefixes.
-     * @param resourceSets the list of sources {@link ResourceSet}
-     * @param prefixes the list of prefixes to look for folders.
-     * @return a possibly empty list of folders.
-     */
-    @NonNull
-    private static List<String> getAllFilters(List<ResourceSet> resourceSets, String... prefixes) {
-        List<String> providedResFolders = new ArrayList<String>();
-        for (ResourceSet resourceSet : resourceSets) {
-            for (File resFolder : resourceSet.getSourceFiles()) {
-                File[] subResFolders = resFolder.listFiles();
-                if (subResFolders != null) {
-                    for (File subResFolder : subResFolders) {
-                        for (String prefix : prefixes) {
-                            if (subResFolder.getName().startsWith(prefix)) {
-                                providedResFolders
-                                        .add(subResFolder.getName().substring(prefix.length()));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return providedResFolders;
-    }
-
-
-    /**
-     * Computes the Java sources to use for compilation. This Object[] contains
-     * {@link org.gradle.api.file.FileCollection} and {@link File} instances
-     */
-    @NonNull
-    public Object[] getJavaSources() {
-        if (javaSources == null) {
-            // Build the list of source folders.
-            List<Object> sourceList = Lists.newArrayList();
-
-            // First the actual source folders.
-            List<SourceProvider> providers = variantConfiguration.getSortedSourceProviders();
-            for (SourceProvider provider : providers) {
-                sourceList.add(((AndroidSourceSet) provider).getJava().getSourceFiles());
-            }
-
-            // then all the generated src folders.
-            if (getScope().getGenerateRClassTask() != null) {
-                sourceList.add(getScope().getRClassSourceOutputDir());
-            }
-
-            // for the other, there's no duplicate so no issue.
-            if (getScope().getGenerateBuildConfigTask() != null) {
-                sourceList.add(scope.getBuildConfigSourceOutputDir());
-            }
-
-            if (getScope().getAidlCompileTask() != null) {
-                sourceList.add(scope.getAidlSourceOutputDir());
-            }
-
-            if (!variantConfiguration.getRenderscriptNdkModeEnabled()
-                    && getScope().getRenderscriptCompileTask() != null) {
-                sourceList.add(scope.getRenderscriptSourceOutputDir());
-            }
-
-            javaSources = sourceList.toArray();
-        }
-
-        return javaSources;
-    }
-
-    /**
-     * Returns the Java folders needed for code coverage report.
-     *
-     * This includes all the source folders except for the ones containing R and buildConfig.
-     */
-    @NonNull
-    public List<File> getJavaSourceFoldersForCoverage() {
-        // Build the list of source folders.
-        List<File> sourceFolders = Lists.newArrayList();
-
-        // First the actual source folders.
-        List<SourceProvider> providers = variantConfiguration.getSortedSourceProviders();
-        for (SourceProvider provider : providers) {
-            for (File sourceFolder : provider.getJavaDirectories()) {
-                if (sourceFolder.isDirectory()) {
-                    sourceFolders.add(sourceFolder);
-                }
-            }
-        }
-
-        File sourceFolder;
-        // then all the generated src folders, except the ones for the R/Manifest and
-        // BuildConfig classes.
-        sourceFolder = aidlCompileTask.getSourceOutputDir();
-        if (sourceFolder.isDirectory()) {
-            sourceFolders.add(sourceFolder);
-        }
-
-        if (!variantConfiguration.getRenderscriptNdkModeEnabled()) {
-            sourceFolder = renderscriptCompileTask.getSourceOutputDir();
-            if (sourceFolder.isDirectory()) {
-                sourceFolders.add(sourceFolder);
-            }
-        }
-
-        return sourceFolders;
-    }
-
-    /**
-     * Returns a list of configuration name for wear connection, from highest to lowest priority.
-     * @return list of config.
-     */
-    @NonNull
-    public List<String> getWearConfigNames() {
-        List<SourceProvider> providers = variantConfiguration.getSortedSourceProviders();
-
-        // this is the wrong order, so let's reverse it as we gather the names.
-        final int count = providers.size();
-        List<String> names = Lists.newArrayListWithCapacity(count);
-        for (int i = count - 1 ; i >= 0; i--) {
-            DefaultAndroidSourceSet sourceSet = (DefaultAndroidSourceSet) providers.get(i);
-
-            names.add(sourceSet.getWearAppConfigurationName());
-        }
-
-        return names;
-    }
-
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .addValue(variantConfiguration.getFullName())
-                .toString();
-    }
-
-    @Nullable
-    public FileSupplier getMappingFileProvider() {
-        return mappingFileProviderTask;
-    }
-
-    @Nullable
-    public File getMappingFile() {
-        return mappingFileProviderTask != null ? mappingFileProviderTask.get() : null;
-    }
-
-    @NonNull
-    public VariantScope getScope() {
-        return scope;
     }
 }

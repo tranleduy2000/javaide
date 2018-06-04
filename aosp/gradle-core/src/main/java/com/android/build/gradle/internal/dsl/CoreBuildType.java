@@ -27,8 +27,5 @@ public interface CoreBuildType extends BuildType {
     @Nullable
     CoreNdkOptions getNdkConfig();
 
-    @Nullable
-    Boolean getUseJack();
-
     boolean isShrinkResources();
 }

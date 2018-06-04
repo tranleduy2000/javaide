@@ -225,9 +225,9 @@ public final class SdkConstants {
         "hprof-conv" + ext(".exe", "");                   //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     /** jack.jar */
-    public static final String FN_JACK = "jack.jar";                                  //$NON-NLS-1$
+//    public static final String FN_JACK = "jack.jar";                                  //$NON-NLS-1$
     /** jill.jar */
-    public static final String FN_JILL = "jill.jar";                                  //$NON-NLS-1$
+//    public static final String FN_JILL = "jill.jar";                                  //$NON-NLS-1$
 
     /** split-select */
     public static final String FN_SPLIT_SELECT = "split-select" + ext(".exe", "");

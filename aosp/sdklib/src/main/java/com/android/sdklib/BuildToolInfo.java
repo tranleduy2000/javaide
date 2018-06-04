@@ -39,8 +39,6 @@ import static com.android.SdkConstants.FN_BCC_COMPAT;
 import static com.android.SdkConstants.FN_DEXDUMP;
 import static com.android.SdkConstants.FN_DX;
 import static com.android.SdkConstants.FN_DX_JAR;
-import static com.android.SdkConstants.FN_JACK;
-import static com.android.SdkConstants.FN_JILL;
 import static com.android.SdkConstants.FN_LD_ARM;
 import static com.android.SdkConstants.FN_LD_MIPS;
 import static com.android.SdkConstants.FN_LD_X86;
@@ -57,8 +55,6 @@ import static com.android.sdklib.BuildToolInfo.PathId.BCC_COMPAT;
 import static com.android.sdklib.BuildToolInfo.PathId.DEXDUMP;
 import static com.android.sdklib.BuildToolInfo.PathId.DX;
 import static com.android.sdklib.BuildToolInfo.PathId.DX_JAR;
-import static com.android.sdklib.BuildToolInfo.PathId.JACK;
-import static com.android.sdklib.BuildToolInfo.PathId.JILL;
 import static com.android.sdklib.BuildToolInfo.PathId.LD_ARM;
 import static com.android.sdklib.BuildToolInfo.PathId.LD_MIPS;
 import static com.android.sdklib.BuildToolInfo.PathId.LD_X86;
@@ -118,8 +114,8 @@ public class BuildToolInfo {
         add(LD_X86, FN_LD_X86);
         add(LD_MIPS, FN_LD_MIPS);
         add(ZIP_ALIGN, FN_ZIPALIGN);
-        add(JACK, FN_JACK);
-        add(JILL, FN_JILL);
+//        add(JACK, FN_JACK);
+//        add(JILL, FN_JILL);
         add(SPLIT_SELECT, FN_SPLIT_SELECT);
     }
 
@@ -380,8 +376,8 @@ public class BuildToolInfo {
         ZIP_ALIGN("19.1.0"),
 
         // --- NEW IN 21.x.y ---
-        JACK("21.1.0"),
-        JILL("21.1.0"),
+//        JACK("21.1.0"),
+//        JILL("21.1.0"),
 
         SPLIT_SELECT("22.0.0");
 

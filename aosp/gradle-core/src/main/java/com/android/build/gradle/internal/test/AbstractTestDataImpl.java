@@ -16,8 +16,6 @@
 
 package com.android.build.gradle.internal.test;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.android.annotations.NonNull;
 import com.android.builder.core.VariantConfiguration;
 import com.android.builder.model.ApiVersion;
@@ -27,6 +25,8 @@ import com.google.common.collect.Maps;
 
 import java.util.Locale;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Common implementation of {@link TestData} for embedded test projects (in androidTest folder)
@@ -68,7 +68,7 @@ public abstract class AbstractTestDataImpl implements TestData {
 
     @Override
     public boolean isTestCoverageEnabled() {
-        return testVariantConfig.isTestCoverageEnabled();
+        return false;
     }
 
     @NonNull

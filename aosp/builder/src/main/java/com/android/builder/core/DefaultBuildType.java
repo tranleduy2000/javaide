@@ -30,7 +30,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
     private final String mName;
     private boolean mDebuggable = false;
     private boolean mPseudoLocalesEnabled = false;
-    private boolean mTestCoverageEnabled = false;
     private boolean mJniDebuggable = false;
     private boolean mRenderscriptDebuggable = false;
     private int mRenderscriptOptimLevel = 3;
@@ -50,7 +49,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
         _initWith(that);
 
         setDebuggable(that.isDebuggable());
-        setTestCoverageEnabled(that.isTestCoverageEnabled());
         setJniDebuggable(that.isJniDebuggable());
         setRenderscriptDebuggable(that.isRenderscriptDebuggable());
         setRenderscriptOptimLevel(that.getRenderscriptOptimLevel());
@@ -90,30 +88,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
     public boolean isDebuggable() {
         // Accessing coverage data requires a debuggable package.
         return mDebuggable || mTestCoverageEnabled;
-    }
-
-    /**
-     * Whether test coverage is enabled for this build type.
-     * <p>
-     * <p>If enabled this uses Jacoco to capture coverage and creates a report in the build
-     * directory.
-     * <p>
-     * <p>The version of Jacoco can be configured with:
-     * <pre>
-     * android {
-     *   jacoco {
-     *     version = '0.6.2.201302030002'
-     *   }
-     * }
-     * </pre>
-     */
-    @Override
-    public boolean isTestCoverageEnabled() {
-        return mTestCoverageEnabled;
-    }
-
-    public void setTestCoverageEnabled(boolean testCoverageEnabled) {
-        mTestCoverageEnabled = testCoverageEnabled;
     }
 
     /**

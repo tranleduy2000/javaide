@@ -2,8 +2,6 @@ include ':app', ':treeview', ':androidlogcat', ':fileexplorer', ':common', ':sty
 include ':bouncycastle', ':jdk-1_7', ':dx'
 
 include ':aosp:annotations'
-include ':aosp:jack:jill-api'
-include ':aosp:jack:jack-api'
 include ':aosp:dvlib'
 include ':aosp:layoutlib-api'
 include ':aosp:sdklib'

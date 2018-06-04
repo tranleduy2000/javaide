@@ -21,7 +21,7 @@ import org.gradle.internal.reflect.Instantiator;
 public class AppExtension extends TestedExtension {
 
     private final DefaultDomainObjectSet<ApplicationVariant> applicationVariantList
-            = new DefaultDomainObjectSet<ApplicationVariant>(ApplicationVariant.class);
+            = new DefaultDomainObjectSet<>(ApplicationVariant.class);
 
     public AppExtension(@NonNull ProjectInternal project, @NonNull Instantiator instantiator,
                         @NonNull AndroidBuilder androidBuilder, @NonNull SdkHandler sdkHandler,

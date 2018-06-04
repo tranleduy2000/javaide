@@ -327,8 +327,6 @@ public class LibraryTaskManager extends TaskManager {
             bundle.dependsOn(libVariantData.generateAnnotationsTask);
         }
 
-        final boolean instrumented = variantConfig.getBuildType().isTestCoverageEnabled();
-
         // data holding dependencies and input for the dex. This gets updated as new
         // post-compilation steps are inserted between the compilation and dx.
         final PostCompilationData pcDataTemp = new PostCompilationData();
@@ -355,9 +353,6 @@ public class LibraryTaskManager extends TaskManager {
                         pcDataTemp.setInputLibraries(Collections.<File>emptyList());
 
                         // if needed, instrument the code
-                        if (instrumented) {
-                            return createJacocoTask(tasks, variantScope, pcDataTemp);
-                        }
                         return pcDataTemp;
                     }
                 });

@@ -32,7 +32,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
 
     private String name;
     private boolean debuggable;
-    private boolean testCoverageEnabled;
     private boolean jniDebuggable;
     private boolean pseudoLocalesEnabled;
     private boolean renderscriptDebuggable;
@@ -49,7 +48,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
 
         clonedBuildType.name = buildType.getName();
         clonedBuildType.debuggable = buildType.isDebuggable();
-        clonedBuildType.testCoverageEnabled = buildType.isTestCoverageEnabled();
         clonedBuildType.jniDebuggable = buildType.isJniDebuggable();
         clonedBuildType.renderscriptDebuggable = buildType.isRenderscriptDebuggable();
         clonedBuildType.renderscriptOptimLevel = buildType.getRenderscriptOptimLevel();
@@ -76,11 +74,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
     @Override
     public boolean isDebuggable() {
         return debuggable;
-    }
-
-    @Override
-    public boolean isTestCoverageEnabled() {
-        return testCoverageEnabled;
     }
 
     @Override

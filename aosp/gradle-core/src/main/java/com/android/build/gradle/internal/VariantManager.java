@@ -16,11 +16,6 @@
 
 package com.android.build.gradle.internal;
 
-import static com.android.builder.core.BuilderConstants.LINT;
-import static com.android.builder.core.VariantType.ANDROID_TEST;
-import static com.android.builder.core.VariantType.LIBRARY;
-import static com.android.builder.core.VariantType.UNIT_TEST;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.gradle.AndroidConfig;
@@ -64,6 +59,10 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import static com.android.builder.core.BuilderConstants.LINT;
+import static com.android.builder.core.VariantType.ANDROID_TEST;
+import static com.android.builder.core.VariantType.UNIT_TEST;
 
 /**
  * Class to create, manage variants.
@@ -487,13 +486,6 @@ public class VariantManager implements VariantModel {
                 variantFactory.getVariantConfigurationType(),
                 signingOverride);
 
-        if (variantConfig.getType() == LIBRARY && variantConfig.getUseJack()) {
-            project.getLogger().warn(
-                    "{}, {}: Jack compiler is not supported in library projects, falling back to javac.",
-                    project.getPath(),
-                    variantConfig.getFullName());
-        }
-
         // sourceSetContainer in case we are creating variant specific sourceSets.
         NamedDomainObjectContainer<AndroidSourceSet> sourceSetsContainer = extension
                 .getSourceSets();
@@ -745,9 +737,6 @@ public class VariantManager implements VariantModel {
                                 "variant",
                                 variantData.getName()),
                         new Recorder.Property(
-                                "use_jack",
-                                Boolean.toString(variantConfig.getUseJack())),
-                        new Recorder.Property(
                                 "use_minify",
                                 Boolean.toString(variantConfig.isMinifyEnabled())),
                         new Recorder.Property(
@@ -765,10 +754,6 @@ public class VariantManager implements VariantModel {
                     variantDataList.add(unitTestVariantData);
 
                     if (buildTypeData == testBuildTypeData) {
-                        if (variantConfig.isMinifyEnabled() && variantConfig.getUseJack()) {
-                            throw new RuntimeException(
-                                    "Cannot test obfuscated variants when compiling with jack.");
-                        }
                         variantForAndroidTest = variantData;
                     }
                 }

@@ -16,9 +16,6 @@
 
 package com.android.build.gradle.internal.model;
 
-import static com.android.SdkConstants.DOT_JAR;
-import static com.android.SdkConstants.FD_JARS;
-
 import com.android.annotations.NonNull;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
 import com.android.build.gradle.internal.dependency.LibraryDependencyImpl;
@@ -45,13 +42,16 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static com.android.SdkConstants.DOT_JAR;
+import static com.android.SdkConstants.FD_JARS;
+
 /**
  */
 public class DependenciesImpl implements Dependencies, Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final CreatingCache<LibraryDependency, AndroidLibrary> sCache
-            = new CreatingCache<LibraryDependency, AndroidLibrary>(
+            = new CreatingCache<>(
             new CreatingCache.ValueFactory<LibraryDependency, AndroidLibrary>() {
                 @Override
                 @NonNull
@@ -67,9 +67,20 @@ public class DependenciesImpl implements Dependencies, Serializable {
     @NonNull
     private final List<String> projects;
 
-    public static void clearCaches() {
-        sCache.clear();
+    public DependenciesImpl(@NonNull Set<JavaLibrary> javaLibraries) {
+        this.javaLibraries = Lists.newArrayList(javaLibraries);
+        this.libraries = Collections.emptyList();
+        this.projects = Collections.emptyList();
     }
+
+    private DependenciesImpl(@NonNull List<AndroidLibrary> libraries,
+                             @NonNull List<JavaLibrary> javaLibraries,
+                             @NonNull List<String> projects) {
+        this.libraries = libraries;
+        this.javaLibraries = javaLibraries;
+        this.projects = projects;
+    }
+
 
     @NonNull
     static DependenciesImpl cloneDependenciesForJavaArtifacts(@NonNull Dependencies dependencies) {
@@ -144,38 +155,6 @@ public class DependenciesImpl implements Dependencies, Serializable {
         return new DependenciesImpl(libraries, javaLibraries, projects);
     }
 
-    public DependenciesImpl(@NonNull Set<JavaLibrary> javaLibraries) {
-        this.javaLibraries = Lists.newArrayList(javaLibraries);
-        this.libraries = Collections.emptyList();
-        this.projects = Collections.emptyList();
-    }
-
-    private DependenciesImpl(@NonNull List<AndroidLibrary> libraries,
-                             @NonNull List<JavaLibrary> javaLibraries,
-                             @NonNull List<String> projects) {
-        this.libraries = libraries;
-        this.javaLibraries = javaLibraries;
-        this.projects = projects;
-    }
-
-    @NonNull
-    @Override
-    public Collection<AndroidLibrary> getLibraries() {
-        return libraries;
-    }
-
-    @NonNull
-    @Override
-    public Collection<JavaLibrary> getJavaLibraries() {
-        return javaLibraries;
-    }
-
-    @NonNull
-    @Override
-    public List<String> getProjects() {
-        return projects;
-    }
-
     @NonNull
     private static AndroidLibrary convertAndroidLibrary(
             @NonNull LibraryDependency libraryDependency) {
@@ -203,7 +182,7 @@ public class DependenciesImpl implements Dependencies, Serializable {
 
     /**
      * Finds the local jar for an aar.
-     *
+     * <p>
      * Since the model can be queried before the aar are exploded, we attempt to get them
      * from inside the aar.
      *
@@ -230,7 +209,7 @@ public class DependenciesImpl implements Dependencies, Serializable {
                 //noinspection IOResourceOpenedButNotSafelyClosed
                 zipFile = new ZipFile(aarFile);
 
-                for (Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements();) {
+                for (Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements(); ) {
                     ZipEntry zipEntry = e.nextElement();
                     String name = zipEntry.getName();
                     if (name.startsWith("libs/") && name.endsWith(DOT_JAR)) {
@@ -254,5 +233,23 @@ public class DependenciesImpl implements Dependencies, Serializable {
         }
 
         return Collections.emptyList();
+    }
+
+    @NonNull
+    @Override
+    public Collection<AndroidLibrary> getLibraries() {
+        return libraries;
+    }
+
+    @NonNull
+    @Override
+    public Collection<JavaLibrary> getJavaLibraries() {
+        return javaLibraries;
+    }
+
+    @NonNull
+    @Override
+    public List<String> getProjects() {
+        return projects;
     }
 }

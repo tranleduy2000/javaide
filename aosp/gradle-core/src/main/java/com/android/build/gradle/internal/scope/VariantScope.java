@@ -39,7 +39,6 @@ import com.android.build.gradle.tasks.BinaryFileProviderTask;
 import com.android.build.gradle.tasks.Dex;
 import com.android.build.gradle.tasks.GenerateBuildConfig;
 import com.android.build.gradle.tasks.GenerateResValues;
-import com.android.build.gradle.tasks.JackTask;
 import com.android.build.gradle.tasks.JavaResourcesProvider;
 import com.android.build.gradle.tasks.MergeAssets;
 import com.android.build.gradle.tasks.MergeResources;
@@ -122,8 +121,6 @@ public class VariantScope {
     private AndroidTask<? extends AbstractCompile> javaCompilerTask;
     @Nullable
     private AndroidTask<JavaCompile> javacTask;
-    @Nullable
-    private AndroidTask<JackTask> jackTask;
 
     // empty anchor compile task to set all compilations tasks as dependents.
     private AndroidTask<Task> compileTask;
@@ -434,47 +431,6 @@ public class VariantScope {
                 DIR_BUNDLES + "/" + getVariantConfiguration().getDirName() + "/aidl");
     }
 
-    /**
-     * Returns the location of an intermediate directory that can be used by the Jack toolchain
-     * to store states necessary to support incremental compilation.
-     * @return a variant specific directory.
-     */
-    @NonNull
-    public File getJackIncrementalDir() {
-        return new File(globalScope.getIntermediatesDir(),
-                "incremental/jack/" + getVariantConfiguration().getDirName());
-    }
-
-    @NonNull
-    public File getJackTempDir() {
-        return new File(globalScope.getIntermediatesDir(),
-                "tmp/jack/" + getVariantConfiguration().getDirName());
-    }
-
-    @NonNull
-    public File getJillPackagedLibrariesDir() {
-        return new File(globalScope.getIntermediatesDir(),
-                "jill/" + getVariantConfiguration().getDirName() + "/packaged");
-    }
-
-    @NonNull
-    public File getJillRuntimeLibrariesDir() {
-        return new File(globalScope.getIntermediatesDir(),
-                "jill/" + getVariantConfiguration().getDirName() + "/runtime");
-    }
-
-    @NonNull
-    public File getJackDestinationDir() {
-        return new File(globalScope.getIntermediatesDir(),
-                "dex/" + getVariantConfiguration().getDirName());
-    }
-
-    @NonNull
-    public File getJackClassesZip() {
-        return new File(globalScope.getIntermediatesDir(),
-                "packaged/" + getVariantConfiguration().getDirName() + "/classes.zip");
-    }
-
     @NonNull
     public File getProguardOutputFolder() {
         return new File(globalScope.getBuildDir(), "/" + FD_OUTPUTS + "/mapping/" +
@@ -676,16 +632,6 @@ public class VariantScope {
     @Nullable
     public AndroidTask<? extends AbstractCompile> getJavaCompilerTask() {
         return javaCompilerTask;
-    }
-
-    @Nullable
-    public AndroidTask<JackTask> getJackTask() {
-        return jackTask;
-    }
-
-    public void setJackTask(
-            @Nullable AndroidTask<JackTask> jackTask) {
-        this.jackTask = jackTask;
     }
 
     @Nullable

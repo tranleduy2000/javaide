@@ -28,7 +28,7 @@ import java.io.File;
  */
 public interface BinaryFileProviderTask extends Task {
 
-    enum BinaryArtifactType { JAR, JACK }
+    enum BinaryArtifactType { JAR}
 
     final class Artifact {
 

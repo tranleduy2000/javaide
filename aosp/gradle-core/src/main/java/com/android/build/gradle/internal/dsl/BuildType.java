@@ -48,8 +48,6 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
     @Nullable
     private final NdkOptions ndkConfig;
 
-    @Nullable
-    private Boolean useJack;
 
     private boolean shrinkResources = false; // opt-in for now until we've validated it in the field
 
@@ -106,12 +104,10 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
         super._initWith(that);
         BuildType thatBuildType = (BuildType) that;
         shrinkResources = thatBuildType.isShrinkResources();
-        useJack = thatBuildType.getUseJack();
     }
 
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (useJack != null ? useJack.hashCode() : 0);
         result = 31 * result + (shrinkResources ? 1 : 0);
         return result;
     }
@@ -122,7 +118,6 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
         if (!(o instanceof BuildType)) return false;
         if (!super.equals(o)) return false;
         BuildType other = (BuildType) o;
-        if (useJack != other.getUseJack()) return false;
         if (shrinkResources != other.isShrinkResources()) return false;
 
         return true;
@@ -265,29 +260,6 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
 
     public void ndk(@NonNull Action<NdkOptions> action) {
         action.execute(ndkConfig);
-    }
-
-    /**
-     * Whether the experimental Jack toolchain should be used.
-     */
-    @Override
-    @Nullable
-    public Boolean getUseJack() {
-        return useJack;
-    }
-
-    /**
-     * Whether the experimental Jack toolchain should be used.
-     */
-    public void setUseJack(@Nullable Boolean useJack) {
-        this.useJack = useJack;
-    }
-
-    /**
-     * Whether the experimental Jack toolchain should be used.
-     */
-    public void useJack(@Nullable Boolean useJack) {
-        setUseJack(useJack);
     }
 
     /**

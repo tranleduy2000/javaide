@@ -16,8 +16,6 @@
 
 package com.android.build.gradle.internal.core;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.dsl.CoreBuildType;
@@ -31,10 +29,12 @@ import com.android.builder.model.SourceProvider;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Version of {@link com.android.builder.core.VariantConfiguration} that uses the specific
  * types used in the Gradle plugins.
- *
+ * <p>
  * It also adds support for Ndk support that is not ready to go in the builder library.
  */
 public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildType, CoreProductFlavor, CoreProductFlavor> {
@@ -93,7 +93,7 @@ public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildTy
 
     /**
      * Returns the ABI filters associated with the artifact, or null if there are no filters.
-     *
+     * <p>
      * If the list contains values, then the artifact only contains these ABIs and excludes
      * others.
      */
@@ -113,28 +113,6 @@ public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildTy
                 (!type.isForTesting() || (getTestedConfig().getType() != VariantType.LIBRARY));
     }
 
-    public boolean getUseJack() {
-        Boolean value = getBuildType().getUseJack();
-        if (value != null) {
-            return value;
-        }
-
-        // cant use merge flavor as useJack is not a prop on the base class.
-        for (CoreProductFlavor productFlavor : getProductFlavors()) {
-            value = productFlavor.getUseJack();
-            if (value != null) {
-                return value;
-            }
-        }
-
-        value = getDefaultConfig().getUseJack();
-        if (value != null) {
-            return value;
-        }
-
-        return false;
-    }
-
     private void computeNdkConfig() {
         mMergedNdkConfig.reset();
 
@@ -143,7 +121,7 @@ public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildTy
         }
 
         final List<CoreProductFlavor> flavors = getProductFlavors();
-        for (int i = flavors.size() - 1 ; i >= 0 ; i--) {
+        for (int i = flavors.size() - 1; i >= 0; i--) {
             CoreNdkOptions ndkConfig = flavors.get(i).getNdkConfig();
             if (ndkConfig != null) {
                 mMergedNdkConfig.append(ndkConfig);

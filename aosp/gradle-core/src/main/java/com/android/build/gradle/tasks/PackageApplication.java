@@ -286,8 +286,7 @@ public class PackageApplication extends IncrementalTask implements FileSupplier 
             packageApp.setVariantName(
                     scope.getVariantScope().getVariantConfiguration().getFullName());
 
-            if (config.isMinifyEnabled() && config.getBuildType().isShrinkResources() && !config
-                    .getUseJack()) {
+            if (config.isMinifyEnabled() && config.getBuildType().isShrinkResources()) {
                 ConventionMappingHelper.map(packageApp, "resourceFile", new Callable<File>() {
                     @Override
                     public File call() {

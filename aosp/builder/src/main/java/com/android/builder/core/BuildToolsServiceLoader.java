@@ -17,15 +17,12 @@
 package com.android.builder.core;
 
 import com.android.annotations.NonNull;
-import com.android.jack.api.JackProvider;
-import com.android.jill.api.JillProvider;
 import com.android.sdklib.BuildToolInfo;
 import com.android.sdklib.repository.FullRevision;
 import com.android.utils.ILogger;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -50,16 +47,6 @@ public enum BuildToolsServiceLoader {
      */
     INSTANCE;
 
-    /**
-     * Jack service description.
-     */
-    public static final Service<JackProvider> JACK =
-            new Service<JackProvider>(ImmutableList.of("jack.jar"), JackProvider.class);
-    /**
-     * Jill service description.
-     */
-    public static final Service<JillProvider> JILL =
-            new Service<JillProvider>(ImmutableList.of("jill.jar"), JillProvider.class);
     private final List<LoadedBuildTool> loadedBuildTools = new ArrayList<LoadedBuildTool>();
 
     /**
@@ -150,6 +137,7 @@ public enum BuildToolsServiceLoader {
         private final BuildToolInfo buildToolInfo;
         private final List<LoadedServiceLoader> loadedServicesLoaders =
                 new ArrayList<LoadedServiceLoader>();
+
         private BuildToolServiceLoader(BuildToolInfo buildToolInfo) {
             this.buildToolInfo = buildToolInfo;
         }
@@ -175,9 +163,6 @@ public enum BuildToolsServiceLoader {
             }
 
             File buildToolLocation = buildToolInfo.getLocation();
-            if (System.getenv("USE_JACK_LOCATION") != null) {
-                buildToolLocation = new File(System.getenv("USE_JACK_LOCATION"));
-            }
             URL[] urls = new URL[serviceType.classpath.size()];
             int i = 0;
             for (String classpathItem : serviceType.getClasspath()) {

@@ -59,11 +59,6 @@ public class ReadOnlyBuildType extends ReadOnlyBaseConfig implements BuildType {
     }
 
     @Override
-    public boolean isTestCoverageEnabled() {
-        return buildType.isTestCoverageEnabled();
-    }
-
-    @Override
     public boolean isJniDebuggable() {
         return buildType.isJniDebuggable();
     }

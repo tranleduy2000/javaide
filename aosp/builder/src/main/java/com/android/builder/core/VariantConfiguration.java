@@ -1757,7 +1757,7 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
     }
 
     public boolean isTestCoverageEnabled() {
-        return mBuildType.isTestCoverageEnabled();
+        return false;
     }
 
     /**

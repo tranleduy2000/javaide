@@ -49,9 +49,6 @@ public class LibraryExtension extends BaseExtension {
         libraryVariantList.add((LibraryVariant) variant);
     }
 
-    // ---------------
-    // TEMP for compatibility
-    // STOPSHIP Remove in 1.0
 
     public void packageBuildConfig(boolean value) {
         if (!value) {

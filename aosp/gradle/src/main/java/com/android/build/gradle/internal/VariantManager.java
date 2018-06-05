@@ -31,8 +31,6 @@ import com.android.build.gradle.internal.dsl.CoreProductFlavor;
 import com.android.build.gradle.internal.profile.SpanRecorders;
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.build.gradle.internal.variant.BaseVariantOutputData;
-import com.android.build.gradle.internal.variant.TestVariantData;
-import com.android.build.gradle.internal.variant.TestedVariantData;
 import com.android.build.gradle.internal.variant.VariantFactory;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.core.VariantType;
@@ -286,16 +284,6 @@ public class VariantManager implements VariantModel {
                     });
         }
 
-        // Create top level test tasks.
-        ThreadRecorder.get().record(ExecutionType.VARIANT_MANAGER_CREATE_TESTS_TASKS,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        taskManager.createTopLevelTestTasks(tasks, !productFlavors.isEmpty());
-                        return null;
-                    }
-                });
-
         for (final BaseVariantData<? extends BaseVariantOutputData> variantData : variantDataList) {
 
             SpanRecorders.record(project, ExecutionType.VARIANT_MANAGER_CREATE_TASKS_FOR_VARIANT,
@@ -514,7 +502,6 @@ public class VariantManager implements VariantModel {
                     variantDep.getPackageConfiguration().getName(), COM_ANDROID_SUPPORT_MULTIDEX);
         }
 
-        final String testedProjectPath = null;
         SpanRecorders.record(project, ExecutionType.RESOLVE_DEPENDENCIES,
                 new Recorder.Block<Void>() {
                     @Override
@@ -522,7 +509,7 @@ public class VariantManager implements VariantModel {
                         taskManager.resolveDependencies(
                                 variantDep,
                                 null /*testedVariantDeps*/,
-                                testedProjectPath);
+                                null);
                         return null;
                     }
                 }, new Recorder.Property(SpanRecorders.VARIANT, variantConfig.getFullName()));
@@ -530,64 +517,6 @@ public class VariantManager implements VariantModel {
         variantConfig.setDependencies(variantDep);
 
         return variantData;
-    }
-
-    /**
-     * Create a TestVariantData for the specified testedVariantData.
-     */
-    public TestVariantData createTestVariantData(
-            BaseVariantData testedVariantData,
-            VariantType type) {
-        CoreProductFlavor defaultConfig = defaultConfigData.getProductFlavor();
-        CoreBuildType buildType = testedVariantData.getVariantConfiguration().getBuildType();
-        BuildTypeData buildTypeData = buildTypes.get(buildType.getName());
-
-        GradleVariantConfiguration testedConfig = testedVariantData.getVariantConfiguration();
-        List<? extends CoreProductFlavor> productFlavorList = testedConfig.getProductFlavors();
-
-        // handle test variant
-        // need a suppress warning because ProductFlavor.getTestSourceSet(type) is annotated
-        // to return @Nullable and the constructor is @NonNull on this parameter,
-        // but it's never the case on defaultConfigData
-        // The constructor does a runtime check on the instances so we should be safe.
-        @SuppressWarnings("ConstantConditions")
-        GradleVariantConfiguration testVariantConfig = new GradleVariantConfiguration(
-                testedVariantData.getVariantConfiguration(),
-                defaultConfig,
-                defaultConfigData.getTestSourceSet(type),
-                buildType,
-                buildTypeData.getTestSourceSet(type),
-                type,
-                signingOverride);
-
-        for (CoreProductFlavor productFlavor : productFlavorList) {
-            ProductFlavorData<CoreProductFlavor> data = productFlavors
-                    .get(productFlavor.getName());
-
-            String dimensionName = productFlavor.getDimension();
-            if (dimensionName == null) {
-                dimensionName = "";
-            }
-            // same supress warning here.
-            //noinspection ConstantConditions
-            testVariantConfig.addProductFlavor(
-                    data.getProductFlavor(),
-                    data.getTestSourceSet(type),
-                    dimensionName);
-        }
-
-        createCompoundSourceSets(
-                productFlavorList,
-                testVariantConfig,
-                extension.getSourceSets());
-
-        // create the internal storage for this variant.
-        TestVariantData testVariantData = new TestVariantData(
-                extension, taskManager, testVariantConfig, (TestedVariantData) testedVariantData);
-        // link the testVariant to the tested variant in the other direction
-        ((TestedVariantData) testedVariantData).setTestVariantData(testVariantData, type);
-
-        return testVariantData;
     }
 
     /**

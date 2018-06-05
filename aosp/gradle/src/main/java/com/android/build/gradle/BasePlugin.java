@@ -73,10 +73,6 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public abstract class BasePlugin {
 
-    /**
-     * default retirement age in days since its inception date for RC or beta versions.
-     */
-    private static final int DEFAULT_RETIREMENT_AGE_FOR_NON_RELEASE_IN_DAYS = 40;
     protected BaseExtension extension;
 
     protected VariantManager variantManager;
@@ -315,20 +311,13 @@ public abstract class BasePlugin {
             });
         }
 
-        taskManager.createMockableJarTask();
-        ThreadRecorder.get().record(ExecutionType.VARIANT_MANAGER_CREATE_ANDROID_TASKS,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        variantManager.createAndroidTasks();
-                        ApiObjectFactory apiObjectFactory = new ApiObjectFactory(
-                                androidBuilder, extension, variantFactory, instantiator);
-                        for (BaseVariantData variantData : variantManager.getVariantDataList()) {
-                            apiObjectFactory.create(variantData);
-                        }
-                        return null;
-                    }
-                }, new Recorder.Property("project", project.getName()));
+        variantManager.createAndroidTasks();
+        ApiObjectFactory apiObjectFactory = new ApiObjectFactory(
+                androidBuilder, extension, variantFactory, instantiator);
+        for (BaseVariantData variantData : variantManager.getVariantDataList()) {
+            apiObjectFactory.create(variantData);
+        }
+
     }
 
     private boolean isVerbose() {

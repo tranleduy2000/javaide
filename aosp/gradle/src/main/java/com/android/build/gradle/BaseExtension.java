@@ -413,14 +413,6 @@ public abstract class BaseExtension implements AndroidConfig {
     }
 
     /**
-     * Configures the test options.
-     */
-    public void testOptions(Action<TestOptions> action) {
-        checkWritability();
-        action.execute(testOptions);
-    }
-
-    /**
      * Configures compile options.
      */
     public void compileOptions(Action<CompileOptions> action) {

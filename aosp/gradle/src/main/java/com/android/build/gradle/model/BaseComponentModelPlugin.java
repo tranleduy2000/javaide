@@ -512,9 +512,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             VariantManager variantManager =
                     ((DefaultAndroidComponentSpec) spec.get(COMPONENT_NAME)).getVariantManager();
 
-            // create the test tasks.
-            taskManager.createTopLevelTestTasks(new TaskModelMapAdaptor(tasks),
-                    !variantManager.getProductFlavors().isEmpty());
         }
 
         @Mutate

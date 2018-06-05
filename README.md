@@ -52,7 +52,8 @@ have a questions, ideas, need help or want to propose a change just open
 an issue. Pull request are greatly appreciated.
 
 ## Tutorials
-1. Setup system https://youtu.be/FZtSbgq8ZN0
+1. Create and build simple java project https://github.com/tranleduy2000/javaide/wiki/Create-simple-Java-project
+2. Open Java examples
 1. Build java file with library https://youtu.be/fUFqR8ZlChg
 3. Build simple Android app https://youtu.be/euZilR8-EhA
 

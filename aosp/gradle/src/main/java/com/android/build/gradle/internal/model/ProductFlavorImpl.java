@@ -22,11 +22,9 @@ import com.android.builder.model.ApiVersion;
 import com.android.builder.model.ProductFlavor;
 import com.android.builder.model.SigningConfig;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -41,16 +39,9 @@ class ProductFlavorImpl extends BaseConfigImpl implements ProductFlavor, Seriali
     private ApiVersion mMinSdkVersion = null;
     private ApiVersion mTargetSdkVersion = null;
     private Integer mMaxSdkVersion = null;
-    private Integer mRenderscriptTargetApi = null;
-    private Boolean mRenderscriptSupportMode = null;
     private Integer mVersionCode = null;
     private String mVersionName = null;
     private String mApplicationId = null;
-    private String mTestApplicationId = null;
-    private String mTestInstrumentationRunner = null;
-    private Map<String, String> mTestInstrumentationRunnerArguments = Maps.newHashMap();
-    private Boolean mTestHandleProfiling = null;
-    private Boolean mTestFunctionalTest = null;
     private Set<String> mResourceConfigurations = null;
 
 
@@ -71,24 +62,16 @@ class ProductFlavorImpl extends BaseConfigImpl implements ProductFlavor, Seriali
         clonedFlavor.mMaxSdkVersion = targetSdkVersionOverride != null
                 ? null /* we remove the maxSdkVersion when dealing with a preview release */
                 : productFlavor.getMaxSdkVersion();
-        clonedFlavor.mRenderscriptTargetApi = productFlavor.getRenderscriptTargetApi();
-        clonedFlavor.mRenderscriptSupportMode = productFlavor.getRenderscriptSupportModeEnabled();
 
         clonedFlavor.mVersionCode = productFlavor.getVersionCode();
         clonedFlavor.mVersionName = productFlavor.getVersionName();
 
         clonedFlavor.mApplicationId = productFlavor.getApplicationId();
 
-        clonedFlavor.mTestApplicationId = productFlavor.getTestApplicationId();
-        clonedFlavor.mTestInstrumentationRunner = productFlavor.getTestInstrumentationRunner();
-        clonedFlavor.mTestHandleProfiling = productFlavor.getTestHandleProfiling();
-        clonedFlavor.mTestFunctionalTest = productFlavor.getTestFunctionalTest();
 
         clonedFlavor.mResourceConfigurations = ImmutableSet.copyOf(
                 productFlavor.getResourceConfigurations());
 
-        clonedFlavor.mTestInstrumentationRunnerArguments = Maps.newHashMap(
-                productFlavor.getTestInstrumentationRunnerArguments());
 
         return clonedFlavor;
     }
@@ -138,11 +121,6 @@ class ProductFlavorImpl extends BaseConfigImpl implements ProductFlavor, Seriali
     public Integer getMaxSdkVersion() { return mMaxSdkVersion; }
 
     @NonNull
-    private Map<String, String> getTestInstrumentationRunnerArguments() {
-        return mTestInstrumentationRunnerArguments;
-    }
-
-    @NonNull
     @Override
     public Collection<String> getResourceConfigurations() {
         return mResourceConfigurations;
@@ -168,15 +146,9 @@ class ProductFlavorImpl extends BaseConfigImpl implements ProductFlavor, Seriali
                 ", mMinSdkVersion=" + mMinSdkVersion +
                 ", mTargetSdkVersion=" + mTargetSdkVersion +
                 ", mMaxSdkVersion=" + mMaxSdkVersion +
-                ", mRenderscriptTargetApi=" + mRenderscriptTargetApi +
-                ", mRenderscriptSupportMode=" + mRenderscriptSupportMode +
                 ", mVersionCode=" + mVersionCode +
                 ", mVersionName='" + mVersionName + '\'' +
                 ", mApplicationId='" + mApplicationId + '\'' +
-                ", mTestApplicationId='" + mTestApplicationId + '\'' +
-                ", mTestInstrumentationRunner='" + mTestInstrumentationRunner + '\'' +
-                ", mTestHandleProfiling=" + mTestHandleProfiling +
-                ", mTestFunctionalTest=" + mTestFunctionalTest +
                 ", mResourceConfigurations=" + mResourceConfigurations +
                 "} " + super.toString();
     }

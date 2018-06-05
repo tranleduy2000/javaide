@@ -41,15 +41,12 @@ import com.android.build.gradle.internal.scope.TaskConfigAction;
 import com.android.build.gradle.internal.scope.VariantOutputScope;
 import com.android.build.gradle.internal.scope.VariantScope;
 import com.android.build.gradle.internal.tasks.CheckManifest;
-import com.android.build.gradle.internal.tasks.DependencyReportTask;
 import com.android.build.gradle.internal.tasks.ExtractJavaResourcesTask;
 import com.android.build.gradle.internal.tasks.FileSupplier;
 import com.android.build.gradle.internal.tasks.GenerateApkDataTask;
 import com.android.build.gradle.internal.tasks.InstallVariantTask;
 import com.android.build.gradle.internal.tasks.MergeJavaResourcesTask;
-import com.android.build.gradle.internal.tasks.MockableAndroidJarTask;
 import com.android.build.gradle.internal.tasks.PrepareDependenciesTask;
-import com.android.build.gradle.internal.tasks.SigningReportTask;
 import com.android.build.gradle.internal.tasks.SourceSetsTask;
 import com.android.build.gradle.internal.tasks.UninstallTask;
 import com.android.build.gradle.internal.tasks.multidex.CreateMainDexList;
@@ -61,7 +58,6 @@ import com.android.build.gradle.internal.variant.ApkVariantOutputData;
 import com.android.build.gradle.internal.variant.ApplicationVariantData;
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.build.gradle.internal.variant.BaseVariantOutputData;
-import com.android.build.gradle.internal.variant.TestVariantData;
 import com.android.build.gradle.tasks.AidlCompile;
 import com.android.build.gradle.tasks.AndroidJarTask;
 import com.android.build.gradle.tasks.AndroidProGuardTask;
@@ -110,14 +106,10 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.JavaBasePlugin;
-import org.gradle.api.plugins.JavaPlugin;
-import org.gradle.api.reporting.ConfigurableReport;
 import org.gradle.api.tasks.Copy;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.compile.AbstractCompile;
 import org.gradle.api.tasks.compile.JavaCompile;
-import org.gradle.api.tasks.testing.Test;
-import org.gradle.api.tasks.testing.TestTaskReports;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
 
 import java.io.File;
@@ -158,11 +150,10 @@ public abstract class TaskManager {
     private static final String MAIN_PREBUILD = "preBuild";
     private static final String UNINSTALL_ALL = "uninstallAll";
     private static final String DEVICE_CHECK = "deviceCheck";
-    private static final String ASSEMBLE_ANDROID_TEST = "assembleAndroidTest";
     private static final String SOURCE_SETS = "sourceSets";
+
     private static final String LINT = "lint";
     private final GlobalScope globalScope;
-    public MockableAndroidJarTask createMockableJar;
     protected Project project;
     protected AndroidBuilder androidBuilder;
     protected SdkHandler sdkHandler;
@@ -389,14 +380,6 @@ public abstract class TaskManager {
                 sourceSetsTask.setDescription(
                         "Prints out all the source sets defined in this project.");
                 sourceSetsTask.setGroup(ANDROID_GROUP);
-            }
-        });
-
-        tasks.create(ASSEMBLE_ANDROID_TEST, new Action<Task>() {
-            @Override
-            public void execute(Task assembleAndroidTestTask) {
-                assembleAndroidTestTask.setGroup(BasePlugin.BUILD_GROUP);
-                assembleAndroidTestTask.setDescription("Assembles all the Test applications.");
             }
         });
 
@@ -933,25 +916,6 @@ public abstract class TaskManager {
         }
     }
 
-    /**
-     * Creates the tasks to build unit tests.
-     */
-    public void createUnitTestVariantTasks(
-            @NonNull TaskFactory tasks,
-            @NonNull TestVariantData variantData) {
-        variantData.assembleVariantTask.dependsOn(createMockableJar);
-        VariantScope variantScope = variantData.getScope();
-
-        createPreBuildTasks(variantScope);
-        createProcessJavaResTasks(tasks, variantScope);
-        createCompileAnchorTask(tasks, variantScope);
-        AndroidTask<JavaCompile> javacTask = createJavacTask(tasks, variantScope);
-        setJavaCompilerTask(javacTask, tasks, variantScope);
-
-        // This hides the assemble unit test task from the task list.
-        variantData.assembleVariantTask.setGroup(null);
-    }
-
     // TODO - should compile src/lint/java from src/lint/java and jar it into build/lint/lint.jar
     private void createLintCompileTask(TaskFactory tasks) {
 
@@ -1479,21 +1443,6 @@ public abstract class TaskManager {
 
         // Return output file.
         return scope.getProguardOutputFile();
-    }
-
-    public void createReportTasks(
-            List<BaseVariantData<? extends BaseVariantOutputData>> variantDataList) {
-        DependencyReportTask dependencyReportTask =
-                project.getTasks().create("androidDependencies", DependencyReportTask.class);
-        dependencyReportTask.setDescription("Displays the Android dependencies of the project.");
-        dependencyReportTask.setVariants(variantDataList);
-        dependencyReportTask.setGroup(ANDROID_GROUP);
-
-        SigningReportTask signingReportTask =
-                project.getTasks().create("signingReport", SigningReportTask.class);
-        signingReportTask.setDescription("Displays the signing info for each variant.");
-        signingReportTask.setVariants(variantDataList);
-        signingReportTask.setGroup(ANDROID_GROUP);
     }
 
     public void createAnchorTasks(@NonNull TaskFactory tasks, @NonNull VariantScope scope) {

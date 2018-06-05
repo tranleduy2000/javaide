@@ -29,8 +29,6 @@ import com.android.build.gradle.internal.VariantManager;
 import com.android.build.gradle.internal.process.GradleJavaProcessExecutor;
 import com.android.build.gradle.internal.process.GradleProcessExecutor;
 import com.android.build.gradle.internal.profile.RecordingBuildListener;
-import com.android.build.gradle.internal.tasks.DependencyReportTask;
-import com.android.build.gradle.internal.tasks.SigningReportTask;
 import com.android.build.gradle.internal.variant.VariantFactory;
 import com.android.build.gradle.managed.AndroidConfig;
 import com.android.build.gradle.managed.BuildType;
@@ -135,14 +133,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
                     new Recorder.Property("next_gen_plugin", "true"),
                     new Recorder.Property("gradle_version", project.getGradle().getGradleVersion())
             );
-            String benchmarkName = AndroidGradleOptions.getBenchmarkName(project);
-            if (benchmarkName != null) {
-                propertyList.add(new Recorder.Property("benchmark_name", benchmarkName));
-            }
-            String benchmarkMode = AndroidGradleOptions.getBenchmarkMode(project);
-            if (benchmarkMode != null) {
-                propertyList.add(new Recorder.Property("benchmark_mode", benchmarkMode));
-            }
 
             ProcessRecorderFactory.initialize(
                     new LoggerWrapper(project.getLogger()),
@@ -512,37 +502,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             VariantManager variantManager =
                     ((DefaultAndroidComponentSpec) spec.get(COMPONENT_NAME)).getVariantManager();
 
-        }
-
-        @Mutate
-        public void createReportTasks(
-                ModelMap<Task> tasks,
-                ModelMap<AndroidComponentSpec> specs) {
-            final VariantManager variantManager =
-                    ((DefaultAndroidComponentSpec) specs.get(COMPONENT_NAME)).getVariantManager();
-
-            tasks.create("androidDependencies", DependencyReportTask.class,
-                    new Action<DependencyReportTask>() {
-                        @Override
-                        public void execute(DependencyReportTask dependencyReportTask) {
-                            dependencyReportTask.setDescription(
-                                    "Displays the Android dependencies of the project");
-                            dependencyReportTask.setVariants(variantManager.getVariantDataList());
-                            dependencyReportTask.setGroup("Android");
-                        }
-                    });
-
-            tasks.create("signingReport", SigningReportTask.class,
-                    new Action<SigningReportTask>() {
-                        @Override
-                        public void execute(SigningReportTask signingReportTask) {
-                            signingReportTask
-                                    .setDescription("Displays the signing info for each variant");
-                            signingReportTask.setVariants(variantManager.getVariantDataList());
-                            signingReportTask.setGroup("Android");
-
-                        }
-                    });
         }
 
         @Mutate

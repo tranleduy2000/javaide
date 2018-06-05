@@ -19,48 +19,14 @@ package com.android.build.gradle;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.model.AndroidProject;
-import com.google.common.collect.Maps;
 
 import org.gradle.api.Project;
-
-import java.util.Map;
 
 /**
  * Determines if various options, triggered from the command line or environment, are set.
  */
 public class AndroidGradleOptions {
 
-    private static final String PROPERTY_TEST_RUNNER_ARGS =
-            "android.testInstrumentationRunnerArguments.";
-
-    // TODO: Drop the "com." prefix, for consistency.
-    private static final String PROPERTY_BENCHMARK_NAME = "com.android.benchmark.name";
-    private static final String PROPERTY_BENCHMARK_MODE = "com.android.benchmark.mode";
-
-    @NonNull
-    public static Map<String, String> getExtraInstrumentationTestRunnerArgs(@NonNull Project project) {
-        Map<String, String> argsMap = Maps.newHashMap();
-        for (Map.Entry<String, ?> entry : project.getProperties().entrySet()) {
-            if (entry.getKey().startsWith(PROPERTY_TEST_RUNNER_ARGS)) {
-                String argName = entry.getKey().substring(PROPERTY_TEST_RUNNER_ARGS.length());
-                String argValue = entry.getValue().toString();
-
-                argsMap.put(argName, argValue);
-            }
-        }
-
-        return argsMap;
-    }
-
-    @Nullable
-    public static String getBenchmarkName(@NonNull Project project) {
-        return getString(project, PROPERTY_BENCHMARK_NAME);
-    }
-
-    @Nullable
-    public static String getBenchmarkMode(@NonNull Project project) {
-        return getString(project, PROPERTY_BENCHMARK_MODE);
-    }
 
     public static boolean invokedFromIde(@NonNull Project project) {
         return getBoolean(project, AndroidProject.PROPERTY_INVOKED_FROM_IDE);

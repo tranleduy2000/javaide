@@ -23,22 +23,17 @@ import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.internal.TaskManager;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
 import com.android.build.gradle.tasks.ExtractAnnotations;
-import com.android.builder.core.VariantType;
-import com.google.common.collect.Maps;
 
 import org.gradle.api.Task;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * Data about a variant that produce a Library bundle (.aar)
  */
-public class LibraryVariantData extends BaseVariantData<LibVariantOutputData> implements TestedVariantData {
-
-    private final Map<VariantType, TestVariantData> testVariants;
+public class LibraryVariantData extends BaseVariantData<LibVariantOutputData> {
 
     @Nullable
     public ExtractAnnotations generateAnnotationsTask = null;
@@ -48,7 +43,6 @@ public class LibraryVariantData extends BaseVariantData<LibVariantOutputData> im
             @NonNull TaskManager taskManager,
             @NonNull GradleVariantConfiguration config) {
         super(androidConfig, taskManager, config);
-        testVariants = Maps.newEnumMap(VariantType.class);
 
         // create default output
         createOutput(OutputFile.OutputType.MAIN,
@@ -73,19 +67,6 @@ public class LibraryVariantData extends BaseVariantData<LibVariantOutputData> im
         } else {
             return String.format("%s build", getCapitalizedBuildTypeName());
         }
-    }
-
-    @Nullable
-    @Override
-    public TestVariantData getTestVariantData(@NonNull VariantType type) {
-        return testVariants.get(type);
-    }
-
-    @Override
-    public void setTestVariantData(
-            @NonNull TestVariantData testVariantData,
-            VariantType type) {
-        testVariants.put(type, testVariantData);
     }
 
     // Overridden to add source folders to a generateAnnotationsTask, if it exists.

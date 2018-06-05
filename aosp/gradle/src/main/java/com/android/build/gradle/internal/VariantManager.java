@@ -296,8 +296,6 @@ public class VariantManager implements VariantModel {
                     },
                     new Recorder.Property(SpanRecorders.VARIANT, variantData.getName()));
         }
-
-        taskManager.createReportTasks(variantDataList);
     }
 
     /**

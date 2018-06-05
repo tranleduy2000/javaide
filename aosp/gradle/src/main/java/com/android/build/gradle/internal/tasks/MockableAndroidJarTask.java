@@ -16,16 +16,10 @@
 
 package com.android.build.gradle.internal.tasks;
 
-import com.android.builder.testing.MockableJarGenerator;
-
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFile;
-import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Task for generating a mockable android.jar
@@ -41,20 +35,6 @@ public class MockableAndroidJarTask extends DefaultTask {
     */
    private boolean mReturnDefaultValues;
 
-   @TaskAction
-   public void createMockableJar() throws IOException {
-      MockableJarGenerator generator = new MockableJarGenerator(getReturnDefaultValues());
-      getOutputFile().delete();
-      getLogger().info(String.format("Creating %s from $s.", getOutputFile().getAbsolutePath(),
-              getAndroidJar().getAbsolutePath()));
-      generator.createMockableJar(getAndroidJar(), getOutputFile());
-   }
-
-   @Input
-   public boolean getReturnDefaultValues() {
-      return mReturnDefaultValues;
-   }
-
    public void setReturnDefaultValues(boolean returnDefaultValues) {
       mReturnDefaultValues = returnDefaultValues;
    }
@@ -66,11 +46,6 @@ public class MockableAndroidJarTask extends DefaultTask {
 
    public void setOutputFile(File outputFile) {
        mOutputFile = outputFile;
-   }
-
-   @InputFile
-   public File getAndroidJar() {
-      return mAndroidJar;
    }
 
    public void setAndroidJar(File androidJar) {

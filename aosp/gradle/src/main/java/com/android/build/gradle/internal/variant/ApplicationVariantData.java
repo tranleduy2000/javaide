@@ -16,7 +16,6 @@
 package com.android.build.gradle.internal.variant;
 
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
 import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.internal.TaskManager;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
@@ -30,8 +29,7 @@ import java.util.Set;
 /**
  * Data about a variant that produce an application APK
  */
-public class ApplicationVariantData extends ApkVariantData implements TestedVariantData {
-    private final Map<VariantType, TestVariantData> testVariants;
+public class ApplicationVariantData extends ApkVariantData  {
     private Set<String> compatibleScreens = null;
 
     public ApplicationVariantData(
@@ -39,7 +37,6 @@ public class ApplicationVariantData extends ApkVariantData implements TestedVari
             @NonNull GradleVariantConfiguration config,
             @NonNull TaskManager taskManager) {
         super(androidConfig, taskManager, config);
-        testVariants = Maps.newEnumMap(VariantType.class);
     }
 
 
@@ -56,16 +53,4 @@ public class ApplicationVariantData extends ApkVariantData implements TestedVari
         return compatibleScreens;
     }
 
-    @Override
-    public void setTestVariantData(
-            @NonNull TestVariantData testVariantData,
-            @NonNull VariantType type) {
-        testVariants.put(type, testVariantData);
-    }
-
-    @Nullable
-    @Override
-    public TestVariantData getTestVariantData(@NonNull VariantType type) {
-        return testVariants.get(type);
-    }
 }

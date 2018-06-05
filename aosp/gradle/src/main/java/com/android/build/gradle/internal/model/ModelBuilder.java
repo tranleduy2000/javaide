@@ -37,8 +37,6 @@ import com.android.build.gradle.internal.scope.VariantScope;
 import com.android.build.gradle.internal.variant.ApkVariantOutputData;
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.build.gradle.internal.variant.BaseVariantOutputData;
-import com.android.build.gradle.internal.variant.TestVariantData;
-import com.android.build.gradle.internal.variant.TestedVariantData;
 import com.android.builder.Version;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.core.VariantType;
@@ -65,7 +63,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import org.gradle.api.Project;
 import org.gradle.tooling.provider.model.ToolingModelBuilder;
@@ -243,31 +240,6 @@ public class ModelBuilder implements ToolingModelBuilder {
             clonedExtraJavaArtifacts.add(JavaArtifactImpl.clone(javaArtifact));
         }
 
-        if (variantData instanceof TestedVariantData) {
-            for (VariantType variantType : VariantType.getTestingTypes()) {
-                TestVariantData testVariantData = ((TestedVariantData) variantData).getTestVariantData(variantType);
-                if (testVariantData != null) {
-                    VariantType type = testVariantData.getType();
-                    if (type != null) {
-                        switch (type) {
-                            case ANDROID_TEST:
-                                extraAndroidArtifacts.add(createAndroidArtifact(
-                                        variantType.getArtifactName(),
-                                        testVariantData));
-                                break;
-                            case UNIT_TEST:
-                                clonedExtraJavaArtifacts.add(createUnitTestsJavaArtifact(
-                                        variantType,
-                                        testVariantData));
-                                break;
-                            default:
-                                throw new IllegalArgumentException(
-                                        "Unsupported test variant type ${variantType}.");
-                        }
-                    }
-                }
-            }
-        }
 
         // if the target is a codename, override the model value.
         ApiVersion sdkVersionOverride = null;
@@ -293,31 +265,6 @@ public class ModelBuilder implements ToolingModelBuilder {
                 mainArtifact,
                 extraAndroidArtifacts,
                 clonedExtraJavaArtifacts);
-    }
-
-    private JavaArtifactImpl createUnitTestsJavaArtifact(
-            @NonNull VariantType variantType,
-            @NonNull BaseVariantData<? extends BaseVariantOutputData> variantData) {
-        SourceProviders sourceProviders = determineSourceProviders(variantData);
-        DependenciesImpl dependencies = DependenciesImpl.cloneDependencies(variantData,
-                androidBuilder);
-
-        List<File> extraGeneratedSourceFolders = variantData.getExtraGeneratedSourceFolders();
-        return new JavaArtifactImpl(
-                variantType.getArtifactName(),
-                variantData.assembleVariantTask.getName(),
-                variantData.compileTask.getName(),
-                Sets.newHashSet(variantData.prepareDependenciesTask.getName(),
-                        taskManager.createMockableJar.getName()),
-                extraGeneratedSourceFolders != null ? extraGeneratedSourceFolders : Collections.<File>emptyList(),
-                (variantData.javacTask != null) ?
-                        variantData.javacTask.getDestinationDir() :
-                        variantData.getScope().getJavaOutputDir(),
-                variantData.getScope().getJavaResourcesDestinationDir(),
-                taskManager.createMockableJar.getOutputFile(),
-                dependencies,
-                sourceProviders.variantSourceProvider,
-                sourceProviders.multiFlavorSourceProvider);
     }
 
     /**

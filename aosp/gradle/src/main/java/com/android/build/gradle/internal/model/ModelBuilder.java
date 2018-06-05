@@ -499,10 +499,6 @@ public class ModelBuilder implements ToolingModelBuilder {
 
         folders.add(scope.getAidlSourceOutputDir());
         folders.add(scope.getBuildConfigSourceOutputDir());
-        Boolean ndkMode = variantData.getVariantConfiguration().getMergedFlavor().getRenderscriptNdkModeEnabled();
-        if (ndkMode == null || !ndkMode) {
-            folders.add(scope.getRenderscriptSourceOutputDir());
-        }
 
         return folders;
     }

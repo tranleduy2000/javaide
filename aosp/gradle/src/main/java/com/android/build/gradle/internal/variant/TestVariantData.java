@@ -21,19 +21,14 @@ import com.android.build.OutputFile;
 import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.internal.TaskManager;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
-import com.android.build.gradle.internal.tasks.DeviceProviderInstrumentTestTask;
-import com.google.common.collect.Lists;
 
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Data about a variant that produce a test APK
  */
 public class TestVariantData extends ApkVariantData {
 
-    public DeviceProviderInstrumentTestTask connectedTestTask;
-    public final List<DeviceProviderInstrumentTestTask> providerTestTaskList = Lists.newArrayList();
     @NonNull
     private final TestedVariantData testedVariantData;
 
@@ -48,11 +43,6 @@ public class TestVariantData extends ApkVariantData {
         // create default output
         createOutput(OutputFile.OutputType.MAIN,
                 Collections.<FilterData>emptyList());
-    }
-
-    @NonNull
-    public TestedVariantData getTestedVariantData() {
-        return testedVariantData;
     }
 
     @Override

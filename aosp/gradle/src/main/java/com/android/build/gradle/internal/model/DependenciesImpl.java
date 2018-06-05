@@ -142,16 +142,6 @@ public class DependenciesImpl implements Dependencies, Serializable {
                                 jarDep.getResolvedCoordinates()));
             }
         }
-
-        GradleVariantConfiguration variantConfig = variantData.getVariantConfiguration();
-
-        if (variantConfig.getRenderscriptSupportModeEnabled()) {
-            File supportJar = androidBuilder.getRenderScriptSupportJar();
-            if (supportJar != null) {
-                javaLibraries.add(new JavaLibraryImpl(supportJar, null, null));
-            }
-        }
-
         return new DependenciesImpl(libraries, javaLibraries, projects);
     }
 

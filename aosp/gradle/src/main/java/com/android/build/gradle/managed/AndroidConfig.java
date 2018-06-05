@@ -25,19 +25,14 @@ import com.android.build.gradle.internal.dsl.LintOptions;
 import com.android.build.gradle.internal.dsl.PackagingOptions;
 import com.android.build.gradle.internal.dsl.PreprocessingOptions;
 import com.android.build.gradle.internal.dsl.Splits;
-import com.android.build.gradle.internal.dsl.TestOptions;
 import com.android.build.gradle.model.AndroidComponentModelSourceSet;
 import com.android.builder.core.LibraryRequest;
-import com.android.builder.testing.api.DeviceProvider;
-import com.android.builder.testing.api.TestServer;
 import com.android.sdklib.repository.FullRevision;
 
 import org.gradle.api.Action;
-import org.gradle.model.Managed;
 import org.gradle.model.ModelMap;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Component model for all Android plugin.
@@ -70,22 +65,6 @@ public interface AndroidConfig {
      * Default config, shared by all flavors.
      */
     ProductFlavor getDefaultConfig();
-
-    /**
-     * List of device providers
-     */
-
-    List<DeviceProvider> getDeviceProviders();
-
-    void setDeviceProviders(List<DeviceProvider> providers);
-
-    /**
-     * List of remote CI servers
-     */
-
-    List<TestServer> getTestServers();
-
-    void setTestServers(List<TestServer> providers);
 
     /**
      * Name of the variant to publish
@@ -200,14 +179,6 @@ public interface AndroidConfig {
     PackagingOptions getPackagingOptions();
 
     void setPackagingOptions(PackagingOptions packagingOptions);
-
-    /**
-     * Options for running tests.
-     */
-
-    TestOptions getTestOptions();
-
-    void setTestOptions(TestOptions testOptions);
 
     /**
      * APK splits

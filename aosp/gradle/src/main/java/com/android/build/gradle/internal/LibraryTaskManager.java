@@ -109,8 +109,6 @@ public class LibraryTaskManager extends TaskManager {
         // Add a task to process the manifest(s)
         createMergeLibManifestsTask(tasks, variantScope);
 
-        // Add a task to compile renderscript files.
-        createRenderscriptTask(tasks, variantScope);
 
         AndroidTask<MergeResources> packageRes = ThreadRecorder.get().record(
                 ExecutionType.LIB_TASK_MANAGER_CREATE_MERGE_RESOURCES_TASK,

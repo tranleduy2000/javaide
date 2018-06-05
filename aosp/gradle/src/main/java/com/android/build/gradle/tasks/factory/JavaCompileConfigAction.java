@@ -41,42 +41,15 @@ public class JavaCompileConfigAction implements TaskConfigAction<JavaCompile> {
 
     @Override
     public void execute(final JavaCompile javacTask) {
-        final BaseVariantData testedVariantData = scope.getTestedVariantData();
+        final BaseVariantData testedVariantData =null;
         scope.getVariantData().javacTask = javacTask;
 
         javacTask.setSource(scope.getVariantData().getJavaSources());
-
         ConventionMappingHelper.map(javacTask, "classpath", new Callable<FileCollection>() {
             @Override
             public FileCollection call() {
                 FileCollection classpath = scope.getJavaClasspath();
                 Project project = scope.getGlobalScope().getProject();
-
-                if (testedVariantData != null) {
-                    // For libraries, the classpath from androidBuilder includes the library
-                    // output (bundle/classes.jar) as a normal dependency. In unit tests we
-                    // don't want to package the jar at every run, so we use the *.class
-                    // files instead.
-                    if (!testedVariantData.getType().equals(LIBRARY)
-                            || scope.getVariantData().getType().equals(UNIT_TEST)) {
-                        classpath = classpath.plus(project.files(
-                                        testedVariantData.getScope().getJavaClasspath(),
-                                        testedVariantData.getScope().getJavaOutputDir(),
-                                        testedVariantData.getScope().getJavaDependencyCache()));
-                    }
-
-                    if (scope.getVariantData().getType().equals(UNIT_TEST)
-                            && testedVariantData.getType().equals(LIBRARY)) {
-                        // The bundled classes.jar may exist, but it's probably old. Don't
-                        // use it, we already have the *.class files in the classpath.
-                        LibraryDependency libraryDependency =
-                                testedVariantData.getVariantConfiguration().getOutput();
-                        if (libraryDependency != null) {
-                            File jarFile = libraryDependency.getJarFile();
-                            classpath = classpath.minus(project.files(jarFile));
-                        }
-                    }
-                }
 
                 return classpath;
             }

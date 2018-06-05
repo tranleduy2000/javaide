@@ -39,14 +39,11 @@ import com.android.build.gradle.internal.dsl.PreprocessingOptions;
 import com.android.build.gradle.internal.dsl.ProductFlavor;
 import com.android.build.gradle.internal.dsl.SigningConfig;
 import com.android.build.gradle.internal.dsl.Splits;
-import com.android.build.gradle.internal.dsl.TestOptions;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.core.BuilderConstants;
 import com.android.builder.core.LibraryRequest;
 import com.android.builder.model.SourceProvider;
 import com.android.builder.sdk.TargetInfo;
-import com.android.builder.testing.api.DeviceProvider;
-import com.android.builder.testing.api.TestServer;
 import com.android.sdklib.repository.FullRevision;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.Lists;
@@ -96,10 +93,7 @@ public abstract class BaseExtension implements AndroidConfig {
      * Dex options.
      */
     final DexOptions dexOptions;
-    /**
-     * Options for running tests.
-     */
-    final TestOptions testOptions;
+
     /**
      * Compile options
      */
@@ -141,8 +135,6 @@ public abstract class BaseExtension implements AndroidConfig {
      * The source sets container.
      */
     final NamedDomainObjectContainer<AndroidSourceSet> sourceSetsContainer;
-    private final List<DeviceProvider> deviceProviderList = Lists.newArrayList();
-    private final List<TestServer> testServerList = Lists.newArrayList();
     private final AndroidBuilder androidBuilder;
     private final SdkHandler sdkHandler;
     protected Project project;
@@ -191,7 +183,6 @@ public abstract class BaseExtension implements AndroidConfig {
         aaptOptions = instantiator.newInstance(AaptOptions.class);
         dexOptions = instantiator.newInstance(DexOptions.class);
         lintOptions = instantiator.newInstance(LintOptions.class);
-        testOptions = instantiator.newInstance(TestOptions.class);
         compileOptions = instantiator.newInstance(CompileOptions.class);
         packagingOptions = instantiator.newInstance(PackagingOptions.class);
         preprocessingOptions = instantiator.newInstance(PreprocessingOptions.class);
@@ -450,28 +441,6 @@ public abstract class BaseExtension implements AndroidConfig {
     public void splits(Action<Splits> action) {
         checkWritability();
         action.execute(splits);
-    }
-
-    public void deviceProvider(DeviceProvider deviceProvider) {
-        checkWritability();
-        deviceProviderList.add(deviceProvider);
-    }
-
-    @Override
-    @NonNull
-    public List<DeviceProvider> getDeviceProviders() {
-        return deviceProviderList;
-    }
-
-    public void testServer(TestServer testServer) {
-        checkWritability();
-        testServerList.add(testServer);
-    }
-
-    @Override
-    @NonNull
-    public List<TestServer> getTestServers() {
-        return testServerList;
     }
 
     /**
@@ -773,14 +742,6 @@ public abstract class BaseExtension implements AndroidConfig {
     @Override
     public Splits getSplits() {
         return splits;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public TestOptions getTestOptions() {
-        return testOptions;
     }
 
     private void ensureTargetSetup() {

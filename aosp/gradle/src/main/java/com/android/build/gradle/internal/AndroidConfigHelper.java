@@ -26,12 +26,9 @@ import com.android.build.gradle.internal.dsl.LintOptions;
 import com.android.build.gradle.internal.dsl.PackagingOptions;
 import com.android.build.gradle.internal.dsl.PreprocessingOptions;
 import com.android.build.gradle.internal.dsl.Splits;
-import com.android.build.gradle.internal.dsl.TestOptions;
 import com.android.build.gradle.managed.AndroidConfig;
 import com.android.builder.core.BuilderConstants;
 import com.android.builder.core.LibraryRequest;
-import com.android.builder.testing.api.DeviceProvider;
-import com.android.builder.testing.api.TestServer;
 import com.google.common.collect.Lists;
 
 import org.gradle.api.Action;
@@ -52,12 +49,9 @@ public class AndroidConfigHelper {
         model.setPublishNonDefault(false);
         model.setGeneratePureSplits(false);
         model.setPreProcessingOptions(instantiator.newInstance(PreprocessingOptions.class));
-        model.setDeviceProviders(Lists.<DeviceProvider>newArrayList());
-        model.setTestServers(Lists.<TestServer>newArrayList());
         model.setAaptOptions(instantiator.newInstance(AaptOptions.class));
         model.setDexOptions(instantiator.newInstance(DexOptions.class));
         model.setLintOptions(instantiator.newInstance(LintOptions.class));
-        model.setTestOptions(instantiator.newInstance(TestOptions.class));
         model.setCompileOptions(instantiator.newInstance(CompileOptions.class));
         model.setPackagingOptions(instantiator.newInstance(PackagingOptions.class));
         model.setAdbOptions(instantiator.newInstance(AdbOptions.class));

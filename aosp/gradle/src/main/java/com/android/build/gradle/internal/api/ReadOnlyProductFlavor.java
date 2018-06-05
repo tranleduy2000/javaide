@@ -25,18 +25,17 @@ import com.android.builder.model.SigningConfig;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * read-only version of the ProductFlavor wrapping another ProductFlavor.
- *
+ * <p>
  * In the variant API, it is important that the objects returned by the variants
  * are read-only.
- *
+ * <p>
  * However, even though the API is defined to use the base interfaces as return
  * type (which all contain only getters), the dynamics of Groovy makes it easy to
  * actually use the setters of the implementation classes.
- *
+ * <p>
  * This wrapper ensures that the returned instance is actually just a strict implementation
  * of the base interface and is read-only.
  */
@@ -90,54 +89,6 @@ public class ReadOnlyProductFlavor extends ReadOnlyBaseConfig implements Product
     @Override
     public Integer getMaxSdkVersion() {
         return productFlavor.getMaxSdkVersion();
-    }
-
-    @Nullable
-    @Override
-    public Integer getRenderscriptTargetApi() {
-        return productFlavor.getRenderscriptTargetApi();
-    }
-
-    @Nullable
-    @Override
-    public Boolean getRenderscriptSupportModeEnabled() {
-        return productFlavor.getRenderscriptSupportModeEnabled();
-    }
-
-    @Nullable
-    @Override
-    public Boolean getRenderscriptNdkModeEnabled() {
-        return productFlavor.getRenderscriptNdkModeEnabled();
-    }
-
-    @Nullable
-    @Override
-    public String getTestApplicationId() {
-        return productFlavor.getTestApplicationId();
-    }
-
-    @Nullable
-    @Override
-    public String getTestInstrumentationRunner() {
-        return productFlavor.getTestInstrumentationRunner();
-    }
-
-    @NonNull
-    @Override
-    public Map<String, String> getTestInstrumentationRunnerArguments() {
-        return productFlavor.getTestInstrumentationRunnerArguments();
-    }
-
-    @Nullable
-    @Override
-    public Boolean getTestHandleProfiling() {
-        return productFlavor.getTestHandleProfiling();
-    }
-
-    @Nullable
-    @Override
-    public Boolean getTestFunctionalTest() {
-        return productFlavor.getTestFunctionalTest();
     }
 
     @NonNull

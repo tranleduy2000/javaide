@@ -181,14 +181,9 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
         public void execute(final AndroidProGuardTask proguardTask) {
             final BaseVariantData<? extends BaseVariantOutputData> variantData = scope.getVariantData();
             final VariantConfiguration variantConfig = scope.getVariantData().getVariantConfiguration();
-            final BaseVariantData testedVariantData = scope.getTestedVariantData();
 
             // use single output for now.
             final BaseVariantOutputData variantOutputData = scope.getVariantData().getOutputs().get(0);
-
-            if (testedVariantData != null) {
-                proguardTask.dependsOn(testedVariantData.getScope().getObfuscationTask().getName());
-            }
 
             variantData.obfuscationTask = proguardTask;
             variantData.mappingFileProviderTask = proguardTask;
@@ -201,37 +196,17 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
 
             try {
 
-                if (testedVariantData != null) {
-                    // Don't remove any code in tested app.
-                    proguardTask.dontshrink();
-                    proguardTask.dontoptimize();
-
-                    // We can't call dontobfuscate, since that would make ProGuard ignore the mapping file.
-                    proguardTask.keep("class * {*;}");
-                    proguardTask.keep("interface * {*;}");
-                    proguardTask.keep("enum * {*;}");
-                    proguardTask.keepattributes();
-
-                    // Input the mapping from the tested app so that we can deal with obfuscated code.
-                    proguardTask.applymapping(testedVariantData.getMappingFile());
-
-                    // All -dontwarn rules for test dependencies should go in here:
-                    proguardTask.configuration(
-                            testedVariantData.getVariantConfiguration().getTestProguardFiles());
-                } else {
-
-                    proguardTask.configuration(new Callable<Collection<File>>() {
-                        @Override
-                        public Collection<File> call() {
-                            List<File> proguardFiles = variantConfig.getProguardFiles(true,
-                                    Collections.singletonList(getDefaultProguardFile(
-                                            TaskManager.DEFAULT_PROGUARD_CONFIG_FILE)));
-                            proguardFiles.add(
-                                    variantOutputData.processResourcesTask.getProguardOutputFile());
-                            return proguardFiles;
-                        }
-                    });
-                }
+                proguardTask.configuration(new Callable<Collection<File>>() {
+                    @Override
+                    public Collection<File> call() {
+                        List<File> proguardFiles = variantConfig.getProguardFiles(true,
+                                Collections.singletonList(getDefaultProguardFile(
+                                        TaskManager.DEFAULT_PROGUARD_CONFIG_FILE)));
+                        proguardFiles.add(
+                                variantOutputData.processResourcesTask.getProguardOutputFile());
+                        return proguardFiles;
+                    }
+                });
 
                 // --- InJars / LibraryJars ---
 
@@ -344,23 +319,6 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
                         }
                     }
                 });
-
-                if (testedVariantData != null) {
-                    // input the tested app as library
-                    proguardTask.libraryjars(testedVariantData.javacTask.getDestinationDir());
-                    // including its dependencies
-                    Callable testedPackagedJars = new Callable<Set<File>>() {
-                        @Override
-                        public Set<File> call() {
-                            return scope.getGlobalScope().getAndroidBuilder()
-                                    .getPackagedJars(testedVariantData.getVariantConfiguration());
-                        }
-                    };
-
-                    LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(1);
-                    map.put("filter", "!META-INF/MANIFEST.MF");
-                    proguardTask.libraryjars(map, testedPackagedJars);
-                }
 
                 // --- Out files ---
 

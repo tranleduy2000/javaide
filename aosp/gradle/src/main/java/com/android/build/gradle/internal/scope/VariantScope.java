@@ -43,7 +43,6 @@ import com.android.build.gradle.tasks.MergeAssets;
 import com.android.build.gradle.tasks.MergeResources;
 import com.android.build.gradle.tasks.NdkCompile;
 import com.android.build.gradle.tasks.ProcessAndroidResources;
-import com.android.build.gradle.tasks.RenderscriptCompile;
 import com.android.builder.core.VariantConfiguration;
 import com.android.builder.core.VariantType;
 import com.android.builder.signing.SignedJarBuilder;
@@ -96,7 +95,6 @@ public class VariantScope {
     private AndroidTask<Task> assetGenTask;
     private AndroidTask<CheckManifest> checkManifestTask;
 
-    private AndroidTask<RenderscriptCompile> renderscriptCompileTask;
     private AndroidTask<AidlCompile> aidlCompileTask;
     @Nullable
     private AndroidTask<MergeResources> mergeResourcesTask;
@@ -225,13 +223,6 @@ public class VariantScope {
         return set;
     }
 
-    @Nullable
-    public BaseVariantData getTestedVariantData() {
-        return variantData instanceof TestVariantData ?
-                (BaseVariantData) ((TestVariantData) variantData).getTestedVariantData() :
-                null;
-    }
-
 
     // Precomputed file paths.
 
@@ -298,12 +289,6 @@ public class VariantScope {
     public File getMainDexListFile() {
         return new File(globalScope.getIntermediatesDir(), "multi-dex/" + getVariantConfiguration().getDirName()
                 + "/maindexlist.txt");
-    }
-
-    @NonNull
-    public File getRenderscriptSourceOutputDir() {
-        return new File(globalScope.getGeneratedDir(),
-                "source/rs/" + variantData.getVariantConfiguration().getDirName());
     }
 
     @NonNull
@@ -507,15 +492,6 @@ public class VariantScope {
     public void setCheckManifestTask(
             AndroidTask<CheckManifest> checkManifestTask) {
         this.checkManifestTask = checkManifestTask;
-    }
-
-    public AndroidTask<RenderscriptCompile> getRenderscriptCompileTask() {
-        return renderscriptCompileTask;
-    }
-
-    public void setRenderscriptCompileTask(
-            AndroidTask<RenderscriptCompile> renderscriptCompileTask) {
-        this.renderscriptCompileTask = renderscriptCompileTask;
     }
 
     public AndroidTask<AidlCompile> getAidlCompileTask() {

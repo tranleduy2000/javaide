@@ -18,7 +18,6 @@ package com.android.build.gradle.managed.adaptor;
 
 import static com.android.builder.core.VariantType.ANDROID_TEST;
 
-import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.gradle.api.AndroidSourceDirectorySet;
 import com.android.build.gradle.api.AndroidSourceFile;
@@ -38,7 +37,6 @@ import com.android.build.gradle.internal.dsl.LintOptions;
 import com.android.build.gradle.internal.dsl.PackagingOptions;
 import com.android.build.gradle.internal.dsl.PreprocessingOptions;
 import com.android.build.gradle.internal.dsl.Splits;
-import com.android.build.gradle.internal.dsl.TestOptions;
 import com.android.build.gradle.managed.BuildType;
 import com.android.build.gradle.managed.ProductFlavor;
 import com.android.build.gradle.managed.SigningConfig;
@@ -46,13 +44,10 @@ import com.android.build.gradle.model.AndroidComponentModelSourceSet;
 import com.android.build.gradle.managed.AndroidConfig;
 import com.android.builder.core.BuilderConstants;
 import com.android.builder.core.LibraryRequest;
-import com.android.builder.testing.api.DeviceProvider;
-import com.android.builder.testing.api.TestServer;
 import com.android.sdklib.repository.FullRevision;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
@@ -106,20 +101,6 @@ public class AndroidConfigAdaptor implements com.android.build.gradle.AndroidCon
     @Override
     public CoreProductFlavor getDefaultConfig() {
         return new ProductFlavorAdaptor(model.getDefaultConfig());
-    }
-
-    @Override
-    @NonNull
-    public List<DeviceProvider> getDeviceProviders() {
-        return model.getDeviceProviders() == null ?
-                Lists.<DeviceProvider>newArrayList() :
-                model.getDeviceProviders();
-    }
-
-    @Override
-    @NonNull
-    public List<TestServer> getTestServers() {
-        return model.getTestServers();
     }
 
     @Override
@@ -242,11 +223,6 @@ public class AndroidConfigAdaptor implements com.android.build.gradle.AndroidCon
         return model.getPackagingOptions();
     }
 
-
-    @Override
-    public TestOptions getTestOptions() {
-        return model.getTestOptions();
-    }
 
     @Override
     public Splits getSplits() {

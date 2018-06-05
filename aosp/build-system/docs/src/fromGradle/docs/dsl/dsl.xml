@@ -60,8 +60,6 @@
             <tr><td>com.android.build.gradle.internal.dsl.ProductFlavor</td></tr>
             <tr><td>com.android.build.gradle.internal.dsl.SigningConfig</td></tr>
             <tr><td>com.android.build.gradle.internal.dsl.Splits</td></tr>
-            <tr><td>com.android.build.gradle.internal.dsl.TestOptions.UnitTestOptions</td></tr>
-            <tr><td>com.android.build.gradle.internal.dsl.TestOptions</td></tr>
         </table>
     </section>
 </book>

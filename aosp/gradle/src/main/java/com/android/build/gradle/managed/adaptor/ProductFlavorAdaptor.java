@@ -177,53 +177,10 @@ public class ProductFlavorAdaptor implements CoreProductFlavor {
         return productFlavor.getMaxSdkVersion();
     }
 
-    @Nullable
-    @Override
-    public Integer getRenderscriptTargetApi() {
-        return productFlavor.getRenderscriptTargetApi();
-    }
-
-    @Nullable
-    @Override
-    public Boolean getRenderscriptSupportModeEnabled() {
-        return productFlavor.getRenderscriptSupportModeEnabled();
-    }
-
-    @Nullable
-    @Override
-    public Boolean getRenderscriptNdkModeEnabled() {
-        return productFlavor.getRenderscriptNdkModeEnabled();
-    }
-
-    @Nullable
-    @Override
-    public String getTestApplicationId() {
-        return productFlavor.getTestApplicationId();
-    }
-
-    @Nullable
-    @Override
-    public String getTestInstrumentationRunner() {
-        return productFlavor.getTestInstrumentationRunner();
-    }
-
     @NonNull
-    @Override
-    public Map<String, String> getTestInstrumentationRunnerArguments() {
+    private Map<String, String> getTestInstrumentationRunnerArguments() {
         // TODO: To be implemented.
         return Maps.newHashMap();
-    }
-
-    @Nullable
-    @Override
-    public Boolean getTestHandleProfiling() {
-        return productFlavor.getTestHandleProfiling();
-    }
-
-    @Nullable
-    @Override
-    public Boolean getTestFunctionalTest() {
-        return productFlavor.getTestFunctionalTest();
     }
 
     @NonNull

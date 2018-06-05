@@ -20,7 +20,6 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * a Product Flavor. This is only the configuration of the flavor.
@@ -95,72 +94,6 @@ public interface ProductFlavor extends BaseConfig, DimensionAware {
     @Nullable
     Integer getMaxSdkVersion();
 
-    /**
-     * Returns the renderscript target api. This is only the value set on this product flavor.
-     * TODO: make final renderscript target api available through the model
-     *
-     * @return the renderscript target api, or null if not specified
-     */
-    @Nullable
-    Integer getRenderscriptTargetApi();
-
-    /**
-     * Returns whether the renderscript code should be compiled in support mode to
-     * make it compatible with older versions of Android.
-     *
-     * @return true if support mode is enabled, false if not, and null if not specified.
-     */
-    @Nullable
-    Boolean getRenderscriptSupportModeEnabled();
-
-    /**
-     * Returns whether the renderscript code should be compiled to generate C/C++ bindings.
-     * @return true for C/C++ generation, false for Java, null if not specified.
-     */
-    @Nullable
-    Boolean getRenderscriptNdkModeEnabled();
-
-    /**
-     * Returns the test application id. This is only the value set on this product flavor.
-     * To get the final value, use {@link Variant#getExtraAndroidArtifacts()} with
-     * {@link AndroidProject#ARTIFACT_ANDROID_TEST} and then
-     * {@link AndroidArtifact#getApplicationId()}
-     *
-     * @return the test package name.
-     */
-    @Nullable
-    String getTestApplicationId();
-
-    /**
-     * Returns the test instrumentation runner. This is only the value set on this product flavor.
-     * TODO: make test instrumentation runner available through the model.
-     *
-     * @return the test package name.
-     */
-    @Nullable
-    String getTestInstrumentationRunner();
-
-    /**
-     * Returns the arguments for the test instrumentation runner.
-     */
-    @NonNull
-    Map<String, String> getTestInstrumentationRunnerArguments();
-
-    /**
-     * Returns the handlingProfile value. This is only the value set on this product flavor.
-     *
-     *  @return the handlingProfile value.
-     */
-    @Nullable
-    Boolean getTestHandleProfiling();
-
-    /**
-     * Returns the functionalTest value. This is only the value set on this product flavor.
-     *
-     * @return the functionalTest value.
-     */
-    @Nullable
-    Boolean getTestFunctionalTest();
 
     /**
      * Returns the resource configuration for this variant.

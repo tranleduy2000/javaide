@@ -43,7 +43,6 @@ class ProductFlavorImpl extends BaseConfigImpl implements ProductFlavor, Seriali
     private Integer mMaxSdkVersion = null;
     private Integer mRenderscriptTargetApi = null;
     private Boolean mRenderscriptSupportMode = null;
-    private Boolean mRenderscriptNdkMode = null;
     private Integer mVersionCode = null;
     private String mVersionName = null;
     private String mApplicationId = null;
@@ -74,7 +73,6 @@ class ProductFlavorImpl extends BaseConfigImpl implements ProductFlavor, Seriali
                 : productFlavor.getMaxSdkVersion();
         clonedFlavor.mRenderscriptTargetApi = productFlavor.getRenderscriptTargetApi();
         clonedFlavor.mRenderscriptSupportMode = productFlavor.getRenderscriptSupportModeEnabled();
-        clonedFlavor.mRenderscriptNdkMode = productFlavor.getRenderscriptNdkModeEnabled();
 
         clonedFlavor.mVersionCode = productFlavor.getVersionCode();
         clonedFlavor.mVersionName = productFlavor.getVersionName();
@@ -139,52 +137,9 @@ class ProductFlavorImpl extends BaseConfigImpl implements ProductFlavor, Seriali
     @Nullable
     public Integer getMaxSdkVersion() { return mMaxSdkVersion; }
 
-    @Override
-    @Nullable
-    public Integer getRenderscriptTargetApi() {
-        return mRenderscriptTargetApi;
-    }
-
-    @Override
-    @Nullable
-    public Boolean getRenderscriptSupportModeEnabled() {
-        return mRenderscriptSupportMode;
-    }
-
-    @Override
-    @Nullable
-    public Boolean getRenderscriptNdkModeEnabled() {
-        return mRenderscriptNdkMode;
-    }
-
-    @Nullable
-    @Override
-    public String getTestApplicationId() {
-        return mTestApplicationId;
-    }
-
-    @Nullable
-    @Override
-    public String getTestInstrumentationRunner() {
-        return mTestInstrumentationRunner;
-    }
-
     @NonNull
-    @Override
-    public Map<String, String> getTestInstrumentationRunnerArguments() {
+    private Map<String, String> getTestInstrumentationRunnerArguments() {
         return mTestInstrumentationRunnerArguments;
-    }
-
-    @Nullable
-    @Override
-    public Boolean getTestHandleProfiling() {
-        return mTestHandleProfiling;
-    }
-
-    @Nullable
-    @Override
-    public Boolean getTestFunctionalTest() {
-        return mTestFunctionalTest;
     }
 
     @NonNull
@@ -215,7 +170,6 @@ class ProductFlavorImpl extends BaseConfigImpl implements ProductFlavor, Seriali
                 ", mMaxSdkVersion=" + mMaxSdkVersion +
                 ", mRenderscriptTargetApi=" + mRenderscriptTargetApi +
                 ", mRenderscriptSupportMode=" + mRenderscriptSupportMode +
-                ", mRenderscriptNdkMode=" + mRenderscriptNdkMode +
                 ", mVersionCode=" + mVersionCode +
                 ", mVersionName='" + mVersionName + '\'' +
                 ", mApplicationId='" + mApplicationId + '\'' +

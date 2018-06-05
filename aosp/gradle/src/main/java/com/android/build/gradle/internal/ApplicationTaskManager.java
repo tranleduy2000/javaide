@@ -72,8 +72,6 @@ public class ApplicationTaskManager extends TaskManager {
         // Add a task to create the res values
         createGenerateResValuesTask(tasks, variantScope);
 
-        // Add a task to compile renderscript files.
-        createRenderscriptTask(tasks, variantScope);
 
         // Add a task to merge the resource folders
         createMergeResourcesTask(tasks, variantScope);

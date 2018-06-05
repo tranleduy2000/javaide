@@ -39,7 +39,6 @@ import com.android.build.gradle.tasks.MergeAssets;
 import com.android.build.gradle.tasks.MergeResources;
 import com.android.build.gradle.tasks.NdkCompile;
 import com.android.build.gradle.tasks.ProcessAndroidResources;
-import com.android.build.gradle.tasks.RenderscriptCompile;
 import com.android.builder.core.VariantType;
 import com.android.builder.model.SourceProvider;
 import com.android.ide.common.res2.ResourceSet;
@@ -85,7 +84,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
     public Task resourceGenTask;
     public Task assetGenTask;
     public CheckManifest checkManifestTask;
-    public RenderscriptCompile renderscriptCompileTask;
     public AidlCompile aidlCompileTask;
     public MergeResources mergeResourcesTask;
     public MergeAssets mergeAssetsTask;
@@ -99,10 +97,9 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
      * Can be JavaCompile depending on user's settings.
      */
     public AbstractCompile javaCompilerTask;
-
-    // TODO: 04-Jun-18 implemet this
     public JavaCompile javacTask;
     public Jar classesJarTask;
+
     // empty anchor compile task to set all compilations tasks as dependents.
     public Task compileTask;
     public FileSupplier mappingFileProviderTask;
@@ -452,53 +449,10 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
                 sourceList.add(scope.getAidlSourceOutputDir());
             }
 
-            if (!variantConfiguration.getRenderscriptNdkModeEnabled()
-                    && getScope().getRenderscriptCompileTask() != null) {
-                sourceList.add(scope.getRenderscriptSourceOutputDir());
-            }
-
             javaSources = sourceList.toArray();
         }
 
         return javaSources;
-    }
-
-    /**
-     * Returns the Java folders needed for code coverage report.
-     * <p>
-     * This includes all the source folders except for the ones containing R and buildConfig.
-     */
-    @NonNull
-    public List<File> getJavaSourceFoldersForCoverage() {
-        // Build the list of source folders.
-        List<File> sourceFolders = Lists.newArrayList();
-
-        // First the actual source folders.
-        List<SourceProvider> providers = variantConfiguration.getSortedSourceProviders();
-        for (SourceProvider provider : providers) {
-            for (File sourceFolder : provider.getJavaDirectories()) {
-                if (sourceFolder.isDirectory()) {
-                    sourceFolders.add(sourceFolder);
-                }
-            }
-        }
-
-        File sourceFolder;
-        // then all the generated src folders, except the ones for the R/Manifest and
-        // BuildConfig classes.
-        sourceFolder = aidlCompileTask.getSourceOutputDir();
-        if (sourceFolder.isDirectory()) {
-            sourceFolders.add(sourceFolder);
-        }
-
-        if (!variantConfiguration.getRenderscriptNdkModeEnabled()) {
-            sourceFolder = renderscriptCompileTask.getSourceOutputDir();
-            if (sourceFolder.isDirectory()) {
-                sourceFolders.add(sourceFolder);
-            }
-        }
-
-        return sourceFolders;
     }
 
     /**

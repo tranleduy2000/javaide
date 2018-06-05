@@ -16,7 +16,6 @@
 
 package com.android.build.gradle;
 
-import com.android.annotations.NonNull;
 import com.android.build.gradle.api.AndroidSourceSet;
 import com.android.build.gradle.api.VariantFilter;
 import com.android.build.gradle.internal.CompileOptions;
@@ -29,11 +28,8 @@ import com.android.build.gradle.internal.dsl.LintOptions;
 import com.android.build.gradle.internal.dsl.PackagingOptions;
 import com.android.build.gradle.internal.dsl.PreprocessingOptions;
 import com.android.build.gradle.internal.dsl.Splits;
-import com.android.build.gradle.internal.dsl.TestOptions;
 import com.android.builder.core.LibraryRequest;
 import com.android.builder.model.SigningConfig;
-import com.android.builder.testing.api.DeviceProvider;
-import com.android.builder.testing.api.TestServer;
 import com.android.sdklib.repository.FullRevision;
 
 import org.gradle.api.Action;
@@ -103,17 +99,6 @@ public interface AndroidConfig {
 
     /** APK splits */
     Splits getSplits();
-
-    /** Options for running tests. */
-    TestOptions getTestOptions();
-
-    /** List of device providers */
-    @NonNull
-    List<DeviceProvider> getDeviceProviders();
-
-    /** List of remote CI servers */
-    @NonNull
-    List<TestServer> getTestServers();
 
     /** All product flavors used by this project. */
     Collection<? extends CoreProductFlavor> getProductFlavors();

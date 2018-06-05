@@ -619,20 +619,7 @@ public class AndroidBuilder {
      */
     @NonNull
     public Set<File> getCompileClasspath(@NonNull VariantConfiguration<?, ?, ?> variantConfiguration) {
-        Set<File> compileClasspath = variantConfiguration.getCompileClasspath();
-
-        if (variantConfiguration.getRenderscriptSupportModeEnabled()) {
-            File renderScriptSupportJar = getRenderScriptSupportJar();
-
-            Set<File> fullJars = Sets.newHashSetWithExpectedSize(compileClasspath.size() + 1);
-            fullJars.addAll(compileClasspath);
-            if (renderScriptSupportJar != null) {
-                fullJars.add(renderScriptSupportJar);
-            }
-            compileClasspath = fullJars;
-        }
-
-        return compileClasspath;
+        return variantConfiguration.getCompileClasspath();
     }
 
     /**
@@ -645,17 +632,7 @@ public class AndroidBuilder {
      */
     @NonNull
     public Set<File> getPackagedJars(@NonNull VariantConfiguration<?, ?, ?> variantConfiguration) {
-        Set<File> packagedJars = Sets.newHashSet(variantConfiguration.getPackagedJars());
-
-        if (variantConfiguration.getRenderscriptSupportModeEnabled()) {
-            File renderScriptSupportJar = getRenderScriptSupportJar();
-
-            if (renderScriptSupportJar != null) {
-                packagedJars.add(renderScriptSupportJar);
-            }
-        }
-
-        return packagedJars;
+        return Sets.newHashSet(variantConfiguration.getPackagedJars());
     }
 
     /**

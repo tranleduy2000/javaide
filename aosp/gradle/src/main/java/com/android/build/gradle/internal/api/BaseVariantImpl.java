@@ -26,7 +26,6 @@ import com.android.build.gradle.tasks.GenerateBuildConfig;
 import com.android.build.gradle.tasks.MergeAssets;
 import com.android.build.gradle.tasks.MergeResources;
 import com.android.build.gradle.tasks.NdkCompile;
-import com.android.build.gradle.tasks.RenderscriptCompile;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.model.BuildType;
 import com.android.builder.model.ProductFlavor;
@@ -44,7 +43,7 @@ import java.util.List;
 
 /**
  * Base class for variants.
- *
+ * <p>
  * This is a wrapper around the internal data model, in order to control what is accessible
  * through the external API.
  */
@@ -69,7 +68,7 @@ abstract class BaseVariantImpl implements BaseVariant {
     protected abstract BaseVariantData<?> getVariantData();
 
     public void addOutputs(@NonNull List<BaseVariantOutput> outputs) {
-       this.outputs.addAll(outputs);
+        this.outputs.addAll(outputs);
     }
 
     @Override
@@ -157,12 +156,6 @@ abstract class BaseVariantImpl implements BaseVariant {
     @NonNull
     public AidlCompile getAidlCompile() {
         return getVariantData().aidlCompileTask;
-    }
-
-    @Override
-    @NonNull
-    public RenderscriptCompile getRenderscriptCompile() {
-        return getVariantData().renderscriptCompileTask;
     }
 
     @Override
@@ -254,7 +247,7 @@ abstract class BaseVariantImpl implements BaseVariant {
 
     @Override
     public void buildConfigField(@NonNull String type, @NonNull String name,
-            @NonNull String value) {
+                                 @NonNull String value) {
         getVariantData().getVariantConfiguration().addBuildConfigField(type, name, value);
     }
 
@@ -264,12 +257,12 @@ abstract class BaseVariantImpl implements BaseVariant {
     }
 
     @Override
-    public void setOutputsAreSigned(boolean isSigned) {
-        getVariantData().outputsAreSigned = isSigned;
+    public boolean getOutputsAreSigned() {
+        return getVariantData().outputsAreSigned;
     }
 
     @Override
-    public boolean getOutputsAreSigned() {
-        return getVariantData().outputsAreSigned;
+    public void setOutputsAreSigned(boolean isSigned) {
+        getVariantData().outputsAreSigned = isSigned;
     }
 }

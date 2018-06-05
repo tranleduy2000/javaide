@@ -24,11 +24,7 @@ import com.android.builder.core.BuilderConstants
 import com.android.builder.core.DefaultBuildType
 import com.android.builder.model.SigningConfig
 import com.android.ide.common.signing.KeystoreHelper
-import com.android.utils.ILogger
-import com.android.utils.StdLogger
 import org.gradle.api.Project
-import org.gradle.api.artifacts.ModuleVersionIdentifier
-import org.gradle.api.internal.artifacts.DefaultModuleVersionIdentifier
 import org.gradle.testfixtures.ProjectBuilder
 
 import static com.android.build.gradle.DslTestUtil.DEFAULT_VARIANTS

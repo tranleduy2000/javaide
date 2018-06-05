@@ -24,7 +24,6 @@ import com.android.build.gradle.api.ApkOutputFile
 import com.android.build.gradle.internal.model.FilterDataImpl
 import com.android.build.gradle.internal.publishing.FilterDataPersistence
 import com.android.build.gradle.internal.tasks.BaseTask
-import com.android.build.gradle.internal.tasks.FileSupplier
 import com.android.build.gradle.internal.tasks.SplitFileSupplier
 import com.google.common.base.Supplier
 import com.google.common.collect.ImmutableList

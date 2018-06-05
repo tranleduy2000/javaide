@@ -16,9 +16,6 @@
 
 package com.android.build.gradle.internal;
 
-import static com.android.builder.model.AndroidProject.PROPERTY_BUILD_MODEL_ONLY;
-import static com.android.builder.model.AndroidProject.PROPERTY_BUILD_MODEL_ONLY_ADVANCED;
-import static com.android.builder.model.AndroidProject.PROPERTY_INVOKED_FROM_IDE;
 import static com.android.ide.common.blame.parser.JsonEncodedGradleMessageParser.STDOUT_ERROR_TAG;
 
 import com.android.annotations.NonNull;

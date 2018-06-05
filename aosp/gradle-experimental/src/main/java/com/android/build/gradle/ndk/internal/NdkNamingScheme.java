@@ -17,7 +17,6 @@
 package com.android.build.gradle.ndk.internal;
 
 import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
-import static com.android.builder.model.AndroidProject.FD_OUTPUTS;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;

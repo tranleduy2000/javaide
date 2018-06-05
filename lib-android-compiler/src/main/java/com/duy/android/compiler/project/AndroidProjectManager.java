@@ -13,8 +13,7 @@ import com.android.io.StreamException;
 import com.duy.android.compiler.builder.internal.dependency.LibraryDependencyImpl;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.library.LibraryCache;
-
-import org.apache.commons.io.FileUtils;
+import com.duy.android.compiler.utils.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 

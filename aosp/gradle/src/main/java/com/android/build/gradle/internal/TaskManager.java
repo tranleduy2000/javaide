@@ -89,7 +89,6 @@ import com.android.build.gradle.tasks.PackageSplitRes;
 import com.android.build.gradle.tasks.PreDex;
 import com.android.build.gradle.tasks.ProcessAndroidResources;
 import com.android.build.gradle.tasks.ProcessManifest;
-import com.android.build.gradle.tasks.ProcessTestManifest;
 import com.android.build.gradle.tasks.RenderscriptCompile;
 import com.android.build.gradle.tasks.ShrinkResources;
 import com.android.build.gradle.tasks.SplitZipAlign;
@@ -499,19 +498,6 @@ public abstract class TaskManager {
 
         BaseVariantOutputData variantOutputData = scope.getVariantData().getOutputs().get(0);
         variantOutputData.getScope().setManifestProcessorTask(processManifest);
-    }
-
-    protected void createProcessTestManifestTask(
-            @NonNull TaskFactory tasks,
-            @NonNull VariantScope scope) {
-
-        AndroidTask<ProcessTestManifest> processTestManifestTask = androidTasks.create(tasks,
-                new ProcessTestManifest.ConfigAction(scope));
-
-        processTestManifestTask.dependsOn(tasks, scope.getVariantData().prepareDependenciesTask);
-
-        BaseVariantOutputData variantOutputData = scope.getVariantData().getOutputs().get(0);
-        variantOutputData.getScope().setManifestProcessorTask(processTestManifestTask);
     }
 
     public void createRenderscriptTask(
@@ -1062,8 +1048,6 @@ public abstract class TaskManager {
 
         createAnchorTasks(tasks, variantScope);
 
-        // Add a task to process the manifest
-        createProcessTestManifestTask(tasks, variantScope);
 
         // Add a task to create the res values
         createGenerateResValuesTask(tasks, variantScope);

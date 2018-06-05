@@ -46,8 +46,10 @@ import com.duy.android.compiler.builder.BuildTask;
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.JavaBuilder;
 import com.duy.android.compiler.project.AndroidAppProject;
+import com.duy.android.compiler.project.FileCollection;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
+import com.duy.android.compiler.utils.ProjectUtils;
 import com.duy.ide.Builder;
 import com.duy.ide.MenuEditor;
 import com.duy.ide.R;
@@ -67,6 +69,7 @@ import com.duy.ide.utils.RootUtils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -318,21 +321,49 @@ public class MainActivity extends ProjectManagerActivity implements
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        File currentFile = getCurrentFile();
-                        if (currentFile == null || !currentFile.getName().endsWith(".java")) {
-                            String message = getString(R.string.main_class_not_found);
-                            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
-                        Intent intent = new Intent(MainActivity.this, ExecuteActivity.class);
-                        intent.putExtra(ExecuteActivity.DEX_FILE, mProject.getDexFile());
-                        intent.putExtra(ExecuteActivity.MAIN_CLASS_FILE, currentFile);
-                        startActivity(intent);
+                        runJava(mProject);
                     }
                 }, 200);
             }
         };
         BuildTask<JavaProject> buildTask = new BuildTask<>(builder, listener);
         buildTask.execute();
+    }
+
+    private void runJava(final JavaProject project) {
+        final File currentFile = getCurrentFile();
+        if (currentFile == null || !ProjectUtils.isFileBelongProject(project, currentFile)) {
+            ArrayList<File> javaSrcDirs = new ArrayList<>();
+            javaSrcDirs.add(project.getJavaSrcDir());
+            FileCollection fileCollection = new FileCollection(javaSrcDirs);
+            final ArrayList<File> javaSources = fileCollection.filter(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    return pathname.isFile() && pathname.getName().endsWith(".java");
+                }
+            });
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            String[] names = new String[javaSources.size()];
+            for (int i = 0; i < javaSources.size(); i++) {
+                names[i] = javaSources.get(i).getName();
+            }
+            builder.setTitle(R.string.select_class_to_run);
+            builder.setItems(names, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(MainActivity.this, ExecuteActivity.class);
+                    intent.putExtra(ExecuteActivity.DEX_FILE, project.getDexFile());
+                    intent.putExtra(ExecuteActivity.MAIN_CLASS_FILE, javaSources.get(which));
+                    startActivity(intent);
+                }
+            });
+            builder.create().show();
+        } else {
+            Intent intent = new Intent(MainActivity.this, ExecuteActivity.class);
+            intent.putExtra(ExecuteActivity.DEX_FILE, project.getDexFile());
+            intent.putExtra(ExecuteActivity.MAIN_CLASS_FILE, currentFile);
+            startActivity(intent);
+        }
     }
 
     /**

@@ -19,7 +19,9 @@ public class ClassUtil {
                 Pattern.DOTALL);
     }
 
-
+    /**
+     * fast resolve main method, no need to parse java file
+     */
     public static boolean hasMainFunction(File file) {
         try {
             String s = org.apache.commons.io.IOUtils.toString(new FileInputStream(file));

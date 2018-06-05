@@ -489,5 +489,6 @@
     <string name="compiler_setting">Compiler setting</string>
     <string name="message_open_examples">This action will be create new project, previous project will be close</string>
     <string name="warning">Warning</string>
+    <string name="select_class_to_run">Select class to run</string>
 
 </resources>

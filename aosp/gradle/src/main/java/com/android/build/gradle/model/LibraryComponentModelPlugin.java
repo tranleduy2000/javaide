@@ -44,7 +44,6 @@ public class LibraryComponentModelPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPluginManager().apply(BaseComponentModelPlugin.class);
         project.getTasks().create("assembleDefault");
-        project.getPluginManager().apply(AndroidComponentModelTestPlugin.class);
     }
 
     @SuppressWarnings("MethodMayBeStatic")

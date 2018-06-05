@@ -445,11 +445,6 @@ public class NdkComponentModelPlugin implements Plugin<Project> {
      * Return library binaries for a VariantConfiguration.
      */
     public Collection<? extends BuildableModelElement> getBinaries(final VariantConfiguration variantConfig) {
-        if (variantConfig.getType().isForTesting()) {
-            // Do not return binaries for test variants as test source set is not supported at the
-            // moment.
-            return Collections.emptyList();
-        }
         BinaryContainer binaries = (BinaryContainer) project.getExtensions().getByName("binaries");
         return binaries.withType(AndroidBinary.class).matching(
                 new Spec<AndroidBinary>() {

@@ -17,7 +17,7 @@ package com.android.build.gradle
 
 import com.android.annotations.NonNull
 import com.android.build.gradle.api.LibraryVariant
-import com.android.build.gradle.api.TestVariant
+
 import com.android.build.gradle.internal.SdkHandler
 import com.android.build.gradle.internal.test.BaseTest
 import com.android.builder.model.SigningConfig

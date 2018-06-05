@@ -109,8 +109,7 @@ public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildTy
         VariantType type = getType();
         // if type == test then getTestedConfig always returns non-null
         //noinspection ConstantConditions
-        return getBuildType().isMinifyEnabled() &&
-                (!type.isForTesting() || (getTestedConfig().getType() != VariantType.LIBRARY));
+        return getBuildType().isMinifyEnabled();
     }
 
     private void computeNdkConfig() {
@@ -128,7 +127,7 @@ public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildTy
             }
         }
 
-        if (getBuildType().getNdkConfig() != null && !getType().isForTesting()) {
+        if (getBuildType().getNdkConfig() != null) {
             mMergedNdkConfig.append(getBuildType().getNdkConfig());
         }
     }

@@ -17,10 +17,7 @@
 package com.android.build.gradle.internal.api;
 
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
 import com.android.build.gradle.api.LibraryVariant;
-import com.android.build.gradle.api.TestVariant;
-import com.android.build.gradle.api.UnitTestVariant;
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.build.gradle.internal.variant.LibraryVariantData;
 import com.android.builder.core.AndroidBuilder;
@@ -32,14 +29,10 @@ import com.android.builder.core.AndroidBuilder;
  * This is a wrapper around the internal data model, in order to control what is accessible
  * through the external API.
  */
-public class LibraryVariantImpl extends BaseVariantImpl implements LibraryVariant, TestedVariant {
+public class LibraryVariantImpl extends BaseVariantImpl implements LibraryVariant {
 
     @NonNull
     private final LibraryVariantData variantData;
-    @Nullable
-    private TestVariant testVariant = null;
-    @Nullable
-    private UnitTestVariant unitTestVariant = null;
 
     public LibraryVariantImpl(
             @NonNull LibraryVariantData variantData,
@@ -55,25 +48,4 @@ public class LibraryVariantImpl extends BaseVariantImpl implements LibraryVarian
         return variantData;
     }
 
-    @Override
-    public void setTestVariant(@Nullable TestVariant testVariant) {
-        this.testVariant = testVariant;
-    }
-
-    @Override
-    @Nullable
-    public TestVariant getTestVariant() {
-        return testVariant;
-    }
-
-    @Override
-    @Nullable
-    public UnitTestVariant getUnitTestVariant() {
-        return unitTestVariant;
-    }
-
-    @Override
-    public void setUnitTestVariant(@Nullable UnitTestVariant unitTestVariant) {
-        this.unitTestVariant = unitTestVariant;
-    }
 }

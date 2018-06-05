@@ -34,15 +34,16 @@ import com.android.build.gradle.internal.dsl.SigningConfig;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.core.VariantType;
 import com.google.common.collect.Lists;
+
 import org.gradle.api.GradleException;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 import org.gradle.internal.reflect.Instantiator;
 
+import java.util.List;
+
 import static com.android.builder.core.BuilderConstants.DEBUG;
 import static com.android.builder.core.BuilderConstants.RELEASE;
-
-import java.util.List;
 
 public class LibraryVariantFactory implements VariantFactory {
 
@@ -109,7 +110,7 @@ public class LibraryVariantFactory implements VariantFactory {
 
     @Override
     public boolean hasTestScope() {
-        return true;
+        return false;
     }
 
     /***

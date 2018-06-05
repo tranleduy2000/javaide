@@ -18,7 +18,7 @@ import org.gradle.internal.reflect.Instantiator;
 /**
  * 'android' extension for 'com.android.application' project.
  */
-public class AppExtension extends TestedExtension {
+public class AppExtension extends BaseExtension {
 
     private final DefaultDomainObjectSet<ApplicationVariant> applicationVariantList
             = new DefaultDomainObjectSet<>(ApplicationVariant.class);

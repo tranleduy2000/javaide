@@ -195,9 +195,7 @@ public class ModelBuilder implements ToolingModelBuilder {
         }
 
         for (BaseVariantData<? extends BaseVariantOutputData> variantData : variantManager.getVariantDataList()) {
-            if (!variantData.getType().isForTesting()) {
-                androidProject.addVariant(createVariant(variantData));
-            }
+            androidProject.addVariant(createVariant(variantData));
         }
 
         return androidProject;

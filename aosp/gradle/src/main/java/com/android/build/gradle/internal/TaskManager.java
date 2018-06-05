@@ -159,7 +159,6 @@ import static com.android.builder.core.BuilderConstants.FD_ANDROID_RESULTS;
 import static com.android.builder.core.BuilderConstants.FD_ANDROID_TESTS;
 import static com.android.builder.core.BuilderConstants.FD_FLAVORS_ALL;
 import static com.android.builder.core.VariantType.ANDROID_TEST;
-import static com.android.builder.core.VariantType.DEFAULT;
 import static com.android.builder.core.VariantType.UNIT_TEST;
 import static com.android.sdklib.BuildToolInfo.PathId.ZIP_ALIGN;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -256,9 +255,7 @@ public abstract class TaskManager {
      */
     private static boolean isLintVariant(
             @NonNull BaseVariantData<? extends BaseVariantOutputData> baseVariantData) {
-        // Only create lint targets for variants like debug and release, not debugTest
-        VariantConfiguration config = baseVariantData.getVariantConfiguration();
-        return !config.getType().isForTesting();
+        return true;
     }
 
     private static void fixTestTaskSources(@NonNull Test testTask) {
@@ -578,12 +575,7 @@ public abstract class TaskManager {
         BaseVariantOutputData variantOutputData = variantData.getOutputs().get(0);
 
         scope.getRenderscriptCompileTask().dependsOn(tasks, variantData.prepareDependenciesTask);
-        if (config.getType().isForTesting()) {
-            scope.getRenderscriptCompileTask().dependsOn(tasks,
-                    variantOutputData.getScope().getManifestProcessorTask());
-        } else {
-            scope.getRenderscriptCompileTask().dependsOn(tasks, scope.getCheckManifestTask());
-        }
+        scope.getRenderscriptCompileTask().dependsOn(tasks, scope.getCheckManifestTask());
 
         scope.getResourceGenTask().dependsOn(tasks, scope.getRenderscriptCompileTask());
         // only put this dependency if rs will generate Java code
@@ -641,18 +633,7 @@ public abstract class TaskManager {
                 androidTasks.create(tasks, new GenerateBuildConfig.ConfigAction(scope));
         scope.setGenerateBuildConfigTask(generateBuildConfigTask);
         scope.getSourceGenTask().dependsOn(tasks, generateBuildConfigTask.getName());
-        if (scope.getVariantConfiguration().getType().isForTesting()) {
-            // in case of a test project, the manifest is generated so we need to depend
-            // on its creation.
-
-            // For test apps there should be a single output, so we get it.
-            BaseVariantOutputData variantOutputData = scope.getVariantData().getOutputs().get(0);
-
-            generateBuildConfigTask.dependsOn(
-                    tasks, variantOutputData.getScope().getManifestProcessorTask());
-        } else {
-            generateBuildConfigTask.dependsOn(tasks, scope.getCheckManifestTask());
-        }
+        generateBuildConfigTask.dependsOn(tasks, scope.getCheckManifestTask());
     }
 
     public void createGenerateResValuesTask(
@@ -996,15 +977,6 @@ public abstract class TaskManager {
                 scope.getVariantData().getVariantDependency().getCompileConfiguration()
                         .getBuildDependencies());
 
-        if (variantData.getType().isForTesting()) {
-            BaseVariantData testedVariantData =
-                    (BaseVariantData) ((TestVariantData) variantData).getTestedVariantData();
-            final JavaCompile testedJavacTask = testedVariantData.javacTask;
-            javacTask.dependsOn(tasks,
-                    testedJavacTask != null ? testedJavacTask :
-                            testedVariantData.getScope().getJavacTask());
-        }
-
         // Create jar task for uses by external modules.
         if (variantData.getVariantDependency().getClassesConfiguration() != null) {
             tasks.create(scope.getTaskName("package", "JarArtifact"), Jar.class, new Action<Jar>() {
@@ -1051,7 +1023,6 @@ public abstract class TaskManager {
         ndkCompile.setAndroidBuilder(androidBuilder);
         ndkCompile.setVariantName(variantData.getName());
         ndkCompile.setNdkDirectory(sdkHandler.getNdkFolder());
-        ndkCompile.setIsForTesting(variantData.getType().isForTesting());
         variantData.ndkCompileTask = ndkCompile;
         variantData.compileTask.dependsOn(variantData.ndkCompileTask);
 
@@ -1688,11 +1659,8 @@ public abstract class TaskManager {
 
         });
 
-        boolean isTestForApp = config.getType().isForTesting() &&
-                ((TestVariantData) variantData).getTestedVariantData().getVariantConfiguration()
-                        .getType().equals(DEFAULT);
         boolean isMinifyEnabled = config.isMinifyEnabled();
-        boolean isMultiDexEnabled = config.isMultiDexEnabled() && !isTestForApp;
+        boolean isMultiDexEnabled = config.isMultiDexEnabled();
         boolean isLegacyMultiDexMode = config.isLegacyMultiDexMode();
 
         // ----- Minify next ----

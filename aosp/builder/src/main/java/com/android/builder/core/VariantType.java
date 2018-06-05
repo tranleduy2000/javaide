@@ -43,15 +43,9 @@ public enum VariantType {
 
     public static ImmutableList<VariantType> getTestingTypes() {
         ImmutableList.Builder<VariantType> result = ImmutableList.builder();
-        for (VariantType variantType : values()) {
-            if (variantType.isForTesting()) {
-                result.add(variantType);
-            }
-        }
         return result.build();
     }
 
-    private final boolean mIsForTesting;
     private final String mPrefix;
     private final String mSuffix;
     private final boolean isSingleBuildType;
@@ -60,7 +54,6 @@ public enum VariantType {
 
     /** App or library variant. */
     VariantType() {
-        this.mIsForTesting = false;
         this.mPrefix = "";
         this.mSuffix = "";
         this.mArtifactName = AndroidProject.ARTIFACT_MAIN;
@@ -77,18 +70,9 @@ public enum VariantType {
             int artifactType) {
         this.mArtifactName = artifactName;
         this.mArtifactType = artifactType;
-        this.mIsForTesting = true;
         this.mPrefix = prefix;
         this.mSuffix = suffix;
         this.isSingleBuildType = isSingleBuildType;
-    }
-
-    /**
-     * Returns true if the variant is automatically generated for testing purposed, false
-     * otherwise.
-     */
-    public boolean isForTesting() {
-        return mIsForTesting;
     }
 
     /**

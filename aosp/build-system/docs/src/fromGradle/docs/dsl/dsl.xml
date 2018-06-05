@@ -47,7 +47,6 @@
             <tr><td>com.android.build.gradle.AppExtension</td></tr>
             <tr><td>com.android.build.gradle.BaseExtension</td></tr>
             <tr><td>com.android.build.gradle.LibraryExtension</td></tr>
-            <tr><td>com.android.build.gradle.TestExtension</td></tr>
             <tr><td>com.android.build.gradle.api.AndroidSourceDirectorySet</td></tr>
             <tr><td>com.android.build.gradle.api.AndroidSourceFile</td></tr>
             <tr><td>com.android.build.gradle.api.AndroidSourceSet</td></tr>

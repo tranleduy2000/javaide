@@ -16,10 +16,6 @@
 
 package com.android.builder.core;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
@@ -47,6 +43,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A Variant configuration.
@@ -117,8 +117,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
 
     /**
      * Optional tested config in case this variant is used for testing another variant.
-     *
-     * @see VariantType#isForTesting()
      */
     private final VariantConfiguration mTestedConfig;
 
@@ -229,10 +227,10 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
         checkNotNull(buildType);
         checkNotNull(type);
         checkArgument(
-                !type.isForTesting() || testedConfig != null,
+                true,
                 "You have to specify the tested variant for this variant type.");
         checkArgument(
-                type.isForTesting() || testedConfig == null,
+                testedConfig == null,
                 "This variant type doesn't need a tested variant.");
 
         mDefaultConfig = checkNotNull(defaultConfig);
@@ -263,10 +261,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
                 sb.append(mBuildType.getName());
             }
 
-            if (mType.isForTesting()) {
-                sb.append(mType.getSuffix());
-            }
-
             mFullName = sb.toString();
         }
 
@@ -290,10 +284,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
         }
 
         sb.append(StringHelper.capitalize(mBuildType.getName()));
-
-        if (mType.isForTesting()) {
-            sb.append(mType.getSuffix());
-        }
 
         return sb.toString();
     }
@@ -343,10 +333,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
 
             sb.append(mBuildType.getName());
 
-            if (mType.isForTesting()) {
-                sb.append('-').append(mType.getPrefix());
-            }
-
             mBaseName = sb.toString();
         }
 
@@ -371,10 +357,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
         sb.append(splitName).append('-');
         sb.append(mBuildType.getName());
 
-        if (mType.isForTesting()) {
-            sb.append('-').append(mType.getPrefix());
-        }
-
         return sb.toString();
     }
 
@@ -390,10 +372,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
     public String getDirName() {
         if (mDirName == null) {
             StringBuilder sb = new StringBuilder();
-
-            if (mType.isForTesting()) {
-                sb.append(mType.getPrefix()).append("/");
-            }
 
             if (!mFlavors.isEmpty()) {
                 boolean first = true;
@@ -426,10 +404,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
     @NonNull
     public String computeDirNameWithSplits(@NonNull String... splitNames) {
         StringBuilder sb = new StringBuilder();
-
-        if (mType.isForTesting()) {
-            sb.append(mType.getPrefix()).append("/");
-        }
 
         if (!mFlavors.isEmpty()) {
             for (F flavor : mFlavors) {
@@ -736,9 +710,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
      */
     @Nullable
     public String getOriginalApplicationId() {
-        if (mType.isForTesting()) {
-            return getApplicationId();
-        }
 
         return getPackageFromManifest();
     }
@@ -752,29 +723,12 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
     public String getApplicationId() {
         String id;
 
-        if (mType.isForTesting()) {
-            checkState(mTestedConfig != null);
-
-            id = mMergedFlavor.getTestApplicationId();
-            String testedPackage = mTestedConfig.getApplicationId();
-            if (id == null) {
-                id = testedPackage + ".test";
-            } else {
-                if (id.equals(testedPackage)) {
-                    throw new RuntimeException(String.format("Application and test application id "
-                                    + "cannot be the same: both are '%s' for %s",
-                            id, getFullName()));
-                }
-            }
-
-        } else {
-            // first get package override.
-            id = getIdOverride();
-            // if it's null, this means we just need the default package
-            // from the manifest since both flavor and build type do nothing.
-            if (id == null) {
-                id = getPackageFromManifest();
-            }
+        // first get package override.
+        id = getIdOverride();
+        // if it's null, this means we just need the default package
+        // from the manifest since both flavor and build type do nothing.
+        if (id == null) {
+            id = getPackageFromManifest();
         }
 
         if (id == null) {
@@ -786,14 +740,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
 
     @Nullable
     public String getTestedApplicationId() {
-        if (mType.isForTesting()) {
-            checkState(mTestedConfig != null);
-            if (mTestedConfig.mType == VariantType.LIBRARY) {
-                return getApplicationId();
-            } else {
-                return mTestedConfig.getApplicationId();
-            }
-        }
 
         return null;
     }
@@ -836,7 +782,7 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
         String versionName = mMergedFlavor.getVersionName();
         String versionSuffix = mBuildType.getVersionNameSuffix();
 
-        if (versionName == null && !mType.isForTesting()) {
+        if (versionName == null && !false) {
             versionName = getVersionNameFromManifest();
         }
 
@@ -858,7 +804,7 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
         int versionCode = mMergedFlavor.getVersionCode() != null ?
                 mMergedFlavor.getVersionCode() : -1;
 
-        if (versionCode == -1 && !mType.isForTesting()) {
+        if (versionCode == -1) {
             versionCode = getVersionCodeFromManifest();
         }
 
@@ -877,10 +823,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
     @NonNull
     public String getInstrumentationRunner() {
         VariantConfiguration config = this;
-        if (mType.isForTesting()) {
-            config = getTestedConfig();
-            checkState(config != null);
-        }
         String runner = config.mMergedFlavor.getTestInstrumentationRunner();
         return runner != null ? runner : DEFAULT_TEST_RUNNER;
     }
@@ -892,10 +834,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
     @NonNull
     public Map<String, String> getInstrumentationRunnerArguments() {
         VariantConfiguration config = this;
-        if (mType.isForTesting()) {
-            config = getTestedConfig();
-            checkState(config != null);
-        }
         return config.mMergedFlavor.getTestInstrumentationRunnerArguments();
     }
 
@@ -907,10 +845,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
     @NonNull
     public Boolean getHandleProfiling() {
         VariantConfiguration config = this;
-        if (mType.isForTesting()) {
-            config = getTestedConfig();
-            checkState(config != null);
-        }
         Boolean handleProfiling = config.mMergedFlavor.getTestHandleProfiling();
         return handleProfiling != null ? handleProfiling : DEFAULT_HANDLE_PROFILING;
     }
@@ -923,10 +857,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
     @NonNull
     public Boolean getFunctionalTest() {
         VariantConfiguration config = this;
-        if (mType.isForTesting()) {
-            config = getTestedConfig();
-            checkState(config != null);
-        }
         Boolean functionalTest = config.mMergedFlavor.getTestFunctionalTest();
         return functionalTest != null ? functionalTest : DEFAULT_FUNCTIONAL_TEST;
     }
@@ -936,7 +866,7 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
      */
     @Nullable
     public String getPackageFromManifest() {
-        checkState(!mType.isForTesting());
+        checkState(true);
 
         File manifestLocation = mDefaultSourceProvider.getManifestFile();
         String packageName = sManifestParser.getPackage(manifestLocation);

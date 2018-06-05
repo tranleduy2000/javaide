@@ -19,10 +19,10 @@ import org.gradle.internal.reflect.Instantiator;
 /**
  * 'android' extension for 'com.android.library' project.
  */
-public class LibraryExtension extends TestedExtension {
+public class LibraryExtension extends BaseExtension {
 
     private final DefaultDomainObjectSet<LibraryVariant> libraryVariantList
-            = new DefaultDomainObjectSet<LibraryVariant>(LibraryVariant.class);
+            = new DefaultDomainObjectSet<>(LibraryVariant.class);
 
     private boolean packageBuildConfig = true;
 

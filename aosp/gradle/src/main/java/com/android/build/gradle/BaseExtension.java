@@ -75,7 +75,6 @@ import java.util.List;
  * <ul>
  * <li>Plugin <code>com.android.application</code> uses {@link AppExtension}</li>
  * <li>Plugin <code>com.android.library</code> uses {@link LibraryExtension}</li>
- * <li>Plugin <code>com.android.test</code> uses {@link TestedExtension}</li>
  * </ul>
  */
 @SuppressWarnings("UnnecessaryInheritDoc")

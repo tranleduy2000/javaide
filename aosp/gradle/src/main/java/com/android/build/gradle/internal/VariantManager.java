@@ -20,8 +20,6 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.AndroidGradleOptions;
-import com.android.build.gradle.TestAndroidConfig;
-import com.android.build.gradle.TestedAndroidConfig;
 import com.android.build.gradle.api.AndroidSourceSet;
 import com.android.build.gradle.internal.api.DefaultAndroidSourceSet;
 import com.android.build.gradle.internal.api.ReadOnlyObjectProvider;
@@ -85,21 +83,19 @@ public class VariantManager implements VariantModel {
     @NonNull
     private final Instantiator instantiator;
     @NonNull
-    private ProductFlavorData<CoreProductFlavor> defaultConfigData;
-    @NonNull
     private final Map<String, BuildTypeData> buildTypes = Maps.newHashMap();
     @NonNull
     private final Map<String, ProductFlavorData<CoreProductFlavor>> productFlavors = Maps.newHashMap();
     @NonNull
     private final Map<String, SigningConfig> signingConfigs = Maps.newHashMap();
-
     @NonNull
     private final ReadOnlyObjectProvider readOnlyObjectProvider = new ReadOnlyObjectProvider();
     @NonNull
     private final VariantFilter variantFilter = new VariantFilter(readOnlyObjectProvider);
-
     @NonNull
     private final List<BaseVariantData<? extends BaseVariantOutputData>> variantDataList = Lists.newArrayList();
+    @NonNull
+    private ProductFlavorData<CoreProductFlavor> defaultConfigData;
     @Nullable
     private SigningConfig signingOverride;
 
@@ -120,21 +116,69 @@ public class VariantManager implements VariantModel {
         DefaultAndroidSourceSet mainSourceSet =
                 (DefaultAndroidSourceSet) extension.getSourceSets().getByName(extension.getDefaultConfig().getName());
 
-        DefaultAndroidSourceSet androidTestSourceSet = null;
-        DefaultAndroidSourceSet unitTestSourceSet = null;
-        if (variantFactory.hasTestScope()) {
-            androidTestSourceSet =
-                    (DefaultAndroidSourceSet) extension.getSourceSets()
-                            .getByName(ANDROID_TEST.getPrefix());
-            unitTestSourceSet =
-                    (DefaultAndroidSourceSet) extension.getSourceSets()
-                            .getByName(UNIT_TEST.getPrefix());
-        }
-
         defaultConfigData = new ProductFlavorData<CoreProductFlavor>(
                 extension.getDefaultConfig(), mainSourceSet,
-                androidTestSourceSet, unitTestSourceSet, project);
+                null, null, project);
         signingOverride = createSigningOverride();
+    }
+
+    private static void createCompoundSourceSets(
+            @NonNull List<? extends ProductFlavor> productFlavorList,
+            GradleVariantConfiguration variantConfig,
+            NamedDomainObjectContainer<AndroidSourceSet> sourceSetsContainer) {
+        if (!productFlavorList.isEmpty() && !variantConfig.getType().isSingleBuildType()) {
+            DefaultAndroidSourceSet variantSourceSet =
+                    (DefaultAndroidSourceSet) sourceSetsContainer.maybeCreate(
+                            computeSourceSetName(
+                                    variantConfig.getFullName(),
+                                    variantConfig.getType()));
+            variantConfig.setVariantSourceProvider(variantSourceSet);
+        }
+
+        if (productFlavorList.size() > 1) {
+            DefaultAndroidSourceSet multiFlavorSourceSet =
+                    (DefaultAndroidSourceSet) sourceSetsContainer.maybeCreate(
+                            computeSourceSetName(
+                                    variantConfig.getFlavorName(),
+                                    variantConfig.getType()));
+            variantConfig.setMultiFlavorSourceProvider(multiFlavorSourceSet);
+        }
+    }
+
+    /**
+     * Turns a string into a valid source set name for the given {@link VariantType}, e.g.
+     * "fooBarUnitTest" becomes "testFooBar".
+     */
+    @NonNull
+    private static String computeSourceSetName(
+            @NonNull String name,
+            @NonNull VariantType variantType) {
+        if (name.endsWith(variantType.getSuffix())) {
+            name = name.substring(0, name.length() - variantType.getSuffix().length());
+        }
+
+        if (!variantType.getPrefix().isEmpty()) {
+            name = variantType.getPrefix() + StringHelper.capitalize(name);
+        }
+
+        return name;
+    }
+
+    private static void checkName(@NonNull String name, @NonNull String displayName) {
+        checkPrefix(name, displayName, ANDROID_TEST.getPrefix());
+        checkPrefix(name, displayName, UNIT_TEST.getPrefix());
+
+        if (LINT.equals(name)) {
+            throw new RuntimeException(String.format(
+                    "%1$s names cannot be %2$s", displayName, LINT));
+        }
+    }
+
+    private static void checkPrefix(String name, String displayName, String prefix) {
+        if (name.startsWith(prefix)) {
+            throw new RuntimeException(String.format(
+                    "%1$s names cannot start with '%2$s'", displayName, prefix));
+        }
     }
 
     @NonNull
@@ -168,6 +212,7 @@ public class VariantManager implements VariantModel {
     /**
      * Adds new BuildType, creating a BuildTypeData, and the associated source set,
      * and adding it to the map.
+     *
      * @param buildType the build type.
      */
     public void addBuildType(@NonNull CoreBuildType buildType) {
@@ -180,15 +225,8 @@ public class VariantManager implements VariantModel {
 
         DefaultAndroidSourceSet mainSourceSet = (DefaultAndroidSourceSet) extension.getSourceSets().maybeCreate(name);
 
-        DefaultAndroidSourceSet unitTestSourceSet = null;
-        if (variantFactory.hasTestScope()) {
-            unitTestSourceSet = (DefaultAndroidSourceSet) extension
-                    .getSourceSets().maybeCreate(
-                            computeSourceSetName(buildType.getName(), UNIT_TEST));
-        }
-
         BuildTypeData buildTypeData = new BuildTypeData(
-                buildType, project, mainSourceSet, unitTestSourceSet);
+                buildType, project, mainSourceSet, null);
 
         buildTypes.put(name, buildTypeData);
     }
@@ -210,23 +248,12 @@ public class VariantManager implements VariantModel {
         DefaultAndroidSourceSet mainSourceSet = (DefaultAndroidSourceSet) extension.getSourceSets().maybeCreate(
                 productFlavor.getName());
 
-        DefaultAndroidSourceSet androidTestSourceSet = null;
-        DefaultAndroidSourceSet unitTestSourceSet = null;
-        if (variantFactory.hasTestScope()) {
-            androidTestSourceSet = (DefaultAndroidSourceSet) extension
-                    .getSourceSets().maybeCreate(
-                            computeSourceSetName(productFlavor.getName(), ANDROID_TEST));
-            unitTestSourceSet = (DefaultAndroidSourceSet) extension
-                    .getSourceSets().maybeCreate(
-                            computeSourceSetName(productFlavor.getName(), UNIT_TEST));
-        }
-
         ProductFlavorData<CoreProductFlavor> productFlavorData =
                 new ProductFlavorData<CoreProductFlavor>(
                         productFlavor,
                         mainSourceSet,
-                        androidTestSourceSet,
-                        unitTestSourceSet,
+                        null,
+                        null,
                         project);
 
         productFlavors.put(productFlavor.getName(), productFlavorData);
@@ -291,52 +318,48 @@ public class VariantManager implements VariantModel {
     private void createAssembleTaskForVariantData(
             TaskFactory tasks,
             final BaseVariantData<?> variantData) {
-        if (variantData.getType().isForTesting()) {
-            variantData.assembleVariantTask = taskManager.createAssembleTask(tasks, variantData);
+        BuildTypeData buildTypeData =
+                buildTypes.get(variantData.getVariantConfiguration().getBuildType().getName());
+
+        if (productFlavors.isEmpty()) {
+            // Reuse assemble task for build type if there is no product flavor.
+            variantData.assembleVariantTask = buildTypeData.getAssembleTask();
         } else {
-            BuildTypeData buildTypeData =
-                    buildTypes.get(variantData.getVariantConfiguration().getBuildType().getName());
+            variantData.assembleVariantTask = taskManager.createAssembleTask(tasks, variantData);
 
-            if (productFlavors.isEmpty()) {
-                // Reuse assemble task for build type if there is no product flavor.
-                variantData.assembleVariantTask = buildTypeData.getAssembleTask();
-            } else {
-                variantData.assembleVariantTask = taskManager.createAssembleTask(tasks, variantData);
+            // setup the task dependencies
+            // build type
+            buildTypeData.getAssembleTask().dependsOn(variantData.assembleVariantTask);
 
-                // setup the task dependencies
-                // build type
-                buildTypeData.getAssembleTask().dependsOn(variantData.assembleVariantTask);
+            // each flavor
+            GradleVariantConfiguration variantConfig = variantData.getVariantConfiguration();
+            for (CoreProductFlavor flavor : variantConfig.getProductFlavors()) {
+                productFlavors.get(flavor.getName()).getAssembleTask()
+                        .dependsOn(variantData.assembleVariantTask);
+            }
 
-                // each flavor
-                GradleVariantConfiguration variantConfig = variantData.getVariantConfiguration();
-                for (CoreProductFlavor flavor : variantConfig.getProductFlavors()) {
-                    productFlavors.get(flavor.getName()).getAssembleTask()
-                             .dependsOn(variantData.assembleVariantTask);
-                }
-
-                // assembleTask for this flavor(dimension), created on demand if needed.
-                if (variantConfig.getProductFlavors().size() > 1) {
-                    final String name = StringHelper.capitalize(variantConfig.getFlavorName());
-                    final String variantAssembleTaskName = "assemble" + name;
-                    if (!tasks.containsKey(variantAssembleTaskName)) {
-                        tasks.create(variantAssembleTaskName, new Action<Task>() {
-                            @Override
-                            public void execute(Task task) {
-                                task.setDescription(
-                                        "Assembles all builds for flavor combination: " + name);
-                                task.setGroup("Build");
-                                task.dependsOn(variantData.assembleVariantTask);
-
-                            }
-                        });
-                    }
-                    tasks.named("assemble", new Action<Task>() {
+            // assembleTask for this flavor(dimension), created on demand if needed.
+            if (variantConfig.getProductFlavors().size() > 1) {
+                final String name = StringHelper.capitalize(variantConfig.getFlavorName());
+                final String variantAssembleTaskName = "assemble" + name;
+                if (!tasks.containsKey(variantAssembleTaskName)) {
+                    tasks.create(variantAssembleTaskName, new Action<Task>() {
                         @Override
                         public void execute(Task task) {
-                            task.dependsOn(variantAssembleTaskName);
+                            task.setDescription(
+                                    "Assembles all builds for flavor combination: " + name);
+                            task.setGroup("Build");
+                            task.dependsOn(variantData.assembleVariantTask);
+
                         }
                     });
                 }
+                tasks.named("assemble", new Action<Task>() {
+                    @Override
+                    public void execute(Task task) {
+                        task.dependsOn(variantAssembleTaskName);
+                    }
+                });
             }
         }
     }
@@ -353,86 +376,14 @@ public class VariantManager implements VariantModel {
             @Override
             public void execute(Task task) {
                 BuildTypeData buildTypeData = buildTypes.get(
-                                variantData.getVariantConfiguration().getBuildType().getName());
+                        variantData.getVariantConfiguration().getBuildType().getName());
                 task.dependsOn(buildTypeData.getAssembleTask());
             }
         });
 
 
-        VariantType variantType = variantData.getType();
-
         createAssembleTaskForVariantData(tasks, variantData);
-        if (variantType.isForTesting()) {
-            final GradleVariantConfiguration testVariantConfig = variantData.getVariantConfiguration();
-            final BaseVariantData testedVariantData = (BaseVariantData) ((TestVariantData) variantData)
-                    .getTestedVariantData();
-
-            // Add the container of dependencies, the order of the libraries is important.
-            // In descending order: build type (only for unit test), flavors, defaultConfig.
-            List<ConfigurationProvider> testVariantProviders = Lists.newArrayListWithExpectedSize(
-                    2 + testVariantConfig.getProductFlavors().size());
-
-            ConfigurationProvider buildTypeConfigurationProvider =
-                    buildTypes.get(testVariantConfig.getBuildType().getName())
-                            .getTestConfigurationProvider(variantType);
-            if (buildTypeConfigurationProvider != null) {
-                testVariantProviders.add(buildTypeConfigurationProvider);
-            }
-
-            for (CoreProductFlavor productFlavor : testVariantConfig.getProductFlavors()) {
-                ProductFlavorData<CoreProductFlavor> data =
-                        productFlavors.get(productFlavor.getName());
-                testVariantProviders.add(data.getTestConfigurationProvider(variantType));
-            }
-
-            // now add the default config
-            testVariantProviders.add(defaultConfigData.getTestConfigurationProvider(variantType));
-
-            assert(testVariantConfig.getTestedConfig() != null);
-            VariantDependencies parentVariant = null;
-            if (testVariantConfig.getTestedConfig().getType() == VariantType.LIBRARY) {
-                parentVariant = testedVariantData.getVariantDependency();
-            }
-
-            // If the variant being tested is a library variant, VariantDependencies must be
-            // computed after the tasks for the tested variant is created.  Therefore, the
-            // VariantDependencies is computed here instead of when the VariantData was created.
-            final VariantDependencies variantDep = VariantDependencies.compute(
-                    project, testVariantConfig.getFullName(),
-                    false /*publishVariant*/,
-                    variantType,
-                    parentVariant,
-                    testVariantProviders.toArray(
-                            new ConfigurationProvider[testVariantProviders.size()]));
-            variantData.setVariantDependency(variantDep);
-
-            SpanRecorders.record(project, ExecutionType.RESOLVE_DEPENDENCIES,
-                    new Recorder.Block<Void>() {
-                        @Override
-                        public Void call() {
-                            taskManager.resolveDependencies(variantDep,
-                                    testVariantConfig.getTestedConfig().getType() == VariantType.LIBRARY
-                                            ? null
-                                            : testedVariantData.getVariantDependency(),
-                                    null /*testedProjectPath*/);
-                            return null;
-                        }
-                    },
-                    new Recorder.Property(SpanRecorders.VARIANT, testVariantConfig.getFullName()));
-            testVariantConfig.setDependencies(variantDep);
-            switch (variantType) {
-                case ANDROID_TEST:
-                    taskManager.createAndroidTestVariantTasks(tasks, (TestVariantData) variantData);
-                    break;
-                case UNIT_TEST:
-                    taskManager.createUnitTestVariantTasks(tasks, (TestVariantData) variantData);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown test type " + variantType);
-            }
-        } else {
-            taskManager.createTasksForVariantData(tasks, variantData);
-        }
+        taskManager.createTasksForVariantData(tasks, variantData);
     }
 
     /**
@@ -462,7 +413,7 @@ public class VariantManager implements VariantModel {
                             flavorDimensionList,
                             flavorDsl);
 
-            for (ProductFlavorCombo<CoreProductFlavor>  flavorCombo : flavorComboList) {
+            for (ProductFlavorCombo<CoreProductFlavor> flavorCombo : flavorComboList) {
                 //noinspection unchecked
                 createVariantDataForProductFlavors(
                         (List<ProductFlavor>) (List) flavorCombo.getFlavorList());
@@ -563,10 +514,7 @@ public class VariantManager implements VariantModel {
                     variantDep.getPackageConfiguration().getName(), COM_ANDROID_SUPPORT_MULTIDEX);
         }
 
-        final String testedProjectPath = extension instanceof TestAndroidConfig ?
-                ((TestAndroidConfig) extension).getTargetProjectPath() :
-                null;
-
+        final String testedProjectPath = null;
         SpanRecorders.record(project, ExecutionType.RESOLVE_DEPENDENCIES,
                 new Recorder.Block<Void>() {
                     @Override
@@ -582,48 +530,6 @@ public class VariantManager implements VariantModel {
         variantConfig.setDependencies(variantDep);
 
         return variantData;
-    }
-
-    private static void createCompoundSourceSets(
-            @NonNull List<? extends ProductFlavor> productFlavorList,
-            GradleVariantConfiguration variantConfig,
-            NamedDomainObjectContainer<AndroidSourceSet> sourceSetsContainer) {
-        if (!productFlavorList.isEmpty() && !variantConfig.getType().isSingleBuildType()) {
-            DefaultAndroidSourceSet variantSourceSet =
-                    (DefaultAndroidSourceSet) sourceSetsContainer.maybeCreate(
-                            computeSourceSetName(
-                                    variantConfig.getFullName(),
-                                    variantConfig.getType()));
-            variantConfig.setVariantSourceProvider(variantSourceSet);
-        }
-
-        if (productFlavorList.size() > 1) {
-            DefaultAndroidSourceSet multiFlavorSourceSet =
-                    (DefaultAndroidSourceSet) sourceSetsContainer.maybeCreate(
-                            computeSourceSetName(
-                                    variantConfig.getFlavorName(),
-                                    variantConfig.getType()));
-            variantConfig.setMultiFlavorSourceProvider(multiFlavorSourceSet);
-        }
-    }
-
-    /**
-     * Turns a string into a valid source set name for the given {@link VariantType}, e.g.
-     * "fooBarUnitTest" becomes "testFooBar".
-     */
-    @NonNull
-    private static String computeSourceSetName(
-            @NonNull String name,
-            @NonNull VariantType variantType) {
-        if (name.endsWith(variantType.getSuffix())) {
-            name = name.substring(0, name.length() - variantType.getSuffix().length());
-        }
-
-        if (!variantType.getPrefix().isEmpty()) {
-            name = variantType.getPrefix() + StringHelper.capitalize(name);
-        }
-
-        return name;
     }
 
     /**
@@ -686,26 +592,13 @@ public class VariantManager implements VariantModel {
 
     /**
      * Creates VariantData for a specified list of product flavor.
-     *
+     * <p>
      * This will create VariantData for all build types of the given flavors.
      *
      * @param productFlavorList the flavor(s) to build.
      */
     private void createVariantDataForProductFlavors(
             @NonNull List<ProductFlavor> productFlavorList) {
-
-        BuildTypeData testBuildTypeData = null;
-        if (extension instanceof TestedAndroidConfig) {
-            TestedAndroidConfig testedExtension = (TestedAndroidConfig) extension;
-
-            testBuildTypeData = buildTypes.get(testedExtension.getTestBuildType());
-            if (testBuildTypeData == null) {
-                throw new RuntimeException(String.format(
-                        "Test Build Type '%1$s' does not exist.", testedExtension.getTestBuildType()));
-            }
-        }
-
-        BaseVariantData variantForAndroidTest = null;
 
         CoreProductFlavor defaultConfig = defaultConfigData.getProductFlavor();
 
@@ -747,46 +640,13 @@ public class VariantManager implements VariantModel {
                                 Boolean.toString(variantConfig.isLegacyMultiDexMode())));
 
 
-                if (variantFactory.hasTestScope()) {
-                    TestVariantData unitTestVariantData = createTestVariantData(
-                            variantData,
-                            UNIT_TEST);
-                    variantDataList.add(unitTestVariantData);
-
-                    if (buildTypeData == testBuildTypeData) {
-                        variantForAndroidTest = variantData;
-                    }
-                }
             }
         }
 
-        if (variantForAndroidTest != null) {
-            TestVariantData androidTestVariantData = createTestVariantData(
-                    variantForAndroidTest,
-                    ANDROID_TEST);
-            variantDataList.add(androidTestVariantData);
-        }
     }
 
     private boolean isVariantPublished() {
         return extension.getPublishNonDefault();
-    }
-
-    private static void checkName(@NonNull String name, @NonNull String displayName) {
-        checkPrefix(name, displayName, ANDROID_TEST.getPrefix());
-        checkPrefix(name, displayName, UNIT_TEST.getPrefix());
-
-        if (LINT.equals(name)) {
-            throw new RuntimeException(String.format(
-                    "%1$s names cannot be %2$s", displayName, LINT));
-        }
-    }
-
-    private static void checkPrefix(String name, String displayName, String prefix) {
-        if (name.startsWith(prefix)) {
-            throw new RuntimeException(String.format(
-                    "%1$s names cannot start with '%2$s'", displayName, prefix));
-        }
     }
 
     private SigningConfig createSigningOverride() {

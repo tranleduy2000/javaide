@@ -60,7 +60,7 @@ public class LintGradleProject extends Project {
     }
 
     /**
-     * Creates a {@link com.android.build.gradle.internal.LintGradleProject} from
+     * Creates a {@link LintGradleProject} from
      * the given {@link com.android.builder.model.AndroidProject} definition for
      * a given {@link com.android.builder.model.Variant}, and returns it along with
      * a set of lint custom rule jars applicable for the given model project.

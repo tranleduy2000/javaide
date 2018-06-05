@@ -272,7 +272,7 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
                     throw new IOException("Cannot delete " + outFile.getAbsolutePath());
                 }
             }
-            FileFilter.PackagingOption itemPackagingOption = getPackagingAction(archivePath);
+            PackagingOption itemPackagingOption = getPackagingAction(archivePath);
 
             switch(itemPackagingOption) {
                 case PICK_FIRST:
@@ -464,7 +464,7 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
         /**
          * Determine the user's intention for a particular archive entry.
          * @param archivePath the archive entry
-         * @return a {@link FileFilter.PackagingOption} as provided by the user in the build.gradle
+         * @return a {@link PackagingOption} as provided by the user in the build.gradle
          */
         @NonNull
         private PackagingOption getPackagingAction(@NonNull String archivePath) {

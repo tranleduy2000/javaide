@@ -171,7 +171,7 @@ public class TestReport {
      *
      * @param source
      * @return
-     * @throws java.text.ParseException
+     * @throws ParseException
      */
     public BigDecimal parse(String source) throws ParseException {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();

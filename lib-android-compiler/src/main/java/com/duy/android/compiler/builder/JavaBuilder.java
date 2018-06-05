@@ -3,24 +3,22 @@ package com.duy.android.compiler.builder;
 import android.content.Context;
 
 import com.duy.android.compiler.builder.model.BuildType;
-import com.duy.android.compiler.builder.task.Task;
-import com.duy.android.compiler.builder.task.java.JarTask;
 import com.duy.android.compiler.builder.task.CleanTask;
+import com.duy.android.compiler.builder.task.Task;
 import com.duy.android.compiler.builder.task.java.CompileJavaTask;
 import com.duy.android.compiler.builder.task.java.DexTask;
+import com.duy.android.compiler.builder.task.java.JarTask;
 import com.duy.android.compiler.project.JavaProject;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-
-import javax.tools.DiagnosticListener;
 
 public class JavaBuilder extends BuilderImpl<JavaProject> {
 
 
     private JavaProject mProject;
 
-    public JavaBuilder(Context context, JavaProject project, DiagnosticListener listener) {
+    public JavaBuilder(Context context, JavaProject project) {
         super(context);
         mProject = project;
 

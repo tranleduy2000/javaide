@@ -70,8 +70,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.tools.DiagnosticCollector;
-
 public class MainActivity extends ProjectManagerActivity implements
         DrawerLayout.DrawerListener,
         DialogRunConfig.OnConfigChangeListener,
@@ -256,7 +254,6 @@ public class MainActivity extends ProjectManagerActivity implements
             }
 
 
-            final DiagnosticCollector mDiagnosticCollector = new DiagnosticCollector();
             final AndroidAppBuilder builder = new AndroidAppBuilder(this, (AndroidAppProject) mProject);
             builder.setStdOut(mMessagePresenter.getStdOut());
             builder.setStdErr(mMessagePresenter.getStdErr());
@@ -297,8 +294,7 @@ public class MainActivity extends ProjectManagerActivity implements
 
 
     private void compileJavaProject() {
-        final DiagnosticCollector mDiagnosticCollector = new DiagnosticCollector();
-        final IBuilder<JavaProject> builder = new JavaBuilder(this, mProject, mDiagnosticCollector);
+        final IBuilder<JavaProject> builder = new JavaBuilder(this, mProject);
         builder.setStdOut(mMessagePresenter.getStdOut());
         builder.setStdErr(mMessagePresenter.getStdErr());
         final BuildTask.CompileListener<JavaProject> listener = new BuildTask.CompileListener<JavaProject>() {

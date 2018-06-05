@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -21,9 +22,11 @@ import com.duy.android.compiler.project.ClassUtil;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.ide.CompileManager;
 import com.duy.ide.R;
+import com.duy.ide.file.FileManager;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -37,10 +40,16 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     private EditText mArgs;
     private EditText mPackage;
     private SharedPreferences mPref;
-    private JavaProject projectFile;
+    private JavaProject mProject;
     @Nullable
     private OnConfigChangeListener listener;
 
+    public static DialogRunConfig newInstance(JavaProject project) {
+
+        DialogRunConfig fragment = new DialogRunConfig();
+        fragment.mProject = project;
+        return fragment;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -75,16 +84,16 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        projectFile = (JavaProject) getArguments().getSerializable(ExecuteActivity.DEX_FILE);
+        mProject = (JavaProject) getArguments().getSerializable(ExecuteActivity.DEX_FILE);
         mPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if (projectFile == null) {
+        if (mProject == null) {
             return;
         }
-        setupSpinnerMainClass(view, projectFile);
+        setupSpinnerMainClass(view, mProject);
         mArgs = view.findViewById(R.id.edit_arg);
         mArgs.setText(mPref.getString(CompileManager.ARGS, ""));
         mPackage = view.findViewById(R.id.edit_package_name);
-        mPackage.setText(projectFile.getPackageName());
+        mPackage.setText(mProject.getPackageName());
 
         view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,19 +118,35 @@ public class DialogRunConfig extends AppCompatDialogFragment {
 
             //check main class
             ClassFile classFile = new ClassFile(selectedItem.toString());
-            String path = classFile.getPath(projectFile);
+            String path = classFile.getPath(mProject);
             if (!ClassUtil.hasMainFunction(new File(path))) {
                 Toast.makeText(getContext(), "Can not find main function", Toast.LENGTH_SHORT).show();
             }
-            projectFile.setPackageName(mPackage.getText().toString());
+            mProject.setPackageName(mPackage.getText().toString());
 
-            if (listener != null) listener.onConfigChange(projectFile);
+            if (listener != null) listener.onConfigChange(mProject);
             this.dismiss();
         }
     }
 
     private void setupSpinnerMainClass(View view, JavaProject projectFile) {
+        ArrayList<String> names = FileManager.listClassName(projectFile.getJavaSrcDirs().get(0));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_list_item_1, names);
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+        mClasses = view.findViewById(R.id.spinner_main_class);
+        mClasses.setAdapter(adapter);
 
+//        if (projectFile.getMainClass() != null) {
+//            String mainClassName = projectFile.getMainClass().getName();
+//            for (int i = 0; i < names.size(); i++) {
+//                String s = names.get(i);
+//                if (s.equalsIgnoreCase(mainClassName)) {
+//                    mClasses.setSelection(i);
+//                    break;
+//                }
+//            }
+//        }
     }
 
     public interface OnConfigChangeListener {

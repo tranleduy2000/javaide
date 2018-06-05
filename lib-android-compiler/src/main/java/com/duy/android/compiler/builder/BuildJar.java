@@ -37,7 +37,7 @@ public class BuildJar extends AsyncTask<JavaProject, Object, File> {
             return null;
         }
         try {
-            JavaBuilder builder = new JavaBuilder(context, projectFile, mDiagnosticCollector);
+            JavaBuilder builder = new JavaBuilder(context, projectFile);
             if (builder.build(BuildType.DEBUG)) {
                 return projectFile.getOutJarArchive();
             }

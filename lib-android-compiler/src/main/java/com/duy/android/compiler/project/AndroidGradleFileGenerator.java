@@ -26,7 +26,7 @@ public class AndroidGradleFileGenerator {
 
 
         File appGradle = new File(project.getAppDir(), DEFAULT_BUILD_FILE);
-        IOUtils.copyNotIfExistAndClose(context.getAssets().open("templates/app/build.gradle.app"), appGradle);
+        IOUtils.copyNotIfExistAndClose(context.getAssets().open("templates/app/build_gradle.template"), appGradle);
     }
 
     public void generateSettingFile() throws IOException {

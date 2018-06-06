@@ -8,8 +8,8 @@ import android.widget.EditText;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
+import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.JavaProject;
-import com.duy.ide.file.FileManager;
 import com.duy.ide.javaide.autocomplete.autocomplete.AutoCompletePackage;
 import com.duy.ide.javaide.autocomplete.autocomplete.PackageImporter;
 import com.duy.ide.javaide.autocomplete.autocomplete.PatternFactory;
@@ -110,7 +110,7 @@ public class AutoCompleteProvider {
 
     public AutoCompleteProvider(Context context) {
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
-        mClassLoader = new JavaDexClassLoader(FileManager.getClasspathFile(context), outDir);
+        mClassLoader = new JavaDexClassLoader(Environment.getClasspathFile(context), outDir);
         mPackageProvider = new AutoCompletePackage();
         mJavaParser = new JavaParser();
     }

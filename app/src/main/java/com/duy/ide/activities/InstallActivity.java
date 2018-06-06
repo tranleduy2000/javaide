@@ -13,8 +13,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.annotations.Nullable;
+import com.duy.android.compiler.env.Environment;
 import com.duy.ide.R;
-import com.duy.ide.file.FileManager;
 import com.duy.ide.setting.AppSetting;
 
 import java.io.File;
@@ -122,7 +122,7 @@ public class InstallActivity extends BaseActivity implements View.OnClickListene
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if ((FileManager.isSdkInstalled(context))) {
+            if ((Environment.isSdkInstalled(context))) {
                 installSuccess();
             } else {
                 showDialogFailed(error);

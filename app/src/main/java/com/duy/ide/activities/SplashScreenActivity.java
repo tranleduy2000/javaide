@@ -28,9 +28,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.android.annotations.VisibleForTesting;
+import com.android.sdklib.IAndroidTarget;
+import com.android.sdklib.SdkManager;
+import com.android.sdklib.internal.project.ProjectCreator;
+import com.android.utils.StdLogger;
+import com.duy.android.compiler.env.Environment;
+import com.duy.ide.DLog;
 import com.duy.ide.R;
 import com.duy.ide.editor.code.MainActivity;
-import com.duy.ide.file.FileManager;
+
+import java.io.File;
+import java.util.Arrays;
 
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -75,7 +84,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private boolean systemInstalled() {
-        return FileManager.isSdkInstalled(this);
+        return Environment.isSdkInstalled(this);
     }
 
     @Override
@@ -123,17 +132,70 @@ public class SplashScreenActivity extends AppCompatActivity {
      * You will be handle data and send to {@link MainActivity}
      */
     private void startMainActivity() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                overridePendingTransition(0, 0);
-                startActivity(intent);
-                finish();
-            }
-        }, 400);
+        //noinspection ConstantConditions
+        if (true) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    overridePendingTransition(0, 0);
+                    startActivity(intent);
+                    finish();
+                }
+            }, 400);
+        }
+        try {
+            testCreateProject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    @VisibleForTesting
+    private void testCreateProject() {
+        StdLogger log = new StdLogger(StdLogger.Level.VERBOSE);
+        String sdkFolder = Environment.getSdkDir(this).getAbsolutePath();
+        SdkManager sdkManager = SdkManager.createManager(sdkFolder, log);
+        ProjectCreator projectCreator = new ProjectCreator(sdkManager, sdkFolder,
+                ProjectCreator.OutputLevel.VERBOSE, log);
+
+        IAndroidTarget target = null;
+        IAndroidTarget[] targets = sdkManager.getTargets();
+        if (DLog.DEBUG) DLog.d(TAG, "targets = " + Arrays.toString(targets));
+        for (IAndroidTarget tmp : targets) {
+            if (tmp.getVersion().getApiLevel() == 27) {
+                target = tmp;
+            }
+        }
+
+        String projectName = "DemoAndroid";
+        File rootProject = new File(Environment.getSdkAppDir(), projectName);
+        com.duy.android.compiler.utils.FileUtils.deleteQuietly(rootProject);
+        projectCreator.createGradleProject(rootProject.getAbsolutePath(), projectName,
+                "com.duy.example",
+                "MainActivity", target, false, "1.0");
+
+        File[] files = rootProject.listFiles();
+        if (DLog.DEBUG) DLog.d(TAG, "files = " + Arrays.toString(files));
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

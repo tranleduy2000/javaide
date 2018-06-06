@@ -135,7 +135,7 @@ public class BuildTypeAdaptor implements CoreBuildType {
 
     @Override
     public boolean isJniDebuggable() {
-        return MoreObjects.firstNonNull(buildType.getNdk().getDebuggable(), false);
+        return false;
     }
 
     @Override

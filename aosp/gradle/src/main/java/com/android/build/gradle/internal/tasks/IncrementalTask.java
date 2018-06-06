@@ -19,7 +19,6 @@ import com.google.common.collect.Lists;
 
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,15 +42,6 @@ public abstract class IncrementalTask extends BaseTask {
      *
      */
     protected abstract void doFullTaskAction() throws IOException;
-
-    /**
-     * Actual entry point for the action.
-     * Calls out to the doTaskAction as needed.
-     */
-    @TaskAction
-    public void taskAction() throws IOException {
-        doFullTaskAction();
-    }
 
     public static List<File> flattenSourceSets(List<? extends SourceSet> resourceSets) {
         List<File> list = Lists.newArrayList();

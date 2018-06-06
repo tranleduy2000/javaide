@@ -16,23 +16,17 @@
 
 package com.android.build.gradle.ndk.internal;
 
-import static com.android.build.gradle.ndk.internal.BinaryToolHelper.getCCompiler;
-import static com.android.build.gradle.ndk.internal.BinaryToolHelper.getCppCompiler;
-
 import com.android.annotations.NonNull;
 import com.android.build.gradle.internal.NdkHandler;
 import com.android.build.gradle.internal.core.Abi;
 import com.android.build.gradle.managed.NdkConfig;
 import com.android.build.gradle.model.AndroidComponentModelSourceSet;
-import com.android.build.gradle.tasks.GdbSetupTask;
 import com.android.build.gradle.tasks.StripDebugSymbolTask;
 import com.android.utils.StringHelper;
-import com.google.common.base.Objects;
 
 import org.gradle.api.Action;
 import org.gradle.api.PolymorphicDomainObjectContainer;
 import org.gradle.api.Task;
-import org.gradle.api.tasks.Copy;
 import org.gradle.language.base.FunctionalSourceSet;
 import org.gradle.language.base.LanguageSourceSet;
 import org.gradle.language.c.CSourceSet;
@@ -40,12 +34,14 @@ import org.gradle.language.c.tasks.CCompile;
 import org.gradle.language.cpp.CppSourceSet;
 import org.gradle.language.cpp.tasks.CppCompile;
 import org.gradle.model.ModelMap;
-import org.gradle.nativeplatform.NativeBinarySpec;
 import org.gradle.nativeplatform.NativeLibrarySpec;
 import org.gradle.nativeplatform.SharedLibraryBinarySpec;
 import org.gradle.platform.base.BinarySpec;
 
 import java.io.File;
+
+import static com.android.build.gradle.ndk.internal.BinaryToolHelper.getCCompiler;
+import static com.android.build.gradle.ndk.internal.BinaryToolHelper.getCppCompiler;
 
 /**
  * Configure settings used by the native binaries.
@@ -147,8 +143,8 @@ public class NdkConfiguration {
         NativeToolSpecificationFactory.create(
                 ndkHandler,
                 binary.getTargetPlatform(),
-                Objects.firstNonNull(ndkConfig.getDebuggable(), false)).apply(
-                binary);
+                false
+                        .apply(binary);
 
         // Add flags defined in NdkConfig
         for (String flag : ndkConfig.getCFlags()) {
@@ -180,10 +176,6 @@ public class NdkConfiguration {
         StlConfiguration.createStlCopyTask(tasks, binary, buildDir, ndkHandler,
                 ndkConfig.getStl(), compileNdkTaskName);
 
-        if (Boolean.TRUE.equals(ndkConfig.getDebuggable())) {
-            // TODO: Use AndroidTaskRegistry and scopes to create tasks in experimental plugin.
-            setupNdkGdbDebug(tasks, binary, buildDir, ndkConfig, ndkHandler, compileNdkTaskName);
-        }
         createStripDebugTask(tasks, binary, buildDir, ndkHandler, compileNdkTaskName);
     }
 
@@ -234,48 +226,6 @@ public class NdkConfiguration {
                 }
             });
         }
-    }
-
-    /**
-     * Setup tasks to create gdb.setup and copy gdbserver for NDK debugging.
-     */
-    private static void setupNdkGdbDebug(
-            @NonNull ModelMap<Task> tasks,
-            @NonNull final NativeBinarySpec binary,
-            @NonNull final File buildDir,
-            @NonNull final NdkConfig ndkConfig,
-            @NonNull final NdkHandler handler,
-            @NonNull String buildTaskName) {
-        final String copyGdbServerTaskName = NdkNamingScheme.getTaskName(binary, "copy", "GdbServer");
-        tasks.create(copyGdbServerTaskName, Copy.class, new Action<Copy>() {
-            @Override
-            public void execute(Copy task) {
-                task.from(new File(handler.getPrebuiltDirectory(
-                        Abi.getByName(binary.getTargetPlatform().getName())),
-                        "gdbserver/gdbserver"));
-                task.into(new File(buildDir, NdkNamingScheme.getOutputDirectoryName(binary)));
-            }
-        });
-
-        final String createGdbSetupTaskName = NdkNamingScheme.getTaskName(binary, "create", "Gdbsetup");
-        tasks.create(createGdbSetupTaskName, GdbSetupTask.class, new Action<GdbSetupTask>() {
-            @Override
-            public void execute(GdbSetupTask task) {
-                task.setNdkHandler(handler);
-                task.setExtension(ndkConfig);
-                task.setBinary(binary);
-                task.setOutputDir(
-                        new File(buildDir, NdkNamingScheme.getOutputDirectoryName(binary)));
-            }
-        });
-
-        tasks.named(buildTaskName, new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                task.dependsOn(copyGdbServerTaskName);
-                task.dependsOn(createGdbSetupTaskName);
-            }
-        });
     }
 
     private static void createStripDebugTask(

@@ -152,17 +152,6 @@ public class NdkComponentModelPlugin implements Plugin<Project> {
                     NdkOptionsHelper.init(buildType.getNdk());
                 }
             });
-
-            buildTypes.named(
-                    BuilderConstants.DEBUG,
-                    new Action<BuildType>() {
-                        @Override
-                        public void execute(BuildType buildType) {
-                            if (buildType.getNdk().getDebuggable() == null) {
-                                buildType.getNdk().setDebuggable(true);
-                            }
-                        }
-                    });
         }
 
         @Defaults

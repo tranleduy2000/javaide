@@ -358,12 +358,6 @@ public final class SdkConstants {
 
 
     /**
-     * filename for gdbserver.
-     */
-    public static final String FN_GDBSERVER = "gdbserver";              //$NON-NLS-1$
-    public static final String FN_GDB_SETUP = "gdb.setup";              //$NON-NLS-1$
-
-    /**
      * global Android proguard config file
      */
     public static final String FN_ANDROID_PROGUARD_FILE = "proguard-android.txt";   //$NON-NLS-1$

@@ -19,7 +19,6 @@ package com.android.build.gradle.internal.tasks;
 import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.api.AndroidSourceDirectorySet;
 import com.android.build.gradle.api.AndroidSourceSet;
-import com.android.builder.core.VariantType;
 import com.google.common.collect.Lists;
 
 import org.gradle.api.Project;
@@ -27,7 +26,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.diagnostics.AbstractReportTask;
 import org.gradle.api.tasks.diagnostics.internal.ReportRenderer;
 import org.gradle.api.tasks.diagnostics.internal.TextReportRenderer;
-import org.gradle.logging.StyledTextOutput;
+import org.gradle.internal.logging.text.StyledTextOutput;
 import org.gradle.util.CollectionUtils;
 
 import java.io.File;

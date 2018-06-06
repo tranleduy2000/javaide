@@ -16,8 +16,6 @@
 
 package com.android.builder.internal.packaging;
 
-import static com.android.SdkConstants.FN_APK_CLASSES_N_DEX;
-
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -52,6 +50,8 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
+
+import static com.android.SdkConstants.FN_APK_CLASSES_N_DEX;
 
 /**
  * Class making the final app package.
@@ -413,10 +413,7 @@ public final class Packager implements IArchiveBuilder {
                             // are gdbserver executables
                             String libName = lib.getName();
                             if (lib.isFile() &&
-                                    (PATTERN_NATIVELIB_EXT.matcher(lib.getName()).matches() ||
-                                        (mJniDebugMode &&
-                                            (SdkConstants.FN_GDBSERVER.equals(libName) ||
-                                             SdkConstants.FN_GDB_SETUP.equals(libName))))) {
+                                    (PATTERN_NATIVELIB_EXT.matcher(lib.getName()).matches())) {
 
                                 String path =
                                     SdkConstants.FD_APK_NATIVE_LIBS + "/" +

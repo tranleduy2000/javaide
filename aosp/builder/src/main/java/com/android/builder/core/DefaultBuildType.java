@@ -46,7 +46,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
         _initWith(that);
 
         setDebuggable(that.isDebuggable());
-        setJniDebuggable(that.isJniDebuggable());
         setApplicationIdSuffix(that.getApplicationIdSuffix());
         setVersionNameSuffix(that.getVersionNameSuffix());
         setMinifyEnabled(that.isMinifyEnabled());

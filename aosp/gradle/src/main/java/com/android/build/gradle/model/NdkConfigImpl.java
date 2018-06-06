@@ -48,8 +48,6 @@ public class NdkConfigImpl implements NdkConfig {
 
     String stl;
 
-    Boolean isDebuggable;
-
     @Override
     public String getModuleName() {
         return moduleName;
@@ -138,16 +136,6 @@ public class NdkConfigImpl implements NdkConfig {
     @Override
     public void setStl(@NonNull String stl) {
         this.stl = stl;
-    }
-
-    @Override
-    public Boolean getDebuggable() {
-        return isDebuggable;
-    }
-
-    @Override
-    public void setDebuggable(Boolean isDebuggable) {
-        this.isDebuggable = isDebuggable;
     }
 
 }

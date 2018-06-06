@@ -67,8 +67,5 @@ public class NdkOptionsHelper {
      */
     public static void merge(NdkBuildType base, NdkBuildType other) {
         merge(base, (NdkOptions) other);
-        if (other.getDebuggable() != null) {
-            base.setDebuggable(other.getDebuggable());
-        }
     }
 }

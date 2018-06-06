@@ -23,9 +23,4 @@ import org.gradle.model.Managed;
  */
 @Managed
 public interface NdkBuildType extends NdkOptions {
-    /**
-     * Returns whether the resulting shared object is debuggable.
-     */
-    Boolean getDebuggable();
-    void setDebuggable(Boolean isDebuggable);
 }

@@ -22,13 +22,14 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
+import java.io.IOException;
 
 public class PrepareLibraryTask extends DefaultAndroidTask {
     private File bundle;
     private File explodedDir;
 
     @TaskAction
-    public void prepare() {
+    public void prepare() throws IOException {
         //LibraryCache.getCache().unzipLibrary(this.name, project, getBundle(), getExplodedDir())
         LibraryCache.unzipAar(getBundle(), getExplodedDir(), getProject());
     }

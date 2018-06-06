@@ -49,7 +49,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
 
         clonedBuildType.name = buildType.getName();
         clonedBuildType.debuggable = buildType.isDebuggable();
-        clonedBuildType.jniDebuggable = buildType.isJniDebuggable();
         clonedBuildType.applicationIdSuffix = buildType.getApplicationIdSuffix();
         clonedBuildType.versionNameSuffix = buildType.getVersionNameSuffix();
         clonedBuildType.minifyEnabled = buildType.isMinifyEnabled();

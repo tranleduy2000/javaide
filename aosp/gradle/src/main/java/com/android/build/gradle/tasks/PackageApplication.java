@@ -385,12 +385,7 @@ public class PackageApplication extends IncrementalTask implements FileSupplier 
                     return config.getSupportedAbis();
                 }
             });
-            ConventionMappingHelper.map(packageApp, "jniDebugBuild", new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    return config.getBuildType().isJniDebuggable();
-                }
-            });
+            packageApp.setJniDebugBuild(false);
 
             CoreSigningConfig sc = (CoreSigningConfig) config.getSigningConfig();
             packageApp.setSigningConfig(sc);

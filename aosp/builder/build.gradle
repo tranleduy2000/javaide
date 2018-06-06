@@ -22,7 +22,7 @@ android {
 dependencies {
     api project(':jdk-1_7')
 
-    api project(':aosp:builder-model')
+    api project(':aosp:annotations')
     api project(':aosp:builder-test-api')
     api project(':aosp:manifest-merger')
     api project(':aosp:profile')

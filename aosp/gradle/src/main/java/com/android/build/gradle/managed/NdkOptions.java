@@ -35,6 +35,7 @@ public interface NdkOptions {
      * The resulting shared object will be named "lib${getModuleName()}.so".
      */
     String getModuleName();
+
     void setModuleName(@NonNull String moduleName);
 
     /**
@@ -42,6 +43,7 @@ public interface NdkOptions {
      */
     @Unmanaged
     Set<String> getAbiFilters();
+
     void setAbiFilters(@NonNull Set<String> filters);
 
     /**
@@ -49,6 +51,7 @@ public interface NdkOptions {
      */
     @Unmanaged
     List<String> getCFlags();
+
     void setCFlags(@NonNull List<String> cFlags);
 
     /**
@@ -56,6 +59,7 @@ public interface NdkOptions {
      */
     @Unmanaged
     List<String> getCppFlags();
+
     void setCppFlags(@NonNull List<String> cppFlags);
 
     /**
@@ -63,6 +67,7 @@ public interface NdkOptions {
      */
     @Unmanaged
     List<String> getLdFlags();
+
     void setLdFlags(@NonNull List<String> ldFlags);
 
     /**
@@ -70,23 +75,23 @@ public interface NdkOptions {
      */
     @Unmanaged
     List<String> getLdLibs();
+
     void setLdLibs(@NonNull List<String> ldLibs);
 
     /**
      * The STL.
-     *
+     * <p>
      * Supported values are:
-     *   - system (default)
-     *   - gabi++_static
-     *   - gabi++_shared
-     *   - stlport_static
-     *   - stlport_shared
-     *   - gnustl_static
-     *   - gnustl_shared
+     * - system (default)
+     * - gabi++_static
+     * - gabi++_shared
+     * - stlport_static
+     * - stlport_shared
+     * - gnustl_static
+     * - gnustl_shared
      */
     String getStl();
+
     void setStl(@NonNull String stl);
 
-    Boolean getRenderscriptNdkMode();
-    void setRenderscriptNdkMode(Boolean renderscriptNdkMode);
 }

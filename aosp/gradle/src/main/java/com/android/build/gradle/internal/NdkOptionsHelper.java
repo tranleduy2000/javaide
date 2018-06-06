@@ -58,9 +58,6 @@ public class NdkOptionsHelper {
         if (other.getStl() != null) {
             base.setStl(other.getStl());
         }
-        if (other.getRenderscriptNdkMode() != null) {
-            base.setRenderscriptNdkMode(other.getRenderscriptNdkMode());
-        }
     }
 
     /**

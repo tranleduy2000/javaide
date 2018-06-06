@@ -394,9 +394,7 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
      * Returns the list of generated res folders for this variant.
      */
     private List<File> getGeneratedResFolders() {
-        List<File> generatedResFolders = Lists.newArrayList(
-                scope.getRenderscriptResOutputDir(),
-                scope.getGeneratedResOutputDir());
+        List<File> generatedResFolders = Lists.newArrayList(scope.getGeneratedResOutputDir());
         if (extraGeneratedResFolders != null) {
             generatedResFolders.addAll(extraGeneratedResFolders);
         }

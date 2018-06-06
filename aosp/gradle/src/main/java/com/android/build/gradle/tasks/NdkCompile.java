@@ -47,8 +47,6 @@ public class NdkCompile extends NdkTask {
     @Input
     private File ndkDirectory;
     @Input
-    private boolean ndkRenderScriptMode;
-    @Input
     private boolean ndkCygwinMode;
 
     private static <T> T setGroovyRef(groovy.lang.Reference<T> ref, T newValue) {
@@ -162,19 +160,11 @@ public class NdkCompile extends NdkTask {
 
         List<String> fullLdlibs = Lists.newArrayList();
         if (ndk.getLdLibs() != null) {
-            ((ArrayList<String>) fullLdlibs).addAll(ndk.getLdLibs());
-        }
-
-        if (getNdkRenderScriptMode()) {
-            ((ArrayList<String>) fullLdlibs).add("dl");
-            ((ArrayList<String>) fullLdlibs).add("log");
-            ((ArrayList<String>) fullLdlibs).add("jnigraphics");
-            ((ArrayList<String>) fullLdlibs).add("RScpp_static");
-            ((ArrayList<String>) fullLdlibs).add("cutils");
+            fullLdlibs.addAll(ndk.getLdLibs());
         }
 
 
-        if (!((ArrayList<String>) fullLdlibs).isEmpty().asBoolean()) {
+        if (!fullLdlibs.isEmpty().asBoolean()) {
             sb.append("LOCAL_LDLIBS := \\\n");
             for (String lib : fullLdlibs) {
                 sb.append("\t-l").append(lib).append(" \\\n");
@@ -193,15 +183,6 @@ public class NdkCompile extends NdkTask {
 
         for (File sourceFolder : getSourceFolders()) {
             sb.append("LOCAL_C_INCLUDES += " + sourceFolder.getAbsolutePath() + "\n");
-        }
-
-
-        if (getNdkRenderScriptMode()) {
-            sb.append("LOCAL_LDFLAGS += -L$(call host-path,$(TARGET_C_INCLUDES)/../lib/rs)\n");
-
-            sb.append("LOCAL_C_INCLUDES += $(TARGET_C_INCLUDES)/rs/cpp\n");
-            sb.append("LOCAL_C_INCLUDES += $(TARGET_C_INCLUDES)/rs\n");
-            sb.append("LOCAL_C_INCLUDES += $(TARGET_OBJS)/$(LOCAL_MODULE)\n");
         }
 
 
@@ -327,18 +308,6 @@ public class NdkCompile extends NdkTask {
 
     public void setNdkDirectory(File ndkDirectory) {
         this.ndkDirectory = ndkDirectory;
-    }
-
-    public boolean getNdkRenderScriptMode() {
-        return ndkRenderScriptMode;
-    }
-
-    public boolean isNdkRenderScriptMode() {
-        return ndkRenderScriptMode;
-    }
-
-    public void setNdkRenderScriptMode(boolean ndkRenderScriptMode) {
-        this.ndkRenderScriptMode = ndkRenderScriptMode;
     }
 
     public boolean getNdkCygwinMode() {

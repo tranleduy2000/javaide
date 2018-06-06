@@ -54,8 +54,6 @@ public class AndroidLibraryImpl extends LibraryImpl implements AndroidLibrary, S
     @NonNull
     private final File aidlFolder;
     @NonNull
-    private final File renderscriptFolder;
-    @NonNull
     private final File proguardRules;
     @NonNull
     private final File lintJar;
@@ -86,7 +84,6 @@ public class AndroidLibraryImpl extends LibraryImpl implements AndroidLibrary, S
         assetsFolder = libraryDependency.getAssetsFolder();
         jniFolder = libraryDependency.getJniFolder();
         aidlFolder = libraryDependency.getAidlFolder();
-        renderscriptFolder = libraryDependency.getRenderscriptFolder();
         proguardRules = libraryDependency.getProguardRules();
         lintJar = libraryDependency.getLintJar();
         annotations = libraryDependency.getExternalAnnotations();
@@ -167,12 +164,6 @@ public class AndroidLibraryImpl extends LibraryImpl implements AndroidLibrary, S
     @Override
     public File getAidlFolder() {
         return aidlFolder;
-    }
-
-    @NonNull
-    @Override
-    public File getRenderscriptFolder() {
-        return renderscriptFolder;
     }
 
     @NonNull

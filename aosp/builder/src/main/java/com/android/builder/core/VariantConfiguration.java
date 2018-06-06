@@ -1114,42 +1114,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
     }
 
     /**
-     * Returns all the renderscript import folder that are outside of the current project.
-     */
-    @NonNull
-    public List<File> getRenderscriptImports() {
-        List<File> list = Lists.newArrayList();
-
-        for (LibraryDependency lib : mFlatLibraries) {
-            File rsLib = lib.getRenderscriptFolder();
-            if (rsLib.isDirectory()) {
-                list.add(rsLib);
-            }
-        }
-
-        return list;
-    }
-
-    /**
-     * Returns all the renderscript source folder from the main config, the flavors and the
-     * build type.
-     *
-     * @return a list of folders.
-     */
-    @NonNull
-    public List<File> getRenderscriptSourceList() {
-        List<SourceProvider> providers = getSortedSourceProviders();
-
-        List<File> sourceList = Lists.newArrayListWithExpectedSize(providers.size());
-
-        for (SourceProvider provider : providers) {
-            sourceList.addAll(provider.getRenderscriptDirectories());
-        }
-
-        return sourceList;
-    }
-
-    /**
      * Returns all the aidl import folder that are outside of the current project.
      */
     @NonNull

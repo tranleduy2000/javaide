@@ -50,8 +50,6 @@ public class NdkConfigImpl implements NdkConfig {
 
     Boolean isDebuggable;
 
-    Boolean renderscriptNdkMode;
-
     @Override
     public String getModuleName() {
         return moduleName;
@@ -152,13 +150,4 @@ public class NdkConfigImpl implements NdkConfig {
         this.isDebuggable = isDebuggable;
     }
 
-    @Override
-    public Boolean getRenderscriptNdkMode() {
-        return renderscriptNdkMode;
-    }
-
-    @Override
-    public void setRenderscriptNdkMode(Boolean renderscriptNdkMode) {
-        this.renderscriptNdkMode = renderscriptNdkMode;
-    }
 }

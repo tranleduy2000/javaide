@@ -61,12 +61,6 @@ public class ProjectProperties implements IPropertySource {
 
     /** The property name for the project target */
     public static final String PROPERTY_TARGET = "target";
-    /** The property name for the renderscript build target */
-    public static final String PROPERTY_RS_TARGET = "renderscript.target";
-    /** The property name for the renderscript support mode */
-    public static final String PROPERTY_RS_SUPPORT = "renderscript.support.mode";
-    /** The version of the build tools to use to compile */
-    public static final String PROPERTY_BUILD_TOOLS = "sdk.buildtools";
 
     public static final String PROPERTY_LIBRARY = "android.library";
     public static final String PROPERTY_LIB_REF = "android.library.reference.";

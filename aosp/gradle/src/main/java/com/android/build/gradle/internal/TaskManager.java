@@ -726,14 +726,6 @@ public abstract class TaskManager {
         //noinspection unchecked
         addAllIfNotNull(set, config.getJniLibsList());
 
-        if (Boolean.TRUE.equals(config.getMergedFlavor().getRenderscriptSupportModeEnabled())) {
-            File rsLibs = androidBuilder.getSupportNativeLibFolder();
-            if (rsLibs != null && rsLibs.isDirectory()) {
-                set.add(rsLibs);
-            }
-
-        }
-
         return set;
     }
 
@@ -867,7 +859,6 @@ public abstract class TaskManager {
 
         final GradleVariantConfiguration variantConfig = variantData.getVariantConfiguration();
 
-        ndkCompile.setNdkRenderScriptMode(false);
         ndkCompile.setSourceFolders((variantConfig.getJniSourceList()));
 
         ndkCompile.setGeneratedMakefile(new File(scope.getGlobalScope().getIntermediatesDir(),

@@ -176,8 +176,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
         private static void initBuildType(@NonNull BuildType buildType) {
             buildType.setDebuggable(false);
             buildType.setPseudoLocalesEnabled(false);
-            buildType.setRenderscriptDebuggable(false);
-            buildType.setRenderscriptOptimLevel(3);
             buildType.setMinifyEnabled(false);
             buildType.setZipAlignEnabled(true);
             buildType.setEmbedMicroApp(true);
@@ -358,7 +356,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             sources.addDefaultSourceSet("res", AndroidLanguageSourceSet.class);
             sources.addDefaultSourceSet("assets", AndroidLanguageSourceSet.class);
             sources.addDefaultSourceSet("aidl", AndroidLanguageSourceSet.class);
-            sources.addDefaultSourceSet("renderscript", AndroidLanguageSourceSet.class);
             sources.addDefaultSourceSet("jniLibs", AndroidLanguageSourceSet.class);
 
             sources.all(new Action<FunctionalSourceSet>() {

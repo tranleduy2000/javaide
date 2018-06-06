@@ -245,7 +245,6 @@ public class AndroidConfigAdaptor implements com.android.build.gradle.AndroidCon
             convertSourceSet(androidSource.getRes(), source, "res");
             convertSourceSet(androidSource.getAssets(), source, "assets");
             convertSourceSet(androidSource.getAidl(), source, "aidl");
-            convertSourceSet(androidSource.getRenderscript(), source, "renderscript");
             convertSourceSet(androidSource.getJni(), source, "jni");
             convertSourceSet(androidSource.getJniLibs(), source, "jniLibs");
         }

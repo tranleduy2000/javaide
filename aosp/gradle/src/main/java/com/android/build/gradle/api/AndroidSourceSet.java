@@ -183,26 +183,6 @@ public interface AndroidSourceSet {
     AndroidSourceSet aidl(Closure configureClosure);
 
     /**
-     * The Android RenderScript source directory for this source set.
-     *
-     * @return the source. Never returns null.
-     */
-    @NonNull
-    AndroidSourceDirectorySet getRenderscript();
-
-    /**
-     * Configures the location of the Android RenderScript source for this set.
-     *
-     * <p>The given closure is used to configure the {@link AndroidSourceDirectorySet}
-     * which contains the Renderscript source.
-     *
-     * @param configureClosure The closure to use to configure the Renderscript source.
-     * @return this
-     */
-    @NonNull
-    AndroidSourceSet renderscript(Closure configureClosure);
-
-    /**
      * The Android JNI source directory for this source set.
      *
      * @return the source. Never returns null.

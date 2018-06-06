@@ -143,16 +143,6 @@ public class BuildTypeAdaptor implements CoreBuildType {
         return buildType.getPseudoLocalesEnabled();
     }
 
-    @Override
-    public boolean isRenderscriptDebuggable() {
-        return buildType.getRenderscriptDebuggable();
-    }
-
-    @Override
-    public int getRenderscriptOptimLevel() {
-        return buildType.getRenderscriptOptimLevel();
-    }
-
     @Nullable
     @Override
     public String getApplicationIdSuffix() {

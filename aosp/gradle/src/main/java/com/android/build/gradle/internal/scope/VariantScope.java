@@ -208,17 +208,9 @@ public class VariantScope {
         // for now only the project's compilation output.
         Set<File> set = Sets.newHashSet();
         set.addAll(getNdkSoFolder());
-        set.add(getRenderscriptLibOutputDir());
         set.addAll(config.getLibraryJniFolders());
         set.addAll(config.getJniLibsList());
 
-        if (config.getMergedFlavor().getRenderscriptSupportModeEnabled() != null &&
-                config.getMergedFlavor().getRenderscriptSupportModeEnabled()) {
-            File rsLibs = globalScope.getAndroidBuilder().getSupportNativeLibFolder();
-            if (rsLibs != null && rsLibs.isDirectory()) {
-                set.add(rsLibs);
-            }
-        }
         return set;
     }
 
@@ -291,12 +283,6 @@ public class VariantScope {
     }
 
     @NonNull
-    public File getRenderscriptLibOutputDir() {
-        return new File(globalScope.getGeneratedDir(),
-                "rs/" + variantData.getVariantConfiguration().getDirName() + "/lib");
-    }
-
-    @NonNull
     public File getSymbolLocation() {
         return new File(globalScope.getIntermediatesDir() + "/symbols/" +
                 variantData.getVariantConfiguration().getDirName());
@@ -362,11 +348,6 @@ public class VariantScope {
     @NonNull
     public File getGeneratedPngsOutputDir() {
         return getGeneratedResourcesDir("pngs");
-    }
-
-    @NonNull
-    public File getRenderscriptResOutputDir() {
-        return getGeneratedResourcesDir("rs");
     }
 
     @NonNull

@@ -44,7 +44,6 @@ public class BuildTypeTest extends BaseTest {
 
         assertTrue(type.isDebuggable())
         assertFalse(type.isJniDebuggable())
-        assertFalse(type.isRenderscriptDebuggable())
         assertNotNull(type.getSigningConfig())
         assertTrue(type.getSigningConfig().isSigningReady())
         assertTrue(type.isZipAlignEnabled())
@@ -66,7 +65,6 @@ public class BuildTypeTest extends BaseTest {
 
         assertFalse(type.isDebuggable())
         assertFalse(type.isJniDebuggable())
-        assertFalse(type.isRenderscriptDebuggable())
         assertTrue(type.isZipAlignEnabled())
     }
 
@@ -80,8 +78,6 @@ public class BuildTypeTest extends BaseTest {
         // change every value from their default.
         object1.setDebuggable(true)
         object1.setJniDebuggable(true)
-        object1.setRenderscriptDebuggable(true)
-        object1.setRenderscriptOptimLevel(0)
         object1.setApplicationIdSuffix("foo")
         object1.setVersionNameSuffix("foo")
         object1.setMinifyEnabled(true)

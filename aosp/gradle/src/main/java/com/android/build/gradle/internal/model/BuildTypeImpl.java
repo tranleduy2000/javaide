@@ -34,13 +34,15 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
     private boolean debuggable;
     private boolean jniDebuggable;
     private boolean pseudoLocalesEnabled;
-    private boolean renderscriptDebuggable;
-    private int renderscriptOptimLevel;
     private String applicationIdSuffix;
     private String versionNameSuffix;
     private boolean minifyEnabled;
     private boolean zipAlignEnabled;
     private boolean embedMicroApp;
+
+    private BuildTypeImpl(@NonNull BuildType buildType) {
+        super(buildType);
+    }
 
     @NonNull
     static BuildTypeImpl cloneBuildType(@NonNull BuildType buildType) {
@@ -49,8 +51,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
         clonedBuildType.name = buildType.getName();
         clonedBuildType.debuggable = buildType.isDebuggable();
         clonedBuildType.jniDebuggable = buildType.isJniDebuggable();
-        clonedBuildType.renderscriptDebuggable = buildType.isRenderscriptDebuggable();
-        clonedBuildType.renderscriptOptimLevel = buildType.getRenderscriptOptimLevel();
         clonedBuildType.applicationIdSuffix = buildType.getApplicationIdSuffix();
         clonedBuildType.versionNameSuffix = buildType.getVersionNameSuffix();
         clonedBuildType.minifyEnabled = buildType.isMinifyEnabled();
@@ -59,10 +59,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
         clonedBuildType.pseudoLocalesEnabled = buildType.isPseudoLocalesEnabled();
 
         return clonedBuildType;
-    }
-
-    private BuildTypeImpl(@NonNull BuildType buildType) {
-        super(buildType);
     }
 
     @NonNull
@@ -82,18 +78,8 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
     }
 
     @Override
-    public boolean isRenderscriptDebuggable() {
-        return renderscriptDebuggable;
-    }
-
-    @Override
     public boolean isPseudoLocalesEnabled() {
         return pseudoLocalesEnabled;
-    }
-
-    @Override
-    public int getRenderscriptOptimLevel() {
-        return renderscriptOptimLevel;
     }
 
     @Nullable
@@ -135,8 +121,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
                 "name='" + name + '\'' +
                 ", debuggable=" + debuggable +
                 ", jniDebuggable=" + jniDebuggable +
-                ", renderscriptDebuggable=" + renderscriptDebuggable +
-                ", renderscriptOptimLevel=" + renderscriptOptimLevel +
                 ", applicationIdSuffix='" + applicationIdSuffix + '\'' +
                 ", versionNameSuffix='" + versionNameSuffix + '\'' +
                 ", minifyEnabled=" + minifyEnabled +

@@ -413,7 +413,6 @@ public class MergeResources extends IncrementalTask {
                         @Override
                         public List<ResourceSet> call() throws Exception {
                             List<File> generatedResFolders = Lists.newArrayList(
-                                    scope.getRenderscriptResOutputDir(),
                                     scope.getGeneratedResOutputDir());
                             if (variantData.getExtraGeneratedResFolders() != null) {
                                 generatedResFolders.addAll(

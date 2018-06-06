@@ -463,7 +463,6 @@ public class ModelBuilder implements ToolingModelBuilder {
 
         VariantScope scope = variantData.getScope();
 
-        result.add(scope.getRenderscriptResOutputDir());
         result.add(scope.getGeneratedResOutputDir());
 
         return result;

@@ -136,14 +136,6 @@ public class NdkConfiguration {
         String sysroot = ndkHandler.getSysroot(
                 Abi.getByName(binary.getTargetPlatform().getName()));
 
-        if (ndkConfig.getRenderscriptNdkMode()) {
-            getCCompiler(binary).args("-I" + sysroot + "/usr/include/rs");
-            getCCompiler(binary).args("-I" + sysroot + "/usr/include/rs/cpp");
-            getCppCompiler(binary).args("-I" + sysroot + "/usr/include/rs");
-            getCppCompiler(binary).args("-I" + sysroot + "/usr/include/rs/cpp");
-            binary.getLinker().args("-L" + sysroot + "/usr/lib/rs");
-        }
-
         // STL flags must be applied before user defined flags to resolve possible undefined symbols
         // in the STL library.
         StlNativeToolSpecification stlConfig = new StlNativeToolSpecification(

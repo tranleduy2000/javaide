@@ -113,8 +113,6 @@ public final class SdkConstants {
     public static final String FN_ATTRS_MANIFEST_XML = "attrs_manifest.xml";          //$NON-NLS-1$
     /** framework aidl import file */
     public static final String FN_FRAMEWORK_AIDL = "framework.aidl";                  //$NON-NLS-1$
-    /** framework renderscript folder */
-    public static final String FN_FRAMEWORK_RENDERSCRIPT = "renderscript";            //$NON-NLS-1$
     /** framework include folder */
     public static final String FN_FRAMEWORK_INCLUDE = "include";                      //$NON-NLS-1$
     /** framework include (clang) folder */
@@ -176,10 +174,6 @@ public final class SdkConstants {
     public static final String FN_AIDL =
         "aidl" + ext(".exe", "");                         //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-    /** renderscript executable (with extension for the current OS) */
-    public static final String FN_RENDERSCRIPT =
-        "llvm-rs-cc" + ext(".exe", "");                   //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
     /** renderscript support exe (with extension for the current OS) */
     public static final String FN_BCC_COMPAT =
             "bcc_compat" + ext(".exe", "");               //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -240,8 +234,6 @@ public final class SdkConstants {
     /** properties file for the SDK */
     public static final String FN_SDK_PROP = "sdk.properties";                        //$NON-NLS-1$
 
-
-    public static final String FN_RENDERSCRIPT_V8_JAR = "renderscript-v8.jar"; //$NON-NLS-1$
 
     /**
      * filename for gdbserver.
@@ -376,8 +368,6 @@ public final class SdkConstants {
     public static final String FD_ANT = "ant";                          //$NON-NLS-1$
     /** Name of the SDK data folder, i.e. "data" */
     public static final String FD_DATA = "data";                        //$NON-NLS-1$
-    /** Name of the SDK renderscript folder, i.e. "rs" */
-    public static final String FD_RENDERSCRIPT = "rs";                  //$NON-NLS-1$
     /** Name of the Java resources folder, i.e. "resources" */
     public static final String FD_JAVA_RES = "resources";               //$NON-NLS-1$
     /** Name of the SDK resources folder, i.e. "res" */
@@ -480,10 +470,6 @@ public final class SdkConstants {
      *  This is an OS path, ending with a separator. */
     public static final String OS_PLATFORM_DATA_FOLDER = FD_DATA + File.separator;
 
-    /** Path of the renderscript directory relative to a platform folder.
-     *  This is an OS path, ending with a separator. */
-    public static final String OS_PLATFORM_RENDERSCRIPT_FOLDER = FD_RENDERSCRIPT + File.separator;
-
 
     /** Path of the samples directory relative to a platform folder.
      *  This is an OS path, ending with a separator. */
@@ -524,13 +510,6 @@ public final class SdkConstants {
     /** Path of the layoutlib.jar file relative to a platform folder. */
     public static final String OS_PLATFORM_LAYOUTLIB_JAR =
             OS_PLATFORM_DATA_FOLDER + FN_LAYOUTLIB_JAR;
-
-    /** Path of the renderscript include folder relative to a platform folder. */
-    public static final String OS_FRAMEWORK_RS =
-            FN_FRAMEWORK_RENDERSCRIPT + File.separator + FN_FRAMEWORK_INCLUDE;
-    /** Path of the renderscript (clang) include folder relative to a platform folder. */
-    public static final String OS_FRAMEWORK_RS_CLANG =
-            FN_FRAMEWORK_RENDERSCRIPT + File.separator + FN_FRAMEWORK_INCLUDE_CLANG;
 
     /* Folder paths relative to a addon folder */
     /** Path of the images directory relative to a folder folder.

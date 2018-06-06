@@ -48,7 +48,6 @@ public class DefaultAndroidSourceSet implements AndroidSourceSet, SourceProvider
     private final AndroidSourceDirectorySet assets;
     private final AndroidSourceDirectorySet res;
     private final AndroidSourceDirectorySet aidl;
-    private final AndroidSourceDirectorySet renderscript;
     private final AndroidSourceDirectorySet jni;
     private final AndroidSourceDirectorySet jniLibs;
     private final String displayName;
@@ -79,9 +78,6 @@ public class DefaultAndroidSourceSet implements AndroidSourceSet, SourceProvider
 
         String aidlDisplayName = String.format("%s aidl", displayName);
         aidl = new DefaultAndroidSourceDirectorySet(aidlDisplayName, project);
-
-        String renderscriptDisplayName = String.format("%s renderscript", displayName);
-        renderscript = new DefaultAndroidSourceDirectorySet(renderscriptDisplayName, project);
 
         String jniDisplayName = String.format("%s jni", displayName);
         jni = new DefaultAndroidSourceDirectorySet(jniDisplayName, project);
@@ -208,19 +204,6 @@ public class DefaultAndroidSourceSet implements AndroidSourceSet, SourceProvider
 
     @Override
     @NonNull
-    public AndroidSourceDirectorySet getRenderscript() {
-        return renderscript;
-    }
-
-    @Override
-    @NonNull
-    public AndroidSourceSet renderscript(Closure configureClosure) {
-        ConfigureUtil.configure(configureClosure, getRenderscript());
-        return this;
-    }
-
-    @Override
-    @NonNull
     public AndroidSourceDirectorySet getJni() {
         return jni;
     }
@@ -281,7 +264,6 @@ public class DefaultAndroidSourceSet implements AndroidSourceSet, SourceProvider
         assets.setSrcDirs(Collections.singletonList(path + "/" + SdkConstants.FD_ASSETS));
         manifest.srcFile(path + "/" + SdkConstants.FN_ANDROID_MANIFEST_XML);
         aidl.setSrcDirs(Collections.singletonList(path + "/aidl"));
-        renderscript.setSrcDirs(Collections.singletonList(path + "/rs"));
         jni.setSrcDirs(Collections.singletonList(path + "/jni"));
         jniLibs.setSrcDirs(Collections.singletonList(path + "/jniLibs"));
         return this;
@@ -311,12 +293,6 @@ public class DefaultAndroidSourceSet implements AndroidSourceSet, SourceProvider
     @NonNull
     public Set<File> getAidlDirectories() {
         return getAidl().getSrcDirs();
-    }
-
-    @Override
-    @NonNull
-    public Set<File> getRenderscriptDirectories() {
-        return getRenderscript().getSrcDirs();
     }
 
     @Override

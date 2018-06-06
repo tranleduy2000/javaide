@@ -197,31 +197,6 @@ public class LibraryTaskManager extends TaskManager {
             }
         }
 
-        Sync packageRenderscript = ThreadRecorder.get().record(
-                ExecutionType.LIB_TASK_MANAGER_CREATE_PACKAGING_TASK,
-                new Recorder.Block<Sync>() {
-                    @Override
-                    public Sync call() throws Exception {
-                        // package from 2 sources.
-                        packageJniLibs.from(variantConfig.getJniLibsList())
-                                .include("**/*.so");
-                        packageJniLibs.into(new File(
-                                variantScope.getGlobalScope().getIntermediatesDir(),
-                                DIR_BUNDLES + "/" + dirName + "/jni"));
-
-                        // package the renderscript header files files into the bundle folder
-                        Sync packageRenderscript = project.getTasks().create(
-                                variantScope.getTaskName("package", "Renderscript"), Sync.class);
-                        // package from 3 sources. the order is important to make sure the override works well.
-                        packageRenderscript.from(variantConfig.getRenderscriptSourceList())
-                                .include("**/*.rsh");
-                        packageRenderscript.into(new File(
-                                variantScope.getGlobalScope().getIntermediatesDir(),
-                                DIR_BUNDLES + "/" + dirName + "/" + SdkConstants.FD_RENDERSCRIPT));
-                        return packageRenderscript;
-                    }
-                });
-
         // merge consumer proguard files from different build types and flavors
         MergeFileTask mergeProGuardFileTask = ThreadRecorder.get().record(
                 ExecutionType.LIB_TASK_MANAGER_CREATE_MERGE_PROGUARD_FILE_TASK,
@@ -380,8 +355,7 @@ public class LibraryTaskManager extends TaskManager {
                     });
         }
 
-        bundle.dependsOn(packageRes.getName(), packageRenderscript, lintCopy, packageJniLibs,
-                mergeProGuardFileTask);
+        bundle.dependsOn(packageRes.getName(),  lintCopy, packageJniLibs, mergeProGuardFileTask);
         TaskManager.optionalDependsOn(bundle, pcData.getClassGeneratingTasks());
         TaskManager.optionalDependsOn(bundle, pcData.getLibraryGeneratingTasks());
 

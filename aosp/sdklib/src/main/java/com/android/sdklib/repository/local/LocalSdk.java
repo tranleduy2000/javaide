@@ -672,7 +672,6 @@ public class LocalSdk {
     private BuildToolInfo createLegacyBuildTools(@NonNull LocalPlatformToolPkgInfo ptInfo) {
         File platformTools = new File(getLocation(), SdkConstants.FD_PLATFORM_TOOLS);
         File platformToolsLib = ptInfo.getLocalDir();
-        File platformToolsRs = new File(platformTools, SdkConstants.FN_FRAMEWORK_RENDERSCRIPT);
 
         return new BuildToolInfo(
                 ptInfo.getDesc().getFullRevision(),
@@ -681,9 +680,6 @@ public class LocalSdk {
                 new File(platformTools, SdkConstants.FN_AIDL),
                 new File(platformTools, SdkConstants.FN_DX),
                 new File(platformToolsLib, SdkConstants.FN_DX_JAR),
-                new File(platformTools, SdkConstants.FN_RENDERSCRIPT),
-                new File(platformToolsRs, SdkConstants.FN_FRAMEWORK_INCLUDE),
-                new File(platformToolsRs, SdkConstants.FN_FRAMEWORK_INCLUDE_CLANG),
                 null,
                 null,
                 null,

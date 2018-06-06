@@ -68,16 +68,6 @@ public class ReadOnlyBuildType extends ReadOnlyBaseConfig implements BuildType {
         return buildType.isPseudoLocalesEnabled();
     }
 
-    @Override
-    public boolean isRenderscriptDebuggable() {
-        return buildType.isRenderscriptDebuggable();
-    }
-
-    @Override
-    public int getRenderscriptOptimLevel() {
-        return buildType.getRenderscriptOptimLevel();
-    }
-
     @Nullable
     @Override
     public String getApplicationIdSuffix() {

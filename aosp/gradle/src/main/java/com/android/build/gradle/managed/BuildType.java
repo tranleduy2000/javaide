@@ -140,25 +140,6 @@ public interface BuildType extends Named {
     void setPseudoLocalesEnabled(Boolean isPseudoLocalesEnabled);
 
     /**
-     * Returns whether the build type is configured to generate an apk with debuggable
-     * renderscript code.
-     *
-     * @return true if the apk is debuggable
-     */
-    Boolean getRenderscriptDebuggable();
-
-    void setRenderscriptDebuggable(Boolean isRenderscriptDebuggable);
-
-    /**
-     * Returns the optimization level of the renderscript compilation.
-     *
-     * @return the optimization level.
-     */
-    Integer getRenderscriptOptimLevel();
-
-    void setRenderscriptOptimLevel(Integer renderscriptOptimLevel);
-
-    /**
      * Returns the application id suffix applied to this build type.
      * To get the final application id, use {@link AndroidArtifact#getApplicationId()}.
      *

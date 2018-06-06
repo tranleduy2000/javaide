@@ -42,15 +42,10 @@ import static com.android.SdkConstants.FN_DX_JAR;
 import static com.android.SdkConstants.FN_LD_ARM;
 import static com.android.SdkConstants.FN_LD_MIPS;
 import static com.android.SdkConstants.FN_LD_X86;
-import static com.android.SdkConstants.FN_RENDERSCRIPT;
 import static com.android.SdkConstants.FN_SPLIT_SELECT;
 import static com.android.SdkConstants.FN_ZIPALIGN;
-import static com.android.SdkConstants.OS_FRAMEWORK_RS;
-import static com.android.SdkConstants.OS_FRAMEWORK_RS_CLANG;
 import static com.android.sdklib.BuildToolInfo.PathId.AAPT;
 import static com.android.sdklib.BuildToolInfo.PathId.AIDL;
-import static com.android.sdklib.BuildToolInfo.PathId.ANDROID_RS;
-import static com.android.sdklib.BuildToolInfo.PathId.ANDROID_RS_CLANG;
 import static com.android.sdklib.BuildToolInfo.PathId.BCC_COMPAT;
 import static com.android.sdklib.BuildToolInfo.PathId.DEXDUMP;
 import static com.android.sdklib.BuildToolInfo.PathId.DX;
@@ -58,7 +53,6 @@ import static com.android.sdklib.BuildToolInfo.PathId.DX_JAR;
 import static com.android.sdklib.BuildToolInfo.PathId.LD_ARM;
 import static com.android.sdklib.BuildToolInfo.PathId.LD_MIPS;
 import static com.android.sdklib.BuildToolInfo.PathId.LD_X86;
-import static com.android.sdklib.BuildToolInfo.PathId.LLVM_RS_CC;
 import static com.android.sdklib.BuildToolInfo.PathId.SPLIT_SELECT;
 import static com.android.sdklib.BuildToolInfo.PathId.ZIP_ALIGN;
 
@@ -105,17 +99,12 @@ public class BuildToolInfo {
         add(AIDL, FN_AIDL);
         add(DX, FN_DX);
         add(DX_JAR, FD_LIB + File.separator + FN_DX_JAR);
-        add(LLVM_RS_CC, FN_RENDERSCRIPT);
-        add(ANDROID_RS, OS_FRAMEWORK_RS);
-        add(ANDROID_RS_CLANG, OS_FRAMEWORK_RS_CLANG);
         add(DEXDUMP, FN_DEXDUMP);
         add(BCC_COMPAT, FN_BCC_COMPAT);
         add(LD_ARM, FN_LD_ARM);
         add(LD_X86, FN_LD_X86);
         add(LD_MIPS, FN_LD_MIPS);
         add(ZIP_ALIGN, FN_ZIPALIGN);
-//        add(JACK, FN_JACK);
-//        add(JILL, FN_JILL);
         add(SPLIT_SELECT, FN_SPLIT_SELECT);
     }
 
@@ -126,9 +115,6 @@ public class BuildToolInfo {
             @NonNull File aidl,
             @NonNull File dx,
             @NonNull File dxJar,
-            @NonNull File llmvRsCc,
-            @NonNull File androidRs,
-            @NonNull File androidRsClang,
             @Nullable File bccCompat,
             @Nullable File ldArm,
             @Nullable File ldX86,
@@ -140,9 +126,6 @@ public class BuildToolInfo {
         add(AIDL, aidl);
         add(DX, dx);
         add(DX_JAR, dxJar);
-        add(LLVM_RS_CC, llmvRsCc);
-        add(ANDROID_RS, androidRs);
-        add(ANDROID_RS_CLANG, androidRsClang);
         add(ZIP_ALIGN, zipAlign);
 
         if (bccCompat != null) {
@@ -338,18 +321,6 @@ public class BuildToolInfo {
          * OS Path to the target's version of the dx.jar file.
          */
         DX_JAR("1.0.0"),
-        /**
-         * OS Path to the llvm-rs-cc binary for Renderscript.
-         */
-        LLVM_RS_CC("1.0.0"),
-        /**
-         * OS Path to the Renderscript include folder.
-         */
-        ANDROID_RS("1.0.0"),
-        /**
-         * OS Path to the Renderscript(clang) include folder.
-         */
-        ANDROID_RS_CLANG("1.0.0"),
 
         DEXDUMP("1.0.0"),
 
@@ -374,10 +345,6 @@ public class BuildToolInfo {
 
         // --- NEW IN 19.1.0 ---
         ZIP_ALIGN("19.1.0"),
-
-        // --- NEW IN 21.x.y ---
-//        JACK("21.1.0"),
-//        JILL("21.1.0"),
 
         SPLIT_SELECT("22.0.0");
 

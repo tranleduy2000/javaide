@@ -99,7 +99,6 @@ public class NdkComponentModelPlugin implements Plugin<Project> {
             ndk.setToolchain("");
             ndk.setToolchainVersion("");
             ndk.setStl("");
-            ndk.setRenderscriptNdkMode(false);
         }
 
         @Finalize

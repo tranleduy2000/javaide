@@ -77,7 +77,6 @@ public class SourceSetsTask extends AbstractReportTask {
                 renderDirectorySet("Android resources", sourceSet.getRes(), project);
                 renderDirectorySet("Assets", sourceSet.getAssets(), project);
                 renderDirectorySet("AIDL sources", sourceSet.getAidl(), project);
-                renderDirectorySet("RenderScript sources", sourceSet.getRenderscript(), project);
                 renderDirectorySet("JNI sources", sourceSet.getJni(), project);
                 renderDirectorySet("JNI libraries", sourceSet.getJniLibs(), project);
 

@@ -27,7 +27,6 @@ import com.android.builder.internal.SymbolWriter;
 import com.android.builder.internal.compiler.AidlProcessor;
 import com.android.builder.internal.compiler.LeafFolderGatherer;
 import com.android.builder.internal.compiler.PreDexCache;
-import com.android.builder.internal.compiler.RenderScriptProcessor;
 import com.android.builder.internal.compiler.SourceSearcher;
 import com.android.builder.internal.incremental.DependencyData;
 import com.android.builder.internal.packaging.Packager;
@@ -564,24 +563,6 @@ public class AndroidBuilder {
     }
 
     /**
-     * Returns the jar file for the renderscript mode.
-     * <p>
-     * This may return null if the SDK has not been loaded yet.
-     *
-     * @return the jar file, or null.
-     * @see #setTargetInfo(SdkInfo, TargetInfo, Collection)
-     */
-    @Nullable
-    public File getRenderScriptSupportJar() {
-        if (mTargetInfo != null) {
-            return RenderScriptProcessor.getSupportJar(
-                    mTargetInfo.getBuildTools().getLocation().getAbsolutePath());
-        }
-
-        return null;
-    }
-
-    /**
      * Returns the compile classpath for this config. If the config tests a library, this
      * will include the classpath of the tested config.
      * <p>
@@ -605,24 +586,6 @@ public class AndroidBuilder {
     @NonNull
     public Set<File> getPackagedJars(@NonNull VariantConfiguration<?, ?, ?> variantConfiguration) {
         return Sets.newHashSet(variantConfiguration.getPackagedJars());
-    }
-
-    /**
-     * Returns the native lib folder for the renderscript mode.
-     * <p>
-     * This may return null if the SDK has not been loaded yet.
-     *
-     * @return the folder, or null.
-     * @see #setTargetInfo(SdkInfo, TargetInfo, Collection)
-     */
-    @Nullable
-    public File getSupportNativeLibFolder() {
-        if (mTargetInfo != null) {
-            return RenderScriptProcessor.getSupportNativeLibFolder(
-                    mTargetInfo.getBuildTools().getLocation().getAbsolutePath());
-        }
-
-        return null;
     }
 
     /**
@@ -1012,73 +975,6 @@ public class AndroidBuilder {
                 processOutputHandler);
 
         processor.processFile(sourceFolder, aidlFile);
-    }
-
-    /**
-     * Compiles all the renderscript files found in the given source folders.
-     * <p>
-     * Right now this is the only way to compile them as the renderscript compiler requires all
-     * renderscript files to be passed for all compilation.
-     * <p>
-     * Therefore whenever a renderscript file or header changes, all must be recompiled.
-     *
-     * @param sourceFolders   all the source folders to find files to compile
-     * @param importFolders   all the import folders.
-     * @param sourceOutputDir the output dir in which to generate the source code
-     * @param resOutputDir    the output dir in which to generate the bitcode file
-     * @param targetApi       the target api
-     * @param debugBuild      whether the build is debug
-     * @param optimLevel      the optimization level
-     * @param ndkMode
-     * @param supportMode     support mode flag to generate .so files.
-     * @param abiFilters      ABI filters in case of support mode
-     * @throws IOException
-     * @throws InterruptedException
-     * @throws LoggedErrorException
-     */
-    public void compileAllRenderscriptFiles(@NonNull List<File> sourceFolders,
-                                            @NonNull List<File> importFolders,
-                                            @NonNull File sourceOutputDir,
-                                            @NonNull File resOutputDir,
-                                            @NonNull File objOutputDir,
-                                            @NonNull File libOutputDir,
-                                            int targetApi,
-                                            boolean debugBuild,
-                                            int optimLevel,
-                                            boolean ndkMode,
-                                            boolean supportMode,
-                                            @Nullable Set<String> abiFilters,
-                                            @NonNull ProcessOutputHandler processOutputHandler)
-            throws InterruptedException, ProcessException, LoggedErrorException, IOException {
-        checkNotNull(sourceFolders, "sourceFolders cannot be null.");
-        checkNotNull(importFolders, "importFolders cannot be null.");
-        checkNotNull(sourceOutputDir, "sourceOutputDir cannot be null.");
-        checkNotNull(resOutputDir, "resOutputDir cannot be null.");
-        checkState(mTargetInfo != null,
-                "Cannot call compileAllRenderscriptFiles() before setTargetInfo() is called.");
-
-        BuildToolInfo buildToolInfo = mTargetInfo.getBuildTools();
-
-        String renderscript = buildToolInfo.getPath(BuildToolInfo.PathId.LLVM_RS_CC);
-        if (renderscript == null || !new File(renderscript).isFile()) {
-            throw new IllegalStateException("llvm-rs-cc is missing");
-        }
-
-        RenderScriptProcessor processor = new RenderScriptProcessor(
-                sourceFolders,
-                importFolders,
-                sourceOutputDir,
-                resOutputDir,
-                objOutputDir,
-                libOutputDir,
-                buildToolInfo,
-                targetApi,
-                debugBuild,
-                optimLevel,
-                ndkMode,
-                supportMode,
-                abiFilters);
-        processor.build(mProcessExecutor, processOutputHandler);
     }
 
     /**

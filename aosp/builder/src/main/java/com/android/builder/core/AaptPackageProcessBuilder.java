@@ -346,11 +346,9 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
             builder.addArgs("--debug-mode");
         }
 
-        if (mType != VariantType.ANDROID_TEST) {
-            if (mPackageForR != null) {
-                builder.addArgs("--custom-package", mPackageForR);
-                logger.verbose("Custom package for R class: '%s'", mPackageForR);
-            }
+        if (mPackageForR != null) {
+            builder.addArgs("--custom-package", mPackageForR);
+            logger.verbose("Custom package for R class: '%s'", mPackageForR);
         }
 
         if (mPseudoLocalesEnabled) {
@@ -539,11 +537,9 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
             builder.addArgs("--debug-mode");
         }
 
-        if (mType != VariantType.ANDROID_TEST) {
-            if (mPackageForR != null) {
-                builder.addArgs("--custom-package", mPackageForR);
-                logger.verbose("Custom package for R class: '%s'", mPackageForR);
-            }
+        if (mPackageForR != null) {
+            builder.addArgs("--custom-package", mPackageForR);
+            logger.verbose("Custom package for R class: '%s'", mPackageForR);
         }
 
         if (mPseudoLocalesEnabled) {

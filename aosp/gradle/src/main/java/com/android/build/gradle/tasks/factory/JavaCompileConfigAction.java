@@ -1,14 +1,10 @@
 package com.android.build.gradle.tasks.factory;
 
-import static com.android.builder.core.VariantType.LIBRARY;
-import static com.android.builder.core.VariantType.UNIT_TEST;
-
 import com.android.build.gradle.internal.CompileOptions;
 import com.android.build.gradle.internal.scope.ConventionMappingHelper;
 import com.android.build.gradle.internal.scope.TaskConfigAction;
 import com.android.build.gradle.internal.scope.VariantScope;
 import com.android.build.gradle.internal.variant.BaseVariantData;
-import com.android.builder.dependency.LibraryDependency;
 import com.google.common.base.Joiner;
 
 import org.gradle.api.Project;

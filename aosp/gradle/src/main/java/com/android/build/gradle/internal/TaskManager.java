@@ -335,9 +335,8 @@ public abstract class TaskManager {
 
     public void resolveDependencies(
             @NonNull VariantDependencies variantDeps,
-            @Nullable VariantDependencies testedVariantDeps,
             @Nullable String testedProjectPath) {
-        dependencyManager.resolveDependencies(variantDeps, testedVariantDeps, testedProjectPath);
+        dependencyManager.resolveDependencies(variantDeps, testedProjectPath);
     }
 
     /**

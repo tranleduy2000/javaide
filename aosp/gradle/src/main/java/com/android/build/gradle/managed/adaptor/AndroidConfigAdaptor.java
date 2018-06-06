@@ -16,8 +16,6 @@
 
 package com.android.build.gradle.managed.adaptor;
 
-import static com.android.builder.core.VariantType.ANDROID_TEST;
-
 import com.android.annotations.Nullable;
 import com.android.build.gradle.api.AndroidSourceDirectorySet;
 import com.android.build.gradle.api.AndroidSourceFile;
@@ -262,11 +260,9 @@ public class AndroidConfigAdaptor implements com.android.build.gradle.AndroidCon
             return buildTypeData.getSourceSet();
         }
 
-        boolean isTest = name.startsWith(ANDROID_TEST.getPrefix());
-        name = name.replaceFirst(ANDROID_TEST.getPrefix(), "");
         ProductFlavorData productFlavorData = variantManager.getProductFlavors().get(name);
         if (productFlavorData != null) {
-            return isTest ? productFlavorData.getTestSourceSet(ANDROID_TEST) : productFlavorData.getSourceSet();
+            return productFlavorData.getSourceSet();
         }
         return null;
     }

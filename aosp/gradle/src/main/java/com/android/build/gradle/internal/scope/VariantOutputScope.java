@@ -122,10 +122,6 @@ public class VariantOutputScope {
                         TaskManager.DIR_BUNDLES + "/"
                                 + getVariantScope().getVariantConfiguration().getDirName()
                                 + "/AndroidManifest.xml");
-            case ANDROID_TEST:
-                return new File(getGlobalScope().getIntermediatesDir(),
-                        "manifest/" + variantScope.getVariantConfiguration().getDirName()
-                                + "/AndroidManifest.xml");
             default:
                 throw new RuntimeException(
                         "getManifestOutputFile called for an unexpected variant.");

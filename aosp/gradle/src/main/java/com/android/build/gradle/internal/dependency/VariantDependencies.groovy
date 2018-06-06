@@ -142,7 +142,7 @@ public class VariantDependencies implements DependencyContainer {
                 mapping,
                 classes,
                 metadata,
-                variantType != VariantType.UNIT_TEST);
+                true);
     }
 
     private VariantDependencies(@NonNull  String name,

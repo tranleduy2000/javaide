@@ -36,7 +36,7 @@ public class BuildTypeData extends VariantDimensionData {
             @NonNull  Project project,
             @NonNull  DefaultAndroidSourceSet sourceSet,
             @Nullable DefaultAndroidSourceSet unitTestSourceSet) {
-        super(sourceSet, null, unitTestSourceSet, project);
+        super(sourceSet, project);
 
         this.buildType = buildType;
 

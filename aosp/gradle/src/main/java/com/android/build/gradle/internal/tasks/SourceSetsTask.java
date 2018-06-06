@@ -69,19 +69,17 @@ public class SourceSetsTask extends AbstractReportTask {
 
                 renderDirectorySet("Java sources", sourceSet.getJava(), project);
 
-                if (!sourceSet.getName().startsWith(VariantType.UNIT_TEST.getPrefix())) {
-                    renderKeyValue(
-                            "Manifest file: ",
-                            project.getRootProject().relativePath(
-                                    sourceSet.getManifest().getSrcFile()));
+                renderKeyValue(
+                        "Manifest file: ",
+                        project.getRootProject().relativePath(
+                                sourceSet.getManifest().getSrcFile()));
 
-                    renderDirectorySet("Android resources", sourceSet.getRes(), project);
-                    renderDirectorySet("Assets", sourceSet.getAssets(), project);
-                    renderDirectorySet("AIDL sources", sourceSet.getAidl(), project);
-                    renderDirectorySet("RenderScript sources", sourceSet.getRenderscript(), project);
-                    renderDirectorySet("JNI sources", sourceSet.getJni(), project);
-                    renderDirectorySet("JNI libraries", sourceSet.getJniLibs(), project);
-                }
+                renderDirectorySet("Android resources", sourceSet.getRes(), project);
+                renderDirectorySet("Assets", sourceSet.getAssets(), project);
+                renderDirectorySet("AIDL sources", sourceSet.getAidl(), project);
+                renderDirectorySet("RenderScript sources", sourceSet.getRenderscript(), project);
+                renderDirectorySet("JNI sources", sourceSet.getJni(), project);
+                renderDirectorySet("JNI libraries", sourceSet.getJniLibs(), project);
 
                 renderDirectorySet("Java-style resources", sourceSet.getResources(), project);
                 

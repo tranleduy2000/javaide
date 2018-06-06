@@ -22,9 +22,6 @@ import com.android.build.gradle.internal.scope.TaskConfigAction
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.builder.model.SourceProvider
 import org.gradle.api.tasks.Sync
-
-import static com.android.builder.core.VariantType.ANDROID_TEST
-
 /**
  * Configuration Action for a ProcessJavaRes task.
  */
@@ -54,11 +51,9 @@ class ProcessJavaResConfigAction implements TaskConfigAction<Sync> {
         processResources.from(((AndroidSourceSet) scope.variantConfiguration.defaultSourceSet).resources.
                 getSourceFiles())
 
-        if (scope.variantConfiguration.type != ANDROID_TEST) {
-            processResources.from(
-                    ((AndroidSourceSet) scope.variantConfiguration.buildTypeSourceSet).resources.
-                            getSourceFiles())
-        }
+        processResources.from(
+                ((AndroidSourceSet) scope.variantConfiguration.buildTypeSourceSet).resources.
+                        getSourceFiles())
         if (scope.variantConfiguration.hasFlavors()) {
             for (SourceProvider flavorSourceSet : scope.variantConfiguration.flavorSourceProviders) {
                 processResources.

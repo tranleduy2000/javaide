@@ -131,11 +131,10 @@ public class DependencyManager {
 
     public void resolveDependencies(
             @NonNull VariantDependencies variantDeps,
-            @Nullable VariantDependencies testedVariantDeps,
             @Nullable String testedProjectPath) {
         Multimap<LibraryDependency, VariantDependencies> reverseMap = ArrayListMultimap.create();
 
-        resolveDependencyForConfig(variantDeps, testedVariantDeps, testedProjectPath, reverseMap);
+        resolveDependencyForConfig(variantDeps, testedProjectPath, reverseMap);
         processLibraries(variantDeps.getLibraries(), reverseMap);
     }
 
@@ -228,7 +227,6 @@ public class DependencyManager {
 
     private void resolveDependencyForConfig(
             @NonNull VariantDependencies variantDeps,
-            @Nullable VariantDependencies testedVariantDeps,
             @Nullable String testedProjectPath,
             @NonNull Multimap<LibraryDependency, VariantDependencies> reverseMap) {
 
@@ -391,65 +389,9 @@ public class DependencyManager {
         // packaged attributes for jars that are already in the tested dependencies in order to
         // not package them twice (since the VM loads the classes of both APKs in the same
         // classpath and refuses to load the same class twice)
-        if (testedVariantDeps != null) {
-            List<JarDependency> jarDependencies = testedVariantDeps.getJarDependencies();
-
-            // gather the tested dependencies
-            Map<String, String> testedDeps = Maps.newHashMapWithExpectedSize(jarDependencies.size());
-
-            for (JarDependency jar : jarDependencies) {
-                if (jar.isPackaged()) {
-                    MavenCoordinates coordinates = jar.getResolvedCoordinates();
-                    //noinspection ConstantConditions
-                    testedDeps.put(
-                            computeVersionLessCoordinateKey(coordinates),
-                            coordinates.getVersion());
-                }
-            }
-
-            // now go through all the test dependencies and check we don't have the same thing.
-            // Skip the ones that are already in the tested variant, and convert the rest
-            // to the final immutable instance
-            for (JarInfo jar : jarInfoSet) {
-                if (jar.isPackaged()) {
-                    MavenCoordinates coordinates = jar.getResolvedCoordinates();
-
-                    String testedVersion = testedDeps.get(
-                            computeVersionLessCoordinateKey(coordinates));
-                    if (testedVersion != null) {
-                        // same artifact, skip packaging of the dependency in the test app,
-                        // whether the version is a match or not.
-
-                        // if the dependency is present in both tested and test artifact,
-                        // verify that they are the same version
-                        if (!testedVersion.equals(coordinates.getVersion())) {
-                            String artifactInfo =  coordinates.getGroupId() + ":" + coordinates.getArtifactId();
-                            variantDeps.getChecker().addSyncIssue(extraModelInfo.handleSyncError(
-                                    artifactInfo,
-                                    SyncIssue.TYPE_MISMATCH_DEP,
-                                    String.format(
-                                            "Conflict with dependency '%s'. Resolved versions for app (%s) and test app (%s) differ.",
-                                            artifactInfo,
-                                            testedVersion,
-                                            coordinates.getVersion())));
-
-                        } else {
-                            logger.info(String.format(
-                                    "Removed '%s' from packaging of %s: Already in tested package.",
-                                    coordinates,
-                                    variantDeps.getName()));
-                        }
-                    } else {
-                        // new artifact, convert it.
-                        jars.add(jar.createJarDependency());
-                    }
-                }
-            }
-        } else {
-            // just convert all of them to JarDependency
-            for (JarInfo jarInfo : jarInfoSet) {
-                jars.add(jarInfo.createJarDependency());
-            }
+        // just convert all of them to JarDependency
+        for (JarInfo jarInfo : jarInfoSet) {
+            jars.add(jarInfo.createJarDependency());
         }
 
         // --- Handle the local jar dependencies ---

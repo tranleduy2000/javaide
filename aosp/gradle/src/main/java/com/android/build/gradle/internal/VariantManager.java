@@ -57,8 +57,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.android.builder.core.BuilderConstants.LINT;
-import static com.android.builder.core.VariantType.ANDROID_TEST;
-import static com.android.builder.core.VariantType.UNIT_TEST;
 
 /**
  * Class to create, manage variants.
@@ -163,9 +161,6 @@ public class VariantManager implements VariantModel {
     }
 
     private static void checkName(@NonNull String name, @NonNull String displayName) {
-        checkPrefix(name, displayName, ANDROID_TEST.getPrefix());
-        checkPrefix(name, displayName, UNIT_TEST.getPrefix());
-
         if (LINT.equals(name)) {
             throw new RuntimeException(String.format(
                     "%1$s names cannot be %2$s", displayName, LINT));
@@ -506,7 +501,7 @@ public class VariantManager implements VariantModel {
                     public Void call() {
                         taskManager.resolveDependencies(
                                 variantDep,
-                                null /*testedVariantDeps*/,
+                                /*testedVariantDeps*/
                                 null);
                         return null;
                     }

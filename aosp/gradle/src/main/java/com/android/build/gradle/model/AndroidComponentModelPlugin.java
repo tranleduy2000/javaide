@@ -16,9 +16,6 @@
 
 package com.android.build.gradle.model;
 
-import static com.android.builder.core.VariantType.ANDROID_TEST;
-import static com.android.builder.core.VariantType.UNIT_TEST;
-
 import com.android.build.gradle.internal.ProductFlavorCombo;
 import com.android.build.gradle.managed.AndroidConfig;
 import com.android.build.gradle.managed.BuildType;
@@ -203,8 +200,6 @@ public class AndroidComponentModelPlugin implements Plugin<Project> {
 
             // Create main source set.
             sources.create("main");
-            sources.create(ANDROID_TEST.getPrefix());
-            sources.create(UNIT_TEST.getPrefix());
 
             for (BuildType buildType : buildTypes.values()) {
                 sources.maybeCreate(buildType.getName());

@@ -29,7 +29,6 @@ import com.android.build.gradle.internal.dsl.Splits;
 import com.android.build.gradle.internal.scope.VariantScope;
 import com.android.build.gradle.internal.tasks.CheckManifest;
 import com.android.build.gradle.internal.tasks.FileSupplier;
-import com.android.build.gradle.internal.tasks.GenerateApkDataTask;
 import com.android.build.gradle.internal.tasks.PrepareDependenciesTask;
 import com.android.build.gradle.tasks.AidlCompile;
 import com.android.build.gradle.tasks.BinaryFileProviderTask;
@@ -90,7 +89,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
     public GenerateBuildConfig generateBuildConfigTask;
     public GenerateResValues generateResValuesTask;
     public Copy copyApkTask;
-    public GenerateApkDataTask generateApkDataTask;
     public Sync processJavaResourcesTask;
     public NdkCompile ndkCompileTask;
     /**

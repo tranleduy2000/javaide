@@ -174,9 +174,6 @@ public class MergeManifests extends ManifestProcessorTask {
             processManifestTask.setVariantName(config.getFullName())
 
             processManifestTask.dependsOn variantData.prepareDependenciesTask
-            if (variantData.generateApkDataTask != null) {
-                processManifestTask.dependsOn variantData.generateApkDataTask
-            }
             if (scope.compatibleScreensManifestTask != null) {
                 processManifestTask.dependsOn scope.compatibleScreensManifestTask.name
             }

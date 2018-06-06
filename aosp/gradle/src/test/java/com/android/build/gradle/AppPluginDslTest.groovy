@@ -53,7 +53,7 @@ public class AppPluginDslTest extends BaseTest {
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
 
-        plugin.createAndroidTasks(false)
+
         assertEquals(DEFAULT_VARIANTS.size(), plugin.variantManager.variantDataList.size())
 
         // we can now call this since the variants/tasks have been created
@@ -83,7 +83,7 @@ public class AppPluginDslTest extends BaseTest {
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
 
-        plugin.createAndroidTasks(false)
+
         assertEquals(DEFAULT_VARIANTS.size(), plugin.variantManager.variantDataList.size())
 
         // we can now call this since the variants/tasks have been created
@@ -110,7 +110,7 @@ public class AppPluginDslTest extends BaseTest {
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
 
-        plugin.createAndroidTasks(false)
+
         assertEquals(DEFAULT_VARIANTS.size(), plugin.variantManager.variantDataList.size())
 
         // we can now call this since the variants/tasks have been created
@@ -166,7 +166,7 @@ public class AppPluginDslTest extends BaseTest {
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
 
-        plugin.createAndroidTasks(false)
+
         assertEquals(
                 countVariants(appVariants: 3, unitTest: 3, androidTests: 1),
                 plugin.variantManager.variantDataList.size())
@@ -208,7 +208,7 @@ public class AppPluginDslTest extends BaseTest {
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
 
-        plugin.createAndroidTasks(false)
+
         assertEquals(
                 countVariants(appVariants: 4, unitTest: 4, androidTests: 2),
                 plugin.variantManager.variantDataList.size())
@@ -263,7 +263,7 @@ public class AppPluginDslTest extends BaseTest {
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
 
-        plugin.createAndroidTasks(false)
+
         assertEquals(
                 countVariants(appVariants: 12, unitTest: 12, androidTests: 6),
                 plugin.variantManager.variantDataList.size())
@@ -331,7 +331,7 @@ public class AppPluginDslTest extends BaseTest {
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
 
-        plugin.createAndroidTasks(false)
+
         assertEquals(DEFAULT_VARIANTS.size(), plugin.variantManager.variantDataList.size())
 
         // we can now call this since the variants/tasks have been created
@@ -391,7 +391,7 @@ public class AppPluginDslTest extends BaseTest {
         }
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(false)
+
 
         def variantsData = plugin.variantManager.variantDataList
         Map<String, GradleVariantConfiguration> variantMap =
@@ -437,7 +437,7 @@ public class AppPluginDslTest extends BaseTest {
         }
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(false)
+
 
         def variantsData = plugin.variantManager.variantDataList
         Map<String, GradleVariantConfiguration> variantMap =
@@ -467,7 +467,7 @@ public class AppPluginDslTest extends BaseTest {
             }
 
             AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-            plugin.createAndroidTasks(false)
+
 
             assertEquals(
                     "target compatibility for ${version}",
@@ -515,7 +515,7 @@ public class AppPluginDslTest extends BaseTest {
             }
         }
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(false)
+
 
         assertEquals(
                 JavaVersion.VERSION_1_6.toString(),
@@ -537,7 +537,7 @@ public class AppPluginDslTest extends BaseTest {
         }
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(false)
+
 
 //        def mockableJarFile = plugin.taskManager.createMockableJar.outputFile
 //        assertFalse(mockableJarFile.absolutePath.contains(":"))
@@ -559,7 +559,7 @@ public class AppPluginDslTest extends BaseTest {
         }
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(false)
+
 
         assertEquals(
                 "foo",
@@ -600,7 +600,7 @@ public class AppPluginDslTest extends BaseTest {
         }
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(false)
+
 
         def variantsData = plugin.variantManager.variantDataList
         Map<String, GradleVariantConfiguration> variantMap =

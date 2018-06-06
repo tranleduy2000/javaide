@@ -52,7 +52,7 @@ public class AppPluginInternalTest extends BaseTest {
         }
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(true /*force*/)
+
 
         assertEquals(2, plugin.variantManager.buildTypes.size())
         assertNotNull(plugin.variantManager.buildTypes.get(BuilderConstants.DEBUG))
@@ -98,7 +98,7 @@ public class AppPluginInternalTest extends BaseTest {
         }
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(true /*force*/)
+
 
         assertEquals(1, plugin.extension.defaultConfig.versionCode)
         assertNotNull(plugin.extension.defaultConfig.minSdkVersion)
@@ -133,7 +133,7 @@ public class AppPluginInternalTest extends BaseTest {
         }
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(true /*force*/)
+
 
         assertEquals(3, plugin.variantManager.buildTypes.size())
 
@@ -172,7 +172,7 @@ public class AppPluginInternalTest extends BaseTest {
         }
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(true /*force*/)
+
 
         assertEquals(2, plugin.variantManager.productFlavors.size())
 
@@ -221,7 +221,7 @@ public class AppPluginInternalTest extends BaseTest {
         }
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(true /*force*/)
+
 
         assertEquals(5, plugin.variantManager.productFlavors.size())
 
@@ -312,7 +312,7 @@ public class AppPluginInternalTest extends BaseTest {
         }
 
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
-        plugin.createAndroidTasks(true /*force*/)
+
 
         List<BaseVariantData> variants = plugin.variantManager.variantDataList
         assertEquals(countVariants(appVariants: 6, unitTests: 6, androidTests: 2), variants.size())
@@ -422,7 +422,7 @@ public class AppPluginInternalTest extends BaseTest {
         AppPlugin plugin = project.plugins.getPlugin(AppPlugin)
         Exception recordedException = null;
         try {
-            plugin.createAndroidTasks(true /*force*/)
+
         } catch (Exception e) {
             recordedException = e;
         }

@@ -2,9 +2,12 @@ package com.android.build.gradle.internal;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.concurrency.GuardedBy;
+import com.android.utils.FileUtils;
 import com.google.common.collect.Maps;
 
+import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.FileCopyDetails;
 import org.gradle.api.file.RelativePath;
 
@@ -12,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+
+import static com.android.SdkConstants.FD_JARS;
 
 /**
  * Cache to library prepareTask.
@@ -22,7 +27,7 @@ import java.util.concurrent.CountDownLatch;
  * <p>
  * The prepareTask is created in the root project always.
  */
-public class LibraryCache extends GroovyObjectSupport {
+public class LibraryCache {
     @NonNull
     private static final LibraryCache sCache = new LibraryCache();
     @GuardedBy("this")
@@ -33,26 +38,21 @@ public class LibraryCache extends GroovyObjectSupport {
         return sCache;
     }
 
-    public static void unzipAar(final File bundle, final File folderOut, final Project project) {
-        folderOut.invokeMethod("deleteDir", new Object[0]);
+    public static void unzipAar(final File bundle, final File folderOut, final Project project) throws IOException {
+        FileUtils.deleteFolder(folderOut);
         folderOut.mkdirs();
-
-        project.copy(new Closure(null, null) {
-            public Object doCall(Object it) {
-                invokeMethod("from", new Object[]{project.zipTree(bundle)});
-                invokeMethod("into", new Object[]{folderOut});
-                return invokeMethod("filesMatching", new Object[]{"**/*.jar", new Closure(DUMMY__1234567890_DUMMYYYYYY___.this, DUMMY__1234567890_DUMMYYYYYY___.this) {
-                    public RelativePath doCall(FileCopyDetails details) {
-                        return setRelativePath(details, new RelativePath(false, FD_JARS).plus(details.getRelativePath()));
+        project.copy(new Action<CopySpec>() {
+            @Override
+            public void execute(CopySpec copySpec) {
+                copySpec.from(project.zipTree(bundle));
+                copySpec.into(new Object[]{folderOut});
+                copySpec.filesMatching("**/*.jar", new Action<FileCopyDetails>() {
+                    @Override
+                    public void execute(FileCopyDetails details) {
+                        setRelativePath(details, new RelativePath(false, FD_JARS).plus(details.getRelativePath()));
                     }
-
-                }});
+                });
             }
-
-            public Object doCall() {
-                return doCall(null);
-            }
-
         });
     }
 

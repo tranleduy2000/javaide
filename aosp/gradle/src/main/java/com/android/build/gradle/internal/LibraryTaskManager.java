@@ -109,70 +109,55 @@ public class LibraryTaskManager extends TaskManager {
         // Add a task to process the manifest(s)
         createMergeLibManifestsTask(tasks, variantScope);
 
+        AndroidTask<MergeResources> packageRes;
+        {
+            // Create a merge task to only merge the resources from this library and not
+            // the dependencies. This is what gets packaged in the aar.
+            packageRes = basicCreateMergeResourcesTask(
+                    tasks,
+                    variantScope,
+                    "package",
+                    new File(variantScope.getGlobalScope().getIntermediatesDir(),
+                            DIR_BUNDLES + "/" +
+                                    variantScope.getVariantConfiguration().getDirName() + "/res"),
+                    false, false);
 
-        AndroidTask<MergeResources> packageRes = ThreadRecorder.get().record(
-                ExecutionType.LIB_TASK_MANAGER_CREATE_MERGE_RESOURCES_TASK,
-                new Recorder.Block<AndroidTask<MergeResources>>() {
-                    @Override
-                    public AndroidTask<MergeResources> call() throws Exception {
-                        // Create a merge task to only merge the resources from this library and not
-                        // the dependencies. This is what gets packaged in the aar.
-                        AndroidTask<MergeResources> mergeResourceTask =
-                                basicCreateMergeResourcesTask(
-                                        tasks,
-                                        variantScope,
-                                        "package",
-                                        new File(
-                                                variantScope.getGlobalScope().getIntermediatesDir(),
-                                                DIR_BUNDLES + "/" + variantScope
-                                                        .getVariantConfiguration().getDirName() +
-                                                        "/res"),
-                                        false /*includeDependencies*/,
-                                        false /*process9Patch*/);
+            if (variantData.getVariantDependency().hasNonOptionalLibraries()) {
+                // Add a task to merge the resource folders, including the libraries, in order to
+                // generate the R.txt file with all the symbols, including the ones from
+                // the dependencies.
+                createMergeResourcesTask(tasks, variantScope);
+            }
+            packageRes.configure(tasks, new Action<Task>() {
+                @Override
+                public void execute(@android.support.annotation.NonNull Task task) {
+                    MergeResources mergeResourcesTask = (MergeResources) task;
+                    mergeResourcesTask.setPublicFile(new File(
+                            variantScope.getGlobalScope().getIntermediatesDir(),
+                            DIR_BUNDLES + "/" + dirName + "/" +
+                                    SdkConstants.FN_PUBLIC_TXT));
+                }
+            });
 
-                        if (variantData.getVariantDependency().hasNonOptionalLibraries()) {
-                            // Add a task to merge the resource folders, including the libraries, in order to
-                            // generate the R.txt file with all the symbols, including the ones from
-                            // the dependencies.
-                            createMergeResourcesTask(tasks, variantScope);
-                        }
-
-                        mergeResourceTask.configure(tasks,
-                                new Action<Task>() {
-                                    @Override
-                                    public void execute(Task task) {
-                                        MergeResources mergeResourcesTask = (MergeResources) task;
-                                        mergeResourcesTask.setPublicFile(new File(
-                                                variantScope.getGlobalScope().getIntermediatesDir(),
-                                                DIR_BUNDLES + "/" + dirName + "/" +
-                                                        SdkConstants.FN_PUBLIC_TXT));
-                                    }
-                                });
-
-                        return mergeResourceTask;
-                    }
-                });
+        }
 
         // Add a task to merge the assets folders
-
         createMergeAssetsTask(tasks, variantScope);
 
         // Add a task to create the BuildConfig class
-
         createBuildConfigTask(tasks, variantScope);
 
         // Add a task to generate resource source files, directing the location
         // of the r.txt file to be directly in the bundle.
         createProcessResTask(tasks, variantScope,
-                new File(variantScope.getGlobalScope().getIntermediatesDir(),
-                        DIR_BUNDLES + "/" + dirName),
-                false /*generateResourcePackage*/);
+                new File(variantScope.getGlobalScope().getIntermediatesDir(), DIR_BUNDLES + "/" + dirName),
+                false);
 
         // process java resources
         createProcessJavaResTasks(tasks, variantScope);
 
-
         createAidlTask(tasks, variantScope);
+
         // Add a compile task
         AndroidTask<JavaCompile> javacTask = createJavacTask(tasks, variantScope);
         TaskManager.setJavaCompilerTask(javacTask, tasks, variantScope);
@@ -198,36 +183,25 @@ public class LibraryTaskManager extends TaskManager {
         }
 
         // merge consumer proguard files from different build types and flavors
-        MergeFileTask mergeProGuardFileTask = ThreadRecorder.get().record(
-                ExecutionType.LIB_TASK_MANAGER_CREATE_MERGE_PROGUARD_FILE_TASK,
-                new Recorder.Block<MergeFileTask>() {
-                    @Override
-                    public MergeFileTask call() throws Exception {
-                        MergeFileTask mergeProGuardFileTask = project.getTasks().create(
-                                variantScope.getTaskName("merge", "ProguardFiles"),
-                                MergeFileTask.class);
-                        mergeProGuardFileTask.setVariantName(variantConfig.getFullName());
-                        mergeProGuardFileTask.setInputFiles(
-                                project.files(variantConfig.getConsumerProguardFiles())
-                                        .getFiles());
-                        mergeProGuardFileTask.setOutputFile(new File(
-                                variantScope.getGlobalScope().getIntermediatesDir(),
-                                DIR_BUNDLES + "/" + dirName + "/" + LibraryBundle.FN_PROGUARD_TXT));
-                        return mergeProGuardFileTask;
-                    }
-
-                });
+        MergeFileTask mergeProGuardFileTask;
+        {
+            mergeProGuardFileTask = project.getTasks().create(
+                    variantScope.getTaskName("merge", "ProguardFiles"),
+                    MergeFileTask.class);
+            mergeProGuardFileTask.setVariantName(variantConfig.getFullName());
+            mergeProGuardFileTask.setInputFiles(
+                    project.files(variantConfig.getConsumerProguardFiles())
+                            .getFiles());
+            mergeProGuardFileTask.setOutputFile(new File(
+                    variantScope.getGlobalScope().getIntermediatesDir(),
+                    DIR_BUNDLES + "/" + dirName + "/" + LibraryBundle.FN_PROGUARD_TXT));
+        }
 
         // copy lint.jar into the bundle folder
-        Copy lintCopy = project.getTasks().create(
-                variantScope.getTaskName("copy", "Lint"), Copy.class);
+        Copy lintCopy = project.getTasks().create(variantScope.getTaskName("copy", "Lint"), Copy.class);
         lintCopy.dependsOn(LINT_COMPILE);
-        lintCopy.from(new File(
-                variantScope.getGlobalScope().getIntermediatesDir(),
-                "lint/lint.jar"));
-        lintCopy.into(new File(
-                variantScope.getGlobalScope().getIntermediatesDir(),
-                DIR_BUNDLES + "/" + dirName));
+        lintCopy.from(new File(variantScope.getGlobalScope().getIntermediatesDir(), "lint/lint.jar"));
+        lintCopy.into(new File(variantScope.getGlobalScope().getIntermediatesDir(), DIR_BUNDLES + "/" + dirName));
 
         final Zip bundle = project.getTasks().create(variantScope.getTaskName("bundle"), Zip.class);
 
@@ -355,7 +329,7 @@ public class LibraryTaskManager extends TaskManager {
                     });
         }
 
-        bundle.dependsOn(packageRes.getName(),  lintCopy, packageJniLibs, mergeProGuardFileTask);
+        bundle.dependsOn(packageRes.getName(), lintCopy, packageJniLibs, mergeProGuardFileTask);
         TaskManager.optionalDependsOn(bundle, pcData.getClassGeneratingTasks());
         TaskManager.optionalDependsOn(bundle, pcData.getLibraryGeneratingTasks());
 
@@ -453,7 +427,7 @@ public class LibraryTaskManager extends TaskManager {
 
         });
 
-                        createLintTasks(tasks, variantScope);
+        createLintTasks(tasks, variantScope);
     }
 
     public ExtractAnnotations createExtractAnnotations(

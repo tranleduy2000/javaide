@@ -41,8 +41,6 @@ public class CompileOptions {
      */
     private JavaVersion defaultJavaVersion = JavaVersion.VERSION_1_6;
 
-    private boolean ndkCygwinMode = false;
-
     /**
      * Language level of the source code.
      *

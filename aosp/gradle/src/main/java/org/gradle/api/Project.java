@@ -860,14 +860,6 @@ public interface Project extends Comparable<Project>, ExtensionAware, PluginAwar
     WorkResult delete(Action<? super DeleteSpec> action);
 
     /**
-     * Executes a Java main class. The closure configures a {@link org.gradle.process.JavaExecSpec}.
-     *
-     * @param closure The closure for configuring the execution.
-     * @return the result of the execution
-     */
-    ExecResult javaexec(Closure closure);
-
-    /**
      * Executes an external Java process.
      * <p>
      * The given action configures a {@link org.gradle.process.JavaExecSpec}, which is used to launch the process.
@@ -877,14 +869,6 @@ public interface Project extends Comparable<Project>, ExtensionAware, PluginAwar
      * @return the result of the execution
      */
     ExecResult javaexec(Action<? super JavaExecSpec> action);
-
-    /**
-     * Executes an external command. The closure configures a {@link org.gradle.process.ExecSpec}.
-     *
-     * @param closure The closure for configuring the execution.
-     * @return the result of the execution
-     */
-    ExecResult exec(Closure closure);
 
     /**
      * Executes an external command.

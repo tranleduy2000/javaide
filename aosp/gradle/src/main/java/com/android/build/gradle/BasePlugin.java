@@ -266,24 +266,17 @@ public abstract class BasePlugin {
 
     private void createTasks() {
         taskManager.createTasksBeforeEvaluate(new TaskContainerAdaptor(project.getTasks()));
-        createAndroidTasks(false);
+        createAndroidTasks();
     }
 
-    final void createAndroidTasks(boolean force) {
+    final void createAndroidTasks() {
         // Make sure unit tests set the required fields.
         checkState(extension.getBuildToolsRevision() != null, "buildToolsVersion is not specified.");
         checkState(extension.getCompileSdkVersion() != null, "compileSdkVersion is not specified.");
 
         ndkHandler.setCompileSdkVersion(extension.getCompileSdkVersion());
 
-
-        // don't do anything if the project was not initialized.
-        // Unless TEST_SDK_DIR is set in which case this is unit tests and we don't return.
-        // This is because project don't get evaluated in the unit test setup.
-        // See AppPluginDslTest
-        if (!force) {
-            return;
-        }
+        ensureTargetSetup();
 
         if (hasCreatedTasks) {
             return;

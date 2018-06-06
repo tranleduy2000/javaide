@@ -42,7 +42,7 @@ import com.android.builder.core.VariantType;
 import com.android.builder.model.SourceProvider;
 import com.android.ide.common.res2.ResourceSet;
 import com.android.utils.StringHelper;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 
 import org.gradle.api.Task;
@@ -67,7 +67,7 @@ import java.util.Set;
 public abstract class BaseVariantData<T extends BaseVariantOutputData> {
 
     @NonNull
-    protected final AndroidConfig androidConfig;
+    private final AndroidConfig androidConfig;
     @NonNull
     protected final TaskManager taskManager;
     @NonNull
@@ -102,7 +102,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
     public Task compileTask;
     public FileSupplier mappingFileProviderTask;
     public BinaryFileProviderTask binayFileProviderTask;
-    // TODO : why is Jack not registered as the obfuscationTask ???
     public Task obfuscationTask;
     // Task to assemble the variant and all its output.
     public Task assembleVariantTask;
@@ -470,7 +469,7 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .addValue(variantConfiguration.getFullName())
                 .toString();
     }

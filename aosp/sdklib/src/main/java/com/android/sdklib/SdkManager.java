@@ -20,8 +20,6 @@ import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
-import com.android.prefs.AndroidLocation;
-import com.android.prefs.AndroidLocation.AndroidLocationException;
 import com.android.sdklib.internal.androidTarget.AddOnTarget;
 import com.android.sdklib.internal.androidTarget.PlatformTarget;
 import com.android.sdklib.repository.FullRevision;
@@ -33,12 +31,9 @@ import com.android.sdklib.repository.local.LocalSdk;
 import com.android.utils.ILogger;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -54,16 +49,6 @@ public class SdkManager {
 
     @SuppressWarnings("unused")
     private static final boolean DEBUG = System.getenv("SDKMAN_DEBUG") != null;        //$NON-NLS-1$
-
-    /**
-     * Preference file containing the usb ids for adb
-     */
-    private static final String ADB_INI_FILE = "adb_usb.ini";                          //$NON-NLS-1$
-    //0--------90--------90--------90--------90--------90--------90--------90--------9
-    private static final String ADB_INI_HEADER =
-            "# ANDROID 3RD PARTY USB VENDOR ID LIST -- DO NOT EDIT.\n" +                   //$NON-NLS-1$
-                    "# USE 'android update adb' TO GENERATE.\n" +                                  //$NON-NLS-1$
-                    "# 1 USB VENDOR ID PER LINE.\n";                                               //$NON-NLS-1$
 
     /**
      * Embedded reference to the new local SDK object.
@@ -234,42 +219,6 @@ public class SdkManager {
     @Nullable
     public IAndroidTarget getTargetFromHashString(@Nullable String hash) {
         return mLocalSdk.getTargetFromHashString(hash);
-    }
-
-    /**
-     * Updates adb with the USB devices declared in the SDK add-ons.
-     *
-     * @throws AndroidLocationException
-     * @throws IOException
-     */
-    public void updateAdb() throws AndroidLocationException, IOException {
-        FileWriter writer = null;
-        try {
-            // get the android prefs location to know where to write the file.
-            File adbIni = new File(AndroidLocation.getFolder(), ADB_INI_FILE);
-            writer = new FileWriter(adbIni);
-
-            // first, put all the vendor id in an HashSet to remove duplicate.
-            HashSet<Integer> set = new HashSet<Integer>();
-            IAndroidTarget[] targets = getTargets();
-            for (IAndroidTarget target : targets) {
-                if (target.getUsbVendorId() != IAndroidTarget.NO_USB_ID) {
-                    set.add(target.getUsbVendorId());
-                }
-            }
-
-            // write file header.
-            writer.write(ADB_INI_HEADER);
-
-            // now write the Id in a text file, one per line.
-            for (Integer i : set) {
-                writer.write(String.format("0x%04x\n", i));                            //$NON-NLS-1$
-            }
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
-        }
     }
 
     /**

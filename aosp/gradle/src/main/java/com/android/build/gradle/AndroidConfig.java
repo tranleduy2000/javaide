@@ -20,7 +20,6 @@ import com.android.build.gradle.api.AndroidSourceSet;
 import com.android.build.gradle.api.VariantFilter;
 import com.android.build.gradle.internal.CompileOptions;
 import com.android.build.gradle.internal.dsl.AaptOptions;
-import com.android.build.gradle.internal.dsl.AdbOptions;
 import com.android.build.gradle.internal.dsl.CoreBuildType;
 import com.android.build.gradle.internal.dsl.CoreProductFlavor;
 import com.android.build.gradle.internal.dsl.DexOptions;
@@ -72,11 +71,6 @@ public interface AndroidConfig {
      * Filter to determine which variants to build
      */
     Action<VariantFilter> getVariantFilter();
-
-    /**
-     * Adb options
-     */
-    AdbOptions getAdbOptions();
 
     /**
      * A prefix to be used when creating new resources. Used by Studio

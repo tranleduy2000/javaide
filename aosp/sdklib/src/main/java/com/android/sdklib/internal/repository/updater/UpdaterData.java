@@ -20,7 +20,6 @@ import com.android.annotations.NonNull;
 import com.android.annotations.VisibleForTesting;
 import com.android.annotations.VisibleForTesting.Visibility;
 import com.android.sdklib.SdkManager;
-import com.android.sdklib.internal.repository.AdbWrapper;
 import com.android.sdklib.internal.repository.DownloadCache;
 import com.android.sdklib.internal.repository.ITask;
 import com.android.sdklib.internal.repository.ITaskFactory;
@@ -466,30 +465,11 @@ public class UpdaterData implements IUpdaterData {
                     }
                 }
 
-                if (installedAddon) {
-                    // Update the USB vendor ids for adb
-                    try {
-                        mSdkManager.updateAdb();
-                        monitor.log("Updated ADB to support the USB devices declared in the SDK add-ons.");
-                    } catch (Exception e) {
-                        mSdkLog.error(e, "Update ADB failed");
-                        monitor.logError("failed to update adb to support the USB devices declared in the SDK add-ons.");
-                    }
-                }
 
                 if (preInstallHookInvoked) {
                     broadcastPostInstallHook();
                 }
 
-                if (installedAddon || installedPlatformTools) {
-                    // We need to restart ADB. Actually since we don't know if it's even
-                    // running, maybe we should just kill it and not start it.
-                    // Note: it turns out even under Windows we don't need to kill adb
-                    // before updating the tools folder, as adb.exe is (surprisingly) not
-                    // locked.
-
-                    askForAdbRestart(monitor);
-                }
 
                 if (installedTools) {
                     notifyToolsNeedsToBeRestarted(flags);
@@ -557,21 +537,6 @@ public class UpdaterData implements IUpdaterData {
             return n;
         }
 
-    }
-
-    /**
-     * Attempts to restart ADB.
-     * <p/>
-     * If the "ask before restart" setting is set (the default), prompt the user whether
-     * now is a good time to restart ADB.
-     */
-    protected void askForAdbRestart(ITaskMonitor monitor) {
-        // Restart ADB if we don't need to ask.
-        if (!getSettingsController().getSettings().getAskBeforeAdbRestart()) {
-            AdbWrapper adb = new AdbWrapper(getOsSdkRoot(), monitor);
-            adb.stopAdb();
-            adb.startAdb();
-        }
     }
 
     protected void notifyToolsNeedsToBeRestarted(int flags) {

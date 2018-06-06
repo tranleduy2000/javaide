@@ -19,7 +19,6 @@ package com.android.build.gradle.managed;
 import com.android.build.gradle.api.VariantFilter;
 import com.android.build.gradle.internal.CompileOptions;
 import com.android.build.gradle.internal.dsl.AaptOptions;
-import com.android.build.gradle.internal.dsl.AdbOptions;
 import com.android.build.gradle.internal.dsl.DexOptions;
 import com.android.build.gradle.internal.dsl.LintOptions;
 import com.android.build.gradle.internal.dsl.PackagingOptions;
@@ -131,14 +130,6 @@ public interface AndroidConfig {
     void setSources(AndroidComponentModelSourceSet sources);
 
     NdkConfig getNdk();
-
-    /**
-     * Adb options
-     */
-
-    AdbOptions getAdbOptions();
-
-    void setAdbOptions(AdbOptions adbOptions);
 
     /**
      * Options for aapt, tool for packaging resources.

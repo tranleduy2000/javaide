@@ -43,11 +43,9 @@ import com.android.build.gradle.internal.scope.VariantScope;
 import com.android.build.gradle.internal.tasks.CheckManifest;
 import com.android.build.gradle.internal.tasks.ExtractJavaResourcesTask;
 import com.android.build.gradle.internal.tasks.FileSupplier;
-import com.android.build.gradle.internal.tasks.InstallVariantTask;
 import com.android.build.gradle.internal.tasks.MergeJavaResourcesTask;
 import com.android.build.gradle.internal.tasks.PrepareDependenciesTask;
 import com.android.build.gradle.internal.tasks.SourceSetsTask;
-import com.android.build.gradle.internal.tasks.UninstallTask;
 import com.android.build.gradle.internal.tasks.multidex.CreateMainDexList;
 import com.android.build.gradle.internal.tasks.multidex.CreateManifestKeepList;
 import com.android.build.gradle.internal.tasks.multidex.JarMergingTask;
@@ -90,7 +88,6 @@ import com.android.builder.sdk.TargetInfo;
 import com.android.builder.signing.SignedJarBuilder;
 import com.android.utils.StringHelper;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -1280,29 +1277,9 @@ public abstract class TaskManager {
             }
         }
 
-        // create install task for the variant Data. This will deal with finding the
-        // right output if there are more than one.
-        // Add a task to install the application package
-        if (signedApk) {
-            AndroidTask<InstallVariantTask> installTask = androidTasks.create(
-                    tasks, new InstallVariantTask.ConfigAction(variantScope));
-            installTask.dependsOn(tasks, variantData.assembleVariantTask);
-        }
-
         if (getExtension().getLintOptions().isCheckReleaseBuilds()) {
             createLintVitalTask(variantData);
         }
-
-        // add an uninstall task
-        final AndroidTask<UninstallTask> uninstallTask = androidTasks.create(
-                tasks, new UninstallTask.ConfigAction(variantScope));
-
-        tasks.named(UNINSTALL_ALL, new Action<Task>() {
-            @Override
-            public void execute(Task it) {
-                it.dependsOn(uninstallTask.getName());
-            }
-        });
     }
 
     public Task createAssembleTask(@NonNull final BaseVariantOutputData variantOutputData) {

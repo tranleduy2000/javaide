@@ -122,8 +122,7 @@ public class PlatformLoader implements SdkLoader {
             }
 
             mSdkInfo = new SdkInfo(
-                    new File(mTreeLocation, "out/host/" + host + "/framework/annotations.jar"),
-                    new File(mTreeLocation, "out/host/" + host + "/bin/adb"));
+                    new File(mTreeLocation, "out/host/" + host + "/framework/annotations.jar")  );
         }
     }
 

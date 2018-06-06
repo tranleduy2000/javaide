@@ -16,15 +16,6 @@
 
 package com.android.builder.sdk;
 
-import static com.android.SdkConstants.FD_EXTRAS;
-import static com.android.SdkConstants.FD_M2_REPOSITORY;
-import static com.android.SdkConstants.FD_PLATFORM_TOOLS;
-import static com.android.SdkConstants.FD_SUPPORT;
-import static com.android.SdkConstants.FD_TOOLS;
-import static com.android.SdkConstants.FN_ADB;
-import static com.android.SdkConstants.FN_ANNOTATIONS_JAR;
-import static com.android.SdkConstants.FN_SOURCE_PROP;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.sdklib.BuildToolInfo;
@@ -46,6 +37,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 import java.util.Properties;
+
+import static com.android.SdkConstants.FD_EXTRAS;
+import static com.android.SdkConstants.FD_M2_REPOSITORY;
+import static com.android.SdkConstants.FD_PLATFORM_TOOLS;
+import static com.android.SdkConstants.FD_SUPPORT;
+import static com.android.SdkConstants.FD_TOOLS;
+import static com.android.SdkConstants.FN_ANNOTATIONS_JAR;
+import static com.android.SdkConstants.FN_SOURCE_PROP;
 
 /**
  * Singleton-based implementation of SdkLoader for a standard SDK
@@ -125,11 +124,9 @@ public class DefaultSdkLoader implements SdkLoader {
 
             File toolsFolder = new File(mSdkLocation, FD_TOOLS);
             File supportToolsFolder = new File(toolsFolder, FD_SUPPORT);
-            File platformTools = new File(mSdkLocation, FD_PLATFORM_TOOLS);
 
             mSdkInfo = new SdkInfo(
-                    new File(supportToolsFolder, FN_ANNOTATIONS_JAR),
-                    new File(platformTools, FN_ADB));
+                    new File(supportToolsFolder, FN_ANNOTATIONS_JAR));
         }
     }
 

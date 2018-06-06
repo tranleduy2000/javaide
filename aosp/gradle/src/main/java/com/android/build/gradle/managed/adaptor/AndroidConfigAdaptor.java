@@ -27,7 +27,6 @@ import com.android.build.gradle.internal.ProductFlavorData;
 import com.android.build.gradle.internal.VariantManager;
 import com.android.build.gradle.internal.dsl.CoreNdkOptions;
 import com.android.build.gradle.internal.dsl.AaptOptions;
-import com.android.build.gradle.internal.dsl.AdbOptions;
 import com.android.build.gradle.internal.dsl.CoreBuildType;
 import com.android.build.gradle.internal.dsl.CoreProductFlavor;
 import com.android.build.gradle.internal.dsl.DexOptions;
@@ -188,11 +187,6 @@ public class AndroidConfigAdaptor implements com.android.build.gradle.AndroidCon
 
     public CoreNdkOptions getNdk() {
         return new NdkOptionsAdaptor(model.getNdk());
-    }
-
-    @Override
-    public AdbOptions getAdbOptions() {
-        return model.getAdbOptions();
     }
 
     @Override

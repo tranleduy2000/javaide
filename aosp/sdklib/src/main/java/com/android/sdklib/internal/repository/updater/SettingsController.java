@@ -154,14 +154,6 @@ public class SettingsController {
             return Boolean.parseBoolean(mProperties.getProperty(ISettingsPage.KEY_FORCE_HTTP));
         }
 
-        /**
-         * Returns the value of the {@link ISettingsPage#KEY_ASK_ADB_RESTART} setting.
-         *
-         * @see ISettingsPage#KEY_ASK_ADB_RESTART
-         */
-        public boolean getAskBeforeAdbRestart() {
-            return Boolean.parseBoolean(mProperties.getProperty(ISettingsPage.KEY_ASK_ADB_RESTART));
-        }
 
         /**
          * Returns the value of the {@link ISettingsPage#KEY_USE_DOWNLOAD_CACHE} setting.
@@ -289,7 +281,6 @@ public class SettingsController {
 
             // Properly reformat some settings to enforce their default value when missing.
             setShowUpdateOnly(mSettings.getShowUpdateOnly());
-            setSetting(ISettingsPage.KEY_ASK_ADB_RESTART, mSettings.getAskBeforeAdbRestart());
             setSetting(ISettingsPage.KEY_USE_DOWNLOAD_CACHE, mSettings.getUseDownloadCache());
             setSetting(ISettingsPage.KEY_ENABLE_PREVIEWS, mSettings.getEnablePreviews());
 

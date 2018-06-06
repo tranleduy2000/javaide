@@ -19,7 +19,6 @@ package com.android.build.gradle.internal;
 import com.android.annotations.NonNull;
 import com.android.build.gradle.api.AndroidSourceSet;
 import com.android.build.gradle.internal.dsl.AaptOptions;
-import com.android.build.gradle.internal.dsl.AdbOptions;
 import com.android.build.gradle.internal.dsl.AndroidSourceSetFactory;
 import com.android.build.gradle.internal.dsl.DexOptions;
 import com.android.build.gradle.internal.dsl.LintOptions;
@@ -54,7 +53,6 @@ public class AndroidConfigHelper {
         model.setLintOptions(instantiator.newInstance(LintOptions.class));
         model.setCompileOptions(instantiator.newInstance(CompileOptions.class));
         model.setPackagingOptions(instantiator.newInstance(PackagingOptions.class));
-        model.setAdbOptions(instantiator.newInstance(AdbOptions.class));
         model.setSplits(instantiator.newInstance(Splits.class, instantiator));
         model.setLibraryRequests(Lists.<LibraryRequest>newArrayList());
     }

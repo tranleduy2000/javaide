@@ -16,7 +16,6 @@ import com.android.builder.model.JavaLibrary;
 import com.android.builder.model.ProductFlavor;
 import com.android.builder.model.ProductFlavorContainer;
 import com.android.builder.model.SourceProvider;
-import com.android.builder.model.SourceProviderContainer;
 import com.android.builder.model.Variant;
 import com.android.sdklib.AndroidTargetHash;
 import com.android.sdklib.AndroidVersion;
@@ -183,7 +182,6 @@ public class LintGradleProject extends Project {
         private AndroidProject mProject;
         private Variant mVariant;
         private List<SourceProvider> mProviders;
-        private List<SourceProvider> mTestProviders;
 
         private AppGradleProject(
                 @NonNull LintGradleClient client,
@@ -252,49 +250,6 @@ public class LintGradleProject extends Project {
             }
 
             return mProviders;
-        }
-
-        private List<SourceProvider> getTestSourceProviders() {
-            if (mTestProviders == null) {
-                List<SourceProvider> providers = Lists.newArrayList();
-
-                ProductFlavorContainer defaultConfig = mProject.getDefaultConfig();
-                for (SourceProviderContainer extra : defaultConfig.getExtraSourceProviders()) {
-                    String artifactName = extra.getArtifactName();
-                    if (AndroidProject.ARTIFACT_ANDROID_TEST.equals(artifactName)) {
-                        providers.add(extra.getSourceProvider());
-                    }
-                }
-
-                for (String flavorName : mVariant.getProductFlavors()) {
-                    for (ProductFlavorContainer flavor : mProject.getProductFlavors()) {
-                        if (flavorName.equals(flavor.getProductFlavor().getName())) {
-                            for (SourceProviderContainer extra : flavor.getExtraSourceProviders()) {
-                                String artifactName = extra.getArtifactName();
-                                if (AndroidProject.ARTIFACT_ANDROID_TEST.equals(artifactName)) {
-                                    providers.add(extra.getSourceProvider());
-                                }
-                            }
-                        }
-                    }
-                }
-
-                String buildTypeName = mVariant.getBuildType();
-                for (BuildTypeContainer buildType : mProject.getBuildTypes()) {
-                    if (buildTypeName.equals(buildType.getBuildType().getName())) {
-                        for (SourceProviderContainer extra : buildType.getExtraSourceProviders()) {
-                            String artifactName = extra.getArtifactName();
-                            if (AndroidProject.ARTIFACT_ANDROID_TEST.equals(artifactName)) {
-                                providers.add(extra.getSourceProvider());
-                            }
-                        }
-                    }
-                }
-
-                mTestProviders = providers;
-            }
-
-            return mTestProviders;
         }
 
         @NonNull
@@ -388,24 +343,6 @@ public class LintGradleProject extends Project {
             }
 
             return mJavaSourceFolders;
-        }
-
-        @NonNull
-        @Override
-        public List<File> getTestSourceFolders() {
-            if (mTestSourceFolders == null) {
-                mTestSourceFolders = Lists.newArrayList();
-                for (SourceProvider provider : getTestSourceProviders()) {
-                    Collection<File> srcDirs = provider.getJavaDirectories();
-                    for (File srcDir : srcDirs) {
-                        if (srcDir.exists()) { // model returns path whether or not it exists
-                            mTestSourceFolders.add(srcDir);
-                        }
-                    }
-                }
-            }
-
-            return mTestSourceFolders;
         }
 
         @NonNull

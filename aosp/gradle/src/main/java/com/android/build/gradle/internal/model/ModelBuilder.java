@@ -136,13 +136,6 @@ public class ModelBuilder implements ToolingModelBuilder {
         List<ArtifactMetaData> artifactMetaDataList = Lists.newArrayList(
                 extraModelInfo.getExtraArtifacts());
 
-        for (VariantType variantType : VariantType.getTestingTypes()) {
-            artifactMetaDataList.add(new ArtifactMetaDataImpl(
-                    variantType.getArtifactName(),
-                    true /*isTest*/,
-                    variantType.getArtifactType()));
-        }
-
         LintOptions lintOptions = com.android.build.gradle.internal.dsl.LintOptions.create(
                 config.getLintOptions());
 

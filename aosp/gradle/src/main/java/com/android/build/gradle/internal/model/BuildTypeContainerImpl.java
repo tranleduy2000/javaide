@@ -18,8 +18,6 @@ package com.android.build.gradle.internal.model;
 
 import com.android.annotations.NonNull;
 import com.android.build.gradle.internal.BuildTypeData;
-import com.android.build.gradle.internal.api.DefaultAndroidSourceSet;
-import com.android.builder.core.VariantType;
 import com.android.builder.model.BuildType;
 import com.android.builder.model.BuildTypeContainer;
 import com.android.builder.model.SourceProvider;
@@ -55,14 +53,6 @@ class BuildTypeContainerImpl implements BuildTypeContainer, Serializable {
         List<SourceProviderContainer> clonedContainers =
                 SourceProviderContainerImpl.cloneCollection(sourceProviderContainers);
 
-        for (VariantType variantType : VariantType.getTestingTypes()) {
-            DefaultAndroidSourceSet testSourceSet = buildTypeData.getTestSourceSet(variantType);
-            if (testSourceSet != null) {
-                clonedContainers.add(SourceProviderContainerImpl.create(
-                        variantType.getArtifactName(),
-                        testSourceSet));
-            }
-        }
         return new BuildTypeContainerImpl(
                 BuildTypeImpl.cloneBuildType(buildTypeData.getBuildType()),
                 SourceProviderImpl.cloneProvider(buildTypeData.getSourceSet()),

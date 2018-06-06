@@ -147,12 +147,6 @@ public class DexProcessBuilder extends ProcessEnvBuilder<DexProcessBuilder> {
         builder.setClasspath(dx);
         builder.setMain("com.android.dx.command.Main");
 
-        if (dexOptions.getJavaMaxHeapSize() != null) {
-            builder.addJvmArg("-Xmx" + dexOptions.getJavaMaxHeapSize());
-        } else {
-            builder.addJvmArg("-Xmx1024M");
-        }
-
         builder.addArgs("--dex");
 
         if (mVerbose) {

@@ -39,10 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class AaptProcess {
 
     private static final int DEFAULT_SLAVE_APPT_TIMEOUT_IN_SECONDS = 5;
-    private static final int SLAVE_AAPT_TIMEOUT_IN_SECONDS =
-            System.getenv("SLAVE_AAPT_TIMEOUT") == null
-                    ? DEFAULT_SLAVE_APPT_TIMEOUT_IN_SECONDS
-                    : Integer.parseInt(System.getenv("SLAVE_AAPT_TIMEOUT"));
+    private static final int SLAVE_AAPT_TIMEOUT_IN_SECONDS = DEFAULT_SLAVE_APPT_TIMEOUT_IN_SECONDS;
 
     private final Process mProcess;
     private final ILogger mLogger;

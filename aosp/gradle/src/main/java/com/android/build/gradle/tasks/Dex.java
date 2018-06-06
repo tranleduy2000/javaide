@@ -1,6 +1,5 @@
 package com.android.build.gradle.tasks;
 
-import com.android.SdkConstants;
 import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.PostCompilationData;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
@@ -11,6 +10,8 @@ import com.android.build.gradle.internal.scope.VariantScope;
 import com.android.build.gradle.internal.tasks.BaseTask;
 import com.android.build.gradle.internal.variant.ApkVariantData;
 import com.android.ide.common.process.LoggedProcessOutputHandler;
+import com.android.ide.common.process.ProcessException;
+import com.android.sdklib.repository.FullRevision;
 import com.android.utils.FileUtils;
 
 import org.gradle.api.tasks.Input;
@@ -18,30 +19,25 @@ import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Nested;
-import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
-import org.gradle.api.tasks.incremental.InputFileDetails;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
 
 public class Dex extends BaseTask {
     @OutputDirectory
     private File outputFolder;
     @Input
-    @Optional
     private List<String> additionalParameters;
-    private boolean enableIncremental = true;
     @InputFiles
-    @Optional
     private Collection<File> inputFiles;
     @InputDirectory
-    @Optional
     private File inputDir;
     @InputFiles
     private Collection<File> libraries;
@@ -52,12 +48,11 @@ public class Dex extends BaseTask {
     @Input
     private boolean optimize = true;
     @InputFile
-    @Optional
     private File mainDexListFile;
     private File tmpFolder;
 
     @Input
-    public String getBuildToolsVersion() {
+    public FullRevision getBuildToolsVersion() {
         return getBuildTools().getRevision();
     }
 
@@ -66,66 +61,19 @@ public class Dex extends BaseTask {
      * Calls out to the doTaskAction as needed.
      */
     @TaskAction
-    public void taskAction(IncrementalTaskInputs inputs) {
+    public void taskAction() throws IOException, InterruptedException, ProcessException {
         Collection<File> _inputFiles = getInputFiles();
         File _inputDir = getInputDir();
         if (_inputFiles == null && _inputDir == null) {
             throw new RuntimeException("Dex task \'" + getName() + ": inputDir and inputFiles cannot both be null");
         }
 
-
-        if (!dexOptions.getIncremental() || !enableIncremental) {
-            doTaskAction(_inputFiles, _inputDir, false);
-            return;
-
-        }
-
-
-        if (!inputs.isIncremental().asBoolean()) {
-            getProject().getLogger().info("Unable to do incremental execution: full task run.");
-            doTaskAction(_inputFiles, _inputDir, false);
-            return;
-
-        }
-
-
-        final AtomicBoolean forceFullRun = new AtomicBoolean();
-
-        //noinspection GroovyAssignabilityCheck
-        inputs.outOfDate(new Closure(this, this) {
-            public void doCall(final Object change) {
-                // force full dx run if existing jar file is modified
-                // New jar files are fine.
-                if (((InputFileDetails) change).isModified() && ((InputFileDetails) change).getFile().getPath().endsWith(SdkConstants.DOT_JAR)) {
-                    getProject().getLogger().info("Force full dx run: Found updated " + String.valueOf(((InputFileDetails) change).getFile()));
-                    forceFullRun.set(true);
-                }
-
-            }
-
-        });
-
-        //noinspection GroovyAssignabilityCheck
-        inputs.removed(new Closure(this, this) {
-            public void doCall(final Object change) {
-                // force full dx run if existing jar file is removed
-                if (((InputFileDetails) change).getFile().getPath().endsWith(SdkConstants.DOT_JAR)) {
-                    getProject().getLogger().info("Force full dx run: Found removed " + String.valueOf(((InputFileDetails) change).getFile()));
-                    forceFullRun.set(true);
-                }
-
-            }
-
-        });
-
-        doTaskAction(_inputFiles, _inputDir, !forceFullRun.get());
+        doTaskAction(_inputFiles, _inputDir);
     }
 
-    private void doTaskAction(@Nullable Collection<File> inputFiles, @Nullable File inputDir, boolean incremental) {
+    private void doTaskAction(@Nullable Collection<File> inputFiles, @Nullable File inputDir) throws IOException, ProcessException, InterruptedException {
         File outFolder = getOutputFolder();
-        if (!incremental.asBoolean()) {
-            FileUtils.emptyFolder(outFolder);
-        }
+        FileUtils.emptyFolder(outFolder);
 
 
         File tmpFolder = getTmpFolder();
@@ -144,7 +92,9 @@ public class Dex extends BaseTask {
         }
 
 
-        getBuilder().convertByteCode(inputFiles, getLibraries(), outFolder, getMultiDexEnabled(), getMainDexListFile(), getDexOptions(), getAdditionalParameters(), tmpFolder, incremental, getOptimize(), new LoggedProcessOutputHandler(getILogger()));
+        getBuilder().convertByteCode(inputFiles, getLibraries(), outFolder, getMultiDexEnabled(),
+                getMainDexListFile(), getDexOptions(), getAdditionalParameters(), tmpFolder,
+                false, getOptimize(), new LoggedProcessOutputHandler(getILogger()));
     }
 
     public File getOutputFolder() {
@@ -161,18 +111,6 @@ public class Dex extends BaseTask {
 
     public void setAdditionalParameters(List<String> additionalParameters) {
         this.additionalParameters = additionalParameters;
-    }
-
-    public boolean getEnableIncremental() {
-        return enableIncremental;
-    }
-
-    public boolean isEnableIncremental() {
-        return enableIncremental;
-    }
-
-    public void setEnableIncremental(boolean enableIncremental) {
-        this.enableIncremental = enableIncremental;
     }
 
     public Collection<File> getInputFiles() {
@@ -247,7 +185,7 @@ public class Dex extends BaseTask {
         this.tmpFolder = tmpFolder;
     }
 
-    public static class ConfigAction extends GroovyObjectSupport implements TaskConfigAction<Dex> {
+    public static class ConfigAction implements TaskConfigAction<Dex> {
         private final VariantScope scope;
         private final PostCompilationData pcData;
 
@@ -263,7 +201,7 @@ public class Dex extends BaseTask {
 
         @Override
         public Class<Dex> getType() {
-            return ((Class<Dex>) (Dex.class));
+            return Dex.class;
         }
 
         @Override
@@ -279,12 +217,13 @@ public class Dex extends BaseTask {
             dexTask.setVariantName(config.getFullName());
             ConventionMappingHelper.map(dexTask, "outputFolder", new Callable<File>() {
                 @Override
-                public File call() throws Exception {
+                public File call() {
                     return scope.getDexOutputFolder();
                 }
 
             });
-            dexTask.setTmpFolder(new File(String.valueOf(scope.getGlobalScope().getBuildDir()) + "/" + FD_INTERMEDIATES + "/tmp/dex/" + config.getDirName()));
+            dexTask.setTmpFolder(new File(String.valueOf(scope.getGlobalScope().getBuildDir())
+                    + "/" + FD_INTERMEDIATES + "/tmp/dex/" + config.getDirName()));
             dexTask.setDexOptions(scope.getGlobalScope().getExtension().getDexOptions());
             dexTask.setMultiDexEnabled(isMultiDexEnabled);
             // dx doesn't work with receving --no-optimize in debug so we disable it for now.
@@ -302,7 +241,7 @@ public class Dex extends BaseTask {
                 // configure the dex task to receive the generated class list.
                 ConventionMappingHelper.map(dexTask, "mainDexListFile", new Callable<File>() {
                     @Override
-                    public File call() throws Exception {
+                    public File call() {
                         return scope.getMainDexListFile();
                     }
 

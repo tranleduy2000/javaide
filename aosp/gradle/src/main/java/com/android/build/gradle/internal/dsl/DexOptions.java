@@ -16,16 +16,14 @@
 
 package com.android.build.gradle.internal.dsl;
 
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Optional;
 import com.android.annotations.Nullable;
+
+import org.gradle.api.tasks.Input;
 
 /**
  * DSL object for configuring dx options.
  */
 public class DexOptions implements com.android.builder.core.DexOptions {
-
-    private boolean isIncrementalFlag = false;
 
     private boolean isPreDexLibrariesFlag = true;
 
@@ -34,20 +32,6 @@ public class DexOptions implements com.android.builder.core.DexOptions {
     private Integer threadCount = null;
 
     private String javaMaxHeapSize;
-
-    public void setIncremental(boolean isIncremental) {
-        isIncrementalFlag = isIncremental;
-    }
-
-    /**
-     * Whether to enable the incremental mode for dx. This has many limitations and may not
-     * work. Use carefully.
-     */
-    @Override
-    @Input
-    public boolean getIncremental() {
-        return isIncrementalFlag;
-    }
 
     /**
      * Whether to pre-dex libraries. This can improve incremental builds, but clean builds may
@@ -74,16 +58,6 @@ public class DexOptions implements com.android.builder.core.DexOptions {
             throw new IllegalArgumentException(
                     "Invalid max heap size DexOption. See `man java` for valid -Xmx arguments.");
         }
-    }
-
-    /**
-     * Sets the -JXmx* value when calling dx. Format should follow the 1024M pattern.
-     */
-    @Override
-    @Optional @Input
-    @Nullable
-    public String getJavaMaxHeapSize() {
-        return javaMaxHeapSize;
     }
 
     public void setThreadCount(int threadCount) {

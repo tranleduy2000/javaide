@@ -128,7 +128,6 @@
 - Enhanced manifest merger logging by specifying library coordinates.
 - Allow manifest placeholder to be of any type as long as toString() is implemented.
 - Fixed issue where a library with a low targetSdk would add permissions due to a declared permission in a different manifest.
-- Better fix for issue where embedding a micro app could add new permissions to the main app manifest.
 - Added check for conflict between density splits and resConfig property.
 - test applications are now not using multi-dexing, unless they test a library project.
 - Fixed lint issues 80872, 80834, 60416, 80837
@@ -140,7 +139,6 @@
 - Density split using aapt 21+ now use --preferred-density allowing for missing density version of some bitmaps.
 - hasProperty() will now work again on read-only wrapper returned by the variant API.
 - Setting applicationId(Suffix) in a Library project will now properly fail.
-- Fixed issue where embedding a micro app could add new permissions to the main app manifest.
 
 0.14.3
 - Variant Specific BuildConfigField/resValue
@@ -184,7 +182,6 @@
 0.14.1
 - Fix coverage support.
 - Fix resource shrinking for style references
-- Exclude embedded Wear micro-app from resource shrinking.
 
 0.14.0
 - Proguard and code coverage can now work together

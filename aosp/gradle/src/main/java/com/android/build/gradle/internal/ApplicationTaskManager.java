@@ -99,10 +99,6 @@ public class ApplicationTaskManager extends TaskManager {
 
         if (variantData.getSplitHandlingPolicy().equals(
                 BaseVariantData.SplitHandlingPolicy.RELEASE_21_AND_AFTER_POLICY)) {
-            if (getExtension().getBuildToolsRevision().getMajor() < 21) {
-                throw new RuntimeException("Pure splits can only be used with buildtools 21 and later");
-            }
-
             createSplitResourcesTasks(variantScope);
             createSplitAbiTasks(variantScope);
         }

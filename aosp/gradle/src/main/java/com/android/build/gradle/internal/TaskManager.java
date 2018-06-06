@@ -143,13 +143,11 @@ public abstract class TaskManager {
     public static final String BUILD_GROUP = BasePlugin.BUILD_GROUP;
 
     public static final String ANDROID_GROUP = "Android";
-    protected static final String CONNECTED_CHECK = "connectedCheck";
     protected static final String LINT_COMPILE = "compileLint";
     // Task names
     // TODO: Convert to AndroidTask.
     private static final String MAIN_PREBUILD = "preBuild";
     private static final String UNINSTALL_ALL = "uninstallAll";
-    private static final String DEVICE_CHECK = "deviceCheck";
     private static final String SOURCE_SETS = "sourceSets";
 
     private static final String LINT = "lint";
@@ -812,18 +810,6 @@ public abstract class TaskManager {
         }
 
         return javacTask;
-    }
-
-    public void createGenerateMicroApkDataTask(
-            @NonNull TaskFactory tasks,
-            @NonNull VariantScope scope,
-            @NonNull Configuration config) {
-        AndroidTask<GenerateApkDataTask> generateMicroApkTask = androidTasks.create(tasks,
-                new GenerateApkDataTask.ConfigAction(scope, config));
-        generateMicroApkTask.dependsOn(tasks, config);
-
-        // the merge res task will need to run after this one.
-        scope.getResourceGenTask().dependsOn(tasks, generateMicroApkTask);
     }
 
     public void createNdkTasks(@NonNull VariantScope scope) {

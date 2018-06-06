@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +49,7 @@ public abstract class IncrementalTask extends BaseTask {
      * Calls out to the doTaskAction as needed.
      */
     @TaskAction
-    void taskAction(IncrementalTaskInputs inputs) throws IOException {
+    void taskAction() throws IOException {
         doFullTaskAction();
     }
 

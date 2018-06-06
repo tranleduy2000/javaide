@@ -134,7 +134,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
         return "BuildTypeImpl{" +
                 "name='" + name + '\'' +
                 ", debuggable=" + debuggable +
-                ", testCoverageEnabled=" + testCoverageEnabled +
                 ", jniDebuggable=" + jniDebuggable +
                 ", renderscriptDebuggable=" + renderscriptDebuggable +
                 ", renderscriptOptimLevel=" + renderscriptOptimLevel +

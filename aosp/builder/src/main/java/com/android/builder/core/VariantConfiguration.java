@@ -83,10 +83,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
     @NonNull
     private final VariantType mType;
     /**
-     * Optional tested config in case this variant is used for testing another variant.
-     */
-    private final VariantConfiguration mTestedConfig;
-    /**
      * External/Jar dependencies.
      */
     private final Set<JarDependency> mExternalJars = Sets.newHashSet();
@@ -156,29 +152,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
     @NonNull
     private ProductFlavor mMergedFlavor;
 
-    /**
-     * Creates the configuration with the base source sets for a given {@link VariantType}. Meant
-     * for non-testing variants.
-     *
-     * @param defaultConfig           the default configuration. Required.
-     * @param defaultSourceProvider   the default source provider. Required
-     * @param buildType               the build type for this variant. Required.
-     * @param buildTypeSourceProvider the source provider for the build type.
-     * @param type                    the type of the project.
-     * @param signingConfigOverride   an optional Signing override to be used for signing.
-     */
-    public VariantConfiguration(
-            @NonNull D defaultConfig,
-            @NonNull SourceProvider defaultSourceProvider,
-            @NonNull T buildType,
-            @Nullable SourceProvider buildTypeSourceProvider,
-            @NonNull VariantType type,
-            @Nullable SigningConfig signingConfigOverride) {
-        this(
-                defaultConfig, defaultSourceProvider,
-                buildType, buildTypeSourceProvider,
-                type, null /*testedConfig*/, signingConfigOverride);
-    }
 
     /**
      * Creates the configuration with the base source sets, and an optional tested variant.
@@ -188,7 +161,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
      * @param buildType               the build type for this variant. Required.
      * @param buildTypeSourceProvider the source provider for the build type.
      * @param type                    the type of the project.
-     * @param testedConfig            the reference to the tested project. Required if type is Type.ANDROID_TEST
      * @param signingConfigOverride   an optional Signing override to be used for signing.
      */
     public VariantConfiguration(
@@ -197,7 +169,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
             @NonNull T buildType,
             @Nullable SourceProvider buildTypeSourceProvider,
             @NonNull VariantType type,
-            @Nullable VariantConfiguration testedConfig,
             @Nullable SigningConfig signingConfigOverride) {
         checkNotNull(defaultConfig);
         checkNotNull(defaultSourceProvider);
@@ -206,16 +177,12 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
         checkArgument(
                 true,
                 "You have to specify the tested variant for this variant type.");
-        checkArgument(
-                testedConfig == null,
-                "This variant type doesn't need a tested variant.");
 
         mDefaultConfig = checkNotNull(defaultConfig);
         mDefaultSourceProvider = checkNotNull(defaultSourceProvider);
         mBuildType = checkNotNull(buildType);
         mBuildTypeSourceProvider = buildTypeSourceProvider;
         mType = checkNotNull(type);
-        mTestedConfig = testedConfig;
         mSigningConfigOverride = signingConfigOverride;
         mMergedFlavor = DefaultProductFlavor.clone(mDefaultConfig);
     }
@@ -574,12 +541,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
         // Output of mTestedConfig will not be initialized until the tasks for the tested config are
         // created.  If library output has never been added to mDirectLibraries, checked the output
         // of the mTestedConfig to see if the tasks are now created.
-        if (mTestedConfig != null &&
-                mTestedConfig.mType == VariantType.LIBRARY &&
-                mTestedConfig.mOutput != null &&
-                !mDirectLibraries.contains(mTestedConfig.mOutput)) {
-            mDirectLibraries.add(mTestedConfig.mOutput);
-        }
 
         mDirectLibraries.addAll(container.getAndroidDependencies());
         mExternalJars.addAll(container.getJarDependencies());
@@ -710,11 +671,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
         return mType;
     }
 
-    @Nullable
-    public VariantConfiguration getTestedConfig() {
-        return mTestedConfig;
-    }
-
     /**
      * Returns the original application ID before any overrides from flavors.
      * If the variant is a test variant, then the application ID is the one coming from the
@@ -751,12 +707,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
         }
 
         return id;
-    }
-
-    @Nullable
-    public String getTestedApplicationId() {
-
-        return null;
     }
 
     /**
@@ -869,9 +819,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
      */
     @NonNull
     public ApiVersion getMinSdkVersion() {
-        if (mTestedConfig != null) {
-            return mTestedConfig.getMinSdkVersion();
-        }
 
         ApiVersion minSdkVersion = mMergedFlavor.getMinSdkVersion();
         if (minSdkVersion == null) {
@@ -894,9 +841,6 @@ public class VariantConfiguration<T extends BuildType, D extends ProductFlavor, 
      */
     @NonNull
     public ApiVersion getTargetSdkVersion() {
-        if (mTestedConfig != null) {
-            return mTestedConfig.getTargetSdkVersion();
-        }
         ApiVersion targetSdkVersion = mMergedFlavor.getTargetSdkVersion();
         if (targetSdkVersion == null) {
             // read it from the main manifest

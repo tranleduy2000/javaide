@@ -208,31 +208,6 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
         return this;
     }
 
-    /**
-     * Specifies a proguard rule file to be included in the published AAR.
-     *
-     * This proguard rule file will then be used by any application project that consume the AAR
-     * (if proguard is enabled).
-     *
-     * This allows AAR to specify shrinking or obfuscation exclude rules.
-     *
-     * This is only valid for Library project. This is ignored in Application project.
-     */
-    @NonNull
-    public BuildType testProguardFile(@NonNull Object proguardFile) {
-        getTestProguardFiles().add(project.file(proguardFile));
-        return this;
-    }
-
-    /**
-     * Adds new ProGuard configuration files.
-     */
-    @NonNull
-    public BuildType testProguardFiles(@NonNull Object... proguardFileArray) {
-        getTestProguardFiles().addAll(project.files(proguardFileArray).getFiles());
-        return this;
-    }
-
     @NonNull
     public BuildType consumerProguardFiles(@NonNull Object... proguardFileArray) {
         getConsumerProguardFiles().addAll(project.files(proguardFileArray).getFiles());

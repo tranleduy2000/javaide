@@ -16,15 +16,7 @@
 
 package com.android.build.gradle.internal;
 
-import static com.android.SdkConstants.DOT_JAR;
-import static com.android.SdkConstants.EXT_ANDROID_PACKAGE;
-import static com.android.SdkConstants.EXT_JAR;
-import static com.android.builder.core.BuilderConstants.EXT_LIB_ARCHIVE;
-import static com.android.builder.core.ErrorReporter.EvaluationMode.STANDARD;
-import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
-
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.dependency.JarInfo;
 import com.android.build.gradle.internal.dependency.LibInfo;
 import com.android.build.gradle.internal.dependency.LibraryDependencyImpl;
@@ -78,17 +70,22 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import static com.android.SdkConstants.DOT_JAR;
+import static com.android.SdkConstants.EXT_ANDROID_PACKAGE;
+import static com.android.SdkConstants.EXT_JAR;
+import static com.android.builder.core.BuilderConstants.EXT_LIB_ARCHIVE;
+import static com.android.builder.core.ErrorReporter.EvaluationMode.STANDARD;
+import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
+
 /**
  * A manager to resolve configuration dependencies.
  */
 public class DependencyManager {
     protected static final boolean DEBUG_DEPENDENCY = false;
-
+    final Map<LibraryDependencyImpl, PrepareLibraryTask> prepareTaskMap = Maps.newHashMap();
     private Project project;
     private ExtraModelInfo extraModelInfo;
     private ILogger logger;
-
-    final Map<LibraryDependencyImpl, PrepareLibraryTask> prepareTaskMap = Maps.newHashMap();
 
     public DependencyManager(Project project, ExtraModelInfo extraModelInfo) {
         this.project = project;
@@ -111,6 +108,227 @@ public class DependencyManager {
         return Lists.newArrayList(files);
     }
 
+    private static List<LibraryDependencyImpl> convertLibraryInfoIntoDependency(
+            @NonNull List<LibInfo> libInfos,
+            @NonNull Multimap<LibraryDependency, VariantDependencies> reverseMap) {
+        List<LibraryDependencyImpl> list = Lists.newArrayListWithCapacity(libInfos.size());
+
+        // since the LibInfos is a graph and the previous "foundLibraries" map ensure we reuse
+        // instance where applicable, we'll create a map to keep track of what we have already
+        // converted.
+        Map<LibInfo, LibraryDependencyImpl> convertedMap = Maps.newIdentityHashMap();
+
+        for (LibInfo libInfo : libInfos) {
+            list.add(convertLibInfo(libInfo, reverseMap, convertedMap));
+        }
+
+        return list;
+    }
+
+    private static LibraryDependencyImpl convertLibInfo(
+            @NonNull LibInfo libInfo,
+            @NonNull Multimap<LibraryDependency, VariantDependencies> reverseMap,
+            @NonNull Map<LibInfo, LibraryDependencyImpl> convertedMap) {
+        LibraryDependencyImpl convertedLib = convertedMap.get(libInfo);
+        if (convertedLib == null) {
+            // first, convert the children.
+            @SuppressWarnings("unchecked")
+            List<LibInfo> children = (List<LibInfo>) (List<?>) libInfo.getDependencies();
+            List<LibraryDependency> convertedChildren = Lists.newArrayListWithCapacity(children.size());
+
+            for (LibInfo child : children) {
+                convertedChildren.add(convertLibInfo(child, reverseMap, convertedMap));
+            }
+
+            // now convert the libInfo
+            convertedLib = new LibraryDependencyImpl(
+                    libInfo.getBundle(),
+                    libInfo.getFolder(),
+                    convertedChildren,
+                    libInfo.getName(),
+                    libInfo.getProjectVariant(),
+                    libInfo.getProject(),
+                    libInfo.getRequestedCoordinates(),
+                    libInfo.getResolvedCoordinates(),
+                    libInfo.isOptional());
+
+            // add it to the map
+            convertedMap.put(libInfo, convertedLib);
+
+            // and update the reversemap
+            // get the items associated with the libInfo. Put in a fresh list as the returned
+            // collection is backed by the content of the map.
+            Collection<VariantDependencies> values = Lists.newArrayList(reverseMap.get(libInfo));
+            reverseMap.removeAll(libInfo);
+            reverseMap.putAll(convertedLib, values);
+        }
+
+        return convertedLib;
+    }
+
+    private static void gatherJarDependencies(
+            Set<JarInfo> outJarInfos,
+            Collection<JarInfo> inJarInfos,
+            boolean compiled,
+            boolean packaged) {
+        for (JarInfo jarInfo : inJarInfos) {
+            if (!outJarInfos.contains(jarInfo)) {
+                outJarInfos.add(jarInfo);
+            }
+
+            if (compiled) {
+                jarInfo.setCompiled(true);
+            }
+            if (packaged) {
+                jarInfo.setPackaged(true);
+            }
+
+            gatherJarDependencies(outJarInfos, jarInfo.getDependencies(), compiled, packaged);
+        }
+    }
+
+    private static void gatherJarDependenciesFromLibraries(
+            Set<JarInfo> outJarInfos,
+            Collection<LibInfo> inLibraryDependencies) {
+        for (LibInfo libInfo : inLibraryDependencies) {
+            gatherJarDependencies(outJarInfos, libInfo.getJarDependencies(),
+                    true, !libInfo.isOptional());
+
+            gatherJarDependenciesFromLibraries(
+                    outJarInfos,
+                    libInfo.getLibInfoDependencies());
+        }
+    }
+
+    private static void printIndent(int indent, @NonNull String message) {
+        for (int i = 0; i < indent; i++) {
+            System.out.print("\t");
+        }
+
+        System.out.println(message);
+    }
+
+    @NonNull
+    private static String computeArtifactName(
+            @NonNull ModuleVersionIdentifier moduleVersion,
+            @NonNull ResolvedArtifact artifact) {
+        StringBuilder nameBuilder = new StringBuilder();
+
+        nameBuilder.append(moduleVersion.getGroup())
+                .append(':')
+                .append(moduleVersion.getName())
+                .append(':')
+                .append(moduleVersion.getVersion());
+
+        if (artifact.getClassifier() != null && !artifact.getClassifier().isEmpty()) {
+            nameBuilder.append(':').append(artifact.getClassifier());
+        }
+
+        return nameBuilder.toString();
+    }
+
+    /**
+     * Normalize a path to remove all illegal characters for all supported operating systems.
+     * {@see http://en.wikipedia.org/wiki/Filename#Comparison%5Fof%5Ffile%5Fname%5Flimitations}
+     *
+     * @param id   the module coordinates that generated this path
+     * @param path the proposed path name
+     * @return the normalized path name
+     */
+    static String normalize(ILogger logger, ModuleVersionIdentifier id, String path) {
+        if (path == null || path.isEmpty()) {
+            logger.info(String.format(
+                    "When unzipping library '%s:%s:%s, either group, name or version is empty",
+                    id.getGroup(), id.getName(), id.getVersion()));
+            return path;
+        }
+        // list of illegal characters
+        String normalizedPath = path.replaceAll("[%<>:\"/?*\\\\]", "@");
+        if (normalizedPath == null || normalizedPath.isEmpty()) {
+            // if the path normalization failed, return the original path.
+            logger.info(String.format(
+                    "When unzipping library '%s:%s:%s, the normalized '%s' is empty",
+                    id.getGroup(), id.getName(), id.getVersion(), path));
+            return path;
+        }
+        try {
+            int pathPointer = normalizedPath.length() - 1;
+            // do not end your path with either a dot or a space.
+            String suffix = "";
+            while (pathPointer >= 0 && (normalizedPath.charAt(pathPointer) == '.'
+                    || normalizedPath.charAt(pathPointer) == ' ')) {
+                pathPointer--;
+                suffix += "@";
+            }
+            if (pathPointer < 0) {
+                throw new RuntimeException(String.format(
+                        "When unzipping library '%s:%s:%s, " +
+                                "the path '%s' cannot be transformed into a valid directory name",
+                        id.getGroup(), id.getName(), id.getVersion(), path));
+            }
+            return normalizedPath.substring(0, pathPointer + 1) + suffix;
+        } catch (Exception e) {
+            logger.error(e, String.format(
+                    "When unzipping library '%s:%s:%s', " +
+                            "Path normalization failed for input %s",
+                    id.getGroup(), id.getName(), id.getVersion(), path));
+            return path;
+        }
+    }
+
+    @NonNull
+    public static List<ManifestDependencyImpl> getManifestDependencies(
+            List<LibraryDependency> libraries) {
+
+        List<ManifestDependencyImpl> list = Lists.newArrayListWithCapacity(libraries.size());
+
+        for (LibraryDependency lib : libraries) {
+            // get the dependencies
+            List<ManifestDependencyImpl> children = getManifestDependencies(lib.getDependencies());
+            list.add(new ManifestDependencyImpl(lib.getName(), lib.getManifest(), children));
+        }
+
+        return list;
+    }
+
+    /**
+     * Adds a dependency on tasks with the specified name in other projects.  The other projects
+     * are determined from project lib dependencies using the specified configuration name.
+     * These may be projects this project depends on or projects that depend on this project
+     * based on the useDependOn argument.
+     *
+     * @param task                 Task to add dependencies to
+     * @param useDependedOn        if true, add tasks from projects this project depends on, otherwise
+     *                             use projects that depend on this one.
+     * @param otherProjectTaskName name of task in other projects
+     * @param configurationName    name of configuration to use to find the other projects
+     */
+    private static void addDependsOnTaskInOtherProjects(final Task task, boolean useDependedOn,
+                                                        String otherProjectTaskName,
+                                                        String configurationName) {
+        Project project = task.getProject();
+        final Configuration configuration = project.getConfigurations().getByName(
+                configurationName);
+        task.dependsOn(configuration.getTaskDependencyFromProjectDependency(
+                useDependedOn, otherProjectTaskName));
+    }
+
+    /**
+     * Compute a version-less key representing the given coordinates.
+     *
+     * @param coordinates the coordinate
+     * @return the key.
+     */
+    @NonNull
+    private static String computeVersionLessCoordinateKey(@NonNull MavenCoordinates coordinates) {
+        StringBuilder sb = new StringBuilder(coordinates.getGroupId());
+        sb.append(':').append(coordinates.getArtifactId());
+        if (coordinates.getClassifier() != null) {
+            sb.append(':').append(coordinates.getClassifier());
+        }
+        return sb.toString();
+    }
+
     public void addDependencyToPrepareTask(
             @NonNull BaseVariantData<? extends BaseVariantOutputData> variantData,
             @NonNull PrepareDependenciesTask prepareDependenciesTask,
@@ -130,11 +348,10 @@ public class DependencyManager {
     }
 
     public void resolveDependencies(
-            @NonNull VariantDependencies variantDeps,
-            @Nullable String testedProjectPath) {
+            @NonNull VariantDependencies variantDeps) {
         Multimap<LibraryDependency, VariantDependencies> reverseMap = ArrayListMultimap.create();
 
-        resolveDependencyForConfig(variantDeps, testedProjectPath, reverseMap);
+        resolveDependencyForConfig(variantDeps, reverseMap);
         processLibraries(variantDeps.getLibraries(), reverseMap);
     }
 
@@ -160,7 +377,7 @@ public class DependencyManager {
         // TODO fix, this is not optimum as we bring in more dependencies than we should.
         Collection<VariantDependencies> configDepList = reverseMap.get(libDependency);
         if (configDepList != null && !configDepList.isEmpty()) {
-            for (VariantDependencies configDependencies: configDepList) {
+            for (VariantDependencies configDependencies : configDepList) {
                 task.dependsOn(configDependencies.getCompileConfiguration().getBuildDependencies());
             }
         }
@@ -227,7 +444,6 @@ public class DependencyManager {
 
     private void resolveDependencyForConfig(
             @NonNull VariantDependencies variantDeps,
-            @Nullable String testedProjectPath,
             @NonNull Multimap<LibraryDependency, VariantDependencies> reverseMap) {
 
         Configuration compileClasspath = variantDeps.getCompileConfiguration();
@@ -280,7 +496,6 @@ public class DependencyManager {
                         artifacts,
                         reverseMap,
                         currentUnresolvedDependencies,
-                        testedProjectPath,
                         Collections.<String>emptyList(),
                         0);
             } else if (dependencyResult instanceof UnresolvedDependencyResult) {
@@ -310,7 +525,6 @@ public class DependencyManager {
                         artifacts,
                         reverseMap,
                         currentUnresolvedDependencies,
-                        testedProjectPath,
                         Collections.<String>emptyList(),
                         0);
             } else if (dependencyResult instanceof UnresolvedDependencyResult) {
@@ -505,102 +719,10 @@ public class DependencyManager {
         configureBuild(variantDeps);
 
         if (DEBUG_DEPENDENCY) {
-            System.out.println(project.getName() + ":" + compileClasspath.getName() + "/" +packageClasspath.getName());
+            System.out.println(project.getName() + ":" + compileClasspath.getName() + "/" + packageClasspath.getName());
             System.out.println("<<<<<<<<<<");
         }
 
-    }
-
-    private static List<LibraryDependencyImpl> convertLibraryInfoIntoDependency(
-            @NonNull List<LibInfo> libInfos,
-            @NonNull Multimap<LibraryDependency, VariantDependencies> reverseMap) {
-        List<LibraryDependencyImpl> list = Lists.newArrayListWithCapacity(libInfos.size());
-
-        // since the LibInfos is a graph and the previous "foundLibraries" map ensure we reuse
-        // instance where applicable, we'll create a map to keep track of what we have already
-        // converted.
-        Map<LibInfo, LibraryDependencyImpl> convertedMap = Maps.newIdentityHashMap();
-
-        for (LibInfo libInfo : libInfos) {
-            list.add(convertLibInfo(libInfo, reverseMap, convertedMap));
-        }
-
-        return list;
-    }
-
-    private static LibraryDependencyImpl convertLibInfo(
-            @NonNull LibInfo libInfo,
-            @NonNull Multimap<LibraryDependency, VariantDependencies> reverseMap,
-            @NonNull Map<LibInfo, LibraryDependencyImpl> convertedMap) {
-        LibraryDependencyImpl convertedLib = convertedMap.get(libInfo);
-        if (convertedLib == null) {
-            // first, convert the children.
-            @SuppressWarnings("unchecked")
-            List<LibInfo> children = (List<LibInfo>) (List<?>) libInfo.getDependencies();
-            List<LibraryDependency> convertedChildren = Lists.newArrayListWithCapacity(children.size());
-
-            for (LibInfo child : children) {
-                convertedChildren.add(convertLibInfo(child, reverseMap, convertedMap));
-            }
-
-            // now convert the libInfo
-            convertedLib = new LibraryDependencyImpl(
-                    libInfo.getBundle(),
-                    libInfo.getFolder(),
-                    convertedChildren,
-                    libInfo.getName(),
-                    libInfo.getProjectVariant(),
-                    libInfo.getProject(),
-                    libInfo.getRequestedCoordinates(),
-                    libInfo.getResolvedCoordinates(),
-                    libInfo.isOptional());
-
-            // add it to the map
-            convertedMap.put(libInfo, convertedLib);
-
-            // and update the reversemap
-            // get the items associated with the libInfo. Put in a fresh list as the returned
-            // collection is backed by the content of the map.
-            Collection<VariantDependencies> values = Lists.newArrayList(reverseMap.get(libInfo));
-            reverseMap.removeAll(libInfo);
-            reverseMap.putAll(convertedLib, values);
-        }
-
-        return convertedLib;
-    }
-
-    private static void gatherJarDependencies(
-            Set<JarInfo> outJarInfos,
-            Collection<JarInfo> inJarInfos,
-            boolean compiled,
-            boolean packaged) {
-        for (JarInfo jarInfo : inJarInfos) {
-            if (!outJarInfos.contains(jarInfo)) {
-                outJarInfos.add(jarInfo);
-            }
-
-            if (compiled) {
-                jarInfo.setCompiled(true);
-            }
-            if (packaged) {
-                jarInfo.setPackaged(true);
-            }
-
-            gatherJarDependencies(outJarInfos, jarInfo.getDependencies(), compiled, packaged);
-        }
-    }
-
-    private static void gatherJarDependenciesFromLibraries(
-            Set<JarInfo> outJarInfos,
-            Collection<LibInfo> inLibraryDependencies) {
-        for (LibInfo libInfo : inLibraryDependencies) {
-            gatherJarDependencies(outJarInfos, libInfo.getJarDependencies(),
-                    true, !libInfo.isOptional());
-
-            gatherJarDependenciesFromLibraries(
-                    outJarInfos,
-                    libInfo.getLibInfoDependencies());
-        }
     }
 
     private void ensureConfigured(Configuration config) {
@@ -648,14 +770,6 @@ public class DependencyManager {
         }
     }
 
-    private static void printIndent(int indent, @NonNull String message) {
-        for (int i = 0 ; i < indent ; i++) {
-            System.out.print("\t");
-        }
-
-        System.out.println(message);
-    }
-
     private void addDependency(
             @NonNull ResolvedComponentResult resolvedComponentResult,
             @NonNull VariantDependencies configDependencies,
@@ -666,7 +780,6 @@ public class DependencyManager {
             @NonNull Map<ModuleVersionIdentifier, List<ResolvedArtifact>> artifacts,
             @NonNull Multimap<LibraryDependency, VariantDependencies> reverseMap,
             @NonNull Set<String> currentUnresolvedDependencies,
-            @Nullable String testedProjectPath,
             @NonNull List<String> projectChain,
             int indent) {
 
@@ -698,8 +811,7 @@ public class DependencyManager {
                 printIndent(indent, "FOUND JAR: " + moduleVersion.getName());
             }
             outJars.addAll(jarsForThisModule);
-        }
-        else {
+        } else {
             if (DEBUG_DEPENDENCY) {
                 printIndent(indent, "NOT FOUND: " + moduleVersion.getName());
             }
@@ -748,7 +860,6 @@ public class DependencyManager {
                             artifacts,
                             reverseMap,
                             currentUnresolvedDependencies,
-                            testedProjectPath,
                             newProjectChain,
                             indent + 1);
                 } else if (dependencyResult instanceof UnresolvedDependencyResult) {
@@ -815,23 +926,13 @@ public class DependencyManager {
                         }
                         // check this jar does not have a dependency on an library, as this would not work.
                         if (!nestedLibraries.isEmpty()) {
-                            if (testedProjectPath != null && testedProjectPath.equals(gradlePath)) {
-                                // TODO: make sure this is a direct dependency and not a transitive one.
-                                // add nested libs as optional somehow...
-                                for (LibInfo lib : nestedLibraries) {
-                                    lib.setIsOptional(true);
-                                }
-                                outLibraries.addAll(nestedLibraries);
-
-                            } else {
-                                configDependencies.getChecker()
-                                        .addSyncIssue(extraModelInfo.handleSyncError(
-                                                new MavenCoordinatesImpl(artifact).toString(),
-                                                SyncIssue.TYPE_JAR_DEPEND_ON_AAR,
-                                                String.format(
-                                                        "Module '%s' depends on one or more Android Libraries but is a jar",
-                                                        moduleVersion)));
-                            }
+                            configDependencies.getChecker()
+                                    .addSyncIssue(extraModelInfo.handleSyncError(
+                                            new MavenCoordinatesImpl(artifact).toString(),
+                                            SyncIssue.TYPE_JAR_DEPEND_ON_AAR,
+                                            String.format(
+                                                    "Module '%s' depends on one or more Android Libraries but is a jar",
+                                                    moduleVersion)));
                         }
 
                         if (jarsForThisModule == null) {
@@ -859,7 +960,7 @@ public class DependencyManager {
                                 SyncIssue.TYPE_DEPENDENCY_IS_APK,
                                 String.format(
                                         "Dependency %s on project %s resolves to an APK archive " +
-                                        "which is not supported as a compilation dependency. File: %s",
+                                                "which is not supported as a compilation dependency. File: %s",
                                         name, project.getName(), artifact.getFile())));
                     } else if ("apklib".equals(artifact.getExtension())) {
                         String name = computeArtifactName(moduleVersion, artifact);
@@ -869,13 +970,13 @@ public class DependencyManager {
                                 SyncIssue.TYPE_DEPENDENCY_IS_APKLIB,
                                 String.format(
                                         "Packaging for dependency %s is 'apklib' and is not supported. " +
-                                        "Only 'aar' libraries are supported.", name)));
+                                                "Only 'aar' libraries are supported.", name)));
                     } else {
                         String name = computeArtifactName(moduleVersion, artifact);
 
                         logger.warning(String.format(
-                                        "Unrecognized dependency: '%s' (type: '%s', extension: '%s')",
-                                        name, artifact.getType(), artifact.getExtension()));
+                                "Unrecognized dependency: '%s' (type: '%s', extension: '%s')",
+                                name, artifact.getType(), artifact.getExtension()));
                     }
                 }
             }
@@ -907,74 +1008,6 @@ public class DependencyManager {
         return pathBuilder.toString();
     }
 
-    @NonNull
-    private static String computeArtifactName(
-            @NonNull ModuleVersionIdentifier moduleVersion,
-            @NonNull ResolvedArtifact artifact) {
-        StringBuilder nameBuilder = new StringBuilder();
-
-        nameBuilder.append(moduleVersion.getGroup())
-                .append(':')
-                .append(moduleVersion.getName())
-                .append(':')
-                .append(moduleVersion.getVersion());
-
-        if (artifact.getClassifier() != null && !artifact.getClassifier().isEmpty()) {
-            nameBuilder.append(':').append(artifact.getClassifier());
-        }
-
-        return nameBuilder.toString();
-    }
-
-    /**
-     * Normalize a path to remove all illegal characters for all supported operating systems.
-     * {@see http://en.wikipedia.org/wiki/Filename#Comparison%5Fof%5Ffile%5Fname%5Flimitations}
-     *
-     * @param id the module coordinates that generated this path
-     * @param path the proposed path name
-     * @return the normalized path name
-     */
-    static String normalize(ILogger logger, ModuleVersionIdentifier id, String path) {
-        if (path == null || path.isEmpty()) {
-            logger.info(String.format(
-                    "When unzipping library '%s:%s:%s, either group, name or version is empty",
-                    id.getGroup(), id.getName(), id.getVersion()));
-            return path;
-        }
-        // list of illegal characters
-        String normalizedPath = path.replaceAll("[%<>:\"/?*\\\\]", "@");
-        if (normalizedPath == null || normalizedPath.isEmpty()) {
-            // if the path normalization failed, return the original path.
-            logger.info(String.format(
-                    "When unzipping library '%s:%s:%s, the normalized '%s' is empty",
-                    id.getGroup(), id.getName(), id.getVersion(), path));
-            return path;
-        }
-        try {
-            int pathPointer = normalizedPath.length() - 1;
-            // do not end your path with either a dot or a space.
-            String suffix = "";
-            while (pathPointer >= 0 && (normalizedPath.charAt(pathPointer) == '.'
-                    || normalizedPath.charAt(pathPointer) == ' ')) {
-                pathPointer--;
-                suffix += "@";
-            }
-            if (pathPointer < 0) {
-                throw new RuntimeException(String.format(
-                        "When unzipping library '%s:%s:%s, " +
-                        "the path '%s' cannot be transformed into a valid directory name",
-                        id.getGroup(), id.getName(), id.getVersion(), path));
-            }
-            return normalizedPath.substring(0, pathPointer + 1) + suffix;
-        } catch (Exception e) {
-            logger.error(e, String.format(
-                    "When unzipping library '%s:%s:%s', " +
-                    "Path normalization failed for input %s",
-                    id.getGroup(), id.getName(), id.getVersion(), path));
-            return path;
-        }
-    }
-
     private void configureBuild(VariantDependencies configurationDependencies) {
         addDependsOnTaskInOtherProjects(
                 project.getTasks().getByName(JavaBasePlugin.BUILD_NEEDED_TASK_NAME), true,
@@ -982,57 +1015,5 @@ public class DependencyManager {
         addDependsOnTaskInOtherProjects(
                 project.getTasks().getByName(JavaBasePlugin.BUILD_DEPENDENTS_TASK_NAME), false,
                 JavaBasePlugin.BUILD_DEPENDENTS_TASK_NAME, "compile");
-    }
-
-    @NonNull
-    public static List<ManifestDependencyImpl> getManifestDependencies(
-            List<LibraryDependency> libraries) {
-
-        List<ManifestDependencyImpl> list = Lists.newArrayListWithCapacity(libraries.size());
-
-        for (LibraryDependency lib : libraries) {
-            // get the dependencies
-            List<ManifestDependencyImpl> children = getManifestDependencies(lib.getDependencies());
-            list.add(new ManifestDependencyImpl(lib.getName(), lib.getManifest(), children));
-        }
-
-        return list;
-    }
-
-    /**
-     * Adds a dependency on tasks with the specified name in other projects.  The other projects
-     * are determined from project lib dependencies using the specified configuration name.
-     * These may be projects this project depends on or projects that depend on this project
-     * based on the useDependOn argument.
-     *
-     * @param task Task to add dependencies to
-     * @param useDependedOn if true, add tasks from projects this project depends on, otherwise
-     * use projects that depend on this one.
-     * @param otherProjectTaskName name of task in other projects
-     * @param configurationName name of configuration to use to find the other projects
-     */
-    private static void addDependsOnTaskInOtherProjects(final Task task, boolean useDependedOn,
-            String otherProjectTaskName,
-            String configurationName) {
-        Project project = task.getProject();
-        final Configuration configuration = project.getConfigurations().getByName(
-                configurationName);
-        task.dependsOn(configuration.getTaskDependencyFromProjectDependency(
-                useDependedOn, otherProjectTaskName));
-    }
-
-    /**
-     * Compute a version-less key representing the given coordinates.
-     * @param coordinates the coordinate
-     * @return the key.
-     */
-    @NonNull
-    private static String computeVersionLessCoordinateKey(@NonNull MavenCoordinates coordinates) {
-        StringBuilder sb = new StringBuilder(coordinates.getGroupId());
-        sb.append(':').append(coordinates.getArtifactId());
-        if (coordinates.getClassifier() != null) {
-            sb.append(':').append(coordinates.getClassifier());
-        }
-        return sb.toString();
     }
 }

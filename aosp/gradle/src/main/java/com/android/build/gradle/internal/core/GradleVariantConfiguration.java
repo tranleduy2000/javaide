@@ -56,21 +56,6 @@ public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildTy
         computeNdkConfig();
     }
 
-    /**
-     * Creates a {@link GradleVariantConfiguration} for a testing variant.
-     */
-    public GradleVariantConfiguration(
-            @Nullable VariantConfiguration testedConfig,
-            @NonNull CoreProductFlavor defaultConfig,
-            @NonNull SourceProvider defaultSourceProvider,
-            @NonNull CoreBuildType buildType,
-            @Nullable SourceProvider buildTypeSourceProvider,
-            @NonNull VariantType type,
-            @Nullable SigningConfig signingConfigOverride) {
-        super(defaultConfig, defaultSourceProvider, buildType, buildTypeSourceProvider, type,
-                testedConfig, signingConfigOverride);
-        computeNdkConfig();
-    }
 
     @NonNull
     @Override

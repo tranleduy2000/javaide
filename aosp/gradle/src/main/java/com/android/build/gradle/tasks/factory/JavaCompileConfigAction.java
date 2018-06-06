@@ -37,7 +37,6 @@ public class JavaCompileConfigAction implements TaskConfigAction<JavaCompile> {
 
     @Override
     public void execute(final JavaCompile javacTask) {
-        final BaseVariantData testedVariantData =null;
         scope.getVariantData().javacTask = javacTask;
 
         javacTask.setSource(scope.getVariantData().getJavaSources());

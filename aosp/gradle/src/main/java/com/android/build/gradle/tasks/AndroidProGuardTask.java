@@ -75,15 +75,6 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
     @Optional
     File mappingFile;
 
-    /**
-     * if this is a test related proguard task, this will point to tested application mapping file
-     * which can be absent in case the tested application did not request obfuscation.
-     */
-    @Nullable
-    @InputFile
-    @Optional
-    File testedAppMappingFile;
-
     File obfuscatedClassesJar;
 
     @Override
@@ -94,7 +85,6 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
 
     @Override
     public void applymapping(Object applyMapping) {
-        testedAppMappingFile = (File) applyMapping;
     }
 
     @Override
@@ -138,9 +128,6 @@ public class AndroidProGuardTask extends ProGuardTask implements FileSupplier, J
     public void doMinification() throws ParseException, IOException {
         // only set the tested application mapping file if it exists (it must at this point or that
         // means the tested application did not request obfuscation).
-        if (testedAppMappingFile != null && testedAppMappingFile.exists()) {
-            super.applymapping(testedAppMappingFile);
-        }
         super.proguard();
     }
 

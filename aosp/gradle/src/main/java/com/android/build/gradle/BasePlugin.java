@@ -284,7 +284,7 @@ public abstract class BasePlugin {
         // Unless TEST_SDK_DIR is set in which case this is unit tests and we don't return.
         // This is because project don't get evaluated in the unit test setup.
         // See AppPluginDslTest
-        if (!force && SdkHandler.sTestSdkFolder == null) {
+        if (!force) {
             return;
         }
 

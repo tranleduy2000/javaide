@@ -24,7 +24,6 @@ import com.android.builder.dependency.SymbolFileProvider;
 import com.android.builder.internal.ClassFieldImpl;
 import com.android.builder.internal.SymbolLoader;
 import com.android.builder.internal.SymbolWriter;
-import com.android.builder.internal.TestManifestGenerator;
 import com.android.builder.internal.compiler.AidlProcessor;
 import com.android.builder.internal.compiler.LeafFolderGatherer;
 import com.android.builder.internal.compiler.PreDexCache;
@@ -61,7 +60,6 @@ import com.android.ide.common.signing.KeytoolException;
 import com.android.manifmerger.ManifestMerger2;
 import com.android.manifmerger.MergingReport;
 import com.android.manifmerger.PlaceholderEncoder;
-import com.android.manifmerger.PlaceholderHandler;
 import com.android.manifmerger.XmlDocument;
 import com.android.sdklib.BuildToolInfo;
 import com.android.sdklib.IAndroidTarget;
@@ -115,7 +113,6 @@ import static com.google.common.base.Preconditions.checkState;
  * <p>
  * then build steps can be done with
  * {@link #mergeManifests(File, List, List, String, int, String, String, String, Integer, String, String, ManifestMerger2.MergeType, Map, File)}
- * {@link #processTestManifest(String, String, String, String, String, Boolean, Boolean, File, List, Map, File, File)}
  * {@link #processResources(AaptPackageProcessBuilder, boolean, ProcessOutputHandler)}
  * {@link #compileAllAidlFiles(List, File, File, List, DependencyFileProcessor, ProcessOutputHandler)}
  * {@link #convertByteCode(Collection, Collection, File, boolean, File, DexOptions, List, File, boolean, boolean, ProcessOutputHandler)}
@@ -266,31 +263,6 @@ public class AndroidBuilder {
             if (!manifestDependencies.isEmpty()) {
                 collectLibraries(manifestDependencies, manifestFiles);
             }
-        }
-    }
-
-    private static void generateTestManifest(
-            @NonNull String testApplicationId,
-            @Nullable String minSdkVersion,
-            @Nullable String targetSdkVersion,
-            @NonNull String testedApplicationId,
-            @NonNull String instrumentationRunner,
-            @NonNull Boolean handleProfiling,
-            @NonNull Boolean functionalTest,
-            @NonNull File outManifestLocation) {
-        TestManifestGenerator generator = new TestManifestGenerator(
-                outManifestLocation,
-                testApplicationId,
-                minSdkVersion,
-                targetSdkVersion,
-                testedApplicationId,
-                instrumentationRunner,
-                handleProfiling,
-                functionalTest);
-        try {
-            generator.generate();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -759,107 +731,6 @@ public class AndroidBuilder {
         try {
             Files.write(xmlDocument.prettyPrint(), out, Charsets.UTF_8);
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Creates the manifest for a test variant
-     *
-     * @param testApplicationId     the application id of the test application
-     * @param minSdkVersion         the minSdkVersion of the test application
-     * @param targetSdkVersion      the targetSdkVersion of the test application
-     * @param testedApplicationId   the application id of the tested application
-     * @param instrumentationRunner the name of the instrumentation runner
-     * @param handleProfiling       whether or not the Instrumentation object will turn profiling on and off
-     * @param functionalTest        whether or not the Instrumentation class should run as a functional test
-     * @param testManifestFile      optionally user provided AndroidManifest.xml for testing application
-     * @param libraries             the library dependency graph
-     * @param outManifest           the output location for the merged manifest
-     * @see VariantConfiguration#getApplicationId()
-     * @see VariantConfiguration#getTestedConfig()
-     * @see VariantConfiguration#getMinSdkVersion()
-     * @see VariantConfiguration#getTestedApplicationId()
-     * @see VariantConfiguration#getInstrumentationRunner()
-     * @see VariantConfiguration#getHandleProfiling()
-     * @see VariantConfiguration#getFunctionalTest()
-     * @see VariantConfiguration#getDirectLibraries()
-     */
-    public void processTestManifest(
-            @NonNull String testApplicationId,
-            @Nullable String minSdkVersion,
-            @Nullable String targetSdkVersion,
-            @NonNull String testedApplicationId,
-            @NonNull String instrumentationRunner,
-            @NonNull Boolean handleProfiling,
-            @NonNull Boolean functionalTest,
-            @Nullable File testManifestFile,
-            @NonNull List<? extends ManifestDependency> libraries,
-            @NonNull Map<String, Object> manifestPlaceholders,
-            @NonNull File outManifest,
-            @NonNull File tmpDir) {
-        checkNotNull(testApplicationId, "testApplicationId cannot be null.");
-        checkNotNull(testedApplicationId, "testedApplicationId cannot be null.");
-        checkNotNull(instrumentationRunner, "instrumentationRunner cannot be null.");
-        checkNotNull(handleProfiling, "handleProfiling cannot be null.");
-        checkNotNull(functionalTest, "functionalTest cannot be null.");
-        checkNotNull(libraries, "libraries cannot be null.");
-        checkNotNull(outManifest, "outManifestLocation cannot be null.");
-
-        try {
-            tmpDir.mkdirs();
-            File generatedTestManifest = libraries.isEmpty() && testManifestFile == null
-                    ? outManifest : File.createTempFile("manifestMerger", ".xml", tmpDir);
-
-            mLogger.verbose("Generating in %1$s", generatedTestManifest.getAbsolutePath());
-            generateTestManifest(
-                    testApplicationId,
-                    minSdkVersion,
-                    targetSdkVersion.equals("-1") ? null : targetSdkVersion,
-                    testedApplicationId,
-                    instrumentationRunner,
-                    handleProfiling,
-                    functionalTest,
-                    generatedTestManifest);
-
-            if (testManifestFile != null) {
-                File mergedTestManifest = File.createTempFile("manifestMerger", ".xml", tmpDir);
-                mLogger.verbose("Merging user supplied manifest in %1$s",
-                        generatedTestManifest.getAbsolutePath());
-                Invoker invoker = ManifestMerger2.newMerger(
-                        testManifestFile, mLogger, ManifestMerger2.MergeType.APPLICATION)
-                        .setOverride(SystemProperty.PACKAGE, testApplicationId)
-                        .setPlaceHolderValues(manifestPlaceholders)
-                        .setPlaceHolderValue(PlaceholderHandler.INSTRUMENTATION_RUNNER,
-                                instrumentationRunner)
-                        .addLibraryManifests(generatedTestManifest);
-                if (minSdkVersion != null) {
-                    invoker.setOverride(SystemProperty.MIN_SDK_VERSION, minSdkVersion);
-                }
-                if (!targetSdkVersion.equals("-1")) {
-                    invoker.setOverride(SystemProperty.TARGET_SDK_VERSION, targetSdkVersion);
-                }
-                MergingReport mergingReport = invoker.merge();
-                if (libraries.isEmpty()) {
-                    handleMergingResult(mergingReport, outManifest);
-                } else {
-                    handleMergingResult(mergingReport, mergedTestManifest);
-                    generatedTestManifest = mergedTestManifest;
-                }
-            }
-
-            if (!libraries.isEmpty()) {
-                MergingReport mergingReport = ManifestMerger2.newMerger(
-                        generatedTestManifest, mLogger, ManifestMerger2.MergeType.APPLICATION)
-                        .withFeatures(Invoker.Feature.REMOVE_TOOLS_DECLARATIONS)
-                        .setOverride(SystemProperty.PACKAGE, testApplicationId)
-                        .addLibraryManifests(collectLibraries(libraries))
-                        .setPlaceHolderValues(manifestPlaceholders)
-                        .merge();
-
-                handleMergingResult(mergingReport, outManifest);
-            }
-        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

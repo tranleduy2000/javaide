@@ -334,9 +334,8 @@ public abstract class TaskManager {
     }
 
     public void resolveDependencies(
-            @NonNull VariantDependencies variantDeps,
-            @Nullable String testedProjectPath) {
-        dependencyManager.resolveDependencies(variantDeps, testedProjectPath);
+            @NonNull VariantDependencies variantDeps) {
+        dependencyManager.resolveDependencies(variantDeps);
     }
 
     /**
@@ -349,24 +348,6 @@ public abstract class TaskManager {
             public void execute(Task uninstallAllTask) {
                 uninstallAllTask.setDescription("Uninstall all applications.");
                 uninstallAllTask.setGroup(INSTALL_GROUP);
-            }
-        });
-
-        tasks.create(DEVICE_CHECK, new Action<Task>() {
-            @Override
-            public void execute(Task deviceCheckTask) {
-                deviceCheckTask.setDescription(
-                        "Runs all device checks using Device Providers and Test Servers.");
-                deviceCheckTask.setGroup(JavaBasePlugin.VERIFICATION_GROUP);
-            }
-        });
-
-        tasks.create(CONNECTED_CHECK, new Action<Task>() {
-            @Override
-            public void execute(Task connectedCheckTask) {
-                connectedCheckTask.setDescription(
-                        "Runs all device checks on currently connected devices.");
-                connectedCheckTask.setGroup(JavaBasePlugin.VERIFICATION_GROUP);
             }
         });
 

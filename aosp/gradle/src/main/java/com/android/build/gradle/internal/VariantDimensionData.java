@@ -17,9 +17,7 @@
 package com.android.build.gradle.internal;
 
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.api.DefaultAndroidSourceSet;
-import com.android.builder.core.VariantType;
 
 import org.gradle.api.Project;
 
@@ -51,16 +49,4 @@ public class VariantDimensionData {
         return sourceSet;
     }
 
-    @Nullable
-    public ConfigurationProvider getTestConfigurationProvider(@NonNull VariantType type) {
-        switch (type) {
-            default:
-                throw unknownTestType(type);
-        }
-    }
-
-    private static RuntimeException unknownTestType(VariantType type) {
-        throw new IllegalArgumentException(
-                String.format("Unknown test variant type %s", type));
-    }
 }

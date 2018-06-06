@@ -500,9 +500,8 @@ public class VariantManager implements VariantModel {
                     @Override
                     public Void call() {
                         taskManager.resolveDependencies(
-                                variantDep,
-                                /*testedVariantDeps*/
-                                null);
+                                variantDep
+                        );
                         return null;
                     }
                 }, new Recorder.Property(SpanRecorders.VARIANT, variantConfig.getFullName()));

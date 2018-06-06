@@ -33,7 +33,6 @@ import org.gradle.api.logging.Logger;
 import org.gradle.internal.reflect.Instantiator;
 
 import java.util.Collection;
-import java.util.Map;
 
 import static com.android.build.gradle.tasks.NdkCompile.USE_DEPRECATED_NDK;
 
@@ -151,38 +150,6 @@ public class ProductFlavor extends DefaultProductFlavor implements CoreProductFl
      */
     public void maxSdkVersion(int targetSdkVersion) {
         setMaxSdkVersion(targetSdkVersion);
-    }
-
-    /**
-     * Adds a custom argument to the test instrumentation runner, e.g:
-     * <p>
-     * <p><pre>testInstrumentationRunnerArgument "size", "medium"</pre>
-     * <p>
-     * <p>Test runner arguments can also be specified from the command line:
-     * <p>
-     * <p><pre>
-     * INSTRUMENTATION_TEST_RUNNER_ARGS=size=medium,foo=bar ./gradlew connectedAndroidTest
-     * ./gradlew connectedAndroidTest -Pcom.android.tools.instrumentationTestRunnerArgs=size=medium,foo=bar
-     * </pre>
-     */
-    public void testInstrumentationRunnerArgument(@NonNull String key, @NonNull String value) {
-        getTestInstrumentationRunnerArguments().put(key, value);
-    }
-
-    /**
-     * Adds custom arguments to the test instrumentation runner, e.g:
-     * <p>
-     * <p><pre>testInstrumentationRunnerArguments(size: "medium", foo: "bar")</pre>
-     * <p>
-     * <p>Test runner arguments can also be specified from the command line:
-     * <p>
-     * <p><pre>
-     * INSTRUMENTATION_TEST_RUNNER_ARGS=size=medium,foo=bar ./gradlew connectedAndroidTest
-     * ./gradlew connectedAndroidTest -Pcom.android.tools.instrumentationTestRunnerArgs=size=medium,foo=bar
-     * </pre>
-     */
-    public void testInstrumentationRunnerArguments(@NonNull Map<String, String> args) {
-        getTestInstrumentationRunnerArguments().putAll(args);
     }
 
     /**
@@ -310,27 +277,6 @@ public class ProductFlavor extends DefaultProductFlavor implements CoreProductFl
         for (Object proguardFile : proguardFileIterable) {
             getProguardFiles().add(project.file(proguardFile));
         }
-    }
-
-    /**
-     * Specifies a proguard rule file to be included in the published AAR.
-     * <p>
-     * <p>This proguard rule file will then be used by any application project that consume the AAR
-     * (if proguard is enabled).
-     * <p>
-     * <p>This allows AAR to specify shrinking or obfuscation exclude rules.
-     * <p>
-     * <p>This is only valid for Library project. This is ignored in Application project.
-     */
-    public void testProguardFile(@NonNull Object proguardFile) {
-        getTestProguardFiles().add(project.file(proguardFile));
-    }
-
-    /**
-     * Adds new ProGuard configuration files.
-     */
-    public void testProguardFiles(Object... proguardFileArray) {
-        getTestProguardFiles().addAll(project.files(proguardFileArray).getFiles());
     }
 
     public void consumerProguardFiles(Object... proguardFileArray) {

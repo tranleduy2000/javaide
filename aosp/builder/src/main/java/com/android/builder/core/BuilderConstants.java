@@ -41,7 +41,4 @@ public class BuilderConstants {
     public static final String FD_FLAVORS = "flavors";
     public static final String FD_FLAVORS_ALL = "all";
 
-    public static final String ANDROID_WEAR_MICRO_APK = "android_wear_micro_apk";
-
-    public static final String ANDROID_WEAR = "com.google.android.wearable.beta.app";
 }

@@ -92,10 +92,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static com.android.SdkConstants.DOT_DEX;
-import static com.android.SdkConstants.DOT_XML;
-import static com.android.SdkConstants.FD_RES_XML;
-import static com.android.builder.core.BuilderConstants.ANDROID_WEAR;
-import static com.android.builder.core.BuilderConstants.ANDROID_WEAR_MICRO_APK;
 import static com.android.manifmerger.ManifestMerger2.Invoker;
 import static com.android.manifmerger.ManifestMerger2.SystemProperty;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -263,31 +259,6 @@ public class AndroidBuilder {
                 collectLibraries(manifestDependencies, manifestFiles);
             }
         }
-    }
-
-    public static void generateApkDataEntryInManifest(
-            int minSdkVersion,
-            int targetSdkVersion,
-            @NonNull File manifestFile)
-            throws InterruptedException, LoggedErrorException, IOException {
-
-        StringBuilder content = new StringBuilder();
-        content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
-                .append("<manifest package=\"\" xmlns:android=\"http://schemas.android.com/apk/res/android\">\n")
-                .append("            <uses-sdk android:minSdkVersion=\"")
-                .append(minSdkVersion).append("\"");
-        if (targetSdkVersion != -1) {
-            content.append(" android:targetSdkVersion=\"").append(targetSdkVersion).append("\"");
-        }
-        content.append("/>\n");
-        content.append("    <application>\n")
-                .append("        <meta-data android:name=\"" + ANDROID_WEAR + "\"\n")
-                .append("                   android:resource=\"@xml/" + ANDROID_WEAR_MICRO_APK)
-                .append("\" />\n")
-                .append("   </application>\n")
-                .append("</manifest>\n");
-
-        Files.write(content, manifestFile, Charsets.UTF_8);
     }
 
     /**
@@ -698,31 +669,6 @@ public class AndroidBuilder {
         }
     }
 
-    private void handleMergingResult(@NonNull MergingReport mergingReport, @NonNull File outFile) {
-        switch (mergingReport.getResult()) {
-            case WARNING:
-                mergingReport.log(mLogger);
-                // fall through since these are just warnings.
-            case SUCCESS:
-                XmlDocument xmlDocument = mergingReport.getMergedDocument().get();
-                try {
-                    String annotatedDocument = mergingReport.getActions().blame(xmlDocument);
-                    mLogger.verbose(annotatedDocument);
-                } catch (Exception e) {
-                    mLogger.error(e, "cannot print resulting xml");
-                }
-                save(xmlDocument, outFile);
-                mLogger.info("Merged manifest saved to " + outFile);
-                break;
-            case ERROR:
-                mergingReport.log(mLogger);
-                throw new RuntimeException(mergingReport.getReportString());
-            default:
-                throw new RuntimeException("Unhandled result type : "
-                        + mergingReport.getResult());
-        }
-    }
-
     /**
      * Process the resources and generate R.java and/or the packaged resources.
      *
@@ -830,49 +776,6 @@ public class AndroidBuilder {
                 writer.write();
             }
         }
-    }
-
-    public void generateApkData(
-            @NonNull File apkFile,
-            @NonNull File outResFolder,
-            @NonNull String mainPkgName,
-            @NonNull String resName) throws ProcessException, IOException {
-
-        // need to run aapt to get apk information
-        BuildToolInfo buildToolInfo = mTargetInfo.getBuildTools();
-
-        String aapt = buildToolInfo.getPath(BuildToolInfo.PathId.AAPT);
-        if (aapt == null) {
-            throw new IllegalStateException(
-                    "Unable to get aapt location from Build Tools " + buildToolInfo.getRevision());
-        }
-
-        ApkInfoParser parser = new ApkInfoParser(new File(aapt), mProcessExecutor);
-        ApkInfoParser.ApkInfo apkInfo = parser.parseApk(apkFile);
-
-        if (!apkInfo.getPackageName().equals(mainPkgName)) {
-            throw new RuntimeException("The main and the micro apps do not have the same package name.");
-        }
-
-        String content = String.format(
-                "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                        "<wearableApp package=\"%1$s\">\n" +
-                        "    <versionCode>%2$s</versionCode>\n" +
-                        "    <versionName>%3$s</versionName>\n" +
-                        "    <rawPathResId>%4$s</rawPathResId>\n" +
-                        "</wearableApp>",
-                apkInfo.getPackageName(),
-                apkInfo.getVersionCode(),
-                apkInfo.getVersionName(),
-                resName);
-
-        // xml folder
-        File resXmlFile = new File(outResFolder, FD_RES_XML);
-        resXmlFile.mkdirs();
-
-        Files.write(content,
-                new File(resXmlFile, ANDROID_WEAR_MICRO_APK + DOT_XML),
-                Charsets.UTF_8);
     }
 
     /**

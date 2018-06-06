@@ -107,13 +107,7 @@ public class PlatformToolPackage extends FullRevisionPackage {
                 // Package-tools revision 17+ matches sdk-repository-8 and above
                 // and only requires adb (other tools moved to the build-tool packages.)
                 String[] expected = new String[] { SdkConstants.FN_ADB };
-                if (ptp.getRevision().getMajor() < 17) {
-                    // Platform-tools before revision 17 should have adb, aapt, aidl and dx.
-                    expected = new String[] { SdkConstants.FN_ADB,
-                                              SdkConstants.FN_AAPT,
-                                              SdkConstants.FN_AIDL,
-                                              SdkConstants.FN_DX };
-                }
+                // Platform-tools before revision 17 should have adb, aapt, aidl and dx.
 
                 for (String name : expected) {
                     if (!names.contains(name)) {

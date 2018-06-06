@@ -89,6 +89,7 @@ import com.android.builder.dependency.LibraryDependency;
 import com.android.builder.sdk.TargetInfo;
 import com.android.builder.signing.SignedJarBuilder;
 import com.android.utils.StringHelper;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -435,7 +436,7 @@ public abstract class TaskManager {
                 scope.getResourceGenTask());
         scope.setMergeResourcesTask(mergeResourcesTask);
         scope.setResourceOutputDir(
-                Objects.firstNonNull(outputLocation, scope.getDefaultMergeResourcesOutputDir()));
+                MoreObjects.firstNonNull(outputLocation, scope.getDefaultMergeResourcesOutputDir()));
         return scope.getMergeResourcesTask();
     }
 

@@ -109,12 +109,9 @@ public class MergeResources extends IncrementalTask {
 
     private PngCruncher getCruncher() {
         if (getUseNewCruncher()) {
-            if (getBuilder().getTargetInfo().getBuildTools().getRevision().getMajor() >= 22) {
-                return QueuedCruncher.Builder.INSTANCE.newCruncher(
-                        getBuilder().getTargetInfo().getBuildTools().getPath(
-                                BuildToolInfo.PathId.AAPT), getILogger());
-            }
-            getLogger().info("New PNG cruncher will be enabled with build tools 22 and above.");
+            return QueuedCruncher.Builder.INSTANCE.newCruncher(
+                    getBuilder().getTargetInfo().getBuildTools().getPath(
+                            BuildToolInfo.PathId.AAPT), getILogger());
         }
         return getBuilder().getAaptCruncher(new LoggedProcessOutputHandler(getBuilder().getLogger()));
     }

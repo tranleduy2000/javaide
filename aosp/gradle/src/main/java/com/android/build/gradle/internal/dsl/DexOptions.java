@@ -67,15 +67,6 @@ public class DexOptions implements com.android.builder.core.DexOptions {
         isJumboModeFlag = flag;
     }
 
-    /**
-     * Enable jumbo mode in dx (--force-jumbo).
-     */
-    @Override
-    @Input
-    public boolean getJumboMode() {
-        return isJumboModeFlag;
-    }
-
     public void setJavaMaxHeapSize(String theJavaMaxHeapSize) {
         if (theJavaMaxHeapSize.matches("\\d+[kKmMgGtT]?")) {
             javaMaxHeapSize = theJavaMaxHeapSize;

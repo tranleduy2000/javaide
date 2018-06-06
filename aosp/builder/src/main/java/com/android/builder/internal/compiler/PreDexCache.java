@@ -109,8 +109,7 @@ public class PreDexCache extends PreProcessCache<DexKey> {
 
         DexKey itemKey = DexKey.of(
                 inputFile,
-                buildToolInfo.getRevision(),
-                dexOptions.getJumboMode());
+                buildToolInfo.getRevision());
 
         Pair<Item, Boolean> pair = getItem(itemKey);
         Item item = pair.getFirst();

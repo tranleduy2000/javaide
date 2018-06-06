@@ -232,10 +232,6 @@ public abstract class TaskManager {
                 new Action<AndroidJarTask>() {
                     @Override
                     public void execute(AndroidJarTask jarTask) {
-                        //        AndroidJarTask jarTask = project.tasks.create(
-                        //                "jar${config.fullName.capitalize()}Classes",
-                        //                AndroidJarTask)
-
                         jarTask.setArchiveName("classes.jar");
                         jarTask.setDestinationDir(new File(
                                 scope.getGlobalScope().getIntermediatesDir(),
@@ -248,30 +244,17 @@ public abstract class TaskManager {
                 });
     }
 
-    public static void optionalDependsOn(@NonNull Task main, Task... dependencies) {
-        for (Task dependency : dependencies) {
-            if (dependency != null) {
-                main.dependsOn(dependency);
-            }
-
-        }
-
-    }
-
     public static void optionalDependsOn(@NonNull Task main, @NonNull List<?> dependencies) {
         for (Object dependency : dependencies) {
             if (dependency != null) {
                 main.dependsOn(dependency);
             }
-
         }
-
     }
 
     @NonNull
     private static List<ManifestDependencyImpl> getManifestDependencies(
             List<LibraryDependency> libraries) {
-
         List<ManifestDependencyImpl> list = Lists.newArrayListWithCapacity(libraries.size());
 
         for (LibraryDependency lib : libraries) {
@@ -1430,6 +1413,7 @@ public abstract class TaskManager {
                         variantData.sourceGenTask = task;
                     }
                 }));
+
         // and resGenTask
         scope.setResourceGenTask(androidTasks.create(tasks,
                 scope.getTaskName("generate", "Resources"),
@@ -1439,7 +1423,6 @@ public abstract class TaskManager {
                     public void execute(Task task) {
                         variantData.resourceGenTask = task;
                     }
-
                 }));
 
         scope.setAssetGenTask(androidTasks.create(tasks,

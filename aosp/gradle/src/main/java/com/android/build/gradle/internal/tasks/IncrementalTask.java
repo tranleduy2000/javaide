@@ -17,14 +17,11 @@ package com.android.build.gradle.internal.tasks;
 import com.android.ide.common.res2.FileStatus;
 import com.android.ide.common.res2.SourceSet;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
-import org.gradle.api.Action;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
-import org.gradle.api.tasks.incremental.InputFileDetails;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +52,6 @@ public abstract class IncrementalTask extends BaseTask {
 
     /**
      * Actual task action. This is called when a full run is needed, which is always the case if
-     * {@link #isIncremental()} returns false.
      *
      */
     protected abstract void doFullTaskAction() throws IOException;
@@ -76,34 +72,7 @@ public abstract class IncrementalTask extends BaseTask {
      */
     @TaskAction
     void taskAction(IncrementalTaskInputs inputs) throws IOException {
-        if (!isIncremental()) {
-            doFullTaskAction();
-            return;
-        }
-
-        if (!inputs.isIncremental()) {
-            getProject().getLogger().info("Unable do incremental execution: full task run");
-            doFullTaskAction();
-            return;
-        }
-
-        final Map<File, FileStatus> changedInputs = Maps.newHashMap();
-        inputs.outOfDate(new Action<InputFileDetails>() {
-            @Override
-            public void execute(InputFileDetails change) {
-                changedInputs.put(change.getFile(), change.isAdded() ? FileStatus.NEW : FileStatus.CHANGED);
-            }
-        });
-
-        inputs.removed(new Action<InputFileDetails>() {
-            @Override
-            public void execute(InputFileDetails change) {
-
-                changedInputs.put(change.getFile(), FileStatus.REMOVED);
-            }
-        });
-
-        doIncrementalTaskAction(changedInputs);
+        doFullTaskAction();
     }
 
     public static List<File> flattenSourceSets(List<? extends SourceSet> resourceSets) {

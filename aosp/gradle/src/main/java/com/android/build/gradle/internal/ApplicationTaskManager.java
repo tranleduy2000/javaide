@@ -24,18 +24,10 @@ import com.android.build.gradle.internal.variant.ApplicationVariantData;
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.build.gradle.internal.variant.BaseVariantOutputData;
 import com.android.builder.core.AndroidBuilder;
-import com.android.builder.profile.ExecutionType;
-import com.android.builder.profile.Recorder;
-import com.android.builder.profile.ThreadRecorder;
 
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
-
-import java.io.File;
-import java.util.List;
-import java.util.Set;
 
 /**
  * TaskManager for creating tasks in an Android application project.
@@ -56,21 +48,16 @@ public class ApplicationTaskManager extends TaskManager {
     public void createTasksForVariantData(
             @NonNull final TaskFactory tasks,
             @NonNull final BaseVariantData<? extends BaseVariantOutputData> variantData) {
-        assert variantData instanceof ApplicationVariantData;
-        final ApplicationVariantData appVariantData = (ApplicationVariantData) variantData;
-
         final VariantScope variantScope = variantData.getScope();
 
         createAnchorTasks(tasks, variantScope);
         createCheckManifestTask(tasks, variantScope);
-
 
         // Add a task to process the manifest(s)
         createMergeAppManifestsTask(tasks, variantScope);
 
         // Add a task to create the res values
         createGenerateResValuesTask(tasks, variantScope);
-
 
         // Add a task to merge the resource folders
         createMergeResourcesTask(tasks, variantScope);
@@ -82,21 +69,17 @@ public class ApplicationTaskManager extends TaskManager {
         // Add a task to create the BuildConfig class
         createBuildConfigTask(tasks, variantScope);
 
-
         // Add a task to process the Android Resources and generate source files
-        createProcessResTask(tasks, variantScope, true );
+        createProcessResTask(tasks, variantScope, true);
 
         // Add a task to process the java resources
         createProcessJavaResTasks(tasks, variantScope);
-
 
         createAidlTask(tasks, variantScope);
 
 
         // Add a compile task
-
         AndroidTask<JavaCompile> javacTask = createJavacTask(tasks, variantScope);
-
         setJavaCompilerTask(javacTask, tasks, variantScope);
         createJarTask(tasks, variantScope);
         createPostCompilationTasks(tasks, variantScope);
@@ -104,14 +87,7 @@ public class ApplicationTaskManager extends TaskManager {
 
         // Add NDK tasks
         if (isNdkTaskNeeded) {
-            ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_NDK_TASK,
-                    new Recorder.Block<Void>() {
-                        @Override
-                        public Void call() {
-                            createNdkTasks(variantScope);
-                            return null;
-                        }
-                    });
+            createNdkTasks(variantScope);
         } else {
             if (variantData.compileTask != null) {
                 variantData.compileTask.dependsOn(getNdkBuildable(variantData));
@@ -127,35 +103,14 @@ public class ApplicationTaskManager extends TaskManager {
                 throw new RuntimeException("Pure splits can only be used with buildtools 21 and later");
             }
 
-            ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_SPLIT_TASK,
-                    new Recorder.Block<Void>() {
-                        @Override
-                        public Void call() {
-                            createSplitResourcesTasks(variantScope);
-                            createSplitAbiTasks(variantScope);
-                            return null;
-                        }
-                    });
+            createSplitResourcesTasks(variantScope);
+            createSplitAbiTasks(variantScope);
         }
 
-        ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_PACKAGING_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        createPackagingTask(tasks, variantScope, true /*publishApk*/);
-                        return null;
-                    }
-                });
+        createPackagingTask(tasks, variantScope, true /*publishApk*/);
 
         // create the lint tasks.
-        ThreadRecorder.get().record(ExecutionType.APP_TASK_MANAGER_CREATE_LINT_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() {
-                        createLintTasks(tasks, variantScope);
-                        return null;
-                    }
-                });
+        createLintTasks(tasks, variantScope);
     }
 
 }

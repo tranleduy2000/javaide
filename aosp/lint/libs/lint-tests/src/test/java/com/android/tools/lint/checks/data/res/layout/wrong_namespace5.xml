@@ -1,0 +1,11 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:noturi="tp://schems.android.com/apk/res/com.my.package"
+    xmlns:typo1="http://schems.android.com/apk/res/com.my.package"
+    xmlns:typo2="http://schems.android.comm/apk/res/com.my.package"
+    xmlns:ok="http://foo.bar/res/unrelated"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+</RelativeLayout>

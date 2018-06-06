@@ -1,0 +1,9 @@
+package android.support.wearable.watchface;
+
+public class CanvasWatchFaceService extends WatchFaceService {
+    public static class Engine extends WatchFaceService.Engine {
+        public void onVisibilityChanged(boolean visible) {
+            super.onVisibilityChanged(visible);
+        }
+    }
+}

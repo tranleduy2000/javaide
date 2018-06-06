@@ -30,6 +30,7 @@ public interface VariantFilter {
 
     /**
      * Sets whether or not to ignore this particular variant. Default is false.
+     *
      * @param ignore whether to ignore the variant
      */
     void setIgnore(boolean ignore);

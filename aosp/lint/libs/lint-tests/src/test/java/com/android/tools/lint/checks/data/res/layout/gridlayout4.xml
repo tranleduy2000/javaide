@@ -1,0 +1,24 @@
+<android.support.v7.widget.GridLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp" android:background="@color/white"
+        android:orientation="horizontal">
+
+    <!-- Need maxLines, otherwise height is unbounded -->
+    <TextView
+            android:layout_width="0dp"
+            android:background="@color/accent_material_light"
+            android:layout_columnWeight="2"
+            android:layout_gravity="fill"
+            android:maxLines="3"
+            android:text="column 1, weight 2"/>
+
+    <TextView
+            android:layout_width="0dp"
+            android:background="@color/ripple_material_light"
+            android:layout_gravity="fill"
+            android:minLines="3"
+            android:layout_columnWeight="1"
+            android:text="column 2, weight 1"/>
+</android.support.v7.widget.GridLayout>

@@ -1,0 +1,5 @@
+<plurals name="in_num_minutes">
+    <item quantity="one">через %d минуту</item>
+    <item quantity="few">через %d минуты</item>
+    <item quantity="many">через %d минут</item>
+</plurals>

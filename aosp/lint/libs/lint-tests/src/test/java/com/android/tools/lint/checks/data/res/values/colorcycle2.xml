@@ -1,0 +1,5 @@
+<resources>
+    <color name="test1">@color/test2</color>
+    <color name="unrelated1">@color/test2b</color>
+    <color name="unrelated2">#ff0000</color>
+</resources>

@@ -1,0 +1,21 @@
+package test.pkg;
+
+import android.annotation.TargetApi;
+import android.graphics.Bitmap;
+import android.os.Build;
+
+public class TargetApiTest {
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public static String getCompressFormatMimeType(Bitmap.CompressFormat format) {
+        switch (format) {
+            case JPEG:
+                return "image/jpeg";
+            case PNG:
+                return "image/png";
+            case WEBP:
+                return "image/webp";
+        }
+        // Unreachable
+        throw new IllegalArgumentException("Unexpected CompressFormat: " + format);
+    }
+}

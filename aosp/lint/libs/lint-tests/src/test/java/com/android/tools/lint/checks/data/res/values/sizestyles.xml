@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="WidthAndHeight" parent="@android:attr/textAppearanceMedium">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="Width" parent="@android:attr/textAppearanceMedium">
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="MyStyle" parent="@style/WidthAndHeight"></style>
+    <style name="MyStyle.Big"></style>
+    <style name="MyOtherStyle" parent="@style/MyStyle.Big"></style>
+
+</resources>

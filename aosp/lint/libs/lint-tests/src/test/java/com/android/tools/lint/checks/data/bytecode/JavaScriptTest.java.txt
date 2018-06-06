@@ -1,0 +1,34 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.webkit.WebView;
+
+public class JavaScriptTest {
+	public void test(WebView webview) {
+		webview.addJavascriptInterface(new AnnotatedObject(), "myobj");
+		webview.addJavascriptInterface(new InheritsFromAnnotated(), "myobj");
+		webview.addJavascriptInterface(new NonAnnotatedObject(), "myobj");
+
+		Object o = new NonAnnotatedObject();
+		webview.addJavascriptInterface(o, "myobj");
+		o = new InheritsFromAnnotated();
+		webview.addJavascriptInterface(o, "myobj");
+	}
+
+	public void test(WebView webview, AnnotatedObject object1, NonAnnotatedObject object2) {
+		webview.addJavascriptInterface(object1, "myobj");
+		webview.addJavascriptInterface(object2, "myobj");
+	}
+
+	@SuppressLint("JavascriptInterface")
+	public void testSuppressed(WebView webview) {
+		webview.addJavascriptInterface(new NonAnnotatedObject(), "myobj");
+	}
+
+	public void testLaterReassignment(WebView webview) {
+		Object o = new NonAnnotatedObject();
+		Object t = o;
+		webview.addJavascriptInterface(t, "myobj");
+		o = new AnnotatedObject();
+	}
+}

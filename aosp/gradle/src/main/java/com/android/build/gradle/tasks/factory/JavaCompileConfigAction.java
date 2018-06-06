@@ -4,7 +4,6 @@ import com.android.build.gradle.internal.CompileOptions;
 import com.android.build.gradle.internal.scope.ConventionMappingHelper;
 import com.android.build.gradle.internal.scope.TaskConfigAction;
 import com.android.build.gradle.internal.scope.VariantScope;
-import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.google.common.base.Joiner;
 
 import org.gradle.api.Project;

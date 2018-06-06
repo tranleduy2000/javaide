@@ -1,0 +1,15 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.widget.Button;
+
+/** Local activity */
+public abstract class Intermediate extends Activity {
+
+	/** Local Custom view */
+	public abstract static class IntermediateCustomV extends Button {
+		public IntermediateCustomV() {
+			super(null);
+		}
+	}
+}

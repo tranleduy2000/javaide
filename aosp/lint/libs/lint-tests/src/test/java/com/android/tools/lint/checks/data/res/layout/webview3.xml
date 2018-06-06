@@ -1,0 +1,13 @@
+<!-- Note the lack of explicit 'layout_height' on root layout; it comes from the app's theme -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:orientation="vertical">
+
+    <!-- other views can go here -->
+
+    <WebView
+      android:id="@+id/webview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+
+</LinearLayout>

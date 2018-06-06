@@ -1,0 +1,30 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.os.Build;
+
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
+@SuppressWarnings({ "unused", "javadoc" })
+@SuppressLint("SimpleDateFormat")
+public class ApiCallTest12 {
+	public void test() {
+		// Normal SimpleDateFormat calls
+		new SimpleDateFormat();
+		new SimpleDateFormat("yyyy-MM-dd");
+		new SimpleDateFormat("yyyy-MM-dd", DateFormatSymbols.getInstance());
+		new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+		new SimpleDateFormat("MMMM", Locale.US);
+
+		// Flag format strings requiring API 9
+		new SimpleDateFormat("yyyy-MM-dd LL", Locale.US);
+
+		SimpleDateFormat format = new SimpleDateFormat("cc yyyy-MM-dd");
+
+		// Escaped text
+		new SimpleDateFormat("MM-dd 'My Location'", Locale.US);
+	}
+}

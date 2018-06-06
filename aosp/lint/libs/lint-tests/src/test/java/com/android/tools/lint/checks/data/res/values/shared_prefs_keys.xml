@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_key_assigned_bluetooth_device_name">Device Name</string>
+    <string name="pref_key_assigned_bluetooth_device_address">Device Address %1$s %2$s</string>
+</resources>
+

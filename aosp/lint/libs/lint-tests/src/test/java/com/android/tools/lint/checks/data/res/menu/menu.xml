@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/item1"
+        android:icon="@drawable/icon1"
+        android:title="My title 1">
+    </item>
+    <item
+        android:id="@+id/item2"
+        android:icon="@drawable/icon2"
+        android:showAsAction="ifRoom"
+        android:title="My title 2">
+    </item>
+
+</menu>

@@ -1,0 +1,15 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageInfo;
+
+public interface Mock {
+    PackageInfo getPackageInfo(String package, int flags);
+}
+
+public class GetSignaturesNotPackageManagerTest extends Activity {
+    public void passLintCheck(Mock mock) {
+        mock.getPackageInfo("some.pkg", PackageManager.GET_SIGNATURES);
+    }
+}

@@ -1,0 +1,28 @@
+package test.pkg;
+
+import android.content.ContentProviderClient;
+import android.content.ContentResolver;
+
+public class ContentProviderClientTest {
+    public void error1(ContentResolver resolver) {
+        ContentProviderClient client = resolver.acquireContentProviderClient("test"); // Warn
+    }
+
+    public void ok1(ContentResolver resolver) {
+        ContentProviderClient client = resolver.acquireContentProviderClient("test"); // OK
+        client.release();
+    }
+
+    public void ok2(ContentResolver resolver) {
+        ContentProviderClient client = resolver.acquireContentProviderClient("test"); // OK
+        unknown(client);
+    }
+
+    public ContentProviderClient ok3(ContentResolver resolver) {
+        ContentProviderClient client = resolver.acquireContentProviderClient("test"); // OK
+        return client;
+    }
+
+    private void unknown(ContentProviderClient client) {
+    }
+}

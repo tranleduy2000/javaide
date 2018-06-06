@@ -1,0 +1,188 @@
+package test.pkg;
+
+import android.content.Context;
+import android.view.MotionEvent;
+import android.view.View;
+
+public class ClickableViewAccessibilityTest {
+
+    // Fails because should also implement performClick.
+    private static class ViewOverridesOnTouchEventButNotPerformClick extends View {
+
+        public ViewOverridesOnTouchEventButNotPerformClick(Context context) {
+            super(context);
+        }
+
+        public boolean onTouchEvent(MotionEvent event) {
+            return false;
+        }
+    }
+
+    // Fails because should call performClick.
+    private static class ViewDoesNotCallPerformClick extends View {
+
+        public ViewDoesNotCallPerformClick(Context context) {
+            super(context);
+        }
+
+        public boolean onTouchEvent(MotionEvent event) {
+            return false;
+        }
+
+        public boolean performClick() {
+            return super.performClick();
+        }
+    }
+
+    // Fails because performClick should call super.performClick.
+    private static class PerformClickDoesNotCallSuper extends View {
+
+        public PerformClickDoesNotCallSuper(Context context) {
+            super(context);
+        }
+
+        public boolean performClick() {
+            return false;
+        }
+    }
+
+    // Valid view.
+    private static class ValidView extends View {
+
+        public ValidView(Context context) {
+            super(context);
+        }
+
+        public boolean onTouchEvent(MotionEvent event) {
+            performClick();
+            return false;
+        }
+
+        public boolean performClick() {
+            return super.performClick();
+        }
+    }
+
+    // Okay because it's not actually a view subclass.
+    private static class NotAView {
+
+        public boolean onTouchEvent(MotionEvent event) {
+            return false;
+        }
+
+        public void setOnTouchListener(View.OnTouchListener onTouchListener) { }
+    }
+
+    // Should fail because it's a view subclass. This tests that we can detect Views that are
+    // not just direct sub-children.
+    private static class ViewSubclass extends ValidView {
+
+        public ViewSubclass(Context context) {
+            super(context);
+        }
+
+        public boolean performClick() {
+            return false;
+        }
+    }
+
+    // Okay because it's declaring onTouchEvent with a different signature.
+    private static class ViewWithDifferentOnTouchEvent extends View {
+
+        public ViewWithDifferentOnTouchEvent(Context context) {
+            super(context);
+        }
+
+        public boolean onTouchEvent() {
+            return false;
+        }
+    }
+
+    // Okay because it's declaring performClick with a different signature.
+    private static class ViewWithDifferentPerformClick extends View {
+
+        public ViewWithDifferentPerformClick(Context context) {
+            super(context);
+        }
+
+        public boolean performClick(Context context) {
+            return false;
+        }
+    }
+
+    // Okay when NoPerformClickOnTouchListenerSetter in project.
+    // When NoPerformClickOnTouchListenerSetter is in the project, fails because no perform click
+    // and setOnTouchListener is called below.
+    private static class NoPerformClick extends View {
+        public NoPerformClick(Context context) {
+            super(context);
+        }
+    }
+
+    private static class NoPerformClickOnTouchListenerSetter {
+        private void callSetOnTouchListenerOnNoPerformClick(NoPerformClick view) {
+            view.setOnTouchListener(new ValidOnTouchListener());
+        }
+    }
+
+    // Succeeds because has performClick call.
+    private static class HasPerformClick extends View {
+       public HasPerformClick(Context context) {
+            super(context);
+        }
+
+        public boolean performClick() {
+            return super.performClick();
+        }
+    }
+
+    private static class HasPerformClickOnTouchListenerSetter {
+        private void callSetOnTouchListenerOnHasPerformClick(HasPerformClick view) {
+            view.setOnTouchListener(new ValidOnTouchListener());
+        }
+    }
+
+    // Okay because even though NotAView doesn't have a performClick call, it isn't
+    // a View subclass.
+    private static class NotAViewOnTouchListenerSetter {
+        private void callSetOnTouchListenerOnNotAView(NotAView notAView) {
+            notAView.setOnTouchListener(new ValidOnTouchListener());
+        }
+    }
+
+    // Okay because onTouch calls view.performClick().
+    private static class ValidOnTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View v, MotionEvent event) {
+            return v.performClick();
+        }
+    }
+
+    // Fails because onTouch does not call view.performClick().
+    private static class InvalidOnTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View v, MotionEvent event) {
+            return false;
+        }
+    }
+
+    // Okay because anonymous OnTouchListener calls view.performClick().
+    private static class AnonymousValidOnTouchListener {
+        private void callSetOnTouchListener(HasPerformClick view) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    return v.performClick();
+                }
+            });
+        }
+    }
+
+    // Fails because anonymous OnTouchListener does not call view.performClick().
+    private static class AnonymousInvalidOnTouchListener {
+        private void callSetOnTouchListener(HasPerformClick view) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    return false;
+                }
+            });
+        }
+    }
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="5dp"
+        android:layout_y="100dp"
+        android:text="Button" />
+
+    <!--  Deprecated attributes -->
+    <TextView
+        android:autoText="true"
+        android:capitalize="true"
+        android:editable="true"
+        android:enabled="true"
+        android:inputMethod="@+id/foo"
+        android:numeric="true"
+        android:password="true"
+        android:phoneNumber="true"
+        android:singleLine="true" />
+
+    <EditText android:editable="true" />
+    <EditText android:editable="false" />
+
+</AbsoluteLayout>

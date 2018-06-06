@@ -1,0 +1,21 @@
+package test.pkg;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+
+import java.util.ArrayList;
+
+public abstract class LayoutInflationTest extends BaseAdapter {
+    public View getView(int position, View convertView, ViewGroup parent) {
+        convertView = mInflater.inflate(R.layout.your_layout, null);
+        convertView = mInflater.inflate(R.layout.your_layout, null, true);
+        convertView = mInflater.inflate(R.layout.your_layout);
+        convertView = mInflater.inflate(R.layout.your_layout, parent);
+        convertView = WeirdInflater.inflate(convertView, null);
+
+        return convertView;
+    }
+}

@@ -1,0 +1,9 @@
+package android.support.wearable.watchface;
+
+// Unit testing stub
+public class WatchFaceService {
+    public static class Engine {
+        public void onVisibilityChanged(boolean visible) {
+        }
+    }
+}

@@ -45,18 +45,8 @@ public interface ApkVariantOutput extends BaseVariantOutput {
     ZipAlign createZipAlignTask(@NonNull String taskName, @NonNull File inputFile, @NonNull File outputFile);
 
     /**
-     * Sets the version code override. This version code will only affect this output.
-     *
-     * If the value is -1, then the output will use the version code defined in the main
-     * merged flavors for this variant.
-     *
-     * @param versionCodeOverride the version code override.
-     */
-    void setVersionCodeOverride(int versionCodeOverride);
-
-    /**
      * Returns the version code override.
-     *
+     * <p>
      * If the value is -1, then the output will use the version code defined in the main
      * merged flavors for this variant.
      *
@@ -65,24 +55,34 @@ public interface ApkVariantOutput extends BaseVariantOutput {
     int getVersionCodeOverride();
 
     /**
-     * Sets the version name override. This version name will only affect this output.
-     *
-     * If the value is null, then the output will use the version name defined in the main
+     * Sets the version code override. This version code will only affect this output.
+     * <p>
+     * If the value is -1, then the output will use the version code defined in the main
      * merged flavors for this variant.
      *
-     * @param versionNameOverride the version name override.
+     * @param versionCodeOverride the version code override.
      */
-    void setVersionNameOverride(String versionNameOverride);
+    void setVersionCodeOverride(int versionCodeOverride);
 
     /**
      * Returns the version name override.
-     *
+     * <p>
      * If the value is null, then the output will use the version name defined in the main
      * merged flavors for this variant.
      *
      * @return the version name override.
      */
     String getVersionNameOverride();
+
+    /**
+     * Sets the version name override. This version name will only affect this output.
+     * <p>
+     * If the value is null, then the output will use the version name defined in the main
+     * merged flavors for this variant.
+     *
+     * @param versionNameOverride the version name override.
+     */
+    void setVersionNameOverride(String versionNameOverride);
 
     /**
      * Returns a filter value for a filter type if present on this variant or null otherwise.

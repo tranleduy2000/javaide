@@ -1,0 +1,36 @@
+package test.pkg;
+
+import java.io.File;
+
+import android.content.Intent;
+import android.net.Uri;
+
+/**
+ * Ignore comments - create("/sdcard/foo")
+ */
+public class SdCardTest {
+	private static final boolean PROFILE_STARTUP = true;
+	private static final String SDCARD_TEST_HTML = "/sdcard/test.html";
+	public static final String SDCARD_ROOT = "/sdcard";
+	public static final String PACKAGES_PATH = "/sdcard/o/packages/";
+	File deviceDir = new File("/sdcard/vr");
+
+	public SdCardTest() {
+		if (PROFILE_STARTUP) {
+			android.os.Debug.startMethodTracing("/sdcard/launcher");
+		}
+		if (new File("/sdcard").exists()) {
+		}
+		String FilePath = "/sdcard/" + new File("test");
+		System.setProperty("foo.bar", "file://sdcard");
+
+
+		Intent intent = new Intent(Intent.ACTION_PICK);
+		intent.setDataAndType(Uri.parse("file://sdcard/foo.json"), "application/bar-json");
+		intent.putExtra("path-filter", "/sdcard(/.+)*");
+		intent.putExtra("start-dir", "/sdcard");
+		String mypath = "/data/data/foo";
+		String base = "/data/data/foo.bar/test-profiling";
+		String s = "file://sdcard/foo";
+	}
+}

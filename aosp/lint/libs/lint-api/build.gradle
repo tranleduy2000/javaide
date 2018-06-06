@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'sdk-java-lib'
+
+group = 'com.android.tools.lint'
+archivesBaseName = 'lint-api'
+version = rootProject.ext.baseVersion
+
+dependencies {
+    compile project(':base:sdk-common')
+    compile project(':base:builder-model')
+
+    compile 'com.android.tools.external.lombok:lombok-ast:0.2.3'
+    compile 'org.ow2.asm:asm:5.0.3'
+    compile 'org.ow2.asm:asm-tree:5.0.3'
+}
+
+sourceSets {
+    main.resources.srcDir 'src/main/java'
+    test.resources.srcDir 'src/test/java'
+}
+
+project.ext.pomName = 'Android Tools Lint API'
+project.ext.pomDesc = 'API to build lint checks'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"
+

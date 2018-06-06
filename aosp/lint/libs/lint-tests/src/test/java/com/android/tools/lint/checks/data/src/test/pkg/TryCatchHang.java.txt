@@ -1,0 +1,26 @@
+package test.pkg;
+
+public final class TryCatchHang {
+    public void foo() {
+        try {
+            getClass().getField("").getInt(null);
+        }
+        catch(IllegalAccessException | NoSuchFieldException xc) {
+                throw new RuntimeException( xc );
+        }
+
+        try {
+                getClass().getField("").getInt(null);
+        }
+        catch (NoSuchFieldException | IllegalAccessException xc) {
+            throw new RuntimeException( xc );
+        }
+
+        try {
+            getClass().getField("").getInt(null);
+        }
+        catch (IllegalAccessException | NoSuchFieldException xc) {
+            throw new RuntimeException(xc);
+        }
+    }
+}

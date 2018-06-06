@@ -1,0 +1,8 @@
+package test.pkg;
+
+import android.os.Parcelable;
+
+public interface MyParcelable5 extends Parcelable {
+    @Override
+    public int describeContents();
+}

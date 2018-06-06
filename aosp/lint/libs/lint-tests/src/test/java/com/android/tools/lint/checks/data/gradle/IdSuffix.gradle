@@ -1,0 +1,9 @@
+apply plugin: 'com.android.application'
+
+android {
+    buildTypes {
+        debug {
+            applicationIdSuffix "debug"
+        }
+    }
+}

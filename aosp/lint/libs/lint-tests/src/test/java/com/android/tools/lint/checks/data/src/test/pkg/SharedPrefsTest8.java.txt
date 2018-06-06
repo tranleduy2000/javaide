@@ -1,0 +1,56 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+public class SharedPrefsTest8 extends Activity {
+    public void commitWarning1() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.commit();
+    }
+
+    public void commitWarning2() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        boolean b = editor.commit(); // OK: reading return value
+    }
+    public void commitWarning3() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        boolean c;
+        c = editor.commit(); // OK: reading return value
+    }
+
+    public void commitWarning4() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        if (editor.commit()) { // OK: reading return value
+            //noinspection UnnecessaryReturnStatement
+            return;
+        }
+    }
+
+    public void commitWarning5() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        boolean c = false;
+        c |= editor.commit(); // OK: reading return value
+    }
+
+    public void commitWarning6() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        foo(editor.commit()); // OK: reading return value
+    }
+
+    public void foo(boolean x) {
+    }
+
+    public void noWarning() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.apply();
+    }
+}

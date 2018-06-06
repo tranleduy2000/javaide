@@ -21,10 +21,6 @@ import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.dsl.CoreSigningConfig;
 import com.android.build.gradle.managed.SigningConfig;
 
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.Optional;
-
 import java.io.File;
 
 /**
@@ -47,21 +43,19 @@ public class SigningConfigAdaptor implements CoreSigningConfig {
 
     @Nullable
     @Override
-    @InputFile @Optional
+
     public File getStoreFile() {
         return signingConfig.getStoreFile() == null ? null : new File(signingConfig.getStoreFile());
     }
 
     @Nullable
     @Override
-    @Input
     public String getStorePassword() {
         return signingConfig.getStorePassword();
     }
 
     @Nullable
     @Override
-    @Input
     public String getKeyAlias() {
         return signingConfig.getKeyAlias();
     }
@@ -74,7 +68,6 @@ public class SigningConfigAdaptor implements CoreSigningConfig {
 
     @Nullable
     @Override
-    @Input
     public String getStoreType() {
         return signingConfig.getStoreType();
     }

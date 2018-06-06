@@ -27,10 +27,14 @@ import org.gradle.api.tasks.incremental.InputFileDetails;
 import org.gradle.api.tasks.util.PatternSet;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static com.android.SdkConstants.CURRENT_PLATFORM;
+import static com.android.SdkConstants.PLATFORM_WINDOWS;
 
 public class NdkCompile extends NdkTask {
     public static String USE_DEPRECATED_NDK = "android.useDeprecatedNdk";
@@ -59,7 +63,7 @@ public class NdkCompile extends NdkTask {
     public FileTree getSource() {
         FileTree src = null;
         List<File> sources = getSourceFolders();
-        if (!sources.isEmpty().asBoolean()) {
+        if (!sources.isEmpty()) {
             src = getProject().files(new ArrayList<Object>(sources)).getAsFileTree();
         }
 
@@ -67,8 +71,8 @@ public class NdkCompile extends NdkTask {
     }
 
     @TaskAction
-    public void taskAction(IncrementalTaskInputs inputs) {
-        if (!getProject().hasProperty(USE_DEPRECATED_NDK).asBoolean()) {
+    public void taskAction(IncrementalTaskInputs inputs) throws IOException {
+        if (!getProject().hasProperty(USE_DEPRECATED_NDK)) {
             // Normally, we would catch the user when they try to configure the NDK, but NDK do
             // not need to be configured by default.  Throw this exception during task execution in
             // case we miss it.
@@ -101,7 +105,7 @@ public class NdkCompile extends NdkTask {
 
         final Reference<Boolean> generateMakefile = new groovy.lang.Reference<boolean>(false);
 
-        if (!inputs.isIncremental().asBoolean()) {
+        if (!inputs.isIncremental()) {
             getProject().getLogger().info("Unable do incremental execution: full task run");
             generateMakefile.set(true);
             FileUtils.emptyFolder(getSoFolder());
@@ -144,7 +148,7 @@ public class NdkCompile extends NdkTask {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("LOCAL_PATH := $(call my-dir)\n" + "include \$(CLEAR_VARS)\n\n");
+        sb.append("LOCAL_PATH := $(call my-dir)\n" + "include $(CLEAR_VARS)\n\n");
 
         String moduleName = ndk.getModuleName() != null ? ndk.getModuleName() : getProject().getName();
 
@@ -164,7 +168,7 @@ public class NdkCompile extends NdkTask {
         }
 
 
-        if (!fullLdlibs.isEmpty().asBoolean()) {
+        if (!fullLdlibs.isEmpty()) {
             sb.append("LOCAL_LDLIBS := \\\n");
             for (String lib : fullLdlibs) {
                 sb.append("\t-l").append(lib).append(" \\\n");
@@ -186,7 +190,7 @@ public class NdkCompile extends NdkTask {
         }
 
 
-        sb.append("\ninclude \$(BUILD_SHARED_LIBRARY)\n");
+        sb.append("\ninclude $(BUILD_SHARED_LIBRARY)\n");
 
         Files.write(sb.toString(), makefile, Charsets.UTF_8);
     }
@@ -207,7 +211,7 @@ public class NdkCompile extends NdkTask {
 
         // target
         IAndroidTarget target = getBuilder().getTarget();
-        if (!target.isPlatform().asBoolean()) {
+        if (!target.isPlatform()) {
             target = target.getParent();
         }
 

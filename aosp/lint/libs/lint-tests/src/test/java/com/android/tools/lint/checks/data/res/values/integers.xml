@@ -1,0 +1,4 @@
+<resources>
+    <item name="bar_display_duration" type="integer">3600</item>
+    <item name="bar_slide_out_duration" type="integer">2400</item>
+</resources>

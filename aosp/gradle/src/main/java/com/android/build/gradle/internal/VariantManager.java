@@ -112,9 +112,9 @@ public class VariantManager implements VariantModel {
         DefaultAndroidSourceSet mainSourceSet =
                 (DefaultAndroidSourceSet) extension.getSourceSets().getByName(extension.getDefaultConfig().getName());
 
-        defaultConfigData = new ProductFlavorData<CoreProductFlavor>(
+        defaultConfigData = new ProductFlavorData<>(
                 extension.getDefaultConfig(), mainSourceSet,
-                null, null, project);
+                project);
         signingOverride = createSigningOverride();
     }
 
@@ -242,11 +242,9 @@ public class VariantManager implements VariantModel {
                 productFlavor.getName());
 
         ProductFlavorData<CoreProductFlavor> productFlavorData =
-                new ProductFlavorData<CoreProductFlavor>(
+                new ProductFlavorData<>(
                         productFlavor,
                         mainSourceSet,
-                        null,
-                        null,
                         project);
 
         productFlavors.put(productFlavor.getName(), productFlavorData);

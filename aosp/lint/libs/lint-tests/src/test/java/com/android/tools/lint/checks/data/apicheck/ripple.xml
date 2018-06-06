@@ -1,0 +1,12 @@
+<ripple
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:tint="#ffffffff"
+    android:tintMode="src_over"
+    >
+    <item>
+        <shape>
+            <solid android:color="#d4ffffff" />
+            <corners android:radius="20dp" />
+        </shape>
+    </item>
+</ripple>

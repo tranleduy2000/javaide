@@ -1,0 +1,7 @@
+package foo.library;
+
+public class LibraryCode {
+    static {
+        System.out.println(R.string.string1);
+    }
+}

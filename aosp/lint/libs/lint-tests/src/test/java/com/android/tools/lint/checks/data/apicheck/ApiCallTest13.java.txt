@@ -1,0 +1,23 @@
+package test.pkg;
+
+import android.content.Context;
+import android.view.View;
+import android.view.View.OnLayoutChangeListener;
+import android.widget.GridLayout;
+
+public class ApiCallTest13 extends GridLayout implements
+		View.OnSystemUiVisibilityChangeListener, OnLayoutChangeListener {
+
+	public ApiCallTest13(Context context) {
+		super(context);
+	}
+
+	@Override
+	public void onSystemUiVisibilityChange(int visibility) {
+	}
+
+	@Override
+	public void onLayoutChange(View v, int left, int top, int right,
+			int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+	}
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/newlinear"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- Ignored via comment, should be hidden -->
+
+    <!--suppress AndroidLintHardcodedText -->
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button1" >
+    </Button>
+
+    <!-- Inherited ignore from parent -->
+
+    <!--suppress AndroidLintHardcodedText-->
+    <LinearLayout
+        android:id="@+id/parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button2" >
+        </Button>
+    </LinearLayout>
+
+    <!-- Ignored through item in ignore list -->
+
+    <!--suppress AndroidLintNewApi,AndroidLintHardcodedText -->
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hardcoded" >
+    </Button>
+
+    <!-- Not ignored: should show up as a warning -->
+    <!--suppress AndroidLintNewApi -->
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hardcoded"
+        >
+    </Button>
+
+</LinearLayout>

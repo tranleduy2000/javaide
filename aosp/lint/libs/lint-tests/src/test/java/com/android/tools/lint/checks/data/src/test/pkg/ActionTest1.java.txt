@@ -1,0 +1,9 @@
+package test.pkg;
+
+import android.view.MenuItem;
+
+public class ActionTest1 {
+    public void foo() {
+        System.out.println(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    }
+}

@@ -1,0 +1,23 @@
+package test.pkg;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+@SuppressWarnings("UnusedDeclaration")
+public class SharedPrefsFormat {
+    public void test(Context sessionContext) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(sessionContext);
+        final String nameKey = sessionContext.getString(R.string.pref_key_assigned_bluetooth_device_name);
+        final String addressKey = sessionContext.getString(R.string.pref_key_assigned_bluetooth_device_address);
+        final String name = prefs.getString(nameKey, null);
+        final String address = prefs.getString(addressKey, null);
+    }
+
+    public static final class R {
+        public static final class string {
+            public static final int pref_key_assigned_bluetooth_device_name = 0x7f0a000e;
+            public static final int pref_key_assigned_bluetooth_device_address = 0x7f0a000f;
+        }
+    }
+}

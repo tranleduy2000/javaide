@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <ProgressBar
+        android:id="@+id/loading_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="60dip"
+        android:layout_marginLeft="40dip"
+        android:layout_marginTop="40dip"
+        android:max="10000" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_marginBottom="60dip"
+        android:layout_marginLeft="40dip"
+        android:layout_marginTop="40dip"
+        android:layout_toRightOf="@id/loading_progress"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:paddingRight="120dip"
+        android:text="@string/creating_instant_mix"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@id/text"
+        android:layout_below="@id/text"
+        android:background="@null"
+        android:text="@string/cancel" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/cancel"
+        android:layout_alignLeft="@id/cancel"
+        android:layout_alignRight="@id/cancel"
+        android:scaleType="fitXY"
+        android:src="@drawable/menu_list_divider" />
+
+</RelativeLayout>

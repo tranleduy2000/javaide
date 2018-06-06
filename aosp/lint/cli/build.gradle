@@ -1,0 +1,43 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'sdk-java-lib'
+
+group = 'com.android.tools.lint'
+archivesBaseName = 'lint'
+version = rootProject.ext.baseVersion
+
+dependencies {
+    compile project(':base:lint-checks')
+    compile 'org.eclipse.jdt.core.compiler:ecj:4.4.2'
+}
+
+sourceSets {
+    main.resources.srcDir 'src/main/java'
+    test.resources.srcDir 'src/test/java'
+}
+
+test {
+    maxParallelForks = Runtime.runtime.availableProcessors() / 2
+}
+
+sdk {
+    linux {
+        item('etc/lint') { executable true }
+    }
+    mac {
+        item('etc/lint') { executable true }
+    }
+    windows {
+        item 'etc/lint.bat'
+    }
+}
+
+// configure the manifest of the sdkJar task.
+sdkJar.manifest.attributes("Main-Class": "com.android.tools.lint.Main")
+
+project.ext.pomName = 'Android Lint Tool'
+project.ext.pomDesc = 'Lint tools. Both a Command line tool and a library to add lint features to other tools'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"

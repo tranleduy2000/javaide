@@ -35,7 +35,7 @@ public interface BaseVariantOutput extends VariantOutput {
     /**
      * Returns the output file for this build variants. Depending on the configuration, this could
      * be an apk (regular and test project) or a bundled library (library project).
-     *
+     * <p>
      * If it's an apk, it could be signed, or not; zip-aligned, or not.
      */
     @NonNull
@@ -75,7 +75,7 @@ public interface BaseVariantOutput extends VariantOutput {
 
     /**
      * Returns a subfolder name for the variant output. Guaranteed to be unique.
-     *
+     * <p>
      * This is usually a mix of build type and flavor(s) (if applicable).
      * For instance this could be:
      * "debug"

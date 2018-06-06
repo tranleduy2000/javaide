@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/now_playing"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/now_playing_height"
+    android:orientation="horizontal">
+    <LinearLayout
+        android:background="@color/background2"
+        android:paddingLeft="14dip"
+        android:paddingRight="14dip"
+        android:paddingTop="10dip"
+        android:paddingBottom="10dip"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/now_playing_title"
+            android:duplicateParentState="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_large"
+            android:textColor="@color/foreground1"
+            android:text="@string/now_playing_after_title"
+            android:maxLines="2"
+            android:ellipsize="end" />
+        <TextView
+            android:id="@+id/now_playing_subtitle"
+            android:duplicateParentState="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="3dip"
+            android:textColor="@color/foreground2"
+            android:textSize="@dimen/text_size_small"
+            android:text="@string/now_playing_after_subtitle"
+            android:singleLine="true"
+            android:ellipsize="end" />
+    </LinearLayout>
+    <View
+        android:layout_width="2px"
+        android:layout_height="fill_parent"
+        android:background="@android:color/white" />
+    <ImageButton
+        android:background="@drawable/btn_now_playing_more"
+        android:id="@+id/now_playing_more"
+        android:src="@drawable/ic_now_playing_logo"
+        android:padding="12dip"
+        android:layout_width="100mm"
+        android:layout_height="120in"
+        android:onClick="onNowPlayingLogoClick"
+        android:maxHeight="1px"
+        android:scaleType="center" />
+</LinearLayout>

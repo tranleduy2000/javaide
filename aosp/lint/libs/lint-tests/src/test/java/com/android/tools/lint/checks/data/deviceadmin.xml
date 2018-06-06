@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="foo.bar2"
+          android:versionCode="1"
+          android:versionName="1.0">
+
+    <uses-sdk android:minSdkVersion="14"/>
+
+    <application
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name">
+
+        <!-- OK -->
+        <receiver android:name=".DeviceAdminTestReceiver"
+                  android:label="@string/app_name"
+                  android:description="@string/app_name"
+                  android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data android:name="android.app.device_admin"
+                       android:resource="@xml/device_admin"/>
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- Specifies data -->
+        <receiver android:name=".DeviceAdminTestReceiver"
+                  android:label="@string/app_name"
+                  android:description="@string/app_name"
+                  android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data android:name="android.app.device_admin"
+                       android:resource="@xml/device_admin"/>
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED"/>
+                <data android:scheme="content" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Missing right intent-filter -->
+        <receiver android:name=".DeviceAdminTestReceiver"
+                  android:label="@string/app_name"
+                  android:description="@string/app_name"
+                  android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data android:name="android.app.device_admin"
+                       android:resource="@xml/device_admin"/>
+            <intent-filter>
+                <action android:name="com.test.foo.DEVICE_ADMIN_ENABLED"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- Missing intent-filter -->
+        <receiver android:name=".DeviceAdminTestReceiver"
+                  android:label="@string/app_name"
+                  android:description="@string/app_name"
+                  android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data android:name="android.app.device_admin"
+                       android:resource="@xml/device_admin"/>
+        </receiver>
+
+        <!-- Suppressed -->
+        <receiver android:name=".DeviceAdminTestReceiver"
+                  android:label="@string/app_name"
+                  android:description="@string/app_name"
+                  android:permission="android.permission.BIND_DEVICE_ADMIN"
+                  tools:ignore="DeviceAdmin">
+            <meta-data android:name="android.app.device_admin"
+                       android:resource="@xml/device_admin"/>
+            <intent-filter>
+                <action android:name="com.test.foo.DEVICE_ADMIN_ENABLED"/>
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

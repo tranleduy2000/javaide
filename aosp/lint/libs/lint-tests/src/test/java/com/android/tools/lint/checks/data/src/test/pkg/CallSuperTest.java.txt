@@ -1,0 +1,90 @@
+package test.pkg;
+
+import android.support.annotation.CallSuper;
+
+import java.util.List;
+import java.util.Map;
+
+@SuppressWarnings("UnusedDeclaration")
+public class CallSuperTest {
+    private static class Child extends Parent {
+        protected void test1() { // ERROR
+        }
+
+        protected void test2() { // ERROR
+        }
+
+        protected void test3() { // ERROR
+        }
+
+        protected void test4(int arg) { // ERROR
+        }
+
+        protected void test4(String arg) { // OK
+        }
+
+        protected void test5(int arg1, boolean arg2, Map<List<String>,?> arg3,  // ERROR
+                             int[][] arg4, int... arg5) {
+        }
+
+        protected void test5() { // ERROR
+            super.test6(); // (wrong super)
+        }
+
+        protected void test6() { // OK
+            int x = 5;
+            super.test6();
+            System.out.println(x);
+        }
+    }
+
+    private static class Parent extends ParentParent {
+        @CallSuper
+        protected void test1() {
+        }
+
+        protected void test3() {
+            super.test3();
+        }
+
+        @CallSuper
+        protected void test4(int arg) {
+        }
+
+        protected void test4(String arg) {
+        }
+
+        @CallSuper
+        protected void test5() {
+        }
+
+        @CallSuper
+        protected void test5(int arg1, boolean arg2, Map<List<String>,?> arg3,
+                             int[][] arg4, int... arg5) {
+        }
+    }
+
+    private static class ParentParent extends ParentParentParent {
+        @CallSuper
+        protected void test2() {
+        }
+
+        @CallSuper
+        protected void test3() {
+        }
+
+        @CallSuper
+        protected void test6() {
+        }
+
+        @CallSuper
+        protected void test7() {
+        }
+
+
+    }
+
+    private static class ParentParentParent {
+
+    }
+}

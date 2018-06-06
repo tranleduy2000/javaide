@@ -1,0 +1,6 @@
+package test.pkg;
+
+import test.pkg.Intermediate.IntermediateCustomV;
+
+public class CustomViewTest extends IntermediateCustomV {
+}

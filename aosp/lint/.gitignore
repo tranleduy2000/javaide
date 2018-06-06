@@ -1,0 +1,7 @@
+cli/bin
+cli/build
+cli/src/test/bin
+libs/lint-api/bin
+libs/lint-api/build
+libs/lint-checks/bin
+libs/lint-checks/build

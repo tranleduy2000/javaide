@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="invalid1" type="string">@layout/other</item>
+    <item name="invalid1" type="drawable">
+          @layout/other
+    </item>
+    <item name="string1" type="string">Plain String</item>
+    <item name="string2" type="string">@string/indirect</item>
+    <string name="string3">@string/indirect</string>
+    <string name="invalid4">@layout/indirect</string>
+    <item name="other2" type="layout">@layout/indirect2</item>
+    <item name="indirect2" type="layout">  @layout/indirect1 </item>
+    <item name="indirect1" type="layout">@layout/to</item>
+    <item name="colorAsDrawable" type="drawable">@color/my_color</item>
+    <item name="drawableAsColor" type="color">@drawable/my_drawable</item>
+</resources>

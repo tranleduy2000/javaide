@@ -57,7 +57,7 @@ public interface BaseVariant {
 
     /**
      * Returns a subfolder name for the variant. Guaranteed to be unique.
-     *
+     * <p>
      * This is usually a mix of build type and flavor(s) (if applicable).
      * For instance this could be:
      * "debug"
@@ -76,6 +76,7 @@ public interface BaseVariant {
     /**
      * Returns the flavor name of the variant. This is a concatenation of all the
      * applied flavors
+     *
      * @return the name of the flavors, or an empty string if there is not flavors.
      */
     @NonNull
@@ -83,6 +84,7 @@ public interface BaseVariant {
 
     /**
      * Returns the variant outputs. There should always be at least one output.
+     *
      * @return a non-null list of variants.
      */
     @NonNull
@@ -103,7 +105,7 @@ public interface BaseVariant {
 
     /**
      * Returns the list of {@link com.android.builder.core.DefaultProductFlavor} for this build variant.
-     *
+     * <p>
      * This is always non-null but could be empty.
      */
     @NonNull
@@ -162,6 +164,7 @@ public interface BaseVariant {
 
     /**
      * Returns the Java Compilation task if javac was configured to compile the source files.
+     *
      * @deprecated prefer {@link #getJavaCompiler} which always return the java compiler task
      * irrespective of which tool chain (javac or jack) used.
      */
@@ -208,7 +211,7 @@ public interface BaseVariant {
 
     /**
      * Adds new Java source folders to the model.
-     *
+     * <p>
      * These source folders will not be used for the default build
      * system, but will be passed along the default Java source folders
      * to whoever queries the model.
@@ -219,7 +222,7 @@ public interface BaseVariant {
 
     /**
      * Adds new Java source folders to the model.
-     *
+     * <p>
      * These source folders will not be used for the default build
      * system, but will be passed along the default Java source folders
      * to whoever queries the model.
@@ -230,80 +233,82 @@ public interface BaseVariant {
 
     /**
      * Adds to the variant a task that generates Java source code.
-     *
+     * <p>
      * This will make the generate[Variant]Sources task depend on this task and add the
      * new source folders as compilation inputs.
-     *
+     * <p>
      * The new source folders are also added to the model.
      *
-     * @param task the task
+     * @param task          the task
      * @param sourceFolders the source folders where the generated source code is.
      */
     void registerJavaGeneratingTask(@NonNull Task task, @NonNull File... sourceFolders);
 
     /**
      * Adds to the variant a task that generates Java source code.
-     *
+     * <p>
      * This will make the generate[Variant]Sources task depend on this task and add the
      * new source folders as compilation inputs.
-     *
+     * <p>
      * The new source folders are also added to the model.
      *
-     * @param task the task
+     * @param task          the task
      * @param sourceFolders the source folders where the generated source code is.
      */
     void registerJavaGeneratingTask(@NonNull Task task, @NonNull Collection<File> sourceFolders);
 
     /**
      * Adds to the variant a task that generates Resources.
-     *
+     * <p>
      * This will make the generate[Variant]Resources task depend on this task and add the
      * new Resource folders as Resource merge inputs.
-     *
+     * <p>
      * The Resource folders are also added to the model.
      *
-     * @param task the task
+     * @param task       the task
      * @param resFolders the folders where the generated resources are.
      */
     void registerResGeneratingTask(@NonNull Task task, @NonNull File... resFolders);
 
     /**
      * Adds to the variant a task that generates Resources.
-     *
+     * <p>
      * This will make the generate[Variant]Resources task depend on this task and add the
      * new Resource folders as Resource merge inputs.
-     *
+     * <p>
      * The Resource folders are also added to the model.
      *
-     * @param task the task
+     * @param task       the task
      * @param resFolders the folders where the generated resources are.
      */
     void registerResGeneratingTask(@NonNull Task task, @NonNull Collection<File> resFolders);
 
     /**
      * Adds a variant-specific BuildConfig field.
-     * @param type the type of the field
-     * @param name the name of the field
+     *
+     * @param type  the type of the field
+     * @param name  the name of the field
      * @param value the value of the field
      */
     void buildConfigField(@NonNull String type, @NonNull String name, @NonNull String value);
 
     /**
      * Adds a variant-specific res value.
-     * @param type the type of the field
-     * @param name the name of the field
+     *
+     * @param type  the type of the field
+     * @param name  the name of the field
      * @param value the value of the field
      */
     void resValue(@NonNull String type, @NonNull String name, @NonNull String value);
+
+    /**
+     * @see #setOutputsAreSigned(boolean)
+     */
+    boolean getOutputsAreSigned();
 
     /**
      * If true, variant outputs will be considered signed. Only set if you manually set the outputs
      * to point to signed files built by other tasks.
      */
     void setOutputsAreSigned(boolean isSigned);
-
-    /**
-     * @see #setOutputsAreSigned(boolean)
-     */
-    boolean getOutputsAreSigned();
 }

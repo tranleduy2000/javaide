@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="hello" tools:ignore="StringFormatMatches">Hello %1$s</string>
+    <string name="hello2" tools:ignore="StringFormatMatches,StringFormatCount">Hello %1$s, %2$s?</string>
+    <string name="missing" tools:ignore="StringFormatCount">Hello %3$s World</string>
+    <string name="score">Score: %1$d</string>
+</resources>

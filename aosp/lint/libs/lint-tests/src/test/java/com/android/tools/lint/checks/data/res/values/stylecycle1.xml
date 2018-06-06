@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ButtonStyle.Base">
+        <item name="android:textColor">#ff0000</item>
+    </style>
+    <style name="ButtonStyle" parent="ButtonStyle.Base">
+        <item name="android:layout_height">40dp</item>
+    </style>
+</resources>

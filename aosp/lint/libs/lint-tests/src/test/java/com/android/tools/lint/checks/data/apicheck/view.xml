@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- Requires API 5 -->
+
+    <view
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        class="QuickContactBadge" />
+
+    <!-- Requires API 11 -->
+
+    <view
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        class="CalendarView" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        unknown="?android:attr/dividerHorizontal"
+        android:textColor="?android:attr/textColorLinkInverse" />
+
+</LinearLayout>

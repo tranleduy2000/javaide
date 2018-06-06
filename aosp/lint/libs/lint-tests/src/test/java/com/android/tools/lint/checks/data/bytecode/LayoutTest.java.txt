@@ -1,0 +1,66 @@
+package test.pkg;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.util.AttributeSet;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+
+@SuppressWarnings("unused")
+public class LayoutTest extends LinearLayout {
+	private MyChild child;
+
+	public LayoutTest(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+	}
+
+	@Override
+	protected void onLayout(boolean changed, int left, int top, int right,
+			int bottom) {
+		super.onLayout(changed, left, top, right, bottom); // OK
+		child.onLayout(changed, left, top, right, bottom); // Not OK
+
+		super.onMeasure(0, 0); // Not OK
+		super.onDraw(null); // Not OK
+		child.layout(left, top, right, bottom); // OK
+	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec); // OK
+		super.onLayout(false, 0, 0, 0, 0); // Not OK
+		child.onMeasure(widthMeasureSpec, heightMeasureSpec); // Not OK
+		child.measure(widthMeasureSpec, heightMeasureSpec); // OK
+	}
+
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas); // OK
+		child.onDraw(canvas); // Not OK
+		child.draw(canvas); // OK
+	}
+
+	private class MyChild extends FrameLayout {
+		public MyChild(Context context, AttributeSet attrs, int defStyle) {
+			super(context, attrs, defStyle);
+		}
+
+		@Override
+		protected void onLayout(boolean changed, int left, int top, int right,
+				int bottom) {
+			super.onLayout(changed, left, top, right, bottom);
+		}
+
+		@Override
+		protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		}
+
+		@Override
+		protected void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
+		}
+	}
+}

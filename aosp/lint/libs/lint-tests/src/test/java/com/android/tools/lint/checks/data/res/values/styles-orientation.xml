@@ -1,0 +1,20 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="Layout.Horizontal" parent="@style/Layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="MyButtonStyle" parent="@style/Layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+    </style>
+
+    <style name="TextWithHint">
+        <item name="android:hint">Number</item>
+    </style>
+
+    <style name="TextWithInput">
+        <item name="android:hint">number</item>
+    </style>
+</resources>

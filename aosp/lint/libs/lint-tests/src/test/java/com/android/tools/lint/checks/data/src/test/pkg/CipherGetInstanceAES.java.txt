@@ -1,0 +1,9 @@
+package test.pkg;
+
+import javax.crypto.Cipher;
+
+public class CipherGetInstanceAES {
+  private void foo() throws Exception {
+    Cipher.getInstance("AES");
+  }
+}

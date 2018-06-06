@@ -1,0 +1,5 @@
+﻿package test.pkg;
+
+public class Utf8BomTest {
+    String s = "/sdcard/mydir";
+}

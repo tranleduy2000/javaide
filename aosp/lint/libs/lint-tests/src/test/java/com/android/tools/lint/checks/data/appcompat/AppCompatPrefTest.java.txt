@@ -1,0 +1,15 @@
+package test.pkg;
+
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+
+public class MyPreferenceActivity extends PreferenceActivity {
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getActionBar(); // Should not generate a warning
+    }
+}

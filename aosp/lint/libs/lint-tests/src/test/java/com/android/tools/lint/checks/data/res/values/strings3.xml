@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="test_string">Test (English)</string>
+
+    <string-array name="test_string_array">
+		<item>@string/test_string</item>
+	</string-array>
+
+</resources>

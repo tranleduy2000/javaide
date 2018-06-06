@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- Various attributes that should be set on EditTexts, not TextViews -->
+
+    <TextView
+        android:text="label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoText="true"
+        android:bufferType="editable"
+        android:capitalize="words"
+        android:cursorVisible="true"
+        android:digits=""
+        android:editable="true"
+        android:editorExtras="@+id/foobar"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:imeActionId="@+id/foo"
+        android:imeActionLabel=""
+        android:imeOptions=""
+        android:inputMethod=""
+        android:inputType="text"
+        android:numeric=""
+        android:password="true"
+        android:phoneNumber="true"
+        android:privateImeOptions="" />
+
+    <!-- Various attributes that should be set on EditTexts, not Buttons -->
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:cursorVisible="true" />
+
+    <CheckedTextView
+        android:id="@+id/checkedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:cursorVisible="true" />
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:cursorVisible="true" />
+
+    <RadioButton
+        android:id="@+id/radioButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:cursorVisible="true" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:cursorVisible="true" />
+
+
+    <!-- Ok #1 -->
+
+    <TextView
+        android:text="label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:bufferType="spannable"
+        android:freezesText="true"
+        android:editable="false"
+        android:inputType="none" />
+
+    <!-- Ok #2 -->
+
+    <TextView
+        android:text="label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/dynamictext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/dynamictext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textIsSelectable="true" />
+
+</LinearLayout>

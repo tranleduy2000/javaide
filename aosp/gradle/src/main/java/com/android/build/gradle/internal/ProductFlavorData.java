@@ -36,8 +36,6 @@ public class ProductFlavorData<T extends CoreProductFlavor> extends VariantDimen
     ProductFlavorData(
             @NonNull T productFlavor,
             @NonNull DefaultAndroidSourceSet sourceSet,
-            @Nullable DefaultAndroidSourceSet androidTestSourceSet,
-            @Nullable DefaultAndroidSourceSet unitTestSourceSet,
             @NonNull Project project) {
         super(sourceSet, project);
 

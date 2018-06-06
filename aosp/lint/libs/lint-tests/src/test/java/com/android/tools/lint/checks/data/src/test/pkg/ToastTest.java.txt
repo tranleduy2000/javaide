@@ -1,0 +1,51 @@
+package foo.bar;
+
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.widget.Toast;
+
+public class ToastTest {
+    private Toast createToast(Context context) {
+        // Don't warn here
+        return Toast.makeText(context, "foo", Toast.LENGTH_LONG);
+    }
+
+    private void showToast(Context context) {
+        // Don't warn here
+        Toast toast = Toast.makeText(context, "foo", Toast.LENGTH_LONG);
+        System.out.println("Other intermediate code here");
+        int temp = 5 + 2;
+        toast.show();
+    }
+
+    private void showToast2(Context context) {
+        // Don't warn here
+        int duration = Toast.LENGTH_LONG;
+        Toast.makeText(context, "foo", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, R.string.app_name, duration).show();
+    }
+
+    private void broken(Context context) {
+        // Errors
+        Toast.makeText(context, "foo", Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(context, R.string.app_name, 5000);
+        toast.getDuration();
+    }
+
+    // Constructor test
+    public ToastTest(Context context) {
+        Toast.makeText(context, "foo", Toast.LENGTH_LONG);
+    }
+
+    @android.annotation.SuppressLint("ShowToast")
+    private void checkSuppress1(Context context) {
+        Toast toast = Toast.makeText(this, "MyToast", Toast.LENGTH_LONG);
+    }
+
+    private void checkSuppress2(Context context) {
+        @android.annotation.SuppressLint("ShowToast")
+        Toast toast = Toast.makeText(this, "MyToast", Toast.LENGTH_LONG);
+    }
+}
+

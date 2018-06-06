@@ -1,0 +1,8 @@
+package test.pkg;
+
+public class NonAnnotatedObject {
+	public void test1() {
+	}
+	public void test2() {
+	}
+}

@@ -1,0 +1,104 @@
+package test.pkg;
+
+import android.content.Context;
+import android.support.annotation.IntDef;
+import android.support.annotation.StringDef;
+import android.view.View;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@SuppressWarnings("UnusedDeclaration")
+public class IntDefTest {
+    @IntDef({STYLE_NORMAL, STYLE_NO_TITLE, STYLE_NO_FRAME, STYLE_NO_INPUT})
+    @Retention(RetentionPolicy.SOURCE)
+    private @interface DialogStyle {}
+
+    public static final int STYLE_NORMAL = 0;
+    public static final int STYLE_NO_TITLE = 1;
+    public static final int STYLE_NO_FRAME = 2;
+    public static final int STYLE_NO_INPUT = 3;
+    public static final int UNRELATED = 3;
+
+    public void setStyle(@DialogStyle int style, int theme) {
+    }
+
+    public void testIntDef(int arg) {
+        setStyle(STYLE_NORMAL, 0); // OK
+        setStyle(IntDefTest.STYLE_NORMAL, 0); // OK
+        setStyle(arg, 0); // OK (not sure)
+
+        setStyle(0, 0); // ERROR
+        setStyle(-1, 0); // ERROR
+        setStyle(UNRELATED, 0); // ERROR
+        setStyle(IntDefTest.UNRELATED, 0); // ERROR
+        setStyle(IntDefTest.STYLE_NORMAL|STYLE_NO_FRAME, 0); // ERROR: Not a flag
+        setStyle(~STYLE_NO_FRAME, 0); // ERROR: Not a flag
+    }
+    @IntDef(value = {STYLE_NORMAL, STYLE_NO_TITLE, STYLE_NO_FRAME, STYLE_NO_INPUT}, flag=true)
+    @Retention(RetentionPolicy.SOURCE)
+    private @interface DialogFlags {}
+
+    public void setFlags(Object first, @DialogFlags int flags) {
+    }
+
+    public void testFlags(int arg) {
+        setFlags("", -1); // OK
+        setFlags("", 0); // OK
+        setFlags("", STYLE_NORMAL); // OK
+        setFlags(arg, 0); // OK (not sure)
+        setFlags("", IntDefTest.STYLE_NORMAL); // OK
+        setFlags("", STYLE_NORMAL|STYLE_NO_TITLE); // OK
+        setFlags("", STYLE_NORMAL|STYLE_NO_TITLE|STYLE_NO_INPUT); // OK
+        setFlags("", arg < 0 ? STYLE_NORMAL : STYLE_NO_TITLE); // OK
+
+        setFlags("", UNRELATED); // ERROR
+        setFlags("", UNRELATED|STYLE_NO_TITLE); // ERROR
+        setFlags("", STYLE_NORMAL|STYLE_NO_TITLE|UNRELATED); // ERROR
+        setFlags("", 1); // ERROR
+        setFlags("", arg < 0 ? STYLE_NORMAL : UNRELATED); // ERROR
+        setFlags("", arg < 0 ? UNRELATED : STYLE_NORMAL); // ERROR
+    }
+
+    public static final String TYPE_1 = "type1";
+    public static final String TYPE_2 = "type2";
+    public static final String UNRELATED_TYPE = "other";
+
+    @StringDef({TYPE_1, TYPE_2})
+    @Retention(RetentionPolicy.SOURCE)
+    private @interface DialogType {}
+
+    public void setTitle(String title, @DialogType String type) {
+    }
+
+    public void testStringDef(String typeArg) {
+        setTitle("", TYPE_1); // OK
+        setTitle("", TYPE_2); // OK
+        setTitle("", null); // OK
+        setTitle("", typeArg); // OK (unknown)
+        setTitle("", UNRELATED_TYPE); // ERROR
+        setTitle("", "type2"); // ERROR
+    }
+
+    public void testFlow() {
+        String type = TYPE_1;
+        setTitle("", type); // OK
+        type = UNRELATED_TYPE;
+        setTitle("", type); // ERROR
+        int flag = 0;
+        flag |= STYLE_NORMAL;
+        setFlags("", flag); // OK
+        flag = UNRELATED;
+        setFlags("", flag); // ERROR
+    }
+
+    public void testExternalAnnotations(View view, Context context) {
+        view.setLayoutDirection(View.LAYOUT_DIRECTION_LTR); // OK
+        context.getSystemService(Context.ALARM_SERVICE); // OK
+
+        view.setLayoutDirection(View.TEXT_DIRECTION_LTR); // ERROR
+        view.setLayoutDirection(0); // ERROR
+        view.setLayoutDirection(View.LAYOUT_DIRECTION_LTR|View.LAYOUT_DIRECTION_RTL); // ERROR
+        context.getSystemService(TYPE_1); // ERROR
+    }
+}

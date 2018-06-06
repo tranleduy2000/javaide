@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lint-api"/>
+	<classpathentry exported="true" kind="var" path="ANDROID_SRC/prebuilts/tools/common/m2/repository/org/ow2/asm/asm-analysis/5.0.3/asm-analysis-5.0.3.jar" sourcepath="/ANDROID_SRC/prebuilts/tools/common/m2/repository/org/ow2/asm/asm-analysis/5.0.3/asm-analysis-5.0.3-sources.jar"/>
+	<classpathentry exported="true" kind="var" path="ANDROID_SRC/prebuilts/tools/common/m2/repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3.jar" sourcepath="/ANDROID_SRC/prebuilts/tools/common/m2/repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3-sources.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,19 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.widget.GridLayout;
+
+/** Test suppress on fields */
+public class ApiCallTest9 {
+    // Actual initialization code lives in the synthetic method <init>
+    private GridLayout field1 = new GridLayout(null);
+
+    // Actual initialization code lives in the synthetic method <clinit>
+    private static GridLayout field2 = new GridLayout(null);
+
+    @SuppressLint("NewApi")
+    private GridLayout field3 = new GridLayout(null);
+
+    @SuppressLint("NewApi")
+    private static GridLayout field4 = new GridLayout(null);
+}

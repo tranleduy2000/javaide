@@ -94,7 +94,7 @@ public class DefaultAndroidBinary extends BaseBinarySpec implements AndroidBinar
             NdkOptionsHelper.merge(mergedNdkConfig, ndkConfig);
         }
 
-        for (int i = flavors.size() - 1 ; i >= 0 ; i--) {
+        for (int i = flavors.size() - 1; i >= 0; i--) {
             NdkOptions ndkOptions = flavors.get(i).getNdk();
             if (ndkOptions != null) {
                 NdkOptionsHelper.merge(mergedNdkConfig, ndkOptions);

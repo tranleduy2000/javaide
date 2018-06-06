@@ -1,0 +1,9 @@
+package test.pkg;
+
+import javax.crypto.Cipher;
+
+public class CipherGetInstanceAESECB {
+  private void foo() throws Exception {
+    Cipher.getInstance("AES/ECB/NoPadding");
+  }
+}

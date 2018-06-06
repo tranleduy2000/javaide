@@ -1,0 +1,8 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style android:name="MyStyle" parent="android:Theme.Light">
+    <!-- if the minSdk level is less then 11, then this should be a lint error, since android:actionBarStyle is since API 11,
+         unless this is in a -v11 (or better) resource folder -->
+        <item name="android:actionBarStyle">...</item>
+        <item name="android:textColor">#999999</item>
+    </style>
+</resources>

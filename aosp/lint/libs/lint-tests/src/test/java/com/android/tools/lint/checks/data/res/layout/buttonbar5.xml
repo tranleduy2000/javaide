@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+		xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<LinearLayout />
+
+	<Button
+			android:layout_toRightOf="@+id/anyid"
+			android:text="Cancel"/>
+
+</RelativeLayout>

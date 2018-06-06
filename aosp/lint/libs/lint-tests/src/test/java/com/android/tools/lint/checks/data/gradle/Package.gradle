@@ -1,0 +1,12 @@
+apply plugin: 'com.android.application'
+
+android {
+    defaultConfig {
+        packageName 'my.pkg'
+    }
+    buildTypes {
+        debug {
+            packageNameSuffix ".debug"
+        }
+    }
+}

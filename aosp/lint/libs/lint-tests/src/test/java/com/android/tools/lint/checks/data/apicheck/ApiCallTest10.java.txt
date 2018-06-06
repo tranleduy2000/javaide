@@ -1,0 +1,45 @@
+package test.pkg;
+
+import android.os.Build;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
+
+public class ApiCallTest10 extends View {
+    public ApiCallTest10() {
+        super(null, null, 0);
+    }
+
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            onPopulateAccessibilityEvent(event); // Shouldn't warn here: method
+                                                 // exists locally
+            return true;
+        }
+        return super.dispatchPopulateAccessibilityEvent(event);
+    }
+
+    @Override
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event); // Not flagged: calling same mehod
+        // Additional override code here:
+    }
+
+    @Override
+    protected boolean dispatchGenericFocusedEvent(MotionEvent event) {
+        return super.dispatchGenericFocusedEvent(event); // Not flagged: calling same mehod
+    }
+
+    protected boolean dispatchHoverEvent(int event) {
+        return false;
+    }
+
+    public void test1() {
+        // Should flag this, because the local method has the wrong signature
+        dispatchHoverEvent(null);
+
+        // Shouldn't flag this, local method makes it available
+        dispatchGenericFocusedEvent(null);
+    }
+}

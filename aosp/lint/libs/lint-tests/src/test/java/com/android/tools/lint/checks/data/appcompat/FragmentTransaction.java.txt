@@ -1,0 +1,17 @@
+package android.support.v4.app;
+
+/** Stub to make unit tests able to resolve types without having a real dependency
+ * on the appcompat library */
+public abstract class FragmentTransaction {
+    public abstract int commit();
+    public abstract int commitAllowingStateLoss();
+    public abstract FragmentTransaction show(Fragment fragment);
+    public abstract FragmentTransaction hide(Fragment fragment);
+    public abstract FragmentTransaction attach(Fragment fragment);
+    public abstract FragmentTransaction detach(Fragment fragment);
+    public abstract FragmentTransaction add(int containerViewId, Fragment fragment);
+    public abstract FragmentTransaction addToBackStack(String name);
+    public abstract FragmentTransaction disallowAddToBackStack();
+    public abstract FragmentTransaction setBreadCrumbShortTitle(int res);
+    public abstract FragmentTransaction setCustomAnimations(int enter, int exit);
+}

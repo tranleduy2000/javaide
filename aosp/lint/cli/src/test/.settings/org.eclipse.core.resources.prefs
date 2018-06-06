@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+encoding//java/com/android/tools/lint/checks/TypoDetectorTest.java=UTF-8
+encoding//java/com/android/tools/lint/checks/TypoLookupTest.java=UTF-8
+encoding//java/com/android/tools/lint/checks/TypographyDetectorTest.java=UTF-8
+encoding//java/com/android/tools/lint/checks/data/res/values-nb/typos.xml=UTF-8

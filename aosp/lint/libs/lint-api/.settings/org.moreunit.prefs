@@ -1,0 +1,6 @@
+#Tue Oct 18 10:20:08 PDT 2011
+eclipse.preferences.version=1
+org.moreunit.extendedTestMethodSearch=true
+org.moreunit.prefixes=
+org.moreunit.unitsourcefolder=lint-api\:src\:lint-check-tests\:src
+org.moreunit.useprojectsettings=true

@@ -1,0 +1,23 @@
+package test.pkg;
+
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.view.View;
+
+public class ApiCallTest5 extends View {
+    public ApiCallTest5(Context context) {
+        super(context);
+    }
+
+    @SuppressWarnings("unused")
+    @Override
+    @TargetApi(2)
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int measuredWidth = View.resolveSizeAndState(widthMeasureSpec,
+                widthMeasureSpec, 0);
+        int measuredHeight = resolveSizeAndState(heightMeasureSpec,
+                heightMeasureSpec, 0);
+        View.combineMeasuredStates(0, 0);
+        ApiCallTest5.combineMeasuredStates(0, 0);
+    }
+}

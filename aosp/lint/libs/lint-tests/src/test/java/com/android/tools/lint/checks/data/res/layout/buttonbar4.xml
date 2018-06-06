@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone" >
+
+    <RatingBar
+        android:id="@+id/review_form_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:numStars="5"
+        android:stepSize="1" />
+
+    <EditText
+        android:id="@+id/review_form_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/review_form_rating"
+        android:hint="@string/review_form_title_hint"
+        android:inputType="text|textCapSentences|textAutoCorrect"
+        android:lines="1" />
+
+    <EditText
+        android:id="@+id/review_form_review"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/review_form_title"
+        android:gravity="top"
+        android:hint="@string/review_form_content_hint"
+        android:inputType="text|textCapSentences|textAutoCorrect|textMultiLine"
+        android:minLines="3"
+        android:singleLine="false"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/review_form_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/review_form_review"
+        android:text="@string/submit"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/review_form_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/review_form_review"
+        android:layout_toLeftOf="@id/review_form_submit"
+        android:text="@string/cancel"
+        android:visibility="gone" />
+
+</RelativeLayout>

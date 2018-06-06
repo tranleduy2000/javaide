@@ -1,0 +1,18 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.content.Context;
+
+public class StringFormat5 extends Activity {
+    public final void test(Context context) {
+        Resources resources = getResources();
+        String string = resources.getString(R.string.VibrationLevelIs, resources.getString(PolarPoint.textResourceForIPS()));
+        System.out.println(string);
+    }
+
+    private static class PolarPoint {
+        public static int textResourceForIPS() {
+            return R.string.app_name;
+        }
+    }
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:other="http://schemas.foo.bar.com/other"
+    xmlns:foo="http://schemas.android.com/apk/res/foo"
+    android:id="@+id/newlinear"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <foo.bar.Baz
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button1"
+        foo:misc="Custom attribute"
+        tools:ignore="HardcodedText" >
+    </foo.bar.Baz>
+
+    <!-- Wrong namespace uri prefix: Don't warn -->
+    <foo.bar.Baz
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button1"
+        other:misc="Custom attribute"
+        tools:ignore="HardcodedText" >
+    </foo.bar.Baz>
+
+</LinearLayout>

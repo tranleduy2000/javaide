@@ -17,14 +17,11 @@
 package com.android.build.gradle.tasks.factory;
 
 import com.android.build.gradle.internal.CompileOptions;
-import com.android.build.gradle.internal.scope.ConventionMappingHelper;
 import com.android.sdklib.AndroidTargetHash;
 import com.android.sdklib.AndroidVersion;
 
 import org.gradle.api.JavaVersion;
 import org.gradle.api.tasks.compile.AbstractCompile;
-
-import java.util.concurrent.Callable;
 
 /**
  * Common code for configuring {@link AbstractCompile} instances.

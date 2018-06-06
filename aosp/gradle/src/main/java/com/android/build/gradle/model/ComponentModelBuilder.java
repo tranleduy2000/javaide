@@ -16,21 +16,12 @@
 
 package com.android.build.gradle.model;
 
-import static com.android.build.gradle.model.ModelConstants.ANDROID_BUILDER;
-import static com.android.build.gradle.model.ModelConstants.ANDROID_CONFIG_ADAPTOR;
-import static com.android.build.gradle.model.ModelConstants.BINARIES;
-import static com.android.build.gradle.model.ModelConstants.COMPONENTS;
-import static com.android.build.gradle.model.ModelConstants.EXTRA_MODEL_INFO;
-import static com.android.build.gradle.model.ModelConstants.IS_APPLICATION;
-import static com.android.build.gradle.model.ModelConstants.NDK_HANDLER;
-import static com.android.build.gradle.model.ModelConstants.TASK_MANAGER;
-
 import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.internal.ExtraModelInfo;
+import com.android.build.gradle.internal.NdkHandler;
 import com.android.build.gradle.internal.TaskManager;
 import com.android.build.gradle.internal.VariantManager;
 import com.android.build.gradle.internal.model.ModelBuilder;
-import com.android.build.gradle.internal.NdkHandler;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.model.AndroidProject;
 
@@ -42,11 +33,20 @@ import org.gradle.platform.base.BinaryContainer;
 import org.gradle.platform.base.ComponentSpecContainer;
 import org.gradle.tooling.provider.model.ToolingModelBuilder;
 
+import static com.android.build.gradle.model.ModelConstants.ANDROID_BUILDER;
+import static com.android.build.gradle.model.ModelConstants.ANDROID_CONFIG_ADAPTOR;
+import static com.android.build.gradle.model.ModelConstants.BINARIES;
+import static com.android.build.gradle.model.ModelConstants.COMPONENTS;
+import static com.android.build.gradle.model.ModelConstants.EXTRA_MODEL_INFO;
+import static com.android.build.gradle.model.ModelConstants.IS_APPLICATION;
+import static com.android.build.gradle.model.ModelConstants.NDK_HANDLER;
+import static com.android.build.gradle.model.ModelConstants.TASK_MANAGER;
+
 /**
  * A ToolingModelBuilder for creating AndroidProject in the component model plugin.
- *
+ * <p>
  * It retrieves models from ModelRegistry and uses ModelBuilder to create AndroidProject.
- *
+ * <p>
  * This model builder uses Gradle's internal API as a public API for create tooling model from
  * component model is not yet available.
  */
@@ -80,7 +80,7 @@ public class ComponentModelBuilder implements ToolingModelBuilder {
         DefaultAndroidComponentSpec componentSpec = (DefaultAndroidComponentSpec) registry.realize(
                 new ModelPath(COMPONENTS),
                 ModelType.of(ComponentSpecContainer.class))
-                        .get(AndroidComponentModelPlugin.COMPONENT_NAME);
+                .get(AndroidComponentModelPlugin.COMPONENT_NAME);
         VariantManager variantManager = componentSpec.getVariantManager();
         TaskManager taskManager = registry.realize(
                 new ModelPath(TASK_MANAGER),

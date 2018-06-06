@@ -1,0 +1,15 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
+
+public class MyActivityImpl extends FragmentActivity {
+	public void test() {
+		boolean isChanging = super.isChangingConfigurations();
+	}
+
+	@Override
+	public boolean isChangingConfigurations() {
+		return super.isChangingConfigurations();
+	}
+}

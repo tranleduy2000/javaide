@@ -33,16 +33,20 @@ import java.util.concurrent.Callable;
 
 /**
  * Represents a resource output from a variant configuration.
- *
+ * <p>
  * Depending on split requirements, there can be more than one output from aapt tool and each
  * output file is represented by an instance of this class.
  */
 public class ApkOutputFile implements OutputFile, Serializable {
 
-    @NonNull private final Collection<FilterData> filters;
-    @NonNull private final Collection<String> filterTypes;
-    @NonNull private final OutputFile.OutputType outputType;
-    @NonNull private final Callable<File> outputFile;
+    @NonNull
+    private final Collection<FilterData> filters;
+    @NonNull
+    private final Collection<String> filterTypes;
+    @NonNull
+    private final OutputFile.OutputType outputType;
+    @NonNull
+    private final Callable<File> outputFile;
 
     public ApkOutputFile(
             @NonNull OutputType outputType,
@@ -138,6 +142,7 @@ public class ApkOutputFile implements OutputFile, Serializable {
 
     /**
      * Returns the split identifier (like "hdpi" for a density split) given the split dimension.
+     *
      * @param filterType the string representation of {@see SplitType} split dimension used to
      *                   create the APK.
      * @return the split identifier or null if there was not split of that dimension.

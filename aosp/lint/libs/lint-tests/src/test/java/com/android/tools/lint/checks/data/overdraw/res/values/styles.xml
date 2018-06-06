@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MyTheme" parent="@android:style/Theme.Light">
+        <item name="android:windowBackground">@drawable/ic_launcher</item>
+    </style>
+
+    <style name="MyTheme.First">
+        <item name="android:textColor">#ff00ff00</item>
+    </style>
+
+    <style name="MyTheme.Second">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="MyTheme.Third">
+        <item name="android:textColor">#ff000000</item>
+    </style>
+
+    <style name="MyTheme.Fourth">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:textColor">#ff000000</item>
+    </style>
+
+</resources>

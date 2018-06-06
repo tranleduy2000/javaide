@@ -1,0 +1,135 @@
+package test.pkg;
+
+import android.os.Build;
+import android.widget.GridLayout;
+
+import static android.os.Build.VERSION;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES;
+import static android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+
+@SuppressWarnings({"UnusedDeclaration", "ConstantConditions"})
+public class VersionConditional1 {
+    public void test(boolean priority) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null).getOrientation(); // Flagged
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null).getOrientation(); // Flagged
+        }
+
+        if (SDK_INT >= ICE_CREAM_SANDWICH) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null).getOrientation(); // Flagged
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null).getOrientation(); // Flagged
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            new GridLayout(null).getOrientation(); // Flagged
+        } else {
+            new GridLayout(null).getOrientation(); // Not flagged
+        }
+
+        if (Build.VERSION.SDK_INT >= 14) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null).getOrientation(); // Flagged
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.ICE_CREAM_SANDWICH) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null).getOrientation(); // Flagged
+        }
+
+        // Nested conditionals
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (priority) {
+                new GridLayout(null).getOrientation(); // Flagged
+            } else {
+                new GridLayout(null).getOrientation(); // Flagged
+            }
+        } else {
+            new GridLayout(null).getOrientation(); // Flagged
+        }
+
+        // Nested conditionals 2
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            if (priority) {
+                new GridLayout(null).getOrientation(); // Not flagged
+            } else {
+                new GridLayout(null).getOrientation(); // Not flagged
+            }
+        } else {
+            new GridLayout(null); // Flagged
+        }
+    }
+
+    public void test2(boolean priority) {
+        if (android.os.Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null); // Flagged
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= 16) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null); // Flagged
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= 13) {
+            new GridLayout(null).getOrientation(); // Flagged
+        } else {
+            new GridLayout(null); // Flagged
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null); // Flagged
+        }
+
+        if (SDK_INT >= JELLY_BEAN) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null); // Flagged
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null); // Flagged
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            new GridLayout(null); // Flagged
+        } else {
+            new GridLayout(null).getOrientation(); // Not flagged
+        }
+
+        if (Build.VERSION.SDK_INT >= 16) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null); // Flagged
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
+            new GridLayout(null).getOrientation(); // Not flagged
+        } else {
+            new GridLayout(null); // Flagged
+        }
+    }
+}

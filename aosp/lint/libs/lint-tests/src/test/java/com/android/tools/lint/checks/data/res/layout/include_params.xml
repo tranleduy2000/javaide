@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Ok: No layout params -->
+    <include layout="@layout/myincluded" />
+
+    <!-- Ok: No layout params -->
+    <include
+        android:id="@+id/myInclude"
+        layout="@layout/myincluded"
+        android:gravity="left"
+        android:visibility="visible" />
+
+    <!-- Ok: No layout params -->
+    <include
+        layout="@layout/myincluded"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <!-- Ok: Specifies both width and height -->
+    <include
+        layout="@layout/myincluded"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:visibility="visible" />
+
+    <!-- Ok: ignored -->
+    <include
+        layout="@layout/myincluded"
+        android:layout_width="fill_parent"
+        android:layout_weight="1.5"
+        android:visibility="visible"
+        tools:ignore="IncludeLayoutParam" />
+
+    <!-- Wrong: Missing both -->
+    <include
+        layout="@layout/myincluded"
+        android:layout_margin="20dp"
+        android:layout_weight="1.5"
+        android:visibility="visible" />
+
+    <!-- Wrong: Missing width -->
+    <include
+        layout="@layout/myincluded"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:visibility="visible" />
+
+    <!-- Wrong: Missing height -->
+    <include
+        layout="@layout/myincluded"
+        android:layout_width="fill_parent"
+        android:layout_weight="1.5"
+        android:visibility="visible" />
+
+    <!-- Wrong: Specified only width -->
+    <include
+            android:id="@+id/myInclude"
+            layout="@layout/myincluded"
+            android:layout_width="fill_parent"
+            android:visibility="visible" />
+
+    <!-- Wrong: Specified only height -->
+    <include
+            android:id="@+id/myInclude"
+            layout="@layout/myincluded"
+            android:layout_height="fill_parent"
+            android:visibility="visible" />
+
+</LinearLayout>

@@ -1,0 +1,21 @@
+package test.bytecode;
+
+import android.util.FloatMath;
+
+//Test data for the MathDetector
+public class MathTest {
+    public float floatResult;
+    public double doubleResult;
+
+    public void floatToFloatTest(float x, double y, int z) {
+        floatResult = FloatMath.cos(x);
+        floatResult = FloatMath.sin((float) y);
+        floatResult = android.util.FloatMath.ceil((float) y);
+        System.out.println(FloatMath.floor(x));
+        System.out.println(FloatMath.sqrt(z));
+
+        // No warnings for plain math
+        floatResult = (float) Math.cos(x);
+        floatResult = (float) java.lang.Math.sin(x);
+    }
+}

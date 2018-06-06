@@ -1,0 +1,9 @@
+package android.support.v4.app;
+
+/** Stub to make unit tests able to resolve types without having a real dependency
+ * on the appcompat library */
+public abstract class DialogFragment extends Fragment {
+    public abstract void show(FragmentManager manager, String tag);
+    public abstract int show(FragmentTransaction transaction, String tag);
+    public abstract void dismiss();
+}

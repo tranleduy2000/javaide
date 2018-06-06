@@ -1,0 +1,4 @@
+package test.pkg;
+
+public class TestProvider2 extends TestProvider {
+}

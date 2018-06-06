@@ -1,0 +1,160 @@
+package test.pkg;
+
+import android.support.annotation.FloatRange;
+import android.support.annotation.IntRange;
+import android.support.annotation.Size;
+
+@SuppressWarnings("UnusedDeclaration")
+public class RangeTest {
+    public void printExact(@Size(5) String arg) { System.out.println(arg); }
+    public void printMin(@Size(min=5) String arg) { }
+    public void printMax(@Size(max=8) String arg) { }
+    public void printRange(@Size(min=4,max=6) String arg) { }
+    public void printExact(@Size(5) int[] arg) { }
+    public void printMin(@Size(min=5) int[] arg) { }
+    public void printMax(@Size(max=8) int[] arg) { }
+    public void printRange(@Size(min=4,max=6) int[] arg) { }
+    public void printMultiple(@Size(multiple=3) int[] arg) { }
+    public void printMinMultiple(@Size(min=4,multiple=3) int[] arg) { }
+    public void printAtLeast(@IntRange(from=4) int arg) { }
+    public void printAtMost(@IntRange(to=7) int arg) { }
+    public void printBetween(@IntRange(from=4,to=7) int arg) { }
+    public void printAtLeastInclusive(@FloatRange(from=2.5) float arg) { }
+    public void printAtLeastExclusive(@FloatRange(from=2.5,fromInclusive=false) float arg) { }
+    public void printAtMostInclusive(@FloatRange(to=7) double arg) { }
+    public void printAtMostExclusive(@FloatRange(to=7,toInclusive=false) double arg) { }
+    public void printBetweenFromInclusiveToInclusive(@FloatRange(from=2.5,to=5.0) float arg) { }
+    public void printBetweenFromExclusiveToInclusive(@FloatRange(from=2.5,to=5.0,fromInclusive=false) float arg) { }
+    public void printBetweenFromInclusiveToExclusive(@FloatRange(from=2.5,to=5.0,toInclusive=false) float arg) { }
+    public void printBetweenFromExclusiveToExclusive(@FloatRange(from=2.5,to=5.0,fromInclusive=false,toInclusive=false) float arg) { }
+
+    public void testLength() {
+        printExact("1234"); // ERROR
+        printExact("12345"); // OK
+        printExact("123456"); // ERROR
+
+        printMin("1234"); // ERROR
+        printMin("12345"); // OK
+        printMin("123456"); // OK
+
+        printMax("123456"); // OK
+        printMax("1234567"); // OK
+        printMax("12345678"); // OK
+        printMax("123456789"); // ERROR
+
+        printRange("123"); // ERROR
+        printRange("1234"); // OK
+        printRange("12345"); // OK
+        printRange("123456"); // OK
+        printRange("1234567"); // ERROR
+    }
+
+    public void testSize() {
+        printExact(new int[]{1, 2, 3, 4}); // ERROR
+        printExact(new int[]{1, 2, 3, 4, 5}); // OK
+        printExact(new int[]{1, 2, 3, 4, 5, 6}); // ERROR
+
+        printMin(new int[]{1, 2, 3, 4}); // ERROR
+        printMin(new int[]{1, 2, 3, 4, 5}); // OK
+        printMin(new int[]{1, 2, 3, 4, 5, 6}); // OK
+
+        printMax(new int[]{1, 2, 3, 4, 5, 6}); // OK
+        printMax(new int[]{1, 2, 3, 4, 5, 6, 7}); // OK
+        printMax(new int[]{1, 2, 3, 4, 5, 6, 7, 8}); // OK
+        printMax(new int[]{1, 2, 3, 4, 5, 6, 7, 8}); // OK
+        printMax(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9}); // ERROR
+
+        printRange(new int[] {1,2,3}); // ERROR
+        printRange(new int[] {1,2,3,4}); // OK
+        printRange(new int[] {1,2,3,4,5}); // OK
+        printRange(new int[] {1,2,3,4,5,6}); // OK
+        printRange(new int[] {1,2,3,4,5,6,7}); // ERROR
+
+        printMultiple(new int[] {1,2,3}); // OK
+        printMultiple(new int[] {1,2,3,4}); // ERROR
+        printMultiple(new int[] {1,2,3,4,5}); // ERROR
+        printMultiple(new int[] {1,2,3,4,5,6}); // OK
+        printMultiple(new int[] {1,2,3,4,5,6,7}); // ERROR
+
+        printMinMultiple(new int[] {1,2,3,4,5,6}); // OK
+        printMinMultiple(new int[]{1, 2, 3}); // ERROR
+    }
+
+    public void testIntRange() {
+        printAtLeast(3); // ERROR
+        printAtLeast(4); // OK
+        printAtLeast(5); // OK
+
+        printAtMost(5); // OK
+        printAtMost(6); // OK
+        printAtMost(7); // OK
+        printAtMost(8); // ERROR
+
+        printBetween(3); // ERROR
+        printBetween(4); // OK
+        printBetween(5); // OK
+        printBetween(6); // OK
+        printBetween(7); // OK
+        printBetween(8); // ERROR
+    }
+
+    public void testFloatRange() {
+        printAtLeastInclusive(2.49f); // ERROR
+        printAtLeastInclusive(2.5f); // OK
+        printAtLeastInclusive(2.6f); // OK
+
+        printAtLeastExclusive(2.49f); // ERROR
+        printAtLeastExclusive(2.5f); // ERROR
+        printAtLeastExclusive(2.501f); // OK
+
+        printAtMostInclusive(6.8f); // OK
+        printAtMostInclusive(6.9f); // OK
+        printAtMostInclusive(7.0f); // OK
+        printAtMostInclusive(7.1f); // ERROR
+
+        printAtMostExclusive(6.9f); // OK
+        printAtMostExclusive(6.99f); // OK
+        printAtMostExclusive(7.0f); // ERROR
+        printAtMostExclusive(7.1f); // ERROR
+
+        printBetweenFromInclusiveToInclusive(2.4f); // ERROR
+        printBetweenFromInclusiveToInclusive(2.5f); // OK
+        printBetweenFromInclusiveToInclusive(3f); // OK
+        printBetweenFromInclusiveToInclusive(5.0f); // OK
+        printBetweenFromInclusiveToInclusive(5.1f); // ERROR
+
+        printBetweenFromExclusiveToInclusive(2.4f); // ERROR
+        printBetweenFromExclusiveToInclusive(2.5f); // ERROR
+        printBetweenFromExclusiveToInclusive(5.0f); // OK
+        printBetweenFromExclusiveToInclusive(5.1f); // ERROR
+
+        printBetweenFromInclusiveToExclusive(2.4f); // ERROR
+        printBetweenFromInclusiveToExclusive(2.5f); // OK
+        printBetweenFromInclusiveToExclusive(3f); // OK
+        printBetweenFromInclusiveToExclusive(4.99f); // OK
+        printBetweenFromInclusiveToExclusive(5.0f); // ERROR
+
+        printBetweenFromExclusiveToExclusive(2.4f); // ERROR
+        printBetweenFromExclusiveToExclusive(2.5f); // ERROR
+        printBetweenFromExclusiveToExclusive(2.51f); // OK
+        printBetweenFromExclusiveToExclusive(4.99f); // OK
+        printBetweenFromExclusiveToExclusive(5.0f); // ERROR
+    }
+
+    public void testNegative() {
+        printBetween(-7); // ERROR
+        printAtLeastExclusive(-10.0f); // ERROR
+    }
+
+    public static final int MINIMUM = -1;
+    public static final int MAXIMUM = 42;
+    public void printIndirect(@IntRange(from = MINIMUM, to = MAXIMUM) int arg) { }
+    public static final int SIZE = 5;
+    public static void printIndirectSize(@Size(SIZE) String foo) { }
+
+    public void testIndirect() {
+        printIndirect(-2); // ERROR
+        printIndirect(43); // ERROR
+        printIndirectSize("1234567"); // ERROR
+    }
+}

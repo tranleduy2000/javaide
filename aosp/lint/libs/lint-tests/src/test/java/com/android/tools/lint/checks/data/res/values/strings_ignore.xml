@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Home -->
+    <string name="home_title">Home Sample</string>
+    <string name="show_all_apps" tools:ignore="MissingTranslation">All</string>
+
+    <!-- Home Menus -->
+    <string name="menu_wallpaper" tools:ignore="MissingTranslation">Wallpaper</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_settings" tools:ignore="all">Settings</string>
+    <string name="dummy" translatable="false">Ignore Me</string>
+
+    <!-- Wallpaper -->
+    <string name="wallpaper_instructions">Tap picture to set portrait wallpaper</string>
+</resources>

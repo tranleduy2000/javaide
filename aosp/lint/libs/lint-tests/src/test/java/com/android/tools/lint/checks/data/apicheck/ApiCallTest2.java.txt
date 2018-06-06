@@ -1,0 +1,9 @@
+package android.support.foo;
+
+import org.w3c.dom.DOMError;
+
+public class Foo {
+	private void foo() {
+		DOMError error = null; // API 8
+	}
+}

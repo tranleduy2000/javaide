@@ -1,0 +1,29 @@
+package test.pkg;
+
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+
+@SuppressWarnings("unused")
+public class CommitTest2 {
+	private void test() {
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		MyDialogFragment fragment = new MyDialogFragment();
+		fragment.show(transaction, "MyTag");
+	}
+
+	private FragmentManager getFragmentManager() {
+		return null;
+	}
+
+	public static class MyDialogFragment extends DialogFragment {
+		public MyDialogFragment() {
+		}
+
+		@Override
+		public int show(FragmentTransaction transaction, String tag) {
+			return super.show(transaction, tag);
+		}
+	}
+}

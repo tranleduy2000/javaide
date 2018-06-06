@@ -1,0 +1,11 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+}
+
+final GPS_VERSION = '5.0.77'
+
+dependencies {
+    compile "com.google.android.gms:play-services-wearable:${GPS_VERSION}"
+}

@@ -1,0 +1,48 @@
+package test.pkg;
+
+import android.animation.RectEvaluator;
+import android.graphics.Rect;
+import android.os.Build;
+
+@SuppressWarnings("unused")
+public class ConditionalApiTest {
+    private void test(Rect rect) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            new RectEvaluator(rect); // OK
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (rect != null) {
+                new RectEvaluator(rect); // OK
+            }
+        }
+    }
+
+    private void test2(Rect rect) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            new RectEvaluator(rect); // OK
+        }
+    }
+
+    private void test3(Rect rect) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            new RectEvaluator(); // ERROR
+        }
+    }
+
+    private void test4(Rect rect) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            System.out.println("Something");
+            new RectEvaluator(rect); // OK
+        } else {
+            new RectEvaluator(rect); // ERROR
+        }
+    }
+
+    private void test5(Rect rect) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
+            new RectEvaluator(rect); // ERROR
+        } else {
+            new RectEvaluator(rect); // ERROR
+        }
+    }
+}

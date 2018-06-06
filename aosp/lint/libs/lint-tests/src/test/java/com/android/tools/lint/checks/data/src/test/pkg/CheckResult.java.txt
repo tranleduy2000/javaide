@@ -1,0 +1,23 @@
+package test.pkg;
+
+import android.support.annotation.CheckResult;
+
+public class CheckResultTest {
+  private void foo() {
+      checkSomething();
+      checkSomethingElse();
+      System.out.println(checkSomething());
+      System.out.println(checkSomethingElse());
+      String s1 = checkSomething();
+      String s2 = checkSomethingElse();
+  }
+
+  @CheckResult
+  private String checkSomething() {
+      return "";
+  }
+
+  private String checkSomethingElse() {
+      return "";
+  }
+}

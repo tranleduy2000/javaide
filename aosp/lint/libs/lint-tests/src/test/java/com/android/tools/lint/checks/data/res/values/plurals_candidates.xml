@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Warnings: should be plurals instead -->
+    <string name="lockscreen_too_many_failed_attempts_dialog_message1">
+        You have incorrectly drawn your unlock pattern %d times.
+        \n\nTry again in >%d seconds.
+    </string>
+    <!-- Same as previous string, but using xliff which means that the formatting strings
+         appear as separate DOM element nodes -->
+    <string name="lockscreen_too_many_failed_attempts_dialog_message2">
+        You have incorrectly drawn your unlock pattern <xliff:g id="number">%d</xliff:g> times.
+        \n\nTry again in <xliff:g id="number">%d</xliff:g> seconds.
+    </string>
+    <string name="win_dialog">You won in %1$s and %2$d moves!</string>
+    <string name="countdown_complete_sub">Timer was paused %d times</string>
+    <string name="service_gpsstatus">Logging: %s (%s with %d satellites)</string>
+    <string name="sync_log_clocks_unsynchronized">The clock on your device is incorrect by %1$d seconds%2$s;</string>
+    <string name="EPr_manage_purge_deleted_status">Purged %d tasks!</string>
+
+    <!-- Not needing plurals -->
+    <string name="not_plural1">Ends with %d</string>
+    <string name="not_plural2">Ends with punctuation: %d.</string>
+    <string name="not_plural3">Ends with punctuation: %d !</string>
+    <string name="not_plural4">Ends with non-letter: %d 3.14</string>
+    <string name="not_plural5">Ends with unit: %d KB</string>
+    <string name="not_plural6">Ends with unit: %d MiB.</string>
+    <string name="not_plural7">Ends with unit: Elevation gain: %1$d m (%2$d ft)</string>
+    <string name="not_plural8">Uses floating point: %.2f entries.</string>
+    <string name="not_plural9">Uses floating point: %.2f entries.</string>
+    <string name="not_plural10">Uses string: %s entries.</string>
+</resources>

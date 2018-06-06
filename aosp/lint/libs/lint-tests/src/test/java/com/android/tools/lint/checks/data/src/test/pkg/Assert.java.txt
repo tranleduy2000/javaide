@@ -1,0 +1,27 @@
+package test.pkg;
+
+import android.annotations.tools.SuppressLint;
+
+public class Assert {
+    public Assert(int param, Object param2, Object param3) {
+        assert false;                              // ERROR
+        assert param > 5 : "My description";       // ERROR
+        assert param2 == param3;                   // ERROR
+        assert param2 != null && param3 == param2; // ERROR
+        assert true;                               // OK
+        assert param2 == null;                     // OK
+        assert param2 != null && param3 == null;   // OK
+        assert param2 == null && param3 != null;   // OK
+        assert param2 != null && param3 != null;   // OK
+        assert null != param2;                     // OK
+        assert param2 != null;                     // OK
+        assert param2 != null : "My description";  // OK
+        assert checkSuppressed(5) != null;         // OK
+    }
+
+    @SuppressLint("Assert")
+    public Object checkSuppressed(int param) {
+        assert param > 5 : "My description";
+        return null;
+    }
+}

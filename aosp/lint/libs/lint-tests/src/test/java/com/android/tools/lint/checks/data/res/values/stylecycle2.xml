@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="mystyle1" parent="@style/mystyle2">
+        <item name="android:textColor">#ff0000</item>
+    </style>
+    <style name="mystyle2" parent="@style/mystyle3">
+        <item name="android:textColor">#ff0ff</item>
+    </style>
+    <style name="mystyle3" parent="@style/mystyle1">
+        <item name="android:textColor">#ffff00</item>
+    </style>
+</resources>

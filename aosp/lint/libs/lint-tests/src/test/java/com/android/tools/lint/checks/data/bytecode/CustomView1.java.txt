@@ -1,0 +1,9 @@
+package test.pkg;
+
+import android.view.View;
+
+public class CustomView1 extends View {
+	public CustomView1() {
+		super(null);
+	}
+}

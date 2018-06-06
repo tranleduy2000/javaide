@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="toast_percent_copy_quota_used">
+        You\'ve used about <xliff:g id="copyQuotaUsed">%d</xliff:g>%% of your
+        quota</string>
+</resources>

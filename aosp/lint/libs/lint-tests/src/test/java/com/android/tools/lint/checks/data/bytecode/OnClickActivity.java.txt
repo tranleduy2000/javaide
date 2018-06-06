@@ -1,0 +1,48 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.util.Log;
+import android.view.View;
+
+/** Test data for the OnClickDetector */
+public class OnClickActivity extends Activity {
+    // Wrong argument type 1
+    public void wrong1() {
+    }
+
+    // Wrong argument type 2
+    public void wrong2(int i) {
+    }
+
+    // Wrong argument type 3
+    public void wrong3(View view, int i) {
+    }
+
+    // Wrong return type
+    public int wrong4(View view) {
+        return 0;
+    }
+
+    // Wrong modifier (not public)
+    void wrong5(View view) {
+    }
+
+    // Wrong modifier (is static)
+    public static void wrong6(View view) {
+    }
+
+    public void ok(View view) {
+    }
+
+    // Ok: Unicode escapes
+    public void my\u1234method(View view) {
+    }
+
+    // Typo
+    public void simple_tyop(View view) {
+    }
+
+    void wrong7(View view) {
+        Log.i("x", "wrong7: called");
+    }
+}

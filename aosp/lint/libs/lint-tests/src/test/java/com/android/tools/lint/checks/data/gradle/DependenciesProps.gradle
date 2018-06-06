@@ -1,0 +1,10 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.1"
+}
+
+dependencies {
+    compile group: 'com.android.support', name: 'support-v4', version: '19.0'
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+  <plurals name="draft">
+    <item quantity="one">"草稿"</item>
+    <item quantity="other">"草稿"</item>
+  </plurals>
+  <plurals name="title_day_dialog_content">
+    <item quantity="one">"天"</item>
+    <item quantity="other">"天"</item>
+  </plurals>
+</resources>

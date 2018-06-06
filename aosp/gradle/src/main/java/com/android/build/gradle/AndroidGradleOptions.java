@@ -93,11 +93,16 @@ public class AndroidGradleOptions {
     }
 
     public static class SigningOptions {
-        @NonNull public final String storeFile;
-        @NonNull public final String storePassword;
-        @NonNull public final String keyAlias;
-        @NonNull public final String keyPassword;
-        @Nullable public final String storeType;
+        @NonNull
+        public final String storeFile;
+        @NonNull
+        public final String storePassword;
+        @NonNull
+        public final String keyAlias;
+        @NonNull
+        public final String keyPassword;
+        @Nullable
+        public final String storeType;
 
         public SigningOptions(
                 @NonNull String storeFile,

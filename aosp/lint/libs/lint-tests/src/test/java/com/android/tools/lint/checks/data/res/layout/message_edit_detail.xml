@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res/foo.bar.baz"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:orientation="horizontal"
+        app:useDefaultMargins="true">
+
+        <TextView
+            app:layout_rowSpan="1"
+            android:text="@string/birthdays"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" />
+        <TextView
+            android:text="@string/abs__action_bar_home_description"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" />
+        <TextView
+            android:text="@string/abs__action_mode_done"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" />
+    </android.support.v7.widget.GridLayout>
+
+    <EditText
+        android:id="@+id/editTextView"
+        android:visibility="invisible"
+        android:inputType="textMultiLine|textLongMessage|textAutoCorrect"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

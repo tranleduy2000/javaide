@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="s1">
+
+           wo befindet eine ip
+
+           </string>
+    <string name="s2">(Authorisierungscode!)</string>
+    <string name="s3">   zurück gefoobaren!</string>
+    <!-- escaped separator -->
+    <string name="issue39599">"ü test\nciht zu"</string>
+
+</resources>

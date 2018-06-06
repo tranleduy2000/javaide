@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lint-checks"/>
+	<classpathentry exported="true" kind="var" path="ANDROID_SRC/prebuilts/tools/common/m2/repository/org/eclipse/jdt/core/compiler/ecj/4.4.2/ecj-4.4.2.jar" sourcepath="/ANDROID_SRC/prebuilts/tools/common/m2/repository/org/eclipse/jdt/core/compiler/ecj/4.4.2/ecj-4.4.2-sources.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

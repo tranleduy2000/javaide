@@ -1,0 +1,37 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CursorAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+@SuppressWarnings("unused")
+public abstract class ViewTagTest {
+    public View newView(Context context, ViewGroup group, Cursor cursor1,
+            MatrixCursor cursor2) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(android.R.layout.activity_list_item, null);
+        view.setTag(android.R.id.background, "Some random tag"); // OK
+        view.setTag(android.R.id.button1, group); // ERROR
+        view.setTag(android.R.id.icon, view.findViewById(android.R.id.icon)); // ERROR
+        view.setTag(android.R.id.icon1, cursor1); // ERROR
+        view.setTag(android.R.id.icon2, cursor2); // ERROR
+        view.setTag(android.R.id.copy, new MyViewHolder()); // ERROR
+        return view;
+    }
+
+    @SuppressLint("ViewTag")
+    public void checkSuppress(Context context, View view) {
+        view.setTag(android.R.id.icon, view.findViewById(android.R.id.icon));
+    }
+
+    private class MyViewHolder {
+        View view;
+    }
+}

@@ -30,6 +30,7 @@ public interface AndroidSourceFile {
 
     /**
      * Returns the file.
+     *
      * @return the file input.
      */
     File getSrcFile();

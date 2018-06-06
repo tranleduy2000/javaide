@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'sdk-java-lib'
+
+group = 'com.android.tools.lint'
+archivesBaseName = 'lint-checks'
+version = rootProject.ext.baseVersion
+
+dependencies {
+    compile project(':base:lint-api')
+    compile 'org.ow2.asm:asm-analysis:5.0.3'
+}
+
+sourceSets {
+    main.resources.srcDir 'src/main/java'
+    test.resources.srcDir 'src/test/java'
+}
+
+project.ext.pomName = 'Android Lint Checks'
+project.ext.pomDesc = 'Checks for Android Lint'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"
+

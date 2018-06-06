@@ -1,0 +1,9 @@
+package test.pkg;
+
+import android.database.sqlite.SQLiteStatement;
+
+public class CloseTest {
+    public void close(SQLiteStatement statement) {
+        statement.close();
+    }
+}

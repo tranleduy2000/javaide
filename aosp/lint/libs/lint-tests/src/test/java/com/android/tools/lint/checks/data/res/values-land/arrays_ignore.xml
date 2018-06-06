@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <array name="signal_strength" tools:ignore="InconsistentArrays">
+        <item>@drawable/ic_setups_signal_0</item>
+        <item>@drawable/ic_setups_signal_1</item>
+        <item>@drawable/ic_setups_signal_2</item>
+        <item>@drawable/ic_setups_signal_3</item>
+        <item>@drawable/ic_setups_signal_4</item>
+        <item>@drawable/extra</item>
+    </array>
+</resources>
+

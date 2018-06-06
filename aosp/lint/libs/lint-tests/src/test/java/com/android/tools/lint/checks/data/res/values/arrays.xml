@@ -1,0 +1,18 @@
+<resources>
+    <!-- Choices for Locations in SetupWizard's Set Time and Data Activity -->
+    <string-array name="security_questions">
+        <item>Favorite food?</item>
+        <item>City of birth?</item>
+        <item>Best childhood friend\'s name?</item>
+        <item>Highschool name?</item>
+    </string-array>
+
+    <array name="signal_strength">
+        <item>@drawable/ic_setups_signal_0</item>
+        <item>@drawable/ic_setups_signal_1</item>
+        <item>@drawable/ic_setups_signal_2</item>
+        <item>@drawable/ic_setups_signal_3</item>
+        <item>@drawable/ic_setups_signal_4</item>
+    </array>
+</resources>
+

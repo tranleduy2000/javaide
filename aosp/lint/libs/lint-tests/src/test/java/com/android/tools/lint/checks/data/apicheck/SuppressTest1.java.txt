@@ -1,0 +1,137 @@
+package test.pkg;
+
+import org.w3c.dom.DOMError;
+import org.w3c.dom.DOMErrorHandler;
+import org.w3c.dom.DOMLocator;
+
+import android.view.ViewGroup.LayoutParams;
+import android.annotations.tools.SuppressLint;
+import android.app.Activity;
+import android.app.ApplicationErrorReport;
+import android.app.ApplicationErrorReport.BatteryInfo;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
+import android.widget.Chronometer;
+import android.widget.GridLayout;
+import dalvik.bytecode.OpcodeInfo;
+
+public class SuppressTest1 extends Activity {
+	@SuppressLint("all")
+	public void method1(Chronometer chronometer, DOMLocator locator) {
+		// Virtual call
+		getActionBar(); // API 11
+
+		// Class references (no call or field access)
+		DOMError error = null; // API 8
+		Class<?> clz = DOMErrorHandler.class; // API 8
+
+		// Method call
+		chronometer.getOnChronometerTickListener(); // API 3
+
+		// Inherited method call (from TextView
+		chronometer.setTextIsSelectable(true); // API 11
+
+		// Field access
+		int field = OpcodeInfo.MAXIMUM_VALUE; // API 11
+		int fillParent = LayoutParams.FILL_PARENT; // API 1
+		// This is a final int, which means it gets inlined
+		int matchParent = LayoutParams.MATCH_PARENT; // API 8
+		// Field access: non final
+		BatteryInfo batteryInfo = getReport().batteryInfo;
+
+		// Enum access
+		Mode mode = PorterDuff.Mode.OVERLAY; // API 11
+	}
+
+	@SuppressLint("NewApi")
+	public void method2(Chronometer chronometer, DOMLocator locator) {
+		// Virtual call
+		getActionBar(); // API 11
+
+		// Class references (no call or field access)
+		DOMError error = null; // API 8
+		Class<?> clz = DOMErrorHandler.class; // API 8
+
+		// Method call
+		chronometer.getOnChronometerTickListener(); // API 3
+
+		// Inherited method call (from TextView
+		chronometer.setTextIsSelectable(true); // API 11
+
+		// Field access
+		int field = OpcodeInfo.MAXIMUM_VALUE; // API 11
+		int fillParent = LayoutParams.FILL_PARENT; // API 1
+		// This is a final int, which means it gets inlined
+		int matchParent = LayoutParams.MATCH_PARENT; // API 8
+		// Field access: non final
+		BatteryInfo batteryInfo = getReport().batteryInfo;
+
+		// Enum access
+		Mode mode = PorterDuff.Mode.OVERLAY; // API 11
+	}
+
+	@SuppressLint("SomethingElse")
+	public void method3(Chronometer chronometer, DOMLocator locator) {
+		// Virtual call
+		getActionBar(); // API 11
+
+		// Class references (no call or field access)
+		DOMError error = null; // API 8
+		Class<?> clz = DOMErrorHandler.class; // API 8
+
+		// Method call
+		chronometer.getOnChronometerTickListener(); // API 3
+
+		// Inherited method call (from TextView
+		chronometer.setTextIsSelectable(true); // API 11
+
+		// Field access
+		int field = OpcodeInfo.MAXIMUM_VALUE; // API 11
+		int fillParent = LayoutParams.FILL_PARENT; // API 1
+		// This is a final int, which means it gets inlined
+		int matchParent = LayoutParams.MATCH_PARENT; // API 8
+		// Field access: non final
+		BatteryInfo batteryInfo = getReport().batteryInfo;
+
+		// Enum access
+		Mode mode = PorterDuff.Mode.OVERLAY; // API 11
+	}
+
+	@SuppressLint({"SomethingElse", "NewApi"})
+	public void method4(Chronometer chronometer, DOMLocator locator) {
+		// Virtual call
+		getActionBar(); // API 11
+
+		// Class references (no call or field access)
+		DOMError error = null; // API 8
+		Class<?> clz = DOMErrorHandler.class; // API 8
+
+		// Method call
+		chronometer.getOnChronometerTickListener(); // API 3
+
+		// Inherited method call (from TextView
+		chronometer.setTextIsSelectable(true); // API 11
+
+		// Field access
+		int field = OpcodeInfo.MAXIMUM_VALUE; // API 11
+		int fillParent = LayoutParams.FILL_PARENT; // API 1
+		// This is a final int, which means it gets inlined
+		int matchParent = LayoutParams.MATCH_PARENT; // API 8
+		// Field access: non final
+		BatteryInfo batteryInfo = getReport().batteryInfo;
+
+		// Enum access
+		Mode mode = PorterDuff.Mode.OVERLAY; // API 11
+	}
+
+	// Return type
+	@SuppressLint("NewApi")
+	GridLayout getGridLayout() { // API 14
+		return null;
+	}
+
+	@SuppressLint("all")
+	private ApplicationErrorReport getReport() {
+		return null;
+	}
+}

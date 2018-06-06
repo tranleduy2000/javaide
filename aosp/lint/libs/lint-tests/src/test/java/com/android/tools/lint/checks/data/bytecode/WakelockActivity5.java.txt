@@ -1,0 +1,19 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.os.PowerManager;
+
+public class WakelockActivity5 extends Activity {
+    void wrongFlow() {
+        PowerManager manager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock lock = 
+                manager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Test");
+        lock.acquire();
+        randomCall();
+        lock.release(); // Should be in finally block
+    }
+
+    static void randomCall() {
+        System.out.println("test");
+    }
+}

@@ -1,0 +1,20 @@
+package foo.bar;
+
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.telephony.SmsManager;
+
+public class NonInternationalizedSmsDetectorTest {
+    private void sendLocalizedMessage(Context context) {
+  // Don't warn here
+  SmsManager sms = SmsManager.getDefault();
+  sms.sendTextMessage("+1234567890", null, null, null, null);
+    }
+
+    private void sendAlternativeCountryPrefix(Context context) {
+  // Do warn here
+  SmsManager sms = SmsManager.getDefault();
+  sms.sendMultipartTextMessage("001234567890", null, null, null, null);
+    }
+}

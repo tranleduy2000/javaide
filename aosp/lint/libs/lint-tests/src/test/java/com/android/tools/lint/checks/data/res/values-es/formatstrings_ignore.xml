@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="hello" tools:ignore="StringFormatMatches">%1$d</string>
+    <string name="hello2" tools:ignore="StringFormatMatches,StringFormatCount">%3$d: %1$s, %2$s?</string>
+</resources>

@@ -1,0 +1,18 @@
+apply plugin: 'com.android.application'
+
+android {
+    defaultConfig {
+        // Ok: not octal
+        versionCode 1
+        versionCode 10
+        versionCode 100
+        // ok: octal == decimal
+        versionCode 01
+
+        // Errors
+        versionCode 010
+
+        // Lint Groovy Bug:
+        versionCode 01 // line suffix comments are not handled correctly
+    }
+}

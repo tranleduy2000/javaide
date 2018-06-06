@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hour_minute_24">%H:%M</string>
+    <string name="numeric_date">%-m/%-e/%Y</string>
+    <string name="month_day_year">%B %-e, %Y</string>
+</resources>

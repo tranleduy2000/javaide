@@ -1,0 +1,21 @@
+package test.pkg;
+
+import android.annotations.tools.SuppressLint;
+import android.app.Activity;
+import android.app.ApplicationErrorReport;
+import android.app.ApplicationErrorReport.BatteryInfo;
+
+public class SuppressTest4 extends Activity {
+	public void method() {
+
+		// These annotations within the method do not end up
+		// in the bytecode, so they have no effect. We need a
+		// lint annotation check to find these.
+
+		@SuppressLint("NewApi")
+		ApplicationErrorReport report = null;
+
+		@SuppressLint("NewApi")
+		BatteryInfo batteryInfo = report.batteryInfo;
+	}
+}

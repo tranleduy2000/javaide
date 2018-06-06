@@ -1,0 +1,16 @@
+package test.pkg;
+
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+
+public class CipherGetInstanceTest {
+    public void test() throws NoSuchPaddingException, NoSuchAlgorithmException {
+        Cipher des = Cipher.getInstance(Constants.DES);
+    }
+
+    public static class Constants {
+        public static final String DES = "DES/ECB/NoPadding";
+    }
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LibraryProject</string>
+    <string name="string1">String 1</string>
+    <string name="string2">String 2</string>
+    <string name="string3">String 3</string>
+
+</resources>

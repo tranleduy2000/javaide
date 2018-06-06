@@ -1,0 +1,11 @@
+package test.pkg;
+
+import android.app.Activity;
+
+public class TransactionTest extends Activity {
+    void test() {
+        android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        android.app.FragmentTransaction transaction2 = getFragmentManager().beginTransaction();
+        transaction.disallowAddToBackStack().commit();
+    }
+}

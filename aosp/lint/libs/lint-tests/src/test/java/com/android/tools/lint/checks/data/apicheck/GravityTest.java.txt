@@ -1,0 +1,18 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.view.Gravity;
+import android.widget.TextView;
+
+public class GravityTest extends Activity {
+    @SuppressLint("RtlHardcoded")
+    public void test() {
+        TextView textView = new TextView(this);
+        textView.setGravity(Gravity.LEFT);
+        textView.setGravity(Gravity.RIGHT);
+        textView.setGravity(Gravity.START);
+        textView.setGravity(Gravity.END);
+        textView.setGravity(Gravity.END);
+    }
+}

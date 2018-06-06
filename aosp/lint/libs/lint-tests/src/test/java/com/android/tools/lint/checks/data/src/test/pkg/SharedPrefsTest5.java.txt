@@ -1,0 +1,54 @@
+package test.pkg;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+
+@SuppressWarnings("unused")
+class SharedPrefsTest5 {
+    SharedPreferences mPreferences;
+    private static final String PREF_FOO = "foo";
+    private static final String PREF_BAZ = "bar";
+
+    private void wrong() {
+        // Field reference to preferences
+        mPreferences.edit().putString(PREF_FOO, "bar");
+        mPreferences.edit().remove(PREF_BAZ).remove(PREF_FOO);
+    }
+
+    private void ok() {
+        mPreferences.edit().putString(PREF_FOO, "bar").commit();
+        mPreferences.edit().remove(PREF_BAZ).remove(PREF_FOO).commit();
+    }
+
+    private void wrong2(SharedPreferences preferences) {
+        preferences.edit().putString(PREF_FOO, "bar");
+        preferences.edit().remove(PREF_BAZ).remove(PREF_FOO);
+    }
+
+    private void wrong3(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences.edit().putString(PREF_FOO, "bar");
+        preferences.edit().remove(PREF_BAZ).remove(PREF_FOO);
+    }
+
+    private void wrong4(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Editor editor = preferences.edit().putString(PREF_FOO, "bar");
+    }
+
+    private void ok2(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences.edit().putString(PREF_FOO, "bar").commit();
+    }
+
+    private final SharedPreferences mPrefs;
+
+    public void ok3() {
+        final SharedPreferences.Editor editor = mPrefs.edit().putBoolean(
+                PREF_FOO, true);
+        editor.putString(PREF_BAZ, "");
+        editor.apply();
+    }
+}

@@ -1,0 +1,25 @@
+package test.pkg;
+
+import android.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.view.ActionMode;
+
+public class IntermediateActivity extends ActionBarActivity {
+    protected ActionBar getSupportActionBar() {
+        return null;
+    }
+
+    public ActionMode startSupportActionMode(ActionMode.Callback callback) {
+        return null;
+    }
+
+    public boolean supportRequestWindowFeature(int featureId) {
+        return true;
+    }
+
+    public void setSupportProgressBarIndeterminateVisibility(boolean visible) {
+    }
+
+    public void setSupportProgressBarIndeterminate(boolean indeterminate) {
+    }
+}

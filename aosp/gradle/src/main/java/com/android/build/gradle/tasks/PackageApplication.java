@@ -1,7 +1,5 @@
 package com.android.build.gradle.tasks;
 
-import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
-
 import com.android.annotations.NonNull;
 import com.android.build.gradle.internal.annotations.ApkFile;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
@@ -23,7 +21,6 @@ import com.android.utils.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 
-import org.codehaus.groovy.runtime.StringGroovyMethods;
 import org.gradle.api.Task;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.logging.Logger;
@@ -43,6 +40,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
+import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
 
 @ParallelizableTask
 public class PackageApplication extends IncrementalTask implements FileSupplier {
@@ -440,7 +439,7 @@ public class PackageApplication extends IncrementalTask implements FileSupplier 
                 final ApkVariantOutputData variantOutputData) {
             BaseVariantData<?> variantData = (BaseVariantData<?>) variantOutputData.variantData;
             ShrinkResources task = scope.getGlobalScope().getProject().getTasks()
-                    .create("shrink" + StringGroovyMethods
+                    .create("shrink" + StringHelper
                             .capitalize(variantOutputData.getFullName())
                             + "Resources", ShrinkResources.class);
             task.setAndroidBuilder(scope.getGlobalScope().getAndroidBuilder());

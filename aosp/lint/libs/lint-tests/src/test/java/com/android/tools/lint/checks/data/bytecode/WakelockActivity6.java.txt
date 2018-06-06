@@ -1,0 +1,71 @@
+package test.pkg;
+
+import com.example.test3.BuildConfig;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;;
+
+public class WakelockActivity6 extends Activity {
+    void wrongFlow1() {
+        PowerManager manager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock lock =
+                manager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Test");
+        lock.acquire();
+        if (getTaskId() == 50) {
+            randomCall();
+        } else {
+            lock.release(); // Wrong
+        }
+    }
+
+    void wrongFlow2(PowerManager.WakeLock lock) {
+        lock.acquire();
+        if (getTaskId() == 50) {
+            randomCall();
+        } else {
+            lock.release(); // Wrong
+        }
+    }
+
+    void okFlow1(WakeLock lock) {
+        lock.acquire();
+        try {
+            randomCall();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.release(); // OK
+        }
+    }
+
+    public void checkNullGuard(WakeLock lock) {
+        lock.acquire();
+        if (lock != null) {
+            lock.release(); // OK
+        }
+    }
+
+    @SuppressLint("Wakelock")
+    public void checkDisabled1(PowerManager.WakeLock lock) {
+        lock.acquire();
+        randomCall();
+        lock.release(); // Wrong, but disabled
+    }
+
+    void wrongFlow3(WakeLock lock) {
+        int id = getTaskId();
+        lock.acquire();
+        if (id < 50) {
+            System.out.println(1);
+        } else {
+            System.out.println(2);
+        }
+        lock.release(); // Wrong
+    }
+
+    static void randomCall() {
+        System.out.println("test");
+    }
+}

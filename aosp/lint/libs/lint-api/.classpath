@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="Android.mk" kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/common"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/sdk-common"/>
+	<classpathentry exported="true" kind="var" path="ANDROID_SRC/prebuilts/tools/common/m2/repository/org/ow2/asm/asm/5.0.3/asm-5.0.3.jar" sourcepath="/ANDROID_SRC/prebuilts/tools/common/m2/repository/org/ow2/asm/asm/5.0.3/asm-5.0.3-sources.jar"/>
+	<classpathentry exported="true" kind="var" path="ANDROID_SRC/prebuilts/tools/common/m2/repository/org/ow2/asm/asm-tree/5.0.3/asm-tree-5.0.3.jar" sourcepath="/ANDROID_SRC/prebuilts/tools/common/m2/repository/org/ow2/asm/asm-tree/5.0.3/asm-tree-5.0.3-sources.jar"/>
+	<classpathentry exported="true" kind="var" path="ANDROID_SRC/prebuilts/tools/common/m2/repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3.jar" sourcepath="/ANDROID_SRC/prebuilts/tools/common/m2/repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3-sources.jar"/>
+	<classpathentry exported="true" kind="var" path="ANDROID_SRC/prebuilts/tools/common/builder-model/builder-model-1.1.0-rc1.jar" sourcepath="/ANDROID_SRC/prebuilts/tools/common/builder-model/builder-model-1.1.0-rc1-sources.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/layoutlib-api"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/sdklib"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

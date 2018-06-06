@@ -1,0 +1,32 @@
+package test.pkg;
+
+import com.example.includetest.R;
+
+import static android.view.Gravity.LEFT;
+import static foo.bar.RIGHT;
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.view.Gravity;
+
+@SuppressWarnings("unused")
+public class GravityTest extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        TextView t1 = new TextView(context);
+        t1.setHeight(desiredHeight);
+        t1.setText(text);
+        t1.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        t1.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        final ViewGroup.LayoutParams lp1 = new LinearLayout.LayoutParams(
+                 0,
+                 ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+        int notAnError = Other.LEFT;
+        t1.setGravity(LEFT | RIGHT); // static imports
+    }
+}

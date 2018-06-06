@@ -1,0 +1,12 @@
+package test.pkg;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.Button;
+
+public class CustomView2 extends Button {
+	public CustomView2(boolean foo,
+			Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+	}
+}

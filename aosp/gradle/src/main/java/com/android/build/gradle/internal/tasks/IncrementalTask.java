@@ -49,7 +49,7 @@ public abstract class IncrementalTask extends BaseTask {
      * Calls out to the doTaskAction as needed.
      */
     @TaskAction
-    void taskAction() throws IOException {
+    public void taskAction() throws IOException {
         doFullTaskAction();
     }
 

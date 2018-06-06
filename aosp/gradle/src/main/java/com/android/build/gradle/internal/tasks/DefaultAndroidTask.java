@@ -22,10 +22,10 @@ import com.android.builder.Version;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 
-public class DefaultAndroidTask extends DefaultTask {
-
+public abstract class DefaultAndroidTask extends DefaultTask {
     @Nullable
     private String variantName;
+
 
     @Nullable
     public String getVariantName() {
@@ -38,10 +38,12 @@ public class DefaultAndroidTask extends DefaultTask {
 
     /**
      * Force tasks to be re-run if the Android plugin version changes.
+     *
      * @return the plugin version, of the form "x.y.z"
      */
     @Input
     public String getAndroidGradlePluginVersion() {
         return Version.ANDROID_GRADLE_PLUGIN_VERSION;
     }
+
 }

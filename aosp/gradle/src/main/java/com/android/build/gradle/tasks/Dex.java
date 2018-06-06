@@ -14,12 +14,6 @@ import com.android.ide.common.process.ProcessException;
 import com.android.sdklib.repository.FullRevision;
 import com.android.utils.FileUtils;
 
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.InputFiles;
-import org.gradle.api.tasks.Nested;
-import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -31,27 +25,19 @@ import java.util.concurrent.Callable;
 import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
 
 public class Dex extends BaseTask {
-    @OutputDirectory
+
     private File outputFolder;
-    @Input
     private List<String> additionalParameters;
-    @InputFiles
     private Collection<File> inputFiles;
-    @InputDirectory
     private File inputDir;
-    @InputFiles
     private Collection<File> libraries;
-    @Nested
+
     private DexOptions dexOptions;
-    @Input
     private boolean multiDexEnabled = false;
-    @Input
     private boolean optimize = true;
-    @InputFile
     private File mainDexListFile;
     private File tmpFolder;
 
-    @Input
     public FullRevision getBuildToolsVersion() {
         return getBuildTools().getRevision();
     }

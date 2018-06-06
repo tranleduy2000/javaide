@@ -36,8 +36,6 @@ import com.android.utils.FileUtils;
 import com.google.common.collect.Lists;
 
 import org.gradle.api.file.FileTree;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.util.PatternSet;
@@ -58,16 +56,23 @@ public class AidlCompile extends IncrementalTask {
     // ----- PUBLIC TASK API -----
     private File sourceOutputDir;
     private File aidlParcelableDir;
-
-    // ----- PRIVATE TASK API -----
-    @Input
-    String getBuildToolsVersion() {
-        return getBuildTools().getRevision().toString();
-    }
     private List<File> sourceDirs;
     private List<File> importDirs;
 
-    @InputFiles
+    private static void cleanUpOutputFrom(@NonNull DependencyData dependencyData) {
+        for (String output : dependencyData.getOutputFiles()) {
+            new File(output).delete();
+        }
+        for (String output : dependencyData.getSecondaryOutputFiles()) {
+            new File(output).delete();
+        }
+    }
+
+    // ----- PRIVATE TASK API -----
+    String getBuildToolsVersion() {
+        return getBuildTools().getRevision().toString();
+    }
+
     FileTree getSourceFiles() {
         FileTree src = null;
         List<File> sources = getSourceDirs();
@@ -77,31 +82,9 @@ public class AidlCompile extends IncrementalTask {
         return src == null ? getProject().files().getAsFileTree() : src;
     }
 
-    private static class DepFileProcessor implements DependencyFileProcessor {
-
-        @GuardedBy("this")
-        List<DependencyData> dependencyDataList = Lists.newArrayList();
-
-        List<DependencyData> getDependencyDataList() {
-            return dependencyDataList;
-        }
-
-        @Override
-        public DependencyData processFile(@NonNull File dependencyFile) throws IOException {
-            DependencyData data = DependencyData.parseDependencyFile(dependencyFile);
-            if (data != null) {
-                synchronized (this) {
-                    dependencyDataList.add(data);
-                }
-            }
-
-            return data;
-        }
-    }
-
     /**
      * Action methods to compile all the files.
-     *
+     * <p>
      * The method receives a {@link DependencyFileProcessor} to be used by the
      * {@link com.android.builder.internal.compiler.SourceSearcher.SourceFileProcessor} during
      * the compilation.
@@ -133,9 +116,10 @@ public class AidlCompile extends IncrementalTask {
 
     /**
      * Compiles a single file.
-     * @param sourceFolder the file to compile.
-     * @param file the file to compile.
-     * @param importFolders the import folders.
+     *
+     * @param sourceFolder            the file to compile.
+     * @param file                    the file to compile.
+     * @param importFolders           the import folders.
      * @param dependencyFileProcessor a DependencyFileProcessor
      */
     private void compileSingleFile(
@@ -171,7 +155,7 @@ public class AidlCompile extends IncrementalTask {
         try {
             compileAllFiles(processor);
         } catch (Exception e) {
-            throw  new RuntimeException(e);
+            throw new RuntimeException(e);
         }
 
         List<DependencyData> dataList = processor.getDependencyDataList();
@@ -199,15 +183,6 @@ public class AidlCompile extends IncrementalTask {
         throw new IllegalArgumentException(String.format("File '%s' is not in a source dir", file));
     }
 
-    private static void cleanUpOutputFrom(@NonNull DependencyData dependencyData) {
-        for (String output : dependencyData.getOutputFiles()) {
-            new File(output).delete();
-        }
-        for (String output : dependencyData.getSecondaryOutputFiles()) {
-            new File(output).delete();
-        }
-    }
-
     @OutputDirectory
     public File getSourceOutputDir() {
         return sourceOutputDir;
@@ -217,7 +192,8 @@ public class AidlCompile extends IncrementalTask {
         this.sourceOutputDir = sourceOutputDir;
     }
 
-    @OutputDirectory @Optional
+    @OutputDirectory
+    @Optional
     public File getAidlParcelableDir() {
         return aidlParcelableDir;
     }
@@ -234,13 +210,34 @@ public class AidlCompile extends IncrementalTask {
         this.sourceDirs = sourceDirs;
     }
 
-    @InputFiles
     public List<File> getImportDirs() {
         return importDirs;
     }
 
     public void setImportDirs(List<File> importDirs) {
         this.importDirs = importDirs;
+    }
+
+    private static class DepFileProcessor implements DependencyFileProcessor {
+
+        @GuardedBy("this")
+        List<DependencyData> dependencyDataList = Lists.newArrayList();
+
+        List<DependencyData> getDependencyDataList() {
+            return dependencyDataList;
+        }
+
+        @Override
+        public DependencyData processFile(@NonNull File dependencyFile) throws IOException {
+            DependencyData data = DependencyData.parseDependencyFile(dependencyFile);
+            if (data != null) {
+                synchronized (this) {
+                    dependencyDataList.add(data);
+                }
+            }
+
+            return data;
+        }
     }
 
     public static class ConfigAction implements TaskConfigAction<AidlCompile> {
@@ -266,7 +263,7 @@ public class AidlCompile extends IncrementalTask {
 
         @Override
         public void execute(AidlCompile compileTask) {
-            final VariantConfiguration<?,?,?> variantConfiguration = scope.getVariantConfiguration();
+            final VariantConfiguration<?, ?, ?> variantConfiguration = scope.getVariantConfiguration();
 
             scope.getVariantData().aidlCompileTask = compileTask;
 

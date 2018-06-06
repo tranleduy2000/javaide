@@ -19,13 +19,9 @@ android {
     }
 
 }
-dependencies {
-    api project(':aosp:annotations')
-    api project(':aosp:builder')
-    api project(':aosp:lint')
-    // https://mvnrepository.com/artifact/org.gradle/gradle-core
-    api group: 'org.gradle', name: 'gradle-core', version: '3.0'
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'commons-io:commons-io:2.4'
+
+dependencies {
+    api project(':aosp:lint-api')
+    api 'org.ow2.asm:asm-analysis:5.0.3'
 }

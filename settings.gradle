@@ -16,7 +16,9 @@ include ':aosp:profile'
 include ':aosp:project-test-lib'
 
 include ':aosp:gradle'
-
+include ':aosp:lint'
+include ':aosp:lint-api'
+include ':aosp:lint-checks'
 
 include ':lib-google-java-format'
 include ':lib-android-compiler'

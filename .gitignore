@@ -64,3 +64,4 @@ freeline_project_description.json
 !/lib-android-compiler/src/main/java/com/android/build/
 !/aosp/gradle-experimental/src/main/java/com/android/build/
 /txt.java
+!**/src/*

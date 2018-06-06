@@ -27,7 +27,6 @@ import com.android.builder.core.VariantType
 import com.android.builder.model.AndroidProject
 import com.android.ide.common.res2.AssetMerger
 import com.android.ide.common.res2.AssetSet
-import com.android.ide.common.res2.FileStatus
 import com.android.ide.common.res2.FileValidity
 import com.android.ide.common.res2.MergedAssetWriter
 import com.android.ide.common.res2.MergingException
@@ -57,10 +56,6 @@ public class MergeAssets extends IncrementalTask {
 
     private final FileValidity<AssetSet> fileValidity = new FileValidity<AssetSet>();
 
-    @Override
-    protected boolean isIncremental() {
-        return true
-    }
 
     @Override
     protected void doFullTaskAction() {
@@ -91,65 +86,6 @@ public class MergeAssets extends IncrementalTask {
             println e.getMessage()
             merger.cleanBlob(getIncrementalFolder())
             throw new ResourceException(e.getMessage(), e)
-        }
-    }
-
-    @Override
-    protected void doIncrementalTaskAction(Map<File, FileStatus> changedInputs) {
-        // create a merger and load the known state.
-        AssetMerger merger = new AssetMerger()
-        try {
-            if (!merger.loadFromBlob(getIncrementalFolder(), true /*incrementalState*/)) {
-                doFullTaskAction()
-                return
-            }
-
-            // compare the known state to the current sets to detect incompatibility.
-            // This is in case there's a change that's too hard to do incrementally. In this case
-            // we'll simply revert to full build.
-            List<AssetSet> assetSets = getInputAssetSets()
-
-            if (!merger.checkValidUpdate(assetSets)) {
-                project.logger.info("Changed Asset sets: full task run!")
-                doFullTaskAction()
-                return
-            }
-
-            // The incremental process is the following:
-            // Loop on all the changed files, find which ResourceSet it belongs to, then ask
-            // the resource set to update itself with the new file.
-            for (Map.Entry<File, FileStatus> entry : changedInputs.entrySet()) {
-                File changedFile = entry.getKey()
-
-                merger.findDataSetContaining(changedFile, fileValidity)
-                if (fileValidity.status == FileValidity.FileStatus.UNKNOWN_FILE) {
-                    doFullTaskAction()
-                    return
-                } else if (fileValidity.status == FileValidity.FileStatus.VALID_FILE) {
-                    if (!fileValidity.dataSet.updateWith(
-                            fileValidity.sourceFile, changedFile, entry.getValue(), getILogger())) {
-                        project.logger.info(
-                                String.format("Failed to process %s event! Full task run",
-                                        entry.getValue()))
-                        doFullTaskAction()
-                        return
-                    }
-                }
-            }
-
-            MergedAssetWriter writer = new MergedAssetWriter(getOutputDir())
-
-            merger.mergeData(writer, false /*doCleanUp*/)
-
-            // No exception? Write the known state.
-            merger.writeBlobTo(getIncrementalFolder(), writer)
-        } catch (MergingException e) {
-            println e.getMessage()
-            merger.cleanBlob(getIncrementalFolder())
-            throw new ResourceException(e.getMessage(), e)
-        } finally {
-            // some clean up after the task to help multi variant/module builds.
-            fileValidity.clear();
         }
     }
 

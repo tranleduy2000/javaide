@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.android.build.gradle.internal.tasks;
-import com.android.ide.common.res2.FileStatus;
 import com.android.ide.common.res2.SourceSet;
 import com.google.common.collect.Lists;
 
@@ -26,7 +25,6 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public abstract class IncrementalTask extends BaseTask {
 
@@ -42,29 +40,10 @@ public abstract class IncrementalTask extends BaseTask {
     }
 
     /**
-     * Whether this task can support incremental update.
-     *
-     * @return whether this task can support incremental update.
-     */
-    protected boolean isIncremental() {
-        return false;
-    }
-
-    /**
      * Actual task action. This is called when a full run is needed, which is always the case if
      *
      */
     protected abstract void doFullTaskAction() throws IOException;
-
-    /**
-     * Optional incremental task action.
-     * Only used if {@link #isIncremental()} returns true.
-     *
-     * @param changedInputs the changed input files.
-     */
-    protected void doIncrementalTaskAction(Map<File, FileStatus> changedInputs) throws IOException {
-        // do nothing.
-    }
 
     /**
      * Actual entry point for the action.

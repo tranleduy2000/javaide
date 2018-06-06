@@ -29,14 +29,11 @@ import com.android.builder.core.VariantType;
 import com.android.builder.internal.incremental.DependencyData;
 import com.android.builder.internal.incremental.DependencyDataStore;
 import com.android.ide.common.internal.LoggedErrorException;
-import com.android.ide.common.internal.WaitableExecutor;
 import com.android.ide.common.process.LoggedProcessOutputHandler;
 import com.android.ide.common.process.ProcessException;
 import com.android.ide.common.process.ProcessOutputHandler;
-import com.android.ide.common.res2.FileStatus;
 import com.android.utils.FileUtils;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 
 import org.gradle.api.file.FileTree;
 import org.gradle.api.tasks.Input;
@@ -47,9 +44,7 @@ import org.gradle.api.tasks.util.PatternSet;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
@@ -102,12 +97,6 @@ public class AidlCompile extends IncrementalTask {
 
             return data;
         }
-    }
-
-    @Override
-    protected boolean isIncremental() {
-        // TODO fix once dep file parsing is resolved.
-        return false;
     }
 
     /**
@@ -192,96 +181,6 @@ public class AidlCompile extends IncrementalTask {
 
         try {
             store.saveTo(new File(getIncrementalFolder(), DEPENDENCY_STORE));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    protected void doIncrementalTaskAction(Map<File, FileStatus> changedInputs) throws IOException {
-        File incrementalData = new File(getIncrementalFolder(), DEPENDENCY_STORE);
-        DependencyDataStore store = new DependencyDataStore();
-        Multimap<String, DependencyData> inputMap;
-        try {
-            inputMap = store.loadFrom(incrementalData);
-        } catch (Exception ignored) {
-            incrementalData.delete();
-            getProject().getLogger().info(
-                    "Failed to read dependency store: full task run!");
-            doFullTaskAction();
-            return;
-        }
-
-        final List<File> importFolders = getImportFolders();
-        final DepFileProcessor processor = new DepFileProcessor();
-        final ProcessOutputHandler processOutputHandler =
-                new LoggedProcessOutputHandler(getILogger());
-
-        // use an executor to parallelize the compilation of multiple files.
-        WaitableExecutor<Void> executor = new WaitableExecutor<Void>();
-
-        Map<String,DependencyData> mainFileMap = store.getMainFileMap();
-
-        for (final Map.Entry<File, FileStatus> entry : changedInputs.entrySet()) {
-            FileStatus status = entry.getValue();
-
-            switch (status) {
-                case NEW:
-                    executor.execute(new Callable<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            File file = entry.getKey();
-                            compileSingleFile(getSourceFolder(file), file, importFolders,
-                                    processor, processOutputHandler);
-                            return null;
-                        }
-                    });
-                    break;
-                case CHANGED:
-                    Collection<DependencyData> impactedData =
-                            inputMap.get(entry.getKey().getAbsolutePath());
-                    if (impactedData != null) {
-                        for (final DependencyData data: impactedData) {
-                            executor.execute(new Callable<Void>() {
-                                @Override
-                                public Void call() throws Exception {
-                                    File file = new File(data.getMainFile());
-                                    compileSingleFile(getSourceFolder(file), file,
-                                            importFolders, processor, processOutputHandler);
-                                    return null;
-                                }
-                            });
-                        }
-                    }
-                    break;
-                case REMOVED:
-                    final DependencyData data2 = mainFileMap.get(entry.getKey().getAbsolutePath());
-                    if (data2 != null) {
-                        executor.execute(new Callable<Void>() {
-                            @Override
-                            public Void call() throws Exception {
-                                cleanUpOutputFrom(data2);
-                                return null;
-                            }
-                        });
-                        store.remove(data2);
-                    }
-                    break;
-            }
-        }
-
-        try {
-            executor.waitForTasksWithQuickFail(true /*cancelRemaining*/);
-        } catch (Throwable t) {
-            incrementalData.delete();
-            throw new RuntimeException(t);
-        }
-
-        // get all the update data for the recompiled objects
-        store.updateAll(processor.getDependencyDataList());
-
-        try {
-            store.saveTo(incrementalData);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

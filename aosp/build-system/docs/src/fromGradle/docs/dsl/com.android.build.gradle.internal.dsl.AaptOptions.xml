@@ -3,20 +3,32 @@
         <title>Properties</title>
         <table>
             <thead>
-                <tr><td>Name</td></tr>
+                <tr>
+                    <td>Name</td>
+                </tr>
             </thead>
-            <tr><td>ignoreAssets</td></tr>
-            <tr><td>noCompress</td></tr>
-            <tr><td>failOnMissingConfigEntry</td></tr>
+            <tr>
+                <td>ignoreAssets</td>
+            </tr>
+            <tr>
+                <td>noCompress</td>
+            </tr>
+            <tr>
+                <td>failOnMissingConfigEntry</td>
+            </tr>
         </table>
     </section>
     <section>
         <title>Methods</title>
         <table>
             <thead>
-                <tr><td>Name</td></tr>
+                <tr>
+                    <td>Name</td>
+                </tr>
             </thead>
-            <tr><td>noCompress</td></tr>
+            <tr>
+                <td>noCompress</td>
+            </tr>
         </table>
     </section>
 </section>

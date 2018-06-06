@@ -14,35 +14,36 @@
   ~ limitations under the License.
   -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-    <xsl:import href="xhtml/docbook.xsl"/>
-    <xsl:import href="userGuideHtmlCommon.xsl"/>
+    <xsl:import href="xhtml/docbook.xsl" />
+    <xsl:import href="userGuideHtmlCommon.xsl" />
 
-    <xsl:output method="xml"
-                encoding="UTF-8"
-                indent="no"/>
+    <xsl:output encoding="UTF-8" indent="no" method="xml" />
 
     <!-- Use custom <head> content, to include stylesheets and bookmarks -->
 
     <xsl:template name="output.html.stylesheets">
-        <link href="base.css" rel="stylesheet" type="text/css"/>
-        <link href="docs.css" rel="stylesheet" type="text/css"/>
-        <link href="userguide.css" rel="stylesheet" type="text/css"/>
-        <link href="print.css" rel="stylesheet" type="text/css" media="print"/>
+        <link href="base.css" rel="stylesheet" type="text/css" />
+        <link href="docs.css" rel="stylesheet" type="text/css" />
+        <link href="userguide.css" rel="stylesheet" type="text/css" />
+        <link href="print.css" media="print" rel="stylesheet" type="text/css" />
     </xsl:template>
 
     <xsl:template name="user.head.content">
         <bookmarks>
-            <xsl:apply-templates select="chapter|appendix" mode="bookmarks"/>
+            <xsl:apply-templates mode="bookmarks" select="chapter|appendix" />
         </bookmarks>
     </xsl:template>
 
     <xsl:template match="*" mode="bookmarks">
         <bookmark>
             <xsl:attribute name="name">
-                <xsl:apply-templates select="." mode="object.title.markup"/>
+                <xsl:apply-templates mode="object.title.markup" select="." />
             </xsl:attribute>
-            <xsl:attribute name="href">#<xsl:call-template name="object.id"/></xsl:attribute>
-            <xsl:apply-templates select="section[parent::chapter|parent::appendix]" mode="bookmarks"/>
+            <xsl:attribute name="href">#
+                <xsl:call-template name="object.id" />
+            </xsl:attribute>
+            <xsl:apply-templates mode="bookmarks"
+                select="section[parent::chapter|parent::appendix]" />
         </bookmark>
     </xsl:template>
 
@@ -50,13 +51,13 @@
     <xsl:template name="component.title">
         <h2>
             <xsl:call-template name="anchor">
-                <xsl:with-param name="node" select=".."/>
-                <xsl:with-param name="conditional" select="0"/>
+                <xsl:with-param name="node" select=".." />
+                <xsl:with-param name="conditional" select="0" />
             </xsl:call-template>
-            <xsl:apply-templates select=".." mode="label.markup"/>
+            <xsl:apply-templates mode="label.markup" select=".." />
         </h2>
         <h1>
-            <xsl:apply-templates select=".." mode="title.markup"/>
+            <xsl:apply-templates mode="title.markup" select=".." />
         </h1>
     </xsl:template>
 </xsl:stylesheet>

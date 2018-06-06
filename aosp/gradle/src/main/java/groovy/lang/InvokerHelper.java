@@ -799,8 +799,8 @@ public class InvokerHelper {
      * with brace boundaries "[" and "]".
      *
      * @param arguments the array to process
-     * @param maxSize stop after approximately this many characters and append '...'
-     * @param safe    whether to use a default object representation for any item in the array if an exception occurs when generating its toString
+     * @param maxSize   stop after approximately this many characters and append '...'
+     * @param safe      whether to use a default object representation for any item in the array if an exception occurs when generating its toString
      * @return the string representation of the array
      */
     public static String toArrayString(Object[] arguments, int maxSize, boolean safe) {

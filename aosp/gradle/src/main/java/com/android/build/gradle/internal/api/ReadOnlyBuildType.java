@@ -90,11 +90,6 @@ public class ReadOnlyBuildType extends ReadOnlyBaseConfig implements BuildType {
         return buildType.isZipAlignEnabled();
     }
 
-    @Override
-    public boolean isEmbedMicroApp() {
-        return buildType.isEmbedMicroApp();
-    }
-
     @Nullable
     @Override
     public SigningConfig getSigningConfig() {

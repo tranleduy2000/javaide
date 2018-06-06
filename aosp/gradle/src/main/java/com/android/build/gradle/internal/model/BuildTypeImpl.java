@@ -38,7 +38,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
     private String versionNameSuffix;
     private boolean minifyEnabled;
     private boolean zipAlignEnabled;
-    private boolean embedMicroApp;
 
     private BuildTypeImpl(@NonNull BuildType buildType) {
         super(buildType);
@@ -55,7 +54,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
         clonedBuildType.versionNameSuffix = buildType.getVersionNameSuffix();
         clonedBuildType.minifyEnabled = buildType.isMinifyEnabled();
         clonedBuildType.zipAlignEnabled = buildType.isZipAlignEnabled();
-        clonedBuildType.embedMicroApp = buildType.isEmbedMicroApp();
         clonedBuildType.pseudoLocalesEnabled = buildType.isPseudoLocalesEnabled();
 
         return clonedBuildType;
@@ -104,11 +102,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
         return zipAlignEnabled;
     }
 
-    @Override
-    public boolean isEmbedMicroApp() {
-        return embedMicroApp;
-    }
-
     @Nullable
     @Override
     public SigningConfig getSigningConfig() {
@@ -125,7 +118,6 @@ class BuildTypeImpl extends BaseConfigImpl implements BuildType, Serializable {
                 ", versionNameSuffix='" + versionNameSuffix + '\'' +
                 ", minifyEnabled=" + minifyEnabled +
                 ", zipAlignEnabled=" + zipAlignEnabled +
-                ", embedMicroApp=" + embedMicroApp +
                 "} " + super.toString();
     }
 }

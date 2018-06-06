@@ -398,10 +398,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
         if (extraGeneratedResFolders != null) {
             generatedResFolders.addAll(extraGeneratedResFolders);
         }
-        if (generateApkDataTask != null &&
-                getVariantConfiguration().getBuildType().isEmbedMicroApp()) {
-            generatedResFolders.add(generateApkDataTask.getResOutputDir());
-        }
         return generatedResFolders;
     }
 

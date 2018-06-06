@@ -35,7 +35,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
     private String mVersionNameSuffix = null;
     private boolean mMinifyEnabled = false;
     private SigningConfig mSigningConfig = null;
-    private boolean mEmbedMicroApp = true;
 
     private boolean mZipAlignEnabled = true;
 
@@ -53,7 +52,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
         setMinifyEnabled(that.isMinifyEnabled());
         setZipAlignEnabled(that.isZipAlignEnabled());
         setSigningConfig(that.getSigningConfig());
-        setEmbedMicroApp(that.isEmbedMicroApp());
         setPseudoLocalesEnabled(that.isPseudoLocalesEnabled());
 
         return this;
@@ -207,27 +205,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
         return mSigningConfig;
     }
 
-    /**
-     * Whether a linked Android Wear app should be embedded in variant using this build type.
-     * <p>
-     * <p>Wear apps can be linked with the following code:
-     * <p>
-     * <pre>
-     * dependencies {
-     *   freeWearApp project(:wear:free') // applies to variant using the free flavor
-     *   wearApp project(':wear:base') // applies to all other variants
-     * }
-     * </pre>
-     */
-    @Override
-    public boolean isEmbedMicroApp() {
-        return mEmbedMicroApp;
-    }
-
-    public void setEmbedMicroApp(boolean embedMicroApp) {
-        mEmbedMicroApp = embedMicroApp;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -242,7 +219,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
                 mPseudoLocalesEnabled == buildType.mPseudoLocalesEnabled &&
                 mMinifyEnabled == buildType.mMinifyEnabled &&
                 mZipAlignEnabled == buildType.mZipAlignEnabled &&
-                mEmbedMicroApp == buildType.mEmbedMicroApp &&
                 Objects.equal(mApplicationIdSuffix, buildType.mApplicationIdSuffix) &&
                 Objects.equal(mVersionNameSuffix, buildType.mVersionNameSuffix) &&
                 Objects.equal(mSigningConfig, buildType.mSigningConfig);
@@ -260,8 +236,7 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
                 mVersionNameSuffix,
                 mMinifyEnabled,
                 mZipAlignEnabled,
-                mSigningConfig,
-                mEmbedMicroApp);
+                mSigningConfig);
     }
 
     @Override
@@ -277,7 +252,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
                 .add("minifyEnabled", mMinifyEnabled)
                 .add("zipAlignEnabled", mZipAlignEnabled)
                 .add("signingConfig", mSigningConfig)
-                .add("embedMicroApp", mEmbedMicroApp)
                 .add("mBuildConfigFields", getBuildConfigFields())
                 .add("mResValues", getResValues())
                 .add("mProguardFiles", getProguardFiles())

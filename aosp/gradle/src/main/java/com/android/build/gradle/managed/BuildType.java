@@ -177,13 +177,6 @@ public interface BuildType extends Named {
     void setZipAlignEnabled(Boolean isZipAlignEnabled);
 
     /**
-     * Returns whether the variant embeds the micro app.
-     */
-    Boolean getEmbedMicroApp();
-
-    void setEmbedMicroApp(Boolean isEmbedMicroApp);
-
-    /**
      * Returns the associated signing config or null if none are set on the build type.
      */
     SigningConfig getSigningConfig();

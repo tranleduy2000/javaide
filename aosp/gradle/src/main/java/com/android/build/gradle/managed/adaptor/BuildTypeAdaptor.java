@@ -165,11 +165,6 @@ public class BuildTypeAdaptor implements CoreBuildType {
         return buildType.getZipAlignEnabled();
     }
 
-    @Override
-    public boolean isEmbedMicroApp() {
-        return buildType.getEmbedMicroApp();
-    }
-
     @Nullable
     @Override
     public SigningConfig getSigningConfig() {

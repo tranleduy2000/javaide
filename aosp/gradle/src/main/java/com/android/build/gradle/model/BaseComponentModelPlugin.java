@@ -178,7 +178,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             buildType.setPseudoLocalesEnabled(false);
             buildType.setMinifyEnabled(false);
             buildType.setZipAlignEnabled(true);
-            buildType.setEmbedMicroApp(true);
             buildType.setShrinkResources(false);
             buildType.setProguardFiles(Sets.<File>newHashSet());
             buildType.setConsumerProguardFiles(Sets.<File>newHashSet());

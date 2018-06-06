@@ -83,8 +83,6 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
     public void init(SigningConfig debugSigningConfig) {
         if (BuilderConstants.DEBUG.equals(getName())) {
             setDebuggable(true);
-            setEmbedMicroApp(false);
-
             assert debugSigningConfig != null;
             setSigningConfig(debugSigningConfig);
         } else if (BuilderConstants.RELEASE.equals(getName())) {

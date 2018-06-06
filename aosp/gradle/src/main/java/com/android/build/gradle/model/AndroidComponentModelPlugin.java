@@ -145,7 +145,6 @@ public class AndroidComponentModelPlugin implements Plugin<Project> {
                 @Override
                 public void execute(BuildType buildType) {
                     buildType.setDebuggable(true);
-                    buildType.setEmbedMicroApp(false);
                 }
             });
             buildTypes.create(BuilderConstants.RELEASE);

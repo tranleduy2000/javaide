@@ -7,18 +7,14 @@
             </thead>
             <tr><td>applicationIdSuffix</td></tr>
             <tr><td>debuggable</td></tr>
-            <tr><td>embedMicroApp</td></tr>
             <tr><td>jniDebuggable</td></tr>
             <tr><td>minifyEnabled</td></tr>
             <tr><td>multiDexEnabled</td></tr>
             <tr><td>name</td></tr>
             <tr><td>pseudoLocalesEnabled</td></tr>
-            <tr><td>renderscriptDebuggable</td></tr>
-            <tr><td>renderscriptOptimLevel</td></tr>
             <tr><td>shrinkResources</td></tr>
             <tr><td>signingConfig</td></tr>
             <tr><td>testCoverageEnabled</td></tr>
-            <tr><td>useJack</td></tr>
             <tr><td>versionNameSuffix</td></tr>
             <tr><td>zipAlignEnabled</td></tr>
         </table>

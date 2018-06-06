@@ -64,7 +64,6 @@ public class ApplicationTaskManager extends TaskManager {
         createAnchorTasks(tasks, variantScope);
         createCheckManifestTask(tasks, variantScope);
 
-        handleMicroApp(tasks, variantScope);
 
         // Add a task to process the manifest(s)
         createMergeAppManifestsTask(tasks, variantScope);
@@ -159,38 +158,4 @@ public class ApplicationTaskManager extends TaskManager {
                 });
     }
 
-    /**
-     * Configure variantData to generate embedded wear application.
-     */
-    private void handleMicroApp(
-            @NonNull TaskFactory tasks,
-            @NonNull VariantScope scope) {
-        BaseVariantData<? extends BaseVariantOutputData> variantData = scope.getVariantData();
-        if (variantData.getVariantConfiguration().getBuildType().isEmbedMicroApp()) {
-            // get all possible configurations for the variant. We'll take the highest priority
-            // of them that have a file.
-            List<String> wearConfigNames = variantData.getWearConfigNames();
-
-            for (String configName : wearConfigNames) {
-                Configuration config = project.getConfigurations().findByName(
-                        configName);
-                // this shouldn't happen, but better safe.
-                if (config == null) {
-                    continue;
-                }
-
-                Set<File> file = config.getFiles();
-
-                int count = file.size();
-                if (count == 1) {
-                    createGenerateMicroApkDataTask(tasks, scope, config);
-                    // found one, bail out.
-                    return;
-                } else if (count > 1) {
-                    throw new RuntimeException(String.format(
-                            "Configuration '%s' resolves to more than one apk.", configName));
-                }
-            }
-        }
-    }
 }

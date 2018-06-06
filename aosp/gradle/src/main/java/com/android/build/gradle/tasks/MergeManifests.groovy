@@ -191,13 +191,6 @@ public class MergeManifests extends ManifestProcessorTask {
                 List<ManifestDependencyImpl> manifests =
                         getManifestDependencies(config.directLibraries)
 
-                if (variantData.generateApkDataTask != null &&
-                        variantData.getVariantConfiguration().getBuildType().
-                                isEmbedMicroApp()) {
-                    manifests.add(new ManifestDependencyImpl(
-                            variantData.generateApkDataTask.getManifestFile(), []))
-                }
-
                 if (scope.compatibleScreensManifestTask != null) {
                     manifests.add(new ManifestDependencyImpl(
                             scope.getCompatibleScreensManifestFile(), []))

@@ -100,7 +100,6 @@ public class AndroidComponentModelPlugin implements Plugin<Project> {
         }
     }
 
-    @SuppressWarnings("MethodMayBeStatic")
     public static class Rules extends RuleSource {
 
         @LanguageType

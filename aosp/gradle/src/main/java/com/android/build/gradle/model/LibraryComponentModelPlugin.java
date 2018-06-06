@@ -16,9 +16,6 @@
 
 package com.android.build.gradle.model;
 
-import static com.android.build.gradle.model.ModelConstants.IS_APPLICATION;
-import static com.android.build.gradle.model.ModelConstants.TASK_MANAGER;
-
 import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.internal.DependencyManager;
 import com.android.build.gradle.internal.ExtraModelInfo;
@@ -33,8 +30,10 @@ import org.gradle.api.Project;
 import org.gradle.internal.reflect.Instantiator;
 import org.gradle.internal.service.ServiceRegistry;
 import org.gradle.model.Model;
-import org.gradle.model.RuleSource;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
+
+import static com.android.build.gradle.model.ModelConstants.IS_APPLICATION;
+import static com.android.build.gradle.model.ModelConstants.TASK_MANAGER;
 
 /**
  * Gradle component model plugin class for 'application' projects.
@@ -46,8 +45,7 @@ public class LibraryComponentModelPlugin implements Plugin<Project> {
         project.getTasks().create("assembleDefault");
     }
 
-    @SuppressWarnings("MethodMayBeStatic")
-    public static class Rules extends RuleSource {
+    public static class Rules {
 
         @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
         @Model(IS_APPLICATION)

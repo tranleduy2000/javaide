@@ -17,7 +17,6 @@
 package com.android.build.gradle.internal.scope;
 
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.TaskFactory;
 
 import org.gradle.api.Action;
@@ -45,8 +44,8 @@ public class AndroidTask<T extends Task> {
     public AndroidTask(@NonNull String name, @NonNull Class<T> taskType) {
         this.name = name;
         this.taskType = taskType;
-        upstreamTasks = new ArrayList<AndroidTask<? extends Task>>();
-        downstreamTasks = new ArrayList<AndroidTask<? extends Task>>();
+        upstreamTasks = new ArrayList<>();
+        downstreamTasks = new ArrayList<>();
     }
 
     /**

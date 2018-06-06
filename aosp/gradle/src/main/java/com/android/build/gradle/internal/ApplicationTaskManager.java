@@ -20,7 +20,6 @@ import com.android.annotations.NonNull;
 import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.internal.scope.AndroidTask;
 import com.android.build.gradle.internal.scope.VariantScope;
-import com.android.build.gradle.internal.variant.ApplicationVariantData;
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.build.gradle.internal.variant.BaseVariantOutputData;
 import com.android.builder.core.AndroidBuilder;
@@ -77,7 +76,6 @@ public class ApplicationTaskManager extends TaskManager {
 
         createAidlTask(tasks, variantScope);
 
-
         // Add a compile task
         AndroidTask<JavaCompile> javacTask = createJavacTask(tasks, variantScope);
         setJavaCompilerTask(javacTask, tasks, variantScope);
@@ -97,13 +95,13 @@ public class ApplicationTaskManager extends TaskManager {
         }
         variantScope.setNdkBuildable(getNdkBuildable(variantData));
 
-        if (variantData.getSplitHandlingPolicy().equals(
-                BaseVariantData.SplitHandlingPolicy.RELEASE_21_AND_AFTER_POLICY)) {
+        if (variantData.getSplitHandlingPolicy()
+                .equals(BaseVariantData.SplitHandlingPolicy.RELEASE_21_AND_AFTER_POLICY)) {
             createSplitResourcesTasks(variantScope);
             createSplitAbiTasks(variantScope);
         }
 
-        createPackagingTask(tasks, variantScope, true /*publishApk*/);
+        createPackagingTask(tasks, variantScope, true);
 
         // create the lint tasks.
         createLintTasks(tasks, variantScope);

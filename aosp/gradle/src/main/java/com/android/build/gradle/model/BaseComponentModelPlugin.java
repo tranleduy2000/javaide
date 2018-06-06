@@ -17,7 +17,6 @@
 package com.android.build.gradle.model;
 
 import com.android.annotations.NonNull;
-import com.android.build.gradle.AndroidGradleOptions;
 import com.android.build.gradle.internal.AndroidConfigHelper;
 import com.android.build.gradle.internal.ExtraModelInfo;
 import com.android.build.gradle.internal.LibraryCache;
@@ -74,7 +73,6 @@ import org.gradle.language.base.LanguageSourceSet;
 import org.gradle.model.Defaults;
 import org.gradle.model.Model;
 import org.gradle.model.ModelMap;
-import org.gradle.model.Mutate;
 import org.gradle.model.Path;
 import org.gradle.model.RuleSource;
 import org.gradle.model.internal.core.ModelCreators;
@@ -88,7 +86,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.util.List;
-
 
 import groovy.lang.Closure;
 
@@ -142,7 +139,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
         } catch (IOException e) {
             throw new RuntimeException("Unable to initialize ProcessRecorderFactory");
         }
-        project.getGradle().addListener(new RecordingBuildListener(ThreadRecorder.get()));
 
         project.getPlugins().apply(AndroidComponentModelPlugin.class);
         project.getPlugins().apply(JavaBasePlugin.class);
@@ -170,7 +166,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
                 toolingRegistry).descriptor("Tooling model builder model registry.").build());
     }
 
-    @SuppressWarnings("MethodMayBeStatic")
     public static class Rules extends RuleSource {
 
         private static void initBuildType(@NonNull BuildType buildType) {
@@ -230,29 +225,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             final ILogger logger = new LoggerWrapper(project.getLogger());
             final SdkHandler sdkHandler = new SdkHandler(project, logger);
 
-            // call back on execution. This is called after the whole build is done (not
-            // after the current project is done).
-            // This is will be called for each (android) projects though, so this should support
-            // being called 2+ times.
-            project.getGradle().buildFinished(new Closure<Object>(this, this) {
-                public void doCall(Object it) {
-                    ExecutorSingleton.shutdown();
-                    sdkHandler.unload();
-                    try {
-                        PreDexCache.getCache().clear(project.getRootProject()
-                                .file(String.valueOf(project.getRootProject().getBuildDir()) + "/"
-                                        + FD_INTERMEDIATES + "/dex-cache/cache.xml"), logger);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    LibraryCache.getCache().unload();
-                }
-
-                public void doCall() {
-                    doCall(null);
-                }
-            });
-
             project.getGradle().getTaskGraph().whenReady(new Closure<Void>(this, this) {
                 public void doCall(TaskExecutionGraph taskGraph) {
                     for (Task task : taskGraph.getAllTasks()) {
@@ -291,7 +263,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
 
         }
 
-        @Mutate
+
         public void initDebugBuildTypes(
                 @Path("android.buildTypes") ModelMap<BuildType> buildTypes,
                 @Path("android.signingConfigs") final ModelMap<SigningConfig> signingConfigs) {
@@ -310,12 +282,12 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             });
         }
 
-        @Mutate
+
         public void initDefaultConfig(@Path("android.defaultConfig") ProductFlavor defaultConfig) {
             initProductFlavor(defaultConfig);
         }
 
-        @Mutate
+
         public void initProductFlavors(
                 @Path("android.productFlavors") final ModelMap<ProductFlavor> productFlavors) {
             productFlavors.beforeEach(new Action<ProductFlavor>() {
@@ -346,7 +318,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             });
         }
 
-        @Mutate
+
         public void addDefaultAndroidSourceSet(
                 @Path("android.sources") AndroidComponentModelSourceSet sources) {
             sources.addDefaultSourceSet("resources", AndroidLanguageSourceSet.class);
@@ -377,7 +349,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
                     .createSourceSetsContainer(project, instantiator, !isApplication));
         }
 
-        @Mutate
+
         public void createAndroidComponents(
                 ComponentSpecContainer androidSpecs,
                 ServiceRegistry serviceRegistry, AndroidConfig androidExtension,
@@ -419,7 +391,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             spec.setVariantManager(variantManager);
         }
 
-        @Mutate
+
         public void createVariantData(
                 ModelMap<AndroidBinary> binaries,
                 ModelMap<AndroidComponentSpec> specs,
@@ -443,12 +415,12 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             });
         }
 
-        @Mutate
+
         public void createLifeCycleTasks(ModelMap<Task> tasks, TaskManager taskManager) {
             taskManager.createTasksBeforeEvaluate(new TaskModelMapAdaptor(tasks));
         }
 
-        @Mutate
+
         public void createAndroidTasks(
                 ModelMap<Task> tasks,
                 ModelMap<AndroidComponentSpec> androidSpecs,
@@ -468,7 +440,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
         }
 
         // TODO: Use @BinaryTasks after figuring how to configure non-binary specific tasks.
-        @Mutate
+
         public void createBinaryTasks(
                 final ModelMap<Task> tasks,
                 BinaryContainer binaries,
@@ -490,7 +462,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
         /**
          * Create tasks that must be created after other tasks for variants are created.
          */
-        @Mutate
+
         public void createRemainingTasks(
                 ModelMap<Task> tasks,
                 TaskManager taskManager,
@@ -500,7 +472,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
 
         }
 
-        @Mutate
+
         public void modifyAssembleTaskDescription(@Path("tasks.assemble") Task assembleTask) {
             assembleTask.setDescription(
                     "Assembles all variants of all applications and secondary packages.");

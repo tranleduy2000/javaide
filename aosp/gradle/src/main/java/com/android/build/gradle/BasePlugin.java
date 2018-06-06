@@ -16,6 +16,8 @@
 
 package com.android.build.gradle;
 
+import android.support.annotation.NonNull;
+
 import com.android.annotations.VisibleForTesting;
 import com.android.build.gradle.internal.ApiObjectFactory;
 import com.android.build.gradle.internal.DependencyManager;
@@ -42,9 +44,6 @@ import com.android.build.gradle.tasks.PreDex;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.core.BuilderConstants;
 import com.android.builder.internal.compiler.PreDexCache;
-import com.android.builder.profile.ExecutionType;
-import com.android.builder.profile.Recorder;
-import com.android.builder.profile.ThreadRecorder;
 import com.android.builder.sdk.TargetInfo;
 import com.android.utils.ILogger;
 
@@ -84,15 +83,13 @@ public abstract class BasePlugin {
     protected SdkHandler sdkHandler;
     protected AndroidBuilder androidBuilder;
     protected Instantiator instantiator;
-    protected VariantFactory variantFactory;
+    private VariantFactory variantFactory;
     private NdkHandler ndkHandler;
     private ToolingModelBuilderRegistry registry;
 
     private LoggerWrapper loggerWrapper;
 
     private ExtraModelInfo extraModelInfo;
-
-    private String creator = "Android Gradle Java N-IDE";
 
     private boolean hasCreatedTasks = false;
 
@@ -147,7 +144,7 @@ public abstract class BasePlugin {
         sdkHandler = new SdkHandler(project, getLogger());
         androidBuilder = new AndroidBuilder(
                 project == project.getRootProject() ? project.getName() : project.getPath(),
-                creator,
+                "Android Gradle Java N-IDE",
                 new GradleProcessExecutor(project),
                 new GradleJavaProcessExecutor(project),
                 extraModelInfo,
@@ -232,7 +229,7 @@ public abstract class BasePlugin {
         // map the whenObjectAdded callbacks on the containers.
         signingConfigContainer.whenObjectAdded(new Action<SigningConfig>() {
             @Override
-            public void execute(SigningConfig signingConfig) {
+            public void execute(@NonNull SigningConfig signingConfig) {
                 variantManager.addSigningConfig(signingConfig);
             }
         });
@@ -240,7 +237,7 @@ public abstract class BasePlugin {
 
         buildTypeContainer.whenObjectAdded(new Action<BuildType>() {
             @Override
-            public void execute(BuildType buildType) {
+            public void execute(@NonNull BuildType buildType) {
                 SigningConfig signingConfig = signingConfigContainer.findByName(BuilderConstants.DEBUG);
                 buildType.init(signingConfig);
                 variantManager.addBuildType(buildType);
@@ -249,7 +246,7 @@ public abstract class BasePlugin {
 
         productFlavorContainer.whenObjectAdded(new Action<ProductFlavor>() {
             @Override
-            public void execute(ProductFlavor productFlavor) {
+            public void execute(@NonNull ProductFlavor productFlavor) {
                 variantManager.addProductFlavor(productFlavor);
             }
         });
@@ -295,17 +292,11 @@ public abstract class BasePlugin {
 
         extension.disableWrite();
 
-        ThreadRecorder.get().record(
-                ExecutionType.GENERAL_CONFIG,
-                Recorder.EmptyBlock,
-                new Recorder.Property("build_tools_version",
-                        extension.getBuildToolsRevision().toString()));
-
         // setup SDK repositories.
         for (final File file : sdkHandler.getSdkLoader().getRepositories()) {
             project.getRepositories().maven(new Action<MavenArtifactRepository>() {
                 @Override
-                public void execute(MavenArtifactRepository mavenArtifactRepository) {
+                public void execute(@NonNull MavenArtifactRepository mavenArtifactRepository) {
                     mavenArtifactRepository.setUrl(file.toURI());
                 }
             });
@@ -364,6 +355,10 @@ public abstract class BasePlugin {
                 subProjectsById.put(id, subProject);
             }
         }
+    }
+
+    public BaseExtension getExtension() {
+        return extension;
     }
 
     private static class UnsupportedAction implements Action<Object> {

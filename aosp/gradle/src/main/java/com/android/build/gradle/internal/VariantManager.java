@@ -267,27 +267,11 @@ public class VariantManager implements VariantModel {
 
         final TaskFactory tasks = new TaskContainerAdaptor(project.getTasks());
         if (variantDataList.isEmpty()) {
-            ThreadRecorder.get().record(ExecutionType.VARIANT_MANAGER_CREATE_VARIANTS,
-                    new Recorder.Block<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            populateVariantDataList();
-                            return null;
-                        }
-                    });
+            populateVariantDataList();
         }
 
-        for (final BaseVariantData<? extends BaseVariantOutputData> variantData : variantDataList) {
-
-            SpanRecorders.record(project, ExecutionType.VARIANT_MANAGER_CREATE_TASKS_FOR_VARIANT,
-                    new Recorder.Block<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            createTasksForVariantData(tasks, variantData);
-                            return null;
-                        }
-                    },
-                    new Recorder.Property(SpanRecorders.VARIANT, variantData.getName()));
+        for (BaseVariantData<? extends BaseVariantOutputData> variantData : variantDataList) {
+            createTasksForVariantData(tasks, variantData);
         }
     }
 

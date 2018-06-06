@@ -453,14 +453,7 @@ public class LibraryTaskManager extends TaskManager {
 
         });
 
-        ThreadRecorder.get().record(ExecutionType.LIB_TASK_MANAGER_CREATE_LINT_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
                         createLintTasks(tasks, variantScope);
-                        return null;
-                    }
-                });
     }
 
     public ExtractAnnotations createExtractAnnotations(

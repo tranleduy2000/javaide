@@ -27,11 +27,7 @@ public class DexOptions implements com.android.builder.core.DexOptions {
 
     private boolean isPreDexLibrariesFlag = true;
 
-    private boolean isJumboModeFlag = false;
-
     private Integer threadCount = null;
-
-    private String javaMaxHeapSize;
 
     /**
      * Whether to pre-dex libraries. This can improve incremental builds, but clean builds may
@@ -47,23 +43,6 @@ public class DexOptions implements com.android.builder.core.DexOptions {
         isPreDexLibrariesFlag = flag;
     }
 
-    public void setJumboMode(boolean flag) {
-        isJumboModeFlag = flag;
-    }
-
-    public void setJavaMaxHeapSize(String theJavaMaxHeapSize) {
-        if (theJavaMaxHeapSize.matches("\\d+[kKmMgGtT]?")) {
-            javaMaxHeapSize = theJavaMaxHeapSize;
-        } else {
-            throw new IllegalArgumentException(
-                    "Invalid max heap size DexOption. See `man java` for valid -Xmx arguments.");
-        }
-    }
-
-    public void setThreadCount(int threadCount) {
-        this.threadCount = threadCount;
-    }
-
     /**
      * Sets the number of threads to use when running dx
      */
@@ -71,5 +50,9 @@ public class DexOptions implements com.android.builder.core.DexOptions {
     @Nullable
     public Integer getThreadCount() {
         return threadCount;
+    }
+
+    public void setThreadCount(int threadCount) {
+        this.threadCount = threadCount;
     }
 }

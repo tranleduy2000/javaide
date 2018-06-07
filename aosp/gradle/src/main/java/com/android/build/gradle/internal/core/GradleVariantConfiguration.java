@@ -30,8 +30,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Version of {@link com.android.builder.core.VariantConfiguration} that uses the specific
  * types used in the Gradle plugins.
- * <p>
- * It also adds support for Ndk support that is not ready to go in the builder library.
  */
 public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildType, CoreProductFlavor, CoreProductFlavor> {
 

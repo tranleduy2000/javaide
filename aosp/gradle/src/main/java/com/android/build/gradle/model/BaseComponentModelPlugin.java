@@ -67,10 +67,6 @@ import org.gradle.model.Defaults;
 import org.gradle.model.Model;
 import org.gradle.model.ModelMap;
 import org.gradle.model.Path;
-import org.gradle.model.RuleSource;
-import org.gradle.model.internal.core.ModelCreators;
-import org.gradle.model.internal.core.ModelReference;
-import org.gradle.model.internal.registry.ModelRegistry;
 import org.gradle.platform.base.BinaryContainer;
 import org.gradle.platform.base.ComponentSpecContainer;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
@@ -91,22 +87,13 @@ import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
 
 public class BaseComponentModelPlugin implements Plugin<Project> {
 
-    private ToolingModelBuilderRegistry toolingRegistry;
-
-    private ModelRegistry modelRegistry;
-
-    protected BaseComponentModelPlugin(ToolingModelBuilderRegistry toolingRegistry,
-                                       ModelRegistry modelRegistry) {
-        this.toolingRegistry = toolingRegistry;
-        this.modelRegistry = modelRegistry;
+    protected BaseComponentModelPlugin() {
     }
 
     private static void createConfiguration(@NonNull ConfigurationContainer configurations,
-                                            @NonNull String configurationName, @NonNull String configurationDescription) {
+                                            @NonNull String configurationName,
+                                            @NonNull String configurationDescription) {
         Configuration configuration = configurations.findByName(configurationName);
-        if (configuration == null) {
-            configuration = configurations.create(configurationName);
-        }
 
         configuration.setVisible(false);
         configuration.setDescription(configurationDescription);
@@ -133,7 +120,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             throw new RuntimeException("Unable to initialize ProcessRecorderFactory");
         }
 
-        project.getPlugins().apply(AndroidComponentModelPlugin.class);
         project.getPlugins().apply(JavaBasePlugin.class);
 
         // TODO: Create configurations for build types and flavors, or migrate to new dependency
@@ -143,22 +129,9 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
         createConfiguration(configurations, "default-metadata", "Metadata for published APKs");
         createConfiguration(configurations, "default-mapping", "Metadata for published APKs");
 
-
-        // Remove this when our models no longer depends on Project.
-        modelRegistry.create(ModelCreators
-                .bridgedInstance(ModelReference.of("projectModel", Project.class), project)
-                .descriptor("Model of project.").build());
-
-        toolingRegistry.register(new ComponentModelBuilder(modelRegistry));
-
-        // Inserting the ToolingModelBuilderRegistry into the model so that it can be use to create
-        // TaskManager in child classes.
-        modelRegistry.create(ModelCreators.bridgedInstance(
-                ModelReference.of("toolingRegistry", ToolingModelBuilderRegistry.class),
-                toolingRegistry).descriptor("Tooling model builder model registry.").build());
     }
 
-    public static class Rules extends RuleSource {
+    public static class Rules {
 
         private static void initBuildType(@NonNull BuildType buildType) {
             buildType.setDebuggable(false);
@@ -314,7 +287,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             sources.all(new Action<FunctionalSourceSet>() {
                 @Override
                 public void execute(FunctionalSourceSet functionalSourceSet) {
-                    LanguageSourceSet manifest = functionalSourceSet.getByName("manifest");
+                    LanguageSourceSet manifest = functionalSourceSet.get("manifest");
                     manifest.getSource().setIncludes(ImmutableList.of("AndroidManifest.xml"));
                 }
             });

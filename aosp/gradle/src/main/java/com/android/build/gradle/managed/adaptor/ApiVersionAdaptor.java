@@ -27,13 +27,13 @@ public class ApiVersionAdaptor implements com.android.builder.model.ApiVersion {
 
     private final ApiVersion apiVersion;
 
+    public ApiVersionAdaptor(ApiVersion apiVersion) {
+        this.apiVersion = apiVersion;
+    }
+
     public static boolean isEmpty(ApiVersion apiVersion) {
         return apiVersion.getApiLevel() == null &&
                 apiVersion.getCodename() == null;
-    }
-
-    public ApiVersionAdaptor(ApiVersion apiVersion) {
-        this.apiVersion = apiVersion;
     }
 
     @Override

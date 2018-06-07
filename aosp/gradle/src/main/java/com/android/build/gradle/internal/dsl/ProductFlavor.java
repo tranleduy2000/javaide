@@ -44,9 +44,6 @@ public class ProductFlavor extends DefaultProductFlavor implements CoreProductFl
     @NonNull
     protected final Logger logger;
 
-    @NonNull
-    private final NdkOptions ndkConfig;
-
     public ProductFlavor(@NonNull String name,
                          @NonNull Project project,
                          @NonNull Instantiator instantiator,
@@ -54,7 +51,6 @@ public class ProductFlavor extends DefaultProductFlavor implements CoreProductFl
         super(name);
         this.project = project;
         this.logger = logger;
-        ndkConfig = instantiator.newInstance(NdkOptions.class);
     }
 
     @Nullable

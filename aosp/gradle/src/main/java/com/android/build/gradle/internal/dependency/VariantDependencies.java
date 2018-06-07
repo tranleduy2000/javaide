@@ -15,7 +15,6 @@ import org.gradle.api.artifacts.Configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,28 +28,65 @@ import java.util.Set;
  * It optionally contains the dependencies for a test config for the given config.
  */
 public class VariantDependencies implements DependencyContainer {
+    private final String name;
+    @NonNull
+    private final Configuration compileConfiguration;
+    @NonNull
+    private final Configuration packageConfiguration;
+    @NonNull
+    private final Configuration publishConfiguration;
+    @Nullable
+    private final Configuration mappingConfiguration;
+    @Nullable
+    private final Configuration classesConfiguration;
+    @Nullable
+    private final Configuration metadataConfiguration;
+    @NonNull
+    private final List<LibraryDependencyImpl> libraries = new ArrayList<LibraryDependencyImpl>();
+    @NonNull
+    private final List<JarDependency> jars = new ArrayList<JarDependency>();
+    @NonNull
+    private final List<JarDependency> localJars = new ArrayList<JarDependency>();
+    /**
+     * Whether we have a direct dependency on com.android.support:support-annotations; this
+     * is used to drive whether we extract annotations when building libraries for example
+     */
+    private boolean annotationsPresent;
+    private DependencyChecker checker;
+
+    private VariantDependencies(@NonNull String name, @NonNull Configuration compileConfiguration, @NonNull Configuration packageConfiguration, @Nullable Configuration publishConfiguration, @Nullable Configuration mappingConfiguration, @Nullable Configuration classesConfiguration, @Nullable Configuration metadataConfiguration, boolean skipClassesInAndroid) {
+        this.name = name;
+        this.compileConfiguration = compileConfiguration;
+        this.packageConfiguration = packageConfiguration;
+        this.publishConfiguration = publishConfiguration;
+        this.mappingConfiguration = mappingConfiguration;
+        this.classesConfiguration = classesConfiguration;
+        this.metadataConfiguration = metadataConfiguration;
+        this.checker = new DependencyChecker(this, skipClassesInAndroid);
+    }
+
     public static VariantDependencies compute(@NonNull Project project, @NonNull final String name, boolean publishVariant, @NonNull VariantType variantType, @Nullable VariantDependencies parentVariant, @NonNull ConfigurationProvider... providers) {
         Set<Configuration> compileConfigs = Sets.newHashSetWithExpectedSize(providers.length * 2);
         Set<Configuration> apkConfigs = Sets.newHashSetWithExpectedSize(providers.length);
 
         for (ConfigurationProvider provider : providers) {
             if (provider != null) {
-                ((HashSet<Configuration>) compileConfigs).add(provider.getCompileConfiguration());
+                compileConfigs.add(provider.getCompileConfiguration());
                 if (provider.getProvidedConfiguration() != null) {
-                    ((HashSet<Configuration>) compileConfigs).add(provider.getProvidedConfiguration());
+                    compileConfigs.add(provider.getProvidedConfiguration());
                 }
 
 
-                ((HashSet<Configuration>) apkConfigs).add(provider.getCompileConfiguration());
-                ((HashSet<Configuration>) apkConfigs).add(provider.getPackageConfiguration());
+                apkConfigs.add(provider.getCompileConfiguration());
+                apkConfigs.add(provider.getPackageConfiguration());
             }
 
         }
 
 
         if (parentVariant != null) {
-            ((HashSet<Configuration>) compileConfigs).add(parentVariant.getCompileConfiguration());
-            ((HashSet<Configuration>) apkConfigs).add(parentVariant.getPackageConfiguration());
+            compileConfigs.add(parentVariant.getCompileConfiguration());
+            apkConfigs.add(parentVariant.getPackageConfiguration());
         }
 
 
@@ -96,17 +132,6 @@ public class VariantDependencies implements DependencyContainer {
 
 
         return new VariantDependencies(name, compile, apk, publish, mapping, classes, metadata, true);
-    }
-
-    private VariantDependencies(@NonNull String name, @NonNull Configuration compileConfiguration, @NonNull Configuration packageConfiguration, @Nullable Configuration publishConfiguration, @Nullable Configuration mappingConfiguration, @Nullable Configuration classesConfiguration, @Nullable Configuration metadataConfiguration, boolean skipClassesInAndroid) {
-        this.name = name;
-        this.compileConfiguration = compileConfiguration;
-        this.packageConfiguration = packageConfiguration;
-        this.publishConfiguration = publishConfiguration;
-        this.mappingConfiguration = mappingConfiguration;
-        this.classesConfiguration = classesConfiguration;
-        this.metadataConfiguration = metadataConfiguration;
-        this.checker = new DependencyChecker(this, skipClassesInAndroid);
     }
 
     public String getName() {
@@ -216,30 +241,4 @@ public class VariantDependencies implements DependencyContainer {
     public void setChecker(DependencyChecker checker) {
         this.checker = checker;
     }
-
-    private final String name;
-    @NonNull
-    private final Configuration compileConfiguration;
-    @NonNull
-    private final Configuration packageConfiguration;
-    @NonNull
-    private final Configuration publishConfiguration;
-    @Nullable
-    private final Configuration mappingConfiguration;
-    @Nullable
-    private final Configuration classesConfiguration;
-    @Nullable
-    private final Configuration metadataConfiguration;
-    @NonNull
-    private final List<LibraryDependencyImpl> libraries = new ArrayList<LibraryDependencyImpl>();
-    @NonNull
-    private final List<JarDependency> jars = new ArrayList<JarDependency>();
-    @NonNull
-    private final List<JarDependency> localJars = new ArrayList<JarDependency>();
-    /**
-     * Whether we have a direct dependency on com.android.support:support-annotations; this
-     * is used to drive whether we extract annotations when building libraries for example
-     */
-    private boolean annotationsPresent;
-    private DependencyChecker checker;
 }

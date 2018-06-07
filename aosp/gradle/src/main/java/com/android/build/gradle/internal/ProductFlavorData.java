@@ -16,7 +16,6 @@
 package com.android.build.gradle.internal;
 
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.api.DefaultAndroidSourceSet;
 import com.android.build.gradle.internal.dsl.CoreProductFlavor;
 import com.android.builder.core.BuilderConstants;

@@ -16,25 +16,6 @@
 
 package com.android.build.gradle.tasks.annotations;
 
-import static com.android.SdkConstants.AMP_ENTITY;
-import static com.android.SdkConstants.APOS_ENTITY;
-import static com.android.SdkConstants.ATTR_NAME;
-import static com.android.SdkConstants.ATTR_VALUE;
-import static com.android.SdkConstants.DOT_CLASS;
-import static com.android.SdkConstants.DOT_JAR;
-import static com.android.SdkConstants.DOT_XML;
-import static com.android.SdkConstants.GT_ENTITY;
-import static com.android.SdkConstants.INT_DEF_ANNOTATION;
-import static com.android.SdkConstants.LT_ENTITY;
-import static com.android.SdkConstants.QUOT_ENTITY;
-import static com.android.SdkConstants.STRING_DEF_ANNOTATION;
-import static com.android.SdkConstants.SUPPORT_ANNOTATIONS_PREFIX;
-import static com.android.SdkConstants.TYPE_DEF_FLAG_ATTRIBUTE;
-import static com.android.SdkConstants.TYPE_DEF_VALUE_ATTRIBUTE;
-import static com.android.SdkConstants.VALUE_TRUE;
-import static com.android.tools.lint.checks.SupportAnnotationDetector.INT_RANGE_ANNOTATION;
-import static com.android.tools.lint.detector.api.LintUtils.assertionsEnabled;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.utils.XmlUtils;
@@ -124,6 +105,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 
+import static com.android.SdkConstants.AMP_ENTITY;
+import static com.android.SdkConstants.APOS_ENTITY;
+import static com.android.SdkConstants.ATTR_NAME;
+import static com.android.SdkConstants.ATTR_VALUE;
+import static com.android.SdkConstants.DOT_CLASS;
+import static com.android.SdkConstants.DOT_JAR;
+import static com.android.SdkConstants.DOT_XML;
+import static com.android.SdkConstants.GT_ENTITY;
+import static com.android.SdkConstants.INT_DEF_ANNOTATION;
+import static com.android.SdkConstants.LT_ENTITY;
+import static com.android.SdkConstants.QUOT_ENTITY;
+import static com.android.SdkConstants.STRING_DEF_ANNOTATION;
+import static com.android.SdkConstants.SUPPORT_ANNOTATIONS_PREFIX;
+import static com.android.SdkConstants.TYPE_DEF_FLAG_ATTRIBUTE;
+import static com.android.SdkConstants.TYPE_DEF_VALUE_ATTRIBUTE;
+import static com.android.SdkConstants.VALUE_TRUE;
+import static com.android.tools.lint.checks.SupportAnnotationDetector.INT_RANGE_ANNOTATION;
+import static com.android.tools.lint.detector.api.LintUtils.assertionsEnabled;
+
 /**
  * Annotation extractor which looks for annotations in parsed compilation units and writes
  * the annotations into a format suitable for use by IntelliJ and Android Studio etc;
@@ -146,32 +146,10 @@ import java.util.zip.ZipEntry;
  * <p>
  * TODO:
  * - Warn if the {@code @IntDef} annotation is used on a non-int, and similarly if
- *   {@code @StringDef} is used on a non-string
+ * {@code @StringDef} is used on a non-string
  * - Ignore annotations defined on @hide elements
  */
 public class Extractor {
-    /** Whether we should include type args like &lt;T*gt; in external annotations signatures */
-    private static final boolean INCLUDE_TYPE_ARGS = false;
-
-    /** Whether to sort annotation attributes (otherwise their declaration order is used) */
-    private final boolean sortAnnotations;
-
-    /**
-     * Whether we should include class-retention annotations into the extracted file;
-     * we don't need {@code android.support.annotation.Nullable} to be in the extracted XML
-     * file since it has class retention and will appear in the compiled .jar version of
-     * the library
-     */
-    private final boolean includeClassRetentionAnnotations;
-
-    /**
-     * Whether we should skip nullable annotations in merged in annotations zip files
-     * (these are typically from infer nullity, which sometimes is a bit aggressive
-     * in assuming something should be marked as nullable; see for example issue #66999
-     * or all the manual removals of findViewById @Nullable return value annotations
-     */
-    private static final boolean INCLUDE_INFERRED_NULLABLE = false;
-
     public static final String ANDROID_ANNOTATIONS_PREFIX = "android.annotation.";
     public static final String ANDROID_NULLABLE = "android.annotation.Nullable";
     public static final String SUPPORT_NULLABLE = "android.support.annotation.Nullable";
@@ -190,7 +168,28 @@ public class Extractor {
     public static final String IDEA_CONTRACT = "org.jetbrains.annotations.Contract";
     public static final String IDEA_NON_NLS = "org.jetbrains.annotations.NonNls";
     public static final String ATTR_VAL = "val";
-
+    /**
+     * Whether we should include type args like &lt;T*gt; in external annotations signatures
+     */
+    private static final boolean INCLUDE_TYPE_ARGS = false;
+    /**
+     * Whether we should skip nullable annotations in merged in annotations zip files
+     * (these are typically from infer nullity, which sometimes is a bit aggressive
+     * in assuming something should be marked as nullable; see for example issue #66999
+     * or all the manual removals of findViewById @Nullable return value annotations
+     */
+    private static final boolean INCLUDE_INFERRED_NULLABLE = false;
+    /**
+     * Whether to sort annotation attributes (otherwise their declaration order is used)
+     */
+    private final boolean sortAnnotations;
+    /**
+     * Whether we should include class-retention annotations into the extracted file;
+     * we don't need {@code android.support.annotation.Nullable} to be in the extracted XML
+     * file since it has class retention and will appear in the compiled .jar version of
+     * the library
+     */
+    private final boolean includeClassRetentionAnnotations;
     @NonNull
     private final Map<String, List<AnnotationData>> types = Maps.newHashMap();
 
@@ -207,25 +206,300 @@ public class Extractor {
 
     private final boolean displayInfo;
 
-    private final Map<String,Integer> stats = Maps.newHashMap();
-    private int filteredCount;
-    private int mergedCount;
+    private final Map<String, Integer> stats = Maps.newHashMap();
     private final Set<CompilationUnitDeclaration> processedFiles = Sets.newHashSetWithExpectedSize(100);
     private final Set<String> ignoredAnnotations = Sets.newHashSet();
-    private boolean listIgnored;
-    private Map<String,List<Annotation>> typedefs;
-    private List<String> typedefClasses;
-    private Map<String,Boolean> sourceRetention;
     private final List<Item> keepItems = Lists.newArrayList();
+    private int filteredCount;
+    private int mergedCount;
+    private boolean listIgnored;
+    private Map<String, List<Annotation>> typedefs;
+    private List<String> typedefClasses;
+    private Map<String, Boolean> sourceRetention;
 
     public Extractor(@Nullable ApiDatabase apiFilter, @Nullable File classDir, boolean displayInfo,
-            boolean includeClassRetentionAnnotations, boolean sortAnnotations) {
+                     boolean includeClassRetentionAnnotations, boolean sortAnnotations) {
         this.apiFilter = apiFilter;
         this.listIgnored = apiFilter != null;
         this.classDir = classDir;
         this.displayInfo = displayInfo;
         this.includeClassRetentionAnnotations = includeClassRetentionAnnotations;
         this.sortAnnotations = sortAnnotations;
+    }
+
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    static void error(String message) {
+        System.err.println("Error: " + message);
+    }
+
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    static void warning(String message) {
+        System.out.println("Warning: " + message);
+    }
+
+    @Nullable
+    private static ClassScope findClassScope(Scope scope) {
+        while (scope != null) {
+            if (scope instanceof ClassScope) {
+                return (ClassScope) scope;
+            }
+            scope = scope.parent;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    static String getFqn(@NonNull Annotation annotation) {
+        if (annotation.resolvedType != null) {
+            return new String(annotation.resolvedType.readableName());
+        }
+        return null;
+    }
+
+    @Nullable
+    private static String getFqn(@NonNull ClassScope scope) {
+        TypeDeclaration typeDeclaration = scope.referenceType();
+        if (typeDeclaration != null && typeDeclaration.binding != null) {
+            return new String(typeDeclaration.binding.readableName());
+        }
+        return null;
+    }
+
+    @Nullable
+    private static String getFqn(@NonNull MethodScope scope) {
+        ClassScope classScope = findClassScope(scope);
+        if (classScope != null) {
+            return getFqn(classScope);
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private static String getFqn(@NonNull BlockScope scope) {
+        ClassScope classScope = findClassScope(scope);
+        if (classScope != null) {
+            return getFqn(classScope);
+        }
+
+        return null;
+    }
+
+    @SuppressWarnings("unused")
+    static boolean hasSourceRetention(@NonNull AnnotationBinding a) {
+        if (new String(a.getAnnotationType().readableName()).equals("java.lang.annotation.Retention")) {
+            ElementValuePair[] pairs = a.getElementValuePairs();
+            if (pairs == null || pairs.length != 1) {
+                warning("Expected exactly one parameter passed to @Retention");
+                return false;
+            }
+            ElementValuePair pair = pairs[0];
+            Object value = pair.getValue();
+            if (value instanceof FieldBinding) {
+                FieldBinding field = (FieldBinding) value;
+                if ("SOURCE".equals(new String(field.readableName()))) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @SuppressWarnings("unused")
+    static boolean hasSourceRetention(@NonNull Annotation[] annotations) {
+        for (Annotation annotation : annotations) {
+            String typeName = Extractor.getFqn(annotation);
+            if ("java.lang.annotation.Retention".equals(typeName)) {
+                MemberValuePair[] pairs = annotation.memberValuePairs();
+                if (pairs == null || pairs.length != 1) {
+                    warning("Expected exactly one parameter passed to @Retention");
+                    return false;
+                }
+                MemberValuePair pair = pairs[0];
+                Expression value = pair.value;
+                if (value instanceof NameReference) {
+                    NameReference reference = (NameReference) value;
+                    Binding binding = reference.binding;
+                    if (binding != null) {
+                        if (binding instanceof FieldBinding) {
+                            FieldBinding fb = (FieldBinding) binding;
+                            if ("SOURCE".equals(new String(fb.name)) &&
+                                    "java.lang.annotation.RetentionPolicy".equals(
+                                            new String(fb.declaringClass.readableName()))) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean isRelevantFrameworkAnnotation(@NonNull String fqn) {
+        return fqn.startsWith(ANDROID_ANNOTATIONS_PREFIX)
+                && !fqn.endsWith(".Widget")
+                && !fqn.endsWith(".TargetApi")
+                && !fqn.endsWith(".SystemApi")
+                && !fqn.endsWith(".SuppressLint")
+                && !fqn.endsWith(".SdkConstant");
+    }
+
+    static boolean isNestedAnnotation(@Nullable String fqn) {
+        return (fqn != null &&
+                (fqn.equals(INT_DEF_ANNOTATION) ||
+                        fqn.equals(STRING_DEF_ANNOTATION) ||
+                        fqn.equals(REQUIRES_PERMISSION) ||
+                        fqn.equals(ANDROID_REQUIRES_PERMISSION) ||
+                        fqn.equals(INT_RANGE_ANNOTATION) ||
+                        fqn.equals(ANDROID_INT_RANGE) ||
+                        fqn.equals(ANDROID_INT_DEF) ||
+                        fqn.equals(ANDROID_STRING_DEF)));
+    }
+
+    @Nullable
+    private static Document checkDocument(@NonNull String pkg, @NonNull String xml,
+                                          boolean namespaceAware) {
+        try {
+            return XmlUtils.parseDocument(xml, namespaceAware);
+        } catch (SAXException sax) {
+            warning("Failed to parse document for package " + pkg + ": " + sax.toString());
+        } catch (Exception e) {
+            // pass
+            // This method is deliberately silent; will return null
+        }
+
+        return null;
+    }
+
+    @NonNull
+    private static String unescapeXml(@NonNull String escaped) {
+        String workingString = escaped.replace(QUOT_ENTITY, "\"");
+        workingString = workingString.replace(LT_ENTITY, "<");
+        workingString = workingString.replace(GT_ENTITY, ">");
+        workingString = workingString.replace(APOS_ENTITY, "'");
+        workingString = workingString.replace(AMP_ENTITY, "&");
+
+        return workingString;
+    }
+
+    @NonNull
+    private static String escapeXml(@NonNull String unescaped) {
+        return XmlEscapers.xmlAttributeEscaper().escape(unescaped);
+    }
+
+    // The parameter declaration used in XML files should not have duplicated spaces,
+    // and there should be no space after commas (we can't however strip out all spaces,
+    // since for example the spaces around the "extends" keyword needs to be there in
+    // types like Map<String,? extends Number>
+    private static String fixParameterString(String parameters) {
+        return parameters.replace("  ", " ").replace(", ", ",");
+    }
+
+    @NonNull
+    private static List<Element> getChildren(@NonNull Element element) {
+        NodeList itemList = element.getChildNodes();
+        int length = itemList.getLength();
+        List<Element> result = new ArrayList<Element>(Math.max(5, length / 2 + 1));
+        for (int i = 0; i < length; i++) {
+            Node node = itemList.item(i);
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+
+            result.add((Element) node);
+        }
+
+        return result;
+    }
+
+    private static boolean isNonNull(String name) {
+        return name.equals(IDEA_NOTNULL)
+                || name.equals(ANDROID_NOTNULL)
+                || name.equals(SUPPORT_NOTNULL);
+    }
+
+    private static boolean isNullable(String name) {
+        return name.equals(IDEA_NULLABLE)
+                || name.equals(ANDROID_NULLABLE)
+                || name.equals(SUPPORT_NULLABLE);
+    }
+
+    private static String getPackage(String fqn) {
+        // Extract package from the given fqn. Attempts to handle inner classes;
+        // e.g.  "foo.bar.Foo.Bar will return "foo.bar".
+        int index = 0;
+        int last = 0;
+        while (true) {
+            index = fqn.indexOf('.', index);
+            if (index == -1) {
+                break;
+            }
+            last = index;
+            if (index < fqn.length() - 1) {
+                char next = fqn.charAt(index + 1);
+                if (Character.isUpperCase(next)) {
+                    break;
+                }
+            }
+            index++;
+        }
+
+        return fqn.substring(0, last);
+    }
+
+    @Nullable
+    private static String getReturnType(MethodBinding binding) {
+        if (binding.returnType != null) {
+            return new String(binding.returnType.readableName());
+        } else if (binding.declaringClass != null) {
+            assert binding.isConstructor();
+            return new String(binding.declaringClass.readableName());
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private static String getMethodName(@NonNull MethodBinding binding) {
+        if (binding.isConstructor()) {
+            if (binding.declaringClass != null) {
+                String classFqn = new String(binding.declaringClass.readableName());
+                return classFqn.substring(classFqn.lastIndexOf('.') + 1);
+            }
+
+        }
+        if (binding.selector != null) {
+            return new String(binding.selector);
+        }
+
+        assert binding.isConstructor();
+
+        return null;
+    }
+
+    @NonNull
+    private static String getParameterList(@NonNull MethodBinding binding, boolean isVarargs) {
+        // Create compact type signature (no spaces around commas or generics arguments)
+        StringBuilder sb = new StringBuilder();
+        TypeBinding[] typeParameters = binding.parameters;
+        if (typeParameters != null) {
+            for (int i = 0, n = typeParameters.length; i < n; i++) {
+                TypeBinding parameter = typeParameters[i];
+                if (i > 0) {
+                    sb.append(',');
+                }
+                String str = fixParameterString(new String(parameter.readableName()));
+                if (isVarargs && i == n - 1 && str.endsWith("[]")) {
+                    str = str.substring(0, str.length() - 2) + "...";
+                }
+                sb.append(str);
+            }
+        }
+        return sb.toString();
     }
 
     public void extractFromProjectSource(Collection<CompilationUnitDeclaration> units) {
@@ -295,7 +569,7 @@ public class Extractor {
                     return s1.compareTo(s2);
                 }
             });
-            Map<String,String> fqnToName = Maps.newHashMap();
+            Map<String, String> fqnToName = Maps.newHashMap();
             int max = 0;
             int count = 0;
             for (String fqn : annotations) {
@@ -338,16 +612,6 @@ public class Extractor {
         }
     }
 
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    static void error(String message) {
-        System.err.println("Error: " + message);
-    }
-
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    static void warning(String message) {
-        System.out.println("Warning: " + message);
-    }
-
     private void analyze(CompilationUnitDeclaration unit) {
         if (processedFiles.contains(unit)) {
             // The code to process all roots seems to hit some of the same classes
@@ -358,55 +622,6 @@ public class Extractor {
 
         AnnotationVisitor visitor = new AnnotationVisitor();
         unit.traverse(visitor, unit.scope);
-    }
-
-    @Nullable
-    private static ClassScope findClassScope(Scope scope) {
-        while (scope != null) {
-            if (scope instanceof ClassScope) {
-                return (ClassScope)scope;
-            }
-            scope = scope.parent;
-        }
-
-        return null;
-    }
-
-    @Nullable
-    static String getFqn(@NonNull Annotation annotation) {
-        if (annotation.resolvedType != null) {
-            return new String(annotation.resolvedType.readableName());
-        }
-        return null;
-    }
-
-    @Nullable
-    private static String getFqn(@NonNull ClassScope scope) {
-        TypeDeclaration typeDeclaration = scope.referenceType();
-        if (typeDeclaration != null && typeDeclaration.binding != null) {
-            return new String(typeDeclaration.binding.readableName());
-        }
-        return null;
-    }
-
-    @Nullable
-    private static String getFqn(@NonNull MethodScope scope) {
-        ClassScope classScope = findClassScope(scope);
-        if (classScope != null) {
-            return getFqn(classScope);
-        }
-
-        return null;
-    }
-
-    @Nullable
-    private static String getFqn(@NonNull BlockScope scope) {
-        ClassScope classScope = findClassScope(scope);
-        if (classScope != null) {
-            return getFqn(classScope);
-        }
-
-        return null;
     }
 
     boolean hasSourceRetention(@NonNull String fqn, @Nullable Annotation annotation) {
@@ -456,59 +671,6 @@ public class Extractor {
         return false;
     }
 
-    @SuppressWarnings("unused")
-    static boolean hasSourceRetention(@NonNull AnnotationBinding a) {
-        if (new String(a.getAnnotationType().readableName()).equals("java.lang.annotation.Retention")) {
-            ElementValuePair[] pairs = a.getElementValuePairs();
-            if (pairs == null || pairs.length != 1) {
-                warning("Expected exactly one parameter passed to @Retention");
-                return false;
-            }
-            ElementValuePair pair = pairs[0];
-            Object value = pair.getValue();
-            if (value instanceof FieldBinding) {
-                FieldBinding field = (FieldBinding) value;
-                if ("SOURCE".equals(new String(field.readableName()))) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    @SuppressWarnings("unused")
-    static boolean hasSourceRetention(@NonNull Annotation[] annotations) {
-        for (Annotation annotation : annotations) {
-            String typeName = Extractor.getFqn(annotation);
-            if ("java.lang.annotation.Retention".equals(typeName)) {
-                MemberValuePair[] pairs = annotation.memberValuePairs();
-                if (pairs == null || pairs.length != 1) {
-                    warning("Expected exactly one parameter passed to @Retention");
-                    return false;
-                }
-                MemberValuePair pair = pairs[0];
-                Expression value = pair.value;
-                if (value instanceof NameReference) {
-                    NameReference reference = (NameReference) value;
-                    Binding binding = reference.binding;
-                    if (binding != null) {
-                        if (binding instanceof FieldBinding) {
-                            FieldBinding fb = (FieldBinding) binding;
-                            if ("SOURCE".equals(new String(fb.name)) &&
-                                    "java.lang.annotation.RetentionPolicy".equals(
-                                            new String(fb.declaringClass.readableName()))) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
     private void addAnnotations(@Nullable Annotation[] annotations, @NonNull Item item) {
         if (annotations != null) {
             for (Annotation annotation : annotations) {
@@ -528,7 +690,7 @@ public class Extractor {
     }
 
     private void addAnnotation(@NonNull Annotation annotation, @Nullable String fqn,
-            @NonNull List<AnnotationData> list) {
+                               @NonNull List<AnnotationData> list) {
         if (fqn == null) {
             return;
         }
@@ -645,15 +807,6 @@ public class Extractor {
         return false;
     }
 
-    private static boolean isRelevantFrameworkAnnotation(@NonNull String fqn) {
-        return fqn.startsWith(ANDROID_ANNOTATIONS_PREFIX)
-                && !fqn.endsWith(".Widget")
-                && !fqn.endsWith(".TargetApi")
-                && !fqn.endsWith(".SystemApi")
-                && !fqn.endsWith(".SuppressLint")
-                && !fqn.endsWith(".SdkConstant");
-    }
-
     boolean isMagicConstant(String typeName) {
         if (irrelevantAnnotations.contains(typeName)
                 || typeName.startsWith("java.lang.")) { // @Override, @SuppressWarnings, etc.
@@ -692,18 +845,6 @@ public class Extractor {
         irrelevantAnnotations.add(typeName);
 
         return false;
-    }
-
-    static boolean isNestedAnnotation(@Nullable String fqn) {
-        return (fqn != null &&
-                (fqn.equals(INT_DEF_ANNOTATION) ||
-                        fqn.equals(STRING_DEF_ANNOTATION) ||
-                        fqn.equals(REQUIRES_PERMISSION) ||
-                        fqn.equals(ANDROID_REQUIRES_PERMISSION) ||
-                        fqn.equals(INT_RANGE_ANNOTATION) ||
-                        fqn.equals(ANDROID_INT_RANGE) ||
-                        fqn.equals(ANDROID_INT_DEF) ||
-                        fqn.equals(ANDROID_STRING_DEF)));
     }
 
     private boolean writeKeepRules(@NonNull File proguardCfg) {
@@ -865,21 +1006,6 @@ public class Extractor {
         return null;
     }
 
-    @Nullable
-    private static Document checkDocument(@NonNull String pkg, @NonNull String xml,
-            boolean namespaceAware) {
-        try {
-            return XmlUtils.parseDocument(xml, namespaceAware);
-        } catch (SAXException sax) {
-            warning("Failed to parse document for package " + pkg + ": " + sax.toString());
-        } catch (Exception e) {
-            // pass
-            // This method is deliberately silent; will return null
-        }
-
-        return null;
-    }
-
     public void mergeExisting(@NonNull File file) {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
@@ -938,7 +1064,7 @@ public class Extractor {
         } catch (Exception e) {
             String message = "Failed to merge " + path + ": " + e.toString();
             if (e instanceof SAXParseException) {
-                SAXParseException spe = (SAXParseException)e;
+                SAXParseException spe = (SAXParseException) e;
                 message = "Line " + spe.getLineNumber() + ":" + spe.getColumnNumber() + ": " + message;
             }
             error(message);
@@ -949,8 +1075,7 @@ public class Extractor {
     }
 
     private void mergeDocument(@NonNull Document document) {
-        @SuppressWarnings("SpellCheckingInspection")
-        final Pattern XML_SIGNATURE = Pattern.compile(
+        @SuppressWarnings("SpellCheckingInspection") final Pattern XML_SIGNATURE = Pattern.compile(
                 // Class (FieldName | Type? Name(ArgList) Argnum?)
                 //"(\\S+) (\\S+|(.*)\\s+(\\S+)\\((.*)\\)( \\d+)?)");
                 "(\\S+) (\\S+|((.*)\\s+)?(\\S+)\\((.*)\\)( \\d+)?)");
@@ -1001,22 +1126,6 @@ public class Extractor {
         }
     }
 
-    @NonNull
-    private static String unescapeXml(@NonNull String escaped) {
-        String workingString = escaped.replace(QUOT_ENTITY, "\"");
-        workingString = workingString.replace(LT_ENTITY, "<");
-        workingString = workingString.replace(GT_ENTITY, ">");
-        workingString = workingString.replace(APOS_ENTITY, "'");
-        workingString = workingString.replace(AMP_ENTITY, "&");
-
-        return workingString;
-    }
-
-    @NonNull
-    private static String escapeXml(@NonNull String unescaped) {
-        return XmlEscapers.xmlAttributeEscaper().escape(unescaped);
-    }
-
     private void mergeField(Element item, String containingClass, String fieldName) {
         if (apiFilter != null &&
                 !apiFilter.hasField(containingClass, fieldName)) {
@@ -1038,7 +1147,7 @@ public class Extractor {
     }
 
     private void mergeMethodOrParameter(Element item, Matcher matcher, String containingClass,
-            String methodName, String type, boolean constructor, String parameters) {
+                                        String methodName, String type, boolean constructor, String parameters) {
         parameters = fixParameterString(parameters);
 
         if (apiFilter != null &&
@@ -1084,14 +1193,6 @@ public class Extractor {
         }
     }
 
-    // The parameter declaration used in XML files should not have duplicated spaces,
-    // and there should be no space after commas (we can't however strip out all spaces,
-    // since for example the spaces around the "extends" keyword needs to be there in
-    // types like Map<String,? extends Number>
-    private static String fixParameterString(String parameters) {
-        return parameters.replace("  ", " ").replace(", ", ",");
-    }
-
     private boolean hasRelevantAnnotations(Element item) {
         for (Element annotationElement : getChildren(item)) {
             if (isRelevantAnnotation(annotationElement)) {
@@ -1126,23 +1227,6 @@ public class Extractor {
         }
 
         return false;
-    }
-
-    @NonNull
-    private static List<Element> getChildren(@NonNull Element element) {
-        NodeList itemList = element.getChildNodes();
-        int length = itemList.getLength();
-        List<Element> result = new ArrayList<Element>(Math.max(5, length / 2 + 1));
-        for (int i = 0; i < length; i++) {
-            Node node = itemList.item(i);
-            if (node.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
-
-            result.add((Element) node);
-        }
-
-        return result;
     }
 
     private int addAnnotations(Element itemElement, Item item) {
@@ -1197,18 +1281,6 @@ public class Extractor {
         return count;
     }
 
-    private static boolean isNonNull(String name) {
-        return name.equals(IDEA_NOTNULL)
-                || name.equals(ANDROID_NOTNULL)
-                || name.equals(SUPPORT_NOTNULL);
-    }
-
-    private static boolean isNullable(String name) {
-        return name.equals(IDEA_NULLABLE)
-                || name.equals(ANDROID_NULLABLE)
-                || name.equals(SUPPORT_NULLABLE);
-    }
-
     private AnnotationData createAnnotation(Element annotationElement) {
         String tagName = annotationElement.getTagName();
         assert tagName.equals("annotation") : tagName;
@@ -1255,7 +1327,7 @@ public class Extractor {
                             List<String> sorted = Lists.newArrayList(fields);
                             Collections.sort(sorted);
                             if (reflectionFields != null) {
-                                final Map<String,Integer> rank = Maps.newHashMap();
+                                final Map<String, Integer> rank = Maps.newHashMap();
                                 for (int i = 0, n = sorted.size(); i < n; i++) {
                                     rank.put(sorted.get(i), reflectionFields.length + i);
 
@@ -1320,7 +1392,7 @@ public class Extractor {
             if (apiFilter != null) {
                 value = removeFiltered(value);
                 while (value.contains(", ,")) {
-                    value = value.replace(", ,",",");
+                    value = value.replace(", ,", ",");
                 }
                 if (value.startsWith(", ")) {
                     value = value.substring(2);
@@ -1329,9 +1401,9 @@ public class Extractor {
 
             annotation = new AnnotationData(
                     valName.equals("stringValues") ? STRING_DEF_ANNOTATION : INT_DEF_ANNOTATION,
-                    new String[] {
+                    new String[]{
                             TYPE_DEF_VALUE_ATTRIBUTE, value,
-                            flag ? TYPE_DEF_FLAG_ATTRIBUTE : null, flag ? VALUE_TRUE : null });
+                            flag ? TYPE_DEF_FLAG_ATTRIBUTE : null, flag ? VALUE_TRUE : null});
         } else if (STRING_DEF_ANNOTATION.equals(name) || ANDROID_STRING_DEF.equals(name) ||
                 INT_DEF_ANNOTATION.equals(name) || ANDROID_INT_DEF.equals(name)) {
             List<Element> children = getChildren(annotationElement);
@@ -1348,14 +1420,14 @@ public class Extractor {
             boolean intDef = INT_DEF_ANNOTATION.equals(name) || ANDROID_INT_DEF.equals(name);
             annotation = new AnnotationData(
                     intDef ? INT_DEF_ANNOTATION : STRING_DEF_ANNOTATION,
-                    new String[] { TYPE_DEF_VALUE_ATTRIBUTE, value,
-                    flag ? TYPE_DEF_FLAG_ATTRIBUTE : null, flag ? VALUE_TRUE : null});
+                    new String[]{TYPE_DEF_VALUE_ATTRIBUTE, value,
+                            flag ? TYPE_DEF_FLAG_ATTRIBUTE : null, flag ? VALUE_TRUE : null});
         } else if (IDEA_CONTRACT.equals(name)) {
             List<Element> children = getChildren(annotationElement);
             assert children.size() == 1 : children.size();
             Element valueElement = children.get(0);
             String value = valueElement.getAttribute(ATTR_VAL);
-            annotation = new AnnotationData(name, new String[] { TYPE_DEF_VALUE_ATTRIBUTE, value });
+            annotation = new AnnotationData(name, new String[]{TYPE_DEF_VALUE_ATTRIBUTE, value});
         } else if (isNonNull(name)) {
             annotation = new AnnotationData(SUPPORT_NOTNULL);
         } else if (isNullable(name)) {
@@ -1412,37 +1484,13 @@ public class Extractor {
         return escapeXml(sb.toString());
     }
 
-
-    private static String getPackage(String fqn) {
-        // Extract package from the given fqn. Attempts to handle inner classes;
-        // e.g.  "foo.bar.Foo.Bar will return "foo.bar".
-        int index = 0;
-        int last = 0;
-        while (true) {
-            index = fqn.indexOf('.', index);
-            if (index == -1) {
-                break;
-            }
-            last = index;
-            if (index < fqn.length() - 1) {
-                char next = fqn.charAt(index + 1);
-                if (Character.isUpperCase(next)) {
-                    break;
-                }
-            }
-            index++;
-        }
-
-        return fqn.substring(0, last);
+    public boolean isListIgnored() {
+        return listIgnored;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public void setListIgnored(boolean listIgnored) {
         this.listIgnored = listIgnored;
-    }
-
-    public boolean isListIgnored() {
-        return listIgnored;
     }
 
     public AnnotationData createData(@NonNull String name, @NonNull Annotation annotation) {
@@ -1451,279 +1499,6 @@ public class Extractor {
             return new AnnotationData(name);
         }
         return new AnnotationData(name, pairs);
-    }
-
-    private class AnnotationData {
-        @NonNull
-        public final String name;
-
-        @Nullable
-        public String[] attributeStrings;
-
-        @Nullable
-        public MemberValuePair[] attributes;
-
-        private AnnotationData(@NonNull String name) {
-            this.name = name;
-        }
-
-        private AnnotationData(@NonNull String name, @Nullable MemberValuePair[] pairs) {
-            this(name);
-            attributes = pairs;
-            assert attributes == null || attributes.length > 0;
-        }
-
-        private AnnotationData(@NonNull String name, @Nullable String[] attributeStrings) {
-            this(name);
-            this.attributeStrings = attributeStrings;
-            assert attributeStrings != null && attributeStrings.length > 0;
-        }
-
-        void write(PrintWriter writer) {
-            writer.print("    <annotation name=\"");
-            writer.print(name);
-
-            if (attributes != null) {
-                writer.print("\">");
-                writer.println();
-                //noinspection PointlessBooleanExpression,ConstantConditions
-                if (attributes.length > 1 && sortAnnotations) {
-                    // Ensure that the value attribute is written first
-                    Arrays.sort(attributes, new Comparator<MemberValuePair>() {
-                        private String getName(MemberValuePair pair) {
-                            if (pair.name == null) {
-                                return ATTR_VALUE;
-                            } else {
-                                return new String(pair.name);
-                            }
-                        }
-
-                        private int rank(MemberValuePair pair) {
-                            return ATTR_VALUE.equals(getName(pair)) ? -1 : 0;
-                        }
-
-                        @Override
-                        public int compare(MemberValuePair o1, MemberValuePair o2) {
-                            int r1 = rank(o1);
-                            int r2 = rank(o2);
-                            int delta = r1 - r2;
-                            if (delta != 0) {
-                                return delta;
-                            }
-                            return getName(o1).compareTo(getName(o2));
-                        }
-                    });
-                }
-
-                MemberValuePair[] attributes = this.attributes;
-
-                if (attributes.length == 1
-                        && name.startsWith(REQUIRES_PERMISSION)
-                        && name.length() > REQUIRES_PERMISSION.length()
-                        && attributes[0].value instanceof SingleMemberAnnotation) {
-                    // The external annotations format does not allow for nested/complex annotations.
-                    // However, these special annotations (@RequiresPermission.Read,
-                    // @RequiresPermission.Write, etc) are known to only be simple containers with a
-                    // single permission child, so instead we "inline" the content:
-                    //  @Read(@RequiresPermission(allOf={P1,P2},conditional=true)
-                    //     =>
-                    //      @RequiresPermission.Read(allOf({P1,P2},conditional=true)
-                    // That's setting attributes that don't actually exist on the container permission,
-                    // but we'll counteract that on the read-annotations side.
-                    SingleMemberAnnotation annotation = (SingleMemberAnnotation)attributes[0].value;
-                    attributes = annotation.memberValuePairs();
-                }
-
-                for (MemberValuePair pair : attributes) {
-                    writer.print("      <val name=\"");
-                    if (pair.name != null) {
-                        writer.print(pair.name);
-                    } else {
-                        writer.print(ATTR_VALUE); // default name
-                    }
-                    writer.print("\" val=\"");
-                    writer.print(escapeXml(attributeString(pair.value)));
-                    writer.println("\" />");
-                }
-                writer.println("    </annotation>");
-
-            } else if (attributeStrings != null) {
-                writer.print("\">");
-                writer.println();
-                for (int i = 0; i < attributeStrings.length; i += 2) {
-                    String name = attributeStrings[i];
-                    String value = attributeStrings[i + 1];
-                    if (name == null) {
-                        continue;
-                    }
-                    writer.print("      <val name=\"");
-                    writer.print(name);
-                    writer.print("\" val=\"");
-                    writer.print(escapeXml(value));
-                    writer.println("\" />");
-                }
-                writer.println("    </annotation>");
-            } else {
-                writer.println("\" />");
-            }
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            AnnotationData that = (AnnotationData) o;
-
-            return name.equals(that.name);
-        }
-
-        @Override
-        public int hashCode() {
-            return name.hashCode();
-        }
-
-        private String attributeString(@NonNull Expression value) {
-            StringBuilder sb = new StringBuilder();
-            appendExpression(sb, value);
-            return sb.toString();
-        }
-
-        private boolean appendExpression(@NonNull StringBuilder sb,
-                @NonNull Expression expression) {
-            if (expression instanceof ArrayInitializer) {
-                sb.append('{');
-                ArrayInitializer initializer = (ArrayInitializer) expression;
-                boolean first = true;
-                int initialLength = sb.length();
-                for (Expression e : initializer.expressions) {
-                    int length = sb.length();
-                    if (first) {
-                        first = false;
-                    } else {
-                        sb.append(", ");
-                    }
-                    boolean appended = appendExpression(sb, e);
-                    if (!appended) {
-                        // trunk off comma if it bailed for some reason (e.g. constant
-                        // filtered out by API etc)
-                        sb.setLength(length);
-                        if (length == initialLength) {
-                            first = true;
-                        }
-                    }
-                }
-                sb.append('}');
-                return true;
-            } else if (expression instanceof NameReference) {
-                NameReference reference = (NameReference) expression;
-                if (reference.binding != null) {
-                    if (reference.binding instanceof FieldBinding) {
-                        FieldBinding fb = (FieldBinding)reference.binding;
-                        Constant constant = fb.constant();
-                        if (constant != null && constant != Constant.NotAConstant &&
-                                !(name.equals(INT_DEF_ANNOTATION)) &&
-                                !(name.equals(STRING_DEF_ANNOTATION))) {
-                            if (constant instanceof StringConstant) {
-                                sb.append('"').append(constant.stringValue()).append('"');
-                                return true;
-                            } else if (constant instanceof IntConstant) {
-                                sb.append(Integer.toString(constant.intValue()));
-                                return true;
-                            } else if (constant instanceof BooleanConstant) {
-                                sb.append(Boolean.toString(constant.booleanValue()));
-                                return true;
-                            } else if (constant instanceof LongConstant) {
-                                sb.append(Long.toString(constant.longValue()));
-                                return true;
-                            } else if (constant instanceof DoubleConstant) {
-                                sb.append(Double.toString(constant.doubleValue()));
-                                return true;
-                            } else if (constant instanceof CharConstant) {
-                                sb.append('\'').append(Character.toString(constant.charValue())).append('\'');
-                                return true;
-                            } else if (constant instanceof FloatConstant) {
-                                sb.append(Float.toString(constant.floatValue()));
-                                return true;
-                            } else if (constant instanceof ShortConstant) {
-                                sb.append(Short.toString(constant.shortValue()));
-                                return true;
-                            } else if (constant instanceof ByteConstant) {
-                                sb.append(Byte.toString(constant.byteValue()));
-                                return true;
-                            }
-                        }
-                        if (fb.declaringClass != null) {
-                            if (apiFilter != null &&
-                                    !apiFilter.hasField(
-                                            new String(fb.declaringClass.readableName()),
-                                            new String(fb.name))) {
-                                if (isListIgnored()) {
-                                    info("Filtering out typedef constant "
-                                            + new String(fb.declaringClass.readableName()) + "."
-                                            + new String(fb.name) + "");
-                                }
-                                return false;
-                            }
-                            sb.append(fb.declaringClass.readableName());
-                            sb.append('.');
-                            sb.append(fb.name);
-                        } else {
-                            sb.append(reference.binding.readableName());
-                        }
-                    } else {
-                        sb.append(reference.binding.readableName());
-                    }
-                    return true;
-                } else {
-                    warning("No binding for reference " + reference);
-                }
-                return false;
-            } else if (expression instanceof StringLiteral) {
-                StringLiteral s = (StringLiteral) expression;
-                sb.append('"');
-                sb.append(s.source());
-                sb.append('"');
-                return true;
-            } else if (expression instanceof NumberLiteral) {
-                NumberLiteral number = (NumberLiteral) expression;
-                sb.append(number.source());
-                return true;
-            } else if (expression instanceof TrueLiteral) {
-                sb.append(true);
-                return true;
-            } else if (expression instanceof FalseLiteral) {
-                sb.append(false);
-                return true;
-            } else if (expression instanceof org.eclipse.jdt.internal.compiler.ast.NullLiteral) {
-                sb.append("null");
-                return true;
-            } else {
-                // BinaryExpression etc can happen if you put "3 + 4" in as an integer!
-                if (expression.constant != null) {
-                    if (expression.constant.typeID() == TypeIds.T_int) {
-                        sb.append(expression.constant.intValue());
-                        return true;
-                    } else if (expression.constant.typeID() == TypeIds.T_JavaLangString) {
-                        sb.append('"');
-                        sb.append(expression.constant.stringValue());
-                        sb.append('"');
-                        return true;
-                    } else {
-                        warning("Unexpected type for constant " + expression.constant.toString());
-                    }
-                } else {
-                    warning("Unexpected annotation expression of type " + expression.getClass() + " and is "
-                            + expression);
-                }
-            }
-
-            return false;
-        }
     }
 
     public enum ClassKind {
@@ -1770,15 +1545,16 @@ public class Extractor {
      * has an associated set of annotations
      */
     private abstract static class Item implements Comparable<Item> {
-        @NonNull public final String containingClass;
-        @NonNull public final ClassKind classKind;
+        @NonNull
+        public final String containingClass;
+        @NonNull
+        public final ClassKind classKind;
+        public final List<AnnotationData> annotations = Lists.newArrayList();
 
         public Item(@NonNull String containingClass, @NonNull ClassKind classKind) {
             this.containingClass = containingClass;
             this.classKind = classKind;
         }
-
-        public final List<AnnotationData> annotations = Lists.newArrayList();
 
         void write(PrintWriter writer) {
             if (annotations.isEmpty()) {
@@ -1891,7 +1667,7 @@ public class Extractor {
         public final String fieldType;
 
         private FieldItem(@NonNull String containingClass, @NonNull ClassKind classKind,
-                @NonNull String fieldName, @Nullable String fieldType) {
+                          @NonNull String fieldName, @Nullable String fieldType) {
             super(containingClass, classKind);
             this.fieldName = fieldName;
             this.fieldType = fieldType;
@@ -1996,16 +1772,11 @@ public class Extractor {
             this.isConstructor = isConstructor;
         }
 
-        @NonNull
-        public String getName() {
-            return methodName;
-        }
-
         @Nullable
         static MethodItem create(@Nullable String classFqn,
-                @NonNull ClassKind classKind,
-                @NonNull AbstractMethodDeclaration declaration,
-                @Nullable MethodBinding binding) {
+                                 @NonNull ClassKind classKind,
+                                 @NonNull AbstractMethodDeclaration declaration,
+                                 @Nullable MethodBinding binding) {
             if (classFqn == null || binding == null) {
                 return null;
             }
@@ -2026,6 +1797,11 @@ public class Extractor {
             return new MethodItem(classFqn, classKind, returnType,
                     methodName, parameterList,
                     binding.isConstructor());
+        }
+
+        @NonNull
+        public String getName() {
+            return methodName;
         }
 
         @NonNull
@@ -2145,57 +1921,6 @@ public class Extractor {
         }
     }
 
-    @Nullable
-    private static String getReturnType(MethodBinding binding) {
-        if (binding.returnType != null) {
-            return new String(binding.returnType.readableName());
-        } else if (binding.declaringClass != null) {
-            assert binding.isConstructor();
-            return new String(binding.declaringClass.readableName());
-        }
-
-        return null;
-    }
-
-    @Nullable
-    private static String getMethodName(@NonNull MethodBinding binding) {
-        if (binding.isConstructor()) {
-            if (binding.declaringClass != null) {
-                String classFqn = new String(binding.declaringClass.readableName());
-                return classFqn.substring(classFqn.lastIndexOf('.') + 1);
-            }
-
-        }
-        if (binding.selector != null) {
-            return new String(binding.selector);
-        }
-
-        assert binding.isConstructor();
-
-        return null;
-    }
-
-    @NonNull
-    private static String getParameterList(@NonNull MethodBinding binding, boolean isVarargs) {
-        // Create compact type signature (no spaces around commas or generics arguments)
-        StringBuilder sb = new StringBuilder();
-        TypeBinding[] typeParameters = binding.parameters;
-        if (typeParameters != null) {
-            for (int i = 0, n = typeParameters.length; i < n; i++) {
-                TypeBinding parameter = typeParameters[i];
-                if (i > 0) {
-                    sb.append(',');
-                }
-                String str = fixParameterString(new String(parameter.readableName()));
-                if (isVarargs && i == n - 1 && str.endsWith("[]")) {
-                    str = str.substring(0, str.length() - 2) + "...";
-                }
-                sb.append(str);
-            }
-        }
-        return sb.toString();
-    }
-
     private static class ParameterItem extends MethodItem {
         @NonNull
         public final String argIndex;
@@ -2303,6 +2028,279 @@ public class Extractor {
         }
     }
 
+    private class AnnotationData {
+        @NonNull
+        public final String name;
+
+        @Nullable
+        public String[] attributeStrings;
+
+        @Nullable
+        public MemberValuePair[] attributes;
+
+        private AnnotationData(@NonNull String name) {
+            this.name = name;
+        }
+
+        private AnnotationData(@NonNull String name, @Nullable MemberValuePair[] pairs) {
+            this(name);
+            attributes = pairs;
+            assert attributes == null || attributes.length > 0;
+        }
+
+        private AnnotationData(@NonNull String name, @Nullable String[] attributeStrings) {
+            this(name);
+            this.attributeStrings = attributeStrings;
+            assert attributeStrings != null && attributeStrings.length > 0;
+        }
+
+        void write(PrintWriter writer) {
+            writer.print("    <annotation name=\"");
+            writer.print(name);
+
+            if (attributes != null) {
+                writer.print("\">");
+                writer.println();
+                //noinspection PointlessBooleanExpression,ConstantConditions
+                if (attributes.length > 1 && sortAnnotations) {
+                    // Ensure that the value attribute is written first
+                    Arrays.sort(attributes, new Comparator<MemberValuePair>() {
+                        private String getName(MemberValuePair pair) {
+                            if (pair.name == null) {
+                                return ATTR_VALUE;
+                            } else {
+                                return new String(pair.name);
+                            }
+                        }
+
+                        private int rank(MemberValuePair pair) {
+                            return ATTR_VALUE.equals(getName(pair)) ? -1 : 0;
+                        }
+
+                        @Override
+                        public int compare(MemberValuePair o1, MemberValuePair o2) {
+                            int r1 = rank(o1);
+                            int r2 = rank(o2);
+                            int delta = r1 - r2;
+                            if (delta != 0) {
+                                return delta;
+                            }
+                            return getName(o1).compareTo(getName(o2));
+                        }
+                    });
+                }
+
+                MemberValuePair[] attributes = this.attributes;
+
+                if (attributes.length == 1
+                        && name.startsWith(REQUIRES_PERMISSION)
+                        && name.length() > REQUIRES_PERMISSION.length()
+                        && attributes[0].value instanceof SingleMemberAnnotation) {
+                    // The external annotations format does not allow for nested/complex annotations.
+                    // However, these special annotations (@RequiresPermission.Read,
+                    // @RequiresPermission.Write, etc) are known to only be simple containers with a
+                    // single permission child, so instead we "inline" the content:
+                    //  @Read(@RequiresPermission(allOf={P1,P2},conditional=true)
+                    //     =>
+                    //      @RequiresPermission.Read(allOf({P1,P2},conditional=true)
+                    // That's setting attributes that don't actually exist on the container permission,
+                    // but we'll counteract that on the read-annotations side.
+                    SingleMemberAnnotation annotation = (SingleMemberAnnotation) attributes[0].value;
+                    attributes = annotation.memberValuePairs();
+                }
+
+                for (MemberValuePair pair : attributes) {
+                    writer.print("      <val name=\"");
+                    if (pair.name != null) {
+                        writer.print(pair.name);
+                    } else {
+                        writer.print(ATTR_VALUE); // default name
+                    }
+                    writer.print("\" val=\"");
+                    writer.print(escapeXml(attributeString(pair.value)));
+                    writer.println("\" />");
+                }
+                writer.println("    </annotation>");
+
+            } else if (attributeStrings != null) {
+                writer.print("\">");
+                writer.println();
+                for (int i = 0; i < attributeStrings.length; i += 2) {
+                    String name = attributeStrings[i];
+                    String value = attributeStrings[i + 1];
+                    if (name == null) {
+                        continue;
+                    }
+                    writer.print("      <val name=\"");
+                    writer.print(name);
+                    writer.print("\" val=\"");
+                    writer.print(escapeXml(value));
+                    writer.println("\" />");
+                }
+                writer.println("    </annotation>");
+            } else {
+                writer.println("\" />");
+            }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            AnnotationData that = (AnnotationData) o;
+
+            return name.equals(that.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return name.hashCode();
+        }
+
+        private String attributeString(@NonNull Expression value) {
+            StringBuilder sb = new StringBuilder();
+            appendExpression(sb, value);
+            return sb.toString();
+        }
+
+        private boolean appendExpression(@NonNull StringBuilder sb,
+                                         @NonNull Expression expression) {
+            if (expression instanceof ArrayInitializer) {
+                sb.append('{');
+                ArrayInitializer initializer = (ArrayInitializer) expression;
+                boolean first = true;
+                int initialLength = sb.length();
+                for (Expression e : initializer.expressions) {
+                    int length = sb.length();
+                    if (first) {
+                        first = false;
+                    } else {
+                        sb.append(", ");
+                    }
+                    boolean appended = appendExpression(sb, e);
+                    if (!appended) {
+                        // trunk off comma if it bailed for some reason (e.g. constant
+                        // filtered out by API etc)
+                        sb.setLength(length);
+                        if (length == initialLength) {
+                            first = true;
+                        }
+                    }
+                }
+                sb.append('}');
+                return true;
+            } else if (expression instanceof NameReference) {
+                NameReference reference = (NameReference) expression;
+                if (reference.binding != null) {
+                    if (reference.binding instanceof FieldBinding) {
+                        FieldBinding fb = (FieldBinding) reference.binding;
+                        Constant constant = fb.constant();
+                        if (constant != null && constant != Constant.NotAConstant &&
+                                !(name.equals(INT_DEF_ANNOTATION)) &&
+                                !(name.equals(STRING_DEF_ANNOTATION))) {
+                            if (constant instanceof StringConstant) {
+                                sb.append('"').append(constant.stringValue()).append('"');
+                                return true;
+                            } else if (constant instanceof IntConstant) {
+                                sb.append(Integer.toString(constant.intValue()));
+                                return true;
+                            } else if (constant instanceof BooleanConstant) {
+                                sb.append(Boolean.toString(constant.booleanValue()));
+                                return true;
+                            } else if (constant instanceof LongConstant) {
+                                sb.append(Long.toString(constant.longValue()));
+                                return true;
+                            } else if (constant instanceof DoubleConstant) {
+                                sb.append(Double.toString(constant.doubleValue()));
+                                return true;
+                            } else if (constant instanceof CharConstant) {
+                                sb.append('\'').append(Character.toString(constant.charValue())).append('\'');
+                                return true;
+                            } else if (constant instanceof FloatConstant) {
+                                sb.append(Float.toString(constant.floatValue()));
+                                return true;
+                            } else if (constant instanceof ShortConstant) {
+                                sb.append(Short.toString(constant.shortValue()));
+                                return true;
+                            } else if (constant instanceof ByteConstant) {
+                                sb.append(Byte.toString(constant.byteValue()));
+                                return true;
+                            }
+                        }
+                        if (fb.declaringClass != null) {
+                            if (apiFilter != null &&
+                                    !apiFilter.hasField(
+                                            new String(fb.declaringClass.readableName()),
+                                            new String(fb.name))) {
+                                if (isListIgnored()) {
+                                    info("Filtering out typedef constant "
+                                            + new String(fb.declaringClass.readableName()) + "."
+                                            + new String(fb.name) + "");
+                                }
+                                return false;
+                            }
+                            sb.append(fb.declaringClass.readableName());
+                            sb.append('.');
+                            sb.append(fb.name);
+                        } else {
+                            sb.append(reference.binding.readableName());
+                        }
+                    } else {
+                        sb.append(reference.binding.readableName());
+                    }
+                    return true;
+                } else {
+                    warning("No binding for reference " + reference);
+                }
+                return false;
+            } else if (expression instanceof StringLiteral) {
+                StringLiteral s = (StringLiteral) expression;
+                sb.append('"');
+                sb.append(s.source());
+                sb.append('"');
+                return true;
+            } else if (expression instanceof NumberLiteral) {
+                NumberLiteral number = (NumberLiteral) expression;
+                sb.append(number.source());
+                return true;
+            } else if (expression instanceof TrueLiteral) {
+                sb.append(true);
+                return true;
+            } else if (expression instanceof FalseLiteral) {
+                sb.append(false);
+                return true;
+            } else if (expression instanceof org.eclipse.jdt.internal.compiler.ast.NullLiteral) {
+                sb.append("null");
+                return true;
+            } else {
+                // BinaryExpression etc can happen if you put "3 + 4" in as an integer!
+                if (expression.constant != null) {
+                    if (expression.constant.typeID() == TypeIds.T_int) {
+                        sb.append(expression.constant.intValue());
+                        return true;
+                    } else if (expression.constant.typeID() == TypeIds.T_JavaLangString) {
+                        sb.append('"');
+                        sb.append(expression.constant.stringValue());
+                        sb.append('"');
+                        return true;
+                    } else {
+                        warning("Unexpected type for constant " + expression.constant.toString());
+                    }
+                } else {
+                    warning("Unexpected annotation expression of type " + expression.getClass() + " and is "
+                            + expression);
+                }
+            }
+
+            return false;
+        }
+    }
+
     private class AnnotationVisitor extends ASTVisitor {
         @Override
         public boolean visit(Argument argument, BlockScope scope) {
@@ -2367,7 +2365,7 @@ public class Extractor {
 
                 String fqn = getFqn(scope);
                 ClassKind kind = scope.referenceContext instanceof TypeDeclaration ?
-                        ClassKind.forType((TypeDeclaration)scope.referenceContext) :
+                        ClassKind.forType((TypeDeclaration) scope.referenceContext) :
                         ClassKind.CLASS;
                 Item item = FieldItem.create(fqn, kind, fieldBinding);
                 if (item != null && fqn != null) {

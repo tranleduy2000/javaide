@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package com.android.build.gradle.internal;
+
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.api.DefaultAndroidSourceSet;
 import com.android.build.gradle.internal.dsl.CoreBuildType;
 import com.android.utils.StringHelper;
@@ -32,10 +32,9 @@ public class BuildTypeData extends VariantDimensionData {
     private final Task assembleTask;
 
     BuildTypeData(
-            @NonNull  CoreBuildType buildType,
-            @NonNull  Project project,
-            @NonNull  DefaultAndroidSourceSet sourceSet,
-            @Nullable DefaultAndroidSourceSet unitTestSourceSet) {
+            @NonNull CoreBuildType buildType,
+            @NonNull Project project,
+            @NonNull DefaultAndroidSourceSet sourceSet) {
         super(sourceSet, project);
 
         this.buildType = buildType;

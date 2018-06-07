@@ -29,7 +29,7 @@ import java.io.File;
 
 /**
  * Implementation of variant output for apk-generating variants.
- *
+ * <p>
  * This is a wrapper around the internal data model, in order to control what is accessible
  * through the external API.
  */
@@ -62,13 +62,8 @@ public class ApkVariantOutputImpl extends BaseVariantOutputImpl implements ApkVa
     @NonNull
     @Override
     public ZipAlign createZipAlignTask(@NonNull String taskName, @NonNull File inputFile,
-            @NonNull File outputFile) {
+                                       @NonNull File outputFile) {
         return variantOutputData.createZipAlignTask(taskName, inputFile, outputFile);
-    }
-
-    @Override
-    public void setVersionCodeOverride(int versionCodeOverride) {
-        variantOutputData.setVersionCodeOverride(versionCodeOverride);
     }
 
     @Override
@@ -77,13 +72,18 @@ public class ApkVariantOutputImpl extends BaseVariantOutputImpl implements ApkVa
     }
 
     @Override
-    public void setVersionNameOverride(String versionNameOverride) {
-        variantOutputData.setVersionNameOverride(versionNameOverride);
+    public void setVersionCodeOverride(int versionCodeOverride) {
+        variantOutputData.setVersionCodeOverride(versionCodeOverride);
     }
 
     @Override
     public String getVersionNameOverride() {
         return variantOutputData.getVersionNameOverride();
+    }
+
+    @Override
+    public void setVersionNameOverride(String versionNameOverride) {
+        variantOutputData.setVersionNameOverride(versionNameOverride);
     }
 
     @Override

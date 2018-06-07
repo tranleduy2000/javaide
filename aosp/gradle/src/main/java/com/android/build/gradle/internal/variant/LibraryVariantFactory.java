@@ -48,11 +48,11 @@ import static com.android.builder.core.BuilderConstants.RELEASE;
 public class LibraryVariantFactory implements VariantFactory {
 
     @NonNull
-    private Instantiator instantiator;
-    @NonNull
     private final AndroidConfig extension;
     @NonNull
     private final AndroidBuilder androidBuilder;
+    @NonNull
+    private Instantiator instantiator;
 
     public LibraryVariantFactory(
             @NonNull Instantiator instantiator,
@@ -106,11 +106,6 @@ public class LibraryVariantFactory implements VariantFactory {
     @Override
     public boolean isLibrary() {
         return true;
-    }
-
-    @Override
-    public boolean hasTestScope() {
-        return false;
     }
 
     /***

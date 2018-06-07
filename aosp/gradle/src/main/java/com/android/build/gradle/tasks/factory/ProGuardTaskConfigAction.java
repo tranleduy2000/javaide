@@ -1,7 +1,5 @@
 package com.android.build.gradle.tasks.factory;
 
-import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
-
 import com.android.build.gradle.internal.PostCompilationData;
 import com.android.build.gradle.internal.scope.TaskConfigAction;
 import com.android.build.gradle.internal.scope.VariantScope;
@@ -14,6 +12,8 @@ import java.util.concurrent.Callable;
 
 import proguard.ParseException;
 import proguard.gradle.ProGuardTask;
+
+import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
 
 /**
  * Configuration Action for a ProGuardTask task.

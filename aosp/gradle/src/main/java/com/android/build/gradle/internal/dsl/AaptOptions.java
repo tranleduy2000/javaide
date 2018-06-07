@@ -53,7 +53,7 @@ public class AaptOptions implements com.android.builder.model.AaptOptions {
 
     /**
      * Pattern describing assets to be ignore.
-     *
+     * <p>
      * <p>See <code>aapt --help</code>
      */
     @Override
@@ -67,13 +67,9 @@ public class AaptOptions implements com.android.builder.model.AaptOptions {
         noCompressList = Collections.singletonList(noCompress);
     }
 
-    public void setNoCompress(String... noCompress) {
-        noCompressList = Arrays.asList(noCompress);
-    }
-
     /**
      * Extensions of files that will not be stored compressed in the APK.
-     *
+     * <p>
      * <p>Equivalent of the -0 flag. See <code>aapt --help</code>
      */
     @Override
@@ -83,12 +79,20 @@ public class AaptOptions implements com.android.builder.model.AaptOptions {
         return noCompressList;
     }
 
+    public void setNoCompress(String... noCompress) {
+        noCompressList = Arrays.asList(noCompress);
+    }
+
     public void useNewCruncher(boolean value) {
         useNewCruncher = value;
     }
 
-    public void setUseNewCruncher(boolean value) {
-        useNewCruncher = value;
+    /**
+     * Returns true if the PNGs should be crunched, false otherwise.
+     */
+    @Input
+    public boolean getCruncherEnabled() {
+        return cruncherEnabled;
     }
 
     /**
@@ -99,14 +103,6 @@ public class AaptOptions implements com.android.builder.model.AaptOptions {
     }
 
     /**
-     * Returns true if the PNGs should be crunched, false otherwise.
-     */
-    @Input
-    public boolean getCruncherEnabled() {
-        return cruncherEnabled;
-    }
-    
-    /**
      * Whether to use the new cruncher.
      */
     @Input
@@ -114,17 +110,17 @@ public class AaptOptions implements com.android.builder.model.AaptOptions {
         return useNewCruncher;
     }
 
-    public void failOnMissingConfigEntry(boolean value) {
-        failOnMissingConfigEntry = value;
+    public void setUseNewCruncher(boolean value) {
+        useNewCruncher = value;
     }
 
-    public void setFailOnMissingConfigEntry(boolean value) {
+    public void failOnMissingConfigEntry(boolean value) {
         failOnMissingConfigEntry = value;
     }
 
     /**
      * Forces aapt to return an error if it fails to find an entry for a configuration.
-     *
+     * <p>
      * <p>See <code>aapt --help</code>
      */
     @Override
@@ -133,11 +129,15 @@ public class AaptOptions implements com.android.builder.model.AaptOptions {
         return failOnMissingConfigEntry;
     }
 
+    public void setFailOnMissingConfigEntry(boolean value) {
+        failOnMissingConfigEntry = value;
+    }
+
     // -- DSL Methods. TODO remove once the instantiator does what I expect it to do.
 
     /**
      * Sets extensions of files that will not be stored compressed in the APK.
-     *
+     * <p>
      * <p>Equivalent of the -0 flag. See <code>aapt --help</code>
      */
     public void noCompress(String noCompress) {
@@ -146,7 +146,7 @@ public class AaptOptions implements com.android.builder.model.AaptOptions {
 
     /**
      * Sets extensions of files that will not be stored compressed in the APK.
-     *
+     * <p>
      * <p>Equivalent of the -0 flag. See <code>aapt --help</code>
      */
     public void noCompress(String... noCompress) {
@@ -161,15 +161,15 @@ public class AaptOptions implements com.android.builder.model.AaptOptions {
         additionalParameters = Arrays.asList(params);
     }
 
-    public void setAdditionalParameters(@Nullable List<String> parameters) {
-        additionalParameters = parameters;
-    }
-
     @Nullable
     @Override
     @Optional
     @Input
     public List<String> getAdditionalParameters() {
         return additionalParameters;
+    }
+
+    public void setAdditionalParameters(@Nullable List<String> parameters) {
+        additionalParameters = parameters;
     }
 }

@@ -16,13 +16,8 @@
 
 package com.android.build.gradle.internal.scope;
 
-import static com.android.build.gradle.internal.TaskManager.DIR_BUNDLES;
-import static com.android.builder.model.AndroidProject.FD_GENERATED;
-import static com.android.builder.model.AndroidProject.FD_OUTPUTS;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.android.build.gradle.internal.core.Abi;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
 import com.android.build.gradle.internal.tasks.CheckManifest;
 import com.android.build.gradle.internal.tasks.FileSupplier;
@@ -46,8 +41,7 @@ import com.android.builder.core.VariantType;
 import com.android.builder.signing.SignedJarBuilder;
 import com.android.utils.FileUtils;
 import com.android.utils.StringHelper;
-import com.google.common.base.Objects;
-import com.google.common.collect.Maps;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Sets;
 
 import org.gradle.api.Task;
@@ -57,42 +51,32 @@ import org.gradle.api.tasks.compile.AbstractCompile;
 import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
+
+import static com.android.build.gradle.internal.TaskManager.DIR_BUNDLES;
+import static com.android.builder.model.AndroidProject.FD_GENERATED;
+import static com.android.builder.model.AndroidProject.FD_OUTPUTS;
 
 /**
  * A scope containing data for a specific variant.
  */
 public class VariantScope {
 
+    SignedJarBuilder.IZipEntryFilter packagingOptionsFilter;
     @NonNull
     private GlobalScope globalScope;
     @NonNull
     private BaseVariantData<? extends BaseVariantOutputData> variantData;
-
-    @Nullable
-    private Collection<Object> ndkBuildable;
-    @Nullable
-    private Collection<File> ndkSoFolder;
-    @Nullable
-    private File ndkObjFolder;
-    @NonNull
-    private Map<Abi, File> ndkDebuggableLibraryFolders = Maps.newHashMap();
-
     @Nullable
     private File mergeResourceOutputDir;
-
     // Tasks
     private AndroidTask<Task> preBuildTask;
     private AndroidTask<PrepareDependenciesTask> prepareDependenciesTask;
     private AndroidTask<ProcessAndroidResources> generateRClassTask;
-
     private AndroidTask<Task> sourceGenTask;
     private AndroidTask<Task> resourceGenTask;
     private AndroidTask<Task> assetGenTask;
     private AndroidTask<CheckManifest> checkManifestTask;
-
     private AndroidTask<AidlCompile> aidlCompileTask;
     @Nullable
     private AndroidTask<MergeResources> mergeResourcesTask;
@@ -100,31 +84,25 @@ public class VariantScope {
     private AndroidTask<MergeAssets> mergeAssetsTask;
     private AndroidTask<GenerateBuildConfig> generateBuildConfigTask;
     private AndroidTask<GenerateResValues> generateResValuesTask;
-
     @Nullable
     private AndroidTask<Dex> dexTask;
-
     private AndroidTask<Sync> processJavaResourcesTask;
     private AndroidTask<MergeJavaResourcesTask> mergeJavaResourcesTask;
     private JavaResourcesProvider javaResourcesProvider;
-
-    /** @see BaseVariantData#javaCompilerTask */
+    /**
+     * @see BaseVariantData#javaCompilerTask
+     */
     @Nullable
     private AndroidTask<? extends AbstractCompile> javaCompilerTask;
     @Nullable
     private AndroidTask<JavaCompile> javacTask;
-
     // empty anchor compile task to set all compilations tasks as dependents.
     private AndroidTask<Task> compileTask;
-
     private FileSupplier mappingFileProviderTask;
     private AndroidTask<BinaryFileProviderTask> binayFileProviderTask;
-
     // TODO : why is Jack not registered as the obfuscationTask ???
     private AndroidTask<? extends Task> obfuscationTask;
-
     private File resourceOutputDir;
-
 
     public VariantScope(
             @NonNull GlobalScope globalScope,
@@ -158,57 +136,20 @@ public class VariantScope {
         return prefix + StringHelper.capitalize(getVariantConfiguration().getFullName()) + suffix;
     }
 
-    public void setNdkBuildable(@NonNull Collection<Object> ndkBuildable) {
-        this.ndkBuildable = ndkBuildable;
-    }
 
-    @Nullable
-    public Collection<File> getNdkSoFolder() {
-        return ndkSoFolder;
-    }
-
-    public void setNdkSoFolder(@NonNull Collection<File> ndkSoFolder) {
-        this.ndkSoFolder = ndkSoFolder;
-    }
-
-    @Nullable
-    public File getNdkObjFolder() {
-        return ndkObjFolder;
-    }
-
-    public void setNdkObjFolder(@NonNull File ndkObjFolder) {
-        this.ndkObjFolder = ndkObjFolder;
-    }
-
-    /**
-     * Return the folder containing the shared object with debugging symbol for the specified ABI.
-     */
-    @Nullable
-    public File getNdkDebuggableLibraryFolders(@NonNull Abi abi) {
-        return ndkDebuggableLibraryFolders.get(abi);
-    }
-
-    public void addNdkDebuggableLibraryFolders(@NonNull Abi abi, @NonNull File searchPath) {
-        this.ndkDebuggableLibraryFolders.put(abi, searchPath);
-    }
+    // Precomputed file paths.
 
     @NonNull
     public Set<File> getJniFolders() {
-        assert getNdkSoFolder() != null;
-
         VariantConfiguration config = getVariantConfiguration();
         ApkVariantData apkVariantData = (ApkVariantData) variantData;
         // for now only the project's compilation output.
         Set<File> set = Sets.newHashSet();
-        set.addAll(getNdkSoFolder());
         set.addAll(config.getLibraryJniFolders());
         set.addAll(config.getJniLibsList());
 
         return set;
     }
-
-
-    // Precomputed file paths.
 
     @NonNull
     public File getDexOutputFolder() {
@@ -283,7 +224,7 @@ public class VariantScope {
 
     @NonNull
     public File getFinalResourcesDir() {
-        return Objects.firstNonNull(resourceOutputDir, getDefaultMergeResourcesOutputDir());
+        return MoreObjects.firstNonNull(resourceOutputDir, getDefaultMergeResourcesOutputDir());
     }
 
     public void setResourceOutputDir(@NonNull File resourceOutputDir) {
@@ -320,7 +261,7 @@ public class VariantScope {
 
     @NonNull
     public File getBuildConfigSourceOutputDir() {
-        return new File(globalScope.getBuildDir() + "/"  + FD_GENERATED + "/source/buildConfig/"
+        return new File(globalScope.getBuildDir() + "/" + FD_GENERATED + "/source/buildConfig/"
                 + variantData.getVariantConfiguration().getDirName());
     }
 
@@ -397,12 +338,12 @@ public class VariantScope {
                 "/proguard-rules/" + getVariantConfiguration().getDirName() + "/aapt_rules.txt");
     }
 
+    // Tasks getters/setters.
+
     public File getMappingFile() {
         return new File(globalScope.getOutputsDir(),
                 "/mapping/" + getVariantConfiguration().getDirName() + "/mapping.txt");
     }
-
-    // Tasks getters/setters.
 
     public AndroidTask<Task> getPreBuildTask() {
         return preBuildTask;
@@ -532,12 +473,6 @@ public class VariantScope {
         this.processJavaResourcesTask = processJavaResourcesTask;
     }
 
-    SignedJarBuilder.IZipEntryFilter packagingOptionsFilter;
-
-    public void setPackagingOptionsFilter(SignedJarBuilder.IZipEntryFilter filter) {
-        this.packagingOptionsFilter = filter;
-    }
-
     /**
      * Returns the {@link SignedJarBuilder.IZipEntryFilter} instance
      * that manages all resources inclusion in the final APK following the rules defined in
@@ -547,36 +482,47 @@ public class VariantScope {
         return packagingOptionsFilter;
     }
 
-    public void setMergeJavaResourcesTask(AndroidTask<MergeJavaResourcesTask> mergeJavaResourcesTask) {
-        this.mergeJavaResourcesTask = mergeJavaResourcesTask;
+    public void setPackagingOptionsFilter(SignedJarBuilder.IZipEntryFilter filter) {
+        this.packagingOptionsFilter = filter;
     }
 
     /**
      * Returns the task extracting java resources from libraries and merging those with java
      * resources coming from the variant's source folders.
+     *
      * @return the task merging resources.
      */
     public AndroidTask<MergeJavaResourcesTask> getMergeJavaResourcesTask() {
         return mergeJavaResourcesTask;
     }
 
-    public void setJavaResourcesProvider(JavaResourcesProvider javaResourcesProvider) {
-        this.javaResourcesProvider = javaResourcesProvider;
+    public void setMergeJavaResourcesTask(AndroidTask<MergeJavaResourcesTask> mergeJavaResourcesTask) {
+        this.mergeJavaResourcesTask = mergeJavaResourcesTask;
     }
 
     /**
      * Returns the {@link JavaResourcesProvider} responsible for providing final merged and possibly
      * obfuscated java resources for inclusion in the final APK. The provider might change during
      * the variant build process.
+     *
      * @return the java resources provider.
      */
     public JavaResourcesProvider getJavaResourcesProvider() {
         return javaResourcesProvider;
     }
 
+    public void setJavaResourcesProvider(JavaResourcesProvider javaResourcesProvider) {
+        this.javaResourcesProvider = javaResourcesProvider;
+    }
+
     @Nullable
     public AndroidTask<? extends AbstractCompile> getJavaCompilerTask() {
         return javaCompilerTask;
+    }
+
+    public void setJavaCompilerTask(
+            @NonNull AndroidTask<? extends AbstractCompile> javaCompileTask) {
+        this.javaCompilerTask = javaCompileTask;
     }
 
     @Nullable
@@ -587,11 +533,6 @@ public class VariantScope {
     public void setJavacTask(
             @Nullable AndroidTask<JavaCompile> javacTask) {
         this.javacTask = javacTask;
-    }
-
-    public void setJavaCompilerTask(
-            @NonNull AndroidTask<? extends AbstractCompile> javaCompileTask) {
-        this.javaCompilerTask = javaCompileTask;
     }
 
     public AndroidTask<Task> getCompileTask() {

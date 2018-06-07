@@ -19,27 +19,19 @@ package com.android.build.gradle.model;
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.build.gradle.managed.BuildType;
 import com.android.build.gradle.managed.ProductFlavor;
-import com.google.common.collect.Lists;
-
-import org.gradle.nativeplatform.NativeLibraryBinarySpec;
-import org.gradle.platform.base.binary.BaseBinarySpec;
 
 import java.util.List;
 
 /**
  * Binary for Android.
  */
-public class DefaultAndroidBinary extends BaseBinarySpec implements AndroidBinary {
+public class DefaultAndroidBinary  implements AndroidBinary {
 
     private BuildType buildType;
 
     private List<ProductFlavor> productFlavors;
 
     private BaseVariantData variantData;
-
-    private List<NativeLibraryBinarySpec> nativeBinaries = Lists.newArrayList();
-
-    private List<String> targetAbi = Lists.newArrayList();
 
     @Override
     public BuildType getBuildType() {
@@ -65,14 +57,6 @@ public class DefaultAndroidBinary extends BaseBinarySpec implements AndroidBinar
 
     public void setVariantData(BaseVariantData variantData) {
         this.variantData = variantData;
-    }
-
-    public List<NativeLibraryBinarySpec> getNativeBinaries() {
-        return nativeBinaries;
-    }
-
-    public List<String> getTargetAbi() {
-        return targetAbi;
     }
 
 }

@@ -40,7 +40,6 @@ public class ConfigurationDependencies implements Dependencies {
     private final Configuration configuration;
 
     public ConfigurationDependencies(@NonNull Configuration configuration) {
-
         this.configuration = configuration;
     }
 

@@ -219,7 +219,7 @@ public class VariantManager implements VariantModel {
         DefaultAndroidSourceSet mainSourceSet = (DefaultAndroidSourceSet) extension.getSourceSets().maybeCreate(name);
 
         BuildTypeData buildTypeData = new BuildTypeData(
-                buildType, project, mainSourceSet, null);
+                buildType, project, mainSourceSet);
 
         buildTypes.put(name, buildTypeData);
     }

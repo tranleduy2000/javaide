@@ -75,8 +75,8 @@ public class AndroidArtifactImpl extends BaseArtifactImpl implements AndroidArti
             @Nullable SourceProvider variantSourceProvider,
             @Nullable SourceProvider multiFlavorSourceProviders,
             @NonNull Collection<NativeLibrary> nativeLibraries,
-            @NonNull Map<String,ClassField> buildConfigFields,
-            @NonNull Map<String,ClassField> resValues) {
+            @NonNull Map<String, ClassField> buildConfigFields,
+            @NonNull Map<String, ClassField> resValues) {
         super(name, assembleTaskName, compileTaskName, classesFolder, javaResourcesFolder,
                 dependencies, variantSourceProvider, multiFlavorSourceProviders,
                 generatedSourceFolders);

@@ -42,11 +42,11 @@ public class DefaultAndroidSourceDirectorySet implements AndroidSourceDirectoryS
 
     private final String name;
     private final Project project;
-    private List<Object> source = Lists.newArrayList();
     private final PatternSet filter = new PatternSet();
+    private List<Object> source = Lists.newArrayList();
 
     public DefaultAndroidSourceDirectorySet(@NonNull String name,
-            @NonNull Project project) {
+                                            @NonNull Project project) {
         this.name = name;
         this.project = project;
     }

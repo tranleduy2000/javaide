@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.android.build.gradle.internal.tasks;
+
 import com.android.ide.common.res2.SourceSet;
 import com.google.common.collect.Lists;
 
@@ -28,21 +29,6 @@ public abstract class IncrementalTask extends BaseTask {
 
     private File incrementalFolder;
 
-    public void setIncrementalFolder(File incrementalFolder) {
-        this.incrementalFolder = incrementalFolder;
-    }
-
-    @OutputDirectory @Optional
-    public File getIncrementalFolder() {
-        return incrementalFolder;
-    }
-
-    /**
-     * Actual task action. This is called when a full run is needed, which is always the case if
-     *
-     */
-    protected abstract void doFullTaskAction() throws IOException;
-
     public static List<File> flattenSourceSets(List<? extends SourceSet> resourceSets) {
         List<File> list = Lists.newArrayList();
 
@@ -52,4 +38,19 @@ public abstract class IncrementalTask extends BaseTask {
 
         return list;
     }
+
+    @OutputDirectory
+    @Optional
+    public File getIncrementalFolder() {
+        return incrementalFolder;
+    }
+
+    public void setIncrementalFolder(File incrementalFolder) {
+        this.incrementalFolder = incrementalFolder;
+    }
+
+    /**
+     * Actual task action. This is called when a full run is needed, which is always the case if
+     */
+    protected abstract void doFullTaskAction() throws IOException;
 }

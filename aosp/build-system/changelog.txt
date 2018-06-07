@@ -200,9 +200,6 @@
      - BuildType.runProguard ->  minifyEnabled
      - BuildType.zipAlign                    -> zipAlignEnabled
      - BuildType.jniDebugBuild               -> jniDebuggable
-     - BuildType.renderscriptDebug           -> renderscriptDebuggable
-     - ProductFlavor.renderscriptSupportMode -> renderscriptSupportModeEnabled
-     - ProductFlavor.renderscriptNdkMode     -> renderscriptNdkModeEnabled
   * BuildType/ProductFlavor/SigningConfig queried through the variant and variantFilter API are now read-only.
      - These objects have always been global and changing them would have side effects in other variants
      - Merged flavor is still per-variant and can me modified

@@ -30,7 +30,6 @@ public class PrepareLibraryTask extends DefaultAndroidTask {
 
     @TaskAction
     public void prepare() throws IOException {
-        //LibraryCache.getCache().unzipLibrary(this.name, project, getBundle(), getExplodedDir())
         LibraryCache.unzipAar(getBundle(), getExplodedDir(), getProject());
     }
 
@@ -39,13 +38,13 @@ public class PrepareLibraryTask extends DefaultAndroidTask {
         return bundle;
     }
 
+    public void setBundle(File bundle) {
+        this.bundle = bundle;
+    }
+
     @OutputDirectory
     public File getExplodedDir() {
         return explodedDir;
-    }
-
-    public void setBundle(File bundle) {
-        this.bundle = bundle;
     }
 
     public void setExplodedDir(File explodedDir) {

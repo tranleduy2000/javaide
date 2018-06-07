@@ -34,7 +34,7 @@ public class PackagingOptions implements com.android.builder.model.PackagingOpti
 
     /**
      * Returns the list of excluded paths.
-     *
+     * <p>
      * <p>Contains "LICENSE.txt" and "LICENSE" by default, since they often cause
      * packaging conflicts.
      */
@@ -51,6 +51,7 @@ public class PackagingOptions implements com.android.builder.model.PackagingOpti
 
     /**
      * Adds an excluded paths.
+     *
      * @param path the path, as packaged in the APK
      */
     public void exclude(String path) {
@@ -67,17 +68,18 @@ public class PackagingOptions implements com.android.builder.model.PackagingOpti
         return Sets.newHashSet(pickFirsts);
     }
 
+    public void setPickFirsts(Set<String> pickFirsts) {
+        this.pickFirsts = Sets.newHashSet(pickFirsts);
+    }
+
     /**
      * Adds a firstPick path. First pick paths do get packaged in the APK, but only the first
      * occurrence gets packaged.
+     *
      * @param path the path to add.
      */
     public void pickFirst(String path) {
         pickFirsts.add(path);
-    }
-
-    public void setPickFirsts(Set<String> pickFirsts) {
-        this.pickFirsts = Sets.newHashSet(pickFirsts);
     }
 
     /**
@@ -96,6 +98,7 @@ public class PackagingOptions implements com.android.builder.model.PackagingOpti
 
     /**
      * Adds a merge path.
+     *
      * @param path the path, as packaged in the APK
      */
     public void merge(String path) {

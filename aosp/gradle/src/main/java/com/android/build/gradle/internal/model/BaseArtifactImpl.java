@@ -53,14 +53,14 @@ abstract class BaseArtifactImpl implements BaseArtifact, Serializable {
 
 
     BaseArtifactImpl(@NonNull String name,
-            @NonNull String assembleTaskName,
-            @NonNull String compileTaskName,
-            @NonNull File classesFolder,
-            @NonNull File javaResourcesFolder,
-            @NonNull Dependencies dependencies,
-            @Nullable SourceProvider variantSourceProvider,
-            @Nullable SourceProvider multiFlavorSourceProviders,
-            @NonNull Collection<File> generatedSourceFolders) {
+                     @NonNull String assembleTaskName,
+                     @NonNull String compileTaskName,
+                     @NonNull File classesFolder,
+                     @NonNull File javaResourcesFolder,
+                     @NonNull Dependencies dependencies,
+                     @Nullable SourceProvider variantSourceProvider,
+                     @Nullable SourceProvider multiFlavorSourceProviders,
+                     @NonNull Collection<File> generatedSourceFolders) {
         this.name = name;
         this.assembleTaskName = assembleTaskName;
         this.compileTaskName = compileTaskName;

@@ -622,10 +622,6 @@ public abstract class BaseExtension implements AndroidConfig {
         return sdkHandler.getSdkFolder();
     }
 
-    public File getNdkDirectory() {
-        return sdkHandler.getNdkFolder();
-    }
-
     public List<File> getBootClasspath() {
         ensureTargetSetup();
         return androidBuilder.getBootClasspath();

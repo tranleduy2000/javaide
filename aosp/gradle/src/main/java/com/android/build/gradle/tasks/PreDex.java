@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.android.build.gradle.tasks;
+
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.build.gradle.internal.PostCompilationData;
@@ -59,21 +60,56 @@ import java.util.concurrent.Callable;
 @ParallelizableTask
 public class PreDex extends BaseTask {
 
+    private Collection<File> inputFiles;
+    private File outputFolder;
+    private com.android.build.gradle.internal.dsl.DexOptions dexOptions;
+    private boolean multiDex;
+
+    /**
+     * Returns the hash of a file.
+     *
+     * @param file the file to hash
+     */
+    private static String getFileHash(@NonNull File file) throws IOException {
+        HashCode hashCode = Files.hash(file, Hashing.sha1());
+        return hashCode.toString();
+    }
+
+    /**
+     * Returns a unique File for the pre-dexed library, even
+     * if there are 2 libraries with the same file names (but different
+     * paths)
+     * <p>
+     * If multidex is enabled the return File is actually a folder.
+     *
+     * @param outFolder the output folder.
+     * @param inputFile the library.
+     */
+    @NonNull
+    static File getDexFileName(@NonNull File outFolder, @NonNull File inputFile) {
+        // get the filename
+        String name = inputFile.getName();
+        // remove the extension
+        int pos = name.lastIndexOf('.');
+        if (pos != -1) {
+            name = name.substring(0, pos);
+        }
+
+        // add a hash of the original file path.
+        String input = inputFile.getAbsolutePath();
+        HashFunction hashFunction = Hashing.sha1();
+        HashCode hashCode = hashFunction.hashString(input, Charsets.UTF_16LE);
+
+        return new File(outFolder, name + "-" + hashCode.toString() + SdkConstants.DOT_JAR);
+    }
+
     @Input
     public String getBuildToolsVersion() {
         return getBuildTools().getRevision().toString();
     }
 
-    private Collection<File> inputFiles;
-
-    private File outputFolder;
-
-    private com.android.build.gradle.internal.dsl.DexOptions dexOptions;
-
-    private boolean multiDex;
-
     @TaskAction
-    void taskAction(IncrementalTaskInputs taskInputs)
+    public void taskAction(IncrementalTaskInputs taskInputs)
             throws IOException, LoggedErrorException, InterruptedException {
 
         final boolean multiDexEnabled = isMultiDex();
@@ -124,6 +160,89 @@ public class PreDex extends BaseTask {
         executor.waitForTasksWithQuickFail(false);
     }
 
+    // this is used automatically by Gradle, even though nothing
+    // in the class uses it.
+    @SuppressWarnings("unused")
+    @InputFiles
+    public Collection<File> getInputFiles() {
+        return inputFiles;
+    }
+
+    public void setInputFiles(Collection<File> inputFiles) {
+        this.inputFiles = inputFiles;
+    }
+
+    @OutputDirectory
+    public File getOutputFolder() {
+        return outputFolder;
+    }
+
+    public void setOutputFolder(File outputFolder) {
+        this.outputFolder = outputFolder;
+    }
+
+    @Nested
+    public com.android.build.gradle.internal.dsl.DexOptions getDexOptions() {
+        return dexOptions;
+    }
+
+    public void setDexOptions(com.android.build.gradle.internal.dsl.DexOptions dexOptions) {
+        this.dexOptions = dexOptions;
+    }
+
+    @Input
+    public boolean isMultiDex() {
+        return multiDex;
+    }
+
+    public void setMultiDex(boolean multiDex) {
+        this.multiDex = multiDex;
+    }
+
+    public static class ConfigAction implements TaskConfigAction<PreDex> {
+
+        private VariantScope scope;
+
+        private Callable<List<File>> inputLibraries;
+
+        public ConfigAction(VariantScope scope, PostCompilationData pcData) {
+            this.scope = scope;
+            this.inputLibraries = pcData.getInputLibrariesCallable();
+        }
+
+        @Override
+        public String getName() {
+            return scope.getTaskName("preDex");
+        }
+
+        @Override
+        public Class<PreDex> getType() {
+            return PreDex.class;
+        }
+
+        @Override
+        public void execute(PreDex preDexTask) {
+            ApkVariantData variantData = (ApkVariantData) scope.getVariantData();
+            VariantConfiguration config = variantData.getVariantConfiguration();
+
+            boolean isMultiDexEnabled = config.isMultiDexEnabled();
+
+            variantData.preDexTask = preDexTask;
+            preDexTask.setAndroidBuilder(scope.getGlobalScope().getAndroidBuilder());
+            preDexTask.setVariantName(config.getFullName());
+            preDexTask.dexOptions = scope.getGlobalScope().getExtension().getDexOptions();
+            preDexTask.multiDex = isMultiDexEnabled;
+
+            ConventionMappingHelper.map(preDexTask, "inputFiles", inputLibraries);
+            ConventionMappingHelper.map(preDexTask, "outputFolder", new Callable<File>() {
+                @Override
+                public File call() throws Exception {
+                    return scope.getPreDexOutputDir();
+                }
+            });
+        }
+    }
+
     private final class PreDexTask implements Callable<Void> {
         private final File outFolder;
         private final File fileToProcess;
@@ -170,126 +289,6 @@ public class PreDex extends BaseTask {
                     fileToProcess, preDexedFile, multiDexEnabled, options, mOutputHandler);
 
             return null;
-        }
-    }
-
-    // this is used automatically by Gradle, even though nothing
-    // in the class uses it.
-    @SuppressWarnings("unused")
-    @InputFiles
-    public Collection<File> getInputFiles() {
-        return inputFiles;
-    }
-
-    public void setInputFiles(Collection<File> inputFiles) {
-        this.inputFiles = inputFiles;
-    }
-
-    @OutputDirectory
-    public File getOutputFolder() {
-        return outputFolder;
-    }
-
-    public void setOutputFolder(File outputFolder) {
-        this.outputFolder = outputFolder;
-    }
-
-    @Nested
-    public com.android.build.gradle.internal.dsl.DexOptions getDexOptions() {
-        return dexOptions;
-    }
-
-    public void setDexOptions(com.android.build.gradle.internal.dsl.DexOptions dexOptions) {
-        this.dexOptions = dexOptions;
-    }
-
-    @Input
-    public boolean isMultiDex() {
-        return multiDex;
-    }
-
-    public void setMultiDex(boolean multiDex) {
-        this.multiDex = multiDex;
-    }
-
-    /**
-     * Returns the hash of a file.
-     * @param file the file to hash
-     */
-    private static String getFileHash(@NonNull File file) throws IOException {
-        HashCode hashCode = Files.hash(file, Hashing.sha1());
-        return hashCode.toString();
-    }
-
-    /**
-     * Returns a unique File for the pre-dexed library, even
-     * if there are 2 libraries with the same file names (but different
-     * paths)
-     *
-     * If multidex is enabled the return File is actually a folder.
-     *
-     * @param outFolder the output folder.
-     * @param inputFile the library.
-     */
-    @NonNull
-    static File getDexFileName(@NonNull File outFolder, @NonNull File inputFile) {
-        // get the filename
-        String name = inputFile.getName();
-        // remove the extension
-        int pos = name.lastIndexOf('.');
-        if (pos != -1) {
-            name = name.substring(0, pos);
-        }
-
-        // add a hash of the original file path.
-        String input = inputFile.getAbsolutePath();
-        HashFunction hashFunction = Hashing.sha1();
-        HashCode hashCode = hashFunction.hashString(input, Charsets.UTF_16LE);
-
-        return new File(outFolder, name + "-" + hashCode.toString() + SdkConstants.DOT_JAR);
-    }
-
-    public static class ConfigAction implements TaskConfigAction<PreDex> {
-
-        private VariantScope scope;
-
-        private Callable<List<File>> inputLibraries;
-
-        public ConfigAction(VariantScope scope, PostCompilationData pcData) {
-            this.scope = scope;
-            this.inputLibraries = pcData.getInputLibrariesCallable();
-        }
-
-        @Override
-        public String getName() {
-            return scope.getTaskName("preDex");
-        }
-
-        @Override
-        public Class<PreDex> getType() {
-            return PreDex.class;
-        }
-
-        @Override
-        public void execute(PreDex preDexTask) {
-            ApkVariantData variantData = (ApkVariantData) scope.getVariantData();
-            VariantConfiguration config = variantData.getVariantConfiguration();
-
-            boolean isMultiDexEnabled = config.isMultiDexEnabled();
-
-            variantData.preDexTask = preDexTask;
-            preDexTask.setAndroidBuilder(scope.getGlobalScope().getAndroidBuilder());
-            preDexTask.setVariantName(config.getFullName());
-            preDexTask.dexOptions = scope.getGlobalScope().getExtension().getDexOptions();
-            preDexTask.multiDex = isMultiDexEnabled;
-
-            ConventionMappingHelper.map(preDexTask, "inputFiles", inputLibraries);
-            ConventionMappingHelper.map(preDexTask, "outputFolder", new Callable<File>() {
-                @Override
-                public File call() throws Exception {
-                    return scope.getPreDexOutputDir();
-                }
-            });
         }
     }
 }

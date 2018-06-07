@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright 2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package com.android.build.gradle.model;
+package org.gradle.process.internal;
 
-import org.gradle.platform.base.TransformationFileType;
+import org.gradle.api.GradleException;
 
-/**
- * Output of an Android LanguageTransform.
- */
-public class AndroidObject implements TransformationFileType {
+public class ExecException extends GradleException {
+    public ExecException(String message) {
+        super(message);
+    }
+
+    public ExecException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

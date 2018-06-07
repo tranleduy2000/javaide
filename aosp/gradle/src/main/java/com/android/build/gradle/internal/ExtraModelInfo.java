@@ -16,8 +16,6 @@
 
 package com.android.build.gradle.internal;
 
-import static com.android.ide.common.blame.parser.JsonEncodedGradleMessageParser.STDOUT_ERROR_TAG;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.gradle.AndroidGradleOptions;
@@ -52,6 +50,8 @@ import org.gradle.api.artifacts.Configuration;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
+
+import static com.android.ide.common.blame.parser.JsonEncodedGradleMessageParser.STDOUT_ERROR_TAG;
 
 /**
  * For storing additional model information.
@@ -89,6 +89,48 @@ public class ExtraModelInfo extends ErrorReporter {
             mGson = gsonBuilder.create();
         } else {
             mGson = null;
+        }
+    }
+
+    private static boolean isDependencyIssue(int type) {
+        switch (type) {
+            case SyncIssue.TYPE_UNRESOLVED_DEPENDENCY:
+            case SyncIssue.TYPE_DEPENDENCY_IS_APK:
+            case SyncIssue.TYPE_DEPENDENCY_IS_APKLIB:
+            case SyncIssue.TYPE_NON_JAR_LOCAL_DEP:
+            case SyncIssue.TYPE_NON_JAR_PACKAGE_DEP:
+            case SyncIssue.TYPE_NON_JAR_PROVIDED_DEP:
+            case SyncIssue.TYPE_JAR_DEPEND_ON_AAR:
+            case SyncIssue.TYPE_MISMATCH_DEP:
+                return true;
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Returns whether we are just trying to build a model for the IDE instead of building. This
+     * means we will attempt to resolve dependencies even if some are broken/unsupported to avoid
+     * failing the import in the IDE.
+     */
+    private static EvaluationMode computeModelQueryMode(@NonNull Project project) {
+        if (AndroidGradleOptions.buildModelOnlyAdvanced(project)) {
+            return EvaluationMode.IDE;
+        }
+
+        if (AndroidGradleOptions.buildModelOnly(project)) {
+            return EvaluationMode.IDE_LEGACY;
+        }
+
+        return EvaluationMode.STANDARD;
+    }
+
+    private static ErrorFormatMode computeErrorFormatMode(@NonNull Project project) {
+        if (AndroidGradleOptions.invokedFromIde(project)) {
+            return ErrorFormatMode.MACHINE_PARSABLE;
+        } else {
+            return ErrorFormatMode.HUMAN_READABLE;
         }
     }
 
@@ -134,23 +176,6 @@ public class ExtraModelInfo extends ErrorReporter {
         return issue;
     }
 
-    private static boolean isDependencyIssue(int type) {
-        switch (type) {
-            case SyncIssue.TYPE_UNRESOLVED_DEPENDENCY:
-            case SyncIssue.TYPE_DEPENDENCY_IS_APK:
-            case SyncIssue.TYPE_DEPENDENCY_IS_APKLIB:
-            case SyncIssue.TYPE_NON_JAR_LOCAL_DEP:
-            case SyncIssue.TYPE_NON_JAR_PACKAGE_DEP:
-            case SyncIssue.TYPE_NON_JAR_PROVIDED_DEP:
-            case SyncIssue.TYPE_JAR_DEPEND_ON_AAR:
-            case SyncIssue.TYPE_MISMATCH_DEP:
-                return true;
-        }
-
-        return false;
-
-    }
-
     @Override
     public void receiveMessage(@NonNull Message message) {
         StringBuilder errorStringBuilder = new StringBuilder();
@@ -194,7 +219,7 @@ public class ExtraModelInfo extends ErrorReporter {
         }
     }
 
-        public Collection<ArtifactMetaData> getExtraArtifacts() {
+    public Collection<ArtifactMetaData> getExtraArtifacts() {
         return extraArtifactMap.values();
     }
 
@@ -217,8 +242,8 @@ public class ExtraModelInfo extends ErrorReporter {
     }
 
     public void registerArtifactType(@NonNull String name,
-            boolean isTest,
-            int artifactType) {
+                                     boolean isTest,
+                                     int artifactType) {
 
         if (extraArtifactMap.get(name) != null) {
             throw new IllegalArgumentException(
@@ -229,8 +254,8 @@ public class ExtraModelInfo extends ErrorReporter {
     }
 
     public void registerBuildTypeSourceProvider(@NonNull String name,
-            @NonNull CoreBuildType buildType,
-            @NonNull SourceProvider sourceProvider) {
+                                                @NonNull CoreBuildType buildType,
+                                                @NonNull SourceProvider sourceProvider) {
         if (extraArtifactMap.get(name) == null) {
             throw new IllegalArgumentException(String.format(
                     "Artifact with name %1$s is not yet registered. Use registerArtifactType()",
@@ -243,8 +268,8 @@ public class ExtraModelInfo extends ErrorReporter {
     }
 
     public void registerProductFlavorSourceProvider(@NonNull String name,
-            @NonNull CoreProductFlavor productFlavor,
-            @NonNull SourceProvider sourceProvider) {
+                                                    @NonNull CoreProductFlavor productFlavor,
+                                                    @NonNull SourceProvider sourceProvider) {
         if (extraArtifactMap.get(name) == null) {
             throw new IllegalArgumentException(String.format(
                     "Artifact with name %1$s is not yet registered. Use registerArtifactType()",
@@ -257,8 +282,8 @@ public class ExtraModelInfo extends ErrorReporter {
     }
 
     public void registerMultiFlavorSourceProvider(@NonNull String name,
-            @NonNull String flavorName,
-            @NonNull SourceProvider sourceProvider) {
+                                                  @NonNull String flavorName,
+                                                  @NonNull SourceProvider sourceProvider) {
         if (extraArtifactMap.get(name) == null) {
             throw new IllegalArgumentException(String.format(
                     "Artifact with name %1$s is not yet registered. Use registerArtifactType()",
@@ -297,31 +322,6 @@ public class ExtraModelInfo extends ErrorReporter {
                 new ConfigurationDependencies(configuration), sourceProvider, null);
 
         extraJavaArtifacts.put(variant.getName(), artifact);
-    }
-
-    /**
-     * Returns whether we are just trying to build a model for the IDE instead of building. This
-     * means we will attempt to resolve dependencies even if some are broken/unsupported to avoid
-     * failing the import in the IDE.
-     */
-    private static EvaluationMode computeModelQueryMode(@NonNull Project project) {
-        if (AndroidGradleOptions.buildModelOnlyAdvanced(project)) {
-            return EvaluationMode.IDE;
-        }
-
-        if (AndroidGradleOptions.buildModelOnly(project)) {
-            return EvaluationMode.IDE_LEGACY;
-        }
-
-        return EvaluationMode.STANDARD;
-    }
-
-    private static ErrorFormatMode computeErrorFormatMode(@NonNull Project project) {
-        if (AndroidGradleOptions.invokedFromIde(project)) {
-            return ErrorFormatMode.MACHINE_PARSABLE;
-        } else {
-            return ErrorFormatMode.HUMAN_READABLE;
-        }
     }
 
     public enum ErrorFormatMode {

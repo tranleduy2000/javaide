@@ -526,13 +526,6 @@ public final class ApkBuilder implements IArchiveBuilder {
     /**
      * Sets the debug mode. In debug mode, when native libraries are present, the packaging
      * will also include one or more copies of gdbserver in the final APK file.
-     * <p>
-     * These are used for debugging native code, to ensure that gdbserver is accessible to the
-     * application.
-     * <p>
-     * There will be one version of gdbserver for each ABI supported by the application.
-     * <p>
-     * the gbdserver files are placed in the libs/abi/ folders automatically by the NDK.
      *
      * @param debugMode the debug mode flag.
      */

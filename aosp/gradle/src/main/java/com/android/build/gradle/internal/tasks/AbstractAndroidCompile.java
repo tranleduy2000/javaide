@@ -18,15 +18,14 @@ package com.android.build.gradle.internal.tasks;
 
 import com.android.builder.Version;
 
-import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.compile.AbstractCompile;
 
-public abstract class AbstractAndroidCompile extends AbstractCompile{
+public abstract class AbstractAndroidCompile extends AbstractCompile {
     /**
      * Force tasks to be re-run if the Android plugin version changes.
+     *
      * @return the plugin version, of the form "x.y.z"
      */
-    @Input
     public String getAndroidGradlePluginVersion() {
         return Version.ANDROID_GRADLE_PLUGIN_VERSION;
     }

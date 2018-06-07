@@ -1,9 +1,5 @@
 package com.android.build.gradle.internal;
 
-import static com.android.SdkConstants.APPCOMPAT_LIB_ARTIFACT;
-import static com.android.SdkConstants.SUPPORT_LIB_ARTIFACT;
-import static java.io.File.separatorChar;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.model.AndroidArtifact;
@@ -38,6 +34,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static com.android.SdkConstants.APPCOMPAT_LIB_ARTIFACT;
+import static com.android.SdkConstants.SUPPORT_LIB_ARTIFACT;
+import static java.io.File.separatorChar;
+
 /**
  * An implementation of Lint's {@link Project} class wrapping a Gradle model (project or
  * library)
@@ -64,9 +64,9 @@ public class LintGradleProject extends Project {
      * a given {@link com.android.builder.model.Variant}, and returns it along with
      * a set of lint custom rule jars applicable for the given model project.
      *
-     * @param client the client
-     * @param project the model project
-     * @param variant the variant
+     * @param client        the client
+     * @param project       the model project
+     * @param variant       the variant
      * @param gradleProject the gradle project
      * @return a pair of new project and list of custom rule jars
      */
@@ -93,35 +93,11 @@ public class LintGradleProject extends Project {
             lintProject.addDirectLibrary(createLibrary(client, library, libraries, customRules));
         }
 
-        return Pair.<LintGradleProject,List<File>>of(lintProject, customRules);
-    }
-
-    @Override
-    protected void initialize() {
-        // Deliberately not calling super; that code is for ADT compatibility
-    }
-
-    protected void readManifest(File manifest) {
-        if (manifest.exists()) {
-            try {
-                String xml = Files.toString(manifest, Charsets.UTF_8);
-                Document document = XmlUtils.parseDocumentSilently(xml, true);
-                if (document != null) {
-                    readManifest(document);
-                }
-            } catch (IOException e) {
-                mClient.log(e, "Could not read manifest %1$s", manifest);
-            }
-        }
-    }
-
-    @Override
-    public boolean isGradleProject() {
-        return true;
+        return Pair.<LintGradleProject, List<File>>of(lintProject, customRules);
     }
 
     protected static boolean dependsOn(@NonNull Dependencies dependencies,
-            @NonNull String artifact) {
+                                       @NonNull String artifact) {
         for (AndroidLibrary library : dependencies.getLibraries()) {
             if (dependsOn(library, artifact)) {
                 return true;
@@ -152,14 +128,10 @@ public class LintGradleProject extends Project {
         return false;
     }
 
-    void addDirectLibrary(@NonNull Project project) {
-        mDirectLibraries.add(project);
-    }
-
     @NonNull
     private static LibraryProject createLibrary(@NonNull LintGradleClient client,
-            @NonNull AndroidLibrary library,
-            @NonNull Set<AndroidLibrary> seen, List<File> customRules) {
+                                                @NonNull AndroidLibrary library,
+                                                @NonNull Set<AndroidLibrary> seen, List<File> customRules) {
         seen.add(library);
         File dir = library.getFolder();
         LibraryProject project = new LibraryProject(client, dir, dir, library);
@@ -176,6 +148,34 @@ public class LintGradleProject extends Project {
         }
 
         return project;
+    }
+
+    @Override
+    protected void initialize() {
+        // Deliberately not calling super; that code is for ADT compatibility
+    }
+
+    protected void readManifest(File manifest) {
+        if (manifest.exists()) {
+            try {
+                String xml = Files.toString(manifest, Charsets.UTF_8);
+                Document document = XmlUtils.parseDocumentSilently(xml, true);
+                if (document != null) {
+                    readManifest(document);
+                }
+            } catch (IOException e) {
+                mClient.log(e, "Could not read manifest %1$s", manifest);
+            }
+        }
+    }
+
+    @Override
+    public boolean isGradleProject() {
+        return true;
+    }
+
+    void addDirectLibrary(@NonNull Project project) {
+        mDirectLibraries.add(project);
     }
 
     private static class AppGradleProject extends LintGradleProject {
@@ -241,7 +241,7 @@ public class LintGradleProject extends Project {
                     }
                 }
 
-                SourceProvider variantProvider =  mainArtifact.getVariantSourceProvider();
+                SourceProvider variantProvider = mainArtifact.getVariantSourceProvider();
                 if (variantProvider != null) {
                     providers.add(variantProvider);
                 }

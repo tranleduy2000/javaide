@@ -18,6 +18,7 @@ package com.android.build.gradle.internal;
 import com.android.annotations.NonNull;
 import com.android.ide.common.res2.MergingException;
 import com.android.utils.ILogger;
+
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.logging.Logger;
 
@@ -37,7 +38,7 @@ public class LoggerWrapper implements ILogger {
     /**
      * Allow {@link ILogger} info() level messages to be remapped to e.g. {@link
      * LogLevel}.LIFECYCLE} rather than INFO
-     *
+     * <p>
      * This is useful for installs and uninstalls, so install details can be shown without the user
      * having to use the noisy INFO log level, while not flagging informational log output as
      * warnings or errors.

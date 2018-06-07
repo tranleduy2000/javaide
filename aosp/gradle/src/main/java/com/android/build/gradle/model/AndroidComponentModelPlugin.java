@@ -42,7 +42,6 @@ import org.gradle.model.Model;
 import org.gradle.model.ModelMap;
 import org.gradle.model.Mutate;
 import org.gradle.model.Path;
-import org.gradle.model.RuleSource;
 import org.gradle.platform.base.BinaryType;
 import org.gradle.platform.base.BinaryTypeBuilder;
 import org.gradle.platform.base.ComponentBinaries;
@@ -72,12 +71,6 @@ public class AndroidComponentModelPlugin implements Plugin<Project> {
     private static final String GRADLE_VERSION_CHECK_OVERRIDE_PROPERTY =
             "com.android.build.gradle.overrideVersionCheck";
 
-    @Override
-    public void apply(Project project) {
-        checkGradleVersion(project);
-        project.getPlugins().apply(ComponentModelBasePlugin.class);
-    }
-
     private static void checkGradleVersion(Project project) {
         String gradleVersion = project.getGradle().getGradleVersion();
         if (!gradleVersion.startsWith(GRADLE_ACCEPTABLE_VERSION)) {
@@ -100,7 +93,22 @@ public class AndroidComponentModelPlugin implements Plugin<Project> {
         }
     }
 
-    public static class Rules  {
+    @Override
+    public void apply(Project project) {
+        checkGradleVersion(project);
+        project.getPlugins().apply(ComponentModelBasePlugin.class);
+    }
+
+    public static class Rules {
+        private static String getBinaryName(BuildType buildType, ProductFlavorCombo flavorCombo) {
+            if (flavorCombo.getFlavorList().isEmpty()) {
+                return buildType.getName();
+            } else {
+                return flavorCombo.getName() + StringHelper.capitalize(buildType.getName());
+            }
+
+        }
+
         @LanguageType
         public void registerLanguage(LanguageTypeBuilder<AndroidLanguageSourceSet> builder) {
             builder.setLanguageName("android");
@@ -116,7 +124,7 @@ public class AndroidComponentModelPlugin implements Plugin<Project> {
 
         @Defaults
         public void androidModelSources(AndroidConfig androidModel,
-                @Path("androidSources") AndroidComponentModelSourceSet sources) {
+                                        @Path("androidSources") AndroidComponentModelSourceSet sources) {
             androidModel.setSources(sources);
         }
 
@@ -201,7 +209,7 @@ public class AndroidComponentModelPlugin implements Plugin<Project> {
             for (BuildType buildType : buildTypes.values()) {
                 sources.maybeCreate(buildType.getName());
 
-                for (ProductFlavorCombo group: flavorGroups) {
+                for (ProductFlavorCombo group : flavorGroups) {
                     sources.maybeCreate(group.getName());
                     if (!group.getFlavorList().isEmpty()) {
                         sources.maybeCreate(
@@ -214,7 +222,7 @@ public class AndroidComponentModelPlugin implements Plugin<Project> {
             if (flavorGroups.size() != flavors.size()) {
                 // If flavorGroups and flavors are the same size, there is at most 1 flavor
                 // dimension.  So we don't need to reconfigure the source sets for flavorGroups.
-                for (ProductFlavor flavor: flavors.values()) {
+                for (ProductFlavor flavor : flavors.values()) {
                     sources.maybeCreate(flavor.getName());
                 }
             }
@@ -255,15 +263,6 @@ public class AndroidComponentModelPlugin implements Plugin<Project> {
                             });
                 }
             }
-        }
-
-        private static String getBinaryName(BuildType buildType, ProductFlavorCombo flavorCombo) {
-            if (flavorCombo.getFlavorList().isEmpty()) {
-                return buildType.getName();
-            } else {
-                return flavorCombo.getName() + StringHelper.capitalize(buildType.getName());
-            }
-
         }
     }
 }

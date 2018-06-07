@@ -44,17 +44,8 @@ public class AaptOptionsImpl implements AaptOptions, Serializable {
     private final List<String> additionalParameters;
 
 
-    static AaptOptions create(@NonNull AaptOptions aaptOptions) {
-        return new AaptOptionsImpl(
-                aaptOptions.getIgnoreAssets(),
-                aaptOptions.getNoCompress(),
-                aaptOptions.getFailOnMissingConfigEntry(),
-                aaptOptions.getAdditionalParameters()
-        );
-    }
-
     private AaptOptionsImpl(String ignoreAssets, Collection<String> noCompress,
-            boolean failOnMissingConfigEntry, List<String> additionalParameters) {
+                            boolean failOnMissingConfigEntry, List<String> additionalParameters) {
         this.ignoreAssets = ignoreAssets;
         if (noCompress == null) {
             this.noCompress = null;
@@ -63,6 +54,15 @@ public class AaptOptionsImpl implements AaptOptions, Serializable {
         }
         this.failOnMissingConfigEntry = failOnMissingConfigEntry;
         this.additionalParameters = additionalParameters;
+    }
+
+    static AaptOptions create(@NonNull AaptOptions aaptOptions) {
+        return new AaptOptionsImpl(
+                aaptOptions.getIgnoreAssets(),
+                aaptOptions.getNoCompress(),
+                aaptOptions.getFailOnMissingConfigEntry(),
+                aaptOptions.getAdditionalParameters()
+        );
     }
 
     @Override

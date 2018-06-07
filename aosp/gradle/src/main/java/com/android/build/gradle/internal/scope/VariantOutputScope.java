@@ -112,10 +112,10 @@ public class VariantOutputScope {
 
     @NonNull
     public File getManifestOutputFile() {
-        switch(variantScope.getVariantConfiguration().getType()) {
+        switch (variantScope.getVariantConfiguration().getType()) {
             case DEFAULT:
                 return new File(getGlobalScope().getIntermediatesDir(),
-                        "/manifests/full/"  + variantOutputData.getDirName()
+                        "/manifests/full/" + variantOutputData.getDirName()
                                 + "/AndroidManifest.xml");
             case LIBRARY:
                 return new File(getGlobalScope().getIntermediatesDir(),

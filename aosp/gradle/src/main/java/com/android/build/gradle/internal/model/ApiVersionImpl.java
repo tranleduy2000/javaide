@@ -35,6 +35,15 @@ public class ApiVersionImpl implements ApiVersion, Serializable {
     @Nullable
     private final String mCodename;
 
+    private ApiVersionImpl(@NonNull ApiVersion apiVersion) {
+        this(apiVersion.getApiLevel(), apiVersion.getCodename());
+    }
+
+    private ApiVersionImpl(int apiLevel, @Nullable String codename) {
+        mApiLevel = apiLevel;
+        mCodename = codename;
+    }
+
     @Nullable
     public static ApiVersion clone(@Nullable ApiVersion apiVersion) {
         if (apiVersion == null) {
@@ -46,15 +55,6 @@ public class ApiVersionImpl implements ApiVersion, Serializable {
 
     public static ApiVersion clone(@NonNull AndroidVersion androidVersion) {
         return new ApiVersionImpl(androidVersion.getApiLevel(), androidVersion.getCodename());
-    }
-
-    private ApiVersionImpl(@NonNull ApiVersion apiVersion) {
-        this(apiVersion.getApiLevel(), apiVersion.getCodename());
-    }
-
-    private ApiVersionImpl(int apiLevel, @Nullable String codename) {
-        mApiLevel = apiLevel;
-        mCodename = codename;
     }
 
     @Override

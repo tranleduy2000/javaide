@@ -44,20 +44,8 @@ class SigningConfigImpl implements SigningConfig, Serializable {
     private final String storeType;
     private final boolean signingReady;
 
-    @NonNull
-    static SigningConfig createSigningConfig(@NonNull SigningConfig signingConfig) {
-        return new SigningConfigImpl(
-                signingConfig.getName(),
-                signingConfig.getStoreFile(),
-                signingConfig.getStorePassword(),
-                signingConfig.getKeyAlias(),
-                signingConfig.getKeyPassword(),
-                signingConfig.getStoreType(),
-                signingConfig.isSigningReady());
-    }
-
     private SigningConfigImpl(
-            @NonNull  String name,
+            @NonNull String name,
             @Nullable File storeFile,
             @Nullable String storePassword,
             @Nullable String keyAlias,
@@ -71,6 +59,18 @@ class SigningConfigImpl implements SigningConfig, Serializable {
         this.keyPassword = keyPassword;
         this.storeType = storeType;
         this.signingReady = signingReady;
+    }
+
+    @NonNull
+    static SigningConfig createSigningConfig(@NonNull SigningConfig signingConfig) {
+        return new SigningConfigImpl(
+                signingConfig.getName(),
+                signingConfig.getStoreFile(),
+                signingConfig.getStorePassword(),
+                signingConfig.getKeyAlias(),
+                signingConfig.getKeyPassword(),
+                signingConfig.getStoreType(),
+                signingConfig.isSigningReady());
     }
 
     @NonNull

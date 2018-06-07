@@ -80,7 +80,7 @@ public class SourceSetsTask extends AbstractReportTask {
                 renderDirectorySet("JNI libraries", sourceSet.getJniLibs(), project);
 
                 renderDirectorySet("Java-style resources", sourceSet.getResources(), project);
-                
+
                 mRenderer.getTextOutput().println();
             }
         }

@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 package com.android.build.gradle.internal.tasks;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.LoggerWrapper;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.sdk.TargetInfo;
 import com.android.sdklib.BuildToolInfo;
-import com.android.utils.FileUtils;
 import com.android.utils.ILogger;
 import com.google.common.base.Preconditions;
 
-import java.io.File;
+import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 
 public abstract class BaseTask extends DefaultAndroidTask {
 
@@ -34,8 +35,14 @@ public abstract class BaseTask extends DefaultAndroidTask {
     @Nullable
     private ILogger iLogger;
 
+    @TaskAction
+    public void taskAction(IncrementalTaskInputs taskInputs) throws Exception {
+
+    }
+
     /**
      * Returns the androidBuilder.
+     *
      * @throws IllegalStateException if androidBuilder has not been set,
      */
     @NonNull
@@ -55,6 +62,7 @@ public abstract class BaseTask extends DefaultAndroidTask {
 
     /**
      * Returns the BuildToolInfo.
+     *
      * @throws IllegalStateException if androidBuilder.targetInfo has not been set,
      */
     @NonNull

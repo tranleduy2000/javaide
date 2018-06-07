@@ -58,6 +58,7 @@ public interface TaskFactory {
 
     /**
      * Returns the {@link Task} named name from the current set of defined tasks.
+     *
      * @param name the name of the requested {@link Task}
      * @return the {@link Task} instance or null if not found.
      */

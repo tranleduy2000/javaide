@@ -19,7 +19,6 @@ package com.android.build.gradle.managed;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.model.AndroidArtifact;
-import com.android.builder.model.AndroidProject;
 import com.android.builder.model.DimensionAware;
 import com.android.builder.model.Variant;
 
@@ -218,5 +217,4 @@ public interface ProductFlavor extends Named, DimensionAware {
 
     void setSigningConfig(SigningConfig signingConfig);
 
-    NdkOptions getNdk();
 }

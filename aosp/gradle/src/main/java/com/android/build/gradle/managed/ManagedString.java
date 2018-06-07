@@ -16,16 +16,14 @@
 
 package com.android.build.gradle.managed;
 
-import org.gradle.model.Managed;
-
 /**
  * A Managed wrapper of String.
- *
+ * <p>
  * This really should not be necessary, but at the moment, there is no way to create a ModelSet of
  * String or equivalent.
  */
-@Managed
 public interface ManagedString {
     String getValue();
+
     void setValue(String value);
 }

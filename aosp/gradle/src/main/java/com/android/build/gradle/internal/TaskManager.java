@@ -124,17 +124,12 @@ public abstract class TaskManager {
     public static final String DEFAULT_PROGUARD_CONFIG_FILE = "proguard-android.txt";
 
     public static final String DIR_BUNDLES = "bundles";
-
-    public static final String INSTALL_GROUP = "Install";
-
-    public static final String BUILD_GROUP = BasePlugin.BUILD_GROUP;
-
-    public static final String ANDROID_GROUP = "Android";
     protected static final String LINT_COMPILE = "compileLint";
+    private static final String BUILD_GROUP = BasePlugin.BUILD_GROUP;
+    private static final String ANDROID_GROUP = "Android";
     // Task names
     // TODO: Convert to AndroidTask.
     private static final String MAIN_PREBUILD = "preBuild";
-    private static final String UNINSTALL_ALL = "uninstallAll";
     private static final String SOURCE_SETS = "sourceSets";
 
     private static final String LINT = "lint";
@@ -144,7 +139,6 @@ public abstract class TaskManager {
     protected SdkHandler sdkHandler;
     protected AndroidConfig extension;
     protected ToolingModelBuilderRegistry toolingRegistry;
-    protected static final boolean isNdkTaskNeeded = false;
     private DependencyManager dependencyManager;
     private AndroidTaskRegistry androidTasks = new AndroidTaskRegistry();
     private Logger logger;
@@ -283,14 +277,6 @@ public abstract class TaskManager {
      * could be referenced by custom build logic.
      */
     public void createTasksBeforeEvaluate(@NonNull TaskFactory tasks) {
-        tasks.create(UNINSTALL_ALL, new Action<Task>() {
-            @Override
-            public void execute(Task uninstallAllTask) {
-                uninstallAllTask.setDescription("Uninstall all applications.");
-                uninstallAllTask.setGroup(INSTALL_GROUP);
-            }
-        });
-
         tasks.create(MAIN_PREBUILD);
 
         tasks.create(SOURCE_SETS, SourceSetsTask.class, new Action<SourceSetsTask>() {

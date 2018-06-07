@@ -25,7 +25,7 @@ import java.util.Set;
 
 /**
  * DSL object for configuring APK Splits options.
- *
+ * <p>
  * <p>See <a href="http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits">APK Splits</a>.
  */
 public class Splits {
@@ -68,7 +68,7 @@ public class Splits {
 
     /**
      * Returns the list of Density filters used for multi-apk.
-     *
+     * <p>
      * <p>null value is allowed, indicating the need to generate an apk with all densities.
      *
      * @return a set of filters.
@@ -80,7 +80,7 @@ public class Splits {
 
     /**
      * Returns the list of language filters used for multi-apk.
-     *
+     * <p>
      * <>null value is allowed, indicating the need to generate an apk with all languages.
      *
      * @return a set of language filters.

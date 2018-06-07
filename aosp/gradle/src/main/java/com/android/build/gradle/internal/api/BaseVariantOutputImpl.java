@@ -33,7 +33,7 @@ import java.io.File;
 /**
  * Implementation of the base variant output. This is the base class for items common to apps,
  * test apps, and libraries
- *
+ * <p>
  * This is a wrapper around the internal data model, in order to control what is accessible
  * through the external API.
  */
@@ -42,15 +42,15 @@ public abstract class BaseVariantOutputImpl implements BaseVariantOutput {
     @NonNull
     protected abstract BaseVariantOutputData getVariantOutputData();
 
-    @Override
-    public void setOutputFile(@NonNull File file) {
-        getVariantOutputData().setOutputFile(file);
-    }
-
     @NonNull
     @Override
     public File getOutputFile() {
         return getVariantOutputData().getOutputFile();
+    }
+
+    @Override
+    public void setOutputFile(@NonNull File file) {
+        getVariantOutputData().setOutputFile(file);
     }
 
     @NonNull

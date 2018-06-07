@@ -19,17 +19,14 @@ import com.android.annotations.NonNull;
 import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.internal.TaskManager;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
-import com.android.builder.core.VariantType;
-import com.google.common.collect.Maps;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * Data about a variant that produce an application APK
  */
-public class ApplicationVariantData extends ApkVariantData  {
+public class ApplicationVariantData extends ApkVariantData {
     private Set<String> compatibleScreens = null;
 
     public ApplicationVariantData(
@@ -39,11 +36,6 @@ public class ApplicationVariantData extends ApkVariantData  {
         super(androidConfig, taskManager, config);
     }
 
-
-    public void setCompatibleScreens(Set<String> compatibleScreens) {
-        this.compatibleScreens = compatibleScreens;
-    }
-
     @NonNull
     public Set<String> getCompatibleScreens() {
         if (compatibleScreens == null) {
@@ -51,6 +43,10 @@ public class ApplicationVariantData extends ApkVariantData  {
         }
 
         return compatibleScreens;
+    }
+
+    public void setCompatibleScreens(Set<String> compatibleScreens) {
+        this.compatibleScreens = compatibleScreens;
     }
 
 }

@@ -26,7 +26,7 @@ import java.util.Set;
 
 /**
  * DSL object for configuring per-language splits options.
- *
+ * <p>
  * <p>See <a href="http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits">APK Splits</a>.
  */
 public class LanguageSplitOptions {
@@ -64,13 +64,6 @@ public class LanguageSplitOptions {
     }
 
     /**
-     * enables or disables splits for language
-     */
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    /**
      * Returns true if splits should be generated for languages.
      */
     public boolean isEnable() {
@@ -78,21 +71,30 @@ public class LanguageSplitOptions {
     }
 
     /**
-     * Sets whether the build system should determine the splits based on the "language-*" folders
-     * in the resources. If the auto mode is set to true, the include list will be ignored.
-     * @param auto true to automatically set the splits list based on the folders presence, false
-     *             to use the include list.
+     * enables or disables splits for language
      */
-    public void setAuto(boolean auto) {
-        this.auto = auto;
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     /**
      * Returns whether to use the automatic discovery mechanism for supported languages (true) or
      * the manual include list (false).
+     *
      * @return true for automatic, false for manual mode.
      */
     public boolean isAuto() {
         return auto;
+    }
+
+    /**
+     * Sets whether the build system should determine the splits based on the "language-*" folders
+     * in the resources. If the auto mode is set to true, the include list will be ignored.
+     *
+     * @param auto true to automatically set the splits list based on the folders presence, false
+     *             to use the include list.
+     */
+    public void setAuto(boolean auto) {
+        this.auto = auto;
     }
 }

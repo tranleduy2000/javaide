@@ -32,13 +32,11 @@ public abstract class BaseTest extends TestCase {
     public static final String FOLDER_TEST_PROJECTS = "test-projects";
 
     protected File sdkDir;
-    protected File ndkDir;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         sdkDir = getSdkDir();
-        ndkDir = getNdkDir();
     }
 
     /**
@@ -121,17 +119,6 @@ public abstract class BaseTest extends TestCase {
      * Returns the SDK folder as built from the Android source tree.
      * @return
      */
-    protected static File getNdkDir() {
-        String androidHome = System.getenv("ANDROID_NDK_HOME");
-        if (androidHome != null) {
-            File f = new File(androidHome);
-            if (f.isDirectory()) {
-                return f;
-            } else {
-                System.out.println("Failed to find NDK in ANDROID_NDK_HOME=" + androidHome)
-            }
-        }
-    }
 
     protected File runTasksOn(
             @NonNull String testFolder,
@@ -185,7 +172,7 @@ public abstract class BaseTest extends TestCase {
         File buildGradle = new File(project, "build.gradle");
         assertTrue("Missing file: " + buildGradle, buildGradle.isFile());
 
-        AndroidProjectConnector connector = new AndroidProjectConnector(sdkDir, ndkDir);
+        AndroidProjectConnector connector = new AndroidProjectConnector(sdkDir);
         connector.runGradleTasks(project, gradleVersion, arguments, jvmDefines, tasks)
 
         return project;

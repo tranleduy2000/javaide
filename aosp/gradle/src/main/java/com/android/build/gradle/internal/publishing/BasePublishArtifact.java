@@ -47,21 +47,6 @@ public abstract class BasePublishArtifact implements PublishArtifact {
     @NonNull
     private final TaskDependency taskDependency;
 
-    private static final class DefaultTaskDependency implements TaskDependency {
-
-        @NonNull
-        private final Set<Task> tasks;
-
-        DefaultTaskDependency(@NonNull Task task) {
-            this.tasks = Collections.singleton(task);
-        }
-
-        @Override
-        public Set<? extends Task> getDependencies(Task task) {
-            return tasks;
-        }
-    }
-
     public BasePublishArtifact(
             @NonNull String name,
             @Nullable String classifier,
@@ -98,5 +83,20 @@ public abstract class BasePublishArtifact implements PublishArtifact {
     @Override
     public TaskDependency getBuildDependencies() {
         return taskDependency;
+    }
+
+    private static final class DefaultTaskDependency implements TaskDependency {
+
+        @NonNull
+        private final Set<Task> tasks;
+
+        DefaultTaskDependency(@NonNull Task task) {
+            this.tasks = Collections.singleton(task);
+        }
+
+        @Override
+        public Set<? extends Task> getDependencies(Task task) {
+            return tasks;
+        }
     }
 }

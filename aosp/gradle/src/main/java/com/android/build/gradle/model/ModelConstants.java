@@ -25,15 +25,6 @@ public class ModelConstants {
 
     public static final String ANDROID_CONFIG_ADAPTOR = "androidConfigAdaptor";
 
-    public static final String BINARIES = "binaries";
-
-    public static final String COMPONENTS = "components";
-
     public static final String EXTRA_MODEL_INFO = "extraModelInfo";
 
-    public static final String IS_APPLICATION = "isApplication";
-
-    public static final String NDK_HANDLER = "ndkHandler";
-
-    public static final String TASK_MANAGER = "taskManager";
 }

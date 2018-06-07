@@ -75,11 +75,9 @@ class DefaultAndroidProject implements AndroidProject, Serializable {
     private final Collection<BuildTypeContainer> buildTypes = Lists.newArrayList();
     private final Collection<ProductFlavorContainer> productFlavors = Lists.newArrayList();
     private final Collection<Variant> variants = Lists.newArrayList();
-
-    private ProductFlavorContainer defaultConfig;
-
     @NonNull
     private final Collection<String> flavorDimensions;
+    private ProductFlavorContainer defaultConfig;
 
     DefaultAndroidProject(
             @NonNull String modelVersion,
@@ -116,12 +114,6 @@ class DefaultAndroidProject implements AndroidProject, Serializable {
         this.resourcePrefix = resourcePrefix;
         this.isLibrary = isLibrary;
         this.apiVersion = apiVersion;
-    }
-
-    @NonNull
-    DefaultAndroidProject setDefaultConfig(@NonNull ProductFlavorContainer defaultConfigContainer) {
-        defaultConfig = defaultConfigContainer;
-        return this;
     }
 
     @NonNull
@@ -164,6 +156,12 @@ class DefaultAndroidProject implements AndroidProject, Serializable {
     @NonNull
     public ProductFlavorContainer getDefaultConfig() {
         return defaultConfig;
+    }
+
+    @NonNull
+    DefaultAndroidProject setDefaultConfig(@NonNull ProductFlavorContainer defaultConfigContainer) {
+        defaultConfig = defaultConfigContainer;
+        return this;
     }
 
     @Override

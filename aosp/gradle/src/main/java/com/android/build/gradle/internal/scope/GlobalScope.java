@@ -16,27 +16,35 @@
 
 package com.android.build.gradle.internal.scope;
 
-import static com.android.builder.core.BuilderConstants.FD_REPORTS;
-import static com.android.builder.model.AndroidProject.FD_GENERATED;
-import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
-import static com.android.builder.model.AndroidProject.FD_OUTPUTS;
-
 import com.android.annotations.NonNull;
 import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.AndroidGradleOptions;
 import com.android.build.gradle.internal.SdkHandler;
 import com.android.builder.core.AndroidBuilder;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import org.gradle.api.Project;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
 
 import java.io.File;
 
+import static com.android.builder.core.BuilderConstants.FD_REPORTS;
+import static com.android.builder.model.AndroidProject.FD_GENERATED;
+import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
+import static com.android.builder.model.AndroidProject.FD_OUTPUTS;
+
 /**
  * A scope containing data for the Android plugin.
  */
 public class GlobalScope {
+    @NonNull
+    private final File intermediatesDir;
+    @NonNull
+    private final File generatedDir;
+    @NonNull
+    private final File reportsDir;
+    @NonNull
+    private final File outputsDir;
     @NonNull
     private Project project;
     @NonNull
@@ -49,15 +57,6 @@ public class GlobalScope {
     private SdkHandler sdkHandler;
     @NonNull
     private ToolingModelBuilderRegistry toolingRegistry;
-
-    @NonNull
-    private final File intermediatesDir;
-    @NonNull
-    private final File generatedDir;
-    @NonNull
-    private final File reportsDir;
-    @NonNull
-    private final File outputsDir;
 
     public GlobalScope(
             @NonNull Project project,
@@ -140,7 +139,7 @@ public class GlobalScope {
 
     @NonNull
     public String getApkLocation() {
-        return Objects.firstNonNull(
+        return MoreObjects.firstNonNull(
                 AndroidGradleOptions.getApkLocation(project),
                 getDefaultApkLocation());
     }

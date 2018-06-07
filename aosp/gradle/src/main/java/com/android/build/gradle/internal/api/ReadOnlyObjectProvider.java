@@ -28,38 +28,37 @@ import java.util.Map;
 /**
  * Provides read-only versions of BuildType, ProductFlavor and SigningConfig instances
  * so that they can safely be exposed through the variant API.
- *
+ * <p>
  * The class creates them on the fly so that they are only created when a
  * Gradle script/plugin queries for them, and caches them so that we reuse them as needed.
  */
 public class ReadOnlyObjectProvider {
-
-    private ReadOnlyProductFlavor readOnlyDefaultConfig;
 
     /**
      * Map of read-only build-types. This maps the normal build type to the read-only version.
      */
     @NonNull
     private final Map<BuildType, BuildType> readOnlyBuildTypes = Maps.newIdentityHashMap();
-
     /**
      * Map of read-only ProductFlavor. This maps the normal flavor to the read-only version.
      */
     @NonNull
     private final Map<ProductFlavor, ProductFlavor> readOnlyFlavors = Maps.newIdentityHashMap();
-
     /**
      * Map of read-only SigningConfig. This maps the normal config to the read-only version.
      */
     @NonNull
     private final Map<SigningConfig, SigningConfig> readOnlySigningConfig = Maps.newIdentityHashMap();
+    private ReadOnlyProductFlavor readOnlyDefaultConfig;
 
     /**
      * Returns an read-only version of the default config.
+     *
      * @param defaultConfig the default config.
      * @return an read-only version.
      */
-    @NonNull ProductFlavor getDefaultConfig(@NonNull ProductFlavor defaultConfig) {
+    @NonNull
+    ProductFlavor getDefaultConfig(@NonNull ProductFlavor defaultConfig) {
         if (readOnlyDefaultConfig != null) {
             if (readOnlyDefaultConfig.productFlavor != defaultConfig) {
                 throw new IllegalStateException("Different DefaultConfigs passed to ApiObjectProvider");
@@ -73,6 +72,7 @@ public class ReadOnlyObjectProvider {
 
     /**
      * Returns an read-only version of a build type.
+     *
      * @param buildType the build type.
      * @return an read-only version.
      */
@@ -89,6 +89,7 @@ public class ReadOnlyObjectProvider {
 
     /**
      * Retuens an read-only version of a groupable product flavor.
+     *
      * @param productFlavor the product flavor.
      * @return an read-only version.
      */
@@ -106,6 +107,7 @@ public class ReadOnlyObjectProvider {
 
     /**
      * Returns an read-only version of a signing config.
+     *
      * @param signingConfig the signing config.
      * @return an read-only version.
      */

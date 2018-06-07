@@ -28,7 +28,7 @@ import java.util.Set;
 
 /**
  * DSL object for configuring per-density splits options.
- *
+ * <p>
  * <p>See <a href="http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits">APK Splits</a>.
  */
 public class DensitySplitOptions extends SplitOptions {
@@ -74,13 +74,9 @@ public class DensitySplitOptions extends SplitOptions {
         this.strict = strict;
     }
 
-    public void setCompatibleScreens(@NonNull List<String> sizes) {
-        compatibleScreens = Sets.newHashSet(sizes);
-    }
-
     /**
      * Adds a new compatible screen.
-     *
+     * <p>
      * <p>See {@link #getCompatibleScreens()}.
      */
     public void compatibleScreens(@NonNull String... sizes) {
@@ -94,7 +90,7 @@ public class DensitySplitOptions extends SplitOptions {
 
     /**
      * A list of compatible screens.
-     *
+     * <p>
      * <p>This will inject a matching <code>&lt;compatible-screens&gt;&lt;screen ...&gt;</code>
      * node in the manifest. This is optional.
      */
@@ -106,22 +102,28 @@ public class DensitySplitOptions extends SplitOptions {
         return compatibleScreens;
     }
 
-    /**
-     * Sets whether the build system should determine the splits based on the "language-*" folders
-     * in the resources. If the auto mode is set to true, the include list will be ignored.
-     * @param auto true to automatically set the splits list based on the folders presence, false
-     *             to use the include list.
-     */
-    public void setAuto(boolean auto) {
-        this.auto = auto;
+    public void setCompatibleScreens(@NonNull List<String> sizes) {
+        compatibleScreens = Sets.newHashSet(sizes);
     }
 
     /**
      * Returns whether to use the automatic discovery mechanism for supported languages (true) or
      * the manual include list (false).
+     *
      * @return true for automatic, false for manual mode.
      */
     public boolean isAuto() {
         return auto;
+    }
+
+    /**
+     * Sets whether the build system should determine the splits based on the "language-*" folders
+     * in the resources. If the auto mode is set to true, the include list will be ignored.
+     *
+     * @param auto true to automatically set the splits list based on the folders presence, false
+     *             to use the include list.
+     */
+    public void setAuto(boolean auto) {
+        this.auto = auto;
     }
 }

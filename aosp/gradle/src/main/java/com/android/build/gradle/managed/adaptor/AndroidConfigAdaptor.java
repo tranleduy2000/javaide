@@ -25,7 +25,6 @@ import com.android.build.gradle.internal.BuildTypeData;
 import com.android.build.gradle.internal.CompileOptions;
 import com.android.build.gradle.internal.ProductFlavorData;
 import com.android.build.gradle.internal.VariantManager;
-import com.android.build.gradle.internal.dsl.CoreNdkOptions;
 import com.android.build.gradle.internal.dsl.AaptOptions;
 import com.android.build.gradle.internal.dsl.CoreBuildType;
 import com.android.build.gradle.internal.dsl.CoreProductFlavor;
@@ -34,11 +33,11 @@ import com.android.build.gradle.internal.dsl.LintOptions;
 import com.android.build.gradle.internal.dsl.PackagingOptions;
 import com.android.build.gradle.internal.dsl.PreprocessingOptions;
 import com.android.build.gradle.internal.dsl.Splits;
+import com.android.build.gradle.managed.AndroidConfig;
 import com.android.build.gradle.managed.BuildType;
 import com.android.build.gradle.managed.ProductFlavor;
 import com.android.build.gradle.managed.SigningConfig;
 import com.android.build.gradle.model.AndroidComponentModelSourceSet;
-import com.android.build.gradle.managed.AndroidConfig;
 import com.android.builder.core.BuilderConstants;
 import com.android.builder.core.LibraryRequest;
 import com.android.sdklib.repository.FullRevision;
@@ -72,6 +71,65 @@ public class AndroidConfigAdaptor implements com.android.build.gradle.AndroidCon
         this.model = model;
         this.sourceSetsContainer = sourceSetsContainer;
         applyProjectSourceSet();
+    }
+
+    @Nullable
+    private static AndroidSourceSet findAndroidSourceSet(
+            VariantManager variantManager,
+            String name) {
+        BuildTypeData buildTypeData = variantManager.getBuildTypes().get(name);
+        if (buildTypeData != null) {
+            return buildTypeData.getSourceSet();
+        }
+
+        ProductFlavorData productFlavorData = variantManager.getProductFlavors().get(name);
+        if (productFlavorData != null) {
+            return productFlavorData.getSourceSet();
+        }
+        return null;
+    }
+
+    /**
+     * Convert a FunctionalSourceSet to an AndroidSourceFile.
+     */
+    private static void convertSourceFile(
+            AndroidSourceFile androidFile,
+            FunctionalSourceSet source,
+            String sourceName) {
+        LanguageSourceSet languageSourceSet = source.get(sourceName);
+        if (languageSourceSet == null) {
+            return;
+        }
+        SourceDirectorySet dir = languageSourceSet.getSource();
+        if (dir == null) {
+            return;
+        }
+        // We use the first file in the file tree until Gradle has a way to specify one source file
+        // instead of an entire source set.
+        Set<File> files = dir.getAsFileTree().getFiles();
+        if (!files.isEmpty()) {
+            androidFile.srcFile(Iterables.getOnlyElement(files));
+        }
+    }
+
+    /**
+     * Convert a FunctionalSourceSet to an AndroidSourceDirectorySet.
+     */
+    private static void convertSourceSet(
+            AndroidSourceDirectorySet androidDir,
+            FunctionalSourceSet source,
+            String sourceName) {
+        LanguageSourceSet languageSourceSet = source.get(sourceName);
+        if (languageSourceSet == null) {
+            return;
+        }
+        SourceDirectorySet dir = languageSourceSet.getSource();
+        if (dir == null) {
+            return;
+        }
+        androidDir.setSrcDirs(dir.getSrcDirs());
+        androidDir.include(dir.getIncludes());
+        androidDir.exclude(dir.getExcludes());
     }
 
     @Override
@@ -210,7 +268,6 @@ public class AndroidConfigAdaptor implements com.android.build.gradle.AndroidCon
         return model.getPackagingOptions();
     }
 
-
     @Override
     public Splits getSplits() {
         return model.getSplits();
@@ -237,64 +294,5 @@ public class AndroidConfigAdaptor implements com.android.build.gradle.AndroidCon
             convertSourceSet(androidSource.getJni(), source, "jni");
             convertSourceSet(androidSource.getJniLibs(), source, "jniLibs");
         }
-    }
-
-    @Nullable
-    private static AndroidSourceSet findAndroidSourceSet(
-            VariantManager variantManager,
-            String name) {
-        BuildTypeData buildTypeData = variantManager.getBuildTypes().get(name);
-        if (buildTypeData != null) {
-            return buildTypeData.getSourceSet();
-        }
-
-        ProductFlavorData productFlavorData = variantManager.getProductFlavors().get(name);
-        if (productFlavorData != null) {
-            return productFlavorData.getSourceSet();
-        }
-        return null;
-    }
-
-    /**
-     * Convert a FunctionalSourceSet to an AndroidSourceFile.
-     */
-    private static void convertSourceFile(
-            AndroidSourceFile androidFile,
-            FunctionalSourceSet source,
-            String sourceName) {
-        LanguageSourceSet languageSourceSet = source.findByName(sourceName);
-        if (languageSourceSet == null) {
-            return;
-        }
-        SourceDirectorySet dir = languageSourceSet.getSource();
-        if (dir == null) {
-            return;
-        }
-        // We use the first file in the file tree until Gradle has a way to specify one source file
-        // instead of an entire source set.
-        Set<File> files = dir.getAsFileTree().getFiles();
-        if (!files.isEmpty()) {
-            androidFile.srcFile(Iterables.getOnlyElement(files));
-        }
-    }
-
-    /**
-     * Convert a FunctionalSourceSet to an AndroidSourceDirectorySet.
-     */
-    private static void convertSourceSet(
-            AndroidSourceDirectorySet androidDir,
-            FunctionalSourceSet source,
-            String sourceName) {
-        LanguageSourceSet languageSourceSet = source.findByName(sourceName);
-        if (languageSourceSet == null) {
-            return;
-        }
-        SourceDirectorySet dir = languageSourceSet.getSource();
-        if (dir == null) {
-            return;
-        }
-        androidDir.setSrcDirs(dir.getSrcDirs());
-        androidDir.include(dir.getIncludes());
-        androidDir.exclude(dir.getExcludes());
     }
 }

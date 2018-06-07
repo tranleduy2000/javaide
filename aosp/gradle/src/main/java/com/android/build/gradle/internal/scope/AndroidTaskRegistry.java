@@ -35,7 +35,7 @@ public class AndroidTaskRegistry {
 
     private final Map<String, AndroidTask> tasks = new HashMap<String, AndroidTask>();
 
-    public synchronized < T extends Task> AndroidTask<T> create(
+    public synchronized <T extends Task> AndroidTask<T> create(
             TaskFactory taskFactory,
             String taskName,
             Class<T> taskClass,

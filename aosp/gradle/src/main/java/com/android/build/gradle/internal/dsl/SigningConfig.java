@@ -42,7 +42,6 @@ public class SigningConfig extends DefaultSigningConfig implements Serializable,
      * Creates a SigningConfig with a given name.
      *
      * @param name the name of the signingConfig.
-     *
      */
     public SigningConfig(@NonNull String name) {
         super(name);
@@ -66,12 +65,13 @@ public class SigningConfig extends DefaultSigningConfig implements Serializable,
 
     /**
      * Store file used when signing.
-     *
+     * <p>
      * <p>See <a href="http://developer.android.com/tools/publishing/app-signing.html">
      * Signing Your Applications</a>
      */
     @Override
-    @InputFile @Optional
+    @InputFile
+    @Optional
     public File getStoreFile() {
         // Getter override to annotate it with Gradle's input annotation.
         return super.getStoreFile();
@@ -79,7 +79,7 @@ public class SigningConfig extends DefaultSigningConfig implements Serializable,
 
     /**
      * Store password used when signing.
-     *
+     * <p>
      * <p>See <a href="http://developer.android.com/tools/publishing/app-signing.html">
      * Signing Your Applications</a>
      */
@@ -92,7 +92,7 @@ public class SigningConfig extends DefaultSigningConfig implements Serializable,
 
     /**
      * Key alias used when signing.
-     *
+     * <p>
      * <p>See <a href="http://developer.android.com/tools/publishing/app-signing.html">
      * Signing Your Applications</a>
      */
@@ -105,7 +105,7 @@ public class SigningConfig extends DefaultSigningConfig implements Serializable,
 
     /**
      * Key password used when signing.
-     *
+     * <p>
      * <p>See <a href="http://developer.android.com/tools/publishing/app-signing.html">
      * Signing Your Applications</a>
      */
@@ -118,7 +118,7 @@ public class SigningConfig extends DefaultSigningConfig implements Serializable,
 
     /**
      * Store type used when signing.
-     *
+     * <p>
      * <p>See <a href="http://developer.android.com/tools/publishing/app-signing.html">
      * Signing Your Applications</a>
      */

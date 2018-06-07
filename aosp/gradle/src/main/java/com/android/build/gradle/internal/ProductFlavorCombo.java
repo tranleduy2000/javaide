@@ -36,13 +36,13 @@ import java.util.List;
  * A combination of product flavors for a variant, each belonging to a different flavor dimension.
  */
 public class ProductFlavorCombo<T extends DimensionAware & Named> {
-    private String name;
-
     @NonNull
     private final List<T> flavorList;
+    private String name;
 
     /**
      * Create a ProductFlavorCombo.
+     *
      * @param flavors Lists of ProductFlavor.
      */
     public ProductFlavorCombo(@NonNull T... flavors) {
@@ -53,33 +53,11 @@ public class ProductFlavorCombo<T extends DimensionAware & Named> {
         flavorList = ImmutableList.copyOf(flavors);
     }
 
-    @NonNull
-    public String getName() {
-        if (name == null) {
-            boolean first = true;
-            StringBuilder sb = new StringBuilder();
-            for (T flavor : flavorList) {
-                if (first) {
-                    sb.append(flavor.getName());
-                    first = false;
-                } else {
-                    sb.append(StringHelper.capitalize(flavor.getName()));
-                }
-            }
-            name = sb.toString();
-        }
-        return name;
-    }
-
-    @NonNull
-    public List<T> getFlavorList() {
-        return flavorList;
-    }
-
     /**
      * Creates a list containing all combinations of ProductFlavors of the given dimensions.
+     *
      * @param flavorDimensions The dimensions each product flavor can belong to.
-     * @param productFlavors An iterable of all ProductFlavors in the project..
+     * @param productFlavors   An iterable of all ProductFlavors in the project..
      * @return A list of ProductFlavorCombo representing all combinations of ProductFlavors.
      */
     @NonNull
@@ -87,7 +65,7 @@ public class ProductFlavorCombo<T extends DimensionAware & Named> {
             @Nullable List<String> flavorDimensions,
             @NonNull Iterable<S> productFlavors) {
 
-        List <ProductFlavorCombo<S>> result = Lists.newArrayList();
+        List<ProductFlavorCombo<S>> result = Lists.newArrayList();
         if (flavorDimensions == null || flavorDimensions.isEmpty()) {
             for (S flavor : productFlavors) {
                 result.add(new ProductFlavorCombo<S>(ImmutableList.of(flavor)));
@@ -163,5 +141,28 @@ public class ProductFlavorCombo<T extends DimensionAware & Named> {
                 group.remove(group.size() - 1);
             }
         }
+    }
+
+    @NonNull
+    public String getName() {
+        if (name == null) {
+            boolean first = true;
+            StringBuilder sb = new StringBuilder();
+            for (T flavor : flavorList) {
+                if (first) {
+                    sb.append(flavor.getName());
+                    first = false;
+                } else {
+                    sb.append(StringHelper.capitalize(flavor.getName()));
+                }
+            }
+            name = sb.toString();
+        }
+        return name;
+    }
+
+    @NonNull
+    public List<T> getFlavorList() {
+        return flavorList;
     }
 }

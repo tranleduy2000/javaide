@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Implementation of ManifestDependency that can be used as a Task input.
  */
-public class ManifestDependencyImpl implements ManifestDependency{
+public class ManifestDependencyImpl implements ManifestDependency {
 
     @NonNull
     private final File manifest;
@@ -44,8 +44,8 @@ public class ManifestDependencyImpl implements ManifestDependency{
     }
 
     public ManifestDependencyImpl(@NonNull String name,
-            @NonNull File manifest,
-            @NonNull List<ManifestDependencyImpl> dependencies) {
+                                  @NonNull File manifest,
+                                  @NonNull List<ManifestDependencyImpl> dependencies) {
         this.manifest = manifest;
         this.dependencies = dependencies;
         this.name = name;

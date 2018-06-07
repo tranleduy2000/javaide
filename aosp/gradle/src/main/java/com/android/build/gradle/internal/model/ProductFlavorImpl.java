@@ -45,6 +45,10 @@ class ProductFlavorImpl extends BaseConfigImpl implements ProductFlavor, Seriali
     private Set<String> mResourceConfigurations = null;
 
 
+    private ProductFlavorImpl(@NonNull ProductFlavor productFlavor) {
+        super(productFlavor);
+    }
+
     @NonNull
     static ProductFlavorImpl cloneFlavor(
             @NonNull ProductFlavor productFlavor,
@@ -74,10 +78,6 @@ class ProductFlavorImpl extends BaseConfigImpl implements ProductFlavor, Seriali
 
 
         return clonedFlavor;
-    }
-
-    private ProductFlavorImpl(@NonNull ProductFlavor productFlavor) {
-        super(productFlavor);
     }
 
     @Override
@@ -118,7 +118,9 @@ class ProductFlavorImpl extends BaseConfigImpl implements ProductFlavor, Seriali
 
     @Override
     @Nullable
-    public Integer getMaxSdkVersion() { return mMaxSdkVersion; }
+    public Integer getMaxSdkVersion() {
+        return mMaxSdkVersion;
+    }
 
     @NonNull
     @Override

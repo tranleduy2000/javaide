@@ -54,7 +54,6 @@ public class SdkHandler {
 
     private SdkLoader sdkLoader;
     private File sdkFolder;
-    private File ndkFolder;
     private boolean isRegularSdk = true;
 
     public SdkHandler(@NonNull Project project,
@@ -134,11 +133,6 @@ public class SdkHandler {
         }
     }
 
-    @Nullable
-    public File getNdkFolder() {
-        return ndkFolder;
-    }
-
     private void findSdkLocation(@NonNull Properties properties, @NonNull File rootDir) {
         String sdkDirProp = properties.getProperty("sdk.dir");
         if (sdkDirProp != null) {
@@ -165,19 +159,6 @@ public class SdkHandler {
         String property = System.getProperty("android.home");
         if (property != null) {
             sdkFolder = new File(property);
-        }
-    }
-
-    private void findNdkLocation(@NonNull Properties properties) {
-        String ndkDirProp = properties.getProperty("ndk.dir");
-        if (ndkDirProp != null) {
-            ndkFolder = new File(ndkDirProp);
-            return;
-        }
-
-        String envVar = System.getenv("ANDROID_NDK_HOME");
-        if (envVar != null) {
-            ndkFolder = new File(envVar);
         }
     }
 
@@ -211,6 +192,5 @@ public class SdkHandler {
         }
 
         findSdkLocation(properties, rootDir);
-        findNdkLocation(properties);
     }
 }

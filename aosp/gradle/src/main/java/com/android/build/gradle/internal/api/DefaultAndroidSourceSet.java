@@ -53,7 +53,7 @@ public class DefaultAndroidSourceSet implements AndroidSourceSet, SourceProvider
     private final String displayName;
 
     public DefaultAndroidSourceSet(@NonNull String name,
-            Project project, boolean isLibrary) {
+                                   Project project, boolean isLibrary) {
         this.name = name;
         this.isLibrary = isLibrary;
         displayName = GUtil.toWords(this.name);

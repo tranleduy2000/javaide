@@ -32,8 +32,8 @@ import java.util.Map;
 
 public class PrepareDependenciesTask extends BaseTask {
 
-    private BaseVariantData variant;
     private final List<DependencyChecker> checkers = Lists.newArrayList();
+    private BaseVariantData variant;
 
     @TaskAction
     protected void prepare() {

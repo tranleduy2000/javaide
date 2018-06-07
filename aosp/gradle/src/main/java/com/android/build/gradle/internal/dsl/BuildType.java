@@ -18,17 +18,14 @@ package com.android.build.gradle.internal.dsl;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.android.annotations.VisibleForTesting;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.core.BuilderConstants;
 import com.android.builder.core.DefaultBuildType;
 import com.android.builder.model.BaseConfig;
 import com.android.builder.model.ClassField;
 
-import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
-import org.gradle.internal.reflect.Instantiator;
 
 import java.io.Serializable;
 
@@ -69,7 +66,9 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
         }
     }
 
-    /** The signing configuration. */
+    /**
+     * The signing configuration.
+     */
     @Override
     @Nullable
     public SigningConfig getSigningConfig() {
@@ -104,14 +103,14 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
 
     /**
      * Adds a new field to the generated BuildConfig class.
-     *
+     * <p>
      * <p>The field is generated as: <code>&lt;type&gt; &lt;name&gt; = &lt;value&gt;;</code>
-     *
+     * <p>
      * <p>This means each of these must have valid Java content. If the type is a String, then the
      * value should include quotes.
      *
-     * @param type the type of the field
-     * @param name the name of the field
+     * @param type  the type of the field
+     * @param name  the name of the field
      * @param value the value of the field
      */
     public void buildConfigField(
@@ -129,8 +128,8 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
     /**
      * Adds a new generated resource.
      *
-     * @param type the type of the resource
-     * @param name the name of the resource
+     * @param type  the type of the resource
+     * @param name  the name of the resource
      * @param value the value of the resource
      */
     public void resValue(
@@ -147,13 +146,13 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
 
     /**
      * Adds a new ProGuard configuration file.
-     *
+     * <p>
      * <p><code>proguardFile getDefaultProguardFile('proguard-android.txt')</code></p>
-     *
+     * <p>
      * <p>There are 2 default rules files
      * <ul>
-     *     <li>proguard-android.txt
-     *     <li>proguard-android-optimize.txt
+     * <li>proguard-android.txt
+     * <li>proguard-android-optimize.txt
      * </ul>
      * <p>They are located in the SDK. Using <code>getDefaultProguardFile(String filename)</code>
      * will return the full path to the files. They are identical except for enabling optimizations.
@@ -193,12 +192,12 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
 
     /**
      * Specifies a proguard rule file to be included in the published AAR.
-     *
+     * <p>
      * This proguard rule file will then be used by any application project that consume the AAR
      * (if proguard is enabled).
-     *
+     * <p>
      * This allows AAR to specify shrinking or obfuscation exclude rules.
-     *
+     * <p>
      * This is only valid for Library project. This is ignored in Application project.
      */
     @NonNull
@@ -210,13 +209,9 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
         return this;
     }
 
-    public void ndk(@NonNull Action<NdkOptions> action) {
-        action.execute(ndkConfig);
-    }
-
     /**
      * Whether shrinking of unused resources is enabled.
-     *
+     * <p>
      * Default is false;
      */
     @Override
@@ -230,7 +225,7 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
 
     /**
      * Whether shrinking of unused resources is enabled.
-     *
+     * <p>
      * Default is false;
      */
     public void shrinkResources(boolean flag) {

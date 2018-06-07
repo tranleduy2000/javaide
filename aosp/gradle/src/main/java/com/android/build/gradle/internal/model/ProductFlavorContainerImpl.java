@@ -39,12 +39,21 @@ class ProductFlavorContainerImpl implements ProductFlavorContainer, Serializable
     @NonNull
     private final Collection<SourceProviderContainer> extraSourceProviders;
 
+    private ProductFlavorContainerImpl(
+            @NonNull ProductFlavorImpl productFlavor,
+            @NonNull SourceProviderImpl sourceProvider,
+            @NonNull Collection<SourceProviderContainer> extraSourceProviders) {
+
+        this.productFlavor = productFlavor;
+        this.sourceProvider = sourceProvider;
+        this.extraSourceProviders = extraSourceProviders;
+    }
+
     /**
      * Create a ProductFlavorContainer from a ProductFlavorData
      *
-     * @param productFlavorData the product flavor data
+     * @param productFlavorData        the product flavor data
      * @param sourceProviderContainers collection of extra source providers
-     *
      * @return a non-null ProductFlavorContainer
      */
     @NonNull
@@ -59,16 +68,6 @@ class ProductFlavorContainerImpl implements ProductFlavorContainer, Serializable
                 ProductFlavorImpl.cloneFlavor(productFlavorData.getProductFlavor(), null, null),
                 SourceProviderImpl.cloneProvider(productFlavorData.getSourceSet()),
                 clonedContainers);
-    }
-
-    private ProductFlavorContainerImpl(
-            @NonNull ProductFlavorImpl productFlavor,
-            @NonNull SourceProviderImpl sourceProvider,
-            @NonNull Collection<SourceProviderContainer> extraSourceProviders) {
-
-        this.productFlavor = productFlavor;
-        this.sourceProvider = sourceProvider;
-        this.extraSourceProviders = extraSourceProviders;
     }
 
     @NonNull

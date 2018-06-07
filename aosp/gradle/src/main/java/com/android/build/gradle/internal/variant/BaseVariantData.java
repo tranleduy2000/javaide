@@ -66,9 +66,9 @@ import java.util.Set;
 public abstract class BaseVariantData<T extends BaseVariantOutputData> {
 
     @NonNull
-    private final AndroidConfig androidConfig;
-    @NonNull
     protected final TaskManager taskManager;
+    @NonNull
+    private final AndroidConfig androidConfig;
     @NonNull
     private final GradleVariantConfiguration variantConfiguration;
     // Needed for ModelBuilder.  Should be removed once VariantScope can replace BaseVariantData.

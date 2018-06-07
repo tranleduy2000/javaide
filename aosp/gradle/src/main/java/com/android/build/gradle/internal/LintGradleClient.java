@@ -16,9 +16,6 @@
 
 package com.android.build.gradle.internal;
 
-import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
-import static java.io.File.separator;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.model.AndroidProject;
@@ -40,6 +37,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
+import static java.io.File.separator;
+
 public class LintGradleClient extends LintCliClient {
     private final AndroidProject mModelProject;
     private final String mVariantName;
@@ -60,6 +60,84 @@ public class LintGradleClient extends LintCliClient {
         mVariantName = variantName;
         mSdkHome = sdkHome;
         mRegistry = registry;
+    }
+
+    /**
+     * Given a list of results from separate variants, merge them into a single
+     * list of warnings, and mark their
+     *
+     * @param warningMap a map from variant to corresponding warnings
+     * @param project    the project model
+     * @return a merged list of issues
+     */
+    @NonNull
+    public static List<Warning> merge(
+            @NonNull Map<Variant, List<Warning>> warningMap,
+            @NonNull AndroidProject project) {
+        // Easy merge?
+        if (warningMap.size() == 1) {
+            return warningMap.values().iterator().next();
+        }
+        int maxCount = 0;
+        for (List<Warning> warnings : warningMap.values()) {
+            int size = warnings.size();
+            maxCount = Math.max(size, maxCount);
+        }
+        if (maxCount == 0) {
+            return Collections.emptyList();
+        }
+
+        int totalVariantCount = project.getVariants().size();
+
+        List<Warning> merged = Lists.newArrayListWithExpectedSize(2 * maxCount);
+
+        // Map fro issue to message to line number to file name to canonical warning
+        Map<Issue, Map<String, Map<Integer, Map<String, Warning>>>> map =
+                Maps.newHashMapWithExpectedSize(2 * maxCount);
+
+        for (Map.Entry<Variant, List<Warning>> entry : warningMap.entrySet()) {
+            Variant variant = entry.getKey();
+            List<Warning> warnings = entry.getValue();
+            for (Warning warning : warnings) {
+                Map<String, Map<Integer, Map<String, Warning>>> messageMap = map.get(warning.issue);
+                if (messageMap == null) {
+                    messageMap = Maps.newHashMap();
+                    map.put(warning.issue, messageMap);
+                }
+                Map<Integer, Map<String, Warning>> lineMap = messageMap.get(warning.message);
+                if (lineMap == null) {
+                    lineMap = Maps.newHashMap();
+                    messageMap.put(warning.message, lineMap);
+                }
+                Map<String, Warning> fileMap = lineMap.get(warning.line);
+                if (fileMap == null) {
+                    fileMap = Maps.newHashMap();
+                    lineMap.put(warning.line, fileMap);
+                }
+                String fileName = warning.file != null ? warning.file.getName() : "<unknown>";
+                Warning canonical = fileMap.get(fileName);
+                if (canonical == null) {
+                    canonical = warning;
+                    fileMap.put(fileName, canonical);
+                    canonical.variants = Sets.newHashSet();
+                    canonical.gradleProject = project;
+                    merged.add(canonical);
+                }
+                canonical.variants.add(variant);
+            }
+        }
+
+        // Clear out variants on any nodes that define all
+        for (Warning warning : merged) {
+            if (warning.variants != null && warning.variants.size() == totalVariantCount) {
+                // If this error is present in all variants, just clear it out
+                warning.variants = null;
+            }
+
+        }
+
+        Collections.sort(merged);
+        return merged;
     }
 
     public void setCustomRules(List<File> customRules) {
@@ -106,88 +184,13 @@ public class LintGradleClient extends LintCliClient {
         return new LintGradleRequest(this, mModelProject, mGradleProject, mVariantName, files);
     }
 
-    /** Run lint with the given registry and return the resulting warnings */
+    /**
+     * Run lint with the given registry and return the resulting warnings
+     */
     @NonNull
     public List<Warning> run(@NonNull IssueRegistry registry) throws IOException {
         run(registry, Collections.<File>emptyList());
         return mWarnings;
-    }
-
-    /**
-     * Given a list of results from separate variants, merge them into a single
-     * list of warnings, and mark their
-     * @param warningMap a map from variant to corresponding warnings
-     * @param project the project model
-     * @return a merged list of issues
-     */
-    @NonNull
-    public static List<Warning> merge(
-            @NonNull Map<Variant,List<Warning>> warningMap,
-            @NonNull AndroidProject project) {
-        // Easy merge?
-        if (warningMap.size() == 1) {
-            return warningMap.values().iterator().next();
-        }
-        int maxCount = 0;
-        for (List<Warning> warnings : warningMap.values()) {
-            int size = warnings.size();
-            maxCount = Math.max(size, maxCount);
-        }
-        if (maxCount == 0) {
-            return Collections.emptyList();
-        }
-
-        int totalVariantCount = project.getVariants().size();
-
-        List<Warning> merged = Lists.newArrayListWithExpectedSize(2 * maxCount);
-
-        // Map fro issue to message to line number to file name to canonical warning
-        Map<Issue,Map<String, Map<Integer, Map<String, Warning>>>> map =
-                Maps.newHashMapWithExpectedSize(2 * maxCount);
-
-        for (Map.Entry<Variant,List<Warning>> entry : warningMap.entrySet()) {
-            Variant variant = entry.getKey();
-            List<Warning> warnings = entry.getValue();
-            for (Warning warning : warnings) {
-                Map<String,Map<Integer,Map<String,Warning>>> messageMap = map.get(warning.issue);
-                if (messageMap == null) {
-                    messageMap = Maps.newHashMap();
-                    map.put(warning.issue, messageMap);
-                }
-                Map<Integer, Map<String, Warning>> lineMap = messageMap.get(warning.message);
-                if (lineMap == null) {
-                    lineMap = Maps.newHashMap();
-                    messageMap.put(warning.message, lineMap);
-                }
-                Map<String, Warning> fileMap = lineMap.get(warning.line);
-                if (fileMap == null) {
-                    fileMap = Maps.newHashMap();
-                    lineMap.put(warning.line, fileMap);
-                }
-                String fileName = warning.file != null ? warning.file.getName() : "<unknown>";
-                Warning canonical = fileMap.get(fileName);
-                if (canonical == null) {
-                    canonical = warning;
-                    fileMap.put(fileName, canonical);
-                    canonical.variants = Sets.newHashSet();
-                    canonical.gradleProject = project;
-                    merged.add(canonical);
-                }
-                canonical.variants.add(variant);
-            }
-        }
-
-        // Clear out variants on any nodes that define all
-        for (Warning warning : merged) {
-            if (warning.variants != null && warning.variants.size() == totalVariantCount) {
-                // If this error is present in all variants, just clear it out
-                warning.variants = null;
-            }
-
-        }
-
-        Collections.sort(merged);
-        return merged;
     }
 
     @Override

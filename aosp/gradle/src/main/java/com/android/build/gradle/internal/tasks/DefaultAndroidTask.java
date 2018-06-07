@@ -26,7 +26,6 @@ public abstract class DefaultAndroidTask extends DefaultTask {
     @Nullable
     private String variantName;
 
-
     @Nullable
     public String getVariantName() {
         return variantName;

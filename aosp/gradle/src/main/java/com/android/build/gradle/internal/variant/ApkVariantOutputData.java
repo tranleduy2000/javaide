@@ -58,15 +58,6 @@ public class ApkVariantOutputData extends BaseVariantOutputData {
         this.taskManager = taskManager;
     }
 
-    @Override
-    public void setOutputFile(@NonNull File file) {
-        if (zipAlignTask != null) {
-            zipAlignTask.setOutputFile(file);
-        } else {
-            packageApplicationTask.setOutputFile(file);
-        }
-    }
-
     @Nullable
     @Override
     public File getOutputFile() {
@@ -75,6 +66,15 @@ public class ApkVariantOutputData extends BaseVariantOutputData {
         }
 
         return packageApplicationTask == null ? null : packageApplicationTask.getOutputFile();
+    }
+
+    @Override
+    public void setOutputFile(@NonNull File file) {
+        if (zipAlignTask != null) {
+            zipAlignTask.setOutputFile(file);
+        } else {
+            packageApplicationTask.setOutputFile(file);
+        }
     }
 
     @NonNull
@@ -94,7 +94,7 @@ public class ApkVariantOutputData extends BaseVariantOutputData {
 
     @NonNull
     public ZipAlign createZipAlignTask(@NonNull String taskName, @NonNull File inputFile,
-            @NonNull File outputFile) {
+                                       @NonNull File outputFile) {
         //noinspection VariableNotUsedInsideIf
         if (zipAlignTask != null) {
             throw new RuntimeException(String.format(
@@ -132,32 +132,33 @@ public class ApkVariantOutputData extends BaseVariantOutputData {
         return variantData.getVariantConfiguration().getVersionName();
     }
 
-    public void setVersionCodeOverride(int versionCodeOverride) {
-        this.versionCodeOverride = versionCodeOverride;
-    }
-
     public int getVersionCodeOverride() {
         return versionCodeOverride;
     }
 
-    public void setVersionNameOverride(String versionNameOverride) {
-        this.versionNameOverride = versionNameOverride;
+    public void setVersionCodeOverride(int versionCodeOverride) {
+        this.versionCodeOverride = versionCodeOverride;
     }
 
     public String getVersionNameOverride() {
         return versionNameOverride;
     }
 
+    public void setVersionNameOverride(String versionNameOverride) {
+        this.versionNameOverride = versionNameOverride;
+    }
+
     /**
      * Returns the list of {@link Supplier} for this variant. Some variant can produce more
      * than one file when dealing with pure splits.
+     *
      * @return the complete list of tasks producing an APK for this variant.
      */
     public List<FileSupplier> getSplitOutputFileSuppliers() {
         ImmutableList.Builder<FileSupplier> tasks = ImmutableList.builder();
         if (splitZipAlign != null || packageSplitResourcesTask != null) {
             tasks.addAll(splitZipAlign == null ? packageSplitResourcesTask.getOutputFileSuppliers()
-                : splitZipAlign.getOutputFileSuppliers());
+                    : splitZipAlign.getOutputFileSuppliers());
         }
         // ABI splits zip are aligned together with the other densities in the splitZipAlign task
         // so only add the ABI splits from the package task if there was no splitZipAlign task.

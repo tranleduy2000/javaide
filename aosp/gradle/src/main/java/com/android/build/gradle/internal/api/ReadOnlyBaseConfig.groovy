@@ -15,12 +15,14 @@
  */
 
 package com.android.build.gradle.internal.api
+
 import com.android.annotations.NonNull
 import com.android.annotations.Nullable
 import com.android.builder.model.BaseConfig
 import com.android.builder.model.ClassField
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
+
 /**
  * Read-only version of the BaseConfig wrapping another BaseConfig.
  *
@@ -115,7 +117,7 @@ abstract class ReadOnlyBaseConfig implements BaseConfig {
     def propertyMissing(String name) {
         try {
             baseConfig."$name"
-        } catch(MissingPropertyException e) {
+        } catch (MissingPropertyException e) {
             // do not leak implementation types, replace the delegate with ourselves in the message
             throw new MissingPropertyException("Could not find ${name} on ${this}")
         }
@@ -124,7 +126,7 @@ abstract class ReadOnlyBaseConfig implements BaseConfig {
     /**
      * Do not authorize setting dynamic properties values and provide a meaningful error message.
      */
-    def propertyMissing(String name, value)  {
+    def propertyMissing(String name, value) {
         throw new RuntimeException("Cannot set property @{name} on read-only ${baseConfig.class}")
     }
 

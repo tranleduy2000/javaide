@@ -648,7 +648,6 @@ public class AppPluginDslTest extends BaseTest {
         assertNotNull(variant.processJavaResources)
         assertNotNull(variant.dex)
         assertNotNull(variant.assemble)
-        assertNotNull(variant.uninstall)
 
         assertFalse(variant.outputs.isEmpty())
 
@@ -662,7 +661,6 @@ public class AppPluginDslTest extends BaseTest {
         }
 
         if (variant.isSigningReady()) {
-            assertNotNull(variant.install)
 
             for (BaseVariantOutput baseVariantOutput : variant.outputs) {
                 ApkVariantOutput apkVariantOutput = (ApkVariantOutput) baseVariantOutput
@@ -675,7 +673,6 @@ public class AppPluginDslTest extends BaseTest {
                 }
             }
         } else {
-            assertNull(variant.install)
         }
 
         if (isTestVariant) {

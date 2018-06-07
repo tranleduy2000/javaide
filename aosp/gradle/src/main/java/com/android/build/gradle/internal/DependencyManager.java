@@ -58,7 +58,6 @@ import org.gradle.api.artifacts.result.ResolvedComponentResult;
 import org.gradle.api.artifacts.result.ResolvedDependencyResult;
 import org.gradle.api.artifacts.result.UnresolvedDependencyResult;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.plugins.JavaBasePlugin;
 import org.gradle.api.specs.Specs;
 import org.gradle.util.GUtil;
 
@@ -81,6 +80,8 @@ import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
  * A manager to resolve configuration dependencies.
  */
 public class DependencyManager {
+    public static final String BUILD_DEPENDENTS_TASK_NAME = "buildDependents";
+    public static final String BUILD_NEEDED_TASK_NAME = "buildNeeded";
     protected static final boolean DEBUG_DEPENDENCY = false;
     final Map<LibraryDependencyImpl, PrepareLibraryTask> prepareTaskMap = Maps.newHashMap();
     private Project project;
@@ -1010,10 +1011,10 @@ public class DependencyManager {
 
     private void configureBuild(VariantDependencies configurationDependencies) {
         addDependsOnTaskInOtherProjects(
-                project.getTasks().getByName(JavaBasePlugin.BUILD_NEEDED_TASK_NAME), true,
-                JavaBasePlugin.BUILD_NEEDED_TASK_NAME, "compile");
+                project.getTasks().getByName(BUILD_NEEDED_TASK_NAME), true,
+                BUILD_NEEDED_TASK_NAME, "compile");
         addDependsOnTaskInOtherProjects(
-                project.getTasks().getByName(JavaBasePlugin.BUILD_DEPENDENTS_TASK_NAME), false,
-                JavaBasePlugin.BUILD_DEPENDENTS_TASK_NAME, "compile");
+                project.getTasks().getByName(BUILD_DEPENDENTS_TASK_NAME), false,
+                BUILD_DEPENDENTS_TASK_NAME, "compile");
     }
 }

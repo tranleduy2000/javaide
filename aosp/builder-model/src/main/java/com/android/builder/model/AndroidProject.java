@@ -163,14 +163,6 @@ public interface AndroidProject {
     Collection<File> getFrameworkSources();
 
     /**
-     * Returns the collection of toolchains used to create any native libraries.
-     *
-     * @return collection of toolchains.
-     */
-    @NonNull
-    Collection<NativeToolchain> getNativeToolchains();
-
-    /**
      * Returns a list of {@link SigningConfig}.
      */
     @NonNull

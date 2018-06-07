@@ -129,8 +129,6 @@ public interface AndroidConfig {
 
     void setSources(AndroidComponentModelSourceSet sources);
 
-    NdkConfig getNdk();
-
     /**
      * Options for aapt, tool for packaging resources.
      */

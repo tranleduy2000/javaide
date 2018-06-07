@@ -21,14 +21,10 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.OutputFile;
 import com.android.build.gradle.AndroidConfig;
-import com.android.build.gradle.internal.core.Abi;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
 import com.android.build.gradle.internal.dependency.LibraryDependencyImpl;
 import com.android.build.gradle.internal.dependency.ManifestDependencyImpl;
 import com.android.build.gradle.internal.dependency.VariantDependencies;
-import com.android.build.gradle.internal.dsl.AaptOptions;
-import com.android.build.gradle.internal.dsl.AbiSplitOptions;
-import com.android.build.gradle.internal.dsl.CoreNdkOptions;
 import com.android.build.gradle.internal.dsl.PackagingOptions;
 import com.android.build.gradle.internal.publishing.ApkPublishArtifact;
 import com.android.build.gradle.internal.publishing.MappingPublishArtifact;
@@ -62,15 +58,12 @@ import com.android.build.gradle.tasks.CompatibleScreensManifest;
 import com.android.build.gradle.tasks.Dex;
 import com.android.build.gradle.tasks.GenerateBuildConfig;
 import com.android.build.gradle.tasks.GenerateResValues;
-import com.android.build.gradle.tasks.GenerateSplitAbiRes;
 import com.android.build.gradle.tasks.JavaResourcesProvider;
 import com.android.build.gradle.tasks.Lint;
 import com.android.build.gradle.tasks.MergeAssets;
 import com.android.build.gradle.tasks.MergeManifests;
 import com.android.build.gradle.tasks.MergeResources;
-import com.android.build.gradle.tasks.NdkCompile;
 import com.android.build.gradle.tasks.PackageApplication;
-import com.android.build.gradle.tasks.PackageSplitAbi;
 import com.android.build.gradle.tasks.PackageSplitRes;
 import com.android.build.gradle.tasks.PreDex;
 import com.android.build.gradle.tasks.ProcessAndroidResources;
@@ -85,12 +78,10 @@ import com.android.builder.core.AndroidBuilder;
 import com.android.builder.core.VariantConfiguration;
 import com.android.builder.dependency.LibraryDependency;
 import com.android.builder.sdk.TargetInfo;
-import com.android.builder.signing.SignedJarBuilder;
 import com.android.utils.StringHelper;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -153,7 +144,7 @@ public abstract class TaskManager {
     protected SdkHandler sdkHandler;
     protected AndroidConfig extension;
     protected ToolingModelBuilderRegistry toolingRegistry;
-    protected boolean isNdkTaskNeeded = true;
+    protected static final boolean isNdkTaskNeeded = false;
     private DependencyManager dependencyManager;
     private AndroidTaskRegistry androidTasks = new AndroidTaskRegistry();
     private Logger logger;
@@ -276,34 +267,6 @@ public abstract class TaskManager {
 
     public GlobalScope getGlobalScope() {
         return globalScope;
-    }
-
-    /**
-     * Returns a collection of buildables that creates native object.
-     * <p>
-     * A buildable is considered to be any object that can be used as the argument to
-     * Task.dependsOn.  This could be a Task or a BuildableModelElement (e.g. BinarySpec).
-     */
-    protected Collection<Object> getNdkBuildable(BaseVariantData variantData) {
-        return Collections.<Object>singleton(variantData.ndkCompileTask);
-    }
-
-    /**
-     * Override to configure NDK data in the scope.
-     */
-    public void configureScopeForNdk(@NonNull VariantScope scope) {
-        final BaseVariantData variantData = scope.getVariantData();
-        scope.setNdkSoFolder(Collections.singleton(new File(
-                scope.getGlobalScope().getIntermediatesDir(),
-                "ndk/" + variantData.getVariantConfiguration().getDirName() + "/lib")));
-        File objFolder = new File(scope.getGlobalScope().getIntermediatesDir(),
-                "ndk/" + variantData.getVariantConfiguration().getDirName() + "/obj");
-        scope.setNdkObjFolder(objFolder);
-        for (Abi abi : NdkHandler.getAbiList()) {
-            scope.addNdkDebuggableLibraryFolders(abi,
-                    new File(objFolder, "local/" + abi.getName()));
-        }
-
     }
 
     protected AndroidConfig getExtension() {
@@ -578,134 +541,6 @@ public abstract class TaskManager {
         zipAlign.dependsOn(variantOutputData.packageSplitResourcesTask);
     }
 
-    public void createSplitAbiTasks(@NonNull final VariantScope scope) {
-        ApplicationVariantData variantData = (ApplicationVariantData) scope.getVariantData();
-
-        checkState(variantData.getSplitHandlingPolicy().equals(
-                BaseVariantData.SplitHandlingPolicy.RELEASE_21_AND_AFTER_POLICY),
-                "split ABI tasks are only compatible with pure splits.");
-
-        final VariantConfiguration config = variantData.getVariantConfiguration();
-        Set<String> filters = AbiSplitOptions.getAbiFilters(
-                getExtension().getSplits().getAbiFilters());
-        if (filters.isEmpty()) {
-            return;
-        }
-
-        List<ApkVariantOutputData> outputs = variantData.getOutputs();
-        if (outputs.size() != 1) {
-            throw new RuntimeException(
-                    "In release 21 and later, there can be only one main APK, " +
-                            "found " + outputs.size());
-        }
-
-        BaseVariantOutputData variantOutputData = outputs.get(0);
-        // first create the split APK resources.
-        GenerateSplitAbiRes generateSplitAbiRes = project.getTasks().create(
-                scope.getTaskName("generate", "SplitAbiRes"),
-                GenerateSplitAbiRes.class);
-        generateSplitAbiRes.setAndroidBuilder(androidBuilder);
-        generateSplitAbiRes.setVariantName(config.getFullName());
-
-        generateSplitAbiRes.setOutputDirectory(new File(
-                scope.getGlobalScope().getIntermediatesDir(), "abi/" + config.getDirName()));
-        generateSplitAbiRes.setSplits(filters);
-        generateSplitAbiRes.setOutputBaseName(config.getBaseName());
-        generateSplitAbiRes.setApplicationId(config.getApplicationId());
-        generateSplitAbiRes.setVersionCode(config.getVersionCode());
-        generateSplitAbiRes.setVersionName(config.getVersionName());
-        ConventionMappingHelper.map(generateSplitAbiRes, "debuggable", new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return config.getBuildType().isDebuggable();
-            }
-        });
-        ConventionMappingHelper.map(generateSplitAbiRes, "aaptOptions",
-                new Callable<AaptOptions>() {
-                    @Override
-                    public AaptOptions call() throws Exception {
-                        return getExtension().getAaptOptions();
-                    }
-                });
-        generateSplitAbiRes.dependsOn(
-                variantOutputData.getScope().getProcessResourcesTask().getName());
-
-        // then package those resources with the appropriate JNI libraries.
-        variantOutputData.packageSplitAbiTask = project.getTasks().create(
-                scope.getTaskName("package", "SplitAbi"), PackageSplitAbi.class);
-        variantOutputData.packageSplitAbiTask.setInputFiles(generateSplitAbiRes.getOutputFiles());
-        variantOutputData.packageSplitAbiTask.setSplits(filters);
-        variantOutputData.packageSplitAbiTask.setOutputBaseName(config.getBaseName());
-        variantOutputData.packageSplitAbiTask.setSigningConfig(config.getSigningConfig());
-        variantOutputData.packageSplitAbiTask.setOutputDirectory(new File(
-                scope.getGlobalScope().getIntermediatesDir(), "splits/" + config.getDirName()));
-        variantOutputData.packageSplitAbiTask.setMergingFolder(
-                new File(scope.getGlobalScope().getIntermediatesDir(),
-                        "package-merge/" + variantOutputData.getDirName()));
-        variantOutputData.packageSplitAbiTask.setAndroidBuilder(androidBuilder);
-        variantOutputData.packageSplitAbiTask.setVariantName(config.getFullName());
-        variantOutputData.packageSplitAbiTask.dependsOn(generateSplitAbiRes);
-        variantOutputData.packageSplitAbiTask.dependsOn(scope.getNdkBuildable());
-
-        ConventionMappingHelper.map(variantOutputData.packageSplitAbiTask, "jniFolders",
-                new Callable<Set<File>>() {
-                    @Override
-                    public Set<File> call() throws Exception {
-                        return getJniFolders(scope);
-                    }
-
-                });
-        ConventionMappingHelper.map(variantOutputData.packageSplitAbiTask, "jniDebuggable",
-                new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        return config.getBuildType().isJniDebuggable();
-                    }
-                });
-        ConventionMappingHelper.map(variantOutputData.packageSplitAbiTask, "packagingOptions",
-                new Callable<PackagingOptions>() {
-                    @Override
-                    public PackagingOptions call() throws Exception {
-                        return getExtension().getPackagingOptions();
-                    }
-                });
-        ConventionMappingHelper.map(variantOutputData.packageSplitAbiTask, "packagingOptionsFilter",
-                new Callable<SignedJarBuilder.IZipEntryFilter>() {
-                    @Override
-                    public SignedJarBuilder.IZipEntryFilter call() throws Exception {
-                        return scope.getPackagingOptionsFilter();
-                    }
-                });
-
-        ((ApkVariantOutputData) variantOutputData).splitZipAlign.getAbiInputFiles().addAll(
-                variantOutputData.packageSplitAbiTask.getOutputFiles());
-
-        ((ApkVariantOutputData) variantOutputData).splitZipAlign.dependsOn(
-                variantOutputData.packageSplitAbiTask);
-    }
-
-    /**
-     * Calculate the list of folders that can contain jni artifacts for this variant.
-     *
-     * @return a potentially empty list of directories that exist or not and that may contains
-     * native resources.
-     */
-    @NonNull
-    public Set<File> getJniFolders(@NonNull VariantScope scope) {
-
-        BaseVariantData variantData = scope.getVariantData();
-        VariantConfiguration config = variantData.getVariantConfiguration();
-        // for now only the project's compilation output.
-        Set<File> set = Sets.newHashSet();
-        addAllIfNotNull(set, scope.getNdkSoFolder());
-        //noinspection unchecked
-        addAllIfNotNull(set, config.getLibraryJniFolders());
-        //noinspection unchecked
-        addAllIfNotNull(set, config.getJniLibsList());
-
-        return set;
-    }
-
     /**
      * Creates the java resources processing tasks.
      * <p>
@@ -806,50 +641,6 @@ public abstract class TaskManager {
         }
 
         return javacTask;
-    }
-
-    public void createNdkTasks(@NonNull VariantScope scope) {
-        final BaseVariantData<? extends BaseVariantOutputData> variantData = scope.getVariantData();
-        NdkCompile ndkCompile = project.getTasks().create(
-                scope.getTaskName("compile", "Ndk"),
-                NdkCompile.class);
-
-        ndkCompile.dependsOn(variantData.preBuildTask);
-
-        ndkCompile.setAndroidBuilder(androidBuilder);
-        ndkCompile.setVariantName(variantData.getName());
-        ndkCompile.setNdkDirectory(sdkHandler.getNdkFolder());
-        variantData.ndkCompileTask = ndkCompile;
-        variantData.compileTask.dependsOn(variantData.ndkCompileTask);
-
-        final GradleVariantConfiguration variantConfig = variantData.getVariantConfiguration();
-
-        ndkCompile.setSourceFolders((variantConfig.getJniSourceList()));
-
-        ndkCompile.setGeneratedMakefile(new File(scope.getGlobalScope().getIntermediatesDir(),
-                "ndk/" + variantData.getVariantConfiguration().getDirName() + "/Android.mk"));
-
-        ConventionMappingHelper.map(ndkCompile, "ndkConfig", new Callable<CoreNdkOptions>() {
-            @Override
-            public CoreNdkOptions call() {
-                return variantConfig.getNdkConfig();
-            }
-        });
-
-        ConventionMappingHelper.map(ndkCompile, "debuggable", new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return variantConfig.getBuildType().isJniDebuggable();
-            }
-        });
-
-        ndkCompile.setObjFolder(new File(scope.getGlobalScope().getIntermediatesDir(),
-                "ndk/" + variantData.getVariantConfiguration().getDirName() + "/obj"));
-
-        Collection<File> ndkSoFolder = scope.getNdkSoFolder();
-        if (ndkSoFolder != null && !ndkSoFolder.isEmpty()) {
-            ndkCompile.setSoFolder(ndkSoFolder.iterator().next());
-        }
     }
 
     // TODO - should compile src/lint/java from src/lint/java and jar it into build/lint/lint.jar
@@ -1125,8 +916,7 @@ public abstract class TaskManager {
                     tasks, new PackageApplication.ConfigAction(variantOutputScope));
 
             packageApp.dependsOn(tasks, variantOutputScope.getProcessResourcesTask(),
-                    variantOutputScope.getVariantScope().getMergeJavaResourcesTask(),
-                    variantOutputScope.getVariantScope().getNdkBuildable());
+                    variantOutputScope.getVariantScope().getMergeJavaResourcesTask());
 
             packageApp.optionalDependsOn(
                     tasks,

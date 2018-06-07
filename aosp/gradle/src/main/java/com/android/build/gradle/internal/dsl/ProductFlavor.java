@@ -27,14 +27,11 @@ import com.android.builder.model.ApiVersion;
 import com.android.builder.model.ClassField;
 import com.google.common.base.Strings;
 
-import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.internal.reflect.Instantiator;
 
 import java.util.Collection;
-
-import static com.android.build.gradle.tasks.NdkCompile.USE_DEPRECATED_NDK;
 
 /**
  * DSL object used to configure product flavors.
@@ -76,12 +73,6 @@ public class ProductFlavor extends DefaultProductFlavor implements CoreProductFl
         }
 
         return null;
-    }
-
-    @Override
-    @Nullable
-    public CoreNdkOptions getNdkConfig() {
-        return ndkConfig;
     }
 
     public void setMinSdkVersion(int minSdkVersion) {
@@ -297,18 +288,6 @@ public class ProductFlavor extends DefaultProductFlavor implements CoreProductFl
         getConsumerProguardFiles().clear();
         for (Object proguardFile : proguardFileIterable) {
             getConsumerProguardFiles().add(project.file(proguardFile));
-        }
-    }
-
-    public void ndk(Action<NdkOptions> action) {
-        action.execute(ndkConfig);
-        if (!project.hasProperty(USE_DEPRECATED_NDK)) {
-            throw new RuntimeException(
-                    "Error: NDK integration is deprecated in the current plugin.  Consider trying " +
-                            "the new experimental plugin.  For details, see " +
-                            "http://tools.android.com/tech-docs/new-build-system/gradle-experimental.  " +
-                            "Set \"" + USE_DEPRECATED_NDK + "=true\" in gradle.properties to " +
-                            "continue using the current NDK integration.");
         }
     }
 

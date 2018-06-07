@@ -31,12 +31,10 @@ import java.util.Set;
 public class Splits {
 
     private final DensitySplitOptions density;
-    private final AbiSplitOptions abi;
     private final LanguageSplitOptions language;
 
     public Splits(@NonNull Instantiator instantiator) {
         density = instantiator.newInstance(DensitySplitOptions.class);
-        abi = instantiator.newInstance(AbiSplitOptions.class);
         language = instantiator.newInstance(LanguageSplitOptions.class);
     }
 
@@ -52,20 +50,6 @@ public class Splits {
      */
     public void density(Action<DensitySplitOptions> action) {
         action.execute(density);
-    }
-
-    /**
-     * ABI settings.
-     */
-    public AbiSplitOptions getAbi() {
-        return abi;
-    }
-
-    /**
-     * Configures ABI split settings.
-     */
-    public void abi(Action<AbiSplitOptions> action) {
-        action.execute(abi);
     }
 
     /**
@@ -92,18 +76,6 @@ public class Splits {
     @NonNull
     public Set<String> getDensityFilters() {
         return density.getApplicableFilters();
-    }
-
-    /**
-     * Returns the list of ABI filters used for multi-apk.
-     *
-     * <p>null value is allowed, indicating the need to generate an apk with all abis.
-     *
-     * @return a set of filters.
-     */
-    @NonNull
-    public Set<String> getAbiFilters() {
-        return abi.getApplicableFilters();
     }
 
     /**

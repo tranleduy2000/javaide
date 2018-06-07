@@ -185,10 +185,6 @@ public class AndroidConfigAdaptor implements com.android.build.gradle.AndroidCon
         model.setSources(sources);
     }
 
-    public CoreNdkOptions getNdk() {
-        return new NdkOptionsAdaptor(model.getNdk());
-    }
-
     @Override
     public AaptOptions getAaptOptions() {
         return model.getAaptOptions();

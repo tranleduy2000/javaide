@@ -23,8 +23,6 @@ import com.android.build.gradle.internal.ApiObjectFactory;
 import com.android.build.gradle.internal.DependencyManager;
 import com.android.build.gradle.internal.ExtraModelInfo;
 import com.android.build.gradle.internal.LoggerWrapper;
-import com.android.build.gradle.internal.NativeLibraryFactoryImpl;
-import com.android.build.gradle.internal.NdkHandler;
 import com.android.build.gradle.internal.SdkHandler;
 import com.android.build.gradle.internal.TaskContainerAdaptor;
 import com.android.build.gradle.internal.TaskManager;
@@ -84,7 +82,6 @@ public abstract class BasePlugin {
     protected AndroidBuilder androidBuilder;
     protected Instantiator instantiator;
     private VariantFactory variantFactory;
-    private NdkHandler ndkHandler;
     private ToolingModelBuilderRegistry registry;
 
     private LoggerWrapper loggerWrapper;
@@ -208,12 +205,6 @@ public abstract class BasePlugin {
                 taskManager,
                 instantiator);
 
-        ndkHandler = new NdkHandler(
-                project.getRootDir(),
-                null, /* compileSkdVersion, this will be set in afterEvaluate */
-                "gcc",
-                "" /*toolchainVersion*/);
-
         // Register a builder for the custom tooling model
         ModelBuilder modelBuilder = new ModelBuilder(
                 androidBuilder,
@@ -221,8 +212,6 @@ public abstract class BasePlugin {
                 taskManager,
                 extension,
                 extraModelInfo,
-                ndkHandler,
-                new NativeLibraryFactoryImpl(ndkHandler),
                 isLibrary());
         registry.register(modelBuilder);
 
@@ -273,8 +262,6 @@ public abstract class BasePlugin {
         // Make sure unit tests set the required fields.
         checkState(extension.getBuildToolsRevision() != null, "buildToolsVersion is not specified.");
         checkState(extension.getCompileSdkVersion() != null, "compileSdkVersion is not specified.");
-
-        ndkHandler.setCompileSdkVersion(extension.getCompileSdkVersion());
 
         ensureTargetSetup();
 

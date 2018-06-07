@@ -19,7 +19,6 @@ package com.android.build.gradle.managed.adaptor;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.dsl.CoreBuildType;
-import com.android.build.gradle.internal.dsl.CoreNdkOptions;
 import com.android.build.gradle.managed.BuildType;
 import com.android.builder.internal.ClassFieldImpl;
 import com.android.builder.model.ClassField;
@@ -169,11 +168,6 @@ public class BuildTypeAdaptor implements CoreBuildType {
     @Override
     public SigningConfig getSigningConfig() {
         return buildType.getSigningConfig() == null ? null : new SigningConfigAdaptor(buildType.getSigningConfig());
-    }
-
-    @Override
-    public CoreNdkOptions getNdkConfig() {
-        return new NdkOptionsAdaptor(buildType.getNdk());
     }
 
     @Override

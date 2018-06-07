@@ -19,15 +19,11 @@ package com.android.build.gradle.internal.core;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.dsl.CoreBuildType;
-import com.android.build.gradle.internal.dsl.CoreNdkOptions;
 import com.android.build.gradle.internal.dsl.CoreProductFlavor;
 import com.android.builder.core.VariantConfiguration;
 import com.android.builder.core.VariantType;
 import com.android.builder.model.SigningConfig;
 import com.android.builder.model.SourceProvider;
-
-import java.util.List;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -38,8 +34,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * It also adds support for Ndk support that is not ready to go in the builder library.
  */
 public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildType, CoreProductFlavor, CoreProductFlavor> {
-
-    private final MergedNdkConfig mMergedNdkConfig = new MergedNdkConfig();
 
     /**
      * Creates a {@link GradleVariantConfiguration} for a normal (non-test) variant.
@@ -53,7 +47,6 @@ public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildTy
             @Nullable SigningConfig signingConfigOverride) {
         super(defaultConfig, defaultSourceProvider, buildType, buildTypeSourceProvider, type,
                 signingConfigOverride);
-        computeNdkConfig();
     }
 
 
@@ -67,24 +60,7 @@ public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildTy
         checkNotNull(sourceProvider);
         checkNotNull(dimensionName);
         super.addProductFlavor(productFlavor, sourceProvider, dimensionName);
-        computeNdkConfig();
         return this;
-    }
-
-    @NonNull
-    public CoreNdkOptions getNdkConfig() {
-        return mMergedNdkConfig;
-    }
-
-    /**
-     * Returns the ABI filters associated with the artifact, or null if there are no filters.
-     * <p>
-     * If the list contains values, then the artifact only contains these ABIs and excludes
-     * others.
-     */
-    @Nullable
-    public Set<String> getSupportedAbis() {
-        return mMergedNdkConfig.getAbiFilters();
     }
 
     /**
@@ -97,23 +73,4 @@ public class GradleVariantConfiguration extends VariantConfiguration<CoreBuildTy
         return getBuildType().isMinifyEnabled();
     }
 
-    private void computeNdkConfig() {
-        mMergedNdkConfig.reset();
-
-        if (getDefaultConfig().getNdkConfig() != null) {
-            mMergedNdkConfig.append(getDefaultConfig().getNdkConfig());
-        }
-
-        final List<CoreProductFlavor> flavors = getProductFlavors();
-        for (int i = flavors.size() - 1; i >= 0; i--) {
-            CoreNdkOptions ndkConfig = flavors.get(i).getNdkConfig();
-            if (ndkConfig != null) {
-                mMergedNdkConfig.append(ndkConfig);
-            }
-        }
-
-        if (getBuildType().getNdkConfig() != null) {
-            mMergedNdkConfig.append(getBuildType().getNdkConfig());
-        }
-    }
 }

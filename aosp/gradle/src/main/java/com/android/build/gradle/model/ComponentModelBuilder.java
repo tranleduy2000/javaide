@@ -94,17 +94,10 @@ public class ComponentModelBuilder implements ToolingModelBuilder {
         Boolean isApplication = registry.realize(
                 new ModelPath(IS_APPLICATION),
                 ModelType.of(Boolean.class));
-        NdkHandler ndkHandler = registry.realize(
-                new ModelPath(NDK_HANDLER),
-                ModelType.of(NdkHandler.class));
-        BinaryContainer binaries = registry.realize(
-                new ModelPath(BINARIES),
-                ModelType.of(BinaryContainer.class));
 
         return new ModelBuilder(
                 androidBuilder, variantManager, taskManager,
-                extension, extraModelInfo, ndkHandler,
-                new ComponentNativeLibraryFactory(binaries, ndkHandler),
+                extension, extraModelInfo,
                 !isApplication);
     }
 }

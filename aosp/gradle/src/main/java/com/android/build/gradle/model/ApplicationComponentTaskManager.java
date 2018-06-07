@@ -16,20 +16,14 @@
 
 package com.android.build.gradle.model;
 
-import com.android.annotations.NonNull;
 import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.internal.ApplicationTaskManager;
 import com.android.build.gradle.internal.DependencyManager;
 import com.android.build.gradle.internal.SdkHandler;
-import com.android.build.gradle.internal.scope.VariantScope;
-import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.builder.core.AndroidBuilder;
-import com.google.common.collect.ImmutableList;
 
 import org.gradle.api.Project;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
-
-import java.util.Collection;
 
 /**
  * TaskManager for creating tasks in an Android application project with component model plugin.
@@ -47,14 +41,4 @@ public class ApplicationComponentTaskManager extends ApplicationTaskManager {
         isNdkTaskNeeded = false;
     }
 
-    @Override
-    protected Collection<Object> getNdkBuildable(BaseVariantData variantData) {
-        NdkComponentModelPlugin plugin = project.getPlugins().getPlugin(NdkComponentModelPlugin.class);
-        return ImmutableList.<Object>copyOf(plugin.getBinaries(variantData.getVariantConfiguration()));
-    }
-
-    @Override
-    public void configureScopeForNdk(@NonNull VariantScope scope) {
-        NdkComponentModelPlugin.configureScopeForNdk(scope);
-    }
 }

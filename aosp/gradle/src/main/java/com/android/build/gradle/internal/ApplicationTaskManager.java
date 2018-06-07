@@ -83,22 +83,15 @@ public class ApplicationTaskManager extends TaskManager {
         createPostCompilationTasks(tasks, variantScope);
 
 
-        // Add NDK tasks
-        if (isNdkTaskNeeded) {
-            createNdkTasks(variantScope);
+        if (variantData.compileTask != null) {
+            variantData.compileTask.dependsOn();
         } else {
-            if (variantData.compileTask != null) {
-                variantData.compileTask.dependsOn(getNdkBuildable(variantData));
-            } else {
-                variantScope.getCompileTask().dependsOn(tasks, getNdkBuildable(variantData));
-            }
+            variantScope.getCompileTask().dependsOn(tasks);
         }
-        variantScope.setNdkBuildable(getNdkBuildable(variantData));
 
         if (variantData.getSplitHandlingPolicy()
                 .equals(BaseVariantData.SplitHandlingPolicy.RELEASE_21_AND_AFTER_POLICY)) {
             createSplitResourcesTasks(variantScope);
-            createSplitAbiTasks(variantScope);
         }
 
         createPackagingTask(tasks, variantScope, true);

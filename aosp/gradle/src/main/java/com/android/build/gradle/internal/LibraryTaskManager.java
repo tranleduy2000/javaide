@@ -168,18 +168,10 @@ public class LibraryTaskManager extends TaskManager {
                 Sync.class);
 
         // Add dependencies on NDK tasks if NDK plugin is applied.
-        if (isNdkTaskNeeded) {
-            // Add NDK tasks
-            createNdkTasks(variantScope);
-            packageJniLibs.dependsOn(variantData.ndkCompileTask);
-            packageJniLibs.from(variantData.ndkCompileTask.getSoFolder())
-                    .include("**/*.so");
+        if (variantData.compileTask != null) {
+            variantData.compileTask.dependsOn();
         } else {
-            if (variantData.compileTask != null) {
-                variantData.compileTask.dependsOn(getNdkBuildable(variantData));
-            } else {
-                variantScope.getCompileTask().dependsOn(tasks, getNdkBuildable(variantData));
-            }
+            variantScope.getCompileTask().dependsOn(tasks);
         }
 
         // merge consumer proguard files from different build types and flavors

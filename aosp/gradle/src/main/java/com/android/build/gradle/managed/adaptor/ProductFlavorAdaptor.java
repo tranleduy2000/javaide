@@ -18,7 +18,6 @@ package com.android.build.gradle.managed.adaptor;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.android.build.gradle.internal.dsl.CoreNdkOptions;
 import com.android.build.gradle.internal.dsl.CoreProductFlavor;
 import com.android.build.gradle.managed.ProductFlavor;
 import com.android.builder.core.BuilderConstants;
@@ -195,11 +194,6 @@ public class ProductFlavorAdaptor implements CoreProductFlavor {
         return productFlavor.getSigningConfig() == null ?
                 null :
                 new SigningConfigAdaptor(productFlavor.getSigningConfig());
-    }
-
-    @Override
-    public CoreNdkOptions getNdkConfig() {
-        return new NdkOptionsAdaptor(productFlavor.getNdk());
     }
 
     @NonNull

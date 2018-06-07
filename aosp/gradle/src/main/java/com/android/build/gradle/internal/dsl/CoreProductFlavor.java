@@ -26,7 +26,4 @@ import org.gradle.api.Named;
  */
 public interface CoreProductFlavor extends ProductFlavor, Named {
 
-    @Nullable
-    CoreNdkOptions getNdkConfig();
-
 }

@@ -24,8 +24,5 @@ import com.android.builder.model.BuildType;
  */
 public interface CoreBuildType extends BuildType {
 
-    @Nullable
-    CoreNdkOptions getNdkConfig();
-
     boolean isShrinkResources();
 }

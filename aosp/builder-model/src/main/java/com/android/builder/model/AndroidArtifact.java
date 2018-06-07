@@ -93,15 +93,6 @@ public interface AndroidArtifact extends BaseArtifact {
     Collection<File> getGeneratedResourceFolders();
 
     /**
-     * Returns the ABI filters associated with the artifact, or null if there are no filters.
-     *
-     * If the list contains values, then the artifact only contains these ABIs and excludes
-     * others.
-     */
-    @Nullable
-    Set<String> getAbiFilters();
-
-    /**
      * Returns the native libraries associated with the artifact.
      */
     @Nullable

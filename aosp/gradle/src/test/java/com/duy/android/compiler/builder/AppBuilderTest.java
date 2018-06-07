@@ -24,7 +24,6 @@ import org.gradle.testfixtures.ProjectBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class AppBuilderTest extends TestCase {
 
@@ -66,13 +65,13 @@ public class AppBuilderTest extends TestCase {
         android.buildTypes(new Action<NamedDomainObjectContainer<BuildType>>() {
             @Override
             public void execute(@NonNull NamedDomainObjectContainer<BuildType> buildTypes) {
-                BuildType debug = new BuildType("debug", project, instantiator, getLogger());
+                BuildType debug = new BuildType("debug", project, getLogger());
                 debug.setMinifyEnabled(false);
                 debug.setProguardFiles(Lists.newArrayList(new File(getTestProjectDir(), "proguard-rules.pro")));
 
                 buildTypes.add(debug);
 
-                BuildType release = new BuildType("release", project, instantiator, getLogger());
+                BuildType release = new BuildType("release", project, getLogger());
                 release.setMinifyEnabled(false);
                 release.setProguardFiles(Lists.newArrayList(new File(getTestProjectDir(), "proguard-rules.pro")));
                 ;

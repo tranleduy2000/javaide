@@ -36,7 +36,6 @@ import com.android.build.gradle.tasks.GenerateBuildConfig;
 import com.android.build.gradle.tasks.GenerateResValues;
 import com.android.build.gradle.tasks.MergeAssets;
 import com.android.build.gradle.tasks.MergeResources;
-import com.android.build.gradle.tasks.NdkCompile;
 import com.android.build.gradle.tasks.ProcessAndroidResources;
 import com.android.builder.core.VariantType;
 import com.android.builder.model.SourceProvider;
@@ -90,7 +89,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
     public GenerateResValues generateResValuesTask;
     public Copy copyApkTask;
     public Sync processJavaResourcesTask;
-    public NdkCompile ndkCompileTask;
     /**
      * Can be JavaCompile depending on user's settings.
      */
@@ -116,7 +114,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
     private List<File> extraGeneratedResFolders;
     private Set<String> densityFilters;
     private Set<String> languageFilters;
-    private Set<String> abiFilters;
     private SplitHandlingPolicy mSplitHandlingPolicy;
 
     public BaseVariantData(
@@ -144,7 +141,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
                             variantConfiguration.getMinSdkVersion().getApiLevel()));
         }
         scope = new VariantScope(taskManager.getGlobalScope(), this);
-        taskManager.configureScopeForNdk(scope);
     }
 
     /**
@@ -358,7 +354,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
                 .getResourceSets(getGeneratedResFolders(), false);
         densityFilters = getFilters(resourceSets, DiscoverableFilterType.DENSITY, splits);
         languageFilters = getFilters(resourceSets, DiscoverableFilterType.LANGUAGE, splits);
-        abiFilters = getFilters(resourceSets, DiscoverableFilterType.ABI, splits);
     }
 
     /**
@@ -372,7 +367,7 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
      */
     @NonNull
     public Set<String> getFilters(OutputFile.FilterType filterType) {
-        if (densityFilters == null || languageFilters == null || abiFilters == null) {
+        if (densityFilters == null || languageFilters == null) {
             throw new IllegalStateException("calculateFilters method not called");
         }
         switch (filterType) {
@@ -380,8 +375,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
                 return densityFilters;
             case LANGUAGE:
                 return languageFilters;
-            case ABI:
-                return abiFilters;
             default:
                 throw new RuntimeException("Unhandled filter type");
         }
@@ -530,18 +523,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
             @Override
             boolean isAuto(@NonNull Splits splits) {
                 return splits.getLanguage().isAuto();
-            }
-        }, ABI("") {
-            @NonNull
-            @Override
-            Collection<String> getConfiguredFilters(@NonNull Splits splits) {
-                return splits.getAbiFilters();
-            }
-
-            @Override
-            boolean isAuto(@NonNull Splits splits) {
-                // so far, we never auto-discover abi filters.
-                return false;
             }
         };
 

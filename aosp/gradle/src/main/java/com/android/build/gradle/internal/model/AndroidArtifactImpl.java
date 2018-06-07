@@ -51,8 +51,6 @@ public class AndroidArtifactImpl extends BaseArtifactImpl implements AndroidArti
 
     @NonNull
     private final List<File> generatedResourceFolders;
-    @Nullable
-    private final Set<String> abiFilters;
     @NonNull
     private final Collection<NativeLibrary> nativeLibraries;
     @NonNull
@@ -76,7 +74,6 @@ public class AndroidArtifactImpl extends BaseArtifactImpl implements AndroidArti
             @NonNull Dependencies dependencies,
             @Nullable SourceProvider variantSourceProvider,
             @Nullable SourceProvider multiFlavorSourceProviders,
-            @Nullable Set<String> abiFilters,
             @NonNull Collection<NativeLibrary> nativeLibraries,
             @NonNull Map<String,ClassField> buildConfigFields,
             @NonNull Map<String,ClassField> resValues) {
@@ -90,7 +87,6 @@ public class AndroidArtifactImpl extends BaseArtifactImpl implements AndroidArti
         this.applicationId = applicationId;
         this.sourceGenTaskName = sourceGenTaskName;
         this.generatedResourceFolders = generatedResourceFolders;
-        this.abiFilters = abiFilters;
         this.nativeLibraries = nativeLibraries;
         this.buildConfigFields = buildConfigFields;
         this.resValues = resValues;
@@ -135,12 +131,6 @@ public class AndroidArtifactImpl extends BaseArtifactImpl implements AndroidArti
     @Override
     public List<File> getGeneratedResourceFolders() {
         return generatedResourceFolders;
-    }
-
-    @Nullable
-    @Override
-    public Set<String> getAbiFilters() {
-        return abiFilters;
     }
 
     @NonNull

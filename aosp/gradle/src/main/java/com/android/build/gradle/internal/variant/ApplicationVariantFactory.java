@@ -16,10 +16,6 @@
 
 package com.android.build.gradle.internal.variant;
 
-import static com.android.build.OutputFile.NO_FILTER;
-import static com.android.builder.core.BuilderConstants.DEBUG;
-import static com.android.builder.core.BuilderConstants.RELEASE;
-
 import com.android.annotations.NonNull;
 import com.android.build.FilterData;
 import com.android.build.OutputFile;
@@ -50,6 +46,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import static com.android.build.OutputFile.NO_FILTER;
+import static com.android.builder.core.BuilderConstants.DEBUG;
+import static com.android.builder.core.BuilderConstants.RELEASE;
 
 /**
  * An implementation of VariantFactory for a project that generates APKs.
@@ -104,8 +104,7 @@ public class ApplicationVariantFactory implements VariantFactory {
 
             List<String> orderedAbis = new ArrayList<String>();
             // if the abi list is empty or we must generate a universal apk, add a NO_FILTER
-            if (abis.isEmpty() || (extension.getSplits().getAbi().isEnable() &&
-                    extension.getSplits().getAbi().isUniversalApk())) {
+            if (abis.isEmpty()) {
                 orderedAbis.add(NO_FILTER);
             }
             orderedAbis.addAll(abis);

@@ -19,21 +19,16 @@ package com.android.build.gradle.model;
 import com.android.annotations.NonNull;
 import com.android.build.gradle.internal.AndroidConfigHelper;
 import com.android.build.gradle.internal.ExtraModelInfo;
-import com.android.build.gradle.internal.LibraryCache;
 import com.android.build.gradle.internal.LoggerWrapper;
-import com.android.build.gradle.internal.NdkOptionsHelper;
 import com.android.build.gradle.internal.SdkHandler;
 import com.android.build.gradle.internal.TaskManager;
 import com.android.build.gradle.internal.VariantManager;
 import com.android.build.gradle.internal.process.GradleJavaProcessExecutor;
 import com.android.build.gradle.internal.process.GradleProcessExecutor;
-import com.android.build.gradle.internal.profile.RecordingBuildListener;
 import com.android.build.gradle.internal.variant.VariantFactory;
 import com.android.build.gradle.managed.AndroidConfig;
 import com.android.build.gradle.managed.BuildType;
 import com.android.build.gradle.managed.ClassField;
-import com.android.build.gradle.managed.NdkConfig;
-import com.android.build.gradle.managed.NdkOptions;
 import com.android.build.gradle.managed.ProductFlavor;
 import com.android.build.gradle.managed.SigningConfig;
 import com.android.build.gradle.managed.adaptor.AndroidConfigAdaptor;
@@ -45,10 +40,8 @@ import com.android.builder.core.AndroidBuilder;
 import com.android.builder.internal.compiler.PreDexCache;
 import com.android.builder.profile.ProcessRecorderFactory;
 import com.android.builder.profile.Recorder;
-import com.android.builder.profile.ThreadRecorder;
 import com.android.builder.sdk.TargetInfo;
 import com.android.builder.signing.DefaultSigningConfig;
-import com.android.ide.common.internal.ExecutorSingleton;
 import com.android.ide.common.signing.KeystoreHelper;
 import com.android.prefs.AndroidLocation;
 import com.android.utils.ILogger;
@@ -150,7 +143,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
         createConfiguration(configurations, "default-metadata", "Metadata for published APKs");
         createConfiguration(configurations, "default-mapping", "Metadata for published APKs");
 
-        project.getPlugins().apply(NdkComponentModelPlugin.class);
 
         // Remove this when our models no longer depends on Project.
         modelRegistry.create(ModelCreators
@@ -200,16 +192,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
                     }
                 }
             });
-        }
-
-        // com.android.build.gradle.AndroidConfig do not contain an NdkConfig.  Copy it to the
-        // defaultConfig for now.
-        @Defaults
-        public void copyNdkConfig(
-                @Path("android.defaultConfig.ndk") NdkOptions defaultNdkConfig,
-                @Path("android.ndk") NdkConfig pluginNdkConfig) {
-            NdkOptionsHelper.init(defaultNdkConfig);
-            NdkOptionsHelper.merge(defaultNdkConfig, pluginNdkConfig);
         }
 
         // TODO: Remove code duplicated from BasePlugin.

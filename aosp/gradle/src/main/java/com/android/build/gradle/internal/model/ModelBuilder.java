@@ -16,8 +16,6 @@
 
 package com.android.build.gradle.internal.model;
 
-import static com.android.builder.model.AndroidProject.ARTIFACT_MAIN;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.OutputFile;
@@ -25,12 +23,9 @@ import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.api.ApkOutputFile;
 import com.android.build.gradle.internal.BuildTypeData;
 import com.android.build.gradle.internal.ExtraModelInfo;
-import com.android.build.gradle.internal.NdkHandler;
 import com.android.build.gradle.internal.ProductFlavorData;
 import com.android.build.gradle.internal.TaskManager;
 import com.android.build.gradle.internal.VariantManager;
-import com.android.build.gradle.internal.core.Abi;
-import com.android.build.gradle.internal.dsl.CoreNdkOptions;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
 import com.android.build.gradle.internal.dsl.CoreProductFlavor;
 import com.android.build.gradle.internal.scope.VariantScope;
@@ -39,7 +34,6 @@ import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.build.gradle.internal.variant.BaseVariantOutputData;
 import com.android.builder.Version;
 import com.android.builder.core.AndroidBuilder;
-import com.android.builder.core.VariantType;
 import com.android.builder.model.AaptOptions;
 import com.android.builder.model.AndroidArtifact;
 import com.android.builder.model.AndroidArtifactOutput;
@@ -49,7 +43,6 @@ import com.android.builder.model.ArtifactMetaData;
 import com.android.builder.model.JavaArtifact;
 import com.android.builder.model.LintOptions;
 import com.android.builder.model.NativeLibrary;
-import com.android.builder.model.NativeToolchain;
 import com.android.builder.model.ProductFlavor;
 import com.android.builder.model.SigningConfig;
 import com.android.builder.model.SourceProvider;
@@ -57,12 +50,9 @@ import com.android.builder.model.SourceProviderContainer;
 import com.android.builder.model.SyncIssue;
 import com.android.sdklib.AndroidVersion;
 import com.android.sdklib.IAndroidTarget;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import org.gradle.api.Project;
 import org.gradle.tooling.provider.model.ToolingModelBuilder;
@@ -71,7 +61,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+
+import static com.android.builder.model.AndroidProject.ARTIFACT_MAIN;
 
 /**
  * Builder for the custom Android model.
@@ -88,13 +79,6 @@ public class ModelBuilder implements ToolingModelBuilder {
     private final VariantManager variantManager;
     @NonNull
     private final TaskManager taskManager;
-    @NonNull
-    private final NdkHandler ndkHandler;
-    @NonNull
-    private Map<Abi, NativeToolchain> toolchains;
-    @NonNull
-    private NativeLibraryFactory nativeLibFactory;
-
     private final boolean isLibrary;
 
     public ModelBuilder(
@@ -103,16 +87,12 @@ public class ModelBuilder implements ToolingModelBuilder {
             @NonNull TaskManager taskManager,
             @NonNull AndroidConfig config,
             @NonNull ExtraModelInfo extraModelInfo,
-            @NonNull NdkHandler ndkHandler,
-            @NonNull NativeLibraryFactory nativeLibraryFactory,
             boolean isLibrary) {
         this.androidBuilder = androidBuilder;
         this.config = config;
         this.extraModelInfo = extraModelInfo;
         this.variantManager = variantManager;
         this.taskManager = taskManager;
-        this.ndkHandler = ndkHandler;
-        this.nativeLibFactory = nativeLibraryFactory;
         this.isLibrary = isLibrary;
     }
 
@@ -146,7 +126,6 @@ public class ModelBuilder implements ToolingModelBuilder {
         List<String> flavorDimensionList = (config.getFlavorDimensionList() != null ?
                 config.getFlavorDimensionList() : Lists.<String>newArrayList());
 
-        toolchains = createNativeToolchainModelMap(ndkHandler);
 
         DefaultAndroidProject androidProject = new DefaultAndroidProject(
                 Version.ANDROID_GRADLE_PLUGIN_VERSION,
@@ -164,7 +143,6 @@ public class ModelBuilder implements ToolingModelBuilder {
                 lintOptions,
                 project.getBuildDir(),
                 config.getResourcePrefix(),
-                ImmutableList.copyOf(toolchains.values()),
                 isLibrary,
                 Version.BUILDER_MODEL_API_VERSION);
 
@@ -189,28 +167,6 @@ public class ModelBuilder implements ToolingModelBuilder {
         }
 
         return androidProject;
-    }
-
-    /**
-     * Create a map of ABI to NativeToolchain
-     */
-    public static Map<Abi, NativeToolchain> createNativeToolchainModelMap(
-            @NonNull NdkHandler ndkHandler) {
-        if (!ndkHandler.isNdkDirConfigured()) {
-            return ImmutableMap.of();
-        }
-
-        Map<Abi, NativeToolchain> toolchains = Maps.newHashMap();
-
-        for (Abi abi : ndkHandler.getSupportedAbis()) {
-            toolchains.put(
-                    abi,
-                    new NativeToolchainImpl(
-                            ndkHandler.getToolchain().getName() + "-" + abi.getName(),
-                            ndkHandler.getCCompiler(abi),
-                            ndkHandler.getCppCompiler(abi)));
-        }
-        return toolchains;
     }
 
     @NonNull
@@ -260,26 +216,6 @@ public class ModelBuilder implements ToolingModelBuilder {
                 clonedExtraJavaArtifacts);
     }
 
-    /**
-     * Create a NativeLibrary for each ABI.
-     */
-    private Collection<NativeLibrary> createNativeLibraries(
-            @NonNull Collection<Abi> abis,
-            @NonNull VariantScope scope) {
-        Collection<NativeLibrary> nativeLibraries = Lists.newArrayListWithCapacity(abis.size());
-        for (Abi abi : abis) {
-            NativeToolchain toolchain = toolchains.get(abi);
-            if (toolchain == null) {
-                continue;
-            }
-            Optional<NativeLibrary> lib = nativeLibFactory.create(scope, toolchain.getName(), abi);
-            if (lib.isPresent()) {
-                nativeLibraries.add(lib.get());
-            }
-        }
-        return nativeLibraries;
-    }
-
     private AndroidArtifact createAndroidArtifact(
             @NonNull String name,
             @NonNull BaseVariantData<? extends BaseVariantOutputData> variantData) {
@@ -298,27 +234,7 @@ public class ModelBuilder implements ToolingModelBuilder {
         List<? extends BaseVariantOutputData> variantOutputs = variantData.getOutputs();
         List<AndroidArtifactOutput> outputs = Lists.newArrayListWithCapacity(variantOutputs.size());
 
-        CoreNdkOptions ndkConfig = variantData.getVariantConfiguration().getNdkConfig();
         Collection<NativeLibrary> nativeLibraries = ImmutableList.of();
-        if (ndkHandler.getNdkDirectory() != null) {
-            if (config.getSplits().getAbi().isEnable()) {
-                nativeLibraries = createNativeLibraries(
-                        config.getSplits().getAbi().isUniversalApk()
-                                ? ndkHandler.getSupportedAbis()
-                                : createAbiList(config.getSplits().getAbiFilters()),
-                        scope);
-            } else {
-                if (ndkConfig.getAbiFilters() == null || ndkConfig.getAbiFilters().isEmpty()) {
-                    nativeLibraries = createNativeLibraries(
-                            ndkHandler.getSupportedAbis(),
-                            scope);
-                } else {
-                    nativeLibraries = createNativeLibraries(
-                            createAbiList(ndkConfig.getAbiFilters()),
-                            scope);
-                }
-            }
-        }
 
         for (BaseVariantOutputData variantOutputData : variantOutputs) {
             int intVersionCode;
@@ -370,18 +286,9 @@ public class ModelBuilder implements ToolingModelBuilder {
                 DependenciesImpl.cloneDependencies(variantData, androidBuilder),
                 sourceProviders.variantSourceProvider,
                 sourceProviders.multiFlavorSourceProvider,
-                variantConfiguration.getSupportedAbis(),
                 nativeLibraries,
                 variantConfiguration.getMergedBuildConfigFields(),
                 variantConfiguration.getMergedResValues());
-    }
-
-    private static Collection<Abi> createAbiList(Collection<String> abiNames) {
-        ImmutableList.Builder<Abi> builder = ImmutableList.builder();
-        for (String abiName : abiNames) {
-            builder.add(Abi.getByName(abiName));
-        }
-        return builder.build();
     }
 
     private static SourceProviders determineSourceProviders(

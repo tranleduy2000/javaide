@@ -58,11 +58,6 @@ public final class SdkConstants {
     public static final String SDK_DIR_PROPERTY = "sdk.dir";
 
     /**
-     * Property in local.properties file that specifies the path of the Android NDK.
-     */
-    public static final String NDK_DIR_PROPERTY = "ndk.dir";
-
-    /**
      * Property in gradle-wrapper.properties file that specifies the URL to the correct Gradle distribution.
      */
     public static final String GRADLE_DISTRIBUTION_URL_PROPERTY = "distributionUrl";  //$NON-NLS-1$

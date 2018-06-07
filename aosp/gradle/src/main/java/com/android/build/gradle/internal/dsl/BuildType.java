@@ -45,36 +45,15 @@ public class BuildType extends DefaultBuildType implements CoreBuildType, Serial
     @NonNull
     private final Logger logger;
 
-    @Nullable
-    private final NdkOptions ndkConfig;
-
 
     private boolean shrinkResources = false; // opt-in for now until we've validated it in the field
 
     public BuildType(@NonNull String name,
                      @NonNull Project project,
-                     @NonNull Instantiator instantiator,
                      @NonNull Logger logger) {
         super(name);
         this.project = project;
         this.logger = logger;
-        ndkConfig = instantiator.newInstance(NdkOptions.class);
-    }
-
-    @VisibleForTesting
-    BuildType(@NonNull String name,
-              @NonNull Project project,
-              @NonNull Logger logger) {
-        super(name);
-        this.project = project;
-        this.logger = logger;
-        ndkConfig = null;
-    }
-
-    @Override
-    @Nullable
-    public CoreNdkOptions getNdkConfig() {
-        return ndkConfig;
     }
 
     /**

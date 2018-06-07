@@ -22,7 +22,6 @@ import com.android.build.gradle.tasks.AidlCompile;
 import com.android.build.gradle.tasks.GenerateBuildConfig;
 import com.android.build.gradle.tasks.MergeAssets;
 import com.android.build.gradle.tasks.MergeResources;
-import com.android.build.gradle.tasks.NdkCompile;
 import com.android.builder.model.BuildType;
 import com.android.builder.model.ProductFlavor;
 import com.android.builder.model.SourceProvider;
@@ -178,12 +177,6 @@ public interface BaseVariant {
      */
     @NonNull
     AbstractCompile getJavaCompiler();
-
-    /**
-     * Returns the NDK Compilation task.
-     */
-    @NonNull
-    NdkCompile getNdkCompile();
 
     /**
      * Returns the obfuscation task. This can be null if obfuscation is not enabled.

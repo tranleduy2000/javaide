@@ -40,7 +40,6 @@ import com.android.build.gradle.tasks.GenerateResValues;
 import com.android.build.gradle.tasks.JavaResourcesProvider;
 import com.android.build.gradle.tasks.MergeAssets;
 import com.android.build.gradle.tasks.MergeResources;
-import com.android.build.gradle.tasks.NdkCompile;
 import com.android.build.gradle.tasks.ProcessAndroidResources;
 import com.android.builder.core.VariantConfiguration;
 import com.android.builder.core.VariantType;
@@ -108,7 +107,6 @@ public class VariantScope {
     private AndroidTask<Sync> processJavaResourcesTask;
     private AndroidTask<MergeJavaResourcesTask> mergeJavaResourcesTask;
     private JavaResourcesProvider javaResourcesProvider;
-    private AndroidTask<NdkCompile> ndkCompileTask;
 
     /** @see BaseVariantData#javaCompilerTask */
     @Nullable
@@ -158,11 +156,6 @@ public class VariantScope {
     @NonNull
     public String getTaskName(@NonNull String prefix, @NonNull String suffix) {
         return prefix + StringHelper.capitalize(getVariantConfiguration().getFullName()) + suffix;
-    }
-
-    @Nullable
-    public Collection<Object> getNdkBuildable() {
-        return ndkBuildable;
     }
 
     public void setNdkBuildable(@NonNull Collection<Object> ndkBuildable) {

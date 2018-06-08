@@ -38,7 +38,7 @@
             android:windowSoftInputMode="stateAlwaysVisible" />
 
         <activity
-            android:name="com.duy.ide.java.editor.code.MainActivity"
+            android:name="com.duy.ide.java.editor.code.JavaIdeActivity"
             android:launchMode="singleTask" />
         <activity android:name=".java.setting.SettingsActivity" />
         <activity

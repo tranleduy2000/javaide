@@ -16,7 +16,6 @@
 
 package com.duy.ide.java.editor.code;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,7 +51,6 @@ import com.duy.ide.java.Builder;
 import com.duy.ide.java.MenuEditor;
 import com.duy.ide.java.diagnostic.DiagnosticFragment;
 import com.duy.ide.java.editor.code.view.EditorView;
-import com.duy.ide.java.editor.code.view.IndentEditText;
 import com.duy.ide.java.utils.RootUtils;
 import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.autocomplete.model.Description;
@@ -68,7 +66,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends ProjectManagerActivity implements
+public class JavaIdeActivity extends ProjectManagerActivity implements
         DrawerLayout.DrawerListener,
         DialogRunConfig.OnConfigChangeListener,
         Builder {
@@ -77,7 +75,6 @@ public class MainActivity extends ProjectManagerActivity implements
     private static final String TAG = "MainActivity";
 
     private MenuEditor mMenuEditor;
-    private Dialog mDialog;
     private MenuItem mActionRun;
     private ProgressBar mCompileProgress;
     private JavaAutoCompleteProvider mAutoCompleteProvider;
@@ -101,7 +98,7 @@ public class MainActivity extends ProjectManagerActivity implements
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        mAutoCompleteProvider = new JavaAutoCompleteProvider(MainActivity.this);
+                        mAutoCompleteProvider = new JavaAutoCompleteProvider(JavaIdeActivity.this);
                         mAutoCompleteProvider.load(mProject);
                         populateAutoCompleteService(mAutoCompleteProvider);
                     }
@@ -144,7 +141,7 @@ public class MainActivity extends ProjectManagerActivity implements
     }
 
     void insertTab(View v) {
-        onKeyClick(v, IndentEditText.TAB_CHARACTER);
+        onKeyClick(v, "\t");
     }
 
     @Override
@@ -216,7 +213,7 @@ public class MainActivity extends ProjectManagerActivity implements
 
                 @Override
                 public void onError(Exception e) {
-                    Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JavaIdeActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                     openDrawer(GravityCompat.START);
                     updateUIFinish();
                 }
@@ -224,10 +221,10 @@ public class MainActivity extends ProjectManagerActivity implements
                 @Override
                 public void onComplete() {
                     updateUIFinish();
-                    Toast.makeText(MainActivity.this, R.string.build_success, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JavaIdeActivity.this, R.string.build_success, Toast.LENGTH_SHORT).show();
                     mFilePresenter.refresh(mProject);
                     mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    RootUtils.installApk(MainActivity.this, ((AndroidAppProject) mProject).getApkSigned());
+                    RootUtils.installApk(JavaIdeActivity.this, ((AndroidAppProject) mProject).getApkSigned());
                 }
 
             });
@@ -254,7 +251,7 @@ public class MainActivity extends ProjectManagerActivity implements
 
             @Override
             public void onError(Exception e) {
-                Toast.makeText(MainActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(JavaIdeActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                 openDrawer(GravityCompat.START);
                 mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
                 updateUIFinish();
@@ -263,7 +260,7 @@ public class MainActivity extends ProjectManagerActivity implements
             @Override
             public void onComplete() {
                 updateUIFinish();
-                Toast.makeText(MainActivity.this, R.string.compile_success, Toast.LENGTH_SHORT).show();
+                Toast.makeText(JavaIdeActivity.this, R.string.compile_success, Toast.LENGTH_SHORT).show();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -297,7 +294,7 @@ public class MainActivity extends ProjectManagerActivity implements
             builder.setItems(names, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(MainActivity.this, ExecuteActivity.class);
+                    Intent intent = new Intent(JavaIdeActivity.this, ExecuteActivity.class);
                     intent.putExtra(ExecuteActivity.DEX_FILE, project.getDexFile());
                     intent.putExtra(ExecuteActivity.MAIN_CLASS_FILE, javaSources.get(which));
                     startActivity(intent);
@@ -305,48 +302,11 @@ public class MainActivity extends ProjectManagerActivity implements
             });
             builder.create().show();
         } else {
-            Intent intent = new Intent(MainActivity.this, ExecuteActivity.class);
+            Intent intent = new Intent(JavaIdeActivity.this, ExecuteActivity.class);
             intent.putExtra(ExecuteActivity.DEX_FILE, project.getDexFile());
             intent.putExtra(ExecuteActivity.MAIN_CLASS_FILE, currentFile);
             startActivity(intent);
         }
-    }
-
-    /**
-     * replace dialog find
-     */
-    public void showDialogFind() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//        builder.setView(R.layout.dialog_find);
-//        final AlertDialog alertDialog = builder.create();
-//        alertDialog.show();
-//        final CheckBox ckbRegex = alertDialog.findViewById(R.id.ckb_regex);
-//        final CheckBox ckbMatch = alertDialog.findViewById(R.id.ckb_match_key);
-//        final CheckBox ckbWordOnly = alertDialog.findViewById(R.id.ckb_word_only);
-//        final EditText editFind = alertDialog.findViewById(R.id.txt_find);
-//        editFind.setText(getPreferences().getString(AppSetting.LAST_FIND));
-//        alertDialog.findViewById(R.id.btn_replace).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-//                if (editorFragment != null) {
-//                    editorFragment.doFind(editFind.getText().toString(),
-//                            ckbRegex.isChecked(),
-//                            ckbWordOnly.isChecked(),
-//                            ckbMatch.isChecked());
-//                }
-//                getPreferences().put(AppSetting.LAST_FIND, editFind.getText().toString());
-//                alertDialog.dismiss();
-//            }
-//        });
-//        alertDialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                alertDialog.dismiss();
-//            }
-//        });
-
-
     }
 
     @Override
@@ -368,9 +328,6 @@ public class MainActivity extends ProjectManagerActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
-        }
     }
 
     @Override
@@ -558,10 +515,6 @@ public class MainActivity extends ProjectManagerActivity implements
     }
 
     @Override
-    public void createKeyStore() {
-    }
-
-    @Override
     public void onDrawerStateChanged(int newState) {
 
     }
@@ -578,22 +531,6 @@ public class MainActivity extends ProjectManagerActivity implements
                 return;
             }
         }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.exit)
-                .setMessage(R.string.exit_mgs)
-                .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        MainActivity.super.onBackPressed();
-                    }
-                })
-                .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                }).create().show();
     }
 
     @Override

@@ -26,7 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.duy.ide.R;
-import com.duy.ide.java.editor.code.MainActivity;
+import com.duy.ide.java.editor.code.JavaIdeActivity;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
 import com.duy.ide.javaide.setting.CompilerSettingActivity;
 import com.duy.ide.java.setting.SettingsActivity;
@@ -42,13 +42,13 @@ import com.pluscubed.logcat.ui.LogcatActivity;
 
 public class MenuEditor {
     @NonNull
-    private MainActivity activity;
+    private JavaIdeActivity activity;
     @Nullable
     private EditorControl listener;
     private Menu menu;
     private Builder builder;
 
-    public MenuEditor(@NonNull MainActivity activity,
+    public MenuEditor(@NonNull JavaIdeActivity activity,
                       @Nullable EditorControl listener) {
         this.activity = activity;
         this.builder = activity;
@@ -68,9 +68,6 @@ public class MenuEditor {
         switch (id) {
             case R.id.action_setting:
                 activity.startActivity(new Intent(activity, SettingsActivity.class));
-                break;
-            case R.id.action_find:
-                activity.showDialogFind();
                 break;
             case R.id.action_run:
                 builder.runProject();
@@ -128,7 +125,7 @@ public class MenuEditor {
                 break;
             case R.id.action_sample:
                 activity.startActivityForResult(new Intent(activity, JavaSampleActivity.class),
-                        MainActivity.REQUEST_CODE_SAMPLE);
+                        JavaIdeActivity.REQUEST_CODE_SAMPLE);
                 break;
             case R.id.action_see_logcat:
                 activity.startActivity(new Intent(activity, LogcatActivity.class));

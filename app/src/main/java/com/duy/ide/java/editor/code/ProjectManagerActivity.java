@@ -222,7 +222,7 @@ public abstract class ProjectManagerActivity extends BaseActivity
         mViewPager.setOffscreenPageLimit(mPageAdapter.getCount());
         mTabLayout.setupWithViewPager(mViewPager);
 
-        mPagePresenter = new PagePresenter((MainActivity) this, mViewPager, mPageAdapter, mTabLayout, mFileManager);
+        mPagePresenter = new PagePresenter((JavaIdeActivity) this, mViewPager, mPageAdapter, mTabLayout, mFileManager);
         mPagePresenter.invalidateTab();
     }
 

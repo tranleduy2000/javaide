@@ -18,7 +18,7 @@ import com.duy.ide.R;
 import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.java.editor.code.EditorFragment;
 import com.duy.ide.java.editor.code.EditorPagerAdapter;
-import com.duy.ide.java.editor.code.MainActivity;
+import com.duy.ide.java.editor.code.JavaIdeActivity;
 import com.duy.ide.java.file.FileManager;
 import com.duy.ide.java.setting.AppSetting;
 
@@ -36,11 +36,11 @@ public class PagePresenter implements EditPageContract.Presenter {
     private TabLayout mTabLayout;
     private AppSetting mPreferences;
     private FileManager mFileManager;
-    private MainActivity mContext;
+    private JavaIdeActivity mContext;
     private Handler mHandler = new Handler();
     private JavaAutoCompleteProvider autoCompleteProvider;
 
-    public PagePresenter(MainActivity context, ViewPager mViewPager,
+    public PagePresenter(JavaIdeActivity context, ViewPager mViewPager,
                          EditorPagerAdapter mPageAdapter, TabLayout tabLayout,
                          FileManager fileManager) {
         this.mViewPager = mViewPager;

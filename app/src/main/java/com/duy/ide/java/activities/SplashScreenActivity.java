@@ -36,7 +36,7 @@ import com.android.utils.StdLogger;
 import com.duy.android.compiler.env.Environment;
 import com.duy.ide.java.DLog;
 import com.duy.ide.R;
-import com.duy.ide.java.editor.code.MainActivity;
+import com.duy.ide.java.editor.code.JavaIdeActivity;
 
 import java.io.File;
 import java.util.Arrays;
@@ -129,7 +129,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     /**
      * If receive data from other app (it could be file, text from clipboard),
-     * You will be handle data and send to {@link MainActivity}
+     * You will be handle data and send to {@link JavaIdeActivity}
      */
     private void startMainActivity() {
         //noinspection ConstantConditions
@@ -137,7 +137,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SplashScreenActivity.this, JavaIdeActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     overridePendingTransition(0, 0);
                     startActivity(intent);

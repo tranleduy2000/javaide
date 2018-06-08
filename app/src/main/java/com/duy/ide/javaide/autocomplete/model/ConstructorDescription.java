@@ -1,7 +1,7 @@
 package com.duy.ide.javaide.autocomplete.model;
 
+import com.duy.ide.java.editor.code.view.EditorView;
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;
-import com.duy.ide.java.editor.code.view.IndentEditText;
 
 import java.lang.reflect.Constructor;
 
@@ -40,9 +40,9 @@ public class ConstructorDescription extends DescriptionImpl {
     @Override
     public String getSnippet() {
         if (constructor.getParameterTypes().length > 0) {
-            return getSimpleName() + "(" + IndentEditText.CURSOR + ");";
+            return getSimpleName() + "(" + EditorView.CURSOR + ");";
         } else {
-            return getSimpleName() + "();" + IndentEditText.CURSOR;
+            return getSimpleName() + "();" + EditorView.CURSOR;
         }
     }
 

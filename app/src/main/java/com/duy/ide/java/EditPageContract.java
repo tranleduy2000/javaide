@@ -24,9 +24,6 @@ public class EditPageContract {
 
         void redo();
 
-        void formatCode();
-
-        File getCurrentFile();
     }
 
     public interface Presenter {

@@ -16,8 +16,6 @@
 
 package com.duy.ide.java;
 
-import android.app.Activity;
-
 import com.duy.android.compiler.project.JavaProject;
 
 /**
@@ -26,20 +24,11 @@ import com.duy.android.compiler.project.JavaProject;
 
 public class CompileManager {
     public static final String FILE_PATH = "file_name";     // extras indicators
-
-    public static final String ACTION = "action";
     public static final String ARGS = "program_args";
-    public static final String DEX_FILE = "dex_path";
 
-    private final Activity mActivity;
-
-    public CompileManager(Activity activity) {
-        this.mActivity = activity;
+    public CompileManager() {
     }
 
 
-    public void executeDex(JavaProject projectFile) {
-
-    }
 
 }

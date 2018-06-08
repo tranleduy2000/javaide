@@ -39,7 +39,6 @@ import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.formatter.FormatFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -96,17 +95,9 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     @Override
     public void onStop() {
         saveFile();
-        if (mCodeEditor != null && getFilePath() != null) {
-//            mCodeEditor.saveHistory(getFilePath());
-        }
         super.onStop();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-//        mCodeEditor.restoreHistory(getFilePath());
-    }
 
     @Override
     public void gotoLine(int line, int col) {
@@ -122,11 +113,13 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     @Override
     public void display(File src) {
         try {
-            StringBuilder srcStr = FileManager.streamToString(new FileInputStream(src));
+            String srcStr = IOUtils.toStringAndClose(src);
             if (mCodeEditor != null) {
                 mCodeEditor.setText(srcStr);
             }
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -140,42 +133,15 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     public void saveFile() {
         if (mCodeEditor == null) return;
         String filePath = getArguments().getString(CompileManager.FILE_PATH);
-        boolean result;
         if (filePath != null) {
             try {
                 String code = getCode();
-                result = FileManager.saveFile(filePath, code);
-                if (result) {
-                    //do some thing
-                } else {
-                    Toast.makeText(getContext(), getString(R.string.can_not_save_file) + " " + (new File(filePath).getName()),
-                            Toast.LENGTH_SHORT).show();
-                }
+                IOUtils.writeAndClose(code, new File(filePath));
             } catch (Exception e) {
                 e.printStackTrace();
+                Toast.makeText(getContext(), getString(R.string.can_not_save_file) + " " + (new File(filePath).getName()),
+                        Toast.LENGTH_SHORT).show();
             }
-        }
-    }
-
-    public void goToLine(int line) {
-//        mCodeEditor.goToLine(line);
-    }
-
-    @Override
-    public void formatCode() {
-        String filePath = getArguments().getString(CompileManager.FILE_PATH);
-        if (filePath != null) {
-            new FormatSource(getContext(), FormatFactory.getType(new File(filePath))).execute(getCode());
-        }
-    }
-
-    @Override
-    public File getCurrentFile() {
-        String filePath = getArguments().getString(CompileManager.FILE_PATH);
-        if (filePath != null) {
-            return new File(filePath);
-        } else {
-            return null;
         }
     }
 

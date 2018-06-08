@@ -18,6 +18,7 @@ package com.duy.ide.java.editor.code;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -31,6 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.utils.StdLogger;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.builder.BuildTask;
 import com.duy.android.compiler.builder.IBuilder;
@@ -44,16 +46,19 @@ import com.duy.ide.R;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.java.Builder;
-import com.duy.ide.java.MenuEditor;
+import com.duy.ide.java.setting.SettingsActivity;
+import com.duy.ide.java.utils.DonateUtils;
 import com.duy.ide.java.utils.RootUtils;
+import com.duy.ide.java.utils.StoreUtil;
 import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
-import com.duy.ide.javaide.autocomplete.util.JavaUtil;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
+import com.duy.ide.javaide.setting.CompilerSettingActivity;
 import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
+import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.pluscubed.logcat.ui.LogcatActivity;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -67,14 +72,12 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     private static final String TAG = "MainActivity";
     private static final int RC_BUILD_PROJECT = 131;
-    private MenuEditor mMenuEditor;
     private ProgressBar mCompileProgress;
     private JavaAutoCompleteProvider mAutoCompleteProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMenuEditor = new MenuEditor(this, this);
         initView();
         startAutoCompleteService();
     }
@@ -118,21 +121,80 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu container) {
+        container.add(0, R.id.action_run, 0, R.string.run)
+                .setIcon(MenuManager.makeToolbarNormalIcon(this, R.drawable.ic_play_arrow_white_24dp))
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        super.onCreateOptionsMenu(container);
+
+        MenuItem fileMenu = container.findItem(R.id.menu_file);
+        fileMenu.getSubMenu().add(0,
+                R.id.action_new_java_project, 0,
+                R.string.new_java_project)
+                .setIcon(MenuManager.makeMenuNormalIcon(this, R.drawable.ic_create_new_folder_white_24dp))
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        fileMenu.getSubMenu().add(0,
+                R.id.action_open_java_project, 0,
+                R.string.open_java_project)
+                .setIcon(MenuManager.makeMenuNormalIcon(this, R.drawable.ic_create_new_folder_white_24dp))
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        boolean handled = mMenuEditor.onOptionsItemSelected(item);
-        return handled || super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_setting:
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            case R.id.action_run:
+                runProject();
+                break;
+            case R.id.action_report_bug: {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://github.com/tranleduy2000/javaide/issues"));
+                startActivity(intent);
+                break;
+            }
+            case R.id.action_donate:
+                DonateUtils.showDialogDonate(this);
+                break;
+            case R.id.action_new_java_project:
+                showDialogCreateJavaProject();
+                break;
+            case R.id.action_new_android_project:
+                showDialogCreateAndroidProject();
+                break;
+            case R.id.action_new_file:
+                createNewFile(null);
+                break;
+            case R.id.action_new_class:
+                showDialogCreateNewClass(null);
+                break;
+            case R.id.action_open_java_project:
+                showDialogOpenJavaProject();
+                break;
+            case R.id.action_open_android_project:
+                showDialogOpenAndroidProject();
+                break;
+            case R.id.action_sample:
+                startActivityForResult(new Intent(this, JavaSampleActivity.class),
+                        JavaIdeActivity.REQUEST_CODE_SAMPLE);
+                break;
+            case R.id.action_see_logcat:
+                startActivity(new Intent(this, LogcatActivity.class));
+                break;
+            case R.id.action_install_cpp_nide:
+                StoreUtil.gotoPlayStore(this, "com.duy.c.cpp.compiler");
+                break;
+            case R.id.action_compiler_setting:
+                startActivity(new Intent(this, CompilerSettingActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void invalidateOptionsMenu() {
-        super.invalidateOptionsMenu();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        return mMenuEditor.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public void runProject() {
@@ -142,14 +204,18 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     @Override
     protected void onSaveComplete(int requestCode) {
         super.onSaveComplete(requestCode);
-        if (mProject != null) {
-            if (mProject instanceof AndroidAppProject) {
-                compileAndroidProject();
-            } else {
-                compileJavaProject();
-            }
-        } else {
-            Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
+        switch (requestCode) {
+            case RC_BUILD_PROJECT:
+                if (mProject != null) {
+                    if (mProject instanceof AndroidAppProject) {
+                        compileAndroidProject();
+                    } else {
+                        compileJavaProject();
+                    }
+                } else {
+                    Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
@@ -176,6 +242,9 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 //            builder.setStdOut(mMessagePresenter.getStdOut());
 //            builder.setStdErr(mMessagePresenter.getStdErr());
 //            builder.setLogger(mMessagePresenter);
+            builder.setStdOut(System.out);
+            builder.setStdErr(System.err);
+            builder.setLogger(new StdLogger(StdLogger.Level.VERBOSE));
 
             final BuildTask<AndroidAppProject> buildTask = new BuildTask<>(builder, new BuildTask.CompileListener<AndroidAppProject>() {
                 @Override
@@ -214,6 +283,10 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         final IBuilder<JavaProject> builder = new JavaBuilder(this, mProject);
 //        builder.setStdOut(mMessagePresenter.getStdOut());
 //        builder.setStdErr(mMessagePresenter.getStdErr());
+
+        builder.setStdOut(System.out);
+        builder.setStdErr(System.err);
+
         final BuildTask.CompileListener<JavaProject> listener = new BuildTask.CompileListener<JavaProject>() {
             @Override
             public void onStart() {
@@ -325,19 +398,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     }
 
     @Override
-    public void runFile(String filePath) {
-        saveAll(0);
-        // TODO: 09-Jun-18 save all
-        if (mProject == null) return;
-        String className = JavaUtil.getClassName(mProject.getJavaSrcDirs().get(0), filePath);
-        if (className == null) {
-            Toast.makeText(this, ("Class \"" + filePath + "\"" + "invalid"), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        runProject();
-    }
-
-    @Override
     public void previewLayout(String path) {
         saveAll(0);
         // TODO: 09-Jun-18 save all
@@ -369,23 +429,24 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     private void updateUiStartCompile() {
         setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
-        if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
+        if (mCompileProgress != null) {
+            mCompileProgress.setVisibility(View.VISIBLE);
+        }
+
         hideKeyboard();
-        openDrawer(GravityCompat.START);
 
 //        mMessagePresenter.resume((JavaApplication) getApplication());
 //        mMessagePresenter.clear();
 //        mMessagePresenter.append("Compiling...\n");
 
-        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+//        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        mDiagnosticPresenter.showPanel();
         mDiagnosticPresenter.clear();
 
 //        mBottomPage.setCurrentItem(0);
-
     }
 
     private void updateUIFinish() {
-//        mMessagePresenter.pause((JavaApplication) getApplication());
         setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
         if (mCompileProgress != null) {
             mHandler.postDelayed(new Runnable() {
@@ -396,6 +457,5 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
             }, 500);
         }
     }
-
 
 }

@@ -32,6 +32,7 @@ import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
@@ -73,10 +74,9 @@ public abstract class ProjectManagerActivity extends IdeActivity
         DialogSelectType.OnFileTypeSelectListener {
     private static final String TAG = "BaseEditorActivity";
 
-    /*Constants*/
-    private static final int REQUEST_OPEN_JAVA_PROJECT = 2;
-    private static final int REQUEST_OPEN_ANDROID_PROJECT = 3;
-    private static final int REQUEST_PICK_FILE = 4;
+    private static final int REQUEST_OPEN_JAVA_PROJECT = 58;
+    private static final int REQUEST_OPEN_ANDROID_PROJECT = 704;
+    private static final int REQUEST_PICK_FILE = 75;
 
     protected final Handler mHandler = new Handler();
 
@@ -96,6 +96,8 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
         setupToolbar();
         createProjectIfNeed();
+
+        mPreferences.setAppTheme(1);
     }
 
     @Override
@@ -119,11 +121,14 @@ public abstract class ProjectManagerActivity extends IdeActivity
         if (folderStructureFragment == null) {
             folderStructureFragment = FolderStructureFragment.newInstance(mProject);
         }
+        ViewGroup viewGroup = nav.findViewById(R.id.left_navigation_content);
+        viewGroup.removeAllViews();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.left_navigation_content, folderStructureFragment, tag).commit();
         mFilePresenter = new ProjectFilePresenter(folderStructureFragment);
 
     }
+
 
     public void setupToolbar() {
 //        if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {

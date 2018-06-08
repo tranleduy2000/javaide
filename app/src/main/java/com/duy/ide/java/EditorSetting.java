@@ -17,7 +17,6 @@
 package com.duy.ide.java;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.duy.ide.java.setting.AppSetting;
 
@@ -28,10 +27,6 @@ import com.duy.ide.java.setting.AppSetting;
 public class EditorSetting extends AppSetting {
     public EditorSetting(Context context) {
         super(context);
-    }
-
-    public EditorSetting(SharedPreferences mPreferences, Context context) {
-        super(mPreferences, context);
     }
 
 

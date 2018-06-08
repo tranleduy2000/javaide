@@ -20,8 +20,6 @@ public interface Builder {
 
     void runProject();
 
-    void runFile(String path);
-
     void previewLayout(String path);
 
 }

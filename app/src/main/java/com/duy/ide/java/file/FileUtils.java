@@ -34,11 +34,6 @@ public class FileUtils {
         }
     }
 
-    public static boolean canRead(File file) {
-        String[] exts = new String[]{".java", ".txt", ".xml"};
-        return file.canRead() && hasExtension(file, exts);
-    }
-
     public static String ext(String path) {
         if (path.contains(".")) {
             return path.substring(path.lastIndexOf(".") + 1);

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="?colorPrimaryDark"
-              android:clickable="true"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:windowBackground"
+    android:clickable="true"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:background="?colorPrimaryDark"
+        android:background="?android:windowBackground"
         android:gravity="center_vertical">
 
         <TextView
@@ -25,7 +25,7 @@
             android:text="@string/project"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="?android:textColorPrimary"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <LinearLayout
             android:id="@+id/linearLayout3"
@@ -42,7 +42,7 @@
                 android:layout_height="24dp"
                 android:layout_marginLeft="4dp"
                 android:foreground="?attr/selectableItemBackground"
-                app:srcCompat="@drawable/ic_add_white_24dp"/>
+                app:srcCompat="@drawable/ic_add_white_24dp" />
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/img_refresh"
@@ -50,7 +50,7 @@
                 android:layout_height="24dp"
                 android:layout_marginLeft="4dp"
                 android:foreground="?attr/selectableItemBackground"
-                app:srcCompat="@drawable/ic_refresh_white_24dp"/>
+                app:srcCompat="@drawable/ic_refresh_white_24dp" />
 
 
             <android.support.v7.widget.AppCompatImageView
@@ -60,7 +60,7 @@
 
                 android:layout_marginLeft="4dp"
                 android:foreground="?attr/selectableItemBackground"
-                app:srcCompat="@drawable/ic_fullscreen_exit_white_24dp"/>
+                app:srcCompat="@drawable/ic_fullscreen_exit_white_24dp" />
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/img_expand_all"
@@ -68,16 +68,16 @@
                 android:layout_height="24dp"
                 android:layout_marginLeft="4dp"
                 android:foreground="?attr/selectableItemBackground"
-                app:srcCompat="@drawable/ic_fullscreen_white_24dp"/>
+                app:srcCompat="@drawable/ic_fullscreen_white_24dp" />
         </LinearLayout>
     </RelativeLayout>
 
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/container"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="2dp">
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="2dp">
 
     </RelativeLayout>
 

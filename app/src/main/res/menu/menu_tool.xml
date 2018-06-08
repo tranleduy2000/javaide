@@ -24,91 +24,29 @@
         app:showAsAction="always" />
 
     <item
-        android:icon="@drawable/ic_folder_white_24dp"
-        android:title="@string/file"
-        app:showAsAction="always">
-
-        <menu>
-            <item
-                android:id="@+id/action_new_java_project"
-                android:icon="@drawable/ic_fiber_new_white_24dp"
-                android:title="@string/new_java_project" />
-            <item
-                android:id="@+id/action_new_android_project"
-                android:icon="@drawable/ic_fiber_new_white_24dp"
-                android:title="@string/new_android_project" />
-
-            <item
-                android:id="@+id/action_new_class"
-                android:icon="@drawable/ic_fiber_new_white_24dp"
-                android:title="@string/new_class" />
-            <item
-                android:id="@+id/action_new_file"
-                android:icon="@drawable/ic_fiber_new_white_24dp"
-                android:title="@string/new_file" />
-            <item
-                android:id="@+id/action_open_project"
-                android:icon="@drawable/ic_folder_open_white_24dp"
-                android:title="@string/open_java_project" />
-            <item
-                android:id="@+id/action_open_android_project"
-                android:icon="@drawable/ic_folder_open_white_24dp"
-                android:title="@string/open_android_project" />
-            <item
-                android:id="@+id/action_save"
-                android:icon="@drawable/ic_save_white_24dp"
-                android:title="@string/save" />
-
-        </menu>
-    </item>
+        android:id="@+id/action_new_java_project"
+        android:icon="@drawable/ic_fiber_new_white_24dp"
+        android:title="@string/new_java_project" />
     <item
-        android:icon="@drawable/ic_edit_white_24dp"
-        android:title="@string/edit"
-        app:showAsAction="always">
-        <menu>
-            <item
-                android:id="@+id/action_undo"
-                android:icon="@drawable/ic_undo_white_24dp"
-                android:title="@string/undo" />
-            <item
-                android:id="@+id/action_redo"
-                android:icon="@drawable/ic_redo_white_24dp"
-                android:title="@string/redo" />
-        </menu>
-    </item>
-
+        android:id="@+id/action_new_android_project"
+        android:icon="@drawable/ic_fiber_new_white_24dp"
+        android:title="@string/new_android_project" />
     <item
-        android:icon="@drawable/ic_build_white_24dp"
-        android:title="@string/tool"
-        app:showAsAction="ifRoom">
-        <menu>
-            <item
-                android:id="@+id/action_find"
-                android:icon="@drawable/ic_search_white_24dp"
-                android:title="@string/find" />
-
-            <item
-                android:id="@+id/action_find_and_replace"
-                android:icon="@drawable/ic_find_replace_white_24dp"
-                android:title="@string/find_replace" />
-            <item
-                android:id="@+id/action_goto_line"
-                android:icon="@drawable/ic_format_list_numbered_white_24dp"
-                android:title="@string/goto_line" />
-
-            <item
-                android:id="@+id/action_format"
-                android:icon="@drawable/ic_format_indent_increase_white_24dp"
-                android:title="@string/format_code" />
-
-
-        </menu>
-    </item>
-
+        android:id="@+id/action_new_class"
+        android:icon="@drawable/ic_fiber_new_white_24dp"
+        android:title="@string/new_class" />
     <item
-        android:id="@+id/action_more_feature"
-        android:icon="@drawable/ic_more_vert_white_24dp"
-        android:title="@string/more_feature"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/action_new_file"
+        android:icon="@drawable/ic_fiber_new_white_24dp"
+        android:title="@string/new_file" />
+    <item
+        android:id="@+id/action_open_java_project"
+        android:icon="@drawable/ic_folder_open_white_24dp"
+        android:title="@string/open_java_project" />
+    <item
+        android:id="@+id/action_open_android_project"
+        android:icon="@drawable/ic_folder_open_white_24dp"
+        android:title="@string/open_android_project" />
+
 
 </menu>

@@ -16,7 +16,6 @@
 
 package com.duy.ide.java.editor.code;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -24,17 +23,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
+import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
@@ -45,13 +42,12 @@ import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.R;
 import com.duy.ide.core.IdeActivity;
-import com.duy.ide.java.EditPageContract;
 import com.duy.ide.java.EditorControl;
-import com.duy.ide.java.PagePresenter;
 import com.duy.ide.java.file.FileManager;
 import com.duy.ide.java.file.FileUtils;
 import com.duy.projectview.ProjectFileContract;
 import com.duy.projectview.ProjectFilePresenter;
+import com.duy.projectview.view.dialog.DialogManager;
 import com.duy.projectview.view.dialog.DialogNewAndroidProject;
 import com.duy.projectview.view.dialog.DialogNewAndroidResource;
 import com.duy.projectview.view.dialog.DialogNewClass;
@@ -60,7 +56,7 @@ import com.duy.projectview.view.dialog.DialogNewJavaProject;
 import com.duy.projectview.view.dialog.DialogSelectType;
 import com.duy.projectview.view.fragments.FolderStructureFragment;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.jecelyin.editor.v2.editor.IEditorDelegate;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,9 +68,7 @@ import static com.duy.projectview.ProjectFileContract.FileActionListener;
  * Created by Duy on 09-Mar-17.
  */
 public abstract class ProjectManagerActivity extends IdeActivity
-        implements
-        EditorControl,
-        FileActionListener,
+        implements EditorControl, FileActionListener,
         DialogNewJavaProject.OnCreateProjectListener,
         DialogSelectType.OnFileTypeSelectListener {
     private static final String TAG = "BaseEditorActivity";
@@ -86,12 +80,13 @@ public abstract class ProjectManagerActivity extends IdeActivity
 
     protected final Handler mHandler = new Handler();
 
-    protected FileManager mFileManager;
-    protected SlidingUpPanelLayout mContainerOutput;
     protected JavaProject mProject;
-    protected ProjectFileContract.Presenter mFilePresenter;
-    protected PagePresenter mPagePresenter;
 
+    //    protected FileManager mFileManager;
+//    protected SlidingUpPanelLayout mContainerOutput;
+    protected ProjectFileContract.Presenter mFilePresenter;
+    //    protected PagePresenter mPagePresenter;
+    private File mLastSelectedDir = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,23 +94,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
         if (mProject == null) {
             this.mProject = JavaProjectManager.getLastProject(this);
         }
-        bindView();
         setupToolbar();
-//        FragmentManager fm = getSupportFragmentManager();
-
-//        List<PageDescriptor> pageDescriptors = new ArrayList<>();
-//        pageDescriptors.add(new SimplePageDescriptor(MessageFragment.TAG, "Message"));
-//        pageDescriptors.add(new SimplePageDescriptor(DiagnosticFragment.TAG, "Diagnostic"));
-//        BottomPageAdapter bottomAdapter = new BottomPageAdapter(fm, pageDescriptors);
-//
-//        mBottomPage = findViewById(R.id.bottom_page);
-//        mBottomPage.setAdapter(bottomAdapter);
-//        mBottomPage.setOffscreenPageLimit(bottomAdapter.getCount());
-
-//        TabLayout bottomTab = findViewById(R.id.bottom_tab);
-//        bottomTab.setupWithViewPager(mBottomPage);
-//
-        //create project if need
         createProjectIfNeed();
     }
 
@@ -146,12 +125,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
 
     }
 
-
-    protected void bindView() {
-        mFileManager = new FileManager(this);
-        mContainerOutput = findViewById(R.id.sliding_layout);
-    }
-
     public void setupToolbar() {
 //        if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {
 //            ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
@@ -162,32 +135,13 @@ public abstract class ProjectManagerActivity extends IdeActivity
 //        }
     }
 
-    /**
-     * remove a page in <code>position</code>
-     */
-    protected void removePage(int position) {
-        mPagePresenter.removePage(position);
-    }
-
-    /**
-     * Add new page for editor
-     * Check if not in list file, add it to tab and select tab of file
-     *
-     * @param file - file need load
-     */
-    protected void addNewPageEditor(@NonNull File file) {
-        mPagePresenter.addPage(file, true);
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
-        mPagePresenter.pause();
         if (mProject != null) {
             JavaProjectManager.saveProject(this, mProject);
         }
     }
-
 
     /**
      * delete a file
@@ -204,8 +158,16 @@ public abstract class ProjectManagerActivity extends IdeActivity
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mPagePresenter.removePage(file.getPath());
-                boolean success = mFileManager.deleteFile(file);
+                Pair<Integer, IEditorDelegate> position = mTabManager.getEditorDelegate(file);
+                if (position != null) {
+                    mTabManager.closeTab(position.first);
+                }
+                boolean success = true;
+                try {
+                    file.delete();
+                } catch (Exception e) {
+                    success = false;
+                }
                 if (success) {
                     callback.onSuccess(null);
                     Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
@@ -238,37 +200,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
         return null;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        closeKeyBoard();
-        mFileManager.destroy();
-    }
-
-    // closes the soft keyboard
-    protected void closeKeyBoard() throws NullPointerException {
-        // Central system API to the overall input method framework (IMF) architecture
-        InputMethodManager inputManager =
-                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        View currentFocus = getCurrentFocus();
-        if (currentFocus != null) {
-            // Base interface for a remotable object
-            IBinder windowToken = currentFocus.getWindowToken();
-
-            // Hide type
-            int hideType = InputMethodManager.HIDE_NOT_ALWAYS;
-
-            // Hide the KeyBoard
-            inputManager.hideSoftInputFromWindow(windowToken, hideType);
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
     public void openDrawer(int gravity) {
         try {
             mDrawerLayout.openDrawer(gravity);
@@ -287,19 +218,14 @@ public abstract class ProjectManagerActivity extends IdeActivity
 
         //remove all edit page
         // TODO: 09-Jun-18 close last project
-//        while (mPageAdapter.getCount() > 0) {
-//            removePage(0);
-//            getTabManager().newTab()
-//        }
+        mTabManager.closeAllTab();
 
         //show file structure of project
         mFilePresenter.show(projectFile, true);
-//        mBottomPage.setCurrentItem(0);
-        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        mDiagnosticPresenter.hidePanel();
         mDiagnosticPresenter.clear();
 
         openDrawer(GravityCompat.START);
-
         startAutoCompleteService();
     }
 
@@ -315,7 +241,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
     public void onFileClick(@NonNull File file, Callback callBack) {
         if (FileUtils.canEdit(file)) {
             //save current file
-            addNewPageEditor(file);
+            openFile(file.getPath());
             //close drawer
             closeDrawers();
         } else {
@@ -346,32 +272,36 @@ public abstract class ProjectManagerActivity extends IdeActivity
     }
 
     @Override
-    public boolean clickCreateNewFile(File file, Callback callBack) {
-        showDialogSelectFileType(file);
+    public boolean onClickNewButton(File file, Callback callback) {
+        showDialogNew(file);
         return false;
     }
 
     @Override
     public void clickNewModule() {
         if (mProject != null) {
-//            showDialogSelectFileType(mPageAdapter);
         } else {
             Toast.makeText(this, "Please create new project", Toast.LENGTH_SHORT).show();
         }
     }
 
-
     @Override
-    public void onFileTypeSelected(File currentDir, String type) {
+    public void onTypeSelected(File currentDir, String type) {
+        mLastSelectedDir = currentDir;
+
         if (type.equals(getString(R.string.java_file))) {
             showDialogCreateNewClass(currentDir);
+
         } else if (type.equals(getString(R.string.xml_file))) {
             showDialogCreateNewXml(currentDir);
+
         } else if (type.equals(getString(R.string.select_from_storage))) {
             String path = Environment.getExternalStorageDirectory().getPath();
             FileExplorerActivity.startPickFileActivity(this, path, path, REQUEST_PICK_FILE);
+
         } else if (type.equals(getString(R.string.create_new_folder))) {
             showDialogCreateNewFolder(currentDir);
+
         }
     }
 
@@ -385,20 +315,21 @@ public abstract class ProjectManagerActivity extends IdeActivity
                     if (file == null) {
                         return;
                     }
-                    File parent = new File(file).getParentFile();
-//                    DialogManager.showDialogCopyFile(file, this, new Callback() {
-//                        @Override
-//                        public void onSuccess(File file) {
-//                            mFilePresenter.refresh(mProject);
-//                        }
-//
-//                        @Override
-//                        public void onFailed(@Nullable Exception e) {
-//                            if (e != null) {
-//                                Toast.makeText(ProjectManagerActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//                    });
+                    DialogManager.showDialogCopyFile(file, mLastSelectedDir, this,
+                            new Callback() {
+                                @Override
+                                public void onSuccess(File file) {
+                                    mFilePresenter.refresh(mProject);
+                                }
+
+                                @Override
+                                public void onFailed(@Nullable Exception e) {
+                                    if (e != null) {
+                                        Toast.makeText(ProjectManagerActivity.this, e.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                 }
                 break;
             case REQUEST_OPEN_JAVA_PROJECT: {
@@ -455,16 +386,16 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
     }
 
-    public void showDialogCreateNewClass(@Nullable File file) {
-        if (file == null) {
-            EditPageContract.SourceView currentPage = mPagePresenter.getCurrentPage();
-            if (currentPage != null) {
-                file = currentPage.getCurrentFile().getParentFile();
+    public void showDialogCreateNewClass(@Nullable File folder) {
+        if (folder == null) {
+            File file = getCurrentFile();
+            if (file != null) {
+                folder = file.getParentFile();
             }
         }
-        if (mProject != null && file != null) {
+        if (mProject != null && folder != null) {
             DialogNewClass dialogNewClass;
-            dialogNewClass = DialogNewClass.newInstance(mProject, null, file);
+            dialogNewClass = DialogNewClass.newInstance(mProject, null, folder);
             dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
         } else {
             toast("Can not create new class");
@@ -492,7 +423,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
         dialogNewProject.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
     }
 
-    public void showDialogSelectFileType(@Nullable File parent) {
+    public void showDialogNew(@Nullable File parent) {
         DialogSelectType dialogSelectType = DialogSelectType.newInstance(parent);
         dialogSelectType.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
     }

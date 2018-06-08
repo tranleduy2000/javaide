@@ -37,7 +37,7 @@ public class ProjectFileContract {
 
         boolean clickRemoveFile(File file, Callback callBack);
 
-        boolean clickCreateNewFile(File file, Callback callBack);
+        boolean onClickNewButton(File file, Callback callBack);
 
         void clickNewModule();
     }

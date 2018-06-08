@@ -72,13 +72,13 @@ public class DialogSelectType extends AppCompatDialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (listener != null) listener.onFileTypeSelected(file, fileTypes[position]);
+                if (listener != null) listener.onTypeSelected(file, fileTypes[position]);
                 dismiss();
             }
         });
     }
 
     public interface OnFileTypeSelectListener {
-        void onFileTypeSelected(File parent, String ext);
+        void onTypeSelected(File parent, String ext);
     }
 }

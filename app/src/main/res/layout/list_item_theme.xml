@@ -54,7 +54,7 @@
         </RelativeLayout>
 
 
-        <com.duy.ide.editor.code.view.EditorView
+        <com.duy.ide.java.editor.code.view.EditorView
             android:id="@+id/editor_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

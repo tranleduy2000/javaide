@@ -20,9 +20,9 @@ import android.widget.Toast;
 import com.duy.android.compiler.project.ClassFile;
 import com.duy.android.compiler.project.ClassUtil;
 import com.duy.android.compiler.project.JavaProject;
-import com.duy.ide.CompileManager;
+import com.duy.ide.java.CompileManager;
 import com.duy.ide.R;
-import com.duy.ide.file.FileManager;
+import com.duy.ide.java.file.FileManager;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 
 import java.io.File;

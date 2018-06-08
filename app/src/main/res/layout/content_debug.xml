@@ -26,7 +26,7 @@
     app:minSize="100dp"
     app:topContent="@+id/vertical_scroll">
 
-    <com.duy.ide.view.LockableScrollView
+    <com.duy.ide.java.view.LockableScrollView
         android:id="@+id/vertical_scroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:fillViewport="true">
 
-            <com.duy.ide.editor.code.view.HighlightEditor
+            <com.duy.ide.java.editor.code.view.HighlightEditor
                 android:id="@+id/code_editor"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -50,10 +50,10 @@
                 android:scrollbarStyle="insideInset"
                 android:scrollbars="vertical">
 
-            </com.duy.ide.editor.code.view.HighlightEditor>
+            </com.duy.ide.java.editor.code.view.HighlightEditor>
         </HorizontalScrollView>
 
-    </com.duy.ide.view.LockableScrollView>
+    </com.duy.ide.java.view.LockableScrollView>
 
     <ImageView
         android:id="@+id/drag_view_horizontal"

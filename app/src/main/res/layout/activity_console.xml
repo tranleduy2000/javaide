@@ -41,7 +41,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.duy.ide.view.exec_screen.console.ConsoleView
+        <com.duy.ide.java.view.exec_screen.console.ConsoleView
             android:id="@+id/console"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

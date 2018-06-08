@@ -20,7 +20,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.duy.ide.R;
-import com.duy.ide.activities.BaseActivity;
+import com.duy.ide.java.activities.BaseActivity;
 
 /**
  * Created by Duy on 27-Feb-17.

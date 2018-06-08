@@ -20,8 +20,8 @@ import android.content.Context;
 import android.graphics.Typeface;
 
 import com.duy.ide.R;
-import com.duy.ide.file.FileManager;
-import com.duy.ide.utils.DonateUtils;
+import com.duy.ide.java.file.FileManager;
+import com.duy.ide.java.utils.DonateUtils;
 
 import java.io.File;
 import java.io.IOException;

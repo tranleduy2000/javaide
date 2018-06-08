@@ -26,7 +26,7 @@ import com.duy.ide.R;
 import com.duy.ide.themefont.themes.database.CodeTheme;
 import com.duy.ide.themefont.themes.database.CodeThemeUtils;
 import com.duy.ide.themefont.themes.database.ThemeDatabase;
-import com.duy.ide.utils.DonateUtils;
+import com.duy.ide.java.utils.DonateUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

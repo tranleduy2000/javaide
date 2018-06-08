@@ -1,6 +1,6 @@
 package com.duy.file;
 
-import com.duy.ide.utils.SecurityUtil;
+import com.duy.ide.java.utils.SecurityUtil;
 
 import junit.framework.TestCase;
 

@@ -15,9 +15,9 @@ import android.widget.Toast;
 
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
-import com.duy.ide.DLog;
+import com.duy.ide.java.DLog;
 import com.duy.ide.R;
-import com.duy.ide.file.FileManager;
+import com.duy.ide.java.file.FileManager;
 import com.duy.ide.javaide.autocomplete.Patterns;
 
 import java.io.File;

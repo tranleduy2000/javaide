@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 
 import com.duy.ide.R;
-import com.duy.ide.activities.BaseActivity;
+import com.duy.ide.java.activities.BaseActivity;
 
 public class CompilerSettingActivity extends BaseActivity {
     @Override

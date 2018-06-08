@@ -23,7 +23,7 @@
         android:largeHeap="true"
         android:theme="@style/AppThemeDark.NoActionBar">
 
-        <activity android:name="com.duy.ide.activities.SplashScreenActivity">
+        <activity android:name=".java.activities.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -31,18 +31,18 @@
         </activity>
 
         <activity android:name=".javaide.sample.activities.JavaSampleActivity" />
-        <activity android:name=".activities.DonateActivity" />
+        <activity android:name=".java.activities.DonateActivity" />
         <activity
             android:name=".javaide.run.activities.ExecuteActivity"
             android:configChanges="orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="stateAlwaysVisible" />
 
         <activity
-            android:name="com.duy.ide.editor.code.MainActivity"
+            android:name="com.duy.ide.java.editor.code.MainActivity"
             android:launchMode="singleTask" />
-        <activity android:name="com.duy.ide.setting.SettingsActivity" />
+        <activity android:name=".java.setting.SettingsActivity" />
         <activity
-            android:name="com.duy.ide.activities.InstallActivity"
+            android:name=".java.activities.InstallActivity"
             android:configChanges="orientation|screenLayout" />
 
 

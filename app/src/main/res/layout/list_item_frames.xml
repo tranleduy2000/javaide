@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_list_white_24dp" />
 
-    <com.duy.ide.view.MonospaceTextView
+    <com.duy.ide.java.view.MonospaceTextView
         android:id="@+id/txt_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

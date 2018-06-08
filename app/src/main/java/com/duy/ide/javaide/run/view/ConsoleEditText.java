@@ -19,7 +19,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 
-import com.duy.ide.setting.AppSetting;
+import com.duy.ide.java.setting.AppSetting;
 import com.duy.ide.javaide.run.utils.IntegerQueue;
 import com.spartacusrex.spartacuside.util.ByteQueue;
 

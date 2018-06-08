@@ -40,7 +40,7 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.duy.ide.editor.code.view.HighlightEditor
+        <com.duy.ide.java.editor.code.view.HighlightEditor
             android:id="@+id/editor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

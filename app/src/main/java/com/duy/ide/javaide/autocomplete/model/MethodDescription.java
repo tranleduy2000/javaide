@@ -3,7 +3,7 @@ package com.duy.ide.javaide.autocomplete.model;
 import android.support.annotation.NonNull;
 
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;
-import com.duy.ide.editor.code.view.IndentEditText;
+import com.duy.ide.java.editor.code.view.IndentEditText;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

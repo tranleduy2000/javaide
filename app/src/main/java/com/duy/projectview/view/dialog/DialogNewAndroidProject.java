@@ -2,11 +2,9 @@ package com.duy.projectview.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +18,7 @@ import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.AndroidProjectManager;
 import com.duy.ide.R;
-import com.duy.ide.file.FileManager;
 import com.duy.ide.javaide.autocomplete.Patterns;
-import com.duy.ide.javaide.sample.AssetUtil;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by Duy on 16-Jul-17.

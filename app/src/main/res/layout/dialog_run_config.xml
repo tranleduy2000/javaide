@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp">
 
-        <com.duy.ide.view.LatinEditText
+        <com.duy.ide.java.view.LatinEditText
             android:id="@+id/edit_package_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.duy.ide.view.LatinEditText
+        <com.duy.ide.java.view.LatinEditText
             android:id="@+id/edit_arg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

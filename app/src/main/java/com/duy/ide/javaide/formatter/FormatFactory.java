@@ -3,7 +3,7 @@ package com.duy.ide.javaide.formatter;
 import android.content.Context;
 
 import com.android.annotations.Nullable;
-import com.duy.ide.setting.AppSetting;
+import com.duy.ide.java.setting.AppSetting;
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;
 import com.google.googlejavaformat.java.JavaFormatterOptions;

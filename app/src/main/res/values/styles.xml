@@ -15,20 +15,18 @@
 
 <resources>
 
-    <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
+    <style name="AppThemeDark" parent="DarkTheme">
         <item name="colorPrimary">@color/dark.color_primary</item>
         <item name="colorPrimaryDark">@color/dark.color_primary_dark</item>
         <item name="colorAccent">@color/dark.color_accent</item>
         <item name="android:windowBackground">@color/dark.color_background</item>
     </style>
 
-    <style name="a" parent="android:Theme.DeviceDefault" />
+    <style name="AppThemeLight" parent="LightTheme">
 
-    <style name="AppThemeLight" parent="Theme.AppCompat.Light.DarkActionBar">
-
-        <item name="colorPrimary">@color/light.color_primary</item>
+        <item name="colorPrimary">@color/lightColorPrimary</item>
         <item name="colorPrimaryDark">@color/light.color_primary_dark</item>
-        <item name="colorAccent">@color/light.color_accent</item>
+        <item name="colorAccent">@color/lightColorAccent</item>
         <item name="android:windowBackground">@color/light.color_background</item>
 
     </style>
@@ -44,32 +42,15 @@
         <item name="windowActionBar">false</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="AppTheme.AppBarOverlay.Dark" parent="ThemeOverlay.AppCompat" />
-
-    <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="AppTheme.PopupOverlay.Dark" parent="ThemeOverlay.AppCompat" />
-
-    <style name="AppTheme.PopupOverlay.Light" parent="ThemeOverlay.AppCompat.Light" />
-
-
     <style name="TreeNodeStyleCustom">
         <item name="android:paddingLeft">12dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <!--<item name="android:showDividers">middle</item>-->
-        <!--<item name="android:divider">@android:drawable/divider_horizontal_bright</item>-->
     </style>
 
     <style name="TreeParentStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <!--<item name="android:showDividers">middle</item>-->
-        <!--<item name="android:divider">@android:drawable/divider_horizontal_bright</item>-->
     </style>
 
 </resources>

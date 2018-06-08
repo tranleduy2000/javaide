@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,4 +54,8 @@ public abstract class IncrementalTask extends BaseTask {
      * Actual task action. This is called when a full run is needed, which is always the case if
      */
     protected abstract void doFullTaskAction() throws IOException;
+
+    public void taskAction(IncrementalTaskInputs inputs) {
+
+    }
 }

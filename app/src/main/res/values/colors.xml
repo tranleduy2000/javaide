@@ -31,8 +31,8 @@
     <color name="dark.color_file_java">#1e88e5</color>
 
     <color name="light.color_primary_dark">#283593</color>
-    <color name="light.color_primary">#3949ab</color>
-    <color name="light.color_accent">#d50000</color>
+    <color name="lightColorPrimary">#3949ab</color>
+    <color name="lightColorAccent">#d50000</color>
     <color name="light.color_background">#e8e8e8</color>
 
 </resources>

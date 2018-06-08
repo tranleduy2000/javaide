@@ -54,6 +54,7 @@ import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.AndroidProjectManager;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
+import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.EditPageContract;
 import com.duy.ide.EditorControl;
 import com.duy.ide.PagePresenter;
@@ -69,7 +70,6 @@ import com.duy.ide.file.FileUtils;
 import com.duy.ide.setting.AppSetting;
 import com.duy.ide.view.SymbolListView;
 import com.duy.projectview.ProjectFilePresenter;
-import com.duy.projectview.view.dialog.DialogManager;
 import com.duy.projectview.view.dialog.DialogNewAndroidProject;
 import com.duy.projectview.view.dialog.DialogNewAndroidResource;
 import com.duy.projectview.view.dialog.DialogNewClass;
@@ -77,7 +77,6 @@ import com.duy.projectview.view.dialog.DialogNewFolder;
 import com.duy.projectview.view.dialog.DialogNewJavaProject;
 import com.duy.projectview.view.dialog.DialogSelectType;
 import com.duy.projectview.view.fragments.FolderStructureFragment;
-import com.jecelyin.android.file_explorer.FileExplorerActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -525,16 +524,16 @@ public abstract class ProjectManagerActivity extends BaseActivity
     }
 
     @Override
-    public void onFileTypeSelected(File parent, String type) {
+    public void onFileTypeSelected(File currentDir, String type) {
         if (type.equals(getString(R.string.java_file))) {
-            showDialogCreateNewClass(parent);
+            showDialogCreateNewClass(currentDir);
         } else if (type.equals(getString(R.string.xml_file))) {
-            showDialogCreateNewXml(parent);
-        } else if (type.equals(getString(R.string.from_storage))) {
+            showDialogCreateNewXml(currentDir);
+        } else if (type.equals(getString(R.string.select_from_storage))) {
             String path = Environment.getExternalStorageDirectory().getPath();
-            FileExplorerActivity.startPickFileActivity(this, path, REQUEST_PICK_FILE, parent);
-        } else if (type.equals(getString(R.string.new_folder))) {
-            showDialogCreateNewFolder(parent);
+            FileExplorerActivity.startPickFileActivity(this, path, path, REQUEST_PICK_FILE);
+        } else if (type.equals(getString(R.string.create_new_folder))) {
+            showDialogCreateNewFolder(currentDir);
         }
     }
 
@@ -559,21 +558,24 @@ public abstract class ProjectManagerActivity extends BaseActivity
         switch (requestCode) {
             case REQUEST_PICK_FILE:
                 if (resultCode == RESULT_OK) {
-                    String selectedFile = FileExplorerActivity.getFile(data);
-                    File parentFile = FileExplorerActivity.getParentFile(data);
-                    DialogManager.showDialogCopyFile(selectedFile, parentFile, this, new Callback() {
-                        @Override
-                        public void onSuccess(File file) {
-                            mFilePresenter.refresh(mProject);
-                        }
-
-                        @Override
-                        public void onFailed(@Nullable Exception e) {
-                            if (e != null) {
-                                Toast.makeText(ProjectManagerActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                    String file = FileExplorerActivity.getFile(data);
+                    if (file == null) {
+                        return;
+                    }
+                    File parent = new File(file).getParentFile();
+//                    DialogManager.showDialogCopyFile(file, this, new Callback() {
+//                        @Override
+//                        public void onSuccess(File file) {
+//                            mFilePresenter.refresh(mProject);
+//                        }
+//
+//                        @Override
+//                        public void onFailed(@Nullable Exception e) {
+//                            if (e != null) {
+//                                Toast.makeText(ProjectManagerActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
                 }
                 break;
             case REQUEST_OPEN_JAVA_PROJECT: {

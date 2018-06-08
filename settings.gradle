@@ -1,4 +1,4 @@
-include ':app', ':treeview', ':androidlogcat', ':fileexplorer', ':common', ':styles'
+include ':app', ':treeview', ':androidlogcat', ':common', ':styles'
 include ':bouncycastle', ':jdk-1_7', ':dx'
 
 include ':aosp:annotations'

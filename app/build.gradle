@@ -81,9 +81,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':treeview')
-    implementation project(':fileexplorer')
     implementation project(':lib-android-compiler')
     implementation project(':lib-google-java-format')
+    implementation project(':lib-n-ide-release')
     implementation project(':androidlogcat')
 
     //android support

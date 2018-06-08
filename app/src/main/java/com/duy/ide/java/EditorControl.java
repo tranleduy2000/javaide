@@ -21,8 +21,6 @@ import android.view.View;
 public interface EditorControl {
     void saveAs();
 
-    void findAndReplace();
-
     void saveCurrentFile();
 
     void saveAllFile();

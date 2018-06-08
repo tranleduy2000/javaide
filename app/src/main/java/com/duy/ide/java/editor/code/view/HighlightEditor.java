@@ -17,7 +17,6 @@
 package com.duy.ide.java.editor.code.view;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -38,7 +37,6 @@ import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -92,10 +90,8 @@ public class HighlightEditor extends CodeSuggestsEditText
     private boolean autoCompile = false;
     private CodeTheme codeTheme = new CodeTheme(true);
     private Context mContext;
-    private boolean canEdit = true;
     @Nullable
     private ScrollView verticalScroll;
-    private int lastPinLine = -1;
     private LineUtils lineUtils;
     private boolean[] isGoodLineArray;
     private int[] realLines;
@@ -110,7 +106,6 @@ public class HighlightEditor extends CodeSuggestsEditText
      * The change listener.
      */
     private EditTextChangeListener mChangeListener;
-    private int numberWidth = 0;
     @Nullable
     private Highlighter mHighlighter;
     private final Runnable colorRunnable_duringEditing =
@@ -160,22 +155,6 @@ public class HighlightEditor extends CodeSuggestsEditText
         refresh();
     }
 
-    public boolean isAutoCompile() {
-        return autoCompile;
-    }
-
-    public void setAutoCompile(boolean autoCompile) {
-        this.autoCompile = autoCompile;
-    }
-
-    public boolean isCanEdit() {
-        return canEdit;
-    }
-
-    public void setCanEdit(boolean canEdit) {
-        this.canEdit = canEdit;
-    }
-
     private void setup(Context context) {
         setSaveEnabled(false);
         this.mContext = context;
@@ -207,10 +186,6 @@ public class HighlightEditor extends CodeSuggestsEditText
         }
     }
 
-    public void setLineError(@NonNull LineInfo lineError) {
-        this.lineError = lineError;
-    }
-
     public void computeScroll() {
 
         if (mTedScroller != null) {
@@ -223,7 +198,6 @@ public class HighlightEditor extends CodeSuggestsEditText
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-
         super.onTouchEvent(event);
         if (mGestureDetector != null) {
             return mGestureDetector.onTouchEvent(event);
@@ -347,10 +321,6 @@ public class HighlightEditor extends CodeSuggestsEditText
         setCodeTheme(theme);
 
         int style = CodeThemeUtils.getCodeTheme(mContext, "");
-        TypedArray typedArray = mContext.obtainStyledAttributes(style,
-                R.styleable.CodeTheme);
-        this.canEdit = typedArray.getBoolean(R.styleable.CodeTheme_can_edit, true);
-        typedArray.recycle();
 
         setTypeface(mEditorSetting.getEditorFont());
         setHorizontallyScrolling(!mEditorSetting.isWrapText());
@@ -402,7 +372,7 @@ public class HighlightEditor extends CodeSuggestsEditText
 
         Rect bounds = new Rect();
         mPaintNumbers.getTextBounds("0", 0, 1, bounds);
-        numberWidth = bounds.width();
+        int numberWidth = bounds.width();
         result = (result * numberWidth) + numberWidth + mPadding;
         return result;
     }
@@ -479,122 +449,9 @@ public class HighlightEditor extends CodeSuggestsEditText
         return -1;
     }
 
-    private void highlightLineError(Editable e) {
-        try {
-//
-        } catch (Exception ignored) {
-        }
-    }
-
-    public void replaceAll(String what, String replace, boolean regex, boolean matchCase) {
-        Pattern pattern;
-        if (regex) {
-            if (matchCase) {
-                pattern = Pattern.compile(what);
-            } else {
-                pattern = Pattern.compile(what, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-            }
-        } else {
-            if (matchCase) {
-                pattern = Pattern.compile(Pattern.quote(what));
-            } else {
-                pattern = Pattern.compile(Pattern.quote(what), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-            }
-        }
-        setText(getText().toString().replaceAll(pattern.toString(), replace));
-    }
-
-    /**
-     * move cursor to lineInfo
-     *
-     * @param virtualLine - lineInfo in editor, start at 0
-     */
-    public void goToLine(int virtualLine) {
-        Layout layout = getLayout();
-        virtualLine = Math.min(virtualLine, getLineCount() - 1);
-        virtualLine = Math.max(0, virtualLine);
-        if (layout != null) {
-            int index = layout.getLineStart(virtualLine);
-            setSelection(index);
-        }
-    }
-
-    /**
-     * @param line   - current line
-     * @param column - column of line
-     * @return Position (in pixels) for edittext at line and column
-     */
-    public Point getDebugPosition(int line, int column, int gravity) {
-        Layout layout = getLayout();
-        if (layout != null) {
-            int pos = layout.getLineStart(line) + column;
-
-            int baseline = layout.getLineBaseline(line);
-            int ascent = layout.getLineAscent(line);
-
-            int offsetHorizontal = (int) layout.getPrimaryHorizontal(pos) + mLinePadding; //x
-
-            float y;
-            int offsetVertical = 0;
-
-            if (gravity == Gravity.BOTTOM) {
-                y = baseline + ascent;
-                if (verticalScroll != null) {
-                    offsetVertical = (int) ((y + mCharHeight) - verticalScroll.getScrollY());
-                } else {
-                    offsetVertical = (int) ((y + mCharHeight) - getScrollY());
-                }
-                return new Point(offsetHorizontal, offsetVertical);
-            } else if (gravity == Gravity.TOP) {
-                y = layout.getLineTop(line);
-                if (verticalScroll != null) {
-                    offsetVertical = (int) (y - verticalScroll.getScrollY());
-                } else {
-                    offsetVertical = (int) (y - getScrollY());
-                }
-                return new Point(offsetHorizontal, offsetVertical);
-            }
-
-            return new Point(offsetHorizontal, offsetVertical);
-        }
-        return new Point();
-    }
-
     @Override
     public void onPopupChangePosition() {
-        try {
-            Layout layout = getLayout();
-            if (layout != null) {
-                int pos = getSelectionStart();
-                int line = layout.getLineForOffset(pos);
-                int baseline = layout.getLineBaseline(line);
-                int ascent = layout.getLineAscent(line);
 
-                float x = layout.getPrimaryHorizontal(pos);
-                float y = baseline + ascent;
-
-                int offsetHorizontal = (int) x + mLinePadding;
-                setDropDownHorizontalOffset(offsetHorizontal);
-
-                int heightVisible = getHeightVisible();
-                int offsetVertical = 0;
-                if (verticalScroll != null) {
-                    offsetVertical = (int) ((y + mCharHeight) - verticalScroll.getScrollY());
-                } else {
-                    offsetVertical = (int) ((y + mCharHeight) - getScrollY());
-                }
-
-                int tmp = offsetVertical + getDropDownHeight() + mCharHeight;
-                if (tmp < heightVisible) {
-                    tmp = offsetVertical + mCharHeight / 2;
-                    setDropDownVerticalOffset(tmp);
-                } else {
-                    tmp = offsetVertical - getDropDownHeight() - mCharHeight;
-                    setDropDownVerticalOffset(tmp);
-                }
-            }
-        } catch (Exception ignored) {
-        }
     }
 
     public void setVerticalScroll(@Nullable ScrollView verticalScroll) {

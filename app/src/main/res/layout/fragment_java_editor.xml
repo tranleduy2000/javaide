@@ -13,35 +13,20 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<com.duy.ide.java.view.LockableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/vertical_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:overScrollMode="always">
 
-    <!--    <com.duy.frontend.view.LockableHorizontalScrollView
-            android:id="@+id/horizontal_scroll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true"
-            android:overScrollMode="always">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">-->
-
     <com.duy.ide.java.editor.code.view.EditorView
         android:id="@+id/code_editor"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:dropDownAnchor="@+id/toolbar"
         android:gravity="top|start"
         android:hint="@string/write_code_here"
         android:imeOptions="flagNoExtractUi"
         android:inputType="textMultiLine|textNoSuggestions" />
-    <!-- </LinearLayout>
-
- </com.duy.frontend.view.LockableHorizontalScrollView>
--->
-</com.duy.ide.java.view.LockableScrollView>
+</FrameLayout>

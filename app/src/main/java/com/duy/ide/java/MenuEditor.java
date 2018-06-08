@@ -72,9 +72,6 @@ public class MenuEditor {
             case R.id.action_find:
                 activity.showDialogFind();
                 break;
-            case R.id.action_find_and_replace:
-                if (listener != null) listener.findAndReplace();
-                break;
             case R.id.action_run:
                 builder.runProject();
                 break;

@@ -34,8 +34,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -49,21 +47,20 @@ import com.duy.android.compiler.project.FileCollection;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.android.compiler.utils.ProjectUtils;
+import com.duy.ide.R;
 import com.duy.ide.java.Builder;
 import com.duy.ide.java.MenuEditor;
-import com.duy.ide.R;
 import com.duy.ide.java.diagnostic.DiagnosticFragment;
 import com.duy.ide.java.editor.code.view.EditorView;
 import com.duy.ide.java.editor.code.view.IndentEditText;
-import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
+import com.duy.ide.java.utils.RootUtils;
 import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.autocomplete.model.Description;
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
-import com.duy.ide.java.setting.AppSetting;
-import com.duy.ide.java.utils.RootUtils;
+import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -171,55 +168,6 @@ public class MainActivity extends ProjectManagerActivity implements
         boolean r = mMenuEditor.onCreateOptionsMenu(menu);
         mActionRun = menu.findItem(R.id.action_run);
         return r;
-    }
-
-    /**
-     * create dialog find and replace
-     */
-    @Override
-    public void findAndReplace() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setView(R.layout.dialog_find_and_replace);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-
-        final CheckBox ckbRegex = alertDialog.findViewById(R.id.ckb_regex);
-        final CheckBox ckbMatch = alertDialog.findViewById(R.id.ckb_match_key);
-        final EditText editFind = alertDialog.findViewById(R.id.txt_find);
-        final EditText editReplace = alertDialog.findViewById(R.id.edit_replace);
-        if (editFind != null) {
-            editFind.setText(getPreferences().getString(AppSetting.LAST_FIND));
-        }
-        View find = alertDialog.findViewById(R.id.btn_replace);
-        assert find != null;
-        assert editFind != null;
-        assert editReplace != null;
-        assert ckbRegex != null;
-        assert ckbMatch != null;
-        find.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-                if (editorFragment != null) {
-
-                    editorFragment.doFindAndReplace(
-                            editFind.getText().toString(),
-                            editReplace.getText().toString(),
-                            ckbRegex.isChecked(),
-                            ckbMatch.isChecked());
-                }
-                getPreferences().put(AppSetting.LAST_FIND, editFind.getText().toString());
-                alertDialog.dismiss();
-            }
-        });
-        View cancle = alertDialog.findViewById(R.id.btn_cancel);
-        assert cancle != null;
-        cancle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
     }
 
     @Override

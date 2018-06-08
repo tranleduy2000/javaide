@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -45,8 +46,9 @@ import java.util.ArrayList;
  * Created by Duy on 28-Feb-17.
  */
 
-public abstract class CodeSuggestsEditText extends EditActionSupportEditor
+public class CodeSuggestsEditText extends EditActionSupportEditor
         implements CodeSuggestAdapter.OnSuggestItemClickListener {
+
     protected static final String TAG = CodeSuggestsEditText.class.getSimpleName();
     public int mCharHeight = 0;
     protected EditorSetting mEditorSetting;
@@ -120,7 +122,36 @@ public abstract class CodeSuggestsEditText extends EditActionSupportEditor
         onPopupChangePosition();
     }
 
-    public abstract void onPopupChangePosition();
+    public void onPopupChangePosition() {
+        try {
+            Layout layout = getLayout();
+            if (layout != null) {
+                int pos = getSelectionStart();
+                int line = layout.getLineForOffset(pos);
+                int baseline = layout.getLineBaseline(line);
+                int ascent = layout.getLineAscent(line);
+
+                float x = layout.getPrimaryHorizontal(pos);
+                float y = baseline + ascent;
+
+                int offsetHorizontal = (int) x + getPaddingLeft();
+                setDropDownHorizontalOffset(offsetHorizontal);
+
+                int heightVisible = getHeightVisible();
+                int offsetVertical = (int) ((y + mCharHeight) - getScrollY());
+
+                int tmp = offsetVertical + getDropDownHeight() + mCharHeight;
+                if (tmp < heightVisible) {
+                    tmp = offsetVertical + mCharHeight / 2;
+                    setDropDownVerticalOffset(tmp);
+                } else {
+                    tmp = offsetVertical - getDropDownHeight() - mCharHeight;
+                    setDropDownVerticalOffset(tmp);
+                }
+            }
+        } catch (Exception ignored) {
+        }
+    }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {

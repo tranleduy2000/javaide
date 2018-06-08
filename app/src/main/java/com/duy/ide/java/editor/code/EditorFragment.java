@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +35,6 @@ import com.duy.ide.java.CompileManager;
 import com.duy.ide.java.EditPageContract;
 import com.duy.ide.java.editor.code.view.EditorView;
 import com.duy.ide.java.file.FileManager;
-import com.duy.ide.java.file.FileUtils;
-import com.duy.ide.java.view.LockableScrollView;
 import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.formatter.FormatFactory;
 
@@ -53,8 +50,6 @@ import java.io.IOException;
 public class EditorFragment extends Fragment implements EditorListener, EditPageContract.SourceView {
     private static final String TAG = "EditorFragment";
     private EditorView mCodeEditor;
-    @Nullable
-    private LockableScrollView mScrollView;
     private FileManager mFileManager;
     private Dialog dialog;
     private EditPageContract.Presenter mPresenter;
@@ -77,32 +72,15 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_editor, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_java_editor, container, false);
         mCodeEditor = view.findViewById(R.id.code_editor);
-        mScrollView = view.findViewById(R.id.vertical_scroll);
-
         String path = getArguments().getString(CompileManager.FILE_PATH);
         try {
             String code = IOUtils.toStringAndClose(new File(path));
-            mCodeEditor.setFileExt(FileUtils.ext(path));
-            mCodeEditor.setTextHighlighted(code);
+            mCodeEditor.setText(code);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        try {
-//            mCodeEditor.setEditorControl((EditorControl) getActivity());
-        } catch (Exception ignored) {
-        }
-
-        if (mScrollView != null) {
-            mCodeEditor.setVerticalScroll(mScrollView);
-            mScrollView.setScrollListener(new LockableScrollView.ScrollListener() {
-                @Override
-                public void onScroll(int x, int y) {
-                    mCodeEditor.updateTextHighlight();
-                }
-            });
         }
         return view;
     }
@@ -119,49 +97,19 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     public void onStop() {
         saveFile();
         if (mCodeEditor != null && getFilePath() != null) {
-            Log.i(TAG, "onStop: save edit history " + getFilePath());
 //            mCodeEditor.saveHistory(getFilePath());
-        } else {
-            Log.e(TAG, "can not save edit history");
         }
         super.onStop();
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-        mCodeEditor.updateFromSettings();
 //        mCodeEditor.restoreHistory(getFilePath());
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void saveAs() {
-
-    }
-
-    @Override
-    public void doFindAndReplace(@NonNull String from, @NonNull String to, boolean regex, boolean matchCase) {
-        mCodeEditor.replaceAll(from, to, regex, matchCase);
-    }
-
-    @Override
-    public void doFind(@NonNull String find, boolean regex, boolean wordOnly, boolean matchCase) {
-        mCodeEditor.find(find, regex, wordOnly, matchCase);
-    }
-
-    @Override
     public void gotoLine(int line, int col) {
-        mCodeEditor.goToLine(line);
     }
 
     @Override
@@ -211,7 +159,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     @Override
     public void goToLine(int line) {
-        mCodeEditor.goToLine(line);
+//        mCodeEditor.goToLine(line);
     }
 
     @Override
@@ -267,7 +215,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     @Nullable
     @Override
     public String getCode() {
-        return mCodeEditor != null ? mCodeEditor.getCleanText() : null;
+        return mCodeEditor != null ? mCodeEditor.getText().toString() : null;
     }
 
     @Override
@@ -280,10 +228,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     }
 
     public void refreshCodeEditor() {
-        if (mCodeEditor != null) {
-            mCodeEditor.updateFromSettings();
-            mCodeEditor.refresh();
-        }
+
     }
 
     public String getFilePath() {
@@ -337,7 +282,6 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
             super.onPostExecute(result);
             if (result != null && mCodeEditor != null) {
                 int selectionEnd = mCodeEditor.getSelectionEnd();
-                mCodeEditor.setTextHighlighted(result);
                 if (selectionEnd > 0 && selectionEnd < mCodeEditor.length()) {
                     mCodeEditor.setSelection(selectionEnd);
                 }

@@ -23,8 +23,7 @@ import android.util.AttributeSet;
  * Created by Duy on 15-Mar-17.
  */
 
-public class EditorView extends HighlightEditor {
-    private static final String TAG = EditorView.class.getSimpleName();
+public class EditorView extends CodeSuggestsEditText {
 
     public EditorView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -37,4 +36,5 @@ public class EditorView extends HighlightEditor {
     public EditorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
 }

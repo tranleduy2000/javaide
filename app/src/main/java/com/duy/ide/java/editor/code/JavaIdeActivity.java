@@ -18,13 +18,11 @@ package com.duy.ide.java.editor.code;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputType;
@@ -47,13 +45,13 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.android.compiler.utils.ProjectUtils;
 import com.duy.ide.R;
+import com.duy.ide.code.format.CodeFormatProviderImpl;
+import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.java.Builder;
 import com.duy.ide.java.MenuEditor;
 import com.duy.ide.java.diagnostic.DiagnosticFragment;
-import com.duy.ide.java.editor.code.view.EditorView;
 import com.duy.ide.java.utils.RootUtils;
 import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
-import com.duy.ide.javaide.autocomplete.model.Description;
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.ide.javaide.run.dialog.DialogRunConfig;
@@ -67,7 +65,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class JavaIdeActivity extends ProjectManagerActivity implements
-        DrawerLayout.DrawerListener,
         DialogRunConfig.OnConfigChangeListener,
         Builder {
     public static final int REQUEST_CODE_SAMPLE = 1015;
@@ -79,16 +76,28 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     private ProgressBar mCompileProgress;
     private JavaAutoCompleteProvider mAutoCompleteProvider;
 
-    private void populateAutoCompleteService(JavaAutoCompleteProvider provider) {
-        mPagePresenter.setAutoCompleteProvider(provider);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMenuEditor = new MenuEditor(this, this);
         initView();
         startAutoCompleteService();
+    }
+
+    @Override
+    protected void populateDiagnostic(@NonNull DiagnosticPresenter diagnosticPresenter) {
+        //init here, set output parser
+        // TODO: 09-Jun-18 output parser AAPT and JAVA
+    }
+
+    private void populateAutoCompleteService(JavaAutoCompleteProvider provider) {
+        mPagePresenter.setAutoCompleteProvider(provider);
+    }
+
+    @Override
+    protected CodeFormatProviderImpl getCodeFormatProvider() {
+        // TODO: 09-Jun-18 java code format
+        return super.getCodeFormatProvider();
     }
 
     protected void startAutoCompleteService() {
@@ -110,8 +119,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     }
 
     public void initView() {
-        mDrawerLayout.addDrawerListener(this);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 mDrawerLayout.closeDrawers();
@@ -162,6 +170,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         boolean r = mMenuEditor.onCreateOptionsMenu(menu);
         mActionRun = menu.findItem(R.id.action_run);
         return r;
@@ -223,7 +232,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
                     updateUIFinish();
                     Toast.makeText(JavaIdeActivity.this, R.string.build_success, Toast.LENGTH_SHORT).show();
                     mFilePresenter.refresh(mProject);
-                    mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+//                    mDiagnosticPresenter.hidePanel();
                     RootUtils.installApk(JavaIdeActivity.this, ((AndroidAppProject) mProject).getApkSigned());
                 }
 
@@ -314,67 +323,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
             editorFragment.saveFile();
-        }
-    }
-
-    public String getCode() {
-        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-        if (editorFragment != null) {
-            return editorFragment.getCode();
-        }
-        return "";
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (getPreferences().isShowListSymbol()) {
-            if (mContainerSymbol != null && mKeyList != null) {
-                mKeyList.setListener(this);
-                mContainerSymbol.setVisibility(View.VISIBLE);
-            }
-        } else {
-            if (mContainerSymbol != null) {
-                mContainerSymbol.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(@NonNull SharedPreferences sharedPreferences, @NonNull String s) {
-        if (s.equals(getString(R.string.key_show_suggest_popup))
-                || s.equals(getString(R.string.key_show_line_number))
-                || s.equals(getString(R.string.key_pref_word_wrap))) {
-            EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-            if (editorFragment != null) {
-                editorFragment.refreshCodeEditor();
-            }
-        } else if (s.equals(getString(R.string.key_show_symbol))) {
-            if (mContainerSymbol != null) {
-                mContainerSymbol.setVisibility(getPreferences().isShowListSymbol()
-                        ? View.VISIBLE : View.GONE);
-            }
-        } else if (s.equals(getString(R.string.key_show_suggest_popup))) {
-            EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-            if (editorFragment != null) {
-                EditorView editor = editorFragment.getEditor();
-                editor.setSuggestData(new ArrayList<Description>());
-            }
-        }
-        //toggle ime/no suggest mode
-        else if (s.equalsIgnoreCase(getString(R.string.key_ime_keyboard))) {
-            EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-            if (editorFragment != null) {
-                EditorView editor = editorFragment.getEditor();
-                editorFragment.refreshCodeEditor();
-            }
-        } else {
-            super.onSharedPreferenceChanged(sharedPreferences, s);
         }
     }
 
@@ -476,21 +424,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     }
 
     @Override
-    public void onDrawerSlide(View drawerView, float slideOffset) {
-
-    }
-
-    @Override
-    public void onDrawerOpened(View drawerView) {
-        closeKeyBoard();
-    }
-
-    @Override
-    public void onDrawerClosed(View drawerView) {
-
-    }
-
-    @Override
     public void runFile(String filePath) {
         saveCurrentFile();
         if (mProject == null) return;
@@ -514,24 +447,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         }
     }
 
-    @Override
-    public void onDrawerStateChanged(int newState) {
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)
-                || mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
-            if (mContainerOutput.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
-                mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                return;
-            } else {
-                mDrawerLayout.closeDrawers();
-                return;
-            }
-        }
-    }
 
     @Override
     public void onConfigChange(JavaProject projectFile) {

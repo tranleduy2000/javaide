@@ -7,8 +7,6 @@ public interface EditorListener {
 
     void saveFile();
 
-    void goToLine(int var1);
-
     void formatCode();
 
     void undo();

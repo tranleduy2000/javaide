@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.annotations.Nullable;
 import com.commonsware.cwac.pager.SimplePageDescriptor;
 import com.duy.ide.R;
 import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
@@ -33,7 +34,8 @@ public class PagePresenter implements EditPageContract.Presenter {
     private static final String TAG = "EditPresenter";
     private ViewPager mViewPager;
     private EditorPagerAdapter mPageAdapter;
-    private TabLayout mTabLayout;
+    @Nullable
+    private final  TabLayout mTabLayout = null;
     private AppSetting mPreferences;
     private FileManager mFileManager;
     private JavaIdeActivity mContext;
@@ -45,7 +47,6 @@ public class PagePresenter implements EditPageContract.Presenter {
                          FileManager fileManager) {
         this.mViewPager = mViewPager;
         this.mPageAdapter = mPageAdapter;
-        this.mTabLayout = tabLayout;
         this.mPreferences = new AppSetting(context);
         this.mFileManager = fileManager;
         this.mContext = context;

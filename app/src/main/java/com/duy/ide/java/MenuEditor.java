@@ -75,9 +75,6 @@ public class MenuEditor {
             case R.id.action_save:
                 if (listener != null) listener.saveCurrentFile();
                 break;
-            case R.id.action_goto_line:
-                if (listener != null) listener.goToLine();
-                break;
             case R.id.action_format:
                 analytics.logEvent("action_format_code", new Bundle());
                 if (listener != null) listener.formatCode();

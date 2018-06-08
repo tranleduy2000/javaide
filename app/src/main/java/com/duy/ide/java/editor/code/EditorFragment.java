@@ -157,7 +157,6 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         }
     }
 
-    @Override
     public void goToLine(int line) {
 //        mCodeEditor.goToLine(line);
     }

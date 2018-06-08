@@ -19,7 +19,6 @@ package com.duy.ide.java.editor.code;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -43,7 +41,6 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -56,10 +53,10 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.R;
+import com.duy.ide.core.IdeActivity;
 import com.duy.ide.java.EditPageContract;
 import com.duy.ide.java.EditorControl;
 import com.duy.ide.java.PagePresenter;
-import com.duy.ide.java.activities.BaseActivity;
 import com.duy.ide.java.adapters.BottomPageAdapter;
 import com.duy.ide.java.diagnostic.DiagnosticFragment;
 import com.duy.ide.java.diagnostic.DiagnosticPresenter;
@@ -67,7 +64,6 @@ import com.duy.ide.java.diagnostic.MessageFragment;
 import com.duy.ide.java.diagnostic.MessagePresenter;
 import com.duy.ide.java.file.FileManager;
 import com.duy.ide.java.file.FileUtils;
-import com.duy.ide.java.setting.AppSetting;
 import com.duy.ide.java.view.SymbolListView;
 import com.duy.projectview.ProjectFilePresenter;
 import com.duy.projectview.view.dialog.DialogNewAndroidProject;
@@ -94,7 +90,7 @@ import static com.duy.projectview.view.fragments.FolderStructureFragment.newInst
 /**
  * Created by Duy on 09-Mar-17.
  */
-public abstract class ProjectManagerActivity extends BaseActivity
+public abstract class ProjectManagerActivity extends IdeActivity
         implements SymbolListView.OnKeyListener,
         EditorControl,
         FileActionListener,
@@ -107,7 +103,6 @@ public abstract class ProjectManagerActivity extends BaseActivity
     private static final int REQUEST_OPEN_ANDROID_PROJECT = 3;
     private static final int REQUEST_PICK_FILE = 4;
 
-    protected final boolean SELECT = true;
     protected final Handler mHandler = new Handler();
 
     protected FileManager mFileManager;
@@ -119,39 +114,19 @@ public abstract class ProjectManagerActivity extends BaseActivity
     protected PagePresenter mPagePresenter;
     protected DiagnosticPresenter mDiagnosticPresenter;
     protected MessagePresenter mMessagePresenter;
-    protected AppBarLayout appBarLayout;
     protected DrawerLayout mDrawerLayout;
-    protected NavigationView navigationView;
+    protected NavigationView mNavigationView;
     protected TabLayout mTabLayout;
-    protected Toolbar toolbar;
     @Nullable
     protected View mContainerSymbol; //don't support in landscape mode
     @Nullable
     protected SymbolListView mKeyList;
     protected ViewPager mViewPager;
-    private KeyBoardEventListener mKeyBoardListener;
 
-    protected void onShowKeyboard() {
-        mTabLayout.setVisibility(View.GONE);
-        AppSetting preferences = getPreferences();
-        if (preferences.isShowListSymbol()) {
-            if (mContainerSymbol != null) {
-                mContainerSymbol.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    protected void onHideKeyboard() {
-        mTabLayout.setVisibility(View.VISIBLE);
-        if (mContainerSymbol != null) {
-            mContainerSymbol.setVisibility(View.GONE);
-        }
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         if (mProject == null) {
             this.mProject = JavaProjectManager.getLastProject(this);
         }
@@ -178,6 +153,11 @@ public abstract class ProjectManagerActivity extends BaseActivity
 
         //create project if need
         createProjectIfNeed();
+    }
+
+    @Override
+    protected int getRootLayoutId() {
+        return R.layout.activity_default_ide;
     }
 
     private void createProjectIfNeed() {
@@ -220,7 +200,6 @@ public abstract class ProjectManagerActivity extends BaseActivity
         mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), descriptors);
         mViewPager.setAdapter(mPageAdapter);
         mViewPager.setOffscreenPageLimit(mPageAdapter.getCount());
-        mTabLayout.setupWithViewPager(mViewPager);
 
         mPagePresenter = new PagePresenter((JavaIdeActivity) this, mViewPager, mPageAdapter, mTabLayout, mFileManager);
         mPagePresenter.invalidateTab();
@@ -230,7 +209,7 @@ public abstract class ProjectManagerActivity extends BaseActivity
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mKeyList = findViewById(R.id.recycler_view);
         mFileManager = new FileManager(this);
-        navigationView = findViewById(R.id.navigation_view);
+        mNavigationView = findViewById(R.id.navigation_view);
         mTabLayout = findViewById(R.id.tab_layout);
         mContainerSymbol = findViewById(R.id.container_symbol);
         mViewPager = findViewById(R.id.view_pager);
@@ -239,25 +218,20 @@ public abstract class ProjectManagerActivity extends BaseActivity
 
     public void setupToolbar() {
         //setup action bar
-        toolbar = findViewById(R.id.toolbar);
-        appBarLayout = findViewById(R.id.app_bar);
+        mToolbar = findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
         if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {
-            ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
+            ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
                     R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             // Set the drawer toggle as the DrawerListener
             mDrawerLayout.setDrawerListener(mDrawerToggle);
             mDrawerToggle.syncState();
         }
-
-        //attach listener hide/show keyboard
-        mKeyBoardListener = new KeyBoardEventListener(this);
-        mDrawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(mKeyBoardListener);
     }
 
     /**
@@ -270,12 +244,11 @@ public abstract class ProjectManagerActivity extends BaseActivity
     /**
      * Add new page for editor
      * Check if not in list file, add it to tab and select tab of file
+     *  @param file          - file need load
      *
-     * @param file          - file need load
-     * @param selectNewPage - if <code>true</code>, the tab of file will be selected when initialized
      */
-    protected void addNewPageEditor(@NonNull File file, boolean selectNewPage) {
-        mPagePresenter.addPage(file, selectNewPage);
+    protected void addNewPageEditor(@NonNull File file) {
+        mPagePresenter.addPage(file, true);
     }
 
     @Override
@@ -287,8 +260,6 @@ public abstract class ProjectManagerActivity extends BaseActivity
         }
     }
 
-
-    protected abstract String getCode();
 
     /**
      * delete a file
@@ -388,7 +359,6 @@ public abstract class ProjectManagerActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         closeKeyBoard();
-        mDrawerLayout.getViewTreeObserver().removeGlobalOnLayoutListener(mKeyBoardListener);
         mFileManager.destroy();
     }
 
@@ -454,14 +424,14 @@ public abstract class ProjectManagerActivity extends BaseActivity
     @Override
     public void onNewFileCreated(@NonNull File file) {
         mFilePresenter.refresh(mProject);
-        if (file.isFile()) addNewPageEditor(file, true);
+        if (file.isFile()) addNewPageEditor(file);
     }
 
     @Override
     public void onFileClick(@NonNull File file, Callback callBack) {
         if (FileUtils.canEdit(file)) {
             //save current file
-            addNewPageEditor(file, SELECT);
+            addNewPageEditor(file);
             //close drawer
             mDrawerLayout.closeDrawers();
         } else {
@@ -655,32 +625,4 @@ public abstract class ProjectManagerActivity extends BaseActivity
     }
 
 
-    /**
-     * Listener keyboard hide/show
-     * if the keyboard is showing, we will hide the toolbar for more space
-     */
-    private class KeyBoardEventListener implements ViewTreeObserver.OnGlobalLayoutListener {
-        ProjectManagerActivity activity;
-
-        KeyBoardEventListener(ProjectManagerActivity activityIde) {
-            this.activity = activityIde;
-        }
-
-        public void onGlobalLayout() {
-            int i = 0;
-            int navHeight = this.activity.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
-            navHeight = navHeight > 0 ? this.activity.getResources().getDimensionPixelSize(navHeight) : 0;
-            int statusBarHeight = this.activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
-            if (statusBarHeight > 0) {
-                i = this.activity.getResources().getDimensionPixelSize(statusBarHeight);
-            }
-            Rect rect = new Rect();
-            activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-            if (activity.mDrawerLayout.getRootView().getHeight() - ((navHeight + i) + rect.height()) <= 0) {
-                activity.onHideKeyboard();
-            } else {
-                activity.onShowKeyboard();
-            }
-        }
-    }
 }

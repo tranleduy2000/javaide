@@ -1,4 +1,4 @@
-package com.duy.ide.editor.uidesigner.dynamiclayoutinflator;
+package com.duy.ide.javaide.uidesigner.dynamiclayoutinflator;
 
 import android.util.DisplayMetrics;
 import android.util.Log;

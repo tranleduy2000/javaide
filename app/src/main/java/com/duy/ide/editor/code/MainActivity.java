@@ -56,7 +56,7 @@ import com.duy.ide.R;
 import com.duy.ide.diagnostic.DiagnosticFragment;
 import com.duy.ide.editor.code.view.EditorView;
 import com.duy.ide.editor.code.view.IndentEditText;
-import com.duy.ide.editor.uidesigner.inflate.DialogLayoutPreview;
+import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
 import com.duy.ide.javaide.autocomplete.AutoCompleteProvider;
 import com.duy.ide.javaide.autocomplete.model.Description;
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;

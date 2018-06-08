@@ -53,7 +53,6 @@ import java.util.Set;
 public class FileManager {
     public static final String EXTERNAL_DIR_SRC;
     public static final String EXTERNAL_DIR;
-    private static final String ANDROID_CLASSPATH = "android.jar";
 
     static {
         EXTERNAL_DIR_SRC = Environment.getExternalStorageDirectory() + "/JavaNIDE/src/";

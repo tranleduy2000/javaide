@@ -1,4 +1,4 @@
-package com.duy.ide.editor.uidesigner.inflate;
+package com.duy.ide.javaide.uidesigner.inflate;
 
 import android.app.Dialog;
 import android.os.Bundle;

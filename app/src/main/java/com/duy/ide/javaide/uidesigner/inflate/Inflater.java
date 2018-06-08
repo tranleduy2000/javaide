@@ -1,4 +1,4 @@
-package com.duy.ide.editor.uidesigner.inflate;
+package com.duy.ide.javaide.uidesigner.inflate;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.duy.ide.editor.uidesigner.dynamiclayoutinflator.DynamicLayoutInflator;
+import com.duy.ide.javaide.uidesigner.dynamiclayoutinflator.DynamicLayoutInflator;
 
 import java.io.File;
 import java.io.FileInputStream;

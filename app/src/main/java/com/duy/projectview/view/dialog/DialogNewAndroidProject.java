@@ -130,66 +130,6 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
         }
     }
 
-    private void copyResources(AndroidAppProject projectFile, boolean useAppCompat, AssetManager assets) throws IOException {
-        String resourcePath = projectFile.getResDirs().getPath();
-        AssetUtil.copyAssetSample(assets, "templates/src/main/res", resourcePath);
-        File file = new File(resourcePath, "values/styles.xml");
-        String content = FileManager.streamToString(new FileInputStream(file)).toString();
-        content = content.replace("{APP_STYLE}", useAppCompat ? "Theme.AppCompat.Light" : "@android:style/Theme.Holo.Light");
-        FileManager.saveFile(file, content);
-    }
-
-    private void copyLibrary(AndroidAppProject projectFile, AssetManager assets) throws IOException {
-        //copy android support library
-        AssetUtil.copyAssetSample(assets, "templates/libs", projectFile.getDirLibs().getPath());
-    }
-
-    private void createStringXml(AndroidAppProject projectFile, String appName) throws Exception {
-        File stringxml = new File(projectFile.getResDirs(), "values/strings.xml");
-        String strings = FileManager.streamToString(new FileInputStream(
-                stringxml)).toString();
-        strings = strings.replace("{APP_NAME}", appName);
-        strings = strings.replace("{MAIN_ACTIVITY_NAME}", appName);
-        Log.d(TAG, "doCreateProject strings = " + strings);
-        FileManager.saveFile(stringxml, strings);
-
-    }
-
-    private void createManifest(AndroidAppProject projectFile, String activityClass, String packageName,
-                                AssetManager assets) throws IOException {
-        File manifest = projectFile.getManifestFile();
-        InputStream manifestTemplate = assets.open("templates/src/main/AndroidManifest.xml");
-        String contentManifest = FileManager.streamToString(manifestTemplate).toString();
-        contentManifest = contentManifest.replace("{PACKAGE}", packageName);
-        contentManifest = contentManifest.replace("{MAIN_ACTIVITY}", activityClass);
-        Log.d(TAG, "doCreateProject contentManifest = " + contentManifest);
-        FileManager.saveFile(manifest, contentManifest);
-    }
-
-    private void createMainActivity(AndroidAppProject projectFile, String activityClass,
-                                    String packageName, String activityName, String appName,
-                                    boolean useAppCompat, AssetManager assets) throws IOException {
-        File activityFile = FileManager.createFileIfNeed(new File(projectFile.getJavaSrcDirs().get(0),
-                activityClass.replace(".", File.separator) + ".java"));
-        String name = useAppCompat ? "templates/src/main/MainActivityAppCompat.java" : "templates/src/main/MainActivity.java";
-        InputStream activityTemplate = assets.open(name);
-        String contentClass = FileManager.streamToString(activityTemplate).toString();
-        contentClass = contentClass.replace("{PACKAGE}", packageName);
-        contentClass = contentClass.replace("{APP_NAME}", appName);
-        contentClass = contentClass.replace("{ACTIVITY_NAME}", activityName);
-        Log.d(TAG, "doCreateProject contentManifest = " + contentClass);
-        FileManager.saveFile(activityFile, contentClass);
-    }
-
-    private void createMainXml(AndroidAppProject projectFile, String mainLayoutName, AssetManager assets) throws IOException {
-        if (!mainLayoutName.contains(".")) mainLayoutName += ".xml";
-        File layoutMain = new File(projectFile.getDirLayout(), mainLayoutName);
-        layoutMain.createNewFile();
-        InputStream layoutTemplate = assets.open("templates/src/main/activity_main.xml");
-        String contentLayout = FileManager.streamToString(layoutTemplate).toString();
-        FileManager.saveFile(layoutMain, contentLayout);
-    }
-
     /**
      * check input data
      *

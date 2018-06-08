@@ -370,35 +370,35 @@ public class MainActivity extends ProjectManagerActivity implements
      * replace dialog find
      */
     public void showDialogFind() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setView(R.layout.dialog_find);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-        final CheckBox ckbRegex = alertDialog.findViewById(R.id.ckb_regex);
-        final CheckBox ckbMatch = alertDialog.findViewById(R.id.ckb_match_key);
-        final CheckBox ckbWordOnly = alertDialog.findViewById(R.id.ckb_word_only);
-        final EditText editFind = alertDialog.findViewById(R.id.txt_find);
-        editFind.setText(getPreferences().getString(AppSetting.LAST_FIND));
-        alertDialog.findViewById(R.id.btn_replace).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-                if (editorFragment != null) {
-                    editorFragment.doFind(editFind.getText().toString(),
-                            ckbRegex.isChecked(),
-                            ckbWordOnly.isChecked(),
-                            ckbMatch.isChecked());
-                }
-                getPreferences().put(AppSetting.LAST_FIND, editFind.getText().toString());
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
+//        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//        builder.setView(R.layout.dialog_find);
+//        final AlertDialog alertDialog = builder.create();
+//        alertDialog.show();
+//        final CheckBox ckbRegex = alertDialog.findViewById(R.id.ckb_regex);
+//        final CheckBox ckbMatch = alertDialog.findViewById(R.id.ckb_match_key);
+//        final CheckBox ckbWordOnly = alertDialog.findViewById(R.id.ckb_word_only);
+//        final EditText editFind = alertDialog.findViewById(R.id.txt_find);
+//        editFind.setText(getPreferences().getString(AppSetting.LAST_FIND));
+//        alertDialog.findViewById(R.id.btn_replace).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
+//                if (editorFragment != null) {
+//                    editorFragment.doFind(editFind.getText().toString(),
+//                            ckbRegex.isChecked(),
+//                            ckbWordOnly.isChecked(),
+//                            ckbMatch.isChecked());
+//                }
+//                getPreferences().put(AppSetting.LAST_FIND, editFind.getText().toString());
+//                alertDialog.dismiss();
+//            }
+//        });
+//        alertDialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                alertDialog.dismiss();
+//            }
+//        });
 
 
     }

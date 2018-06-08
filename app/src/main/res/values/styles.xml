@@ -26,7 +26,6 @@
 
     <style name="AppThemeLight" parent="Theme.AppCompat.Light.DarkActionBar">
 
-
         <item name="colorPrimary">@color/light.color_primary</item>
         <item name="colorPrimaryDark">@color/light.color_primary_dark</item>
         <item name="colorAccent">@color/light.color_accent</item>

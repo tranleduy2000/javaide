@@ -31,16 +31,15 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.duy.android.compiler.utils.IOUtils;
+import com.duy.ide.R;
 import com.duy.ide.java.CompileManager;
 import com.duy.ide.java.EditPageContract;
-import com.duy.ide.java.EditorControl;
-import com.duy.ide.R;
 import com.duy.ide.java.editor.code.view.EditorView;
 import com.duy.ide.java.file.FileManager;
 import com.duy.ide.java.file.FileUtils;
-import com.duy.ide.javaide.autocomplete.AutoCompleteProvider;
-import com.duy.ide.javaide.formatter.FormatFactory;
 import com.duy.ide.java.view.LockableScrollView;
+import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
+import com.duy.ide.javaide.formatter.FormatFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,7 +58,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     private FileManager mFileManager;
     private Dialog dialog;
     private EditPageContract.Presenter mPresenter;
-    private AutoCompleteProvider autoCompleteProvider;
+    private JavaAutoCompleteProvider autoCompleteProvider;
 
 
     public static EditorFragment newInstance(String filePath) {
@@ -92,7 +91,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
             e.printStackTrace();
         }
         try {
-            mCodeEditor.setEditorControl((EditorControl) getActivity());
+//            mCodeEditor.setEditorControl((EditorControl) getActivity());
         } catch (Exception ignored) {
         }
 
@@ -121,7 +120,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         saveFile();
         if (mCodeEditor != null && getFilePath() != null) {
             Log.i(TAG, "onStop: save edit history " + getFilePath());
-            mCodeEditor.saveHistory(getFilePath());
+//            mCodeEditor.saveHistory(getFilePath());
         } else {
             Log.e(TAG, "can not save edit history");
         }
@@ -137,7 +136,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
     public void onResume() {
         super.onResume();
         mCodeEditor.updateFromSettings();
-        mCodeEditor.restoreHistory(getFilePath());
+//        mCodeEditor.restoreHistory(getFilePath());
     }
 
     @Override
@@ -251,36 +250,18 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     @Override
     public void undo() {
-        if (mCodeEditor == null) return;
-        if (mCodeEditor.canUndo()) {
-            mCodeEditor.undo();
-        } else {
-            Toast.makeText(getContext(), R.string.cant_undo, Toast.LENGTH_SHORT).show();
+        if (mCodeEditor == null) {
+            return;
         }
+        mCodeEditor.undo();
     }
 
     @Override
     public void redo() {
-        if (mCodeEditor == null) return;
-        if (mCodeEditor.canRedo()) {
-            mCodeEditor.redo();
-        } else {
-            Toast.makeText(getContext(), R.string.cant_redo, Toast.LENGTH_SHORT).show();
+        if (mCodeEditor == null) {
+            return;
         }
-    }
-
-    @Override
-    public void paste() {
-        if (mCodeEditor != null) {
-            mCodeEditor.paste();
-        }
-    }
-
-    @Override
-    public void copyAll() {
-        if (mCodeEditor != null) {
-            mCodeEditor.copyAll();
-        }
+        mCodeEditor.redo();
     }
 
     @Nullable
@@ -291,9 +272,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
 
     @Override
     public void insert(@NonNull CharSequence text) {
-        if (mCodeEditor != null) {
-            mCodeEditor.insert(text);
-        }
+        mCodeEditor.insert(text);
     }
 
     public EditorView getEditor() {
@@ -316,7 +295,7 @@ public class EditorFragment extends Fragment implements EditorListener, EditPage
         }
     }
 
-    public void setAutoCompleteProvider(AutoCompleteProvider autoCompleteProvider) {
+    public void setAutoCompleteProvider(JavaAutoCompleteProvider autoCompleteProvider) {
         this.autoCompleteProvider = autoCompleteProvider;
         if (mCodeEditor != null) {
             mCodeEditor.setAutoCompleteProvider(autoCompleteProvider);

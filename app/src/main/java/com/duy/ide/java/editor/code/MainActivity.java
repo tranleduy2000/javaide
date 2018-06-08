@@ -56,12 +56,11 @@ import com.duy.ide.java.diagnostic.DiagnosticFragment;
 import com.duy.ide.java.editor.code.view.EditorView;
 import com.duy.ide.java.editor.code.view.IndentEditText;
 import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
-import com.duy.ide.javaide.autocomplete.AutoCompleteProvider;
+import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.autocomplete.model.Description;
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.ide.javaide.run.dialog.DialogRunConfig;
-import com.duy.ide.javaide.sample.activities.DocumentActivity;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
 import com.duy.ide.java.setting.AppSetting;
 import com.duy.ide.java.utils.RootUtils;
@@ -84,9 +83,9 @@ public class MainActivity extends ProjectManagerActivity implements
     private Dialog mDialog;
     private MenuItem mActionRun;
     private ProgressBar mCompileProgress;
-    private AutoCompleteProvider mAutoCompleteProvider;
+    private JavaAutoCompleteProvider mAutoCompleteProvider;
 
-    private void populateAutoCompleteService(AutoCompleteProvider provider) {
+    private void populateAutoCompleteService(JavaAutoCompleteProvider provider) {
         mPagePresenter.setAutoCompleteProvider(provider);
     }
 
@@ -105,7 +104,7 @@ public class MainActivity extends ProjectManagerActivity implements
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        mAutoCompleteProvider = new AutoCompleteProvider(MainActivity.this);
+                        mAutoCompleteProvider = new JavaAutoCompleteProvider(MainActivity.this);
                         mAutoCompleteProvider.load(mProject);
                         populateAutoCompleteService(mAutoCompleteProvider);
                     }
@@ -410,12 +409,6 @@ public class MainActivity extends ProjectManagerActivity implements
         }
     }
 
-    @Override
-    public void showDocumentActivity() {
-        Intent intent = new Intent(this, DocumentActivity.class);
-        startActivity(intent);
-    }
-
     public String getCode() {
         EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
         if (editorFragment != null) {
@@ -590,22 +583,6 @@ public class MainActivity extends ProjectManagerActivity implements
     @Override
     public void onDrawerClosed(View drawerView) {
 
-    }
-
-    @Override
-    public void paste() {
-        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-        if (editorFragment != null) {
-            editorFragment.paste();
-        }
-    }
-
-    @Override
-    public void copyAll() {
-        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-        if (editorFragment != null) {
-            editorFragment.copyAll();
-        }
     }
 
     @Override

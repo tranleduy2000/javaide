@@ -27,8 +27,6 @@ public interface EditorControl {
 
     void saveAllFile();
 
-    void showDocumentActivity();
-
     void createNewFile(View view);
 
     void goToLine();
@@ -38,9 +36,5 @@ public interface EditorControl {
     void undo();
 
     void redo();
-
-    void paste();
-
-    void copyAll();
 
 }

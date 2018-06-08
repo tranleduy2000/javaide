@@ -24,10 +24,6 @@ public class EditPageContract {
 
         void redo();
 
-        void paste();
-
-        void copyAll();
-
         void formatCode();
 
         File getCurrentFile();

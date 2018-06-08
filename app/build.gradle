@@ -83,9 +83,10 @@ dependencies {
     api project(':treeview')
     api project(':lib-android-compiler')
     api project(':lib-google-java-format')
-    api project(':lib-n-ide-release')
     api project(':androidlogcat')
 
+
+    api project(':lib-n-ide-release')
 
     //firebase sdk
     api "com.google.firebase:firebase-core:16.0.0"

@@ -30,12 +30,11 @@ import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
 import com.duy.ide.R;
-import com.duy.ide.editor.view.CodeEditor;
 import com.duy.ide.editor.view.EditActionSupportEditor;
 import com.duy.ide.java.DLog;
 import com.duy.ide.java.EditorSetting;
 import com.duy.ide.java.editor.code.view.adapters.CodeSuggestAdapter;
-import com.duy.ide.javaide.autocomplete.AutoCompleteProvider;
+import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.autocomplete.model.Description;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ import java.util.ArrayList;
  * Created by Duy on 28-Feb-17.
  */
 
-public abstract class CodeSuggestsEditText extends CodeEditor
+public abstract class CodeSuggestsEditText extends EditActionSupportEditor
         implements CodeSuggestAdapter.OnSuggestItemClickListener {
     protected static final String TAG = CodeSuggestsEditText.class.getSimpleName();
     public int mCharHeight = 0;
@@ -54,7 +53,7 @@ public abstract class CodeSuggestsEditText extends CodeEditor
     protected SymbolsTokenizer mTokenizer;
     private CodeSuggestAdapter mAdapter;
     @Nullable
-    private AutoCompleteProvider mAutoCompleteProvider;
+    private JavaAutoCompleteProvider mAutoCompleteProvider;
     private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -109,7 +108,7 @@ public abstract class CodeSuggestsEditText extends CodeEditor
     }
 
     @Override
-    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
+    public void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
         if (mAutoCompleteProvider != null) {
             if (mGenerateSuggestDataTask != null) {
@@ -224,7 +223,7 @@ public abstract class CodeSuggestsEditText extends CodeEditor
         }
     }
 
-    public void setAutoCompleteProvider(AutoCompleteProvider autoCompleteProvider) {
+    public void setAutoCompleteProvider(JavaAutoCompleteProvider autoCompleteProvider) {
         this.mAutoCompleteProvider = autoCompleteProvider;
     }
 
@@ -250,9 +249,9 @@ public abstract class CodeSuggestsEditText extends CodeEditor
 
     private class GenerateSuggestDataTask extends AsyncTask<Void, Void, ArrayList<Description>> {
         private final EditText editText;
-        private final AutoCompleteProvider provider;
+        private final JavaAutoCompleteProvider provider;
 
-        private GenerateSuggestDataTask(@NonNull EditText editText, @NonNull AutoCompleteProvider provider) {
+        private GenerateSuggestDataTask(@NonNull EditText editText, @NonNull JavaAutoCompleteProvider provider) {
             this.editText = editText;
             this.provider = provider;
             provider.getClass();

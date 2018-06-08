@@ -51,7 +51,7 @@ import static java.util.regex.Pattern.compile;
  * Created by Duy on 20-Jul-17.
  */
 
-public class AutoCompleteProvider {
+public class JavaAutoCompleteProvider {
     public static final int KIND_NONE = 0;
     public static final int KIND_PACKAGE = KIND_NONE + 1; //or import
     public static final int KIND_METHOD = KIND_PACKAGE + 1;
@@ -108,7 +108,7 @@ public class AutoCompleteProvider {
     @ContextType
     private int mContextType = CONTEXT_OTHER;
 
-    public AutoCompleteProvider(Context context) {
+    public JavaAutoCompleteProvider(Context context) {
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
         mClassLoader = new JavaDexClassLoader(Environment.getClasspathFile(context), outDir);
         mPackageProvider = new AutoCompletePackage();

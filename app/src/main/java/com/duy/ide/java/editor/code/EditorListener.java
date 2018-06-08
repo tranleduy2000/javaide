@@ -20,10 +20,6 @@ public interface EditorListener {
 
     void redo();
 
-    void paste();
-
-    void copyAll();
-
     @Nullable
     String getCode();
 

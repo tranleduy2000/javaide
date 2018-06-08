@@ -27,7 +27,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
@@ -101,8 +101,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
         bindView();
         setupToolbar();
-        setupFileView(savedInstanceState);
-        FragmentManager fm = getSupportFragmentManager();
+//        FragmentManager fm = getSupportFragmentManager();
 
 //        List<PageDescriptor> pageDescriptors = new ArrayList<>();
 //        pageDescriptors.add(new SimplePageDescriptor(MessageFragment.TAG, "Message"));
@@ -131,18 +130,20 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
     }
 
-    private void setupFileView(Bundle savedInstanceState) {
-        FolderStructureFragment folderStructureFragment = null;
-        if (savedInstanceState != null) {
-            folderStructureFragment = (FolderStructureFragment)
-                    getSupportFragmentManager().findFragmentByTag(FolderStructureFragment.TAG);
-        }
+    @Override
+    protected void initLeftNavigationView(@NonNull NavigationView nav) {
+        super.initLeftNavigationView(nav);
+
+        String tag = FolderStructureFragment.TAG;
+        FolderStructureFragment folderStructureFragment = (FolderStructureFragment)
+                getSupportFragmentManager().findFragmentByTag(tag);
         if (folderStructureFragment == null) {
             folderStructureFragment = FolderStructureFragment.newInstance(mProject);
         }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container_file, folderStructureFragment, FolderStructureFragment.TAG).commit();
+        ft.replace(R.id.left_navigation_content, folderStructureFragment, tag).commit();
         mFilePresenter = new ProjectFilePresenter(folderStructureFragment);
+
     }
 
 

@@ -5,8 +5,6 @@ import android.support.v4.app.FragmentManager;
 
 import com.commonsware.cwac.pager.PageDescriptor;
 import com.commonsware.cwac.pager.v4.ArrayPagerAdapter;
-import com.duy.ide.java.diagnostic.DiagnosticFragment;
-import com.duy.ide.java.diagnostic.MessageFragment;
 
 import java.util.List;
 
@@ -27,11 +25,6 @@ public class BottomPageAdapter extends ArrayPagerAdapter<Fragment> {
 
     @Override
     protected Fragment createFragment(PageDescriptor desc) {
-        if (desc.getFragmentTag().equals(MessageFragment.TAG)) {
-            return MessageFragment.newInstance();
-        } else if (desc.getFragmentTag().equals(DiagnosticFragment.TAG)) {
-            return DiagnosticFragment.newInstance();
-        }
         return null;
     }
 }

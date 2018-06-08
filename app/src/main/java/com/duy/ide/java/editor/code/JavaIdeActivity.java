@@ -86,7 +86,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     }
 
     private void populateAutoCompleteService(JavaAutoCompleteProvider provider) {
-        mPagePresenter.setAutoCompleteProvider(provider);
+//        mPagePresenter.setAutoCompleteProvider(provider);
     }
 
     @Override

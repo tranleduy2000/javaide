@@ -17,13 +17,9 @@
 package com.duy.ide.java.file;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
-import com.duy.ide.java.CompileManager;
-import com.duy.ide.R;
-import com.duy.ide.java.activities.SplashScreenActivity;
 import com.duy.ide.java.setting.AppSetting;
 
 import org.apache.commons.io.FileUtils;
@@ -54,8 +50,6 @@ public class FileManager {
         EXTERNAL_DIR = new File(Environment.getExternalStorageDirectory(), "JavaNIDE").getAbsolutePath();
     }
 
-    private final String FILE_TEMP_NAME = "tmp.pas";
-    private int mode = SAVE_MODE.EXTERNAL;
     private Context context;
     private Database mDatabase;
     private AppSetting mPascalPreferences;
@@ -64,17 +58,6 @@ public class FileManager {
         this.context = context;
         mDatabase = new Database(context);
         mPascalPreferences = new AppSetting(context);
-    }
-
-    /**
-     * @return path of application
-     */
-    public static String getApplicationPath() {
-        File file = new File(EXTERNAL_DIR_SRC);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        return EXTERNAL_DIR_SRC;
     }
 
     public static StringBuilder streamToString(InputStream inputStream) {
@@ -98,22 +81,6 @@ public class FileManager {
             }
         }
         return result;
-    }
-
-    /**
-     * saveFile current project
-     *
-     * @param file
-     */
-    public static boolean saveFile(@NonNull File file, String text) {
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            if (text.length() > 0) out.write(text.getBytes());
-            out.close();
-            return true;
-        } catch (Exception ignored) {
-        }
-        return false;
     }
 
     /**
@@ -151,23 +118,6 @@ public class FileManager {
         return zFile.delete();
     }
 
-    public static void copyStream(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
-        int read;
-        while ((read = in.read(buffer)) != -1) {
-            out.write(buffer, 0, read);
-        }
-        out.flush();
-    }
-
-    public static void extractAsset(Context zContext, String zAssetFile, File zOuput) throws IOException {
-        InputStream in = zContext.getAssets().open(zAssetFile);
-        OutputStream os = new FileOutputStream(zOuput);
-        copyStream(in, os);
-        in.close();
-        os.close();
-    }
-
     public static ArrayList<String> listClassName(File src) {
         if (!src.exists()) return new ArrayList<>();
 
@@ -185,30 +135,6 @@ public class FileManager {
         return classes;
     }
 
-
-    /**
-     * get all file in folder
-     *
-     * @param path - folder path
-     * @return list file
-     */
-    public ArrayList<File> getListFile(String path) {
-        ArrayList<File> list = new ArrayList<>();
-        File directory = new File(path);
-        File[] files = directory.listFiles();
-        try {
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile()) list.add(file);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Set<File> listFile = mDatabase.getListFile();
-        list.addAll(listFile);
-        return list;
-    }
 
     public Set<File> getEditorFiles() {
         return mDatabase.getListFile();
@@ -253,70 +179,6 @@ public class FileManager {
         return res;
     }
 
-    /**
-     * read content of file
-     *
-     * @param filename - file
-     * @return - string
-     */
-    public String loadInMode(String filename) {
-        String res = "";
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(new File(getCurrentPath() + filename)), "UTF8"));
-
-            String line;
-            while ((line = in.readLine()) != null) {
-                res += line + "\n";
-            }
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return res;
-    }
-
-    /**
-     * create new file in dir of application
-     *
-     * @param fileName
-     * @return - path of file
-     */
-    public String createNewFileInMode(String fileName) {
-        String name = getCurrentPath() + fileName;
-        File file = new File(name);
-//        Log.i(TAG, "createNewFileInMode: " + name);
-        try {
-            if (!file.exists()) {
-                new File(file.getParent()).mkdirs();
-                file.createNewFile();
-            }
-            return file.getPath();
-        } catch (IOException e) {
-//            Log.e("", "Could not create file.", e);
-            return "";
-        }
-    }
-
-    /**
-     * create new file
-     *
-     * @param path path to file
-     * @return file path
-     */
-    public String createNewFile(String path) {
-        File file = new File(path);
-        try {
-            if (!file.exists()) {
-                new File(file.getParent()).mkdirs();
-                file.createNewFile();
-            }
-            return path;
-        } catch (IOException e) {
-            return "";
-        }
-    }
-
     public boolean deleteFile(File file) {
         try {
             if (file.isDirectory()) {
@@ -328,92 +190,12 @@ public class FileManager {
         }
     }
 
-    public String removeFile(File file) {
-        try {
-            file.delete();
-            return "";
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-    }
-
-    /**
-     * set content of file pas for generate, put it in internal storage
-     *
-     * @param content - Content of file, string
-     */
-    public String setContentFileTemp(String content) {
-        String name = getCurrentPath(SAVE_MODE.INTERNAL) + FILE_TEMP_NAME;
-//        Dlog.d(TAG, "setContentFileTemp: " + name);
-//        Dlog.d(TAG, "setContentFileTemp: " + content);
-        File file = new File(name);
-        FileOutputStream outputStream;
-        try {
-            if (!file.exists()) {
-                createNewFile(name);
-            }
-            outputStream = new FileOutputStream(new File(name));
-            outputStream.write(content.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return file.getPath();
-    }
-
-    /**
-     * return file pas for run program
-     *
-     * @return - pascal file
-     */
-    public File getTempFile() {
-        String name = getCurrentPath(SAVE_MODE.INTERNAL) + File.separatorChar + FILE_TEMP_NAME;
-//        Dlog.d(TAG, "getTempFile: " + name);
-        File file = new File(name);
-        if (!file.exists()) {
-            createNewFileInMode(name);
-        }
-        return file;
-    }
-
-    public String getCurrentPath() {
-        if (mode == SAVE_MODE.INTERNAL) {
-            return context.getFilesDir().getPath() + File.separatorChar;
-        } else {
-            return Environment.getExternalStorageDirectory().getPath() + "/PascalCompiler/";
-        }
-    }
-
-    private String getCurrentPath(int mode) {
-        if (mode == SAVE_MODE.INTERNAL) {
-            return context.getFilesDir().getPath() + File.separatorChar;
-        } else {
-            return Environment.getExternalStorageDirectory().getPath() + "/PascalCompiler/";
-        }
-    }
-
     public void addNewPath(String path) {
         mDatabase.addNewFile(new File(path));
     }
 
-    /**
-     * set working file path
-     *
-     * @param path
-     */
-    public void setWorkingFilePath(String path) {
-        mPascalPreferences.put(AppSetting.FILE_PATH, path);
-    }
-
     public void removeTabFile(String path) {
         mDatabase.removeFile(path);
-    }
-
-    public String createRandomFile() {
-        String filePath;
-        filePath = getApplicationPath() + Integer.toHexString((int) System.currentTimeMillis())
-                + ".pas";
-        return createNewFile(filePath);
     }
 
     /**
@@ -448,23 +230,6 @@ public class FileManager {
         out.flush();
         out.close();
 
-    }
-
-    public Intent createShortcutIntent(Context context, File file) {
-        // create shortcut if requested
-        Intent.ShortcutIconResource icon =
-                Intent.ShortcutIconResource.fromContext(context, R.mipmap.ic_launcher);
-
-        Intent intent = new Intent();
-
-        Intent launchIntent = new Intent(context, SplashScreenActivity.class);
-        launchIntent.putExtra(CompileManager.FILE_PATH, file.getPath());
-        launchIntent.setAction("run_from_shortcut");
-
-        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, launchIntent);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, file.getName());
-        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-        return intent;
     }
 
     public void destroy() {

@@ -55,10 +55,10 @@ import com.duy.android.compiler.project.AndroidProjectManager;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.file.explorer.FileExplorerActivity;
+import com.duy.ide.R;
 import com.duy.ide.java.EditPageContract;
 import com.duy.ide.java.EditorControl;
 import com.duy.ide.java.PagePresenter;
-import com.duy.ide.R;
 import com.duy.ide.java.activities.BaseActivity;
 import com.duy.ide.java.adapters.BottomPageAdapter;
 import com.duy.ide.java.diagnostic.DiagnosticFragment;
@@ -83,6 +83,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 import static com.duy.projectview.ProjectFileContract.Callback;
@@ -205,24 +206,24 @@ public abstract class ProjectManagerActivity extends BaseActivity
     }
 
     private void setupEditor() {
-//        Set<File> editorFiles = mFileManager.getEditorFiles();
-//        ArrayList<PageDescriptor> descriptors = new ArrayList<>();
-//        if (mProject != null) {
-//            for (File editorFile : editorFiles) {
-//                descriptors.add(new SimplePageDescriptor(editorFile.getPath(), editorFile.getName()));
-//            }
-//        } else {
-//            for (File editorFile : editorFiles) {
-//                mFileManager.removeTabFile(editorFile.getPath());
-//            }
-//        }
-//        mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), descriptors);
-//        mViewPager.setAdapter(mPageAdapter);
-//        mViewPager.setOffscreenPageLimit(mPageAdapter.getCount());
-//        mTabLayout.setupWithViewPager(mViewPager);
-//
-//        mPagePresenter = new PagePresenter((MainActivity) this, mViewPager, mPageAdapter, mTabLayout, mFileManager);
-//        mPagePresenter.invalidateTab();
+        Set<File> editorFiles = mFileManager.getEditorFiles();
+        ArrayList<PageDescriptor> descriptors = new ArrayList<>();
+        if (mProject != null) {
+            for (File editorFile : editorFiles) {
+                descriptors.add(new SimplePageDescriptor(editorFile.getPath(), editorFile.getName()));
+            }
+        } else {
+            for (File editorFile : editorFiles) {
+                mFileManager.removeTabFile(editorFile.getPath());
+            }
+        }
+        mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), descriptors);
+        mViewPager.setAdapter(mPageAdapter);
+        mViewPager.setOffscreenPageLimit(mPageAdapter.getCount());
+        mTabLayout.setupWithViewPager(mViewPager);
+
+        mPagePresenter = new PagePresenter((MainActivity) this, mViewPager, mPageAdapter, mTabLayout, mFileManager);
+        mPagePresenter.invalidateTab();
     }
 
     protected void bindView() {

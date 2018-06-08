@@ -17,11 +17,9 @@
 package com.duy.ide.java.editor.code.view;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -54,35 +52,6 @@ public class IndentEditText extends AppCompatMultiAutoCompleteTextView {
         init();
     }
 
-    public static char getCloseBracket(char open, int index) {
-        switch (open) {
-            case '(':
-                return ')';
-            case '{':
-                return '}';
-            case '[':
-                return ']';
-        }
-        return 0;
-    }
-
-    public void applyTabWidth(Editable text, int start, int end) {
-        /*String str = text.toString();
-        float tabWidth = getPaint().measureText(INDEX_CHAR) * TAB_NUMBER;
-        while (start < end) {
-            int index = str.indexOf("\t", start);
-            if (index < 0)
-                break;
-            text.setSpan(new CustomTabWidthSpan(Float.valueOf(tabWidth).intValue()), index, index + 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            start = index + 1;
-        }*/
-    }
-
-    public void applyTabWidth() {
-        applyTabWidth(getText(), 0, getText().length());
-    }
-
     private void init() {
         setFilters(new InputFilter[]{
                 new InputFilter() {
@@ -100,7 +69,9 @@ public class IndentEditText extends AppCompatMultiAutoCompleteTextView {
                         return source;
                     }
                 }
-        });//auto add bracket
+        });
+
+        //auto add bracket
         addTextChangedListener(new TextWatcher() {
             private int start;
             private int count;
@@ -118,7 +89,7 @@ public class IndentEditText extends AppCompatMultiAutoCompleteTextView {
 
             @Override
             public void afterTextChanged(Editable editable) {
-              if (editable.length() > start && count > 1) {
+                if (editable.length() > start && count > 1) {
                     CharSequence newText = editable.subSequence(start, start + count);
                     int i = newText.toString().indexOf(CURSOR);
                     if (i > -1) {
@@ -146,40 +117,9 @@ public class IndentEditText extends AppCompatMultiAutoCompleteTextView {
         return source;
     }
 
-    /**
-     * @return the line above current cursor
-     */
-    @Nullable
-    private CharSequence getPrevLine(Editable editable, Layout layout, int currentLine) {
-        if (currentLine - 1 < 0) return null;
-        int lineStart = layout.getLineStart(currentLine - 1);
-        int lineEnd = layout.getLineEnd(currentLine - 1);
-        return editable.subSequence(lineStart, lineEnd);
-    }
-
-    @Nullable
-    protected CharSequence getNextLine(Editable editable, Layout layout, int currentLine) {
-        if (currentLine + 1 > layout.getLineCount() - 1) return null;
-        int lineStart = layout.getLineStart(currentLine + 1);
-        int lineEnd = layout.getLineEnd(currentLine + 1);
-        return editable.subSequence(lineStart, lineEnd);
-    }
-
-    @Nullable
-    protected CharSequence getWordInCursor() {
-        int pos = getSelectionStart();
-        if (pos == -1) return "";
-        Editable editableText = getEditableText();
-        int start = pos, end = pos;
-        while (start > 0 && Character.isLetterOrDigit(editableText.charAt(start))) start--;
-        while (end < editableText.length() && Character.isLetterOrDigit(editableText.charAt(start)))
-            end++;
-        return editableText.subSequence(start, end);
-    }
-
 
     private CharSequence indentLine(CharSequence source, int start, int end, Spanned dest,
-                                    int dstart, int dend) {
+                                    final int dstart, int dend) {
         String indent = "";
         int indexStart = dstart - 1;
         int indexEnd;

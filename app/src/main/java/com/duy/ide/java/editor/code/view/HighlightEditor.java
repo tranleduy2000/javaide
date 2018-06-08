@@ -65,7 +65,6 @@ public class HighlightEditor extends CodeSuggestsEditText
     public static final int SYNTAX_DELAY_MILLIS_LONG = 700;
     public static final int CHARS_TO_COLOR = 2500;
     private final Handler updateHandler = new Handler();
-    private final Object objectThread = new Object();
     public boolean showLines = true;
     public boolean wordWrap = true;
     public LineInfo lineError = null;
@@ -757,7 +756,6 @@ public class HighlightEditor extends CodeSuggestsEditText
 
         CharSequence textToHighlight = editable.subSequence(firstVisibleIndex, lastVisibleIndex);
         mHighlighter.highlight(editable, textToHighlight, firstVisibleIndex);
-        applyTabWidth(editable, firstVisibleIndex, lastVisibleIndex);
     }
 
     public void enableTextChangedListener() {

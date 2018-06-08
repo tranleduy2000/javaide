@@ -29,9 +29,11 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
+import com.duy.ide.R;
+import com.duy.ide.editor.view.CodeEditor;
+import com.duy.ide.editor.view.EditActionSupportEditor;
 import com.duy.ide.java.DLog;
 import com.duy.ide.java.EditorSetting;
-import com.duy.ide.R;
 import com.duy.ide.java.editor.code.view.adapters.CodeSuggestAdapter;
 import com.duy.ide.javaide.autocomplete.AutoCompleteProvider;
 import com.duy.ide.javaide.autocomplete.model.Description;
@@ -44,15 +46,13 @@ import java.util.ArrayList;
  * Created by Duy on 28-Feb-17.
  */
 
-public abstract class CodeSuggestsEditText extends IndentEditText
+public abstract class CodeSuggestsEditText extends CodeEditor
         implements CodeSuggestAdapter.OnSuggestItemClickListener {
     protected static final String TAG = CodeSuggestsEditText.class.getSimpleName();
     public int mCharHeight = 0;
-    public int mCharWidth = 0;
     protected EditorSetting mEditorSetting;
     protected SymbolsTokenizer mTokenizer;
     private CodeSuggestAdapter mAdapter;
-    private boolean enoughToFilter = true;
     @Nullable
     private AutoCompleteProvider mAutoCompleteProvider;
     private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {

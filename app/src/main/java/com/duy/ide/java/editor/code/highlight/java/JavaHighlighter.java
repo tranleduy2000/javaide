@@ -41,7 +41,6 @@ import static com.duy.ide.javaide.autocomplete.Patterns.JAVA_KEYWORDS;
  * Created by Duy on 18-Jun-17.
  */
 public class JavaHighlighter extends HighlightImpl {
-    private static final String TAG = "CodeHighlighter";
     private StringHighlighter stringHighlighter;
     private JavaCommentHighlighter commentHighlighter;
     private int startError, endError;

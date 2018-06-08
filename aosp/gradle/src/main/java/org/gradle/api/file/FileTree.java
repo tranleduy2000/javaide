@@ -16,7 +16,6 @@
 package org.gradle.api.file;
 
 import org.gradle.api.tasks.util.PatternFilterable;
-import org.gradle.internal.HasInternalProtocol;
 
 import java.io.File;
 import java.util.Set;
@@ -32,7 +31,6 @@ import groovy.lang.Closure;
  * {@link org.gradle.api.Project#zipTree(Object)} or {@link org.gradle.api.Project#tarTree(Object)}.
  * </p>
  */
-@HasInternalProtocol
 public interface FileTree extends FileCollection {
     /**
      * <p>Restricts the contents of this tree to those files matching the given filter. The filtered tree is live, so

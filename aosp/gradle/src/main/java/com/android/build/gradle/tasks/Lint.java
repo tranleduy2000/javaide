@@ -22,6 +22,7 @@ import com.google.common.collect.Maps;
 
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.JavaBasePlugin;
 import org.gradle.api.tasks.ParallelizableTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.tooling.provider.model.ToolingModelBuilder;
@@ -29,7 +30,6 @@ import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -93,13 +93,8 @@ public class Lint extends DefaultAndroidTask {
     public void lintAllVariants(@NonNull AndroidProject modelProject) throws IOException {
         Map<Variant, List<Warning>> warningMap = Maps.newHashMap();
         for (Variant variant : modelProject.getVariants()) {
-            try {
-                List<Warning> warnings = runLint(modelProject, variant.getName(), false);
-                warningMap.put(variant, warnings);
-            } catch (IOException e) {
-                throw new GradleException("Invalid arguments.", e);
-            }
-
+            List<Warning> warnings = runLint(modelProject, variant.getName(), false);
+            warningMap.put(variant, warnings);
         }
 
 
@@ -107,7 +102,7 @@ public class Lint extends DefaultAndroidTask {
         boolean quiet = mLintOptions.isQuiet();
 
 
-        for (Map.Entry<Variant, List<Warning>> entry : ((HashMap<Variant, List<Warning>>) warningMap).entrySet()) {
+        for (Map.Entry<Variant, List<Warning>> entry : warningMap.entrySet()) {
             Variant variant = entry.getKey();
             List<Warning> warnings = entry.getValue();
             if (!mFatalOnly && !quiet) {
@@ -179,8 +174,7 @@ public class Lint extends DefaultAndroidTask {
      * Runs lint on the given variant and returns the set of warnings
      */
     @Nullable
-    private List<Warning> runLint(@NonNull AndroidProject modelProject, @NonNull String variantName, boolean report)
-            throws IOException {
+    private List<Warning> runLint(@NonNull AndroidProject modelProject, @NonNull String variantName, boolean report) {
         IssueRegistry registry = createIssueRegistry();
         LintCliFlags flags = new LintCliFlags();
         LintGradleClient client = new LintGradleClient(registry, flags, getProject(), modelProject, mSdkHome, variantName);
@@ -276,7 +270,7 @@ public class Lint extends DefaultAndroidTask {
             lint.setToolingRegistry(scope.getGlobalScope().getToolingRegistry());
             lint.setDescription(("Runs lint on the " +
                     StringHelper.capitalize(scope.getVariantConfiguration().getFullName()) + " build."));
-            lint.setGroup(((String) (JavaBasePlugin.VERIFICATION_GROUP)));
+            lint.setGroup(JavaBasePlugin.VERIFICATION_GROUP);
         }
 
         public VariantScope getScope() {

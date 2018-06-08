@@ -31,7 +31,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.duy.JavaApplication;
 import com.duy.android.compiler.builder.AndroidAppBuilder;
 import com.duy.android.compiler.builder.BuildTask;
 import com.duy.android.compiler.builder.IBuilder;
@@ -46,7 +45,6 @@ import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.java.Builder;
 import com.duy.ide.java.MenuEditor;
-import com.duy.ide.java.diagnostic.DiagnosticFragment;
 import com.duy.ide.java.utils.RootUtils;
 import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;
@@ -130,31 +128,10 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         super.invalidateOptionsMenu();
     }
 
-    void insertTab(View v) {
-        onKeyClick(v, "\t");
-    }
-
-    @Override
-    public void onKeyClick(View view, String text) {
-        EditorFragment currentFragment = mPageAdapter.getCurrentFragment();
-        if (currentFragment != null) {
-            currentFragment.insert(text);
-        }
-    }
-
-    @Override
-    public void onKeyLongClick(String text) {
-        EditorFragment currentFragment = mPageAdapter.getCurrentFragment();
-        if (currentFragment != null) {
-            currentFragment.insert(text);
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        boolean r = mMenuEditor.onCreateOptionsMenu(menu);
-        return r;
+        return mMenuEditor.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -196,9 +173,9 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
 
             final AndroidAppBuilder builder = new AndroidAppBuilder(this, (AndroidAppProject) mProject);
-            builder.setStdOut(mMessagePresenter.getStdOut());
-            builder.setStdErr(mMessagePresenter.getStdErr());
-            builder.setLogger(mMessagePresenter);
+//            builder.setStdOut(mMessagePresenter.getStdOut());
+//            builder.setStdErr(mMessagePresenter.getStdErr());
+//            builder.setLogger(mMessagePresenter);
 
             final BuildTask<AndroidAppProject> buildTask = new BuildTask<>(builder, new BuildTask.CompileListener<AndroidAppProject>() {
                 @Override
@@ -235,8 +212,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     private void compileJavaProject() {
         final IBuilder<JavaProject> builder = new JavaBuilder(this, mProject);
-        builder.setStdOut(mMessagePresenter.getStdOut());
-        builder.setStdErr(mMessagePresenter.getStdErr());
+//        builder.setStdOut(mMessagePresenter.getStdOut());
+//        builder.setStdErr(mMessagePresenter.getStdErr());
         final BuildTask.CompileListener<JavaProject> listener = new BuildTask.CompileListener<JavaProject>() {
             @Override
             public void onStart() {
@@ -247,7 +224,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
             public void onError(Exception e) {
                 Toast.makeText(JavaIdeActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                 openDrawer(GravityCompat.START);
-                mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
+//                mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
                 updateUIFinish();
             }
 
@@ -303,14 +280,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         }
     }
 
-    @Override
-    public void saveCurrentFile() {
-        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-        if (editorFragment != null) {
-            editorFragment.saveFile();
-        }
-    }
-
     /**
      * show dialog create new source file
      */
@@ -357,7 +326,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     @Override
     public void runFile(String filePath) {
-        saveCurrentFile();
+        saveAll(0);
+        // TODO: 09-Jun-18 save all
         if (mProject == null) return;
         String className = JavaUtil.getClassName(mProject.getJavaSrcDirs().get(0), filePath);
         if (className == null) {
@@ -369,7 +339,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     @Override
     public void previewLayout(String path) {
-        saveCurrentFile();
+        saveAll(0);
+        // TODO: 09-Jun-18 save all
         File currentFile = getCurrentFile();
         if (currentFile != null) {
             DialogLayoutPreview dialogPreview = DialogLayoutPreview.newInstance(currentFile);
@@ -402,19 +373,19 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         hideKeyboard();
         openDrawer(GravityCompat.START);
 
-        mMessagePresenter.resume((JavaApplication) getApplication());
-        mMessagePresenter.clear();
-        mMessagePresenter.append("Compiling...\n");
+//        mMessagePresenter.resume((JavaApplication) getApplication());
+//        mMessagePresenter.clear();
+//        mMessagePresenter.append("Compiling...\n");
 
         mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         mDiagnosticPresenter.clear();
 
-        mBottomPage.setCurrentItem(0);
+//        mBottomPage.setCurrentItem(0);
 
     }
 
     private void updateUIFinish() {
-        mMessagePresenter.pause((JavaApplication) getApplication());
+//        mMessagePresenter.pause((JavaApplication) getApplication());
         setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
         if (mCompileProgress != null) {
             mHandler.postDelayed(new Runnable() {

@@ -27,13 +27,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -41,8 +38,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.commonsware.cwac.pager.PageDescriptor;
-import com.commonsware.cwac.pager.SimplePageDescriptor;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.AndroidProjectManager;
 import com.duy.android.compiler.project.JavaProject;
@@ -53,14 +48,8 @@ import com.duy.ide.core.IdeActivity;
 import com.duy.ide.java.EditPageContract;
 import com.duy.ide.java.EditorControl;
 import com.duy.ide.java.PagePresenter;
-import com.duy.ide.java.adapters.BottomPageAdapter;
-import com.duy.ide.java.diagnostic.DiagnosticFragment;
-import com.duy.ide.java.diagnostic.DiagnosticPresenter;
-import com.duy.ide.java.diagnostic.MessageFragment;
-import com.duy.ide.java.diagnostic.MessagePresenter;
 import com.duy.ide.java.file.FileManager;
 import com.duy.ide.java.file.FileUtils;
-import com.duy.ide.java.view.SymbolListView;
 import com.duy.projectview.ProjectFileContract;
 import com.duy.projectview.ProjectFilePresenter;
 import com.duy.projectview.view.dialog.DialogNewAndroidProject;
@@ -75,18 +64,15 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.duy.projectview.ProjectFileContract.Callback;
 import static com.duy.projectview.ProjectFileContract.FileActionListener;
-import static com.duy.projectview.view.fragments.FolderStructureFragment.newInstance;
 
 /**
  * Created by Duy on 09-Mar-17.
  */
 public abstract class ProjectManagerActivity extends IdeActivity
-        implements SymbolListView.OnKeyListener,
+        implements
         EditorControl,
         FileActionListener,
         DialogNewJavaProject.OnCreateProjectListener,
@@ -104,11 +90,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
     protected SlidingUpPanelLayout mContainerOutput;
     protected JavaProject mProject;
     protected ProjectFileContract.Presenter mFilePresenter;
-    protected ViewPager mBottomPage;
     protected PagePresenter mPagePresenter;
-    protected DiagnosticPresenter mDiagnosticPresenter;
-    protected MessagePresenter mMessagePresenter;
-    protected DrawerLayout mDrawerLayout;
 
 
     @Override
@@ -122,21 +104,18 @@ public abstract class ProjectManagerActivity extends IdeActivity
         setupFileView(savedInstanceState);
         FragmentManager fm = getSupportFragmentManager();
 
-        List<PageDescriptor> pageDescriptors = new ArrayList<>();
-        pageDescriptors.add(new SimplePageDescriptor(MessageFragment.TAG, "Message"));
-        pageDescriptors.add(new SimplePageDescriptor(DiagnosticFragment.TAG, "Diagnostic"));
-        BottomPageAdapter bottomAdapter = new BottomPageAdapter(fm, pageDescriptors);
+//        List<PageDescriptor> pageDescriptors = new ArrayList<>();
+//        pageDescriptors.add(new SimplePageDescriptor(MessageFragment.TAG, "Message"));
+//        pageDescriptors.add(new SimplePageDescriptor(DiagnosticFragment.TAG, "Diagnostic"));
+//        BottomPageAdapter bottomAdapter = new BottomPageAdapter(fm, pageDescriptors);
+//
+//        mBottomPage = findViewById(R.id.bottom_page);
+//        mBottomPage.setAdapter(bottomAdapter);
+//        mBottomPage.setOffscreenPageLimit(bottomAdapter.getCount());
 
-        mBottomPage = findViewById(R.id.bottom_page);
-        mBottomPage.setAdapter(bottomAdapter);
-        mBottomPage.setOffscreenPageLimit(bottomAdapter.getCount());
-
-        mDiagnosticPresenter = new DiagnosticPresenter(this, bottomAdapter, mPagePresenter);
-        mMessagePresenter = new MessagePresenter(this, bottomAdapter, mDiagnosticPresenter);
-
-        TabLayout bottomTab = findViewById(R.id.bottom_tab);
-        bottomTab.setupWithViewPager(mBottomPage);
-
+//        TabLayout bottomTab = findViewById(R.id.bottom_tab);
+//        bottomTab.setupWithViewPager(mBottomPage);
+//
         //create project if need
         createProjectIfNeed();
     }
@@ -148,12 +127,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
 
     private void createProjectIfNeed() {
         if (mProject == null) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showDialogCreateJavaProject();
-                }
-            }, 100);
+            showDialogCreateJavaProject();
         }
     }
 
@@ -164,7 +138,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
                     getSupportFragmentManager().findFragmentByTag(FolderStructureFragment.TAG);
         }
         if (folderStructureFragment == null) {
-            folderStructureFragment = newInstance(mProject);
+            folderStructureFragment = FolderStructureFragment.newInstance(mProject);
         }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.container_file, folderStructureFragment, FolderStructureFragment.TAG).commit();
@@ -173,7 +147,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
 
 
     protected void bindView() {
-        mDrawerLayout = findViewById(R.id.drawer_layout);
         mFileManager = new FileManager(this);
         mContainerOutput = findViewById(R.id.sliding_layout);
     }
@@ -320,9 +293,8 @@ public abstract class ProjectManagerActivity extends IdeActivity
 
         //show file structure of project
         mFilePresenter.show(projectFile, true);
-        mBottomPage.setCurrentItem(0);
+//        mBottomPage.setCurrentItem(0);
         mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        mMessagePresenter.clear();
         mDiagnosticPresenter.clear();
 
         openDrawer(GravityCompat.START);
@@ -335,7 +307,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
     @Override
     public void onNewFileCreated(@NonNull File file) {
         mFilePresenter.refresh(mProject);
-        if (file.isFile()) addNewPageEditor(file);
+        openFile(file.getPath());
     }
 
     @Override
@@ -350,7 +322,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
     }
 
-    private boolean openFileByAnotherApp(File file) {
+    private void openFileByAnotherApp(File file) {
         try {
             Uri uri;
             if (Build.VERSION.SDK_INT >= 24) {
@@ -370,7 +342,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
-        return true;
     }
 
     @Override
@@ -389,21 +360,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
     }
 
 
-    public void showDialogCreateJavaProject() {
-        DialogNewJavaProject dialogNewProject = DialogNewJavaProject.newInstance();
-        dialogNewProject.show(getSupportFragmentManager(), DialogNewJavaProject.TAG);
-    }
-
-    public void showDialogCreateAndroidProject() {
-        DialogNewAndroidProject dialogNewProject = DialogNewAndroidProject.newInstance();
-        dialogNewProject.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
-    }
-
-    public void showDialogSelectFileType(@Nullable File parent) {
-        DialogSelectType dialogSelectType = DialogSelectType.newInstance(parent);
-        dialogSelectType.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
-    }
-
     @Override
     public void onFileTypeSelected(File currentDir, String type) {
         if (type.equals(getString(R.string.java_file))) {
@@ -417,21 +373,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
             showDialogCreateNewFolder(currentDir);
         }
     }
-
-    /**
-     * Show dialog create new folder
-     *
-     * @param file - current file, uses for determine current directory, it can be null
-     */
-    private void showDialogCreateNewFolder(@Nullable File file) {
-        if (mProject != null && file != null) {
-            DialogNewFolder newFolder = DialogNewFolder.newInstance(mProject, file);
-            newFolder.show(getSupportFragmentManager(), DialogNewClass.TAG);
-        } else {
-            toast("Can not create new folder");
-        }
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -490,6 +431,20 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
     }
 
+    /**
+     * Show dialog create new folder
+     *
+     * @param file - current file, uses for determine current directory, it can be null
+     */
+    private void showDialogCreateNewFolder(@Nullable File file) {
+        if (mProject != null && file != null) {
+            DialogNewFolder newFolder = DialogNewFolder.newInstance(mProject, file);
+            newFolder.show(getSupportFragmentManager(), DialogNewClass.TAG);
+        } else {
+            toast("Can not create new folder");
+        }
+    }
+
     private void showDialogCreateNewXml(File file) {
         if (mProject != null && file != null) {
             DialogNewAndroidResource dialog = DialogNewAndroidResource.newInstance(mProject, file);
@@ -515,10 +470,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
     }
 
-    protected void toast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
     public void showDialogOpenJavaProject() {
         FileExplorerActivity.startPickPathActivity(this, FileManager.EXTERNAL_DIR,
                 null, REQUEST_OPEN_JAVA_PROJECT);
@@ -530,6 +481,24 @@ public abstract class ProjectManagerActivity extends IdeActivity
 
     }
 
+    public void showDialogCreateJavaProject() {
+        DialogNewJavaProject dialogNewProject = DialogNewJavaProject.newInstance();
+        dialogNewProject.show(getSupportFragmentManager(), DialogNewJavaProject.TAG);
+    }
+
+    public void showDialogCreateAndroidProject() {
+        DialogNewAndroidProject dialogNewProject = DialogNewAndroidProject.newInstance();
+        dialogNewProject.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
+    }
+
+    public void showDialogSelectFileType(@Nullable File parent) {
+        DialogSelectType dialogSelectType = DialogSelectType.newInstance(parent);
+        dialogSelectType.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
+    }
+
+    protected void toast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 
     public void closeDrawer(int start) {
         if (mDrawerLayout.isDrawerOpen(start)) mDrawerLayout.closeDrawer(start);

@@ -20,8 +20,6 @@ import android.view.View;
 
 public interface EditorControl {
 
-    void saveCurrentFile();
-
     void createNewFile(View view);
 
 }

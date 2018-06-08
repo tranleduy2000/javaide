@@ -18,21 +18,18 @@ package com.duy.ide.java;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.GravityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.duy.ide.R;
 import com.duy.ide.java.editor.code.JavaIdeActivity;
-import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
-import com.duy.ide.javaide.setting.CompilerSettingActivity;
 import com.duy.ide.java.setting.SettingsActivity;
 import com.duy.ide.java.utils.DonateUtils;
 import com.duy.ide.java.utils.StoreUtil;
-import com.google.firebase.analytics.FirebaseAnalytics;
+import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
+import com.duy.ide.javaide.setting.CompilerSettingActivity;
 import com.pluscubed.logcat.ui.LogcatActivity;
 
 /**
@@ -64,7 +61,6 @@ public class MenuEditor {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
         if (menuItem.isCheckable()) menuItem.setChecked(!menuItem.isChecked());
-        FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(activity);
         switch (id) {
             case R.id.action_setting:
                 activity.startActivity(new Intent(activity, SettingsActivity.class));
@@ -72,32 +68,12 @@ public class MenuEditor {
             case R.id.action_run:
                 builder.runProject();
                 break;
-            case R.id.action_save:
-                if (listener != null) listener.saveCurrentFile();
-                break;
-            case R.id.action_format:
-                analytics.logEvent("action_format_code", new Bundle());
-                if (listener != null) listener.formatCode();
-                break;
             case R.id.action_report_bug: {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("https://github.com/tranleduy2000/javaide/issues"));
                 activity.startActivity(intent);
                 break;
             }
-            case R.id.action_undo:
-                analytics.logEvent("action_undo", new Bundle());
-                if (listener != null) listener.undo();
-                break;
-            case R.id.action_redo:
-                analytics.logEvent("action_redo", new Bundle());
-                if (listener != null) listener.redo();
-                break;
-            case R.id.action_more_feature:
-                activity.openDrawer(GravityCompat.END);
-
-                break;
-
             case R.id.action_donate:
                 DonateUtils.showDialogDonate(activity);
                 break;
@@ -113,7 +89,6 @@ public class MenuEditor {
             case R.id.action_new_class:
                 activity.showDialogCreateNewClass(null);
                 break;
-
             case R.id.action_open_project:
                 activity.showDialogOpenJavaProject();
                 break;
@@ -130,7 +105,6 @@ public class MenuEditor {
             case R.id.action_install_cpp_nide:
                 StoreUtil.gotoPlayStore(activity, "com.duy.c.cpp.compiler");
                 break;
-
             case R.id.action_compiler_setting:
                 activity.startActivity(new Intent(activity, CompilerSettingActivity.class));
                 break;

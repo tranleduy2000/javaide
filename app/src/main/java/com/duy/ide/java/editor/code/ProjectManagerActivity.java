@@ -27,7 +27,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -35,10 +34,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -65,6 +61,7 @@ import com.duy.ide.java.diagnostic.MessagePresenter;
 import com.duy.ide.java.file.FileManager;
 import com.duy.ide.java.file.FileUtils;
 import com.duy.ide.java.view.SymbolListView;
+import com.duy.projectview.ProjectFileContract;
 import com.duy.projectview.ProjectFilePresenter;
 import com.duy.projectview.view.dialog.DialogNewAndroidProject;
 import com.duy.projectview.view.dialog.DialogNewAndroidResource;
@@ -73,18 +70,16 @@ import com.duy.projectview.view.dialog.DialogNewFolder;
 import com.duy.projectview.view.dialog.DialogNewJavaProject;
 import com.duy.projectview.view.dialog.DialogSelectType;
 import com.duy.projectview.view.fragments.FolderStructureFragment;
+import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 import static com.duy.projectview.ProjectFileContract.Callback;
 import static com.duy.projectview.ProjectFileContract.FileActionListener;
-import static com.duy.projectview.ProjectFileContract.Presenter;
 import static com.duy.projectview.view.fragments.FolderStructureFragment.newInstance;
 
 /**
@@ -106,22 +101,14 @@ public abstract class ProjectManagerActivity extends IdeActivity
     protected final Handler mHandler = new Handler();
 
     protected FileManager mFileManager;
-    protected EditorPagerAdapter mPageAdapter;
     protected SlidingUpPanelLayout mContainerOutput;
     protected JavaProject mProject;
-    protected Presenter mFilePresenter;
+    protected ProjectFileContract.Presenter mFilePresenter;
     protected ViewPager mBottomPage;
     protected PagePresenter mPagePresenter;
     protected DiagnosticPresenter mDiagnosticPresenter;
     protected MessagePresenter mMessagePresenter;
     protected DrawerLayout mDrawerLayout;
-    protected NavigationView mNavigationView;
-    protected TabLayout mTabLayout;
-    @Nullable
-    protected View mContainerSymbol; //don't support in landscape mode
-    @Nullable
-    protected SymbolListView mKeyList;
-    protected ViewPager mViewPager;
 
 
     @Override
@@ -133,7 +120,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
         bindView();
         setupToolbar();
         setupFileView(savedInstanceState);
-        setupEditor();
         FragmentManager fm = getSupportFragmentManager();
 
         List<PageDescriptor> pageDescriptors = new ArrayList<>();
@@ -185,53 +171,21 @@ public abstract class ProjectManagerActivity extends IdeActivity
         mFilePresenter = new ProjectFilePresenter(folderStructureFragment);
     }
 
-    private void setupEditor() {
-        Set<File> editorFiles = mFileManager.getEditorFiles();
-        ArrayList<PageDescriptor> descriptors = new ArrayList<>();
-        if (mProject != null) {
-            for (File editorFile : editorFiles) {
-                descriptors.add(new SimplePageDescriptor(editorFile.getPath(), editorFile.getName()));
-            }
-        } else {
-            for (File editorFile : editorFiles) {
-                mFileManager.removeTabFile(editorFile.getPath());
-            }
-        }
-        mPageAdapter = new EditorPagerAdapter(getSupportFragmentManager(), descriptors);
-        mViewPager.setAdapter(mPageAdapter);
-        mViewPager.setOffscreenPageLimit(mPageAdapter.getCount());
-
-        mPagePresenter = new PagePresenter((JavaIdeActivity) this, mViewPager, mPageAdapter, mTabLayout, mFileManager);
-        mPagePresenter.invalidateTab();
-    }
 
     protected void bindView() {
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        mKeyList = findViewById(R.id.recycler_view);
         mFileManager = new FileManager(this);
-        mNavigationView = findViewById(R.id.navigation_view);
-        mTabLayout = findViewById(R.id.tab_layout);
-        mContainerSymbol = findViewById(R.id.container_symbol);
-        mViewPager = findViewById(R.id.view_pager);
         mContainerOutput = findViewById(R.id.sliding_layout);
     }
 
     public void setupToolbar() {
-        //setup action bar
-        mToolbar = findViewById(R.id.toolbar);
-
-        setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
-
-        if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {
-            ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
-                    R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            // Set the drawer toggle as the DrawerListener
-            mDrawerLayout.setDrawerListener(mDrawerToggle);
-            mDrawerToggle.syncState();
-        }
+//        if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {
+//            ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
+//                    R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//            // Set the drawer toggle as the DrawerListener
+//            mDrawerLayout.setDrawerListener(mDrawerToggle);
+//            mDrawerToggle.syncState();
+//        }
     }
 
     /**
@@ -244,8 +198,8 @@ public abstract class ProjectManagerActivity extends IdeActivity
     /**
      * Add new page for editor
      * Check if not in list file, add it to tab and select tab of file
-     *  @param file          - file need load
      *
+     * @param file - file need load
      */
     protected void addNewPageEditor(@NonNull File file) {
         mPagePresenter.addPage(file, true);
@@ -303,56 +257,11 @@ public abstract class ProjectManagerActivity extends IdeActivity
      */
     @Nullable
     protected File getCurrentFile() {
-        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
+        EditorDelegate editorFragment = getCurrentEditorDelegate();
         if (editorFragment != null) {
-            String filePath = editorFragment.getFilePath();
-            return new File(filePath);
+            return editorFragment.getDocument().getFile();
         }
         return null;
-    }
-
-    @Override
-    public void saveAs() {
-        saveCurrentFile();
-        final AppCompatEditText edittext = new AppCompatEditText(this);
-        edittext.setHint(R.string.enter_new_file_name);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.save_as)
-                .setView(edittext)
-                .setIcon(R.drawable.ic_create_new_folder_white_24dp)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        String fileName = edittext.getText().toString();
-                        dialog.cancel();
-                        File currentFile = getCurrentFile();
-                        if (currentFile != null) {
-                            try {
-                                mFileManager.copy(currentFile.getPath(),
-                                        currentFile.getParent() + "/" + fileName);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Toast.makeText(ProjectManagerActivity.this, R.string.can_not_save_file,
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        builder.create().show();
-    }
-
-    @Override
-    public void saveAllFile() {
-        for (int i = 0; i < mPageAdapter.getCount(); i++) {
-            EditorFragment fm = mPageAdapter.getExistingFragment(i);
-            if (fm != null) {
-                fm.saveFile();
-            }
-        }
     }
 
     @Override
@@ -403,9 +312,11 @@ public abstract class ProjectManagerActivity extends IdeActivity
         JavaProjectManager.saveProject(this, projectFile);
 
         //remove all edit page
-        while (mPageAdapter.getCount() > 0) {
-            removePage(0);
-        }
+        // TODO: 09-Jun-18 close last project
+//        while (mPageAdapter.getCount() > 0) {
+//            removePage(0);
+//            getTabManager().newTab()
+//        }
 
         //show file structure of project
         mFilePresenter.show(projectFile, true);
@@ -433,7 +344,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
             //save current file
             addNewPageEditor(file);
             //close drawer
-            mDrawerLayout.closeDrawers();
+            closeDrawers();
         } else {
             openFileByAnotherApp(file);
         }

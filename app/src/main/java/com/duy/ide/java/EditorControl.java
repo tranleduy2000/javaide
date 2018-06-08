@@ -19,20 +19,9 @@ package com.duy.ide.java;
 import android.view.View;
 
 public interface EditorControl {
-    void saveAs();
 
     void saveCurrentFile();
 
-    void saveAllFile();
-
     void createNewFile(View view);
-
-    void goToLine();
-
-    void formatCode();
-
-    void undo();
-
-    void redo();
 
 }

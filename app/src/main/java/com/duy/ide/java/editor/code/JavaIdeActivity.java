@@ -20,12 +20,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatEditText;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,8 +42,8 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.android.compiler.utils.ProjectUtils;
 import com.duy.ide.R;
-import com.duy.ide.code.format.CodeFormatProviderImpl;
-import com.duy.ide.diagnostic.DiagnosticPresenter;
+import com.duy.ide.code.api.CodeFormatProvider;
+import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.java.Builder;
 import com.duy.ide.java.MenuEditor;
 import com.duy.ide.java.diagnostic.DiagnosticFragment;
@@ -57,6 +54,7 @@ import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
 import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
+import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -70,9 +68,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     public static final int REQUEST_CODE_SAMPLE = 1015;
 
     private static final String TAG = "MainActivity";
-
+    private static final int RC_BUILD_PROJECT = 131;
     private MenuEditor mMenuEditor;
-    private MenuItem mActionRun;
     private ProgressBar mCompileProgress;
     private JavaAutoCompleteProvider mAutoCompleteProvider;
 
@@ -85,7 +82,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     }
 
     @Override
-    protected void populateDiagnostic(@NonNull DiagnosticPresenter diagnosticPresenter) {
+    protected void populateDiagnostic(@NonNull DiagnosticContract.Presenter diagnosticPresenter) {
         //init here, set output parser
         // TODO: 09-Jun-18 output parser AAPT and JAVA
     }
@@ -95,7 +92,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     }
 
     @Override
-    protected CodeFormatProviderImpl getCodeFormatProvider() {
+    protected CodeFormatProvider getCodeFormatProvider() {
         // TODO: 09-Jun-18 java code format
         return super.getCodeFormatProvider();
     }
@@ -119,28 +116,13 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     }
 
     public void initView() {
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                mDrawerLayout.closeDrawers();
-                return mMenuEditor.onOptionsItemSelected(item);
-            }
-        });
-        View tab = findViewById(R.id.img_tab);
-        if (tab != null) {
-            tab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    insertTab(v);
-                }
-            });
-        }
         mCompileProgress = findViewById(R.id.compile_progress);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return mMenuEditor.onOptionsItemSelected(item);
+        boolean handled = mMenuEditor.onOptionsItemSelected(item);
+        return handled || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -172,13 +154,17 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         boolean r = mMenuEditor.onCreateOptionsMenu(menu);
-        mActionRun = menu.findItem(R.id.action_run);
         return r;
     }
 
     @Override
     public void runProject() {
-        saveAllFile();
+        saveAll(RC_BUILD_PROJECT);
+    }
+
+    @Override
+    protected void onSaveComplete(int requestCode) {
+        super.onSaveComplete(requestCode);
         if (mProject != null) {
             if (mProject instanceof AndroidAppProject) {
                 compileAndroidProject();
@@ -246,7 +232,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
             }
         }
     }
-
 
     private void compileJavaProject() {
         final IBuilder<JavaProject> builder = new JavaBuilder(this, mProject);
@@ -349,59 +334,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     }
 
     @Override
-    public void goToLine() {
-        final AppCompatEditText edittext = new AppCompatEditText(this);
-        edittext.setInputType(InputType.TYPE_CLASS_NUMBER);
-        edittext.setMaxEms(5);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.goto_line)
-                .setView(edittext)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        String line = edittext.getText().toString();
-                        if (!line.isEmpty()) {
-                            EditorFragment editorFragment
-                                    = mPageAdapter.getCurrentFragment();
-                            if (editorFragment != null) {
-                                editorFragment.goToLine(Integer.parseInt(line));
-                            }
-                        }
-                        dialog.cancel();
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        builder.create().show();
-    }
-
-    @Override
-    public void formatCode() {
-        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-        if (editorFragment != null) {
-            editorFragment.formatCode();
-        }
-    }
-
-    @Override
-    public void undo() {
-        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-        if (editorFragment != null) {
-            editorFragment.undo();
-        }
-    }
-
-    @Override
-    public void redo() {
-        EditorFragment editorFragment = mPageAdapter.getCurrentFragment();
-        if (editorFragment != null) {
-            editorFragment.redo();
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
@@ -465,7 +397,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     }
 
     private void updateUiStartCompile() {
-        if (mActionRun != null) mActionRun.setEnabled(false);
+        setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
         if (mCompileProgress != null) mCompileProgress.setVisibility(View.VISIBLE);
         hideKeyboard();
         openDrawer(GravityCompat.START);
@@ -483,7 +415,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     private void updateUIFinish() {
         mMessagePresenter.pause((JavaApplication) getApplication());
-        if (mActionRun != null) mActionRun.setEnabled(true);
+        setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
         if (mCompileProgress != null) {
             mHandler.postDelayed(new Runnable() {
                 @Override

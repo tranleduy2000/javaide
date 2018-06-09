@@ -39,6 +39,7 @@ import com.duy.android.compiler.project.FileCollection;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.android.compiler.utils.ProjectUtils;
+import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.ide.R;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.diagnostic.DiagnosticContract;
@@ -55,6 +56,8 @@ import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
 import com.duy.ide.javaide.setting.CompilerSettingActivity;
+import com.duy.ide.javaide.theme.PremiumDialog;
+import com.duy.ide.javaide.theme.ThemeActivity;
 import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.manager.MenuManager;
@@ -67,14 +70,14 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-public class JavaIdeActivity extends ProjectManagerActivity implements DialogRunConfig.OnConfigChangeListener
-        {
+public class JavaIdeActivity extends ProjectManagerActivity implements DialogRunConfig.OnConfigChangeListener {
     private static final String TAG = "MainActivity";
 
     private static final int RC_OPEN_SAMPLE = 1015;
     private static final int RC_BUILD_PROJECT = 131;
     private static final int RC_REVIEW_LAYOUT = 741;
-
+    private static final int RC_CHANGE_THEME = 350;
+    private InAppPurchaseHelper mInAppPurchaseHelper;
     private ProgressBar mCompileProgress;
     private JavaAutoCompleteProvider mAutoCompleteProvider;
 
@@ -83,6 +86,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
         super.onCreate(savedInstanceState);
         mCompileProgress = findViewById(R.id.compile_progress);
         startAutoCompleteService();
+
+        mInAppPurchaseHelper = new InAppPurchaseHelper(this);
     }
 
     @Override
@@ -200,10 +205,16 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
                 startActivity(intent);
                 break;
             }
+            case R.id.action_premium:
+                PremiumDialog premiumDialog = new PremiumDialog(this, mInAppPurchaseHelper);
+                premiumDialog.show();
+                break;
+            case R.id.action_editor_color_scheme:
+                startActivityForResult(new Intent(this, ThemeActivity.class), RC_CHANGE_THEME);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     protected void onSaveComplete(int requestCode) {

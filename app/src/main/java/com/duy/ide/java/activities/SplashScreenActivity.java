@@ -144,6 +144,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     finish();
                 }
             }, 400);
+            return;
         }
         try {
             testCreateProject();

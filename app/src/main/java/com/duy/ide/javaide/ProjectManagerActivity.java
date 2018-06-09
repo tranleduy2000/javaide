@@ -66,7 +66,7 @@ import static com.duy.projectview.ProjectFileContract.FileActionListener;
  * Created by Duy on 09-Mar-17.
  */
 public abstract class ProjectManagerActivity extends IdeActivity
-        implements EditorControl, FileActionListener,
+        implements  FileActionListener,
         DialogNewJavaProject.OnCreateProjectListener,
         DialogSelectType.OnFileTypeSelectListener {
     private static final String TAG = "BaseEditorActivity";
@@ -76,9 +76,8 @@ public abstract class ProjectManagerActivity extends IdeActivity
     private static final int REQUEST_PICK_FILE = 75;
 
     protected JavaProject mProject;
-
     protected ProjectFileContract.Presenter mFilePresenter;
-    private File mLastSelectedDir = null;
+    protected File mLastSelectedDir = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

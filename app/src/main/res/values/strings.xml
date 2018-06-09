@@ -138,7 +138,10 @@
         To support developer, you can buy premium version with 1$. Some locked features: \n
         1. Editor color schemes (320+ themes)\n
         2. Change editor fonts (5+ fonts)\n
-        3. Terminal themes (10 themes)
     </string>
     <string name="button_purchase_restore">Restore</string>
+
+    <string name="editor_theme">Editor theme (Pro)</string>
+    <string name="selected_editor_theme">Selected %s. Restart app to apply theme.</string>
+    <string name="logcat">Logcat</string>
 </resources>

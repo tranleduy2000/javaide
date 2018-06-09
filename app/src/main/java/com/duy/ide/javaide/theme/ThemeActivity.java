@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.common.purchase.Premium;
 import com.duy.ide.R;
+import com.duy.ide.editor.theme.EditorThemeFragment;
 import com.duy.ide.editor.theme.model.EditorTheme;
 import com.jecelyin.editor.v2.Preferences;
 import com.jecelyin.editor.v2.ThemeSupportActivity;

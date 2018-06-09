@@ -19,12 +19,19 @@
         android:id="@+id/action_install_cpp_nide"
         android:icon="@drawable/ic_code_white_24dp"
         android:title="C/C++ N-IDE" />
+    <item
+        android:id="@+id/action_premium"
+        android:icon="@drawable/baseline_lock_open_24"
+        android:title="@string/title_premium_version" />
+    <item
+        android:id="@+id/action_editor_color_scheme"
+        android:icon="@drawable/ic_color_lens_white_24dp"
+        android:title="@string/editor_theme" />
 
     <item
         android:id="@+id/action_see_logcat"
         android:icon="@drawable/ic_line_weight_white_24dp"
-        android:title="Logcat" />
-
+        android:title="@string/logcat" />
     <item
         android:id="@+id/action_sample"
         android:icon="@drawable/ic_code_white_24dp"

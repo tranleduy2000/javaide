@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.java.editor.code.view.adapters;
+package com.duy.ide.javaide.editor.view.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;

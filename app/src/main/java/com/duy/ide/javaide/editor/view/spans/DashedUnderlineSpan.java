@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.java.editor.code.view.spans;
+package com.duy.ide.javaide.editor.view.spans;
 
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;

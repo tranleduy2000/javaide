@@ -12,7 +12,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -32,21 +31,6 @@ import javax.xml.transform.stream.StreamResult;
  */
 
 public class FormatFactory {
-    @Nullable
-    public static Type getType(File ext) {
-        if (ext.getPath().contains(".")) {
-            switch (ext.getPath().substring(ext.getPath().lastIndexOf(".") + 1).toLowerCase()) {
-                case "java":
-                    return Type.JAVA;
-                case "xml":
-                    return Type.XML;
-                default:
-                    return null;
-            }
-        } else {
-            return null;
-        }
-    }
 
     public static String format(Context context, String src, @Nullable Type type) throws Exception {
         switch (type) {

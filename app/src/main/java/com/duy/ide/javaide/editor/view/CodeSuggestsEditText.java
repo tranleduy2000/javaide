@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.java.editor.code.view;
+package com.duy.ide.javaide.editor.view;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -34,7 +34,7 @@ import com.duy.ide.R;
 import com.duy.ide.editor.view.EditActionSupportEditor;
 import com.duy.ide.java.DLog;
 import com.duy.ide.java.EditorSetting;
-import com.duy.ide.java.editor.code.view.adapters.CodeSuggestAdapter;
+import com.duy.ide.javaide.editor.view.adapters.CodeSuggestAdapter;
 import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.autocomplete.model.Description;
 

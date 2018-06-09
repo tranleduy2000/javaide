@@ -2,7 +2,7 @@ package com.duy.ide.javaide.autocomplete.model;
 
 import android.support.annotation.NonNull;
 
-import com.duy.ide.java.editor.code.view.EditorView;
+import com.duy.ide.javaide.editor.view.EditorView;
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Method;

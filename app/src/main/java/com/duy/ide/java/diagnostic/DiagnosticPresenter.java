@@ -11,7 +11,7 @@ import com.android.ide.common.blame.SourceFilePosition;
 import com.android.ide.common.blame.SourcePosition;
 import com.duy.ide.java.EditPageContract;
 import com.duy.ide.java.adapters.BottomPageAdapter;
-import com.duy.ide.java.editor.code.ProjectManagerActivity;
+import com.duy.ide.javaide.ProjectManagerActivity;
 
 import java.util.List;
 

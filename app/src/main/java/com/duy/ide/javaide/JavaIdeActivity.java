@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.java.editor.code;
+package com.duy.ide.javaide;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -51,6 +51,7 @@ import com.duy.ide.java.utils.DonateUtils;
 import com.duy.ide.java.utils.RootUtils;
 import com.duy.ide.java.utils.StoreUtil;
 import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
+import com.duy.ide.javaide.formatter.JavaIdeCodeFormatProvider;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
@@ -94,8 +95,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     @Override
     protected CodeFormatProvider getCodeFormatProvider() {
-        // TODO: 09-Jun-18 java code format
-        return super.getCodeFormatProvider();
+        return new JavaIdeCodeFormatProvider(this);
     }
 
     protected void startAutoCompleteService() {

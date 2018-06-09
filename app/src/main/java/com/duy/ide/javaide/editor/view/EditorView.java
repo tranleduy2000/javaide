@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.java.editor.code.view;
+package com.duy.ide.javaide.editor.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

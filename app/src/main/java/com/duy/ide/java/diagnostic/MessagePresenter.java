@@ -10,7 +10,7 @@ import com.duy.JavaApplication;
 import com.duy.ide.java.adapters.BottomPageAdapter;
 import com.duy.ide.java.diagnostic.parser.ToolOutputParser;
 import com.duy.ide.java.diagnostic.parser.java.JavaOutputParser;
-import com.duy.ide.java.editor.code.ProjectManagerActivity;
+import com.duy.ide.javaide.ProjectManagerActivity;
 
 import java.io.IOException;
 import java.io.OutputStream;

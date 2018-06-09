@@ -36,7 +36,7 @@ import com.android.utils.StdLogger;
 import com.duy.android.compiler.env.Environment;
 import com.duy.ide.java.DLog;
 import com.duy.ide.R;
-import com.duy.ide.java.editor.code.JavaIdeActivity;
+import com.duy.ide.javaide.JavaIdeActivity;
 
 import java.io.File;
 import java.util.Arrays;

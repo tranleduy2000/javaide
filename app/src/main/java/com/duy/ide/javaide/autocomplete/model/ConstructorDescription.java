@@ -1,6 +1,6 @@
 package com.duy.ide.javaide.autocomplete.model;
 
-import com.duy.ide.java.editor.code.view.EditorView;
+import com.duy.ide.javaide.editor.view.EditorView;
 import com.duy.ide.javaide.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Constructor;

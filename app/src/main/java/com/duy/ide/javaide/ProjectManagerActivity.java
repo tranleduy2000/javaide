@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.java.editor.code;
+package com.duy.ide.javaide;
 
 import android.content.DialogInterface;
 import android.content.Intent;

@@ -1,5 +1,6 @@
 package com.duy.ide.javaide.run.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -19,9 +20,8 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 
-import com.duy.ide.java.setting.AppSetting;
-import com.duy.ide.javaide.run.utils.IntegerQueue;
 import com.duy.ide.java.utils.ByteQueue;
+import com.duy.ide.javaide.run.utils.IntegerQueue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,6 +67,7 @@ public class ConsoleEditText extends AppCompatEditText {
     private TextListener mTextListener = new TextListener();
     private EnterListener mEnterListener = new EnterListener();
     private byte[] mReceiveBuffer;
+    @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -83,24 +84,22 @@ public class ConsoleEditText extends AppCompatEditText {
 
     public ConsoleEditText(Context context) {
         super(context);
-        init(context);
+        init();
     }
 
     public ConsoleEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
     public ConsoleEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
-        if (!isInEditMode()) {
-            AppSetting pref = new AppSetting(context);
-            setTypeface(pref.getConsoleFont());
-            setTextSize(pref.getConsoleTextSize());
+    private void init() {
+        if (isInEditMode()){
+            return;
         }
         setFilters(new InputFilter[]{mTextListener});
         setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);

@@ -20,14 +20,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
-import com.duy.ide.java.DLog;
 import com.duy.ide.R;
-import com.duy.ide.themefont.fonts.FontManager;
-import com.duy.ide.java.utils.DonateUtils;
 
 /**
  * Setting for application
@@ -168,46 +164,6 @@ public class AppSetting {
         }
     }
 
-    public boolean useFullScreen() {
-        return getBoolean(context.getString(R.string.key_full_screen));
-    }
-
-    public int getConsoleBackground() {
-//        return getInt(mContext.readBuffer(R.string.key_bg_console));
-        return Color.BLACK;
-    }
-
-    public int getConsoleTextColor() {
-//        return getInt(mContext.readBuffer(R.string.key_console_text_color));
-        return Color.WHITE;
-    }
-
-
-    public int getConsoleFrameRate() {
-        int i;
-        try {
-            i = Integer.parseInt(sharedPreferences.getString(context.getString(R.string.key_console_frame_rate), "60"));
-        } catch (Exception e) {
-            i = 60;
-        }
-        return (i > 0 && i < 1000) ? i : 60;
-    }
-
-    public int getConsoleMaxBuffer() {
-        int res;
-        try {
-            res = Integer.parseInt(
-                    sharedPreferences.getString(context.getString(R.string.key_console_max_buffer_size), "200"));
-        } catch (Exception e) {
-            res = 100;
-        }
-        return res;
-    }
-
-    public boolean isWrapText() {
-        return getBoolean(context.getString(R.string.key_pref_word_wrap));
-    }
-
     /**
      * @return size of editor text in sp unit
      */
@@ -219,125 +175,10 @@ public class AppSetting {
         }
     }
 
-    /**
-     * @return size of console text in sp unit
-     */
-    public float getConsoleTextSize() {
-        try {
-            return Float.parseFloat(getString("key_pref_console_font_size"));
-        } catch (Exception e) {
-            return 12f;
-        }
-    }
-
-    public Typeface getEditorFont() {
-        boolean fromStorage = getBoolean("key_pref_editor_font_from_storage");
-        String name = getString("key_pref_editor_font");
-        return fromStorage && DonateUtils.DONATED ? FontManager.getFontFromStorage(name)
-                : FontManager.getFontFromAsset(context, name);
-    }
-
-    public Typeface getConsoleFont() {
-        boolean fromStorage = getBoolean("key_pref_console_font_from_storage");
-        String name = getString("key_pref_console_font");
-        return fromStorage && DonateUtils.DONATED ? FontManager.getFontFromStorage(name)
-                : FontManager.getFontFromAsset(context, name);
-    }
-
-    public boolean isShowLines() {
-        return getBoolean(context.getString(R.string.key_show_line_number));
-    }
-
-    public void setShowLines(boolean isShow) {
-        put(context.getString(R.string.key_show_line_number), isShow);
-    }
-
-    public boolean isAutoCompile() {
-        return getBoolean(context.getString(R.string.key_pref_auto_compile));
-    }
-
-    public boolean isShowListSymbol() {
-        return getBoolean(context.getString(R.string.key_show_symbol), true);
-    }
-
-    public boolean isShowSuggestPopup() {
-        return getBoolean(context.getString(R.string.key_show_suggest_popup), true);
-    }
-
-    public void setShowSuggestPopup(boolean b) {
-        put(context.getString(R.string.key_show_suggest_popup), b);
-    }
-
-    public void setShowSymbol(boolean b) {
-        put(context.getString(R.string.key_show_symbol), b);
-    }
-
-    public void setWordWrap(boolean b) {
-        put(context.getString(R.string.key_pref_word_wrap), b);
-    }
-
-    public int getMaxPage() {
-        int count = getInt(context.getString(R.string.key_max_page));
-        count = Math.min(10, count);
-        count = Math.max(1, count);
-        return count;
-    }
-
-    public void setMaxPage(int count) {
-        put(context.getString(R.string.key_max_page), count);
-    }
-
-    public int getMaxHistoryEdit() {
-        int max = getInt(context.getString(R.string.max_history_edit), 1000);
-        max = Math.min(1000, max);
-        max = Math.max(100, max);
-        return max;
-    }
-
-    public long getMaxStackSize() {
-        long maxStack = getLong("key_max_stack");
-        maxStack = Math.max(5000, maxStack);
-        DLog.d(TAG, "getMaxStackSize() returned: " + maxStack);
-        return maxStack;
-    }
-
-    public boolean useLightTheme() {
-        return false;
-    }
-
-    public int getMaxLineConsole() {
-        return 1000;
-    }
-
-    public boolean useImeKeyboard() {
-        return getBoolean(context.getString(R.string.key_ime_keyboard), false);
-    }
-
-    public void setImeMode(boolean checked) {
-        put(context.getString(R.string.key_ime_keyboard), checked);
-    }
-
-    public boolean flingToScroll() {
-        return true;
-    }
-
-    public boolean useAntiAlias() {
-        return getBoolean("pref_console_anti_alias");
-    }
-
     public void setTheme(String name) {
         put(context.getString(R.string.key_code_theme), name);
     }
 
-
-    public boolean hasSystemInstalled() {
-        return getBoolean("system_installed");
-    }
-
-    public String getSystemVersion() {
-        String version = getString("system_version");
-        return version.isEmpty() ? "Unknown" : version;
-    }
 
 
     public int getFormatType() {

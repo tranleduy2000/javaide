@@ -21,12 +21,9 @@ import android.graphics.Typeface;
 
 import com.duy.ide.R;
 import com.duy.ide.java.file.FileManager;
-import com.duy.ide.java.utils.DonateUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.LinkedList;
 
 /**
  * Created by Duy on 18-Mar-17.
@@ -90,37 +87,6 @@ public class FontManager {
             e.printStackTrace();
         }
         return Typeface.MONOSPACE;
-    }
-
-    private static boolean isFontFile(String name) {
-        return name.toLowerCase().endsWith(".ttf") || name.toLowerCase().endsWith(".otf");
-    }
-
-    public static LinkedList<FontEntry> getAll(Context context) {
-        LinkedList<FontEntry> fontEntries = new LinkedList<>();
-        try {
-            String[] fonts = context.getAssets().list("fonts");
-            for (String font : fonts) {
-                if (isFontFile(font)) {
-                    fontEntries.add(new FontEntry(false, font));
-                }
-            }
-            fontEntries.addFirst(new FontEntry(false, "monospace"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (DonateUtils.DONATED) {
-            File parent = new File(FileManager.EXTERNAL_DIR_SRC + "fonts");
-            if (parent.exists() && parent.isDirectory()) {
-                File[] files = parent.listFiles();
-                for (File f : files) {
-                    if (isFontFile(f.getName())) {
-                        fontEntries.add(new FontEntry(true, f.getName()));
-                    }
-                }
-            }
-        }
-        return fontEntries;
     }
 
     public static Typeface getFont(FontEntry fontEntry, Context context) {

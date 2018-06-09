@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:fastScrollPopupBgColor="?android:windowBackground"
+        app:fastScrollPopupTextColor="?android:textColorPrimary"
+        app:fastScrollPopupTextSize="24sp"
+        app:fastScrollThumbColor="?colorAccent">
+
+    </com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView>
+
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+</FrameLayout>

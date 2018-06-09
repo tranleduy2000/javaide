@@ -28,7 +28,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
-import com.duy.ide.javaide.editor.autocomplete.util.SpanUtil;
 import com.duy.ide.R;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
@@ -37,7 +36,8 @@ import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
-import com.duy.ide.java.setting.AppSetting;
+import com.duy.ide.javaide.editor.autocomplete.util.SpanUtil;
+import com.jecelyin.editor.v2.Preferences;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -105,8 +105,8 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
         this.suggestion = new ArrayList<>();
         this.resourceID = resource;
 
-        AppSetting appSetting = new AppSetting(context);
-        editorTextSize = appSetting.getEditorTextSize();
+
+        editorTextSize = Preferences.getInstance(context).getFontSize();
     }
 
     public ArrayList<Description> getAllItems() {

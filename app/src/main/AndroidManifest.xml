@@ -31,7 +31,6 @@
         </activity>
 
         <activity android:name=".javaide.sample.activities.JavaSampleActivity" />
-        <activity android:name=".java.activities.DonateActivity" />
         <activity
             android:name=".javaide.run.activities.ExecuteActivity"
             android:configChanges="orientation|screenLayout|uiMode|screenSize|smallestScreenSize"

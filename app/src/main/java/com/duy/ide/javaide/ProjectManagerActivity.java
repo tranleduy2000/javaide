@@ -117,11 +117,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
 
         String tag = FolderStructureFragment.TAG;
-        FolderStructureFragment folderStructureFragment = (FolderStructureFragment)
-                getSupportFragmentManager().findFragmentByTag(tag);
-        if (folderStructureFragment == null) {
-            folderStructureFragment = FolderStructureFragment.newInstance(mProject);
-        }
+        FolderStructureFragment folderStructureFragment = FolderStructureFragment.newInstance(mProject);
         ViewGroup viewGroup = nav.findViewById(R.id.left_navigation_content);
         viewGroup.removeAllViews();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

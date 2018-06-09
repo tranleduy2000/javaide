@@ -21,13 +21,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -55,6 +53,7 @@ import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
 import com.duy.ide.javaide.setting.CompilerSettingActivity;
 import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
+import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.pluscubed.logcat.ui.LogcatActivity;
 
@@ -71,13 +70,15 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     private static final String TAG = "MainActivity";
     private static final int RC_BUILD_PROJECT = 131;
+    private static final int RC_REVIEW_LAYOUT = 741;
+
     private ProgressBar mCompileProgress;
     private JavaAutoCompleteProvider mAutoCompleteProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initView();
+        mCompileProgress = findViewById(R.id.compile_progress);
         startAutoCompleteService();
     }
 
@@ -114,19 +115,16 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         }
     }
 
-    public void initView() {
-        mCompileProgress = findViewById(R.id.compile_progress);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu container) {
         container.add(0, R.id.action_run, 0, R.string.run)
-                .setIcon(com.jecelyin.editor.v2.manager.MenuManager.makeToolbarNormalIcon(this, R.drawable.ic_play_arrow_white_24dp))
+                .setIcon(MenuManager.makeToolbarNormalIcon(this,
+                        R.drawable.ic_play_arrow_white_24dp))
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         super.onCreateOptionsMenu(container);
 
         MenuItem fileMenu = container.findItem(R.id.menu_file);
-        new JavaMenuManager(this).createFileMenu(fileMenu);
+        new JavaMenuManager(this).createFileMenu(fileMenu.getSubMenu());
         return true;
     }
 
@@ -184,7 +182,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void runProject() {
         saveAll(RC_BUILD_PROJECT);
@@ -203,6 +200,15 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
                     }
                 } else {
                     Toast.makeText(this, "You need create project", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case RC_REVIEW_LAYOUT:
+                File currentFile = getCurrentFile();
+                if (currentFile != null) {
+                    DialogLayoutPreview dialogPreview = DialogLayoutPreview.newInstance(currentFile);
+                    dialogPreview.show(getSupportFragmentManager(), DialogLayoutPreview.TAG);
+                } else {
+                    Toast.makeText(this, "Can not find file", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -372,31 +378,15 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     @Override
     public void previewLayout(String path) {
-        saveAll(0);
-        // TODO: 09-Jun-18 save all
-        File currentFile = getCurrentFile();
-        if (currentFile != null) {
-            DialogLayoutPreview dialogPreview = DialogLayoutPreview.newInstance(currentFile);
-            dialogPreview.show(getSupportFragmentManager(), DialogLayoutPreview.TAG);
-        } else {
-            Toast.makeText(this, "Can not find file", Toast.LENGTH_SHORT).show();
-        }
-    }
+        saveAll(RC_REVIEW_LAYOUT);
 
+    }
 
     @Override
     public void onConfigChange(JavaProject projectFile) {
         this.mProject = projectFile;
         if (projectFile != null) {
             JavaProjectManager.saveProject(this, projectFile);
-        }
-    }
-
-    private void hideKeyboard() {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 

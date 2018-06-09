@@ -158,5 +158,7 @@
     <string name="warning">Warning</string>
     <string name="select_class_to_run">Select class to run</string>
     <string name="create_main_function">Create main function</string>
+    <string name="title_menu_new">New</string>
+    <string name="title_menu_open">Open</string>
 
 </resources>

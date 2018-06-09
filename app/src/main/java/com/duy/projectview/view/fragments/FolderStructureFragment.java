@@ -66,9 +66,14 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     private ProjectFileContract.Presenter presenter;
     private AndroidTreeView mTreeView;
     private SharedPreferences mPref;
+
+    @Nullable
     private JavaProject mProject;
 
-    public static FolderStructureFragment newInstance(@NonNull JavaProject projectFile) {
+    /**
+     * Create folder view, project can be null, we will init after
+     */
+    public static FolderStructureFragment newInstance(@Nullable JavaProject projectFile) {
         FolderStructureFragment fragment = new FolderStructureFragment();
         fragment.setProject(projectFile);
         return fragment;
@@ -261,7 +266,9 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
 
     @Override
     public TreeNode refresh() {
-        if (mProject == null) return null;
+        if (mProject == null) {
+            return null;
+        }
         TreeNode root = TreeNode.root();
         TreeNode fileStructure = createFileStructure(mProject);
         if (fileStructure != null) {

@@ -20,13 +20,14 @@ import android.widget.Toast;
 import com.duy.android.compiler.project.ClassFile;
 import com.duy.android.compiler.project.ClassUtil;
 import com.duy.android.compiler.project.JavaProject;
-import com.duy.ide.java.CompileManager;
 import com.duy.ide.R;
-import com.duy.ide.java.file.FileManager;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
+
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -36,6 +37,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class DialogRunConfig extends AppCompatDialogFragment {
     public static final String TAG = "DialogRunConfig";
+    public static final String ARGS = "program_args";
     private Spinner mClasses;
     private EditText mArgs;
     private EditText mPackage;
@@ -91,7 +93,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
         }
         setupSpinnerMainClass(view, mProject);
         mArgs = view.findViewById(R.id.edit_arg);
-        mArgs.setText(mPref.getString(CompileManager.ARGS, ""));
+        mArgs.setText(mPref.getString(ARGS, ""));
         mPackage = view.findViewById(R.id.edit_package_name);
         mPackage.setText(mProject.getPackageName());
 
@@ -111,7 +113,7 @@ public class DialogRunConfig extends AppCompatDialogFragment {
 
     private void save() {
         mPref = getDefaultSharedPreferences(getContext());
-        mPref.edit().putString(CompileManager.ARGS, mArgs.getText().toString()).apply();
+        mPref.edit().putString(ARGS, mArgs.getText().toString()).apply();
 
         Object selectedItem = mClasses.getSelectedItem();
         if (selectedItem != null) {
@@ -130,24 +132,31 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     }
 
     private void setupSpinnerMainClass(View view, JavaProject projectFile) {
-        ArrayList<String> names = FileManager.listClassName(projectFile.getJavaSrcDirs().get(0));
+        ArrayList<String> names = listClassName(projectFile.getJavaSrcDirs().get(0));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, names);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         mClasses = view.findViewById(R.id.spinner_main_class);
         mClasses.setAdapter(adapter);
-
-//        if (projectFile.getMainClass() != null) {
-//            String mainClassName = projectFile.getMainClass().getName();
-//            for (int i = 0; i < names.size(); i++) {
-//                String s = names.get(i);
-//                if (s.equalsIgnoreCase(mainClassName)) {
-//                    mClasses.setSelection(i);
-//                    break;
-//                }
-//            }
-//        }
     }
+
+    public ArrayList<String> listClassName(File src) {
+        if (!src.exists()) return new ArrayList<>();
+
+        String[] exts = new String[]{"java"};
+        Collection<File> files = FileUtils.listFiles(src, exts, true);
+
+        ArrayList<String> classes = new ArrayList<>();
+        String srcPath = src.getPath();
+        for (File file : files) {
+            String javaPath = file.getPath();
+            javaPath = javaPath.substring(srcPath.length() + 1, javaPath.length() - 5); //.java
+            javaPath = javaPath.replace(File.separator, ".");
+            classes.add(javaPath);
+        }
+        return classes;
+    }
+
 
     public interface OnConfigChangeListener {
         void onConfigChange(JavaProject projectFile);

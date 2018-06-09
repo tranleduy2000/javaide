@@ -44,11 +44,10 @@ import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
-import com.duy.ide.java.Builder;
-import com.duy.ide.javaide.diagnostic.parser.aapt.AaptOutputParser;
-import com.duy.ide.javaide.diagnostic.parser.java.JavaOutputParser;
 import com.duy.ide.java.utils.RootUtils;
 import com.duy.ide.java.utils.StoreUtil;
+import com.duy.ide.javaide.diagnostic.parser.aapt.AaptOutputParser;
+import com.duy.ide.javaide.diagnostic.parser.java.JavaOutputParser;
 import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.editor.format.JavaIdeCodeFormatProvider;
 import com.duy.ide.javaide.menu.JavaMenuManager;
@@ -68,9 +67,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-public class JavaIdeActivity extends ProjectManagerActivity implements
-        DialogRunConfig.OnConfigChangeListener,
-        Builder {
+public class JavaIdeActivity extends ProjectManagerActivity implements DialogRunConfig.OnConfigChangeListener
+        {
     private static final String TAG = "MainActivity";
 
     private static final int RC_OPEN_SAMPLE = 1015;
@@ -159,7 +157,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         int id = item.getItemId();
         switch (id) {
             case R.id.action_run:
-                runProject();
+                saveAll(RC_BUILD_PROJECT);
                 break;
             case R.id.action_new_java_project:
                 createJavaProject();
@@ -206,10 +204,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void runProject() {
-        saveAll(RC_BUILD_PROJECT);
-    }
 
     @Override
     protected void onSaveComplete(int requestCode) {
@@ -359,7 +353,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     /**
      * show dialog create new source file
      */
-    @Override
     public void createNewFile(View view) {
 //        DialogCreateNewFile dialogCreateNewFile = DialogCreateNewFile.Companion.getInstance();
 //        dialogCreateNewFile.show(getSupportFragmentManager(), DialogCreateNewFile.Companion.getTAG());
@@ -402,10 +395,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         }
     }
 
-    @Override
     public void previewLayout(String path) {
         saveAll(RC_REVIEW_LAYOUT);
-
     }
 
     @Override

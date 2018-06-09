@@ -39,7 +39,6 @@
         <activity
             android:name="com.duy.ide.javaide.JavaIdeActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".java.setting.SettingsActivity" />
         <activity
             android:name=".java.activities.InstallActivity"
             android:configChanges="orientation|screenLayout" />

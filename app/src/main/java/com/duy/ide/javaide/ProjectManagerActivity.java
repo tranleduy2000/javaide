@@ -42,7 +42,6 @@ import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.R;
 import com.duy.ide.core.IdeActivity;
-import com.duy.ide.java.EditorControl;
 import com.duy.ide.java.file.FileUtils;
 import com.duy.projectview.ProjectFileContract;
 import com.duy.projectview.ProjectFilePresenter;

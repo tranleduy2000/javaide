@@ -19,7 +19,6 @@ package com.duy.ide.java.setting;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
@@ -31,11 +30,6 @@ import com.duy.ide.R;
  * Created by Duy on 3/7/2016
  */
 public class AppSetting {
-    public static final String FILE_PATH = "last_file";
-    public static final String LAST_FIND = "LAST_FIND";
-    public static final String LAST_REPLACE = "LAST_REPLACE";
-    public static final String TAB_POSITION_FILE = "TAB_POSITION_FILE";
-    private static final String TAG = "PascalPreferences";
     @NonNull
     protected SharedPreferences.Editor editor;
     @NonNull

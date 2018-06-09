@@ -32,11 +32,11 @@ import android.widget.MultiAutoCompleteTextView;
 
 import com.duy.ide.R;
 import com.duy.ide.editor.view.EditActionSupportEditor;
-import com.duy.ide.java.DLog;
-import com.duy.ide.java.EditorSetting;
-import com.duy.ide.javaide.editor.view.adapters.CodeSuggestAdapter;
+import com.duy.ide.java.utils.DLog;
+import com.duy.ide.java.setting.AppSetting;
 import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.editor.autocomplete.model.Description;
+import com.duy.ide.javaide.editor.view.adapters.CodeSuggestAdapter;
 
 import java.util.ArrayList;
 
@@ -51,7 +51,7 @@ public class CodeSuggestsEditText extends EditActionSupportEditor
 
     protected static final String TAG = CodeSuggestsEditText.class.getSimpleName();
     public int mCharHeight = 0;
-    protected EditorSetting mEditorSetting;
+    protected AppSetting mEditorSetting;
     protected SymbolsTokenizer mTokenizer;
     private CodeSuggestAdapter mAdapter;
     @Nullable
@@ -259,7 +259,7 @@ public class CodeSuggestsEditText extends EditActionSupportEditor
     }
 
     private void init(Context context) {
-        mEditorSetting = new EditorSetting(getContext());
+        mEditorSetting = new AppSetting(getContext());
         setDefaultKeyword();
         mTokenizer = new SymbolsTokenizer();
         setTokenizer(mTokenizer);

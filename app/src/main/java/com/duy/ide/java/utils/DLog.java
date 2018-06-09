@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.ide.java;
+package com.duy.ide.java.utils;
 
 import android.util.Log;
 

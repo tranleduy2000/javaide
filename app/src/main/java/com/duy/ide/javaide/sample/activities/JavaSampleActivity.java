@@ -11,11 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.ide.R;
 import com.duy.ide.java.activities.BaseActivity;
-import com.duy.ide.java.file.FileManager;
 import com.duy.ide.javaide.sample.AssetUtil;
 import com.duy.ide.javaide.sample.fragments.SelectCategoryFragment;
 import com.duy.ide.javaide.sample.fragments.SelectProjectFragment;
@@ -136,7 +136,7 @@ public class JavaSampleActivity extends BaseActivity implements
 
     private void openExample(CodeProjectSample codeProjectSample) {
         try {
-            File projectDir = new File(FileManager.EXTERNAL_DIR);
+            File projectDir = Environment.getSdkAppDir();
             JavaProjectManager manager = new JavaProjectManager(this);
             JavaProject javaProject = manager.createNewProject(projectDir, codeProjectSample.getName());
             File appDir = javaProject.getAppDir();

@@ -1,21 +1,17 @@
 package com.duy.ide.java.activities;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.annotations.Nullable;
 import com.duy.android.compiler.env.Environment;
 import com.duy.ide.R;
-import com.duy.ide.java.setting.AppSetting;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,15 +20,9 @@ import java.io.IOException;
  * Created by Duy on 16-Jul-17.
  */
 
-public class InstallActivity extends BaseActivity implements View.OnClickListener {
-    public static final String SYSTEM_VERSION = "System v3.0";
-    private static final int REQUEST_CODE_SELECT_FILE = 1101;
-    private AppSetting mPreferences;
+public class InstallActivity extends BaseActivity {
     private ProgressBar mProgressBar;
     private TextView mInfo;
-    private Button mInstallButton;
-    //    private TextView mTxtVersion;
-    private ProgressDialog progressDialog;
     private boolean mIsInstalling = false;
 
     @Override
@@ -42,15 +32,8 @@ public class InstallActivity extends BaseActivity implements View.OnClickListene
         setupToolbar();
         setTitle(R.string.install);
 
-        mPreferences = new AppSetting(this);
         mProgressBar = findViewById(R.id.progress_bar);
         mInfo = findViewById(R.id.txt_info);
-        mInstallButton = findViewById(R.id.btn_install);
-
-        findViewById(R.id.btn_install).setOnClickListener(this);
-        findViewById(R.id.btn_select_file).setOnClickListener(this);
-        findViewById(R.id.down_load_from_github).setOnClickListener(this);
-
         new InstallTask(this).execute();
     }
 
@@ -85,11 +68,6 @@ public class InstallActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
-
     @SuppressLint("StaticFieldLeak")
     private class InstallTask extends AsyncTask<File, String, Void> {
         private Context context;
@@ -104,7 +82,6 @@ public class InstallActivity extends BaseActivity implements View.OnClickListene
             super.onPreExecute();
             mInfo.setText(R.string.start_install_system);
             mProgressBar.setIndeterminate(true);
-            mInstallButton.setEnabled(false);
             mIsInstalling = true;
         }
 
@@ -127,7 +104,6 @@ public class InstallActivity extends BaseActivity implements View.OnClickListene
             } else {
                 showDialogFailed(error);
             }
-            mInstallButton.setEnabled(true);
             mProgressBar.setIndeterminate(false);
             mIsInstalling = false;
         }

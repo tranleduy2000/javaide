@@ -13,11 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.ide.R;
-import com.duy.ide.java.DLog;
-import com.duy.ide.java.file.FileManager;
+import com.duy.ide.java.utils.DLog;
 import com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory;
 
 import java.io.File;
@@ -98,7 +98,7 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
     private boolean doCreateProject() {
         if (isValid()) {
             try {
-                File dirToCreate = new File(FileManager.EXTERNAL_DIR);
+                File dirToCreate = new File(Environment.getSdkAppDir().getPath());
                 String projectName = mEditAppName.getText().toString();
 
                 JavaProjectManager manager = new JavaProjectManager(getContext());

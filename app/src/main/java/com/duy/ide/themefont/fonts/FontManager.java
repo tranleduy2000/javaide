@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 
 import com.duy.ide.R;
-import com.duy.ide.java.file.FileManager;
 
 import java.io.IOException;
 import java.util.Hashtable;
@@ -70,27 +69,9 @@ public class FontManager {
         return Typeface.MONOSPACE;
     }
 
-    public synchronized static Typeface getFontFromStorage(String name) {
-        try {
-            synchronized (cache) {
-                if (!cache.containsKey(name)) {
-                    try {
-                        Typeface font = Typeface.createFromFile(FileManager.EXTERNAL_DIR_SRC + "fonts/" + name);
-                        cache.put(name, font);
-                    } catch (Exception e) {
-                        throw new IOException("Could not get typeface '" + name + "' because " + e.getMessage());
-                    }
-                }
-                return cache.get(name);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Typeface.MONOSPACE;
-    }
 
     public static Typeface getFont(FontEntry fontEntry, Context context) {
-        return fontEntry.fromStorage ? getFontFromStorage(fontEntry.name) :
+        return
                 getFontFromAsset(context, fontEntry.name);
     }
 }

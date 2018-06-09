@@ -34,7 +34,7 @@ import com.android.sdklib.SdkManager;
 import com.android.sdklib.internal.project.ProjectCreator;
 import com.android.utils.StdLogger;
 import com.duy.android.compiler.env.Environment;
-import com.duy.ide.java.DLog;
+import com.duy.ide.java.utils.DLog;
 import com.duy.ide.R;
 import com.duy.ide.javaide.JavaIdeActivity;
 

@@ -13,38 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.duy.ide.java.diagnostic.parser.aapt;
+package com.duy.ide.javaide.diagnostic.parser.aapt;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.ParsingFailedException;
 import com.duy.ide.diagnostic.util.OutputLineReader;
 import com.duy.ide.logging.ILogger;
+import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class Warning1Parser extends AbstractAaptOutputParser {
+class Error2Parser extends AbstractAaptOutputParser {
 
     /**
-     * Single-line aapt warning.
+     * First and second line of dual-line aapt error.
+     * <pre>
+     * ERROR: &lt;error&gt;
+     * Defined at file &lt;path&gt; line &lt;line&gt;
+     * </pre>
      */
-    private static final Pattern MSG_PATTERN = Pattern.compile("^(.+?):(\\d+):\\s+WARNING:(.+)$");
+    private static final List<Pattern> MSG_PATTERNS = ImmutableList
+            .of(Pattern.compile("^ERROR:\\s+(.+)$"),
+                    Pattern.compile("Defined\\s+at\\s+file\\s+(.+)\\s+line\\s+(\\d+)"));
 
     @Override
     public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages, @NonNull ILogger logger)
             throws ParsingFailedException {
-        Matcher m = MSG_PATTERN.matcher(line);
+        Matcher m = MSG_PATTERNS.get(0).matcher(line);
         if (!m.matches()) {
             return false;
         }
+        String msgText = m.group(1);
 
+        m = getNextLineMatcher(reader, MSG_PATTERNS.get(1));
+        if (m == null) {
+            throw new ParsingFailedException();
+        }
         String sourcePath = m.group(1);
         String lineNumber = m.group(2);
-        String msgText = m.group(3);
 
-        Message msg = createMessage(Message.Kind.WARNING, msgText, sourcePath,
+        Message msg = createMessage(Message.Kind.ERROR, msgText, sourcePath,
                 lineNumber, "", logger);
         messages.add(msg);
         return true;

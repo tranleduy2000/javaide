@@ -29,7 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".javaide.theme.ThemeActivity" />
         <activity android:name=".javaide.sample.activities.JavaSampleActivity" />
         <activity
             android:name=".javaide.run.activities.ExecuteActivity"
@@ -44,6 +44,7 @@
             android:name=".java.activities.InstallActivity"
             android:configChanges="orientation|screenLayout" />
         <activity android:name=".javaide.setting.CompilerSettingActivity" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"

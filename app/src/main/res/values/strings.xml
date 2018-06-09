@@ -14,25 +14,8 @@
  * limitations under the License.
 -->
 <resources>
-    <!-- Title for Latin keyboard  -->
-
-    <!-- Symbols that are commonly considered word separators in this language -->
-
-    <!-- Labels on soft keys -->
-
     <string name="reset" translatable="false">Reset term</string>
-
     <string name="paste">Paste</string>
-
-    <!-- Preference dialog -->
-
-    <!-- Don't localize these default values -->
-
-    <!-- The word CTRLKEY should be left un-translated. It will be replaced at run-time with the
-         actual control key key name. -->
-    <!-- The word FNKEY should be left un-translated. It will be replaced at run-time with the
-         actual function key key name. -->
-
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="ok">OK</string>
@@ -87,11 +70,6 @@
     <string name="keyboard">Keyboard</string>
     <string name="ime_desc">Allows your keyboard to show hints.</string>
 
-
-    <!--DONATE-->
-
-    <!--Splash screen-->
-
     <string name="java_for_android" translatable="false">Java for Android</string>
 
     <string name="install" translatable="false">Install</string>
@@ -115,14 +93,7 @@
     <string name="java_package_name_com_example">Package name (com.example)</string>
     <string name="main_class_name_main">Main class name (Main)</string>
     <string name="download_system_file">Download system files</string>
-    <string name="install_msg">
-        "You need to download files for your system, make sure you have turned on your internet connection and have at least 100MB of free internal memory.
-        1. Press the download button
-        2. Wait for the download to finish
-        3. Wait for the installation to complete.
 
-        Note: If you can't download by clicking "Download system files", go to GitHub page and download this file. Press "select file" and select the file that you have downloaded."
-    </string>
     <string name="main_class">Main class</string>
     <string name="program_arg">Program arguments</string>
     <string name="enter_package">Enter package name</string>
@@ -161,4 +132,13 @@
     <string name="title_menu_new">New</string>
     <string name="title_menu_open">Open</string>
 
+    <string name="title_premium_version">Premium version</string>
+    <string name="button_purchase">Purchase</string>
+    <string name="message_premium">This app is free and no ads.
+        To support developer, you can buy premium version with 1$. Some locked features: \n
+        1. Editor color schemes (320+ themes)\n
+        2. Change editor fonts (5+ fonts)\n
+        3. Terminal themes (10 themes)
+    </string>
+    <string name="button_purchase_restore">Restore</string>
 </resources>

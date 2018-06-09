@@ -13,50 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.duy.ide.java.diagnostic.parser.aapt;
+package com.duy.ide.javaide.diagnostic.parser.aapt;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.ParsingFailedException;
 import com.duy.ide.diagnostic.util.OutputLineReader;
 import com.duy.ide.logging.ILogger;
-import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class Error4Parser extends AbstractAaptOutputParser {
+class Error8Parser extends AbstractAaptOutputParser {
 
     /**
-     * First line of dual-line aapt error.
+     * 2-line aapt error
      * <pre>
-     * ERROR parsing XML file &lt;path&gt;
-     * &lt;error&gt; at line &lt;line&gt;
+     * ERROR: Invalid configuration: foo
+     *                               ^^^
      * </pre>
+     * There's no need to parse the 2nd line.
      */
-    private static final List<Pattern> MSG_PATTERNS =
-            ImmutableList.of(Pattern.compile("^Error\\s+parsing\\s+XML\\s+file\\s(.+)$"),
-                    Pattern.compile("^(.+)\\s+at\\s+line\\s+(\\d+)$"));
+    private static final Pattern MSG_PATTERN = Pattern.compile("^Invalid configuration: (.+)$");
 
     @Override
     public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages, @NonNull ILogger logger)
             throws ParsingFailedException {
-        Matcher m = MSG_PATTERNS.get(0).matcher(line);
+        Matcher m = MSG_PATTERN.matcher(line);
         if (!m.matches()) {
             return false;
         }
-        String sourcePath = m.group(1);
+        String badConfig = m.group(1);
+        String msgText = String.format("APK Configuration filter '%1$s' is invalid", badConfig);
+        // skip the next line
+        reader.skipNextLine();
 
-        m = getNextLineMatcher(reader, MSG_PATTERNS.get(1));
-        if (m == null) {
-            throw new ParsingFailedException();
-        }
-        String msgText = m.group(1);
-        String lineNumber = m.group(2);
-
-        Message msg = createMessage(Message.Kind.ERROR, msgText, sourcePath,
-                lineNumber, "", logger);
+        Message msg = createMessage(Message.Kind.ERROR, msgText, null, null, "", logger);
         messages.add(msg);
         return true;
     }

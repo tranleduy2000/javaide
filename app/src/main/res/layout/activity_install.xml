@@ -50,16 +50,15 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textView3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoLink="all"
-                    android:text="@string/install_msg"
                     android:textIsSelectable="true"
                     android:visibility="gone" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/down_load_from_github"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -75,36 +74,7 @@
                     android:autoLink="all"
                     android:text="Info..." />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btn_install"
-                        style="@style/Base.Widget.AppCompat.Button.Colored"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="bottom"
-                        android:text="@string/download_system_file"
-                        android:visibility="gone" />
-
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btn_select_file"
-                        style="@style/Base.Widget.AppCompat.Button.Borderless"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="bottom"
-                        android:text="@string/select_file"
-                        android:visibility="gone" />
-
-                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>

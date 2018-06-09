@@ -13,50 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.duy.ide.java.diagnostic.parser.aapt;
+package com.duy.ide.javaide.diagnostic.parser.aapt;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.ParsingFailedException;
 import com.duy.ide.diagnostic.util.OutputLineReader;
 import com.duy.ide.logging.ILogger;
-import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class Error1Parser extends AbstractAaptOutputParser {
+class Warning1Parser extends AbstractAaptOutputParser {
 
     /**
-     * First and second line of dual-line aapt error.
-     * <pre>
-     * ERROR at line &lt;line&gt;: &lt;error&gt;
-     *  (Occurred while parsing &lt;path&gt;)
-     * </pre>
+     * Single-line aapt warning.
      */
-    private static final List<Pattern> MSG_PATTERNS = ImmutableList.of(
-            Pattern.compile("^ERROR\\s+at\\s+line\\s+(\\d+):\\s+(.*)$"),
-            Pattern.compile("^\\s+\\(Occurred while parsing\\s+(.*)\\)$")
-    );
+    private static final Pattern MSG_PATTERN = Pattern.compile("^(.+?):(\\d+):\\s+WARNING:(.+)$");
 
     @Override
     public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages, @NonNull ILogger logger)
             throws ParsingFailedException {
-        Matcher m = MSG_PATTERNS.get(0).matcher(line);
+        Matcher m = MSG_PATTERN.matcher(line);
         if (!m.matches()) {
             return false;
         }
-        String lineNumber = m.group(1);
-        String msgText = m.group(2);
 
-        m = getNextLineMatcher(reader, MSG_PATTERNS.get(1));
-        if (m == null) {
-            throw new ParsingFailedException();
-        }
         String sourcePath = m.group(1);
+        String lineNumber = m.group(2);
+        String msgText = m.group(3);
 
-        Message msg = createMessage(Message.Kind.ERROR, msgText, sourcePath,
+        Message msg = createMessage(Message.Kind.WARNING, msgText, sourcePath,
                 lineNumber, "", logger);
         messages.add(msg);
         return true;

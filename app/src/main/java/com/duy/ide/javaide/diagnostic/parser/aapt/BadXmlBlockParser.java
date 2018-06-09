@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.duy.ide.java.diagnostic.parser.aapt;
+package com.duy.ide.javaide.diagnostic.parser.aapt;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.diagnostic.model.Message;
@@ -25,15 +25,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class SkippingWarning2Parser extends AbstractAaptOutputParser {
+class BadXmlBlockParser extends AbstractAaptOutputParser {
 
-    /**
-     * Error message emitted when aapt skips a file because for example it's name is invalid, such
-     * as a layout file name which starts with _. <p/> This error message is used by AAPT in Tools
-     * 20 and later.
-     */
     private static final Pattern MSG_PATTERN = Pattern
-            .compile("    \\(skipping .+ '(.+)' due to ANDROID_AAPT_IGNORE pattern '.+'\\)");
+            .compile("W/ResourceType\\(.*\\): Bad XML block: no root element node found");
 
     @Override
     public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages, @NonNull ILogger logger)
@@ -42,13 +37,13 @@ class SkippingWarning2Parser extends AbstractAaptOutputParser {
         if (!m.matches()) {
             return false;
         }
-        String sourcePath = m.group(1);
-        if (sourcePath != null && (sourcePath.startsWith(".") || sourcePath.endsWith("~"))) {
-            return true;
+        // W/ResourceType(12345): Bad XML block: no root element node found.
+        // Sadly there's NO filename reference; this error typically describes the error *after* this line.
+        if (reader.getLineCount() == 1) {
+            // This is the only error message: dump to console and quit.
+            throw new ParsingFailedException();
         }
-        Message msg = createMessage(Message.Kind.WARNING, line, sourcePath,
-                null, "", logger);
-        messages.add(msg);
+        // Continue: the real culprit is displayed next and should get a marker.
         return true;
     }
 }

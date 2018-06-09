@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.duy.ide.java.diagnostic.parser.aapt;
+package com.duy.ide.javaide.diagnostic.parser.aapt;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.ParsingFailedException;
 import com.duy.ide.diagnostic.util.OutputLineReader;
 import com.duy.ide.logging.ILogger;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class Error3Parser extends AbstractAaptOutputParser {
+class Error7Parser extends AbstractAaptOutputParser {
 
-    /**
-     * Single-line aapt error
-     * <pre>
-     * &lt;path&gt; line &lt;line&gt;: &lt;error&gt;
-     * </pre>
-     */
-    private static final Pattern MSG_PATTERN = Pattern.compile("^(.+)\\sline\\s(\\d+):\\s(.+)$");
+    private static final Pattern MSG_PATTERN = Pattern
+            .compile("^(invalid resource directory name): (.*)$");
 
     @Override
     public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages, @NonNull ILogger logger)
@@ -41,12 +37,9 @@ class Error3Parser extends AbstractAaptOutputParser {
         if (!m.matches()) {
             return false;
         }
-        String sourcePath = m.group(1);
-        String lineNumber = m.group(2);
-        String msgText = m.group(3);
-
-        Message msg = createMessage(Message.Kind.ERROR, msgText, sourcePath,
-                lineNumber, "", logger);
+        String sourcePath = m.group(2);
+        String text = m.group(1);
+        Message msg = createMessage(Message.Kind.ERROR, text, sourcePath, null, "", logger);
         messages.add(msg);
         return true;
     }

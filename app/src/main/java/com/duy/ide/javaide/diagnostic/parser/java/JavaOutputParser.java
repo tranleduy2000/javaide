@@ -1,4 +1,4 @@
-package com.duy.ide.java.diagnostic.parser.java;
+package com.duy.ide.javaide.diagnostic.parser.java;
 
 
 import android.support.annotation.NonNull;

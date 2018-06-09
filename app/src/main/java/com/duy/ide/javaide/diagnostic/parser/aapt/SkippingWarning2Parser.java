@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.duy.ide.java.diagnostic.parser.aapt;
+package com.duy.ide.javaide.diagnostic.parser.aapt;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.diagnostic.model.Message;
@@ -25,14 +25,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class SkippingWarning1Parser extends AbstractAaptOutputParser {
+class SkippingWarning2Parser extends AbstractAaptOutputParser {
 
     /**
      * Error message emitted when aapt skips a file because for example it's name is invalid, such
      * as a layout file name which starts with _. <p/> This error message is used by AAPT in Tools
-     * 19 and earlier.
+     * 20 and later.
      */
-    private static final Pattern MSG_PATTERN = Pattern.compile("    \\(skipping (.+) .+ '(.*)'\\)");
+    private static final Pattern MSG_PATTERN = Pattern
+            .compile("    \\(skipping .+ '(.+)' due to ANDROID_AAPT_IGNORE pattern '.+'\\)");
 
     @Override
     public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages, @NonNull ILogger logger)
@@ -41,13 +42,8 @@ class SkippingWarning1Parser extends AbstractAaptOutputParser {
         if (!m.matches()) {
             return false;
         }
-        String sourcePath = m.group(2);
-        // Certain files can safely be skipped without marking the project as having errors.
-        // See isHidden() in AaptAssets.cpp:
-        String type = m.group(1);
-        if (type.equals("backup")         // main.xml~, etc
-                || type.equals("hidden")      // .gitignore, etc
-                || type.equals("index")) {    // thumbs.db, etc
+        String sourcePath = m.group(1);
+        if (sourcePath != null && (sourcePath.startsWith(".") || sourcePath.endsWith("~"))) {
             return true;
         }
         Message msg = createMessage(Message.Kind.WARNING, line, sourcePath,

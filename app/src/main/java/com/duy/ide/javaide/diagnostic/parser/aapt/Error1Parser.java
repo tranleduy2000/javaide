@@ -13,37 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.duy.ide.java.diagnostic.parser.aapt;
+package com.duy.ide.javaide.diagnostic.parser.aapt;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.ParsingFailedException;
 import com.duy.ide.diagnostic.util.OutputLineReader;
 import com.duy.ide.logging.ILogger;
+import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class BadXmlBlockParser extends AbstractAaptOutputParser {
+class Error1Parser extends AbstractAaptOutputParser {
 
-    private static final Pattern MSG_PATTERN = Pattern
-            .compile("W/ResourceType\\(.*\\): Bad XML block: no root element node found");
+    /**
+     * First and second line of dual-line aapt error.
+     * <pre>
+     * ERROR at line &lt;line&gt;: &lt;error&gt;
+     *  (Occurred while parsing &lt;path&gt;)
+     * </pre>
+     */
+    private static final List<Pattern> MSG_PATTERNS = ImmutableList.of(
+            Pattern.compile("^ERROR\\s+at\\s+line\\s+(\\d+):\\s+(.*)$"),
+            Pattern.compile("^\\s+\\(Occurred while parsing\\s+(.*)\\)$")
+    );
 
     @Override
     public boolean parse(@NonNull String line, @NonNull OutputLineReader reader, @NonNull List<Message> messages, @NonNull ILogger logger)
             throws ParsingFailedException {
-        Matcher m = MSG_PATTERN.matcher(line);
+        Matcher m = MSG_PATTERNS.get(0).matcher(line);
         if (!m.matches()) {
             return false;
         }
-        // W/ResourceType(12345): Bad XML block: no root element node found.
-        // Sadly there's NO filename reference; this error typically describes the error *after* this line.
-        if (reader.getLineCount() == 1) {
-            // This is the only error message: dump to console and quit.
+        String lineNumber = m.group(1);
+        String msgText = m.group(2);
+
+        m = getNextLineMatcher(reader, MSG_PATTERNS.get(1));
+        if (m == null) {
             throw new ParsingFailedException();
         }
-        // Continue: the real culprit is displayed next and should get a marker.
+        String sourcePath = m.group(1);
+
+        Message msg = createMessage(Message.Kind.ERROR, msgText, sourcePath,
+                lineNumber, "", logger);
+        messages.add(msg);
         return true;
     }
 }

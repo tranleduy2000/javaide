@@ -45,11 +45,6 @@
                 android:icon="@drawable/ic_settings_white_24dp"
                 android:title="@string/compiler_setting" />
 
-            <item
-                android:id="@+id/action_setting"
-                android:enabled="true"
-                android:icon="@drawable/ic_settings_white_24dp"
-                android:title="@string/setting_editor" />
         </menu>
     </item>
 
@@ -57,10 +52,7 @@
     <item android:title="@string/information">
 
         <menu>
-            <item
-                android:id="@+id/action_donate"
-                android:icon="@drawable/ic_donate_white"
-                android:title="@string/donate" />
+
             <item
                 android:id="@+id/action_report_bug"
                 android:icon="@drawable/ic_bug_report_white_24dp"

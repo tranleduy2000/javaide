@@ -51,12 +51,12 @@ import com.duy.ide.java.utils.RootUtils;
 import com.duy.ide.java.utils.StoreUtil;
 import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.editor.format.JavaIdeCodeFormatProvider;
+import com.duy.ide.javaide.menu.JavaMenuManager;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
 import com.duy.ide.javaide.setting.CompilerSettingActivity;
 import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
-import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.pluscubed.logcat.ui.LogcatActivity;
 
@@ -123,31 +123,25 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu container) {
         container.add(0, R.id.action_run, 0, R.string.run)
-                .setIcon(MenuManager.makeToolbarNormalIcon(this, R.drawable.ic_play_arrow_white_24dp))
+                .setIcon(com.jecelyin.editor.v2.manager.MenuManager.makeToolbarNormalIcon(this, R.drawable.ic_play_arrow_white_24dp))
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         super.onCreateOptionsMenu(container);
 
         MenuItem fileMenu = container.findItem(R.id.menu_file);
-        fileMenu.getSubMenu().add(0,
-                R.id.action_new_java_project, 0,
-                R.string.new_java_project)
-                .setIcon(MenuManager.makeMenuNormalIcon(this, R.drawable.ic_create_new_folder_white_24dp))
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        fileMenu.getSubMenu().add(0,
-                R.id.action_open_java_project, 0,
-                R.string.open_java_project)
-                .setIcon(MenuManager.makeMenuNormalIcon(this, R.drawable.ic_create_new_folder_white_24dp))
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        new JavaMenuManager(this).createFileMenu(fileMenu);
         return true;
+    }
+
+    @Override
+    protected void onCreateNavigationMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_nav_javaide, menu);
+        super.onCreateNavigationMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_setting:
-                startActivity(new Intent(this, SettingsActivity.class));
-                break;
             case R.id.action_run:
                 runProject();
                 break;
@@ -157,9 +151,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
                 startActivity(intent);
                 break;
             }
-            case R.id.action_donate:
-                DonateUtils.showDialogDonate(this);
-                break;
             case R.id.action_new_java_project:
                 showDialogCreateJavaProject();
                 break;

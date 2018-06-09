@@ -31,5 +31,17 @@
             android:title="Classpath (android.jar)">
 
         </EditTextPreference>
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/format_types"
+            android:entryValues="@array/format_type_value"
+            android:key="@string/key_format_type"
+            android:summary="google-java-format is a program that reformats Java source code to comply with Google Java Style."
+            android:title="@string/pref_title_java_format_type" />
+
+
     </PreferenceCategory>
+
+
 </PreferenceScreen>

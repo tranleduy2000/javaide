@@ -88,6 +88,7 @@ public class ExecuteActivity extends BaseActivity {
             @Override
             public void run() {
                 getSupportActionBar().setSubtitle(R.string.console_stopped);
+                removeIOFilter();
             }
         });
     }
@@ -133,7 +134,10 @@ public class ExecuteActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         Log.d(TAG, "onStop() called");
+        removeIOFilter();
+    }
 
+    private void removeIOFilter() {
         mConsoleEditText.stop();
         JavaApplication application = (JavaApplication) getApplication();
         application.removeErrStream(mConsoleEditText.getErrorStream());

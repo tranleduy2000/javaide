@@ -43,9 +43,9 @@ public class ConsoleEditText extends AppCompatEditText {
     private int mLength = 0;
 
     //out, in and err stream
-    private  PrintStream outputStream;
-    private  InputStream inputStream;
-    private  PrintStream errorStream;
+    private  PrintStream mOutputStream;
+    private  InputStream mInputStream;
+    private  PrintStream mErrorStream;
 
     /**
      * uses for input
@@ -61,7 +61,7 @@ public class ConsoleEditText extends AppCompatEditText {
      * buffer for output
      */
     private ByteQueue mStderrBuffer = new ByteQueue(IntegerQueue.QUEUE_SIZE);
-    private AtomicBoolean isRunning = new AtomicBoolean(true);
+    private AtomicBoolean mIsRunning = new AtomicBoolean(true);
 
     //filter input text, block a part of text
     private TextListener mTextListener = new TextListener();
@@ -70,7 +70,7 @@ public class ConsoleEditText extends AppCompatEditText {
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (!isRunning.get()) {
+            if (!mIsRunning.get()) {
                 return;
             }
             if (msg.what == NEW_OUTPUT) {
@@ -115,14 +115,14 @@ public class ConsoleEditText extends AppCompatEditText {
         mStdoutBuffer = new ByteQueue(4 * 1024);
         mStderrBuffer = new ByteQueue(4 * 1024);
 
-        inputStream = new ConsoleInputStream(mInputBuffer);
-        outputStream = new PrintStream(new ConsoleOutputStream(mStdoutBuffer, new StdListener() {
+        mInputStream = new ConsoleInputStream(mInputBuffer);
+        mOutputStream = new PrintStream(new ConsoleOutputStream(mStdoutBuffer, new StdListener() {
             @Override
             public void onUpdate() {
                 mHandler.sendMessage(mHandler.obtainMessage(NEW_OUTPUT));
             }
         }));
-        errorStream = new PrintStream(new ConsoleErrorStream(mStderrBuffer, new StdListener() {
+        mErrorStream = new PrintStream(new ConsoleErrorStream(mStderrBuffer, new StdListener() {
             @Override
             public void onUpdate() {
                 mHandler.sendMessage(mHandler.obtainMessage(NEW_ERR));
@@ -164,17 +164,17 @@ public class ConsoleEditText extends AppCompatEditText {
 
     @WorkerThread
     public PrintStream getOutputStream() {
-        return outputStream;
+        return mOutputStream;
     }
 
     @WorkerThread
     public InputStream getInputStream() {
-        return inputStream;
+        return mInputStream;
     }
 
     @WorkerThread
     public PrintStream getErrorStream() {
-        return errorStream;
+        return mErrorStream;
     }
 
 
@@ -209,7 +209,7 @@ public class ConsoleEditText extends AppCompatEditText {
 
     public void stop() {
         mInputBuffer.write(-1);
-        isRunning.set(false);
+        mIsRunning.set(false);
     }
 
     public interface StdListener {

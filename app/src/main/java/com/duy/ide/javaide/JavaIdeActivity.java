@@ -42,6 +42,7 @@ import com.duy.android.compiler.utils.ProjectUtils;
 import com.duy.ide.R;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.diagnostic.DiagnosticContract;
+import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.java.Builder;
 import com.duy.ide.java.diagnostic.parser.aapt.AaptOutputParser;
@@ -56,6 +57,7 @@ import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
 import com.duy.ide.javaide.setting.CompilerSettingActivity;
 import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
+import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.pluscubed.logcat.ui.LogcatActivity;
@@ -92,6 +94,19 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
                 new JavaOutputParser()
         };
         diagnosticPresenter.setOutputParser(parsers);
+        diagnosticPresenter.setFilter(new DiagnosticContract.MessageFilter() {
+            @Override
+            public boolean accept(Message message) {
+                return message.getKind() == Message.Kind.ERROR
+                        || message.getKind() == Message.Kind.WARNING;
+            }
+        });
+    }
+
+    @Override
+    public void onEditorViewCreated(@NonNull IEditorDelegate editorDelegate) {
+        super.onEditorViewCreated(editorDelegate);
+
     }
 
     private void populateAutoCompleteService(JavaAutoCompleteProvider provider) {
@@ -146,12 +161,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
             case R.id.action_run:
                 runProject();
                 break;
-            case R.id.action_report_bug: {
-                Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://github.com/tranleduy2000/javaide/issues"));
-                startActivity(intent);
-                break;
-            }
             case R.id.action_new_java_project:
                 createJavaProject();
                 break;
@@ -171,18 +180,28 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
                 openAndroidProject();
                 break;
             case R.id.action_sample:
-                startActivityForResult(new Intent(this, JavaSampleActivity.class),
+                startActivityForResult(
+                        new Intent(this, JavaSampleActivity.class),
                         JavaIdeActivity.RC_OPEN_SAMPLE);
                 break;
             case R.id.action_see_logcat:
                 startActivity(new Intent(this, LogcatActivity.class));
                 break;
-            case R.id.action_install_cpp_nide:
-                StoreUtil.gotoPlayStore(this, "com.duy.c.cpp.compiler");
-                break;
+
             case R.id.action_compiler_setting:
                 startActivity(new Intent(this, CompilerSettingActivity.class));
                 return true;
+
+            case R.id.action_install_cpp_nide:
+                StoreUtil.gotoPlayStore(this, "com.duy.c.cpp.compiler");
+                break;
+
+            case R.id.action_report_bug: {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://github.com/tranleduy2000/javaide/issues"));
+                startActivity(intent);
+                break;
+            }
         }
         return super.onOptionsItemSelected(item);
     }

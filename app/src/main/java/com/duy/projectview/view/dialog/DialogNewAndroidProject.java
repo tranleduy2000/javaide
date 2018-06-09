@@ -18,7 +18,7 @@ import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.AndroidProjectManager;
 import com.duy.ide.R;
-import com.duy.ide.javaide.autocomplete.Patterns;
+import com.duy.ide.javaide.editor.autocomplete.Patterns;
 
 /**
  * Created by Duy on 16-Jul-17.

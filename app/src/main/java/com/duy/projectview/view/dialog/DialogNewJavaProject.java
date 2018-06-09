@@ -18,7 +18,7 @@ import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.ide.java.DLog;
 import com.duy.ide.R;
 import com.duy.ide.java.file.FileManager;
-import com.duy.ide.javaide.autocomplete.Patterns;
+import com.duy.ide.javaide.editor.autocomplete.Patterns;
 
 import java.io.File;
 import java.io.IOException;

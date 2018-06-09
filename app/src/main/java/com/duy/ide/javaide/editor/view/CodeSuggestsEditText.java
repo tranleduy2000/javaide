@@ -35,8 +35,8 @@ import com.duy.ide.editor.view.EditActionSupportEditor;
 import com.duy.ide.java.DLog;
 import com.duy.ide.java.EditorSetting;
 import com.duy.ide.javaide.editor.view.adapters.CodeSuggestAdapter;
-import com.duy.ide.javaide.autocomplete.JavaAutoCompleteProvider;
-import com.duy.ide.javaide.autocomplete.model.Description;
+import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
+import com.duy.ide.javaide.editor.autocomplete.model.Description;
 
 import java.util.ArrayList;
 

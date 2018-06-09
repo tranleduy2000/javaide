@@ -13,7 +13,7 @@ import com.duy.android.compiler.java.Java;
 import com.duy.android.compiler.utils.IOUtils;
 import com.duy.ide.R;
 import com.duy.ide.java.activities.BaseActivity;
-import com.duy.ide.javaide.autocomplete.parser.JavaParser;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
 import com.duy.ide.javaide.run.view.ConsoleEditText;
 import com.sun.tools.javac.tree.JCTree;
 

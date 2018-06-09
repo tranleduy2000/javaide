@@ -7,7 +7,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 
-import com.duy.ide.javaide.autocomplete.model.ClassDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 
 /**
  * Created by duy on 19/07/2017.

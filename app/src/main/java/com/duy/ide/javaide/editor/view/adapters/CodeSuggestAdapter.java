@@ -30,13 +30,13 @@ import android.widget.TextView;
 
 import com.duy.ide.java.diagnostic.SpanUtil;
 import com.duy.ide.R;
-import com.duy.ide.javaide.autocomplete.model.ClassDescription;
-import com.duy.ide.javaide.autocomplete.model.ConstructorDescription;
-import com.duy.ide.javaide.autocomplete.model.Description;
-import com.duy.ide.javaide.autocomplete.model.FieldDescription;
-import com.duy.ide.javaide.autocomplete.model.MethodDescription;
-import com.duy.ide.javaide.autocomplete.model.PackageDescription;
-import com.duy.ide.javaide.autocomplete.util.JavaUtil;
+import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.Description;
+import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
+import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 import com.duy.ide.java.setting.AppSetting;
 
 import java.util.ArrayList;

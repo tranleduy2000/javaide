@@ -22,7 +22,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
@@ -64,6 +63,7 @@ import com.pluscubed.logcat.ui.LogcatActivity;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 public class JavaIdeActivity extends ProjectManagerActivity implements
@@ -239,14 +239,11 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
 
             final AndroidAppBuilder builder = new AndroidAppBuilder(this, (AndroidAppProject) mProject);
-//            builder.setStdOut(mMessagePresenter.getStdOut());
-//            builder.setStdErr(mMessagePresenter.getStdErr());
-//            builder.setLogger(mMessagePresenter);
-            builder.setStdOut(System.out);
-            builder.setStdErr(System.err);
+            builder.setStdOut(new PrintStream(mDiagnosticPresenter.getStandardOutput()));
+            builder.setStdErr(new PrintStream(mDiagnosticPresenter.getErrorOutput()));
             builder.setLogger(new StdLogger(StdLogger.Level.VERBOSE));
 
-            final BuildTask<AndroidAppProject> buildTask = new BuildTask<>(builder, new BuildTask.CompileListener<AndroidAppProject>() {
+            BuildTask.CompileListener<AndroidAppProject> listener = new BuildTask.CompileListener<AndroidAppProject>() {
                 @Override
                 public void onStart() {
                     updateUiStartCompile();
@@ -254,9 +251,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
                 @Override
                 public void onError(Exception e) {
-                    Toast.makeText(JavaIdeActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
-                    openDrawer(GravityCompat.START);
                     updateUIFinish();
+                    Toast.makeText(JavaIdeActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -264,28 +260,25 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
                     updateUIFinish();
                     Toast.makeText(JavaIdeActivity.this, R.string.build_success, Toast.LENGTH_SHORT).show();
                     mFilePresenter.refresh(mProject);
-//                    mDiagnosticPresenter.hidePanel();
                     RootUtils.installApk(JavaIdeActivity.this, ((AndroidAppProject) mProject).getApkSigned());
                 }
 
-            });
+            };
+            BuildTask<AndroidAppProject> buildTask = new BuildTask<>(builder, listener);
             buildTask.execute();
         } else {
             if (mProject != null) {
                 toast("This is Java project, please create new Android project");
             } else {
-                toast("You need create project");
+                toast("You need create Android project");
             }
         }
     }
 
     private void compileJavaProject() {
         final IBuilder<JavaProject> builder = new JavaBuilder(this, mProject);
-//        builder.setStdOut(mMessagePresenter.getStdOut());
-//        builder.setStdErr(mMessagePresenter.getStdErr());
-
-        builder.setStdOut(System.out);
-        builder.setStdErr(System.err);
+        builder.setStdOut(new PrintStream(mDiagnosticPresenter.getStandardOutput()));
+        builder.setStdErr(new PrintStream(mDiagnosticPresenter.getErrorOutput()));
 
         final BuildTask.CompileListener<JavaProject> listener = new BuildTask.CompileListener<JavaProject>() {
             @Override
@@ -295,22 +288,18 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
             @Override
             public void onError(Exception e) {
-                Toast.makeText(JavaIdeActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
-                openDrawer(GravityCompat.START);
-//                mBottomPage.setCurrentItem(DiagnosticFragment.INDEX);
+                Toast.makeText(JavaIdeActivity.this, R.string.failed_msg,
+                        Toast.LENGTH_SHORT).show();
+                mDiagnosticPresenter.showPanel();
                 updateUIFinish();
             }
 
             @Override
             public void onComplete() {
                 updateUIFinish();
-                Toast.makeText(JavaIdeActivity.this, R.string.compile_success, Toast.LENGTH_SHORT).show();
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        runJava(mProject);
-                    }
-                }, 200);
+                Toast.makeText(JavaIdeActivity.this, R.string.compile_success,
+                        Toast.LENGTH_SHORT).show();
+                runJava(mProject);
             }
         };
         BuildTask<JavaProject> buildTask = new BuildTask<>(builder, listener);
@@ -432,18 +421,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         if (mCompileProgress != null) {
             mCompileProgress.setVisibility(View.VISIBLE);
         }
-
-        hideKeyboard();
-
-//        mMessagePresenter.resume((JavaApplication) getApplication());
-//        mMessagePresenter.clear();
-//        mMessagePresenter.append("Compiling...\n");
-
-//        mContainerOutput.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         mDiagnosticPresenter.showPanel();
         mDiagnosticPresenter.clear();
-
-//        mBottomPage.setCurrentItem(0);
     }
 
     private void updateUIFinish() {

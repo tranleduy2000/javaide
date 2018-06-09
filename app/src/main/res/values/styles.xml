@@ -16,6 +16,9 @@
 <resources>
 
     <style name="AppThemeDark" parent="DarkTheme">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
         <item name="colorPrimary">@color/dark.color_primary</item>
         <item name="colorPrimaryDark">@color/dark.color_primary_dark</item>
         <item name="colorAccent">@color/dark.color_accent</item>
@@ -32,8 +35,7 @@
     </style>
 
     <style name="AppThemeDark.NoActionBar" parent="AppThemeDark">
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
+
     </style>
 
     <!--Theme light for pro version-->

@@ -44,7 +44,6 @@ import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.R;
 import com.duy.ide.core.IdeActivity;
 import com.duy.ide.java.EditorControl;
-import com.duy.ide.java.file.FileManager;
 import com.duy.ide.java.file.FileUtils;
 import com.duy.projectview.ProjectFileContract;
 import com.duy.projectview.ProjectFilePresenter;
@@ -82,18 +81,13 @@ public abstract class ProjectManagerActivity extends IdeActivity
 
     protected JavaProject mProject;
 
-    //    protected FileManager mFileManager;
-//    protected SlidingUpPanelLayout mContainerOutput;
     protected ProjectFileContract.Presenter mFilePresenter;
-    //    protected PagePresenter mPagePresenter;
     private File mLastSelectedDir = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (mProject == null) {
-            this.mProject = JavaProjectManager.getLastProject(this);
-        }
+
         setupToolbar();
         createProjectIfNeed();
 
@@ -105,6 +99,10 @@ public abstract class ProjectManagerActivity extends IdeActivity
         return R.layout.activity_default_ide;
     }
 
+    protected int getThemeId() {
+        return R.style.AppThemeDark_NoActionBar;
+    }
+
     private void createProjectIfNeed() {
         if (mProject == null) {
             showDialogCreateJavaProject();
@@ -114,6 +112,9 @@ public abstract class ProjectManagerActivity extends IdeActivity
     @Override
     protected void initLeftNavigationView(@NonNull NavigationView nav) {
         super.initLeftNavigationView(nav);
+        if (mProject == null) {
+            mProject = JavaProjectManager.getLastProject(this);
+        }
 
         String tag = FolderStructureFragment.TAG;
         FolderStructureFragment folderStructureFragment = (FolderStructureFragment)
@@ -339,10 +340,13 @@ public abstract class ProjectManagerActivity extends IdeActivity
                 break;
             case REQUEST_OPEN_JAVA_PROJECT: {
                 if (resultCode == RESULT_OK) {
-                    String file = FileExplorerActivity.getFile(data);
-                    JavaProjectManager javaProjectManager = new JavaProjectManager(this);
+                    String path = FileExplorerActivity.getFile(data);
+                    if (path == null) {
+                        return;
+                    }
+                    JavaProjectManager manager = new JavaProjectManager(this);
                     try {
-                        JavaProject javaProject = javaProjectManager.loadProject(new File(file), true);
+                        JavaProject javaProject = manager.loadProject(new File(path), true);
                         onProjectCreated(javaProject);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -408,13 +412,15 @@ public abstract class ProjectManagerActivity extends IdeActivity
     }
 
     public void showDialogOpenJavaProject() {
-        FileExplorerActivity.startPickPathActivity(this, FileManager.EXTERNAL_DIR,
-                null, REQUEST_OPEN_JAVA_PROJECT);
+        String destPath = com.duy.android.compiler.env.Environment.getSdkAppDir().getAbsolutePath();
+        FileExplorerActivity.startPickPathActivity(this, destPath,
+                "UTF-8", REQUEST_OPEN_JAVA_PROJECT);
     }
 
     public void showDialogOpenAndroidProject() {
-        FileExplorerActivity.startPickPathActivity(this, FileManager.EXTERNAL_DIR,
-                null, REQUEST_OPEN_ANDROID_PROJECT);
+        String destPath = com.duy.android.compiler.env.Environment.getSdkAppDir().getAbsolutePath();
+        FileExplorerActivity.startPickPathActivity(this, destPath,
+                "UTF-8", REQUEST_OPEN_ANDROID_PROJECT);
 
     }
 

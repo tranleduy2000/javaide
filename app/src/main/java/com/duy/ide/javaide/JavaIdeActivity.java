@@ -42,7 +42,10 @@ import com.duy.android.compiler.utils.ProjectUtils;
 import com.duy.ide.R;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.diagnostic.DiagnosticContract;
+import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.java.Builder;
+import com.duy.ide.java.diagnostic.parser.aapt.AaptOutputParser;
+import com.duy.ide.java.diagnostic.parser.java.JavaOutputParser;
 import com.duy.ide.java.utils.RootUtils;
 import com.duy.ide.java.utils.StoreUtil;
 import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
@@ -84,8 +87,11 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     @Override
     protected void populateDiagnostic(@NonNull DiagnosticContract.Presenter diagnosticPresenter) {
-        //init here, set output parser
-        // TODO: 09-Jun-18 output parser AAPT and JAVA
+        PatternAwareOutputParser[] parsers = new PatternAwareOutputParser[]{
+                new AaptOutputParser(),
+                new JavaOutputParser()
+        };
+        diagnosticPresenter.setOutputParser(parsers);
     }
 
     private void populateAutoCompleteService(JavaAutoCompleteProvider provider) {

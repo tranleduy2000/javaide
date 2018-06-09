@@ -35,8 +35,9 @@ class JavaErrorParser extends AbstractJavaOutputParser {
             Message message = new Message(Message.Kind.ERROR, text,
                     new SourceFilePosition(new SourceFile(sourcePath), parseLineNumber(lineNumber)));
             messages.add(message);
+            return true;
         } catch (Exception e) {
+            return false;
         }
-        return true;
     }
 }

@@ -27,12 +27,16 @@ class JavaWarningParser extends AbstractJavaOutputParser {
         if (!matcher.find()) {
             return false;
         }
-        String sourcePath = matcher.group(1);
-        String text = matcher.group(4);
-        String lineNumber = matcher.group(2);
-        Message message = new Message(Message.Kind.WARNING, text,
-                new SourceFilePosition(new SourceFile(sourcePath), parseLineNumber(lineNumber)));
-        messages.add(message);
-        return true;
+        try {
+            String sourcePath = matcher.group(1);
+            String text = matcher.group(4);
+            String lineNumber = matcher.group(2);
+            Message message = new Message(Message.Kind.WARNING, text,
+                    new SourceFilePosition(new SourceFile(sourcePath), parseLineNumber(lineNumber)));
+            messages.add(message);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

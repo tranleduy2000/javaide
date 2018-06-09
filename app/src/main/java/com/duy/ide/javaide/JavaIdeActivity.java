@@ -69,9 +69,9 @@ import java.util.ArrayList;
 public class JavaIdeActivity extends ProjectManagerActivity implements
         DialogRunConfig.OnConfigChangeListener,
         Builder {
-    public static final int REQUEST_CODE_SAMPLE = 1015;
-
     private static final String TAG = "MainActivity";
+
+    private static final int RC_OPEN_SAMPLE = 1015;
     private static final int RC_BUILD_PROJECT = 131;
     private static final int RC_REVIEW_LAYOUT = 741;
 
@@ -172,7 +172,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
                 break;
             case R.id.action_sample:
                 startActivityForResult(new Intent(this, JavaSampleActivity.class),
-                        JavaIdeActivity.REQUEST_CODE_SAMPLE);
+                        JavaIdeActivity.RC_OPEN_SAMPLE);
                 break;
             case R.id.action_see_logcat:
                 startActivity(new Intent(this, LogcatActivity.class));
@@ -361,9 +361,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case REQUEST_CODE_SAMPLE:
+            case RC_OPEN_SAMPLE:
                 if (resultCode == RESULT_OK) {
                     String projectPath = data.getStringExtra(JavaSampleActivity.PROJECT_PATH);
                     JavaProjectManager manager = new JavaProjectManager(this);
@@ -377,6 +376,9 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
                         onProjectCreated(javaProject);
                     }
                 }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
                 break;
         }
     }

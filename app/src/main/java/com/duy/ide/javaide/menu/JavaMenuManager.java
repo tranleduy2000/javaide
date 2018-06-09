@@ -36,8 +36,8 @@ public class JavaMenuManager {
                 R.id.action_new_file, R.string.new_file, R.drawable.ic_fiber_new_white_24dp,
         };
         int[] openMenuIds = new int[]{
-                R.id.action_open_android_project, R.string.open_java_project, R.drawable.ic_folder_open_white_24dp,
-                R.id.action_open_java_project, R.string.open_android_project, R.drawable.ic_folder_open_white_24dp,
+                R.id.action_open_java_project, R.string.open_java_project, R.drawable.ic_folder_open_white_24dp,
+                R.id.action_open_android_project, R.string.open_android_project, R.drawable.ic_folder_open_white_24dp,
         };
         addToMenu(menu, R.drawable.ic_create_new_folder_white_24dp, R.string.title_menu_new, newMenuIds);
         addToMenu(menu, R.drawable.baseline_folder_open_24, R.string.title_menu_open, openMenuIds);

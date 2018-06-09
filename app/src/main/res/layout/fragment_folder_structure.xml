@@ -14,14 +14,17 @@
         android:background="?android:windowBackground"
         android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/textView2"
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/txt_project_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/linearLayout3"
             android:layout_toStartOf="@+id/linearLayout3"
+            android:ellipsize="end"
             android:gravity="center"
             android:padding="4dp"
+            android:singleLine="true"
             android:text="@string/project"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="?android:textColorPrimary"
@@ -31,7 +34,7 @@
             android:id="@+id/linearLayout3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/textView2"
+            android:layout_alignBottom="@id/txt_project_name"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:gravity="center">

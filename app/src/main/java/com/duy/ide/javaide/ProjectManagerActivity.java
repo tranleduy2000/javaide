@@ -22,7 +22,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -77,8 +76,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
     private static final int REQUEST_OPEN_ANDROID_PROJECT = 704;
     private static final int REQUEST_PICK_FILE = 75;
 
-    protected final Handler mHandler = new Handler();
-
     protected JavaProject mProject;
 
     protected ProjectFileContract.Presenter mFilePresenter;
@@ -92,6 +89,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
         createProjectIfNeed();
 
         mPreferences.setAppTheme(1);
+        mPreferences.setEditorTheme("allure-contrast.json.properties");
     }
 
     @Override
@@ -99,6 +97,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
         return R.layout.activity_default_ide;
     }
 
+    @Override
     protected int getThemeId() {
         return R.style.AppThemeDark_NoActionBar;
     }

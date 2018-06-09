@@ -90,6 +90,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
                 }
             } else {
                 file.renameTo(new File(rootDir, AndroidGradleFileGenerator.DEFAULT_SETTING_FILE));
+                file = new File(rootDir, AndroidGradleFileGenerator.DEFAULT_SETTING_FILE);
             }
         }
 

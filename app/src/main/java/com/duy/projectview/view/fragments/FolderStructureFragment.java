@@ -10,10 +10,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.interfaces.Predicate;
 import com.duy.ide.R;
@@ -63,7 +64,8 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
 
 
     private ViewGroup mContainerView;
-    private ProjectFileContract.Presenter presenter;
+    private TextView mTxtProjectName;
+    private ProjectFileContract.Presenter mPresenter;
     private AndroidTreeView mTreeView;
     private SharedPreferences mPref;
 
@@ -98,6 +100,8 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mContainerView = view.findViewById(R.id.container);
+        mTxtProjectName = view.findViewById(R.id.txt_project_name);
+
         view.findViewById(R.id.img_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -136,6 +140,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
                 if (listener != null) listener.clickNewModule();
             }
         });
+
     }
 
     @Nullable
@@ -202,22 +207,9 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
         return nodes;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-//            case R.id.expandAll:
-//                mTreeView.expandAll();
-//                break;
-//
-//            case R.id.collapseAll:
-//                mTreeView.collapseAll();
-//                break;
-        }
-        return true;
-    }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mTreeView != null) {
             outState.putString("tState", mTreeView.getSaveState());
@@ -228,6 +220,13 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     @Override
     public void display(JavaProject projectFile, boolean expand) {
         this.mProject = projectFile;
+
+        if (mProject != null && mTxtProjectName != null) {
+            boolean isAndroid = mProject instanceof AndroidAppProject;
+            String text = (isAndroid ? "Android: " : "Java: ") + mProject.getProjectName();
+            mTxtProjectName.setText(text);
+        }
+
         TreeNode root = refresh();
         if (expand && mTreeView != null) {
             expand(root);
@@ -299,7 +298,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
 
     @Override
     public void setPresenter(ProjectFileContract.Presenter presenter) {
-        this.presenter = presenter;
+        this.mPresenter = presenter;
     }
 
     @Override

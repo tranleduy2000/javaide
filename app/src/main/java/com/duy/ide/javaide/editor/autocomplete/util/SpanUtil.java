@@ -1,4 +1,4 @@
-package com.duy.ide.java.diagnostic;
+package com.duy.ide.javaide.editor.autocomplete.util;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;

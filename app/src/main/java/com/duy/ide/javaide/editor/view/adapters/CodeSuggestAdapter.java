@@ -28,7 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
-import com.duy.ide.java.diagnostic.SpanUtil;
+import com.duy.ide.javaide.editor.autocomplete.util.SpanUtil;
 import com.duy.ide.R;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
@@ -46,7 +46,6 @@ import java.util.Collection;
  * Created by Duy on 26-Apr-17.
  */
 public class CodeSuggestAdapter extends ArrayAdapter<Description> {
-    private static final String TAG = "CodeSuggestAdapter";
     @NonNull
     private Context context;
     @NonNull

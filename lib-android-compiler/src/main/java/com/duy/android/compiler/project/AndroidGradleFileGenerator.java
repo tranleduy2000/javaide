@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class AndroidGradleFileGenerator {
     public static final String DEFAULT_BUILD_FILE = "build.gradle";
-    public static final String DEFAULT_SETTING_FILE = "setting.gradle";
+    public static final String DEFAULT_SETTING_FILE = "settings.gradle";
     private Context context;
     private AndroidAppProject project;
 

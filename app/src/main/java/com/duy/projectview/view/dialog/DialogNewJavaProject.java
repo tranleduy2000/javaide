@@ -15,10 +15,10 @@ import android.widget.Toast;
 
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
-import com.duy.ide.java.DLog;
 import com.duy.ide.R;
+import com.duy.ide.java.DLog;
 import com.duy.ide.java.file.FileManager;
-import com.duy.ide.javaide.editor.autocomplete.Patterns;
+import com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -134,16 +134,19 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
             mEditAppName.setError(getString(R.string.enter_name));
             return false;
         }
+        if (!mEditAppName.getText().toString().matches(PatternFactory.IDENTIFIER.pattern())) {
+            mEditAppName.setError("Only accept A-Za-z0-9_");
+            return false;
+        }
 
         //check package name
         String packageName = mEditPackage.getText().toString();
         if (mEditPackage.getText().toString().isEmpty()) {
-            if (DLog.DEBUG) DLog.d(TAG, "isValid: package name");
             mEditPackage.setError(getString(R.string.enter_package));
             return false;
         }
 
-        if (!Patterns.PACKAGE_NAME.matcher(packageName).find()) {
+        if (!packageName.matches(PatternFactory.PACKAGE_NAME.pattern())) {
             mEditPackage.setError("Invalid package name");
             return false;
         }
@@ -154,7 +157,7 @@ public class DialogNewJavaProject extends AppCompatDialogFragment implements Vie
             mEditMainClass.setError(getString(R.string.enter_name));
             return false;
         }
-        if (!Patterns.RE_IDENTIFIER.matcher(mainClassName).find()) {
+        if (!mainClassName.matches(PatternFactory.IDENTIFIER.pattern())) {
             mEditMainClass.setError("Invalid name");
             return false;
         }

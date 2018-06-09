@@ -39,6 +39,7 @@ public class FolderHolder extends TreeNode.BaseNodeViewHolder<FolderHolder.TreeI
         View view = inflater.inflate(R.layout.list_item_file, null, false);
         txtName = view.findViewById(R.id.node_value);
         txtName.setText(item.getFile().getName());
+        txtName.setContentDescription(item.getFile().getPath());
 
         imgArrow = view.findViewById(R.id.img_arrow);
         this.leaf = node.isLeaf();

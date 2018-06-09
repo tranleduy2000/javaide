@@ -122,7 +122,6 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
                         R.drawable.ic_play_arrow_white_24dp))
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         super.onCreateOptionsMenu(container);
-
         MenuItem fileMenu = container.findItem(R.id.menu_file);
         new JavaMenuManager(this).createFileMenu(fileMenu.getSubMenu());
         return true;
@@ -395,6 +394,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
         if (mCompileProgress != null) {
             mCompileProgress.setVisibility(View.VISIBLE);
         }
+
+        mDiagnosticPresenter.setCurrentItem(DiagnosticContract.COMPILER_LOG);
         mDiagnosticPresenter.showPanel();
         mDiagnosticPresenter.clear();
     }
@@ -402,12 +403,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
     private void updateUIFinish() {
         setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
         if (mCompileProgress != null) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mCompileProgress.setVisibility(View.GONE);
-                }
-            }, 500);
+            mCompileProgress.setVisibility(View.GONE);
         }
     }
 

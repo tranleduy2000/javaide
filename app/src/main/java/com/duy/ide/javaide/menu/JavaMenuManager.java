@@ -8,6 +8,8 @@ import android.view.SubMenu;
 import com.duy.ide.R;
 import com.jecelyin.editor.v2.manager.MenuManager;
 
+import java.util.ArrayList;
+
 public class JavaMenuManager {
     private final Context mContext;
 
@@ -16,6 +18,17 @@ public class JavaMenuManager {
     }
 
     public void createFileMenu(SubMenu menu) {
+        //hide create new file menu
+        menu.removeItem(R.id.action_new_file);
+        menu.removeItem(R.id.action_open);
+
+        ArrayList<MenuItem> oldMenuItems = new ArrayList<>();
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            oldMenuItems.add(item);
+        }
+        menu.clear();
+
         int[] newMenuIds = new int[]{
                 R.id.action_new_java_project, R.string.new_java_project, R.drawable.ic_create_new_folder_white_24dp,
                 R.id.action_new_android_project, R.string.new_android_project, R.drawable.ic_create_new_folder_white_24dp,
@@ -28,6 +41,12 @@ public class JavaMenuManager {
         };
         addToMenu(menu, R.drawable.ic_create_new_folder_white_24dp, R.string.title_menu_new, newMenuIds);
         addToMenu(menu, R.drawable.baseline_folder_open_24, R.string.title_menu_open, openMenuIds);
+
+        //restore, make it bottom
+        for (MenuItem item : oldMenuItems) {
+            menu.add(item.getGroupId(), item.getItemId(), item.getOrder(), item.getTitle())
+                    .setIcon(item.getIcon());
+        }
     }
 
     private void addToMenu(SubMenu menu, int iconId, int title, int[] child) {

@@ -28,12 +28,18 @@
                 android:title="Android Logcat" />
         </menu>
     </item>
-    <item android:title="@string/learn">
+
+    <item android:title="Code">
         <menu>
             <item
                 android:id="@+id/action_sample"
                 android:icon="@drawable/ic_code_white_24dp"
                 android:title="@string/sample_code_java" />
+
+            <item
+                android:id="@+id/action_report_bug"
+                android:icon="@drawable/ic_bug_report_white_24dp"
+                android:title="@string/report_bug" />
         </menu>
     </item>
 
@@ -44,19 +50,6 @@
                 android:enabled="true"
                 android:icon="@drawable/ic_settings_white_24dp"
                 android:title="@string/compiler_setting" />
-
-        </menu>
-    </item>
-
-
-    <item android:title="@string/information">
-
-        <menu>
-
-            <item
-                android:id="@+id/action_report_bug"
-                android:icon="@drawable/ic_bug_report_white_24dp"
-                android:title="@string/report_bug" />
 
         </menu>
     </item>

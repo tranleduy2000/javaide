@@ -44,21 +44,7 @@
         <activity
             android:name=".java.activities.InstallActivity"
             android:configChanges="orientation|screenLayout" />
-
-
-        <activity android:name="com.spartacusrex.spartacuside.keyboard.KeyboardPrefs" />
         <activity android:name=".javaide.setting.CompilerSettingActivity" />
-
-        <service
-            android:name="com.spartacusrex.spartacuside.keyboard.TerminalKeyboard"
-            android:permission="android.permission.BIND_INPUT_METHOD">
-            <intent-filter>
-                <action android:name="android.view.InputMethod" />
-            </intent-filter>
-            <meta-data
-                android:name="android.view.im"
-                android:resource="@xml/method" />
-        </service>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"

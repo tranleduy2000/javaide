@@ -21,7 +21,7 @@ import android.util.AttributeSet;
 
 import com.duy.ide.java.setting.AppSetting;
 import com.duy.ide.javaide.run.utils.IntegerQueue;
-import com.spartacusrex.spartacuside.util.ByteQueue;
+import com.duy.ide.java.utils.ByteQueue;
 
 import java.io.IOException;
 import java.io.InputStream;

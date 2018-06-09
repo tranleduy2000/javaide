@@ -105,7 +105,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
 
     private void createProjectIfNeed() {
         if (mProject == null) {
-            showDialogCreateJavaProject();
+            createJavaProject();
         }
     }
 
@@ -296,7 +296,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
         mLastSelectedDir = currentDir;
 
         if (type.equals(getString(R.string.java_file))) {
-            showDialogCreateNewClass(currentDir);
+            createNewClass(currentDir);
 
         } else if (type.equals(getString(R.string.xml_file))) {
             showDialogCreateNewXml(currentDir);
@@ -395,7 +395,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
     }
 
-    public void showDialogCreateNewClass(@Nullable File folder) {
+    public void createNewClass(@Nullable File folder) {
         if (folder == null) {
             File file = getCurrentFile();
             if (file != null) {
@@ -411,25 +411,25 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
     }
 
-    public void showDialogOpenJavaProject() {
+    public void openJavaProject() {
         String destPath = com.duy.android.compiler.env.Environment.getSdkAppDir().getAbsolutePath();
         FileExplorerActivity.startPickPathActivity(this, destPath,
                 "UTF-8", REQUEST_OPEN_JAVA_PROJECT);
     }
 
-    public void showDialogOpenAndroidProject() {
+    public void openAndroidProject() {
         String destPath = com.duy.android.compiler.env.Environment.getSdkAppDir().getAbsolutePath();
         FileExplorerActivity.startPickPathActivity(this, destPath,
                 "UTF-8", REQUEST_OPEN_ANDROID_PROJECT);
 
     }
 
-    public void showDialogCreateJavaProject() {
+    public void createJavaProject() {
         DialogNewJavaProject dialogNewProject = DialogNewJavaProject.newInstance();
         dialogNewProject.show(getSupportFragmentManager(), DialogNewJavaProject.TAG);
     }
 
-    public void showDialogCreateAndroidProject() {
+    public void createAndroidProject() {
         DialogNewAndroidProject dialogNewProject = DialogNewAndroidProject.newInstance();
         dialogNewProject.show(getSupportFragmentManager(), DialogNewAndroidProject.TAG);
     }

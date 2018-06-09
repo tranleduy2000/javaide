@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.spartacusrex.spartacuside.util;
+package com.duy.ide.java.utils;
 
 /**
  * A multi-thread-safe produce-consumer byte array.

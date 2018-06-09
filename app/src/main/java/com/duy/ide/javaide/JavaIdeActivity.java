@@ -45,8 +45,6 @@ import com.duy.ide.R;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.java.Builder;
-import com.duy.ide.java.setting.SettingsActivity;
-import com.duy.ide.java.utils.DonateUtils;
 import com.duy.ide.java.utils.RootUtils;
 import com.duy.ide.java.utils.StoreUtil;
 import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
@@ -152,22 +150,22 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
                 break;
             }
             case R.id.action_new_java_project:
-                showDialogCreateJavaProject();
+                createJavaProject();
                 break;
             case R.id.action_new_android_project:
-                showDialogCreateAndroidProject();
+                createAndroidProject();
                 break;
             case R.id.action_new_file:
                 createNewFile(null);
                 break;
             case R.id.action_new_class:
-                showDialogCreateNewClass(null);
+                createNewClass(null);
                 break;
             case R.id.action_open_java_project:
-                showDialogOpenJavaProject();
+                openJavaProject();
                 break;
             case R.id.action_open_android_project:
-                showDialogOpenAndroidProject();
+                openAndroidProject();
                 break;
             case R.id.action_sample:
                 startActivityForResult(new Intent(this, JavaSampleActivity.class),

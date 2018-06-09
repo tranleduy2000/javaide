@@ -20,37 +20,24 @@
         android:icon="@drawable/ic_code_white_24dp"
         android:title="C/C++ N-IDE" />
 
-    <item android:title="Tool">
-        <menu>
-            <item
-                android:id="@+id/action_see_logcat"
-                android:icon="@drawable/ic_line_weight_white_24dp"
-                android:title="Android Logcat" />
-        </menu>
-    </item>
+    <item
+        android:id="@+id/action_see_logcat"
+        android:icon="@drawable/ic_line_weight_white_24dp"
+        android:title="Logcat" />
 
-    <item android:title="Code">
-        <menu>
-            <item
-                android:id="@+id/action_sample"
-                android:icon="@drawable/ic_code_white_24dp"
-                android:title="@string/sample_code_java" />
+    <item
+        android:id="@+id/action_sample"
+        android:icon="@drawable/ic_code_white_24dp"
+        android:title="@string/sample_code_java" />
 
-            <item
-                android:id="@+id/action_report_bug"
-                android:icon="@drawable/ic_bug_report_white_24dp"
-                android:title="@string/report_bug" />
-        </menu>
-    </item>
+    <item
+        android:id="@+id/action_report_bug"
+        android:icon="@drawable/ic_bug_report_white_24dp"
+        android:title="@string/report_bug" />
+    <item
+        android:id="@+id/action_compiler_setting"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:title="@string/compiler_setting" />
 
-    <item android:title="@string/setting">
-        <menu>
-            <item
-                android:id="@+id/action_compiler_setting"
-                android:enabled="true"
-                android:icon="@drawable/ic_settings_white_24dp"
-                android:title="@string/compiler_setting" />
-
-        </menu>
-    </item>
 </menu>

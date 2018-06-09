@@ -9,6 +9,7 @@ import com.duy.ide.diagnostic.parser.ParsingFailedException;
 import com.duy.ide.diagnostic.util.OutputLineReader;
 import com.duy.ide.logging.ILogger;
 
+import java.io.File;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +33,7 @@ class JavaWarningParser extends AbstractJavaOutputParser {
             String text = matcher.group(4);
             String lineNumber = matcher.group(2);
             Message message = new Message(Message.Kind.WARNING, text,
-                    new SourceFilePosition(new SourceFile(sourcePath), parseLineNumber(lineNumber)));
+                    new SourceFilePosition(new SourceFile(new File(sourcePath)), parseLineNumber(lineNumber)));
             messages.add(message);
             return true;
         } catch (Exception e) {

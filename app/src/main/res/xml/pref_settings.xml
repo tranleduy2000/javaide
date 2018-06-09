@@ -16,25 +16,14 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/code_editor">
-
-        <ListPreference
-            android:defaultValue="@string/zero"
-            android:entries="@array/format_types"
-            android:entryValues="@array/format_type_value"
-            android:key="@string/key_format_type"
-            android:title="@string/format_type_" />
-    </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/keyboard">
-
 
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_ime_keyboard"
             android:summary="@string/ime_desc"
             android:title="@string/enable_ime_keyboard" />
-
 
     </PreferenceCategory>
 
@@ -48,11 +37,6 @@
             android:key="@string/key_max_page"
             android:title="@string/max_page" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="@string/key_full_screen"
-            android:summary="@string/hide_status_bar_desc"
-            android:title="@string/hide_status_bar" />
 
     </PreferenceCategory>
 

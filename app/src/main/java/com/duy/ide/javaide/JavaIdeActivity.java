@@ -216,13 +216,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements
             }
             //check launcher activity
             if (((AndroidAppProject) mProject).getLauncherActivity() == null) {
-                String msg = getString(R.string.can_not_find_launcher_activity);
-                Snackbar.make(findViewById(R.id.coordinate_layout), msg, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.config, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                            }
-                        }).show();
+                String message = getString(R.string.can_not_find_launcher_activity);
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 return;
             }
 

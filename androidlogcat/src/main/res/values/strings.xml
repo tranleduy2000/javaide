@@ -15,7 +15,6 @@
     <string name="log_level_warn">Warn</string>
     <string name="log_level_wtf">What a Terrible Failure</string>
 
-    <string name="pref_about">about</string>
     <string name="pref_buffer">buffer</string>
     <string name="pref_buffer_choice_events_value">events</string>
     <string name="pref_buffer_choice_main_value">main</string>
@@ -72,7 +71,6 @@
     <string name="delete_saved_log">Delete Saved Logs</string>
     <string name="delimiter">, </string>
     <string name="dialog_compiling_log">Compiling log…</string>
-    <string name="dialog_for_widget">For a <b>widget</b>,\ndo Home → Long\npress → Widgets</string>
     <string name="dialog_initializing_recorder">Loading recorder…</string>
     <string name="dialog_loading_updates">Loading updates…</string>
     <string name="dialog_partial_select_explanation">1. Select the <b>first</b> line.\n2. Then select the <b>last</b> line.</string>
@@ -91,17 +89,11 @@
     <string name="filter_choice_tag">Tag</string>
     <string name="filter_text_colon">Filter text:</string>
 
-    <string name="first_run_pref_summary">Show introductory message again.</string>
-    <string name="first_run_pref_title">Reset Introduction</string>
-    <string name="first_run_title">Welcome to log cat!</string>
-
     <string name="log_cleared">Logs cleared</string>
     <string name="log_level">Log Level</string>
     <string name="log_level_colon">Log level:</string>
     <string name="log_recording_started">Log recording started.</string>
     <string name="log_saved">Log saved.</string>
-
-    <string name="main_edit_text_hint">Search logs</string>
 
     <string name="manage_saved_logs">Manage Saved Logs</string>
 
@@ -143,12 +135,8 @@
     <string name="pref_theme_choice_sprint_name">Big Yellow</string>
     <string name="pref_theme_choice_tmobile_name">T-Mo</string>
     <string name="pref_theme_choice_verizon_name">Big Red</string>
-    <string name="pref_theme_summary_free">Requires donate version.</string>
-    <string name="pref_theme_title">Color Scheme</string>
 
     <string name="record_log">Record Log</string>
-
-    <string name="recording_in_progress">Recording already in progress.</string>
 
     <string name="save">Save</string>
     <string name="save_as">Save As…</string>
@@ -158,8 +146,6 @@
 
     <string name="select_logs_to_delete">Select which logs to delete.</string>
 
-    <string name="send_as_attachment">Send as Attachment</string>
-    <string name="send_as_text">Send as Text</string>
     <string name="send_log">Send</string>
     <string name="send_log_title">Send Log</string>
 
@@ -168,8 +154,6 @@
     <string name="simultaneous"> (Simultaneous)</string>
 
     <string name="start_recording_log">Record</string>
-
-    <string name="stop_recording_log">Stop Recording</string>
 
     <string name="subject_log_report">Log report</string>
 
@@ -194,14 +178,11 @@
         <item quantity="other">Log too large; showing last %d lines.</item>
     </plurals>
 
-    <string name="toast_no_root">Could not obtain root.  You will only see own logs.</string>
     <string name="toast_pref_changed_restart_required">Setting updated. Restart app to see the changes.</string>
     <string name="toast_request_root">Logcat requires root (superuser) access to read logs.</string>
     <string name="toast_started_select_partial">Select Partial mode enabled</string>
 
     <string name="unable_to_save_log">Unable to save log. Did you enter a valid filename?</string>
-
-    <string name="version">Version %s</string>
 
     <string name="widget_recording_in_progress">Recording…</string>
     <string name="widget_start_recording">Record\nLog</string>

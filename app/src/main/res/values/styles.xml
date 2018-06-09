@@ -25,32 +25,14 @@
         <item name="android:windowBackground">@color/dark.color_background</item>
     </style>
 
-    <style name="AppThemeLight" parent="LightTheme">
-
-        <item name="colorPrimary">@color/lightColorPrimary</item>
-        <item name="colorPrimaryDark">@color/light.color_primary_dark</item>
-        <item name="colorAccent">@color/lightColorAccent</item>
-        <item name="android:windowBackground">@color/light.color_background</item>
-
-    </style>
-
     <style name="AppThemeDark.NoActionBar" parent="AppThemeDark">
 
     </style>
 
     <!--Theme light for pro version-->
-    <style name="AppThemeLight.NoActionBar" parent="AppThemeLight">
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-    </style>
 
     <style name="TreeNodeStyleCustom">
         <item name="android:paddingLeft">12dp</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-    </style>
-
-    <style name="TreeParentStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
     </style>

@@ -16,7 +16,6 @@
 
 package com.duy.ide.java.file;
 
-import android.content.Context;
 import android.os.Environment;
 
 import org.apache.commons.io.FileUtils;
@@ -36,9 +35,6 @@ public class FileManager {
     static {
         EXTERNAL_DIR_SRC = Environment.getExternalStorageDirectory() + "/JavaNIDE/src/";
         EXTERNAL_DIR = new File(Environment.getExternalStorageDirectory(), "JavaNIDE").getAbsolutePath();
-    }
-
-    public FileManager(Context context) {
     }
 
     public static ArrayList<String> listClassName(File src) {

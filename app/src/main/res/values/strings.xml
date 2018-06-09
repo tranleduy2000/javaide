@@ -102,7 +102,7 @@
     <string name="open_java_project">Open Java project</string>
     <string name="class_name">Class name</string>
     <string name="kind">Kind</string>
-    <string name="package_">Package</string>
+    <string name="package_name">Package name</string>
     <string name="visibility">Visibility</string>
     <string name="public_">Public</string>
     <string name="package_private">Package private</string>
@@ -157,5 +157,6 @@
     <string name="message_open_examples">This action will be create new project, previous project will be close</string>
     <string name="warning">Warning</string>
     <string name="select_class_to_run">Select class to run</string>
+    <string name="create_main_function">Create main function</string>
 
 </resources>

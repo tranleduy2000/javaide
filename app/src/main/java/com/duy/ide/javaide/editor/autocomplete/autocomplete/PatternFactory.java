@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 public class PatternFactory {
     public static final Pattern PACKAGE = Pattern.compile("package\\s+[^;]*;");
+    public static final Pattern PACKAGE_NAME = Pattern.compile("[A-Za-z_]+(.[A-Za-z][A-Za-z0-9_]*)*");
     public static final Pattern IMPORT = Pattern.compile("(import\\s+)([^;]*)(\\s?);");
     public static final Pattern WORD = Pattern.compile("[^\\s-]+$");
 

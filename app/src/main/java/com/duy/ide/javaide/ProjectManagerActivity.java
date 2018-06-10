@@ -97,7 +97,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
 
     @Override
     protected int getThemeId() {
-        return R.style.AppThemeDark_NoActionBar;
+        return R.style.AppThemeDark;
     }
 
     private void createProjectIfNeed() {

@@ -1,4 +1,4 @@
-package com.duy;
+package com.duy.ide.javaide;
 
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;

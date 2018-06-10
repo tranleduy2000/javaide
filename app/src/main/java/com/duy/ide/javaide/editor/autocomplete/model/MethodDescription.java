@@ -2,8 +2,8 @@ package com.duy.ide.javaide.editor.autocomplete.model;
 
 import android.support.annotation.NonNull;
 
-import com.duy.ide.javaide.editor.autocomplete.api.SuggestItem;
-import com.duy.ide.javaide.editor.view.EditorView;
+import com.duy.ide.code.api.SuggestItem;
+import com.duy.ide.editor.view.CodeEditor;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Method;
@@ -61,9 +61,9 @@ public class MethodDescription implements Member, SuggestItem {
     @Override
     public String getInsertText() {
         if (getParameterTypes().size() > 0) {
-            return getSimpleName() + "(" + EditorView.CURSOR + ");";
+            return getSimpleName() + "(" + CodeEditor.CURSOR + ");";
         } else {
-            return getSimpleName() + "();" + EditorView.CURSOR;
+            return getSimpleName() + "();" + CodeEditor.CURSOR;
         }
     }
 

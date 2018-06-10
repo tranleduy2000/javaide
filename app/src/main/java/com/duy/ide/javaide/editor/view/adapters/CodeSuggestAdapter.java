@@ -29,12 +29,8 @@ import android.widget.Filter;
 import android.widget.TextView;
 
 import com.duy.ide.R;
+import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
-import com.duy.ide.javaide.editor.autocomplete.api.SuggestItem;
-import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 import com.duy.ide.javaide.editor.autocomplete.util.SpanUtil;
 import com.jecelyin.editor.v2.Preferences;
@@ -135,16 +131,18 @@ public class CodeSuggestAdapter extends ArrayAdapter<SuggestItem> {
                 txtName.setText(item.toString());
                 txtType.setText(item.getType() != null ? JavaUtil.getSimpleName(item.getType()) : "");
             }
-
-            if (item instanceof ClassDescription || item instanceof ConstructorDescription) {
-                txtHeader.setText("c");
-            } else if (item instanceof FieldDescription) {
-                txtHeader.setText("f");
-            } else if (item instanceof MethodDescription) {
-                txtHeader.setText("m");
-            } else if (item instanceof PackageDescription) {
-                txtHeader.setText("p");
-            }
+//            txtHeader.setText(item.getTypeHeader());
+            /**
+             * if (item instanceof ClassDescription || item instanceof ConstructorDescription) {
+             txtHeader.setText("c");
+             } else if (item instanceof FieldDescription) {
+             txtHeader.setText("f");
+             } else if (item instanceof MethodDescription) {
+             txtHeader.setText("m");
+             } else if (item instanceof PackageDescription) {
+             txtHeader.setText("p");
+             }
+             */
         }
         return convertView;
     }

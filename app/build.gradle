@@ -95,7 +95,7 @@ dependencies {
     api project(':androidlogcat')
     api project(':common')
 
-    api project(':lib-n-ide-release-4')
+    api project(':lib-n-ide-release-7')
 
     //firebase sdk
     api "com.google.firebase:firebase-core:16.0.0"

@@ -1,6 +1,7 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
-import com.duy.ide.javaide.editor.autocomplete.api.SuggestItem;
+
+import com.duy.ide.code.api.SuggestItem;
 
 /**
  * Created by Duy on 21-Jul-17.

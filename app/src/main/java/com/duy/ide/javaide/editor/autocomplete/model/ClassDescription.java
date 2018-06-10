@@ -1,7 +1,7 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
 
-import com.duy.ide.javaide.editor.autocomplete.api.SuggestItem;
+import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Constructor;

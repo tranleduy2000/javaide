@@ -38,8 +38,7 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.R;
-import com.duy.ide.core.IdeActivity;
-import com.duy.ide.javaide.utils.FileUtils;
+import com.duy.ide.core.api.IdeActivity;
 import com.duy.ide.javaide.projectview.ProjectFileContract;
 import com.duy.ide.javaide.projectview.ProjectFilePresenter;
 import com.duy.ide.javaide.projectview.dialog.DialogNewAndroidProject;
@@ -47,6 +46,7 @@ import com.duy.ide.javaide.projectview.dialog.DialogNewClass;
 import com.duy.ide.javaide.projectview.dialog.DialogNewJavaProject;
 import com.duy.ide.javaide.projectview.dialog.DialogSelectType;
 import com.duy.ide.javaide.projectview.view.fragments.FolderStructureFragment;
+import com.duy.ide.javaide.utils.FileUtils;
 import com.jecelyin.editor.v2.editor.EditorDelegate;
 import com.jecelyin.editor.v2.editor.IEditorDelegate;
 
@@ -83,7 +83,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
     }
 
     @Override
-    protected int getThemeId() {
+    public int getThemeId() {
         return R.style.AppThemeDark;
     }
 
@@ -218,6 +218,7 @@ public abstract class ProjectManagerActivity extends IdeActivity
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

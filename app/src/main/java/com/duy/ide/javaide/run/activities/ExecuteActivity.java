@@ -8,7 +8,7 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
-import com.duy.JavaApplication;
+import com.duy.ide.javaide.JavaApplication;
 import com.duy.android.compiler.java.Java;
 import com.duy.android.compiler.utils.IOUtils;
 import com.duy.ide.R;

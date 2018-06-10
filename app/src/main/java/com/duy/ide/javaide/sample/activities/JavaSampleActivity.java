@@ -15,7 +15,7 @@ import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.ide.R;
-import com.duy.ide.java.activities.BaseActivity;
+import com.duy.ide.javaide.activities.BaseActivity;
 import com.duy.ide.javaide.sample.AssetUtil;
 import com.duy.ide.javaide.sample.fragments.SelectCategoryFragment;
 import com.duy.ide.javaide.sample.fragments.SelectProjectFragment;

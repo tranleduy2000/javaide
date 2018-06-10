@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.duy.ide.code.api.CodeFormatter;
-import com.duy.ide.java.setting.AppSetting;
+import com.duy.ide.javaide.setting.AppSetting;
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.JavaFormatterOptions;
 

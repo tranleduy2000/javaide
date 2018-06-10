@@ -23,7 +23,7 @@
         android:largeHeap="true"
         android:theme="@style/AppThemeDark">
 
-        <activity android:name=".java.activities.SplashScreenActivity">
+        <activity android:name=".javaide.activities.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -40,7 +40,7 @@
             android:name="com.duy.ide.javaide.JavaIdeActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name=".java.activities.InstallActivity"
+            android:name=".javaide.activities.InstallActivity"
             android:configChanges="orientation|screenLayout" />
         <activity android:name=".javaide.setting.CompilerSettingActivity" />
 

@@ -32,8 +32,8 @@ import android.widget.MultiAutoCompleteTextView;
 
 import com.duy.ide.R;
 import com.duy.ide.editor.view.EditActionSupportEditor;
-import com.duy.ide.java.utils.DLog;
-import com.duy.ide.java.setting.AppSetting;
+import com.duy.ide.javaide.utils.DLog;
+import com.duy.ide.javaide.setting.AppSetting;
 import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.editor.autocomplete.model.Description;
 import com.duy.ide.javaide.editor.view.adapters.CodeSuggestAdapter;

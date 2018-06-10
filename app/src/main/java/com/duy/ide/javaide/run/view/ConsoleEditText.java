@@ -20,7 +20,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 
-import com.duy.ide.java.utils.ByteQueue;
+import com.duy.ide.javaide.utils.ByteQueue;
 import com.duy.ide.javaide.run.utils.IntegerQueue;
 
 import java.io.IOException;

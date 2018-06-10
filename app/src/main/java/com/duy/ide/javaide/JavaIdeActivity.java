@@ -45,8 +45,8 @@ import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
-import com.duy.ide.java.utils.RootUtils;
-import com.duy.ide.java.utils.StoreUtil;
+import com.duy.ide.javaide.utils.RootUtils;
+import com.duy.ide.javaide.utils.StoreUtil;
 import com.duy.ide.javaide.diagnostic.parser.aapt.AaptOutputParser;
 import com.duy.ide.javaide.diagnostic.parser.java.JavaOutputParser;
 import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
@@ -113,8 +113,8 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
     }
 
     @Override
-    public void onEditorDestroyed(@NonNull IEditorDelegate editorDelegate) {
-        super.onEditorDestroyed(editorDelegate);
+    public void onEditorViewDestroyed(@NonNull IEditorDelegate editorDelegate) {
+        super.onEditorViewDestroyed(editorDelegate);
 
     }
 

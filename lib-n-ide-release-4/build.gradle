@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('lib-n-ide-release-4.aar'))

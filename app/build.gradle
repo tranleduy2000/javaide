@@ -78,10 +78,6 @@ configurations {
     }
 }
 
-
-repositories {
-    mavenCentral()
-}
 dependencies {
     androidTestImplementation "com.android.support:support-annotations:$supportLibVersion"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -97,9 +93,9 @@ dependencies {
     api project(':lib-android-compiler')
     api project(':lib-google-java-format')
     api project(':androidlogcat')
+    api project(':common')
 
-
-    api project(':lib-n-ide-release')
+    api project(':lib-n-ide-release-4')
 
     //firebase sdk
     api "com.google.firebase:firebase-core:16.0.0"

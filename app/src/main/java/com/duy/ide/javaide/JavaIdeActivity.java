@@ -112,6 +112,12 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
 
     }
 
+    @Override
+    public void onEditorDestroyed(@NonNull IEditorDelegate editorDelegate) {
+        super.onEditorDestroyed(editorDelegate);
+
+    }
+
     private void populateAutoCompleteService(JavaAutoCompleteProvider provider) {
 //        mPagePresenter.setAutoCompleteProvider(provider);
     }

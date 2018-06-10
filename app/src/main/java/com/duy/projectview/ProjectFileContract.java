@@ -42,7 +42,7 @@ public class ProjectFileContract {
         void clickNewModule();
     }
 
-    public static interface Callback {
+    public interface Callback {
         void onSuccess(File file);
 
         void onFailed(@Nullable Exception e);

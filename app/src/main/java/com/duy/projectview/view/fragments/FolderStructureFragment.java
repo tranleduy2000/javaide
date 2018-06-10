@@ -23,8 +23,8 @@ import com.duy.common.interfaces.Predicate;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.R;
 import com.duy.projectview.ProjectFileContract;
+import com.duy.projectview.dialog.DialogCopyFile;
 import com.duy.projectview.dialog.DialogDeleteFile;
-import com.duy.projectview.dialog.DialogManager;
 import com.duy.projectview.dialog.DialogNewAndroidProject;
 import com.duy.projectview.dialog.DialogNewAndroidResource;
 import com.duy.projectview.dialog.DialogNewClass;
@@ -229,7 +229,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
                     if (file == null) {
                         return;
                     }
-                    DialogManager.showDialogCopyFile(file, mLastSelectedDir, getContext(),
+                    DialogCopyFile dialog = new DialogCopyFile(getContext(), file, mLastSelectedDir,
                             new ProjectFileContract.Callback() {
                                 @Override
                                 public void onSuccess(File file) {
@@ -243,6 +243,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
                                     }
                                 }
                             });
+                    dialog.show();
                 }
                 break;
         }

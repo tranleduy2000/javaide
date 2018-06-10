@@ -24,4 +24,4 @@ include ':aosp:lint-checks'
 include ':lib-google-java-format'
 include ':lib-android-compiler'
 
-include ':lib-n-ide-release-7'
+include ':lib-n-ide-release-9'

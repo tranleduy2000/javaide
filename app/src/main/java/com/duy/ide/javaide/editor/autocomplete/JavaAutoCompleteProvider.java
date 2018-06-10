@@ -4,14 +4,14 @@ import android.content.Context;
 import android.support.annotation.IntDef;
 import android.text.Editable;
 import android.util.Log;
-import android.widget.EditText;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.JavaProject;
-import com.duy.ide.code.api.IAutoCompleteProvider;
 import com.duy.ide.code.api.SuggestItem;
+import com.duy.ide.code.api.SuggestionProvider;
+import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.AutoCompletePackage;
@@ -53,7 +53,7 @@ import static java.util.regex.Pattern.compile;
  * Created by Duy on 20-Jul-17.
  */
 
-public class JavaAutoCompleteProvider implements IAutoCompleteProvider {
+public class JavaAutoCompleteProvider implements SuggestionProvider {
     public static final int KIND_NONE = 0;
     public static final int KIND_PACKAGE = KIND_NONE + 1; //or import
     public static final int KIND_METHOD = KIND_PACKAGE + 1;
@@ -121,9 +121,9 @@ public class JavaAutoCompleteProvider implements IAutoCompleteProvider {
         return !b;
     }
 
-    private void resolveContextType(EditText editor) {
-        this.cursor = editor.getSelectionStart();
-        this.source = editor.getText().toString();
+    private void resolveContextType(Editor editor) {
+        this.cursor = editor.getCursor();
+        this.source = editor.getText();
         try {
             this.unit = mJavaParser.parse(source);
         } catch (Exception e) {
@@ -949,12 +949,12 @@ public class JavaAutoCompleteProvider implements IAutoCompleteProvider {
      * " Note: It's the base for parsing. And It's OK for most cases.
      */
     @NonNull
-    private String getStatement(EditText editor) {
+    private String getStatement(Editor editor) {
         String lineBeforeCursor = getCurrentLine(editor);
         if (lineBeforeCursor.matches("^\\s*(import|package)\\s+")) {
             return lineBeforeCursor;
         }
-        int oldCursor = editor.getSelectionStart();
+        int oldCursor = editor.getCursor();
         int newCursor = oldCursor;
         while (true) {
             if (newCursor == 0) break;
@@ -974,12 +974,12 @@ public class JavaAutoCompleteProvider implements IAutoCompleteProvider {
         return statement;
     }
 
-    private String getCurrentLine(EditText editText) {
-        return EditorUtil.getLineBeforeCursor(editText, editText.getSelectionStart());
+    private String getCurrentLine(Editor editText) {
+        return EditorUtil.getLineBeforeCursor(editText, editText.getCursor());
     }
 
-    private int findChar(EditText editor, String s) {
-        int selectionEnd = editor.getSelectionEnd();
+    private int findChar(Editor editor, String s) {
+        int selectionEnd = editor.getCursor();
         while (selectionEnd > -1 && editor.getText().charAt(selectionEnd) != s.charAt(0)) {
             selectionEnd--;
         }
@@ -1025,7 +1025,7 @@ public class JavaAutoCompleteProvider implements IAutoCompleteProvider {
     }
 
     @Override
-    public ArrayList<SuggestItem> getSuggestions(EditText editor) {
+    public ArrayList<SuggestItem> getSuggestions(Editor editor) {
         try {
             this.resolveContextType(editor);
             ArrayList<SuggestItem> complete = generateSuggestion();
@@ -1043,7 +1043,7 @@ public class JavaAutoCompleteProvider implements IAutoCompleteProvider {
         } else if (suggestion instanceof ConstructorDescription) {
             PackageImporter.importClass(editText, suggestion.getName());
         } else if (suggestion instanceof Member) {
-            mClassLoader.touchClass(suggestion.getType());
+            //mClassLoader.touchClass(suggestion.getType());
         }
     }
 

@@ -44,6 +44,11 @@ public class MethodDescription implements Member, SuggestItem {
     }
 
     @Override
+    public char getTypeHeader() {
+        return 'm'; //method
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -54,11 +59,11 @@ public class MethodDescription implements Member, SuggestItem {
     }
 
     @Override
-    public String getType() {
+    public String getReturnType() {
         return type;
     }
 
-    @Override
+
     public String getInsertText() {
         if (getParameterTypes().size() > 0) {
             return getSimpleName() + "(" + CodeEditor.CURSOR + ");";
@@ -70,11 +75,6 @@ public class MethodDescription implements Member, SuggestItem {
     @Override
     public int getSuggestionPriority() {
         return METHOD_DESC;
-    }
-
-    @Override
-    public String getPrototype() {
-        return null;
     }
 
     @Override

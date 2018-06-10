@@ -16,7 +16,7 @@ public class BaseActivity extends ThemeSupportActivity
 
     @StyleRes
     @Override
-    protected int getThemeId() {
+    public int getThemeId() {
         return R.style.AppThemeDark;
     }
 

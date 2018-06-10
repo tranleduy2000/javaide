@@ -7,7 +7,6 @@ import android.util.Log;
 import com.android.annotations.NonNull;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.JavaProject;
-import com.duy.ide.BuildConfig;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
@@ -150,9 +149,7 @@ public class JavaClassReader {
         });
 
         for (Class mClass : mClasses) {
-            if (!BuildConfig.DEBUG) {
-                mSimpleClasses.add(new Pair<>(mClass.getSimpleName(), mClass));
-            }
+            mSimpleClasses.add(new Pair<>(mClass.getSimpleName(), mClass));
         }
         Collections.sort(mSimpleClasses, new Comparator<Pair<String, Class>>() {
             @Override

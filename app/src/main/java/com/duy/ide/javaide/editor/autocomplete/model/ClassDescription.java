@@ -16,14 +16,16 @@ import java.util.ArrayList;
 
 public class ClassDescription extends DescriptionImpl {
     private static final String TAG = "ClassDescription";
-    private String name, simpleName, className, extend, packageName;
+    private final String simpleName;
+    private final String className;
+    private final String packageName;
+    private final ArrayList<ConstructorDescription> constructors;
+    private final ArrayList<FieldDescription> fields;
+    private final ArrayList<MethodDescription> methods;
 
-    private ArrayList<ConstructorDescription> constructors;
-    private ArrayList<FieldDescription> fields;
-    private ArrayList<MethodDescription> methods;
+    private String extend;
 
     public ClassDescription(String simpleName, String className, String extend, long lastUsed) {
-        this.name = simpleName;
         this.simpleName = simpleName;
         this.className = className;
         this.extend = extend;
@@ -35,9 +37,9 @@ public class ClassDescription extends DescriptionImpl {
         methods = new ArrayList<>();
     }
 
+    @SuppressWarnings("unused")
     public ClassDescription(Class value) {
         this.simpleName = value.getSimpleName();
-        this.name = value.getSimpleName();
         this.className = value.getName();
         if (value.getSuperclass() != null) {
             this.extend = value.getSuperclass().getName();
@@ -69,8 +71,24 @@ public class ClassDescription extends DescriptionImpl {
         }
     }
 
-    public String getType() {
-        return null;
+    @Override
+    public String getName() {
+        return simpleName;
+    }
+
+    @Override
+    public final String getDescription() {
+        return packageName;
+    }
+
+    @Override
+    public String getReturnType() {
+        return "";
+    }
+
+    @Override
+    public char getTypeHeader() {
+        return DescriptionImpl.CLASS_DESC;
     }
 
     @Override
@@ -83,45 +101,25 @@ public class ClassDescription extends DescriptionImpl {
         return DescriptionImpl.CLASS_DESC;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getDescription() {
-        return null;
-    }
-
-    public String getSimpleName() {
+    public final String getSimpleName() {
         return simpleName;
     }
 
-    public String getClassName() {
+    public final String getClassName() {
         return className;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public String getSuperClass() {
+    public final String getSuperClass() {
         return extend;
     }
 
-    public String getPackageName() {
+    public final String getPackageName() {
         return packageName;
     }
 
     public ArrayList<ConstructorDescription> getConstructors() {
         return constructors;
-    }
-
-    public void setConstructors(ArrayList<ConstructorDescription> constructors) {
-        this.constructors = constructors;
     }
 
     public ArrayList<FieldDescription> getFields() {

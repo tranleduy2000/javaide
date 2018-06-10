@@ -17,8 +17,8 @@ public class PackageDescription extends DescriptionImpl {
     }
 
     @Override
-    public String toString() {
-        return name;
+    public char getTypeHeader() {
+        return 'p';
     }
 
     @Override
@@ -32,7 +32,7 @@ public class PackageDescription extends DescriptionImpl {
     }
 
     @Override
-    public String getType() {
+    public String getReturnType() {
         return null;
     }
 
@@ -81,5 +81,10 @@ public class PackageDescription extends DescriptionImpl {
         } else {
             return this.child.remove(child);
         }
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

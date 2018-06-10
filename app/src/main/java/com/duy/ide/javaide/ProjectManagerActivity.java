@@ -39,6 +39,8 @@ import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.R;
 import com.duy.ide.core.api.IdeActivity;
+import com.duy.ide.editor.EditorDelegate;
+import com.duy.ide.editor.IEditorDelegate;
 import com.duy.ide.javaide.projectview.ProjectFileContract;
 import com.duy.ide.javaide.projectview.ProjectFilePresenter;
 import com.duy.ide.javaide.projectview.dialog.DialogNewAndroidProject;
@@ -47,8 +49,6 @@ import com.duy.ide.javaide.projectview.dialog.DialogNewJavaProject;
 import com.duy.ide.javaide.projectview.dialog.DialogSelectType;
 import com.duy.ide.javaide.projectview.view.fragments.FolderStructureFragment;
 import com.duy.ide.javaide.utils.FileUtils;
-import com.jecelyin.editor.v2.editor.EditorDelegate;
-import com.jecelyin.editor.v2.editor.IEditorDelegate;
 
 import java.io.File;
 import java.io.IOException;

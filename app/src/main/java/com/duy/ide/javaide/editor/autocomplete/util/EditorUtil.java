@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory;
 
@@ -111,10 +112,12 @@ public class EditorUtil {
     }
 
     @NonNull
-    public static String getLineBeforeCursor(EditText editText, int pos) {
-        if (pos < 0 || pos > editText.length()) return "";
-        int line = LineUtils.getLineFromIndex(pos, editText.getLayout().getLineCount(), editText.getLayout());
-        int lineStart = editText.getLayout().getLineStart(line);
-        return editText.getText().subSequence(lineStart, pos).toString();
+    public static String getLineBeforeCursor(@NonNull Editor editor, final int cursor) {
+        int start = cursor - 1;
+        String text = editor.getText();
+        while (start > 0 && text.charAt(start) != '\n') {
+            start = start - 1;
+        }
+        return editor.getText().substring(start, cursor - 1);
     }
 }

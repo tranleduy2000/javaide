@@ -12,15 +12,14 @@ import java.lang.reflect.Constructor;
 public class ConstructorDescription extends DescriptionImpl {
     private Constructor constructor;
     private String simpleName;
+    private String packageName;
 
     public ConstructorDescription(Constructor constructor) {
         this.constructor = constructor;
         this.simpleName = JavaUtil.getSimpleName(constructor.getName());
+        this.packageName = JavaUtil.getPackageName(constructor.getName());
     }
 
-    public String getSimpleName() {
-        return simpleName;
-    }
 
     @Override
     public String getName() {
@@ -28,24 +27,28 @@ public class ConstructorDescription extends DescriptionImpl {
     }
 
     @Override
-    public String getDescription() {
-        return null;
+    public char getTypeHeader() {
+        return 'c'; //class
     }
 
     @Override
-    public String getType() {
-        return null;
+    public String getDescription() {
+        return packageName;
+    }
+
+    @Override
+    public String getReturnType() {
+        return "";
     }
 
     @Override
     public String getInsertText() {
         if (constructor.getParameterTypes().length > 0) {
-            return getSimpleName() + "(" + CodeEditor.CURSOR + ");";
+            return simpleName + "(" + CodeEditor.CURSOR + ");";
         } else {
-            return getSimpleName() + "();" + CodeEditor.CURSOR;
+            return simpleName + "();" + CodeEditor.CURSOR;
         }
     }
-
 
 
     @Override

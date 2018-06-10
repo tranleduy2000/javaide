@@ -45,8 +45,7 @@ import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
-import com.duy.ide.javaide.utils.RootUtils;
-import com.duy.ide.javaide.utils.StoreUtil;
+import com.duy.ide.editor.IEditorDelegate;
 import com.duy.ide.javaide.diagnostic.parser.aapt.AaptOutputParser;
 import com.duy.ide.javaide.diagnostic.parser.java.JavaOutputParser;
 import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
@@ -59,7 +58,8 @@ import com.duy.ide.javaide.setting.CompilerSettingActivity;
 import com.duy.ide.javaide.theme.PremiumDialog;
 import com.duy.ide.javaide.theme.ThemeActivity;
 import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
-import com.jecelyin.editor.v2.editor.IEditorDelegate;
+import com.duy.ide.javaide.utils.RootUtils;
+import com.duy.ide.javaide.utils.StoreUtil;
 import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.pluscubed.logcat.ui.LogcatActivity;
@@ -109,7 +109,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
     @Override
     public void onEditorViewCreated(@NonNull IEditorDelegate editorDelegate) {
         super.onEditorViewCreated(editorDelegate);
-
+        editorDelegate.setSuggestionProvider(mAutoCompleteProvider);
     }
 
     @Override
@@ -119,7 +119,9 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
     }
 
     private void populateAutoCompleteService(JavaAutoCompleteProvider provider) {
-//        mPagePresenter.setAutoCompleteProvider(provider);
+        for (IEditorDelegate delegate : getTabManager().getEditorPagerAdapter().getAllEditor()) {
+            delegate.setSuggestionProvider(provider);
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * Created by Duy on 20-Jul-17.
@@ -9,6 +10,7 @@ import java.lang.reflect.Field;
 public class FieldDescription extends DescriptionImpl implements Member {
     private String name, type;
     private int modifiers;
+    private String value;
 
     public FieldDescription(String name, String type, int modifiers) {
         this.name = name;
@@ -20,8 +22,18 @@ public class FieldDescription extends DescriptionImpl implements Member {
         this.name = field.getName();
         this.type = field.getType().getName();
         this.modifiers = field.getModifiers();
+        if (Modifier.isStatic(modifiers)) {
+            try {
+                value = field.get(null).toString();
+            } catch (Exception ignored) {
+            }
+        }
     }
 
+    @Override
+    public char getTypeHeader() {
+        return 'f'; //field
+    }
 
     @Override
     public String getName() {
@@ -30,11 +42,11 @@ public class FieldDescription extends DescriptionImpl implements Member {
 
     @Override
     public String getDescription() {
-        return null;
+        return value;
     }
 
     @Override
-    public String getType() {
+    public String getReturnType() {
         return type;
     }
 
@@ -46,11 +58,6 @@ public class FieldDescription extends DescriptionImpl implements Member {
     @Override
     public int getSuggestionPriority() {
         return DescriptionImpl.FIELD_DESC;
-    }
-
-    @Override
-    public String getPrototype() {
-        return name;
     }
 
     @Override

@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.utils.IOUtils;
 import com.duy.ide.R;
-import com.duy.projectview.ProjectFileContract;
+import com.duy.ide.javaide.FileChangeListener;
+import com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory;
 
 import java.io.File;
 
@@ -29,25 +29,20 @@ public class DialogNewAndroidResource extends AppCompatDialogFragment implements
     public static final String TAG = "DialogNewClass";
     private EditText mEditName;
     @Nullable
-    private ProjectFileContract.FileActionListener listener;
-    @Nullable
+    private FileChangeListener listener;
     private File currentFolder;
 
-    @NonNull
-    private JavaProject project;
-
-    public static DialogNewAndroidResource newInstance(@NonNull JavaProject project, @Nullable File currentFolder) {
+    public static DialogNewAndroidResource newInstance(@NonNull File currentFolder) {
         DialogNewAndroidResource fragment = new DialogNewAndroidResource();
-        fragment.setProject(project);
-        fragment.setCurrentFolder(currentFolder);
-        ;
+        fragment.currentFolder = currentFolder;
         return fragment;
     }
 
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.dialog_new_xml, container, false);
     }
 
@@ -64,7 +59,7 @@ public class DialogNewAndroidResource extends AppCompatDialogFragment implements
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (ProjectFileContract.FileActionListener) getActivity();
+            listener = (FileChangeListener) getActivity();
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
@@ -83,7 +78,7 @@ public class DialogNewAndroidResource extends AppCompatDialogFragment implements
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mEditName = view.findViewById(R.id.edit_class_name);
         view.findViewById(R.id.btn_create).setOnClickListener(this);
@@ -97,15 +92,40 @@ public class DialogNewAndroidResource extends AppCompatDialogFragment implements
             mEditName.setError(getString(R.string.enter_name));
             return;
         }
+        if (!fileName.matches(PatternFactory.FILE_NAME.pattern())) {
+            mEditName.setError(getString(R.string.invalid_name));
+            return;
+        }
+
         try {
-
+            if (!fileName.endsWith(".xml")) {
+                fileName += ".xml";
+            }
             File xmlFile = new File(currentFolder, fileName);
-            currentFolder.mkdirs();
+            xmlFile.getParentFile().mkdirs();
 
-            String header = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-            IOUtils.writeAndClose(header, xmlFile);
+            String content = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+            if (currentFolder.getName().matches("^color(-v[0-9]+)?")) {
+                content += "<selector>\n</selector>";
+            } else if (currentFolder.getName().matches("^menu(-v[0-9]+)?")) {
+                content += "<menu " +
+                        "xmlns:android=\"http://schemas.android.com/apk/res/android\">\n" +
+                        "\n" +
+                        "</menu>";
+            } else if (currentFolder.getName().matches("^values(-v[0-9]+)?")) {
+                content += "<resources>\n</resources>";
+            } else if (currentFolder.getName().matches("^layout(-v[0-9]+)?")) {
+                content += "<LinearLayout\n" +
+                        "    xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
+                        "    android:layout_width=\"match_parent\"\n" +
+                        "    android:layout_height=\"match_parent\">" +
+                        "\n" +
+                        "</LinearLayout>";
+            }
+
+            IOUtils.writeAndClose(content, xmlFile);
             if (listener != null) {
-                listener.onNewFileCreated(xmlFile);
+                listener.onFileCreated(xmlFile);
             }
             dismiss();
         } catch (Exception e) {
@@ -113,11 +133,4 @@ public class DialogNewAndroidResource extends AppCompatDialogFragment implements
         }
     }
 
-    public void setCurrentFolder(@Nullable File currentFolder) {
-        this.currentFolder = currentFolder;
-    }
-
-    public void setProject(@NonNull JavaProject project) {
-        this.project = project;
-    }
 }

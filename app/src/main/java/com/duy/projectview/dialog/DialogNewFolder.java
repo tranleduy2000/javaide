@@ -13,9 +13,8 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.duy.android.compiler.project.JavaProject;
 import com.duy.ide.R;
-import com.duy.projectview.ProjectFileContract;
+import com.duy.ide.javaide.FileChangeListener;
 
 import java.io.File;
 
@@ -27,23 +26,23 @@ public class DialogNewFolder extends AppCompatDialogFragment implements View.OnC
     public static final String TAG = "DialogNewFolder";
 
     private EditText mEditName;
+
     @Nullable
-    private ProjectFileContract.FileActionListener listener;
-    @NonNull
-    private JavaProject project;
+    private FileChangeListener listener;
+
     @Nullable
     private File currentFolder;
 
-    public static DialogNewFolder newInstance(@NonNull JavaProject project, @Nullable File currentFolder) {
+    public static DialogNewFolder newInstance(@Nullable File currentFolder) {
         DialogNewFolder fragment = new DialogNewFolder();
-        fragment.setProject(project);
         fragment.setCurrentFolder(currentFolder);
         return fragment;
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.dialog_new_folder, container, false);
     }
 
@@ -61,7 +60,7 @@ public class DialogNewFolder extends AppCompatDialogFragment implements View.OnC
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (ProjectFileContract.FileActionListener) getActivity();
+            listener = (FileChangeListener) getActivity();
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
@@ -98,15 +97,13 @@ public class DialogNewFolder extends AppCompatDialogFragment implements View.OnC
         try {
             File folder = new File(currentFolder, fileName);
             folder.mkdirs();
-            listener.onNewFileCreated(folder);
+            if (listener != null) {
+                listener.onFileCreated(folder);
+            }
             dismiss();
         } catch (Exception e) {
             Toast.makeText(getContext(), "Can not create new file", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void setProject(@NonNull JavaProject project) {
-        this.project = project;
     }
 
     public void setCurrentFolder(@Nullable File currentFolder) {

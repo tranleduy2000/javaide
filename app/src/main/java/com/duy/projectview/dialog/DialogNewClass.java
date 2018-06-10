@@ -1,6 +1,5 @@
 package com.duy.projectview.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,8 +17,8 @@ import android.widget.Toast;
 
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.ide.R;
+import com.duy.ide.javaide.FileChangeListener;
 import com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory;
-import com.duy.projectview.ProjectFileContract;
 import com.duy.projectview.utils.ProjectFileUtil;
 import com.squareup.javawriter.JavaWriter;
 
@@ -28,8 +27,6 @@ import java.io.StringWriter;
 import java.util.Set;
 
 import javax.lang.model.element.Modifier;
-
-import static android.view.ViewGroup.LayoutParams;
 
 /**
  * Created by Duy on 16-Jul-17.
@@ -42,7 +39,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     private RadioGroup mModifiers, mVisibility;
     private CheckBox mCreateMainFunc;
 
-    private ProjectFileContract.FileActionListener listener;
+    private FileChangeListener listener;
     private JavaProject project;
     @Nullable
     private String currentPackage;
@@ -65,20 +62,12 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
         return inflater.inflate(R.layout.dialog_new_class, container, false);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            dialog.getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (ProjectFileContract.FileActionListener) getActivity();
+            listener = (FileChangeListener) getActivity();
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
@@ -179,7 +168,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
             String content = out.toString();
             File clazz = project.createClass(currentPackage, className, content);
             if (listener != null) {
-                listener.onNewFileCreated(clazz);
+                listener.onFileCreated(clazz);
                 Toast.makeText(getContext(), "success!", Toast.LENGTH_SHORT).show();
                 this.dismiss();
             }

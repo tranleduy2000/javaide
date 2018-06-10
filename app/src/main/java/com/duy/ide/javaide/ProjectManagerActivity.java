@@ -53,15 +53,11 @@ import com.jecelyin.editor.v2.editor.IEditorDelegate;
 import java.io.File;
 import java.io.IOException;
 
-import static com.duy.projectview.ProjectFileContract.Callback;
-
 /**
  * Created by Duy on 09-Mar-17.
  */
 public abstract class ProjectManagerActivity extends IdeActivity
-        implements ProjectFileContract.FileActionListener,
-        DialogNewJavaProject.OnCreateProjectListener,
-        DialogSelectType.OnFileTypeSelectListener {
+        implements FileChangeListener, DialogNewJavaProject.OnCreateProjectListener {
     private static final String TAG = "BaseEditorActivity";
 
     private static final int REQUEST_OPEN_JAVA_PROJECT = 58;
@@ -133,14 +129,9 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
     }
 
-    /**
-     * delete a file
-     *
-     * @param file - file need delete
-     */
     @Override
-    public void clickRemoveFile(final File file, final Callback callback) {
-        Pair<Integer, IEditorDelegate> position = mTabManager.getEditorDelegate(file);
+    public void onFileDeleted(File deleted) {
+        Pair<Integer, IEditorDelegate> position = mTabManager.getEditorDelegate(deleted);
         if (position != null) {
             mTabManager.closeTab(position.first);
         }
@@ -190,20 +181,20 @@ public abstract class ProjectManagerActivity extends IdeActivity
     protected abstract void startAutoCompleteService();
 
     @Override
-    public void onNewFileCreated(@NonNull File file) {
+    public void onFileCreated(File newFile) {
         mFilePresenter.refresh(mProject);
-        openFile(file.getPath());
+        openFile(newFile.getPath());
     }
 
     @Override
-    public void onFileClick(@NonNull File file, Callback callBack) {
-        if (FileUtils.canEdit(file)) {
+    public void doOpenFile(File toEdit) {
+        if (FileUtils.canEdit(toEdit)) {
             //save current file
-            openFile(file.getPath());
+            openFile(toEdit.getPath());
             //close drawer
             closeDrawers();
         } else {
-            openFileByAnotherApp(file);
+            openFileByAnotherApp(toEdit);
         }
     }
 
@@ -228,22 +219,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-
-    @Override
-    public void onClickNewButton(File file, Callback callback) {
-        showDialogNew(file);
-    }
-
-    @Override
-    public void clickNewModule() {
-
-    }
-
-    @Override
-    public void onTypeSelected(File currentDir, String type) {
-
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

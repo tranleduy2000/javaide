@@ -130,7 +130,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
 
     private void showDialogCreateNewXml(@NonNull File file) {
         if (mProject != null) {
-            DialogNewAndroidResource dialog = DialogNewAndroidResource.newInstance(mProject, file);
+            DialogNewAndroidResource dialog = DialogNewAndroidResource.newInstance(file);
             dialog.show(getChildFragmentManager(), DialogNewClass.TAG);
         } else {
             Toast.makeText(getContext(), "Can not create Android resource file", Toast.LENGTH_SHORT).show();
@@ -144,7 +144,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
      */
     private void showDialogCreateNewFolder(@NonNull File file) {
         if (mProject != null) {
-            DialogNewFolder newFolder = DialogNewFolder.newInstance(mProject, file);
+            DialogNewFolder newFolder = DialogNewFolder.newInstance(file);
             newFolder.show(getChildFragmentManager(), DialogNewClass.TAG);
         } else {
             Toast.makeText(getContext(), "Can not create new folder", Toast.LENGTH_SHORT).show();

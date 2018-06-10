@@ -37,6 +37,7 @@ public class PatternFactory {
     public static final Pattern JAVA_FILE = Pattern.compile(PatternFactory.IDENTIFIER_STR + "\\.java[^\\w]");
     public static final Pattern JAVA_FILE_LINE_COL = Pattern.compile(PatternFactory.IDENTIFIER_STR
             + "\\.java[0-9]+:[0-9]+");
+    public static final Pattern FILE_NAME = Pattern.compile("[A-Za-z][A-Za-z0-9_\\-.]*");
 
     static {
         KEYWORD = new String[PRIMITIVE_TYPE.length + KEYWORD_MODIFIERS.length + KEYWORD_TYPE.length];

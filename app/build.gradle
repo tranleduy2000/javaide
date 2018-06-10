@@ -102,7 +102,6 @@ dependencies {
     api 'com.crashlytics.sdk.android:crashlytics:2.9.3'
 
     api 'io.github.kobakei:ratethisapp:1.2.0'
-    api 'com.github.clans:fab:1.6.4'
     api 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     api 'com.miguelcatalan:materialsearchview:1.4.0'
 

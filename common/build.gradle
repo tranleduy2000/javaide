@@ -25,6 +25,4 @@ android {
 dependencies {
     api "com.android.support:support-v4:$supportLibVersion"
     api "com.android.support:appcompat-v7:$supportLibVersion"
-    api 'com.google.code.gson:gson:2.8.0'
-
 }

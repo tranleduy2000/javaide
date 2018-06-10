@@ -58,7 +58,7 @@
             android:background="?selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            app:srcCompat="@drawable/fab_add" />
+            app:srcCompat="@drawable/ic_add_white_24dp" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/img_delete"

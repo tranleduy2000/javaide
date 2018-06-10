@@ -1,4 +1,4 @@
-package com.duy.ide.javaide.editor.autocomplete.autocomplete;
+package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import android.os.FileObserver;
 import android.util.Log;

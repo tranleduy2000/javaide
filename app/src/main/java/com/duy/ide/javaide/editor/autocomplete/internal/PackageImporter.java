@@ -1,4 +1,4 @@
-package com.duy.ide.javaide.editor.autocomplete.autocomplete;
+package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -14,8 +14,8 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory.firstMatch;
-import static com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory.lastMatch;
+import static com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory.firstMatch;
+import static com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory.lastMatch;
 
 
 /**
@@ -44,7 +44,7 @@ public class PackageImporter {
     public static String getImportedClassName(CharSequence src, @Nullable String className) {
         if (className == null) return null;
 
-        Pattern pattern = PatternFactory.makeImport(className);
+        Pattern pattern = PatternFactory.makeImportClass(className);
         Matcher matcher = pattern.matcher(src);
         if (matcher.find()) {
             return matcher.group(2);

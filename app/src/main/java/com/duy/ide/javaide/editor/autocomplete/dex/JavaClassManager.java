@@ -4,13 +4,13 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory;
+import com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import static com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory.lastMatchStr;
+import static com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory.lastMatchStr;
 import static com.duy.ide.javaide.editor.autocomplete.util.EditorUtil.getCurrentClassSimpleName;
 import static com.duy.ide.javaide.editor.autocomplete.util.EditorUtil.getPossibleClassName;
 import static com.duy.ide.javaide.editor.autocomplete.util.EditorUtil.getWord;

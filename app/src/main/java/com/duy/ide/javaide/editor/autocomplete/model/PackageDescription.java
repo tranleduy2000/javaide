@@ -37,7 +37,7 @@ public class PackageDescription extends DescriptionImpl {
     }
 
     @Override
-    public String getSnippet() {
+    public String getInsertText() {
         return name + (isLeaf() ? ";" : ".");
     }
 

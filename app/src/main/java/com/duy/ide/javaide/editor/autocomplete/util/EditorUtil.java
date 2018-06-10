@@ -6,8 +6,8 @@ import android.text.Editable;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.duy.ide.javaide.editor.autocomplete.autocomplete.PackageImporter;
-import com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory;
+import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
+import com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

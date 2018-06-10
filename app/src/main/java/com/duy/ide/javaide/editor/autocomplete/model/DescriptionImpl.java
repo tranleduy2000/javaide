@@ -1,10 +1,12 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
+import com.duy.ide.javaide.editor.autocomplete.api.SuggestItem;
+
 /**
  * Created by Duy on 21-Jul-17.
  */
 
-public abstract class DescriptionImpl implements Description {
+public abstract class DescriptionImpl implements SuggestItem {
     public static final int FIELD_DESC = 0;
     public static final int METHOD_DESC = 1;
     public static final int CLASS_DESC = 2;
@@ -13,17 +15,7 @@ public abstract class DescriptionImpl implements Description {
     protected long lastUsed;
 
     @Override
-    public long getLastUsed() {
-        return lastUsed;
-    }
-
-    @Override
-    public void setLastUsed(long lastUsed) {
-        this.lastUsed = lastUsed;
-    }
-
-    @Override
-    public int getDescriptionType() {
+    public int getSuggestionPriority() {
         return OTHER_DESC;
     }
 

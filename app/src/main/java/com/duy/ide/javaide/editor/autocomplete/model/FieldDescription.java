@@ -39,12 +39,12 @@ public class FieldDescription extends DescriptionImpl implements Member {
     }
 
     @Override
-    public String getSnippet() {
+    public String getInsertText() {
         return name;
     }
 
     @Override
-    public int getDescriptionType() {
+    public int getSuggestionPriority() {
         return DescriptionImpl.FIELD_DESC;
     }
 

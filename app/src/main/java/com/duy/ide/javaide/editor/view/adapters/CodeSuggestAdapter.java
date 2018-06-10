@@ -31,7 +31,7 @@ import android.widget.TextView;
 import com.duy.ide.R;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.Description;
+import com.duy.ide.javaide.editor.autocomplete.api.SuggestItem;
 import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
@@ -45,15 +45,15 @@ import java.util.Collection;
 /**
  * Created by Duy on 26-Apr-17.
  */
-public class CodeSuggestAdapter extends ArrayAdapter<Description> {
+public class CodeSuggestAdapter extends ArrayAdapter<SuggestItem> {
     @NonNull
     private Context context;
     @NonNull
     private LayoutInflater inflater;
     @NonNull
-    private ArrayList<Description> clone;
+    private ArrayList<SuggestItem> clone;
     @NonNull
-    private ArrayList<Description> suggestion;
+    private ArrayList<SuggestItem> suggestion;
     private int resourceID;
     @Nullable
     private OnSuggestItemClickListener listener;
@@ -64,7 +64,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
             if (value == null) {
                 return "";
             }
-            return ((Description) value).getSnippet();
+            return ((SuggestItem) value).getInsertText();
         }
 
         @Override
@@ -72,7 +72,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
             FilterResults filterResults = new FilterResults();
             suggestion.clear();
             if (constraint != null) {
-                for (Description item : clone) {
+                for (SuggestItem item : clone) {
 //                    if (item.compareTo(constraint.toString()) == 0) {
                     suggestion.add(item);
 //                    }
@@ -87,7 +87,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
         @SuppressWarnings("unchecked")
 
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            ArrayList<Description> filteredList = (ArrayList<Description>) results.values;
+            ArrayList<SuggestItem> filteredList = (ArrayList<SuggestItem>) results.values;
             clear();
             if (filteredList != null && filteredList.size() > 0) {
                 addAll(filteredList);
@@ -97,11 +97,11 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
     };
 
     @SuppressWarnings("unchecked")
-    public CodeSuggestAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<Description> objects) {
+    public CodeSuggestAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<SuggestItem> objects) {
         super(context, resource, objects);
         this.inflater = LayoutInflater.from(context);
         this.context = context;
-        this.clone = (ArrayList<Description>) objects.clone();
+        this.clone = (ArrayList<SuggestItem>) objects.clone();
         this.suggestion = new ArrayList<>();
         this.resourceID = resource;
 
@@ -109,7 +109,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
         editorTextSize = Preferences.getInstance(context).getFontSize();
     }
 
-    public ArrayList<Description> getAllItems() {
+    public ArrayList<SuggestItem> getAllItems() {
         return clone;
     }
 
@@ -120,7 +120,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
             convertView = inflater.inflate(resourceID, null);
         }
 
-        final Description item = getItem(position);
+        final SuggestItem item = getItem(position);
         TextView txtName = convertView.findViewById(R.id.txt_name);
         txtName.setTypeface(Typeface.MONOSPACE);
         txtName.setTextSize(editorTextSize);
@@ -154,7 +154,7 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
         clone.clear();
     }
 
-    public void addData(@NonNull Collection<? extends Description> collection) {
+    public void addData(@NonNull Collection<? extends SuggestItem> collection) {
         addAll(collection);
         clone.addAll(collection);
     }
@@ -170,6 +170,6 @@ public class CodeSuggestAdapter extends ArrayAdapter<Description> {
     }
 
     public interface OnSuggestItemClickListener {
-        void onClickSuggest(Description description);
+        void onClickSuggest(SuggestItem description);
     }
 }

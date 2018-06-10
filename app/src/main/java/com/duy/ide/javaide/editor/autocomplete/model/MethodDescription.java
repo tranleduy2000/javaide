@@ -2,6 +2,7 @@ package com.duy.ide.javaide.editor.autocomplete.model;
 
 import android.support.annotation.NonNull;
 
+import com.duy.ide.javaide.editor.autocomplete.api.SuggestItem;
 import com.duy.ide.javaide.editor.view.EditorView;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
@@ -14,7 +15,7 @@ import static com.duy.ide.javaide.editor.autocomplete.model.DescriptionImpl.METH
  * Created by Duy on 20-Jul-17.
  */
 
-public class MethodDescription implements Member, Description {
+public class MethodDescription implements Member, SuggestItem {
     private String name, type;
     private int modifiers;
     private String simpleName;
@@ -53,22 +54,12 @@ public class MethodDescription implements Member, Description {
     }
 
     @Override
-    public long getLastUsed() {
-        return 0;
-    }
-
-    @Override
-    public void setLastUsed(long time) {
-
-    }
-
-    @Override
     public String getType() {
         return type;
     }
 
     @Override
-    public String getSnippet() {
+    public String getInsertText() {
         if (getParameterTypes().size() > 0) {
             return getSimpleName() + "(" + EditorView.CURSOR + ");";
         } else {
@@ -77,7 +68,7 @@ public class MethodDescription implements Member, Description {
     }
 
     @Override
-    public int getDescriptionType() {
+    public int getSuggestionPriority() {
         return METHOD_DESC;
     }
 

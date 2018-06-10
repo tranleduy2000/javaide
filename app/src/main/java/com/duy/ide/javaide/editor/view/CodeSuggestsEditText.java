@@ -35,7 +35,7 @@ import com.duy.ide.editor.view.EditActionSupportEditor;
 import com.duy.ide.javaide.utils.DLog;
 import com.duy.ide.javaide.setting.AppSetting;
 import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
-import com.duy.ide.javaide.editor.autocomplete.model.Description;
+import com.duy.ide.javaide.editor.autocomplete.api.SuggestItem;
 import com.duy.ide.javaide.editor.view.adapters.CodeSuggestAdapter;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class CodeSuggestsEditText extends EditActionSupportEditor
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (mAdapter != null) {
-                Description description = mAdapter.getAllItems().get(position);
+                SuggestItem description = mAdapter.getAllItems().get(position);
                 onClickSuggest(description);
             }
         }
@@ -227,14 +227,14 @@ public class CodeSuggestsEditText extends EditActionSupportEditor
 //        }, 50);
     }
 
-    public ArrayList<Description> getSuggestData() {
+    public ArrayList<SuggestItem> getSuggestData() {
         return mAdapter.getAllItems();
     }
 
     /**
      * invalidate data for auto suggest
      */
-    public void setSuggestData(ArrayList<Description> data) {
+    public void setSuggestData(ArrayList<SuggestItem> data) {
         Log.d(TAG, "setSuggestData() called with: data = [" + data.size() + "]");
 
         if (mAdapter != null) {
@@ -270,7 +270,7 @@ public class CodeSuggestsEditText extends EditActionSupportEditor
     }
 
     @Override
-    public void onClickSuggest(Description description) {
+    public void onClickSuggest(SuggestItem description) {
         Log.d(TAG, "onClickSuggest() called with: description = [" + description + "]");
         if (mAutoCompleteProvider != null) {
             mAutoCompleteProvider.onInsertSuggestion(getText(), description);
@@ -278,7 +278,7 @@ public class CodeSuggestsEditText extends EditActionSupportEditor
     }
 
 
-    private class GenerateSuggestDataTask extends AsyncTask<Void, Void, ArrayList<Description>> {
+    private class GenerateSuggestDataTask extends AsyncTask<Void, Void, ArrayList<SuggestItem>> {
         private final EditText editText;
         private final JavaAutoCompleteProvider provider;
 
@@ -295,7 +295,7 @@ public class CodeSuggestsEditText extends EditActionSupportEditor
         }
 
         @Override
-        protected ArrayList<Description> doInBackground(Void... params) {
+        protected ArrayList<SuggestItem> doInBackground(Void... params) {
             try {
                 return provider.getSuggestions(editText);
             } catch (Exception e) {
@@ -305,14 +305,14 @@ public class CodeSuggestsEditText extends EditActionSupportEditor
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Description> descriptions) {
+        protected void onPostExecute(ArrayList<SuggestItem> descriptions) {
             super.onPostExecute(descriptions);
             if (isCancelled()) {
                 Log.d(TAG, "onPostExecute: canceled");
                 return;
             }
             if (descriptions == null) {
-                setSuggestData(new ArrayList<Description>());
+                setSuggestData(new ArrayList<SuggestItem>());
             } else {
                 setSuggestData(descriptions);
             }

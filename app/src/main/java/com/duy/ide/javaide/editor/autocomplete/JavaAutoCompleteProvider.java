@@ -10,14 +10,16 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.JavaProject;
-import com.duy.ide.javaide.editor.autocomplete.autocomplete.AutoCompletePackage;
-import com.duy.ide.javaide.editor.autocomplete.autocomplete.PackageImporter;
-import com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory;
+import com.duy.ide.javaide.editor.autocomplete.api.IAutoCompleteProvider;
+import com.duy.ide.javaide.editor.autocomplete.api.SuggestItem;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
+import com.duy.ide.javaide.editor.autocomplete.internal.AutoCompletePackage;
+import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
+import com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory;
+import com.duy.ide.javaide.editor.autocomplete.internal.Patterns;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.Description;
 import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.Member;
 import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
@@ -42,7 +44,7 @@ import java.util.regex.Pattern;
 
 import javax.lang.model.SourceVersion;
 
-import static com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory.lastMatchStr;
+import static com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory.lastMatchStr;
 import static com.duy.ide.javaide.editor.autocomplete.util.EditorUtil.getPossibleClassName;
 import static java.util.regex.Pattern.compile;
 
@@ -51,7 +53,7 @@ import static java.util.regex.Pattern.compile;
  * Created by Duy on 20-Jul-17.
  */
 
-public class JavaAutoCompleteProvider {
+public class JavaAutoCompleteProvider implements IAutoCompleteProvider {
     public static final int KIND_NONE = 0;
     public static final int KIND_PACKAGE = KIND_NONE + 1; //or import
     public static final int KIND_METHOD = KIND_PACKAGE + 1;
@@ -273,7 +275,7 @@ public class JavaAutoCompleteProvider {
         }
     }
 
-    public ArrayList<Description> complete() {
+    public ArrayList<SuggestItem> generateSuggestion() {
         System.out.println("contextType = " + mContextType);
         //" Return list of matches.
         //case: all is empty
@@ -282,7 +284,7 @@ public class JavaAutoCompleteProvider {
         }
 
         //the result
-        ArrayList<Description> result = new ArrayList<>();
+        ArrayList<SuggestItem> result = new ArrayList<>();
 
         if (!mDotExpr.isEmpty()) {
             switch (mContextType) {
@@ -338,9 +340,9 @@ public class JavaAutoCompleteProvider {
         return result;
     }
 
-    private ArrayList<Description> filter(ArrayList<Description> input, String incomplete) {
-        ArrayList<Description> result = new ArrayList<>();
-        for (Description s : input) {
+    private ArrayList<SuggestItem> filter(ArrayList<SuggestItem> input, String incomplete) {
+        ArrayList<SuggestItem> result = new ArrayList<>();
+        for (SuggestItem s : input) {
             // TODO: 14-Aug-17 improve
             if (s.getName().contains(incomplete)) {
                 result.add(s);
@@ -353,12 +355,12 @@ public class JavaAutoCompleteProvider {
      * " Precondition:	incomplete must be a word without '.'.
      * " return all the matched, variables, fields, methods, types, packages
      */
-    private ArrayList<Description> completeWord(String source, String incomplete) {
+    private ArrayList<SuggestItem> completeWord(String source, String incomplete) {
         if (incomplete.endsWith(" ")) {
             return new ArrayList<>();
         }
         incomplete = incomplete.trim();
-        ArrayList<Description> result = new ArrayList<>();
+        ArrayList<SuggestItem> result = new ArrayList<>();
         if (mContextType != CONTEXT_PACKAGE_DECL) {
             //parse current file
             if (unit != null) {
@@ -437,24 +439,24 @@ public class JavaAutoCompleteProvider {
             result.addAll(aClass);
 
         }
-        Collections.sort(result, new Comparator<Description>() {
+        Collections.sort(result, new Comparator<SuggestItem>() {
             @Override
-            public int compare(Description o1, Description o2) {
-                return Integer.valueOf(o1.getDescriptionType()).compareTo(o2.getDescriptionType());
+            public int compare(SuggestItem o1, SuggestItem o2) {
+                return Integer.valueOf(o1.getSuggestionPriority()).compareTo(o2.getSuggestionPriority());
             }
         });
         return result;
     }
 
-    private ArrayList<Description> completeMethodParams(String incomplete) {
+    private ArrayList<SuggestItem> completeMethodParams(String incomplete) {
         return new ArrayList<>();
     }
 
     @NonNull
-    private ArrayList<Description> getConstructorList(String className) {
+    private ArrayList<SuggestItem> getConstructorList(String className) {
         if (className.isEmpty()) return new ArrayList<>();
         ArrayList<ClassDescription> classes = mClassLoader.findClassWithPrefix(className);
-        ArrayList<Description> constructors = new ArrayList<>();
+        ArrayList<SuggestItem> constructors = new ArrayList<>();
         for (ClassDescription c : classes) {
             constructors.addAll(c.getConstructors());
         }
@@ -470,10 +472,10 @@ public class JavaAutoCompleteProvider {
      * @return
      */
     @NonNull
-    private ArrayList<Description> getMember(String prefix, String suffix) {
+    private ArrayList<SuggestItem> getMember(String prefix, String suffix) {
         //get class member
         ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(prefix, null);
-        ArrayList<Description> members = new ArrayList<>();
+        ArrayList<SuggestItem> members = new ArrayList<>();
         if (classDescription != null) {
             members.addAll(classDescription.getMember(suffix));
         }
@@ -494,7 +496,7 @@ public class JavaAutoCompleteProvider {
      * " Precondition:	expr must end with '.'
      * " return members of the value of expression
      */
-    private ArrayList<Description> completeAfterDot(String source, String dotExpr, String incomplete) {
+    private ArrayList<SuggestItem> completeAfterDot(String source, String dotExpr, String incomplete) {
         ArrayList<String> items = parseExpr(dotExpr);
         if (items.size() == 0) {
             return new ArrayList<>();
@@ -505,7 +507,7 @@ public class JavaAutoCompleteProvider {
             return getMember(dotExpr, String.class.getName());
         }
 
-        ArrayList<Description> ti = new ArrayList<>();
+        ArrayList<SuggestItem> ti = new ArrayList<>();
         int ii = 1; //item index;
         @ItemKind
         int itemKind = 0;
@@ -677,7 +679,7 @@ public class JavaAutoCompleteProvider {
         return filter(ti, incomplete);
     }
 
-    private ArrayList<Description> arrayAccess(String typeName, String s) {
+    private ArrayList<SuggestItem> arrayAccess(String typeName, String s) {
         return null;
     }
 
@@ -690,7 +692,7 @@ public class JavaAutoCompleteProvider {
         return null;
     }
 
-    private ArrayList<Description> methodInvocation(String s, ArrayList<Description> ti, int itemKind) {
+    private ArrayList<SuggestItem> methodInvocation(String s, ArrayList<SuggestItem> ti, int itemKind) {
         return ti;
     }
 
@@ -730,7 +732,7 @@ public class JavaAutoCompleteProvider {
         return "";
     }
 
-    private ArrayList<Description> getVariableDeclaration() {
+    private ArrayList<SuggestItem> getVariableDeclaration() {
         return new ArrayList<>();
     }
 
@@ -743,9 +745,9 @@ public class JavaAutoCompleteProvider {
     }
 
     @NonNull
-    private ArrayList<Description> getStaticAccess(String className) {
+    private ArrayList<SuggestItem> getStaticAccess(String className) {
         ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(className, null);
-        ArrayList<Description> result = new ArrayList<>();
+        ArrayList<SuggestItem> result = new ArrayList<>();
         if (classDescription != null) {
             for (FieldDescription fieldDescription : classDescription.getFields()) {
                 if (Modifier.isStatic(fieldDescription.getModifiers())
@@ -763,11 +765,11 @@ public class JavaAutoCompleteProvider {
         return result;
     }
 
-    private ArrayList<Description> doGetClassInfo(String fullName) {
-        ArrayList<Description> descriptions = new ArrayList<>();
+    private ArrayList<SuggestItem> doGetClassInfo(String fullName) {
+        ArrayList<SuggestItem> descriptions = new ArrayList<>();
         ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(fullName, null);
         if (classDescription != null) {
-            ArrayList<Description> members = classDescription.getMember("");
+            ArrayList<SuggestItem> members = classDescription.getMember("");
             descriptions.addAll(members);
         }
         return descriptions;
@@ -1022,10 +1024,11 @@ public class JavaAutoCompleteProvider {
         return mClassLoader.getClassReader().isLoaded();
     }
 
-    public ArrayList<Description> getSuggestions(EditText editor) {
+    @Override
+    public ArrayList<SuggestItem> getSuggestions(EditText editor) {
         try {
             this.resolveContextType(editor);
-            ArrayList<Description> complete = complete();
+            ArrayList<SuggestItem> complete = generateSuggestion();
             return complete;
         } catch (Exception e) {
             e.printStackTrace();
@@ -1034,7 +1037,7 @@ public class JavaAutoCompleteProvider {
     }
 
 
-    public void onInsertSuggestion(Editable editText, Description suggestion) {
+    public void onInsertSuggestion(Editable editText, SuggestItem suggestion) {
         if (suggestion instanceof ClassDescription) {
             PackageImporter.importClass(editText, ((ClassDescription) suggestion).getClassName());
         } else if (suggestion instanceof ConstructorDescription) {

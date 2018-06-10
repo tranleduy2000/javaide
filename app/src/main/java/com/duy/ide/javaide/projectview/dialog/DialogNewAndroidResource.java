@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.duy.android.compiler.utils.IOUtils;
 import com.duy.ide.R;
 import com.duy.ide.javaide.FileChangeListener;
-import com.duy.ide.javaide.editor.autocomplete.autocomplete.PatternFactory;
+import com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory;
 
 import java.io.File;
 

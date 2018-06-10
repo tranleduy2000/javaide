@@ -1,4 +1,4 @@
-package com.duy.ide.javaide.editor.autocomplete.autocomplete;
+package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import android.support.annotation.Nullable;
 
@@ -33,10 +33,6 @@ public class PatternFactory {
 
     public static final String GENERIC_STR = "<[A-Z][a-zA-Z0-9_<>, ]*>";
 
-    /*Match file*/
-    public static final Pattern JAVA_FILE = Pattern.compile(PatternFactory.IDENTIFIER_STR + "\\.java[^\\w]");
-    public static final Pattern JAVA_FILE_LINE_COL = Pattern.compile(PatternFactory.IDENTIFIER_STR
-            + "\\.java[0-9]+:[0-9]+");
     public static final Pattern FILE_NAME = Pattern.compile("[A-Za-z][A-Za-z0-9_\\-.]*");
 
     static {
@@ -46,10 +42,9 @@ public class PatternFactory {
         System.arraycopy(KEYWORD_TYPE, 0, KEYWORD, KEYWORD_MODIFIERS.length, KEYWORD_TYPE.length);
     }
 
-    public static Pattern makeImport(String className) {
+    public static Pattern makeImportClass(String className) {
         return Pattern.compile("(import\\s+)(.*" + className + ")(\\s?;)");
     }
-
 
     @Nullable
     public static String lastMatchStr(CharSequence text, Pattern pattern) {

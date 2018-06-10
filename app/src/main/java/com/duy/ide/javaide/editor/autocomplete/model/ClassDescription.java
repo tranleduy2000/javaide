@@ -1,6 +1,7 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
 
+import com.duy.ide.javaide.editor.autocomplete.api.SuggestItem;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Constructor;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 public class ClassDescription extends DescriptionImpl {
     private static final String TAG = "ClassDescription";
     private String name, simpleName, className, extend, packageName;
+
     private ArrayList<ConstructorDescription> constructors;
     private ArrayList<FieldDescription> fields;
     private ArrayList<MethodDescription> methods;
@@ -72,12 +74,12 @@ public class ClassDescription extends DescriptionImpl {
     }
 
     @Override
-    public String getSnippet() {
+    public String getInsertText() {
         return getSimpleName() + " ";
     }
 
     @Override
-    public int getDescriptionType() {
+    public int getSuggestionPriority() {
         return DescriptionImpl.CLASS_DESC;
     }
 
@@ -147,8 +149,8 @@ public class ClassDescription extends DescriptionImpl {
         return simpleName + "(" + packageName + ")";
     }
 
-    public ArrayList<Description> getMember(String suffix) {
-        ArrayList<Description> result = new ArrayList<>();
+    public ArrayList<SuggestItem> getMember(String suffix) {
+        ArrayList<SuggestItem> result = new ArrayList<>();
         for (ConstructorDescription constructor : constructors) {
             if (!suffix.isEmpty() && constructor.getName().startsWith(suffix)) {
                 result.add(constructor);

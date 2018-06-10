@@ -38,7 +38,7 @@ public class ConstructorDescription extends DescriptionImpl {
     }
 
     @Override
-    public String getSnippet() {
+    public String getInsertText() {
         if (constructor.getParameterTypes().length > 0) {
             return getSimpleName() + "(" + EditorView.CURSOR + ");";
         } else {

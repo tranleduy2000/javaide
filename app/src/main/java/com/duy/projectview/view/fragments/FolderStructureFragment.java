@@ -22,6 +22,7 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.interfaces.Predicate;
 import com.duy.file.explorer.FileExplorerActivity;
 import com.duy.ide.R;
+import com.duy.ide.javaide.FileChangeListener;
 import com.duy.projectview.ProjectFileContract;
 import com.duy.projectview.dialog.DialogCopyFile;
 import com.duy.projectview.dialog.DialogDeleteFile;
@@ -50,28 +51,29 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     public static final String TAG = "FolderStructureFragment";
     private static final int REQUEST_PICK_FILE = 498;
 
-    protected File mLastSelectedDir = null;
+    private File mLastSelectedDir = null;
     @Nullable
-    private ProjectFileContract.FileActionListener mParentListener;
+    private FileChangeListener mParentListener;
 
     private ViewGroup mContainerView;
     private TextView mTxtProjectName;
-    private ProjectFileContract.Presenter mPresenter;
     private AndroidTreeView mTreeView;
-    private SharedPreferences mPref;
+
+    private SharedPreferences mPreferences;
     @Nullable
     private JavaProject mProject;
-    private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
+
+    private TreeNode.TreeNodeClickListener mNodeClickListener = new TreeNode.TreeNodeClickListener() {
         @Override
         public void onClick(TreeNode node, Object value) {
             FolderHolder.TreeItem i = (FolderHolder.TreeItem) value;
             File file = i.getFile();
             if (mParentListener != null && file.isFile()) {
-                mParentListener.onFileClick(file, null);
+                mParentListener.doOpenFile(file);
             }
         }
     };
-    private TreeNode.TreeNodeLongClickListener nodeLongClickListener = new TreeNode.TreeNodeLongClickListener() {
+    private TreeNode.TreeNodeLongClickListener mNodeLongClickListener = new TreeNode.TreeNodeLongClickListener() {
         @Override
         public boolean onLongClick(TreeNode node, Object value) {
             FolderHolder.TreeItem i = (FolderHolder.TreeItem) value;
@@ -92,73 +94,6 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
         FolderStructureFragment fragment = new FolderStructureFragment();
         fragment.setProject(projectFile);
         return fragment;
-    }
-
-    private void showDialogNew(@NonNull File parent) {
-        mLastSelectedDir = parent;
-        DialogSelectType dialogSelectType = DialogSelectType.newInstance(parent,
-                new DialogSelectType.OnFileTypeSelectListener() {
-                    @Override
-                    public void onTypeSelected(File currentDir, String type) {
-                        if (type.equals(getString(R.string.java_file))) {
-                            createNewClass(currentDir);
-
-                        } else if (type.equals(getString(R.string.xml_file))) {
-                            showDialogCreateNewXml(currentDir);
-
-                        } else if (type.equals(getString(R.string.select_from_storage))) {
-                            selectFromStorage(currentDir);
-
-                        } else if (type.equals(getString(R.string.create_new_folder))) {
-                            showDialogCreateNewFolder(currentDir);
-
-                        }
-                    }
-                });
-        dialogSelectType.show(getChildFragmentManager(), DialogNewAndroidProject.TAG);
-    }
-
-    private void selectFromStorage(File currentDir) {
-        String path = Environment.getExternalStorageDirectory().getPath();
-        Intent intent = new Intent(getContext(), FileExplorerActivity.class);
-        intent.putExtra(FileExplorerActivity.EXTRA_MODE, FileExplorerActivity.MODE_PICK_FILE);
-        intent.putExtra(FileExplorerActivity.EXTRA_INIT_PATH, path);
-        intent.putExtra(FileExplorerActivity.EXTRA_HOME_PATH, getSdkAppDir());
-        intent.putExtra(FileExplorerActivity.EXTRA_ENCODING, "UTF-8");
-        startActivityForResult(intent, REQUEST_PICK_FILE);
-    }
-
-    private void showDialogCreateNewXml(@NonNull File file) {
-        if (mProject != null) {
-            DialogNewAndroidResource dialog = DialogNewAndroidResource.newInstance(file);
-            dialog.show(getChildFragmentManager(), DialogNewClass.TAG);
-        } else {
-            Toast.makeText(getContext(), "Can not create Android resource file", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Show dialog create new folder
-     *
-     * @param file - current file, uses for determine current directory, it can be null
-     */
-    private void showDialogCreateNewFolder(@NonNull File file) {
-        if (mProject != null) {
-            DialogNewFolder newFolder = DialogNewFolder.newInstance(file);
-            newFolder.show(getChildFragmentManager(), DialogNewClass.TAG);
-        } else {
-            Toast.makeText(getContext(), "Can not create new folder", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void createNewClass(@NonNull File folder) {
-        if (mProject != null) {
-            DialogNewClass dialogNewClass;
-            dialogNewClass = DialogNewClass.newInstance(mProject, null, folder);
-            dialogNewClass.show(getChildFragmentManager(), DialogNewClass.TAG);
-        } else {
-            Toast.makeText(getContext(), "Can not create new class", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -206,14 +141,14 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
                 }
             }
         } else if (mTreeView != null) {
-            String state = mPref.getString("tree_state", "");
+            String state = mPreferences.getString("tree_state", "");
             if (!state.isEmpty()) mTreeView.restoreState(state);
         }
 
         view.findViewById(R.id.img_add_dependencies).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mParentListener != null) mParentListener.clickNewModule();
+                clickNewModule();
             }
         });
 
@@ -389,8 +324,8 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
         mTreeView.setDefaultAnimation(false);
         mTreeView.setDefaultContainerStyle(R.style.TreeNodeStyleCustom);
         mTreeView.setDefaultViewHolder(FolderHolder.class);
-        mTreeView.setDefaultNodeClickListener(nodeClickListener);
-        mTreeView.setDefaultNodeLongClickListener(nodeLongClickListener);
+        mTreeView.setDefaultNodeClickListener(mNodeClickListener);
+        mTreeView.setDefaultNodeLongClickListener(mNodeLongClickListener);
         if (saveState != null) {
             mTreeView.restoreState(saveState);
         }
@@ -404,24 +339,23 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
 
     @Override
     public void setPresenter(ProjectFileContract.Presenter presenter) {
-        this.mPresenter = presenter;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            this.mParentListener = (ProjectFileContract.FileActionListener) getActivity();
+            this.mParentListener = (FileChangeListener) getActivity();
         } catch (ClassCastException ignored) {
         }
-        mPref = PreferenceManager.getDefaultSharedPreferences(context);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override
     public void onDestroyView() {
         if (mTreeView != null) {
             String saveState = mTreeView.getSaveState();
-            mPref.edit().putString("tree_state", saveState).apply();
+            mPreferences.edit().putString("tree_state", saveState).apply();
         }
         super.onDestroyView();
     }
@@ -454,7 +388,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     @Override
     public void onNewFileCreated(@NonNull File file) {
         if (mParentListener != null) {
-            mParentListener.onNewFileCreated(file);
+            mParentListener.doOpenFile(file);
         }
     }
 
@@ -467,7 +401,7 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
                         callback.onSuccess(file);
                         Toast.makeText(getContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
                         if (mParentListener != null) {
-                            mParentListener.clickRemoveFile(file, callback);
+                            mParentListener.onFileDeleted(file);
                         }
                     }
 
@@ -489,4 +423,73 @@ public class FolderStructureFragment extends Fragment implements ProjectFileCont
     public void clickNewModule() {
 
     }
+
+
+    private void showDialogNew(@NonNull File parent) {
+        mLastSelectedDir = parent;
+        DialogSelectType dialogSelectType = DialogSelectType.newInstance(parent,
+                new DialogSelectType.OnFileTypeSelectListener() {
+                    @Override
+                    public void onTypeSelected(File currentDir, String type) {
+                        if (type.equals(getString(R.string.java_file))) {
+                            createNewClass(currentDir);
+
+                        } else if (type.equals(getString(R.string.xml_file))) {
+                            showDialogCreateNewXml(currentDir);
+
+                        } else if (type.equals(getString(R.string.select_from_storage))) {
+                            selectFromStorage(currentDir);
+
+                        } else if (type.equals(getString(R.string.create_new_folder))) {
+                            showDialogCreateNewFolder(currentDir);
+                        }
+                    }
+                });
+        dialogSelectType.show(getChildFragmentManager(), DialogNewAndroidProject.TAG);
+    }
+
+    private void selectFromStorage(File currentDir) {
+        mLastSelectedDir = currentDir;
+        String path = Environment.getExternalStorageDirectory().getPath();
+        Intent intent = new Intent(getContext(), FileExplorerActivity.class);
+        intent.putExtra(FileExplorerActivity.EXTRA_MODE, FileExplorerActivity.MODE_PICK_FILE);
+        intent.putExtra(FileExplorerActivity.EXTRA_INIT_PATH, path);
+        intent.putExtra(FileExplorerActivity.EXTRA_HOME_PATH, getSdkAppDir());
+        intent.putExtra(FileExplorerActivity.EXTRA_ENCODING, "UTF-8");
+        startActivityForResult(intent, REQUEST_PICK_FILE);
+    }
+
+    private void showDialogCreateNewXml(@NonNull File file) {
+        if (mProject != null) {
+            DialogNewAndroidResource dialog = DialogNewAndroidResource.newInstance(file);
+            dialog.show(getChildFragmentManager(), DialogNewClass.TAG);
+        } else {
+            Toast.makeText(getContext(), "Can not create Android resource file", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Show dialog create new folder
+     *
+     * @param file - current file, uses for determine current directory, it can be null
+     */
+    private void showDialogCreateNewFolder(@NonNull File file) {
+        if (mProject != null) {
+            DialogNewFolder newFolder = DialogNewFolder.newInstance(file);
+            newFolder.show(getChildFragmentManager(), DialogNewClass.TAG);
+        } else {
+            Toast.makeText(getContext(), "Can not create new folder", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void createNewClass(@NonNull File folder) {
+        if (mProject != null) {
+            DialogNewClass dialogNewClass
+                    = DialogNewClass.newInstance(mProject, mProject.getPackageName(), folder);
+            dialogNewClass.show(getChildFragmentManager(), DialogNewClass.TAG);
+        } else {
+            Toast.makeText(getContext(), "Can not create new class", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

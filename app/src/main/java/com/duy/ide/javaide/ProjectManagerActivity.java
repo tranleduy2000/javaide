@@ -267,7 +267,8 @@ public abstract class ProjectManagerActivity extends IdeActivity
         }
         if (mProject != null && folder != null) {
             DialogNewClass dialogNewClass;
-            dialogNewClass = DialogNewClass.newInstance(mProject, null, folder);
+            dialogNewClass = DialogNewClass.newInstance(mProject, mProject.getPackageName(),
+                    folder);
             dialogNewClass.show(getSupportFragmentManager(), DialogNewClass.TAG);
         } else {
             toast("Can not create new class");

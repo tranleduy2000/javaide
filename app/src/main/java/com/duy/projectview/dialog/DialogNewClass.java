@@ -42,9 +42,9 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     private FileChangeListener listener;
     private JavaProject project;
     @Nullable
-    private String currentPackage;
+    private String mCurrPackage;
     @Nullable
-    private File currentFolder;
+    private File mCurrFolder;
 
     public static DialogNewClass newInstance(@NonNull JavaProject project,
                                              @Nullable String currentPackage,
@@ -58,7 +58,8 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.dialog_new_class, container, false);
     }
 
@@ -86,7 +87,7 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mEditName = view.findViewById(R.id.edit_class_name);
         mKind = view.findViewById(R.id.spinner_kind);
@@ -105,13 +106,12 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     }
 
     private void initPackage() {
-        if (currentPackage == null || currentPackage.isEmpty()) {
-            if (currentFolder != null) {
-                currentPackage = ProjectFileUtil.findPackage(project.getJavaSrcDirs().get(0), currentFolder);
+        if (mCurrPackage == null || mCurrPackage.isEmpty()) {
+            if (mCurrFolder != null) {
+                mCurrPackage = ProjectFileUtil.findPackage(project.getJavaSrcDirs().get(0), mCurrFolder);
             }
         }
-
-        mPackage.setText(currentPackage);
+        mPackage.setText(mCurrPackage);
     }
 
     private void createNewClass() {
@@ -184,10 +184,10 @@ public class DialogNewClass extends AppCompatDialogFragment implements View.OnCl
     }
 
     public void setCurrentFolder(@Nullable File currentFolder) {
-        this.currentFolder = currentFolder;
+        this.mCurrFolder = currentFolder;
     }
 
     public void setCurrentPackage(@Nullable String currentPackage) {
-        this.currentPackage = currentPackage;
+        this.mCurrPackage = currentPackage;
     }
 }

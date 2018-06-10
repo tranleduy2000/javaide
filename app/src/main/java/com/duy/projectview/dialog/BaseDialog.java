@@ -1,4 +1,4 @@
-package com.duy.projectview.view.dialog;
+package com.duy.projectview.dialog;
 
 import android.content.Context;
 import android.support.v7.app.AlertDialog;

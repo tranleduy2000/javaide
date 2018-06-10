@@ -1,4 +1,4 @@
-package com.duy.projectview.view.dialog;
+package com.duy.projectview.dialog;
 
 import android.app.Dialog;
 import android.content.Context;

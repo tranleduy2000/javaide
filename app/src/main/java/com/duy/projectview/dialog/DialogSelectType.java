@@ -1,7 +1,6 @@
-package com.duy.projectview.view.dialog;
+package com.duy.projectview.dialog;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -24,25 +23,16 @@ import java.io.File;
 
 public class DialogSelectType extends AppCompatDialogFragment {
     public static final String TAG = "DialogNewAndroidProject";
-    private OnFileTypeSelectListener listener;
+    private OnFileTypeSelectListener mListener;
+    private File mCurrentDir;
 
-    public static DialogSelectType newInstance(File parent) {
-
-        Bundle args = new Bundle();
-        args.putSerializable("parent", parent);
+    public static DialogSelectType newInstance(File parent, OnFileTypeSelectListener onFileTypeSelectListener) {
         DialogSelectType fragment = new DialogSelectType();
-        fragment.setArguments(args);
+        fragment.mCurrentDir = parent;
+        fragment.mListener = onFileTypeSelectListener;
         return fragment;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            listener = (OnFileTypeSelectListener) getActivity();
-        } catch (ClassCastException ignored) {
-        }
-    }
 
     @Override
     public void onStart() {
@@ -63,16 +53,19 @@ public class DialogSelectType extends AppCompatDialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final File file = (File) getArguments().getSerializable("parent");
-        ((TextView) view.findViewById(R.id.txt_path)).setText(file.getPath());
+        if (mCurrentDir == null) {
+            dismiss();
+            return;
+        }
+
+        ((TextView) view.findViewById(R.id.txt_path)).setText(mCurrentDir.getPath());
         ListView listView = view.findViewById(R.id.file_types);
         final String[] fileTypes = getResources().getStringArray(R.array.select_type);
-        listView.setAdapter(new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_1, fileTypes));
+        listView.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, fileTypes));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (listener != null) listener.onTypeSelected(file, fileTypes[position]);
+                if (mListener != null) mListener.onTypeSelected(mCurrentDir, fileTypes[position]);
                 dismiss();
             }
         });

@@ -27,7 +27,8 @@ public class ThemeActivity extends ThemeSupportActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_java_editor_theme);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        setTitle("");
+        getSupportActionBar().    setTitle(R.string.editor_theme);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mPreferences = Preferences.getInstance(this);
         mInAppPurchaseHelper = new InAppPurchaseHelper(this);

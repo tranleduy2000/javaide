@@ -25,10 +25,6 @@
         <item name="android:windowBackground">@color/dark.color_background</item>
     </style>
 
-    <style name="AppThemeDark.NoActionBar" parent="AppThemeDark">
-
-    </style>
-
     <!--Theme light for pro version-->
 
     <style name="TreeNodeStyleCustom">

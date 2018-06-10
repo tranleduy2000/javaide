@@ -166,7 +166,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
         JavaProjectManager.saveProject(this, projectFile);
 
         //remove all edit page
-        // TODO: 09-Jun-18 close last project
         mTabManager.closeAllTab();
 
         //show file structure of project

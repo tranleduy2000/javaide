@@ -25,7 +25,6 @@ import java.util.Arrays;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class JavaProject {
     private static final String TAG = "ProjectFile";
-
     protected ArrayList<File> javaSrcDirs;
     protected File dirSrcMain;
     protected File dirGeneratedSource;
@@ -60,12 +59,12 @@ public class JavaProject {
     private File dexFile;
     private File outJarArchive;
     private File dirGenerated;
-
     public JavaProject(File root, @Nullable String packageName) {
         this.packageName = packageName;
         this.dirRoot = root;
         init();
     }
+
 
     public File createClass(String currentPackage, String className, String content) {
         File file = new File(javaSrcDirs.get(0), currentPackage.replace(".", File.separator));
@@ -287,5 +286,29 @@ public class JavaProject {
 
     public File getDirBuildIntermediates() {
         return dirBuildIntermediates;
+    }
+
+
+    @Override
+    public String toString() {
+        return "JavaProject{" +
+                "javaSrcDirs=" + javaSrcDirs +
+                ", dirSrcMain=" + dirSrcMain +
+                ", dirGeneratedSource=" + dirGeneratedSource +
+                ", dirRoot=" + dirRoot +
+                ", dirApp=" + dirApp +
+                ", packageName='" + packageName + '\'' +
+                ", dirBuild=" + dirBuild +
+                ", dirBuildOutput=" + dirBuildOutput +
+                ", dirLibs=" + dirLibs +
+                ", dirBuildClasses=" + dirBuildClasses +
+                ", dirBuildOutputJar=" + dirBuildOutputJar +
+                ", dirBuildDexedLibs=" + dirBuildDexedLibs +
+                ", dirBuildDexedClass=" + dirBuildDexedClass +
+                ", dirBuildIntermediates=" + dirBuildIntermediates +
+                ", dexFile=" + dexFile +
+                ", outJarArchive=" + outJarArchive +
+                ", dirGenerated=" + dirGenerated +
+                '}';
     }
 }

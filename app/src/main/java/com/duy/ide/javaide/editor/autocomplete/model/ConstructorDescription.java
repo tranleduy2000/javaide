@@ -5,6 +5,7 @@ import android.text.Editable;
 
 import com.duy.ide.BuildConfig;
 import com.duy.ide.editor.view.IEditAreaView;
+import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Constructor;
@@ -41,6 +42,8 @@ public class ConstructorDescription extends JavaSuggestItemImpl {
                 editable.insert(start, text);
                 editorView.setSelection(start + text.length());
             }
+
+            PackageImporter.importClass(editorView.getEditableText(), constructor.getName());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
 import android.support.annotation.NonNull;
+import android.text.Editable;
 
 import com.duy.ide.editor.view.IEditAreaView;
 
@@ -19,10 +20,29 @@ public class PackageDescription extends JavaSuggestItemImpl {
     public static PackageDescription root() {
         return new PackageDescription("", null);
     }
-    @Override
-    public void onSelectThis(@NonNull IEditAreaView iEditAreaView) {
 
+    @Override
+    public void onSelectThis(@NonNull IEditAreaView editorView) {
+        try {
+            final int length = getIncomplete().length();
+            final int start = editorView.getSelectionStart() - length;
+
+            Editable editable = editorView.getEditableText();
+            editable.delete(start, editorView.getSelectionStart());
+
+            if (isLeaf()) {
+                editable.insert(start, name);
+                editorView.setSelection(start + name.length());
+            } else {
+                String text = name + ".";
+                editable.insert(start, text);
+                editorView.setSelection(start + text.length());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
     @Override
     public char getTypeHeader() {
         return 'p';

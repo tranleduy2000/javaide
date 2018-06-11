@@ -18,6 +18,7 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
 import android.support.annotation.NonNull;
+import android.text.Editable;
 
 import com.duy.ide.editor.view.IEditAreaView;
 
@@ -43,27 +44,49 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member {
         this.name = field.getName();
         this.type = field.getType().getName();
         this.modifiers = field.getModifiers();
+
         if (Modifier.isStatic(modifiers)) {
             try {
-                value = field.get(null).toString();
+                boolean primitive = field.getType().isPrimitive();
+                Object o = field.get(null);
+                if (primitive) {
+                    value = o.toString();
+                } else {
+                    value = o.getClass().getName();
+                }
             } catch (Exception ignored) {
             }
         }
     }
-    @Override
-    public void onSelectThis(@NonNull IEditAreaView iEditAreaView) {
 
+    @Override
+    public void onSelectThis(@NonNull IEditAreaView editorView) {
+        try {
+            final int length = getIncomplete().length();
+            final int cursor = getEditor().getCursor();
+            final int start = cursor - length;
+
+            Editable editable = editorView.getEditableText();
+            editable.replace(start, cursor, name);
+            editorView.setSelection(start + name.length());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
     @Override
     public char getTypeHeader() {
         return 'f'; //field
     }
 
-
-
     @Override
     public String getName() {
-        return name;
+        if (value == null) {
+            return name;
+        } else {
+            return name + "(" + value + ")";
+        }
     }
 
     @Override

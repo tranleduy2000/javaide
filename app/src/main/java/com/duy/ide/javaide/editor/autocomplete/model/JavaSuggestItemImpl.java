@@ -26,7 +26,7 @@ import com.duy.ide.editor.internal.suggestion.Editor;
  * Created by Duy on 21-Jul-17.
  */
 
-public abstract class JavaSuggestItemImpl implements SuggestItem {
+public abstract class JavaSuggestItemImpl implements SuggestItem, Cloneable {
     public static final int FIELD_DESC = 0;
     public static final int METHOD_DESC = 1;
     public static final int CLASS_DESC = 2;

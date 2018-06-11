@@ -28,12 +28,12 @@ import java.util.HashMap;
  * @see com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage
  */
 public class PackageDescription extends JavaSuggestItemImpl {
-    private String mChildName;
+    private String mName;
     private PackageDescription mParentPkg;
     private HashMap<String, PackageDescription> mChild = new HashMap<>();
 
     private PackageDescription(String childName, PackageDescription parent) {
-        this.mChildName = childName;
+        this.mName = childName;
         this.mParentPkg = parent;
     }
 
@@ -52,13 +52,13 @@ public class PackageDescription extends JavaSuggestItemImpl {
 
             if (isLeaf()) {
                 //static access
-                String text = mChildName.replace("$", ".");
+                String text = mName.replace("$", ".");
                 // why not add semicolon (;) , in some case you need declared variable with full class
                 // name, not import package
                 editable.replace(start, cursor, text);
                 editorView.setSelection(start + text.length());
             } else {
-                String text = mChildName + ".";
+                String text = mName + ".";
                 editable.replace(start, cursor, text);
                 editorView.setSelection(start + text.length());
             }
@@ -74,7 +74,7 @@ public class PackageDescription extends JavaSuggestItemImpl {
 
     @Override
     public String getName() {
-        return mChildName;
+        return mName;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class PackageDescription extends JavaSuggestItemImpl {
     }
 
     private boolean isRoot() {
-        return mChildName.isEmpty() || mParentPkg == null;
+        return mName.isEmpty() || mParentPkg == null;
     }
 
     private boolean isLeaf() {
@@ -131,11 +131,6 @@ public class PackageDescription extends JavaSuggestItemImpl {
 
     @Override
     public String toString() {
-        return "PackageDescription{" +
-                "name='" + mChildName + '\'' +
-                ", parent=" + mParentPkg +
-                ", child=" + mChild +
-                ", lastUsed=" + lastUsed +
-                "} " + super.toString();
+        return mName;
     }
 }

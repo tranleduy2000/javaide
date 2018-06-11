@@ -51,6 +51,8 @@ public abstract class JavaCompleteMatcherImpl implements IJavaCompleteMatcher {
     public static final Pattern METHOD_NAME = IDENTIFIER;
     public static final Pattern CLASS_NAME = IDENTIFIER;
     public static final Pattern VARIABLE_NAME = IDENTIFIER;
+    public static final Pattern PACKAGE_NAME = Pattern.compile(
+            "^" + IDENTIFIER.pattern() + "(\\." + IDENTIFIER.pattern() + ")*$");
 
     private static final String TAG = "JavaCompleteMatcherImpl";
 

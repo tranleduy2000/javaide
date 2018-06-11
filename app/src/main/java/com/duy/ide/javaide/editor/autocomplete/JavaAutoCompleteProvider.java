@@ -213,12 +213,12 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             }
 
             //String literal
-            else if (Pattern.compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
+            /*else if (Pattern.compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
                 mDotExpr = statement.replaceAll("\\s*\\.\\s*$", ".");
                 return;
-            }
+            }*/
             //" type declaration		NOTE: not supported generic yet.
-            else {
+            /*else*/ {
                 Matcher matcher = Pattern.compile("^\\s?" + Patterns.RE_TYPE_DECL).matcher(statement);
                 if (matcher.find()) {
                     mDotExpr = statement.substring(matcher.start());

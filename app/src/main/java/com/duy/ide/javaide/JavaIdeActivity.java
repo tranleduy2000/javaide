@@ -43,13 +43,14 @@ import com.duy.android.compiler.utils.ProjectUtils;
 import com.duy.common.purchase.InAppPurchaseHelper;
 import com.duy.ide.R;
 import com.duy.ide.code.api.CodeFormatProvider;
+import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.diagnostic.DiagnosticContract;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.editor.IEditorDelegate;
 import com.duy.ide.javaide.diagnostic.parser.aapt.AaptOutputParser;
 import com.duy.ide.javaide.diagnostic.parser.java.JavaOutputParser;
-import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
+import com.duy.ide.javaide.editor.autocomplete.JavaAutoComplete2;
 import com.duy.ide.javaide.editor.format.JavaIdeCodeFormatProvider;
 import com.duy.ide.javaide.menu.JavaMenuManager;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
@@ -80,7 +81,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
     private static final int RC_CHANGE_THEME = 350;
     private InAppPurchaseHelper mInAppPurchaseHelper;
     private ProgressBar mCompileProgress;
-    private JavaAutoCompleteProvider mAutoCompleteProvider;
+    private SuggestionProvider mAutoCompleteProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +120,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
 
     }
 
-    private void populateAutoCompleteService(JavaAutoCompleteProvider provider) {
+    private void populateAutoCompleteService(SuggestionProvider provider) {
         for (IEditorDelegate delegate : getTabManager().getEditorPagerAdapter().getAllEditor()) {
             delegate.setSuggestionProvider(provider);
         }
@@ -137,8 +138,12 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        mAutoCompleteProvider = new JavaAutoCompleteProvider(JavaIdeActivity.this);
-                        mAutoCompleteProvider.load(mProject);
+//                        JavaAutoCompleteProvider provider;
+//                        provider = new JavaAutoCompleteProvider(JavaIdeActivity.this);
+//                        provider.load(mProject);
+                        JavaAutoComplete2 provider = new JavaAutoComplete2(JavaIdeActivity.this);
+                        provider.load(mProject);
+                        mAutoCompleteProvider = provider;
                         populateAutoCompleteService(mAutoCompleteProvider);
                     }
                 }).start();

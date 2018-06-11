@@ -59,9 +59,12 @@ import java.util.regex.Pattern;
 
 import javax.lang.model.SourceVersion;
 
+import static com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl.END_WITH_CHARACTER_OR_DOT;
+import static com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl.END_WITH_DOT;
+import static com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl.KEYWORD_DOT;
+import static com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl.VALID_WHEN_END_WITH_DOT;
 import static com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory.lastMatchStr;
 import static com.duy.ide.javaide.editor.autocomplete.util.EditorUtil.getPossibleClassName;
-import static java.util.regex.Pattern.compile;
 
 
 /**
@@ -145,6 +148,39 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return !b;
     }
 
+    public static String mergeLine(String statement) {
+        statement = cleanStatement(statement);
+        return statement;
+    }
+
+    public static String getCurrentLine(Editor editText) {
+        return EditorUtil.getLineBeforeCursor(editText, editText.getCursor());
+    }
+
+    /**
+     * set string literal empty, remove comments, trim begining or ending spaces
+     * case: ' 	sb. /* block comment"/ append( "stringliteral" ) // comment '
+     * return 'sb.append("")'
+     */
+    private static String cleanStatement(String code) {
+        if (code.matches("\\s*")) {
+            return "";
+        }
+        code = removeComment(code); //clear all comment
+        //clear all string content
+        code = code.replaceAll(Patterns.STRINGS.toString(), "\"\"");
+        code = EditorUtil.trimLeft(code);
+        code = code.replaceAll("[\n\t\r]", "");
+        return code;
+    }
+
+    /**
+     * remove all comment
+     */
+    private static String removeComment(String code) {
+        return code.replaceAll(Patterns.JAVA_COMMENTS.toString(), "");
+    }
+
     private void resolveContextType(Editor editor) {
         try {
             this.unit = mJavaParser.parse(editor.getText());
@@ -159,31 +195,34 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
         statement = getStatement(editor);
         Log.d(TAG, "findStart statement = " + statement);
-        if (compile("[.0-9A-Za-z_]\\s*$").matcher(statement).find()) {
-            boolean valid = true;
-            if (compile("\\.\\s*$").matcher(statement).find()) {
-                valid = compile("[\")0-9A-Za-z_\\]]\\s*\\.\\s*$").matcher(statement).find()
-                        && !compile("(" + Patterns.RE_KEYWORDS.toString() + ")\\.\\s*").matcher(statement).find();
+        if (END_WITH_CHARACTER_OR_DOT.matcher(statement).find()) {
+            boolean isValid = true;
+            if (END_WITH_DOT.matcher(statement).find()) {
+                isValid = VALID_WHEN_END_WITH_DOT.matcher(statement).find()
+                        &&
+                        !KEYWORD_DOT.matcher(statement).find();
             }
-            if (!valid) return;
+            if (!isValid) {
+                return;
+            }
 
             mContextType = CONTEXT_AFTER_DOT;
             //import or package declaration
-            if (compile("^\\s*(import|package)\\s+").matcher(statement).find()) {
+            if (Pattern.compile("^\\s*(import|package)\\s+").matcher(statement).find()) {
                 progressImportPackage();
             }
 
             //String literal
-            else if (compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
+            else if (Pattern.compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
                 mDotExpr = statement.replaceAll("\\s*\\.\\s*$", ".");
                 return;
             }
             //" type declaration		NOTE: not supported generic yet.
             else {
-                Matcher matcher = compile("^\\s?" + Patterns.RE_TYPE_DECL).matcher(statement);
+                Matcher matcher = Pattern.compile("^\\s?" + Patterns.RE_TYPE_DECL).matcher(statement);
                 if (matcher.find()) {
                     mDotExpr = statement.substring(matcher.start());
-                    matcher = compile("\\s+(extends|implements)(\\s+)(" + Patterns.RE_QUALID + ")").matcher(mDotExpr);
+                    matcher = Pattern.compile("\\s+(extends|implements)(\\s+)(" + Patterns.RE_QUALID + ")").matcher(mDotExpr);
                     if (not(matcher.find())) {
                         // TODO: 13-Aug-17 suggest class
                         return;
@@ -199,7 +238,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                         mContextType = CONTEXT_NEED_INTERFACE;
                     }
                 } else {
-                    matcher = compile("(\\s*new\\s+)(" + Patterns.RE_QUALID + ")$").matcher(statement);
+                    matcher = Pattern.compile("(\\s*new\\s+)(" + Patterns.RE_QUALID + ")$").matcher(statement);
                     if (matcher.find()) {
                         statement = matcher.group(2);
                         if (!Patterns.RE_KEYWORDS.matcher(statement).find()) {
@@ -226,14 +265,14 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
         }
         //	" method parameters, treat methodname or 'new' as an incomplete word
-        else if (compile("\\(\\s*$").matcher(statement).find()) {
+        else if (Pattern.compile("\\(\\s*$").matcher(statement).find()) {
             //" TODO: Need to exclude method declaration?
             mContextType = CONTEXT_METHOD_PARAM;
             int pos = statement.lastIndexOf("(");
             statement = statement.replaceAll("\\s*\\(\\s*$", "");
             //" new ClassName?
 
-            if (compile("\\s*new\\s+" + Patterns.RE_QUALID + "$").matcher(statement).find()) {
+            if (Pattern.compile("\\s*new\\s+" + Patterns.RE_QUALID + "$").matcher(statement).find()) {
                 statement = statement.replaceAll("^\\s*new\\s+", "");
                 if (!Patterns.KEYWORDS.matcher(statement).find()) {
                     mIcompleteWord = "+";
@@ -243,7 +282,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
                 }
             } else {
-                Matcher matcher = compile("\\s*" + Patterns.RE_IDENTIFIER + "$").matcher(statement);
+                Matcher matcher = Pattern.compile("\\s*" + Patterns.RE_IDENTIFIER + "$").matcher(statement);
                 matcher.find();
                 pos = matcher.start();
                 //case: "method(|)", "this(|)", "super(|)"
@@ -275,21 +314,21 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     private void progressImportPackage() {
         statement = statement.replaceAll("\\s+\\.", ".");
         statement = statement.replaceAll("\\.\\s+", ".");
-        if (compile("^\\s*(import)\\s+").matcher(statement).find()) {
+        if (Pattern.compile("^\\s*(import)\\s+").matcher(statement).find()) {
             //static import
-            if (compile("^\\s*(import)\\s+(static)\\s+").matcher(statement).find()) {
+            if (Pattern.compile("^\\s*(import)\\s+(static)\\s+").matcher(statement).find()) {
                 mContextType = CONTEXT_IMPORT_STATIC;
             } else { //normal import
                 mContextType = CONTEXT_IMPORT;
             }
-            Pattern importStatic = compile("^\\s*(import)\\s+(static\\s+)?");
+            Pattern importStatic = Pattern.compile("^\\s*(import)\\s+(static\\s+)?");
             Matcher matcher = importStatic.matcher(statement);
             if (matcher.find()) {
                 mDotExpr = statement.substring(matcher.end());
             }
         } else {
             mContextType = CONTEXT_PACKAGE_DECL;
-            Pattern _package = compile("^\\s*(package)\\s+?");
+            Pattern _package = Pattern.compile("^\\s*(package)\\s+?");
             Matcher matcher = _package.matcher(statement);
             if (matcher.find()) {
                 mDotExpr = statement.substring(matcher.end());
@@ -371,10 +410,10 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         ArrayList<SuggestItem> result = new ArrayList<>();
         if (mContextType != CONTEXT_PACKAGE_DECL) {
             //parse current file
-            getPossileResultInCurrentFile(result, unit, incomplete);
-            ArrayList<? extends SuggestItem> aClass = mClassLoader.findClassWithPrefix(incomplete);
-            setInfo(aClass);
-            result.addAll(aClass);
+            getPossibleResultInCurrentFile(result, unit, incomplete);
+            ArrayList<? extends SuggestItem> classes = mClassLoader.findClassWithPrefix(incomplete);
+            setInfo(classes);
+            result.addAll(classes);
 
         }
         Collections.sort(result, new Comparator<SuggestItem>() {
@@ -388,15 +427,15 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     private void setInfo(ArrayList<? extends SuggestItem> items) {
         for (SuggestItem item : items) {
-            if (item instanceof JavaSuggestItemImpl){
+            if (item instanceof JavaSuggestItemImpl) {
                 ((JavaSuggestItemImpl) item).setEditor(mEditor);
                 ((JavaSuggestItemImpl) item).setIncomplete(mIcompleteWord);
             }
         }
     }
 
-    private void getPossileResultInCurrentFile(ArrayList<SuggestItem> result,
-                                               JCTree.JCCompilationUnit unit, String incomplete) {
+    private void getPossibleResultInCurrentFile(ArrayList<SuggestItem> result,
+                                                JCTree.JCCompilationUnit unit, String incomplete) {
         if (unit != null) {
             //add import current file
             com.sun.tools.javac.util.List<JCTree.JCImport> imports = unit.getImports();
@@ -482,7 +521,6 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return result;
     }
 
-
     /**
      * get member of class name, package ...
      * e.g.
@@ -497,6 +535,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
      */
     @NonNull
     private ArrayList<SuggestItem> getMember(@NonNull String prefix, @NonNull String incomplete) {
+        System.out.println("JavaAutoCompleteProvider.getMember");
         ArrayList<SuggestItem> result = new ArrayList<>();
         //get class member
         mCompleteClassMember.getSuggestion(mEditor, prefix + incomplete, result);
@@ -530,7 +569,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
          " search the longest expr consisting of ident
          */
         int i = 0, k = 0;
-        while (i < items.size() && compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*$").matcher(items.get(i)).find()) {
+        while (i < items.size() && Pattern.compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*$").matcher(items.get(i)).find()) {
             String ident = items.get(i).replaceAll("\\s", "");
             if (ident.equals("class") || ident.equals("this") || ident.equals("super")) {
                 k = i;
@@ -608,7 +647,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 }
             }
             //" method invocation:	"method().|"	- "this.method().|"
-            else if (compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*\\(").matcher(items.get(0)).find()) {
+            else if (Pattern.compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*\\(").matcher(items.get(0)).find()) {
                 ti = methodInvocation(items.get(0), ti, itemKind);
             }
             //" array type, return `class`: "int[] [].|", "java.lang.String[].|", "NestedClass[].|"
@@ -624,10 +663,10 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             }
             //" class instance creation expr:	"new String().|", "new NonLoadableClass().|"
 //            " array creation expr:	"new int[i=1] [val()].|", "new java.lang.String[].|"
-            else if (compile("^new\\s+").matcher(items.get(0)).find()) {
+            else if (Pattern.compile("^new\\s+").matcher(items.get(0)).find()) {
                 String clean = items.get(0).replaceAll("^new\\s+", "");
                 clean = clean.replaceAll("\\s", "");
-                Pattern compile = compile("(" + Patterns.RE_QUALID + ")\\s*([(\\[])");
+                Pattern compile = Pattern.compile("(" + Patterns.RE_QUALID + ")\\s*([(\\[])");
                 Matcher matcher = compile.matcher(clean);
                 if (matcher.find()) {
                     if (matcher.group(2).charAt(0) == '[') {
@@ -662,7 +701,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
          */
         while (!ti.isEmpty() && ii < items.size()) {
             // method invocation:	"PrimaryExpr.method(parameters)[].|"
-            if (compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*\\(").matcher(items.get(ii)).find()) {
+            if (Pattern.compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*\\(").matcher(items.get(ii)).find()) {
                 Log.d(TAG, "completeAfterDot: RE_IDENTIFIER ( ");
                 ti = methodInvocation(items.get(ii), ti, itemKind);
                 itemKind = KIND_NONE;
@@ -714,7 +753,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     private String getDeclaredClassName(String src, String ident) {
         ident = ident.trim();
-        if (compile("this|super").matcher(ident).find()) {
+        if (Pattern.compile("this|super").matcher(ident).find()) {
             return ident; //TODO Return current class
         }
         /*
@@ -820,14 +859,14 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
         //recognize ClassInstanceCreationExpr as a whole
         //case: new String() , new int[]  , new char []
-        Matcher matcher = compile("^\\s*new\\s+" + Patterns.RE_QUALID + "\\s*[(\\]]").matcher(expr);
+        Matcher matcher = Pattern.compile("^\\s*new\\s+" + Patterns.RE_QUALID + "\\s*[(\\]]").matcher(expr);
         int e = -1;
         if (matcher.find()) {
             e = matcher.end() - 1;
             Log.i(TAG, "parseExpr: found instance at " + matcher.group());
         }
         if (e < 0) {//not found instance
-            matcher = compile("[.(\\[]").matcher(expr); //(String) str, ((Char) c)
+            matcher = Pattern.compile("[.(\\[]").matcher(expr); //(String) str, ((Char) c)
             if (matcher.find()) {
                 e = matcher.start();
             }
@@ -850,7 +889,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 if (e < 0) {
                     break;
                 } else {
-                    Pattern pattern = compile("^\\s*[.\\[]");
+                    Pattern pattern = Pattern.compile("^\\s*[.\\[]");
                     matcher = pattern.matcher(expr);
                     if (matcher.find(e + 1)) {
                         e = matcher.end() - 1;
@@ -863,7 +902,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 if (e < 0) {
                     break;
                 } else {
-                    Pattern pattern = compile("^\\s*[.\\[]");
+                    Pattern pattern = Pattern.compile("^\\s*[.\\[]");
                     matcher = pattern.matcher(expr);
                     if (matcher.find(e + 1)) {
                         e = matcher.end() - 1;
@@ -873,7 +912,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             }
             matcher = Pattern.compile("[.(\\[]").matcher(expr);
             if (matcher.find(last)) {
-                e = PatternFactory.matchEnd(expr, compile("[.(\\[]"), last);
+                e = PatternFactory.matchEnd(expr, Pattern.compile("[.(\\[]"), last);
             } else {
                 e = -1;
             }
@@ -891,7 +930,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     //" Given optional argument, call s:ParseExpr() to parser the nonparentheses expr
     private ArrayList<String> processParentheses(String expr) {
-        Pattern pattern = compile("^\\s*\\(");
+        Pattern pattern = Pattern.compile("^\\s*\\(");
         Matcher matcher = pattern.matcher(expr);
         int s;
         if (matcher.find()) {
@@ -903,7 +942,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             int e = getMatchedIndexEx(expr, s - 1, '(', ')');
             if (e >= 0) {
                 String tail = expr.substring(e + 1);
-                if (compile("^\\s*\\[").matcher(tail).find()) {
+                if (Pattern.compile("^\\s*\\[").matcher(tail).find()) {
 
                 }
             }
@@ -987,45 +1026,12 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return mergeLine(statement);
     }
 
-    private String mergeLine(String statement) {
-        statement = cleanStatement(statement);
-        return statement;
-    }
-
-    private String getCurrentLine(Editor editText) {
-        return EditorUtil.getLineBeforeCursor(editText, editText.getCursor());
-    }
-
     private int findChar(Editor editor, String s) {
         int selectionEnd = editor.getCursor();
         while (selectionEnd > -1 && editor.getText().charAt(selectionEnd) != s.charAt(0)) {
             selectionEnd--;
         }
         return selectionEnd;
-    }
-
-    /**
-     * set string literal empty, remove comments, trim begining or ending spaces
-     * case: ' 	sb. /* block comment"/ append( "stringliteral" ) // comment '
-     * return 'sb.append("")'
-     */
-    private String cleanStatement(String code) {
-        if (code.matches("\\s*")) {
-            return "";
-        }
-        code = removeComment(code); //clear all comment
-        //clear all string content
-        code = code.replaceAll(Patterns.STRINGS.toString(), "\"\"");
-        code = EditorUtil.trimLeft(code);
-        code = code.replaceAll("[\n\t\r]", "");
-        return code;
-    }
-
-    /**
-     * remove all comment
-     */
-    private String removeComment(String code) {
-        return code.replaceAll(Patterns.JAVA_COMMENTS.toString(), "");
     }
 
     private boolean inComment() {

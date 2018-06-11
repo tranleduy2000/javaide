@@ -36,7 +36,7 @@ public class CompleteConstructor implements IJavaCompleteMatcher {
     }
 
     @Override
-    public boolean process() {
+    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
         return false;
     }
 

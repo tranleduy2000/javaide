@@ -23,9 +23,11 @@ import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Complete package
@@ -45,7 +47,11 @@ public class CompletePackage extends JavaCompleteMatcherImpl {
     }
 
     @Override
-    public boolean process() {
+    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
+        Pattern compile = Pattern.compile("[.0-9A-Za-z_]\\s*$");
+        if (compile.matcher(statement).find()){
+
+        }
         return false;
     }
 

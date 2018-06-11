@@ -21,10 +21,12 @@ import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
 
+import java.util.ArrayList;
 import java.util.List;
 
-interface IJavaCompleteMatcher {
-    boolean process();
+public interface IJavaCompleteMatcher {
+    boolean process(Editor editor, String statement, ArrayList<SuggestItem> result)
+            throws Exception;
 
     void getSuggestion(@NonNull Editor editor,
                        @NonNull String incomplete,

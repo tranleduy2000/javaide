@@ -183,35 +183,42 @@ public class JavaClassReader {
         mClasses.clear();
     }
 
+    /**
+     * @param fullClassName - full class name
+     * @param instance      - instant of full class name, can use {@link Class#forName(String)}
+     */
     @Nullable
-    public ClassDescription readClassByName(String className, @Nullable Class second) {
-        ClassDescription cache = mCache.get(className);
+    public ClassDescription readClassByName(String fullClassName, @Nullable Class instance) {
+        ClassDescription cache = mCache.get(fullClassName);
         if (cache != null) {
             return cache;
         }
-        Class aClass = second != null ? second : binarySearch(className);
-
-        if (aClass != null) {
-            String superclass = aClass.getSuperclass() != null ? aClass.getSuperclass().getName() : "";
-            ClassDescription classDesc = new ClassDescription(aClass.getSimpleName(), aClass.getName(), superclass, 0);
-            for (Constructor constructor : aClass.getConstructors()) {
+        Class clazz = instance != null ? instance : binarySearch(fullClassName);
+        if (clazz == null) {
+            String javaLangClass = "java.lang." + fullClassName;
+            clazz = binarySearch(javaLangClass);
+        }
+        if (clazz != null) {
+            String superclass = clazz.getSuperclass() != null ? clazz.getSuperclass().getName() : "";
+            ClassDescription classDesc = new ClassDescription(clazz.getSimpleName(), clazz.getName(), superclass, 0);
+            for (Constructor constructor : clazz.getConstructors()) {
                 if (Modifier.isPublic(constructor.getModifiers())) {
                     classDesc.addConstructor(new ConstructorDescription(constructor));
                 }
             }
-            for (Field field : aClass.getDeclaredFields()) {
+            for (Field field : clazz.getDeclaredFields()) {
                 if (Modifier.isPublic(field.getModifiers())) {
                     if (!field.getName().equals(field.getDeclaringClass().getName())) {
                         classDesc.addField(new FieldDescription(field));
                     }
                 }
             }
-            for (Method method : aClass.getMethods()) {
+            for (Method method : clazz.getMethods()) {
                 if (Modifier.isPublic(method.getModifiers())) {
                     classDesc.addMethod(new MethodDescription(method));
                 }
             }
-            mCache.put(className, classDesc);
+            mCache.put(fullClassName, classDesc);
             return classDesc;
         }
         return null;

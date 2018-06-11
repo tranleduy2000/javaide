@@ -195,11 +195,15 @@ public class ClassDescription extends JavaSuggestItemImpl {
                 result.add(field);
             }
         }
+        getMethods(result, prefix);
+        return result;
+    }
+
+    public void getMethods(ArrayList<SuggestItem> result, String prefix) {
         for (MethodDescription method : methods) {
             if (prefix.isEmpty() || method.getName().startsWith(prefix)) {
                 result.add(method);
             }
         }
-        return result;
     }
 }

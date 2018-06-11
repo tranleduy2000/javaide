@@ -17,12 +17,12 @@
 
 package com.duy.ide.javaide.editor.autocomplete.internal;
 
-import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
+import com.duy.ide.javaide.utils.DLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class CompleteClassMember extends JavaCompleteMatcherImpl implements IJav
     }
 
     @Override
-    public boolean process() {
+    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
         return false;
     }
 

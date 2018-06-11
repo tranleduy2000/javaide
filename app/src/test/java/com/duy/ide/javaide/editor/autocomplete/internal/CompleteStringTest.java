@@ -17,20 +17,19 @@
 
 package com.duy.ide.javaide.editor.autocomplete.internal;
 
-import com.duy.ide.code.api.SuggestItem;
-import com.duy.ide.editor.internal.suggestion.Editor;
+import junit.framework.TestCase;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Matcher;
 
-public class CompleteKeyword implements IJavaCompleteMatcher {
-    @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
-        return false;
+public class CompleteStringTest extends TestCase {
+    public void test1() {
+        Matcher matcher = CompleteString.STRING_DOT.matcher("\"Hello\".");
+        assertTrue(matcher.find());
     }
 
-    @Override
-    public void getSuggestion(Editor editor, String incomplete, List<SuggestItem> suggestItems) {
-
+    public void test2() {
+        Matcher matcher = CompleteString.STRING_DOT_EXPR.matcher("\"Hello\".toLowerCase");
+        assertTrue(matcher.find());
     }
+
 }

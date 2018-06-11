@@ -23,8 +23,35 @@ import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.model.JavaSuggestItemImpl;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
-abstract class JavaCompleteMatcherImpl implements IJavaCompleteMatcher {
+public abstract class JavaCompleteMatcherImpl implements IJavaCompleteMatcher {
+    //statement end with character, number or dot
+    public static final Pattern END_WITH_CHARACTER_OR_DOT
+            = Pattern.compile("[.0-9A-Za-z_]\\s*$", Pattern.MULTILINE);
+    //statement end with dot "str."
+    public static final Pattern END_WITH_DOT = Pattern.compile("\\.\\s*$", Pattern.MULTILINE);
+
+    /**
+     * Check statement is valid when end with dot
+     */
+    public static final Pattern VALID_WHEN_END_WITH_DOT
+            = Pattern.compile(
+            "[" +
+                    "\"" + //string: "Hello".|
+                    ")" + //expression in parentheses: (new String("")).|
+                    "0-9A-Za-z_" + //name of variable or identifier: variable.|
+                    "\\]" + //array access: array[].|
+                    "]\\s*\\.\\s*$", Pattern.MULTILINE);
+    public static final Pattern KEYWORD_DOT
+            = Pattern.compile("(" + Patterns.RE_KEYWORDS.pattern() + ")\\s*\\.\\s*$");
+
+
+    public static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
+    public static final Pattern METHOD_NAME = IDENTIFIER;
+    public static final Pattern CLASS_NAME = IDENTIFIER;
+    public static final Pattern VARIABLE_NAME = IDENTIFIER;
+
     private static final String TAG = "JavaCompleteMatcherImpl";
 
     protected void setInfo(ArrayList<SuggestItem> members, Editor editor, String incomplete) {

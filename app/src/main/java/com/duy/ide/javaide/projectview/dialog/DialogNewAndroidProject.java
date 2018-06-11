@@ -169,7 +169,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             this.mActivityName.setError(getString(R.string.enter_name));
             return false;
         }
-        if (!Patterns.RE_IDENTIFIER.matcher(activityName).find()) {
+        if (!Patterns.IDENTIFIER.matcher(activityName).find()) {
             this.mActivityName.setText("Invalid name");
             return false;
         }
@@ -179,7 +179,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             layoutName.setError(getString(R.string.enter_name));
             return false;
         }
-        if (!Patterns.RE_IDENTIFIER.matcher(layoutName.getText().toString()).find()) {
+        if (!Patterns.IDENTIFIER.matcher(layoutName.getText().toString()).find()) {
             layoutName.setText("Invalid name");
             return false;
         }

@@ -57,15 +57,15 @@ public class Patterns {
 
     public static final Pattern RE_BRACKETS = compile("(\\s*\\[\\s*\\])");
 
-    public static final Pattern RE_IDENTIFIER = compile("[a-zA-Z_][a-zA-Z0-9_]*");
+    public static final Pattern IDENTIFIER = compile("[a-zA-Z_][a-zA-Z0-9_]*");
     //case:  JCTree.JCClassDecl
     //case: java.util.ArrayList)
-    public static final Pattern RE_QUALID = compile(RE_IDENTIFIER + "(\\s*\\.\\s*" + RE_IDENTIFIER + ")?");
+    public static final Pattern RE_QUALID = compile(IDENTIFIER + "(\\s*\\.\\s*" + IDENTIFIER + ")?");
     public static final Pattern RE_REFERENCE_TYPE = compile(RE_QUALID + RE_BRACKETS.pattern() + "\\*");
     public static final Pattern RE_TYPE = RE_REFERENCE_TYPE;
 
-    public static final Pattern RE_TYPE_MODS = compile("public|protected|private|abstract|static|final|strictfp");
-    public static final Pattern RE_TYPE_DECL_HEAD = compile("(class|inteface|enum)[\\s]+");
+    public static final Pattern TYPE_DECLARE_MODIFIERS = compile("public|protected|private|abstract|static|final|strictfp");
+    public static final Pattern TYPE_DECLARE_HEAD = compile("class|inteface|enum");
 
     //case: public class A
     //case: public class Lamborghini extends Car
@@ -76,9 +76,9 @@ public class Patterns {
                     "(\\s+(extends|implements)(\\s+)([a-zA-Z_][a-zA-Z0-9_]*))?");
 
     public static final Pattern RE_ARRAY_TYPE = compile("^\\s*(" + RE_QUALID + ")(" + RE_BRACKETS + ")+\\s*");
-    public static final Pattern RE_SELECT_OR_ACCESS = compile("^\\s*(" + RE_IDENTIFIER + ")\\s*(\\[.*])?\\s*$");
-    public static final Pattern RE_ARRAY_ACCESS = compile("^\\s*(" + RE_IDENTIFIER + ")" + "\\s*(\\[.*])+\\s*$");
-    public static final Pattern RE_CASTING = compile("\\s*\\((" + RE_QUALID + "\\s*)\\)\\s*" + RE_IDENTIFIER);
+    public static final Pattern RE_SELECT_OR_ACCESS = compile("^\\s*(" + IDENTIFIER + ")\\s*(\\[.*])?\\s*$");
+    public static final Pattern RE_ARRAY_ACCESS = compile("^\\s*(" + IDENTIFIER + ")" + "\\s*(\\[.*])+\\s*$");
+    public static final Pattern RE_CASTING = compile("\\s*\\((" + RE_QUALID + "\\s*)\\)\\s*" + IDENTIFIER);
     public static final Pattern RE_KEYWORDS = KEYWORDS;
 
     public static final Pattern PACKAGE_NAME = compile("([A-Za-z0-9_]([.][a-zA-Z0-9_])?)*");

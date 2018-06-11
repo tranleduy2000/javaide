@@ -282,7 +282,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
                 }
             } else {
-                Matcher matcher = Pattern.compile("\\s*" + Patterns.RE_IDENTIFIER + "$").matcher(statement);
+                Matcher matcher = Pattern.compile("\\s*" + Patterns.IDENTIFIER + "$").matcher(statement);
                 matcher.find();
                 pos = matcher.start();
                 //case: "method(|)", "this(|)", "super(|)"
@@ -411,7 +411,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         if (mContextType != CONTEXT_PACKAGE_DECL) {
             //parse current file
             getPossibleResultInCurrentFile(result, unit, incomplete);
-            ArrayList<? extends SuggestItem> classes = mClassLoader.findClassWithPrefix(incomplete);
+            ArrayList<? extends SuggestItem> classes = mClassLoader.findAllWithPrefix(incomplete);
             setInfo(classes);
             result.addAll(classes);
 
@@ -569,7 +569,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
          " search the longest expr consisting of ident
          */
         int i = 0, k = 0;
-        while (i < items.size() && Pattern.compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*$").matcher(items.get(i)).find()) {
+        while (i < items.size() && Pattern.compile("^\\s*" + Patterns.IDENTIFIER + "\\s*$").matcher(items.get(i)).find()) {
             String ident = items.get(i).replaceAll("\\s", "");
             if (ident.equals("class") || ident.equals("this") || ident.equals("super")) {
                 k = i;
@@ -611,7 +611,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             // 3) "var.|"		- variable or field
             // 4) "String.|" 		- type imported or defined locally
             // 5) "java.|"   		- package
-            if (Pattern.compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*").matcher(items.get(0)).find()) {
+            if (Pattern.compile("^\\s*" + Patterns.IDENTIFIER + "\\s*").matcher(items.get(0)).find()) {
                 String ident = items.get(0).replaceAll("\\s", "");
                 if (SourceVersion.isKeyword(ident)) {
                     // 1)
@@ -647,7 +647,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 }
             }
             //" method invocation:	"method().|"	- "this.method().|"
-            else if (Pattern.compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*\\(").matcher(items.get(0)).find()) {
+            else if (Pattern.compile("^\\s*" + Patterns.IDENTIFIER + "\\s*\\(").matcher(items.get(0)).find()) {
                 ti = methodInvocation(items.get(0), ti, itemKind);
             }
             //" array type, return `class`: "int[] [].|", "java.lang.String[].|", "NestedClass[].|"
@@ -701,7 +701,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
          */
         while (!ti.isEmpty() && ii < items.size()) {
             // method invocation:	"PrimaryExpr.method(parameters)[].|"
-            if (Pattern.compile("^\\s*" + Patterns.RE_IDENTIFIER + "\\s*\\(").matcher(items.get(ii)).find()) {
+            if (Pattern.compile("^\\s*" + Patterns.IDENTIFIER + "\\s*\\(").matcher(items.get(ii)).find()) {
                 Log.d(TAG, "completeAfterDot: RE_IDENTIFIER ( ");
                 ti = methodInvocation(items.get(ii), ti, itemKind);
                 itemKind = KIND_NONE;

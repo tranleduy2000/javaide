@@ -18,12 +18,13 @@
 package com.duy.ide.javaide.editor.autocomplete.dex;
 
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.JavaProject;
+import com.duy.common.data.Pair;
+import com.duy.common.interfaces.Filter;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
@@ -52,22 +53,21 @@ import dalvik.system.DexClassLoader;
  */
 
 public class JavaClassReader {
+
+
     private static final String TAG = "JavaClassReader";
+    private boolean loaded = false;
     private String classpath;
     private String tempDir;
     /**
      * All classes sorted by full class name
      */
     private ArrayList<Class> mClasses = new ArrayList<>();
-
     /**
      * All classes sorted by simple class name
      */
     private ArrayList<Pair<String, Class>> mSimpleClasses = new ArrayList<>();
-
     private WeakHashMap<String, ClassDescription> mCache = new WeakHashMap<>();
-
-    private boolean loaded = false;
 
     public JavaClassReader(String classpath, String tempDir) {
         this.classpath = classpath;
@@ -293,25 +293,23 @@ public class JavaClassReader {
     }
 
     @NonNull
-    public ArrayList<ClassDescription> findClass(String simpleNamePrefix) {
-        Log.d(TAG, "findClass() called with: prefix = [" + simpleNamePrefix + "]");
-
-        long start = System.currentTimeMillis();
+    public ArrayList<ClassDescription> find(@NonNull String simpleNamePrefix,
+                                            @Nullable Filter<Class> filter) {
         ArrayList<ClassDescription> result = new ArrayList<>();
 
+        //find with simple name
         List<Pair<String, Class>> simple = binarySearch(mSimpleClasses, simpleNamePrefix);
         if (simple != null) {
             for (Pair<String, Class> c : simple) {
-                result.add(readClassByName(c.second.getName(), c.second));
+                if (filter != null) {
+                    if (!filter.accepts(c.second)) {
+                        continue;
+                    }
+                }
+                ClassDescription classDescription = readClassByName(c.second.getName(), c.second);
+                result.add(classDescription);
             }
         }
-
-        ClassDescription full = readClassByName(simpleNamePrefix, null);
-        if (full != null) {
-            result.add(full);
-        }
-
-        Log.d(TAG, "findClass: time " + simpleNamePrefix + " - " + (System.currentTimeMillis() - start));
         return result;
     }
 

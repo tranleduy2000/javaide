@@ -15,25 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal;
-
-import com.duy.ide.code.api.SuggestItem;
-import com.duy.ide.editor.internal.suggestion.Editor;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.duy.common.interfaces;
 
 /**
- * This class very complex, implement after
+ * Simple filter acting as a boolean predicate. Method accepts return true if
+ * the supplied element matches against the filter.
  */
-public class CompleteExpression extends JavaCompleteMatcherImpl {
-    @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) throws Exception {
-        return false;
-    }
-
-    @Override
-    public void getSuggestion(Editor editor, String incomplete, List<SuggestItem> suggestItems) {
-
-    }
+public interface Filter<T> {
+    /**
+     * Does this element match against the filter?
+     * @param t element to be checked
+     * @return true if the element satisfy constraints imposed by filter
+     */
+    boolean accepts(T t);
 }

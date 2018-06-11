@@ -42,13 +42,6 @@ public class CompleteClassMember extends JavaCompleteMatcherImpl implements IJav
 
     @Override
     public void getSuggestion(Editor editor, String expression, List<SuggestItem> suggestItems) {
-        if (DLog.DEBUG) {
-            DLog.d(TAG, "getSuggestion() called with:" +
-                    " editor = [" + editor + "]," +
-                    " expression = [" + expression + "]," +
-                    " suggestItems = [" + suggestItems + "]");
-        }
-
         final String className;
         final String incomplete;
         if (expression.contains(".")) {

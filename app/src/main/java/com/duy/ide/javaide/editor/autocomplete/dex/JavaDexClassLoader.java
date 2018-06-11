@@ -19,8 +19,10 @@ package com.duy.ide.javaide.editor.autocomplete.dex;
 
 import android.support.annotation.NonNull;
 
-import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
+import com.android.annotations.Nullable;
 import com.duy.android.compiler.project.JavaProject;
+import com.duy.common.interfaces.Filter;
+import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,6 +32,32 @@ import java.util.ArrayList;
  */
 
 public class JavaDexClassLoader {
+    private static final Filter<Class> mClassFilter = new Filter<Class>() {
+        @Override
+        public boolean accepts(Class aClass) {
+            return !(aClass.isAnnotation() || aClass.isInterface() || aClass.isEnum()
+                    && aClass.isAnonymousClass() || aClass.isSynthetic());
+        }
+    };
+    private static final Filter<Class> mEnumFilter = new Filter<Class>() {
+        @Override
+        public boolean accepts(Class aClass) {
+            return aClass.isEnum();
+        }
+    };
+    private static final Filter<Class> mInterfaceFilter = new Filter<Class>() {
+        @Override
+        public boolean accepts(Class aClass) {
+            return aClass.isInterface();
+        }
+    };
+    private static final Filter<Class> mAnnotationFilter = new Filter<Class>() {
+        @Override
+        public boolean accepts(Class aClass) {
+            return aClass.isAnnotation();
+        }
+    };
+
     private static final String TAG = "JavaDexClassLoader";
     private JavaClassReader mClassReader;
 
@@ -42,14 +70,33 @@ public class JavaDexClassLoader {
     }
 
     @NonNull
-    public ArrayList<ClassDescription> findClassWithPrefix(String simpleNamePrefix) {
-        return mClassReader.findClass(simpleNamePrefix);
+    public ArrayList<ClassDescription> findAllWithPrefix(String simpleNamePrefix) {
+        return mClassReader.find(simpleNamePrefix, null);
     }
 
-
-    public void touchClass(String className) {
-        ClassDescription classDescriptions = mClassReader.readClassByName(className, null);
+    @NonNull
+    public ArrayList<ClassDescription> findAllWithPrefix(@NonNull String simpleNamePrefix,
+                                                         @Nullable Filter<Class> filter) {
+        return mClassReader.find(simpleNamePrefix, filter);
     }
+
+    public ArrayList<ClassDescription> findClasses(String simpleNamePrefix) {
+        return mClassReader.find(simpleNamePrefix, mClassFilter);
+    }
+
+    public ArrayList<ClassDescription> findInterfaces(String simpleNamePrefix) {
+        return mClassReader.find(simpleNamePrefix, mInterfaceFilter);
+    }
+
+    public ArrayList<ClassDescription> findEnums(String simpleNamePrefix) {
+        return mClassReader.find(simpleNamePrefix, mEnumFilter);
+
+    }
+
+    public ArrayList<ClassDescription> findAnnotations(String simpleNamePrefix) {
+        return mClassReader.find(simpleNamePrefix, mAnnotationFilter);
+    }
+
 
     public ClassDescription loadClass(String className) {
         return mClassReader.readClassByName(className, null);

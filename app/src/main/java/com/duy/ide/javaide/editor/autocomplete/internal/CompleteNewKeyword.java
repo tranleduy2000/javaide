@@ -61,7 +61,7 @@ public class CompleteNewKeyword extends JavaCompleteMatcherImpl {
         }
 
         //try to find constructor
-        ArrayList<ClassDescription> classes = mClassLoader.findClassWithPrefix(incomplete);
+        ArrayList<ClassDescription> classes = mClassLoader.findAllWithPrefix(incomplete);
         for (ClassDescription clazz : classes) {
             ArrayList<ConstructorDescription> constructors = clazz.getConstructors();
             setInfo(constructors, editor, incomplete);

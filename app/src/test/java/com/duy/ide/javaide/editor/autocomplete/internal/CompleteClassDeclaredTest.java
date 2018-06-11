@@ -17,23 +17,27 @@
 
 package com.duy.ide.javaide.editor.autocomplete.internal;
 
-import com.duy.ide.code.api.SuggestItem;
-import com.duy.ide.editor.internal.suggestion.Editor;
+import junit.framework.TestCase;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.duy.ide.javaide.editor.autocomplete.internal.Patterns.TYPE_DECLARE_MODIFIERS;
 
-/**
- * This class very complex, implement after
- */
-public class CompleteExpression extends JavaCompleteMatcherImpl {
-    @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) throws Exception {
-        return false;
+public class CompleteClassDeclaredTest extends TestCase {
+
+    public void test1() {
+        boolean matches = "public class CompleteClassDeclaredTest extends TestCase"
+                .matches(CompleteClassDeclared.CLASS_DECLARE.pattern());
+        assertTrue(matches);
     }
 
-    @Override
-    public void getSuggestion(Editor editor, String incomplete, List<SuggestItem> suggestItems) {
+    public void test2() {
+        boolean matches = "public class CompleteClassDeclaredTest"
+                .matches(CompleteClassDeclared.CLASS_DECLARE.pattern());
+        assertTrue(matches);
+    }
 
+    public void test3() {
+        boolean matches = "public"
+                .matches(TYPE_DECLARE_MODIFIERS.pattern());
+        assertTrue(matches);
     }
 }

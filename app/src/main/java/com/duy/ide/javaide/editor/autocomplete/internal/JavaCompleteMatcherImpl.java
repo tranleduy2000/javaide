@@ -47,12 +47,11 @@ public abstract class JavaCompleteMatcherImpl implements IJavaCompleteMatcher {
             = Pattern.compile("(" + Patterns.RE_KEYWORDS.pattern() + ")\\s*\\.\\s*$");
 
 
-    public static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
-    public static final Pattern METHOD_NAME = IDENTIFIER;
-    public static final Pattern VARIABLE_NAME = IDENTIFIER;
+    public static final Pattern METHOD_NAME = Patterns.IDENTIFIER;
+    public static final Pattern VARIABLE_NAME = Patterns.IDENTIFIER;
     //String or java.lang.String
     public static final Pattern CLASS_NAME = Pattern.compile(
-            IDENTIFIER.pattern() + "(\\s*\\.\\s*" + IDENTIFIER.pattern() + ")*");
+            Patterns.IDENTIFIER.pattern() + "(\\s*\\.\\s*" + Patterns.IDENTIFIER.pattern() + ")*");
     //java.util.*
     public static final Pattern PACKAGE_NAME = CLASS_NAME;
     //java.io.FileInputStream

@@ -15,25 +15,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal;
+package com.duy.common.data;
 
-import com.duy.ide.code.api.SuggestItem;
-import com.duy.ide.editor.internal.suggestion.Editor;
+public class Pair<L, R> {
+    public final L first;
+    public final R second;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * This class very complex, implement after
- */
-public class CompleteExpression extends JavaCompleteMatcherImpl {
-    @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) throws Exception {
-        return false;
+    public Pair(L l, R r) {
+        first = l;
+        second = r;
     }
 
     @Override
-    public void getSuggestion(Editor editor, String incomplete, List<SuggestItem> suggestItems) {
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Pair)) return false;
 
+        Pair<?, ?> pair = (Pair<?, ?>) o;
+
+        if (first != null ? !first.equals(pair.first) : pair.first != null) return false;
+        return second != null ? second.equals(pair.second) : pair.second == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = first != null ? first.hashCode() : 0;
+        result = 31 * result + (second != null ? second.hashCode() : 0);
+        return result;
     }
 }

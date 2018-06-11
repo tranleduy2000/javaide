@@ -26,6 +26,7 @@ import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
+import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassDeclared;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteNewKeyword;
@@ -81,6 +82,7 @@ public class JavaAutoComplete2 implements SuggestionProvider {
         mJavaAutoCompletes.add(new CompletePackage(mJavaPackageManager));
         mJavaAutoCompletes.add(new CompleteStaticAccess());
         mJavaAutoCompletes.add(new CompleteString(mClassLoader));
+        mJavaAutoCompletes.add(new CompleteClassDeclared(mClassLoader));
     }
 
     @Override
@@ -120,6 +122,7 @@ public class JavaAutoComplete2 implements SuggestionProvider {
         for (newCursor = oldCursor - 1; newCursor > 0; newCursor--) {
             char c = editor.getText().charAt(newCursor);
             if (c == '{' || c == '}' || c == ';') {
+                newCursor++;
                 break;
             }
         }

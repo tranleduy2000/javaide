@@ -43,10 +43,6 @@ public class CompleteString extends JavaCompleteMatcherImpl {
 
     @Override
     public boolean process(Editor editor, String statement, ArrayList<SuggestItem> suggestItems) {
-        if (DLog.DEBUG) {
-            DLog.d(TAG, "process() called with: editor = [" + editor + "]" +
-                    ", statement = [" + statement + "], suggestItems = [" + suggestItems + "]");
-        }
         Matcher matcher = STRING_DOT.matcher(statement);
         if (matcher.find()) {
             if (DLog.DEBUG) DLog.d(TAG, "process: string dot found");

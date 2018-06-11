@@ -18,10 +18,10 @@
 package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import com.android.annotations.NonNull;
-import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
+import com.duy.ide.javaide.utils.DLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +59,7 @@ public class CompletePackage extends JavaCompleteMatcherImpl {
         if (matcher.find()) {
             if (DLog.DEBUG) DLog.d(TAG, "process: package found");
             String incompletePkg = matcher.group(2);
+            if (DLog.DEBUG) DLog.d(TAG, "incompletePkg = " + incompletePkg);
             getSuggestion(editor, incompletePkg, result);
             return true;
         }
@@ -66,7 +67,11 @@ public class CompletePackage extends JavaCompleteMatcherImpl {
         matcher = IMPORT_OR_IMPORT_STATIC.matcher(statement);
         if (matcher.find()) {
             if (DLog.DEBUG) DLog.d(TAG, "process: import(static)? found");
+            boolean isStatic = matcher.group(1) != null;
+            // TODO: 11-Jun-18 support import static
+            if (DLog.DEBUG) DLog.d(TAG, "isStatic = " + isStatic);
             String incompletePkg = matcher.group(2);
+            if (DLog.DEBUG) DLog.d(TAG, "incompletePkg = " + incompletePkg);
             getSuggestion(editor, incompletePkg, result);
         }
 
@@ -75,12 +80,6 @@ public class CompletePackage extends JavaCompleteMatcherImpl {
 
     @Override
     public void getSuggestion(Editor editor, String expr, List<SuggestItem> suggestItems) {
-        if (DLog.DEBUG) {
-            DLog.d(TAG, "getSuggestion() called with:" +
-                    " editor = [" + editor + "]," +
-                    " expr = [" + expr + "]," +
-                    " suggestItems = [" + suggestItems + "]");
-        }
         getSuggestionImpl(editor, expr, suggestItems, false);
     }
 

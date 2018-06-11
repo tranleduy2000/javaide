@@ -28,13 +28,13 @@ import java.util.HashMap;
  * @see com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage
  */
 public class PackageDescription extends JavaSuggestItemImpl {
-    private String name;
-    private PackageDescription parent;
-    private HashMap<String, PackageDescription> child = new HashMap<>();
+    private String mChildName;
+    private PackageDescription mParentPkg;
+    private HashMap<String, PackageDescription> mChild = new HashMap<>();
 
-    private PackageDescription(String name, PackageDescription parent) {
-        this.name = name;
-        this.parent = parent;
+    private PackageDescription(String childName, PackageDescription parent) {
+        this.mChildName = childName;
+        this.mParentPkg = parent;
     }
 
     public static PackageDescription root() {
@@ -52,13 +52,13 @@ public class PackageDescription extends JavaSuggestItemImpl {
 
             if (isLeaf()) {
                 //static access
-                String text = name.replace("$", ".");
+                String text = mChildName.replace("$", ".");
                 // why not add semicolon (;) , in some case you need declared variable with full class
                 // name, not import package
                 editable.replace(start, cursor, text);
                 editorView.setSelection(start + text.length());
             } else {
-                String text = name + ".";
+                String text = mChildName + ".";
                 editable.replace(start, cursor, text);
                 editorView.setSelection(start + text.length());
             }
@@ -74,7 +74,7 @@ public class PackageDescription extends JavaSuggestItemImpl {
 
     @Override
     public String getName() {
-        return name;
+        return mChildName;
     }
 
     @Override
@@ -89,20 +89,20 @@ public class PackageDescription extends JavaSuggestItemImpl {
 
 
     public HashMap<String, PackageDescription> getChild() {
-        return child;
+        return mChild;
     }
 
     private boolean isRoot() {
-        return name.isEmpty() || parent == null;
+        return mChildName.isEmpty() || mParentPkg == null;
     }
 
     private boolean isLeaf() {
-        return child.isEmpty();
+        return mChild.isEmpty();
     }
 
     public PackageDescription get(String key) {
         if (!key.contains(".")) {
-            return child.get(key);
+            return mChild.get(key);
         } else {
             return get(key.substring(0, key.indexOf(".")))
                     .get(key.substring(key.indexOf(".") + 1));
@@ -117,24 +117,24 @@ public class PackageDescription extends JavaSuggestItemImpl {
             }
             get(first).put(pkg.substring(pkg.indexOf(".") + 1));
         } else {
-            this.child.put(pkg, new PackageDescription(pkg, this));
+            this.mChild.put(pkg, new PackageDescription(pkg, this));
         }
     }
 
     public PackageDescription remove(String child) {
         if (child.contains(".")) {
-            return this.child.remove(child.substring(0, child.indexOf(".")));
+            return this.mChild.remove(child.substring(0, child.indexOf(".")));
         } else {
-            return this.child.remove(child);
+            return this.mChild.remove(child);
         }
     }
 
     @Override
     public String toString() {
         return "PackageDescription{" +
-                "name='" + name + '\'' +
-                ", parent=" + parent +
-                ", child=" + child +
+                "name='" + mChildName + '\'' +
+                ", parent=" + mParentPkg +
+                ", child=" + mChild +
                 ", lastUsed=" + lastUsed +
                 "} " + super.toString();
     }

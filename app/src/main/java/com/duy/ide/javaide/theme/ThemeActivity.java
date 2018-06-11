@@ -21,9 +21,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.duy.common.purchase.InAppPurchaseHelper;
@@ -44,38 +41,16 @@ public class ThemeActivity extends ThemeSupportActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_java_editor_theme);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        getSupportActionBar().    setTitle(R.string.editor_theme);
+        getSupportActionBar().setTitle(R.string.editor_theme);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mPreferences = Preferences.getInstance(this);
         mInAppPurchaseHelper = new InAppPurchaseHelper(this);
-
-        Spinner spinner = findViewById(R.id.spinner_themes);
-        spinner.setSelection(mPreferences.isUseLightTheme() ? 0 : 1);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                useLightTheme(position == 0);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         mPreferences.registerOnSharedPreferenceChangeListener(this);
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content, new EditorThemeFragment())
                 .commit();
-    }
-
-    private void useLightTheme(boolean useLightTheme) {
-        if (mPreferences.isUseLightTheme() != useLightTheme) {
-            mPreferences.setAppTheme(useLightTheme ? 0 : 1);
-            recreate();
-        }
     }
 
     @Override

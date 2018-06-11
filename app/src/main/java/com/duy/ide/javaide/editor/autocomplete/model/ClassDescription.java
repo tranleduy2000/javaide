@@ -95,7 +95,7 @@ public class ClassDescription extends JavaSuggestItemImpl {
 
     @Override
     public String getName() {
-        return simpleName;
+        return simpleName + " (" + packageName + ")";
     }
 
     @Override
@@ -110,7 +110,7 @@ public class ClassDescription extends JavaSuggestItemImpl {
 
     @Override
     public char getTypeHeader() {
-        return JavaSuggestItemImpl.CLASS_DESC;
+        return 'c';
     }
 
     @Override

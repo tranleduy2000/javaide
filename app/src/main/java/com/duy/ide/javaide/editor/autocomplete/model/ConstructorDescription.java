@@ -46,17 +46,17 @@ public class ConstructorDescription extends JavaSuggestItemImpl {
     public void onSelectThis(@NonNull IEditAreaView editorView) {
         try {
             final int length = getIncomplete().length();
-            final int start = editorView.getSelectionStart() - length;
+            int cursor = getEditor().getCursor();
+            final int start = cursor - length;
 
             Editable editable = editorView.getEditableText();
-            editable.delete(start, editorView.getSelectionStart());
 
             if (constructor.getParameterTypes().length > 0) {
-                editable.insert(start, simpleName + "()");
-                editorView.setSelection(start + simpleName.length() + 1);
+                editable.replace(start, cursor, simpleName + "()");
+                editorView.setSelection(start + simpleName.length() + 1 /*between two parentheses*/);
             } else {
                 String text = simpleName + "();";
-                editable.insert(start, text);
+                editable.replace(start, cursor, text);
                 editorView.setSelection(start + text.length());
             }
 

@@ -50,7 +50,6 @@ public class ConstructorDescription extends JavaSuggestItemImpl {
             final int start = cursor - length;
 
             Editable editable = editorView.getEditableText();
-
             if (constructor.getParameterTypes().length > 0) {
                 editable.replace(start, cursor, simpleName + "()");
                 editorView.setSelection(start + simpleName.length() + 1 /*between two parentheses*/);
@@ -68,7 +67,7 @@ public class ConstructorDescription extends JavaSuggestItemImpl {
 
     @Override
     public String getName() {
-        return simpleName;
+        return simpleName + "(" + paramsToString(constructor.getParameterTypes()) + ")";
     }
 
     @Override
@@ -91,15 +90,20 @@ public class ConstructorDescription extends JavaSuggestItemImpl {
     @Override
     public String toString() {
         Class<?>[] parameterTypes = constructor.getParameterTypes();
-        StringBuilder params = new StringBuilder();
-        for (int i = 0; i < parameterTypes.length; i++) {
-            Class<?> parameterType = parameterTypes[i];
-            if (i == parameterTypes.length - 1) {
-                params.append(parameterType.getSimpleName());
-                break;
+        return JavaUtil.getSimpleName(constructor.getName()) + "(" + paramsToString(parameterTypes) + ")";
+    }
+
+    private String paramsToString(@NonNull Class<?>[] parameterTypes) {
+        StringBuilder result = new StringBuilder();
+        boolean firstTime = true;
+        for (Class<?> parameterType : parameterTypes) {
+            if (firstTime) {
+                firstTime = false;
+            } else {
+                result.append(",");
             }
-            params.append(parameterType.getSimpleName()).append(",");
+            result.append(parameterType.getSimpleName());
         }
-        return JavaUtil.getSimpleName(constructor.getName()) + "(" + params.toString() + ")";
+        return result.toString();
     }
 }

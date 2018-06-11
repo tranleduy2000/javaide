@@ -49,7 +49,6 @@ public class CompleteKeyword extends JavaCompleteMatcherImpl {
         Set<String> s = new HashSet<>(Arrays.asList(kws));
         KEYWORDS = Collections.unmodifiableSet(s);
     }
-
     @Override
     public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
         if (statement.contains(" ")) {

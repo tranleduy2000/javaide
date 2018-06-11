@@ -237,19 +237,19 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                     } else {
                         mContextType = CONTEXT_NEED_INTERFACE;
                     }
-                } else {
-                    matcher = Pattern.compile("(\\s*new\\s+)(" + Patterns.RE_QUALID + ")$").matcher(statement);
-                    if (matcher.find()) {
-                        statement = matcher.group(2);
-                        if (!Patterns.RE_KEYWORDS.matcher(statement).find()) {
-                            mIcompleteWord = statement;
-                            mDotExpr = "";
-                            mContextType = CONTEXT_NEED_CONSTRUCTOR;
-                            return;
-                        }
-                    }
-                    mDotExpr = extractCleanExpr(statement);
-                }
+                } //else {
+//                    matcher = Pattern.compile("(\\s*new\\s+)(" + Patterns.RE_QUALID + ")$").matcher(statement);
+//                    if (matcher.find()) {
+//                        statement = matcher.group(2);
+//                        if (!Patterns.RE_KEYWORDS.matcher(statement).find()) {
+//                            mIcompleteWord = statement;
+//                            mDotExpr = "";
+//                            mContextType = CONTEXT_NEED_CONSTRUCTOR;
+//                            return;
+//                        }
+//                    }
+//                    mDotExpr = extractCleanExpr(statement);
+               // }
             }
 
             //" all cases: " java.ut|" or " java.util.|" or "ja|"

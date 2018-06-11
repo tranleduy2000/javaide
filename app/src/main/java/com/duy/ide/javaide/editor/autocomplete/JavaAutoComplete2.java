@@ -27,8 +27,8 @@ import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
-import com.duy.ide.javaide.editor.autocomplete.internal.CompleteNewKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteKeyword;
+import com.duy.ide.javaide.editor.autocomplete.internal.CompleteNewKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteStaticAccess;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteString;
@@ -116,15 +116,12 @@ public class JavaAutoComplete2 implements SuggestionProvider {
             return lineBeforeCursor;
         }
         int oldCursor = editor.getCursor();
-        int newCursor = oldCursor;
-        while (true) {
-            if (newCursor == 0) break;
+        int newCursor;
+        for (newCursor = oldCursor - 1; newCursor > 0; newCursor--) {
             char c = editor.getText().charAt(newCursor);
             if (c == '{' || c == '}' || c == ';') {
-                newCursor++;
                 break;
             }
-            newCursor--;
         }
         String statement = editor.getText().subSequence(newCursor, oldCursor).toString();
         return mergeLine(statement);

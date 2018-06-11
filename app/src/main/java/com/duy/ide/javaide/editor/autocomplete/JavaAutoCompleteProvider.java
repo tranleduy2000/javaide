@@ -98,8 +98,6 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     @Nullable
     private JCTree.JCCompilationUnit unit;
-    private String source;
-    private int cursor;
 
     private String statement = ""; //statement before cursor
     private String mDotExpr = ""; //expression end with .
@@ -131,10 +129,8 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     }
 
     private void resolveContextType(Editor editor) {
-        this.cursor = editor.getCursor();
-        this.source = editor.getText();
         try {
-            this.unit = mJavaParser.parse(source);
+            this.unit = mJavaParser.parse(editor.getText());
         } catch (Exception e) {
             this.unit = null;
         }
@@ -298,7 +294,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         if (!mDotExpr.isEmpty()) {
             switch (mContextType) {
                 case CONTEXT_AFTER_DOT:
-                    result = completeAfterDot(source, mDotExpr, mIcompleteWord);
+                    result = completeAfterDot(mEditor.getText(), mDotExpr, mIcompleteWord);
                     break;
                 case CONTEXT_IMPORT:
                 case CONTEXT_IMPORT_STATIC:
@@ -307,7 +303,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                     result = getMember(mDotExpr, mIcompleteWord);
                     break;
                 case CONTEXT_METHOD_PARAM:
-                    result = completeAfterDot(source, mDotExpr, mIcompleteWord);
+                    result = completeAfterDot(mEditor.getText(), mDotExpr, mIcompleteWord);
                     break;
                 case CONTEXT_NEED_CONSTRUCTOR:
                     result = getConstructors(mEditor, mDotExpr);
@@ -328,7 +324,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                     result = getConstructors(mEditor, mIcompleteWord);
                     break;
                 default:
-                    result = completeWord(source, mIcompleteWord);
+                    result = completeWord(mEditor.getText(), mIcompleteWord);
                     break;
             }
         }
@@ -359,7 +355,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         if (mContextType != CONTEXT_PACKAGE_DECL) {
             //parse current file
             getPossileResultInCurrentFile(result, unit, incomplete);
-            ArrayList<ClassDescription> aClass = mClassLoader.findClassWithPrefix(incomplete);
+            ArrayList<? extends SuggestItem> aClass = mClassLoader.findClassWithPrefix(incomplete);
             setInfo(aClass);
             result.addAll(aClass);
 
@@ -373,10 +369,12 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return result;
     }
 
-    private void setInfo(ArrayList<? extends JavaSuggestItemImpl> items) {
-        for (JavaSuggestItemImpl item : items) {
-            item.setEditor(mEditor);
-            item.setIncomplete(mIcompleteWord);
+    private void setInfo(ArrayList<? extends SuggestItem> items) {
+        for (SuggestItem item : items) {
+            if (item instanceof JavaSuggestItemImpl){
+                ((JavaSuggestItemImpl) item).setEditor(mEditor);
+                ((JavaSuggestItemImpl) item).setIncomplete(mIcompleteWord);
+            }
         }
     }
 
@@ -422,8 +420,8 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                                         paramsStr));
                             }
                             //if the cursor in method scope
-                            if (method.getStartPosition() <= cursor
-                                    && method.getBody().getEndPosition(unit.endPositions) >= cursor) {
+                            if (method.getStartPosition() <= mEditor.getCursor()
+                                    && method.getBody().getEndPosition(unit.endPositions) >= mEditor.getCursor()) {
                                 //add field from start position of method to the cursor
                                 com.sun.tools.javac.util.List<JCTree.JCStatement> statements = method.getBody().getStatements();
                                 for (JCTree.JCStatement jcStatement : statements) {
@@ -532,7 +530,9 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             //  " cases: "this.|", "super.|", "ClassName.this.|", "ClassName.super.|", "TypeName.class.|"
             String itemAtK = items.get(k);
             if (itemAtK.equals("class") || itemAtK.equals("this") || itemAtK.equals("super")) {
-                ti = doGetClassInfo(itemAtK.equals("class") ? "java.lang.Class" : join(items, 0, k, "."));
+                ti = getClassMembers(
+                        itemAtK.equals("class") ? "java.lang.Class" : join(items, 0, k, "."),
+                        incomplete);
                 if (!ti.isEmpty()) {
                     itemKind = !itemAtK.equals("this") ? KIND_THIS : !itemAtK.equals("super") ? KIND_SUPER : KIND_NONE;
                     ii = k + 1;
@@ -560,26 +560,26 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 if (SourceVersion.isKeyword(ident)) {
                     // 1)
                     if (ident.equals("void") || isBuiltinType(ident)) {
-                        ti = doGetClassInfo(int.class.getName());
+                        ti = getClassMembers(int.class.getName(), incomplete);
                         itemKind = KIND_BUILTIN_TYPE;
                     }
                     // 2)
                     else if (ident.equals("this") || ident.equals("super")) {
                         itemKind = ident.equals("this") ? KIND_THIS : ident.equals("super") ? KIND_SUPER : KIND_NONE;
-                        ti = doGetClassInfo(ident);
+                        ti = getClassMembers(ident, incomplete);
                     }
                 } else {
                     // 3)
                     String typeName = getDeclaredClassName(source, ident);
                     if (!typeName.isEmpty()) {
                         if (typeName.charAt(0) == '[' && typeName.charAt(typeName.length() - 1) == ']') {
-                            ti = doGetClassInfo(Object[].class.getName());
+                            ti = getClassMembers(Object[].class.getName(), incomplete);
                         } else if (!typeName.equals("void") && !isBuiltinType(typeName)) {
-                            ti = doGetClassInfo(typeName);
+                            ti = getClassMembers(typeName, incomplete);
                         }
                     } else { //typeName is empty
                         // 4) TypeName.|
-                        ti = doGetClassInfo(ident);
+                        ti = getClassMembers(ident, incomplete);
                         itemKind = KIND_MEMBER;
 
                         // 5) package
@@ -599,8 +599,8 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 Matcher matcher = Patterns.RE_ARRAY_TYPE.matcher(items.get(0));
                 if (matcher.find()) {
                     String qid = matcher.group(1); //class name
-                    if (isBuiltinType(qid) || (!isKeyword(qid) && !doGetClassInfo(qid).isEmpty())) {
-                        ti = doGetClassInfo(int.class.getName());
+                    if (isBuiltinType(qid) || (!isKeyword(qid) && !getClassMembers(qid, incomplete).isEmpty())) {
+                        ti = getClassMembers(int.class.getName(), incomplete);
                         itemKind = KIND_MEMBER;
                     }
                 }
@@ -614,9 +614,9 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 Matcher matcher = compile.matcher(clean);
                 if (matcher.find()) {
                     if (matcher.group(2).charAt(0) == '[') {
-                        ti = doGetClassInfo(int[].class.getName());
+                        ti = getClassMembers(int[].class.getName(), incomplete);
                     } else if (matcher.group(2).charAt(0) == '(') {
-                        ti = doGetClassInfo(matcher.group(1));
+                        ti = getClassMembers(matcher.group(1), incomplete);
                     }
                 }
             }
@@ -624,7 +624,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             else if (Patterns.RE_CASTING.matcher(items.get(0)).find()) {
                 Matcher matcher = Patterns.RE_CASTING.matcher(items.get(0));
                 if (matcher.find()) {
-                    ti = doGetClassInfo(matcher.group(1));
+                    ti = getClassMembers(matcher.group(1), incomplete);
                 }
             }
             //" array access:	"var[i][j].|"		Note: "var[i][]" is incorrect
@@ -665,7 +665,8 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 //" type members
                 else if (itemKind == KIND_MEMBER && bracket.isEmpty()) {
                     if (ident.equals("class") || ident.equals("this") || ident.equals("super")) {
-                        ti = doGetClassInfo(ident.equals("class") ? "java.lang.Class" : join(items, 0, ii - 1, "."));
+                        ti = getClassMembers(ident.equals("class") ?
+                                "java.lang.Class" : join(items, 0, ii - 1, "."), incomplete);
                         itemKind = ident.equals("this") ? KIND_THIS : ident.equals("super") ? KIND_SUPER : KIND_NONE;
                     } else if (!isKeyword(ident) /*&& type == class*/) {
                         //accessible static field
@@ -707,7 +708,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
          "   j = 0;
          " }
          */
-        int pos = cursor;
+        int pos = mEditor.getCursor();
         int start = Math.max(0, pos - 2500);
         String range = src.substring(start, pos);
 
@@ -763,11 +764,13 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return result;
     }
 
-    private ArrayList<SuggestItem> doGetClassInfo(String fullName) {
+    private ArrayList<SuggestItem> getClassMembers(String fullClassName, String incomplete) {
         ArrayList<SuggestItem> descriptions = new ArrayList<>();
-        ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(fullName, null);
-        if (classDescription != null) {
-            ArrayList<SuggestItem> members = classDescription.getMember("");
+        JavaClassReader classReader = mClassLoader.getClassReader();
+        ClassDescription clazz = classReader.readClassByName(fullClassName, null);
+        if (clazz != null) {
+            ArrayList<SuggestItem> members = clazz.getMember(incomplete);
+            setInfo(members);
             descriptions.addAll(members);
         }
         return descriptions;

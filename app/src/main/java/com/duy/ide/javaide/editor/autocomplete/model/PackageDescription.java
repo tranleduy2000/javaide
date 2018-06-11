@@ -7,12 +7,15 @@ import com.duy.ide.editor.view.IEditAreaView;
 
 import java.util.HashMap;
 
+/**
+ * @see com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage
+ */
 public class PackageDescription extends JavaSuggestItemImpl {
     private String name;
     private PackageDescription parent;
     private HashMap<String, PackageDescription> child = new HashMap<>();
 
-    public PackageDescription(String name, PackageDescription parent) {
+    private PackageDescription(String name, PackageDescription parent) {
         this.name = name;
         this.parent = parent;
     }
@@ -24,18 +27,22 @@ public class PackageDescription extends JavaSuggestItemImpl {
     @Override
     public void onSelectThis(@NonNull IEditAreaView editorView) {
         try {
+            final int cursor = getEditor().getCursor();
             final int length = getIncomplete().length();
-            final int start = editorView.getSelectionStart() - length;
+            final int start = cursor - length;
 
             Editable editable = editorView.getEditableText();
-            editable.delete(start, editorView.getSelectionStart());
 
             if (isLeaf()) {
-                editable.insert(start, name);
-                editorView.setSelection(start + name.length());
+                //static access
+                String text = name.replace("$", ".");
+                // why not add semicolon (;) , in some case you need declared variable with full class
+                // name, not import package
+                editable.replace(start, cursor, text);
+                editorView.setSelection(start + text.length());
             } else {
                 String text = name + ".";
-                editable.insert(start, text);
+                editable.replace(start, cursor, text);
                 editorView.setSelection(start + text.length());
             }
         } catch (Exception e) {
@@ -107,6 +114,11 @@ public class PackageDescription extends JavaSuggestItemImpl {
 
     @Override
     public String toString() {
-        return name;
+        return "PackageDescription{" +
+                "name='" + name + '\'' +
+                ", parent=" + parent +
+                ", child=" + child +
+                ", lastUsed=" + lastUsed +
+                "} " + super.toString();
     }
 }

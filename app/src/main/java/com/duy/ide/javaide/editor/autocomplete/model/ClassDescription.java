@@ -163,20 +163,23 @@ public class ClassDescription extends JavaSuggestItemImpl {
         return simpleName + "(" + packageName + ")";
     }
 
-    public ArrayList<SuggestItem> getMember(String suffix) {
+    @SuppressWarnings("ConstantConditions")
+    public ArrayList<SuggestItem> getMember(String prefix) {
         ArrayList<SuggestItem> result = new ArrayList<>();
         for (ConstructorDescription constructor : constructors) {
-            if (!suffix.isEmpty() && constructor.getName().startsWith(suffix)) {
-                result.add(constructor);
+            if (!prefix.isEmpty()) {
+                if (constructor.getName().startsWith(prefix)) {
+                    result.add(constructor);
+                }
             }
         }
         for (FieldDescription field : fields) {
-            if (suffix.isEmpty() || field.getName().startsWith(suffix)) {
+            if (prefix.isEmpty() || field.getName().startsWith(prefix)) {
                 result.add(field);
             }
         }
         for (MethodDescription method : methods) {
-            if (suffix.isEmpty() || method.getName().startsWith(suffix)) {
+            if (prefix.isEmpty() || method.getName().startsWith(prefix)) {
                 result.add(method);
             }
         }

@@ -1,22 +1,20 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
 import android.support.annotation.NonNull;
+import android.text.Editable;
 
 import com.duy.ide.code.api.SuggestItem;
-import com.duy.ide.editor.view.CodeEditor;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import static com.duy.ide.javaide.editor.autocomplete.model.JavaSuggestItemImpl.METHOD_DESC;
-
 /**
  * Created by Duy on 20-Jul-17.
  */
 
-public class MethodDescription implements Member, SuggestItem {
+public class MethodDescription extends JavaSuggestItemImpl implements Member, SuggestItem {
     private String name, type;
     private int modifiers;
     private String simpleName;
@@ -39,10 +37,31 @@ public class MethodDescription implements Member, SuggestItem {
             this.parameterTypes.add(parameterType.getName());
         }
     }
+
     @Override
-    public void onSelectThis(@NonNull IEditAreaView iEditAreaView) {
+    public void onSelectThis(@NonNull IEditAreaView editorView) {
+        try {
+            final int length = getIncomplete().length();
+            final int start = editorView.getSelectionStart() - length;
+
+            Editable editable = editorView.getEditableText();
+            editable.delete(start, editorView.getSelectionStart());
+            String text = simpleName + "();";
+            if (getParameterTypes().size() > 0) {
+                //Should end method?
+                editable.insert(start, text);
+                editorView.setSelection(start + simpleName.length() + 1/*(*/);
+            } else {
+                editable.insert(start, text);
+                editorView.setSelection(start + text.length());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
+
     public ArrayList<String> getParameterTypes() {
         return parameterTypes;
     }
@@ -67,14 +86,6 @@ public class MethodDescription implements Member, SuggestItem {
         return type;
     }
 
-
-    public String getInsertText() {
-        if (getParameterTypes().size() > 0) {
-            return getSimpleName() + "(" + CodeEditor.CURSOR + ");";
-        } else {
-            return getSimpleName() + "();" + CodeEditor.CURSOR;
-        }
-    }
 
     @Override
     public int getSuggestionPriority() {

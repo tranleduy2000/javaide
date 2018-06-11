@@ -2,7 +2,6 @@ package com.duy.ide.javaide.editor.autocomplete;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
-import android.text.Editable;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
@@ -14,19 +13,17 @@ import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
-import com.duy.ide.javaide.editor.autocomplete.internal.AutoCompletePackage;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteConstructor;
+import com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage;
+import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory;
 import com.duy.ide.javaide.editor.autocomplete.internal.Patterns;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.JavaSuggestItemImpl;
-import com.duy.ide.javaide.editor.autocomplete.model.Member;
 import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
 import com.duy.ide.javaide.editor.autocomplete.util.EditorUtil;
 import com.google.common.collect.Lists;
@@ -39,9 +36,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,8 +89,10 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
      */
     private final CompleteConstructor mCompleteConstructor;
     private final CompleteClassMember mCompleteClassMember;
+    private final CompletePackage mCompletePackage;
+
     private JavaDexClassLoader mClassLoader;
-    private AutoCompletePackage mCompletePackage;
+    private JavaPackageManager mJavaPackageManager;
     private PackageImporter mPackageImporter;
     private JavaParser mJavaParser;
 
@@ -122,10 +119,11 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     public JavaAutoCompleteProvider(Context context) {
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
         mClassLoader = new JavaDexClassLoader(Environment.getClasspathFile(context), outDir);
-        mCompletePackage = new AutoCompletePackage();
+        mJavaPackageManager = new JavaPackageManager();
         mJavaParser = new JavaParser();
         mCompleteConstructor = new CompleteConstructor(mClassLoader);
         mCompleteClassMember = new CompleteClassMember(mClassLoader);
+        mCompletePackage = new CompletePackage(mJavaPackageManager);
     }
 
     private static boolean not(boolean b) {
@@ -485,24 +483,10 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     @NonNull
     private ArrayList<SuggestItem> getMember(@NonNull String prefix, @NonNull String incomplete) {
         ArrayList<SuggestItem> result = new ArrayList<>();
-
         //get class member
         mCompleteClassMember.getSuggestion(mEditor, prefix + incomplete, result);
-
-        //complete package
-        if (prefix.contains(".")) {
-            String pkgName = prefix.substring(0, prefix.lastIndexOf("."));
-            PackageDescription packages = mCompletePackage.trace(pkgName);
-            if (packages != null) {
-                HashMap<String, PackageDescription> child = packages.getChild();
-                for (Map.Entry<String, PackageDescription> entry : child.entrySet()) {
-                    if (entry.getValue().getName().startsWith(incomplete)) {
-                        result.add(entry.getValue());
-                    }
-
-                }
-            }
-        }
+        //package members
+        mCompletePackage.getSuggestion(mEditor, prefix + incomplete, result);
         return result;
     }
 
@@ -600,7 +584,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
                         // 5) package
                         if (ti.isEmpty()) {
-                            ti = getMember(dotExpr, ident);
+                            ti = getMember(dotExpr, incomplete);
                             itemKind = KIND_PACKAGE;
                         }
                     }
@@ -1002,14 +986,17 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     /**
      * set string literal empty, remove comments, trim begining or ending spaces
-     * test case: ' 	sb. /* block comment"/ append( "stringliteral" ) // comment '
+     * case: ' 	sb. /* block comment"/ append( "stringliteral" ) // comment '
+     * return 'sb.append("")'
      */
     private String cleanStatement(String code) {
         if (code.matches("\\s*")) {
             return "";
         }
         code = removeComment(code); //clear all comment
-        code = code.replaceAll(Patterns.STRINGS.toString(), "\"\""); //clear all string content
+        //clear all string content
+        code = code.replaceAll(Patterns.STRINGS.toString(), "\"\"");
+        code = EditorUtil.trimLeft(code);
         code = code.replaceAll("[\n\t\r]", "");
         return code;
     }
@@ -1031,7 +1018,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     public void load(JavaProject projectFile) {
         mClassLoader.loadAllClasses(projectFile);
-        mCompletePackage.init(projectFile, mClassLoader.getClassReader());
+        mJavaPackageManager.init(projectFile, mClassLoader.getClassReader());
     }
 
     public boolean isLoaded() {
@@ -1041,6 +1028,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     @Override
     public ArrayList<SuggestItem> getSuggestions(Editor editor) {
         try {
+            mEditor = editor;
             this.resolveContextType(editor);
             ArrayList<SuggestItem> complete = generateSuggestion();
             return complete;
@@ -1050,16 +1038,6 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return new ArrayList<>();
     }
 
-
-    public void onInsertSuggestion(Editable editText, SuggestItem suggestion) {
-        if (suggestion instanceof ClassDescription) {
-            PackageImporter.importClass(editText, ((ClassDescription) suggestion).getClassName());
-        } else if (suggestion instanceof ConstructorDescription) {
-            PackageImporter.importClass(editText, suggestion.getName());
-        } else if (suggestion instanceof Member) {
-            //mClassLoader.touchClass(suggestion.getType());
-        }
-    }
 
     public void dispose() {
         mClassLoader.getClassReader().dispose();

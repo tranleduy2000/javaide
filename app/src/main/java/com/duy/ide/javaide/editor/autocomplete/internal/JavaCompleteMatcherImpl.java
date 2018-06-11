@@ -13,11 +13,15 @@ abstract class JavaCompleteMatcherImpl implements IJavaCompleteMatcher {
     protected void setInfo(ArrayList<SuggestItem> members, Editor editor, String incomplete) {
         for (SuggestItem member : members) {
             if (member instanceof JavaSuggestItemImpl) {
-                ((JavaSuggestItemImpl) member).setEditor(editor);
-                ((JavaSuggestItemImpl) member).setIncomplete(incomplete);
+                setInfo((JavaSuggestItemImpl) member, editor, incomplete);
             } else {
                 if (DLog.DEBUG) DLog.w(TAG, "setInfo: not a java suggestion " + member);
             }
         }
+    }
+
+    protected void setInfo(JavaSuggestItemImpl member, Editor editor, String incomplete) {
+        member.setEditor(editor);
+        member.setIncomplete(incomplete);
     }
 }

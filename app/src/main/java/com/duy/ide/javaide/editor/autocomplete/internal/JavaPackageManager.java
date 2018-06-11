@@ -15,12 +15,12 @@ import java.util.ArrayList;
  * Created by Duy on 20-Jul-17.
  */
 
-public class AutoCompletePackage {
+public class JavaPackageManager {
     private static final String TAG = "AutoCompletePackage";
     private PackageDescription root;
     private FileObserver fileObserver;
 
-    public AutoCompletePackage() {
+    public JavaPackageManager() {
         root = PackageDescription.root();
     }
 

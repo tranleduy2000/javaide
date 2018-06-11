@@ -120,4 +120,25 @@ public class EditorUtil {
         }
         return editor.getText().substring(start, cursor - 1);
     }
+
+    public static String trimLeft(String code) {
+        if (code == null) {
+            return null;
+        }
+        if (code.length() == 0) {
+            return "";
+        }
+        int index = 0;
+        while (index < code.length()) {
+            if (Character.isWhitespace(code.charAt(index))) {
+                index++;
+            } else {
+                break;
+            }
+        }
+        if (index == code.length()) {
+            return "";
+        }
+        return code.substring(index);
+    }
 }

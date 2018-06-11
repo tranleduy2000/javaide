@@ -15,12 +15,15 @@ import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.AutoCompletePackage;
+import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
+import com.duy.ide.javaide.editor.autocomplete.internal.CompleteConstructor;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory;
 import com.duy.ide.javaide.editor.autocomplete.internal.Patterns;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.JavaSuggestItemImpl;
 import com.duy.ide.javaide.editor.autocomplete.model.Member;
 import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
@@ -86,9 +89,14 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     public static final int CONTEXT_NEED_INTERFACE = CONTEXT_NEED_CLASS + 1;
 
     private static final String TAG = "AutoCompleteProvider";
+    /**
+     * Support complete java constructor
+     */
+    private final CompleteConstructor mCompleteConstructor;
+    private final CompleteClassMember mCompleteClassMember;
     private JavaDexClassLoader mClassLoader;
-    private PackageImporter packageImporter;
-    private AutoCompletePackage mPackageProvider;
+    private AutoCompletePackage mCompletePackage;
+    private PackageImporter mPackageImporter;
     private JavaParser mJavaParser;
 
     @Nullable
@@ -109,12 +117,15 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     private String mIcompleteWord = "";
     @ContextType
     private int mContextType = CONTEXT_OTHER;
+    private Editor mEditor;
 
     public JavaAutoCompleteProvider(Context context) {
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
         mClassLoader = new JavaDexClassLoader(Environment.getClasspathFile(context), outDir);
-        mPackageProvider = new AutoCompletePackage();
+        mCompletePackage = new AutoCompletePackage();
         mJavaParser = new JavaParser();
+        mCompleteConstructor = new CompleteConstructor(mClassLoader);
+        mCompleteClassMember = new CompleteClassMember(mClassLoader);
     }
 
     private static boolean not(boolean b) {
@@ -301,26 +312,12 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                     result = completeAfterDot(source, mDotExpr, mIcompleteWord);
                     break;
                 case CONTEXT_NEED_CONSTRUCTOR:
-                    result = getConstructorList(mDotExpr);
+                    result = getConstructors(mEditor, mDotExpr);
                     break;
                 case CONTEXT_OTHER:
                     result = new ArrayList<>();
                     break;
             }
-//            if (contextType == CONTEXT_AFTER_DOT) {
-//                result = completeAfterDot(editor, dotExpr);
-//            } else if (contextType == CONTEXT_IMPORT
-//                    || contextType == CONTEXT_IMPORT_STATIC
-//                    || contextType == CONTEXT_PACKAGE_DECL
-//                    || contextType == CONTEXT_NEED_TYPE) {
-//                result = getMember(dotExpr, incomplete);
-//            } else if (contextType == CONTEXT_METHOD_PARAM) {
-//                if (incomplete.equals("+")) {
-//                    result = getConstructorList(dotExpr);
-//                } else {
-//                    result = completeAfterDot(editor, dotExpr);
-//                }
-//            }
         }
         //only complete word
         else if (!mIcompleteWord.isEmpty()) {
@@ -330,7 +327,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                     result = completeMethodParams(mIcompleteWord);
                     break;
                 case CONTEXT_NEED_CONSTRUCTOR:
-                    result = getConstructorList(mIcompleteWord);
+                    result = getConstructors(mEditor, mIcompleteWord);
                     break;
                 default:
                     result = completeWord(source, mIcompleteWord);
@@ -363,79 +360,9 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         ArrayList<SuggestItem> result = new ArrayList<>();
         if (mContextType != CONTEXT_PACKAGE_DECL) {
             //parse current file
-            if (unit != null) {
-                //add import current file
-                com.sun.tools.javac.util.List<JCTree.JCImport> imports = unit.getImports();
-                for (JCTree.JCImport anImport : imports) {
-                    JavaClassReader classReader = mClassLoader.getClassReader();
-                    ClassDescription clazz = classReader.readClassByName(anImport.getQualifiedIdentifier().toString(), null);
-                    if (clazz != null && clazz.getSimpleName().startsWith(incomplete)) {
-                        result.add(clazz);
-                    }
-                }
-                //current file declare
-                com.sun.tools.javac.util.List<JCTree> typeDecls = unit.getTypeDecls();
-                if (!typeDecls.isEmpty()) {
-                    JCTree jcTree = typeDecls.get(0);
-                    if (jcTree instanceof JCTree.JCClassDecl) {
-                        com.sun.tools.javac.util.List<JCTree> members = ((JCTree.JCClassDecl) jcTree).getMembers();
-                        for (JCTree member : members) {
-                            if (member instanceof JCTree.JCVariableDecl) {
-                                JCTree.JCVariableDecl field = (JCTree.JCVariableDecl) member;
-                                if (field.getName().toString().startsWith(incomplete)) {
-                                    result.add(new FieldDescription(
-                                            field.getName().toString(),
-                                            field.getType().toString(),
-                                            (int) field.getModifiers().flags));
-                                }
-                            } else if (member instanceof JCTree.JCMethodDecl) {
-                                JCTree.JCMethodDecl method = (JCTree.JCMethodDecl) member;
-                                if (((JCTree.JCMethodDecl) member).getName().toString().startsWith(incomplete)) {
-                                    com.sun.tools.javac.util.List<JCTree.JCTypeParameter> typeParameters = method.getTypeParameters();
-                                    ArrayList<String> paramsStr = new ArrayList<>();
-                                    for (JCTree.JCTypeParameter typeParameter : typeParameters) {
-                                        paramsStr.add(typeParameter.toString());
-                                    }
-                                    result.add(new MethodDescription(
-                                            method.getName().toString(),
-                                            method.getReturnType().toString(),
-                                            method.getModifiers().flags,
-                                            paramsStr));
-                                }
-                                //if the cursor in method scope
-                                if (method.getStartPosition() <= cursor
-                                        && method.getBody().getEndPosition(unit.endPositions) >= cursor) {
-                                    //add field from start position of method to the cursor
-                                    com.sun.tools.javac.util.List<JCTree.JCStatement> statements = method.getBody().getStatements();
-                                    for (JCTree.JCStatement jcStatement : statements) {
-                                        if (jcStatement instanceof JCTree.JCVariableDecl) {
-                                            JCTree.JCVariableDecl field = (JCTree.JCVariableDecl) jcStatement;
-                                            if (field.getName().toString().startsWith(incomplete)) {
-                                                result.add(new FieldDescription(
-                                                        field.getName().toString(),
-                                                        field.getType().toString(),
-                                                        (int) field.getModifiers().flags));
-                                            }
-                                        }
-                                    }
-                                    //add params
-                                    com.sun.tools.javac.util.List<JCTree.JCVariableDecl> parameters = method.getParameters();
-                                    for (JCTree.JCVariableDecl parameter : parameters) {
-                                        JCTree.JCVariableDecl field = parameter;
-                                        if (field.getName().toString().startsWith(incomplete)) {
-                                            result.add(new FieldDescription(
-                                                    field.getName().toString(),
-                                                    field.getType().toString(),
-                                                    (int) field.getModifiers().flags));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            getPossileResultInCurrentFile(result, unit, incomplete);
             ArrayList<ClassDescription> aClass = mClassLoader.findClassWithPrefix(incomplete);
+            setInfo(aClass);
             result.addAll(aClass);
 
         }
@@ -448,48 +375,135 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return result;
     }
 
+    private void setInfo(ArrayList<? extends JavaSuggestItemImpl> items) {
+        for (JavaSuggestItemImpl item : items) {
+            item.setEditor(mEditor);
+            item.setIncomplete(mIcompleteWord);
+        }
+    }
+
+    private void getPossileResultInCurrentFile(ArrayList<SuggestItem> result,
+                                               JCTree.JCCompilationUnit unit, String incomplete) {
+        if (unit != null) {
+            //add import current file
+            com.sun.tools.javac.util.List<JCTree.JCImport> imports = unit.getImports();
+            for (JCTree.JCImport anImport : imports) {
+                JavaClassReader classReader = mClassLoader.getClassReader();
+                ClassDescription clazz = classReader.readClassByName(anImport.getQualifiedIdentifier().toString(), null);
+                if (clazz != null && clazz.getSimpleName().startsWith(incomplete)) {
+                    result.add(clazz);
+                }
+            }
+            //current file declare
+            com.sun.tools.javac.util.List<JCTree> typeDecls = unit.getTypeDecls();
+            if (!typeDecls.isEmpty()) {
+                JCTree jcTree = typeDecls.get(0);
+                if (jcTree instanceof JCTree.JCClassDecl) {
+                    com.sun.tools.javac.util.List<JCTree> members = ((JCTree.JCClassDecl) jcTree).getMembers();
+                    for (JCTree member : members) {
+                        if (member instanceof JCTree.JCVariableDecl) {
+                            JCTree.JCVariableDecl field = (JCTree.JCVariableDecl) member;
+                            if (field.getName().toString().startsWith(incomplete)) {
+                                result.add(new FieldDescription(
+                                        field.getName().toString(),
+                                        field.getType().toString(),
+                                        (int) field.getModifiers().flags));
+                            }
+                        } else if (member instanceof JCTree.JCMethodDecl) {
+                            JCTree.JCMethodDecl method = (JCTree.JCMethodDecl) member;
+                            if (((JCTree.JCMethodDecl) member).getName().toString().startsWith(incomplete)) {
+                                com.sun.tools.javac.util.List<JCTree.JCTypeParameter> typeParameters = method.getTypeParameters();
+                                ArrayList<String> paramsStr = new ArrayList<>();
+                                for (JCTree.JCTypeParameter typeParameter : typeParameters) {
+                                    paramsStr.add(typeParameter.toString());
+                                }
+                                result.add(new MethodDescription(
+                                        method.getName().toString(),
+                                        method.getReturnType().toString(),
+                                        method.getModifiers().flags,
+                                        paramsStr));
+                            }
+                            //if the cursor in method scope
+                            if (method.getStartPosition() <= cursor
+                                    && method.getBody().getEndPosition(unit.endPositions) >= cursor) {
+                                //add field from start position of method to the cursor
+                                com.sun.tools.javac.util.List<JCTree.JCStatement> statements = method.getBody().getStatements();
+                                for (JCTree.JCStatement jcStatement : statements) {
+                                    if (jcStatement instanceof JCTree.JCVariableDecl) {
+                                        JCTree.JCVariableDecl field = (JCTree.JCVariableDecl) jcStatement;
+                                        if (field.getName().toString().startsWith(incomplete)) {
+                                            result.add(new FieldDescription(
+                                                    field.getName().toString(),
+                                                    field.getType().toString(),
+                                                    (int) field.getModifiers().flags));
+                                        }
+                                    }
+                                }
+                                //add params
+                                com.sun.tools.javac.util.List<JCTree.JCVariableDecl> parameters = method.getParameters();
+                                for (JCTree.JCVariableDecl parameter : parameters) {
+                                    JCTree.JCVariableDecl field = parameter;
+                                    if (field.getName().toString().startsWith(incomplete)) {
+                                        result.add(new FieldDescription(
+                                                field.getName().toString(),
+                                                field.getType().toString(),
+                                                (int) field.getModifiers().flags));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private ArrayList<SuggestItem> completeMethodParams(String incomplete) {
         return new ArrayList<>();
     }
 
     @NonNull
-    private ArrayList<SuggestItem> getConstructorList(String className) {
-        if (className.isEmpty()) return new ArrayList<>();
-        ArrayList<ClassDescription> classes = mClassLoader.findClassWithPrefix(className);
-        ArrayList<SuggestItem> constructors = new ArrayList<>();
-        for (ClassDescription c : classes) {
-            constructors.addAll(c.getConstructors());
-        }
-        return constructors;
+    private ArrayList<SuggestItem> getConstructors(Editor editor, String incomplete) {
+        ArrayList<SuggestItem> result = new ArrayList<>();
+        mCompleteConstructor.getSuggestion(editor, incomplete, result);
+        return result;
     }
 
 
     /**
      * get member of class name, package ...
+     * e.g.
+     * java.lang.String.to|
+     * <p>                ^ cursor
+     * return toString, toCharArray, toLowerCase,... etc
+     * +      ^^        ^^           ^^
      *
-     * @param prefix - end with "."
-     * @param suffix - incomplete word
-     * @return
+     * @param prefix     - the expression end with ".", it can be a full class name
+     *                   or empty (java.lang.* classes)
+     * @param incomplete - incomplete word
      */
     @NonNull
-    private ArrayList<SuggestItem> getMember(String prefix, String suffix) {
-        //get class member
-        ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(prefix, null);
-        ArrayList<SuggestItem> members = new ArrayList<>();
-        if (classDescription != null) {
-            members.addAll(classDescription.getMember(suffix));
-        }
-        PackageDescription packageDescription = mPackageProvider.trace(prefix.substring(0, prefix.lastIndexOf(".")));
-        if (packageDescription != null) {
-            HashMap<String, PackageDescription> child = packageDescription.getChild();
-            for (Map.Entry<String, PackageDescription> entry : child.entrySet()) {
-                if (entry.getValue().getName().startsWith(suffix)) {
-                    members.add(entry.getValue());
-                }
+    private ArrayList<SuggestItem> getMember(@NonNull String prefix, @NonNull String incomplete) {
+        ArrayList<SuggestItem> result = new ArrayList<>();
 
+        //get class member
+        mCompleteClassMember.getSuggestion(mEditor, prefix + incomplete, result);
+
+        //complete package
+        if (prefix.contains(".")) {
+            String pkgName = prefix.substring(0, prefix.lastIndexOf("."));
+            PackageDescription packages = mCompletePackage.trace(pkgName);
+            if (packages != null) {
+                HashMap<String, PackageDescription> child = packages.getChild();
+                for (Map.Entry<String, PackageDescription> entry : child.entrySet()) {
+                    if (entry.getValue().getName().startsWith(incomplete)) {
+                        result.add(entry.getValue());
+                    }
+
+                }
             }
         }
-        return members;
+        return result;
     }
 
     /**
@@ -1017,7 +1031,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     public void load(JavaProject projectFile) {
         mClassLoader.loadAllClasses(projectFile);
-        mPackageProvider.init(projectFile, mClassLoader.getClassReader());
+        mCompletePackage.init(projectFile, mClassLoader.getClassReader());
     }
 
     public boolean isLoaded() {

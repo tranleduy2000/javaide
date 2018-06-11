@@ -1,6 +1,10 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
-import com.duy.ide.editor.view.CodeEditor;
+import android.support.annotation.NonNull;
+import android.text.Editable;
+
+import com.duy.ide.BuildConfig;
+import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Constructor;
@@ -9,7 +13,7 @@ import java.lang.reflect.Constructor;
  * Created by Duy on 20-Jul-17.
  */
 
-public class ConstructorDescription extends DescriptionImpl {
+public class ConstructorDescription extends JavaSuggestItemImpl {
     private Constructor constructor;
     private String simpleName;
     private String packageName;
@@ -20,15 +24,37 @@ public class ConstructorDescription extends DescriptionImpl {
         this.packageName = JavaUtil.getPackageName(constructor.getName());
     }
 
+    @Override
+    public void onSelectThis(@NonNull IEditAreaView editorView) {
+        try {
+            final int length = getIncomplete().length();
+            final int start = editorView.getSelectionStart() - length;
+
+            Editable editable = editorView.getEditableText();
+            editable.delete(start, editorView.getSelectionStart());
+
+            if (constructor.getParameterTypes().length > 0) {
+                editable.insert(start, simpleName + "()");
+                editorView.setSelection(start + simpleName.length() + 1);
+            } else {
+                String text = simpleName + "();";
+                editable.insert(start, text);
+                editorView.setSelection(start + text.length());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public String getName() {
-        return constructor.getName();
+        return simpleName;
     }
 
     @Override
     public char getTypeHeader() {
-        return 'c'; //class
+        //just debug
+        return BuildConfig.DEBUG ? 'z' : 'c'; //class
     }
 
     @Override
@@ -39,15 +65,6 @@ public class ConstructorDescription extends DescriptionImpl {
     @Override
     public String getReturnType() {
         return "";
-    }
-
-    @Override
-    public String getInsertText() {
-        if (constructor.getParameterTypes().length > 0) {
-            return simpleName + "(" + CodeEditor.CURSOR + ");";
-        } else {
-            return simpleName + "();" + CodeEditor.CURSOR;
-        }
     }
 
 

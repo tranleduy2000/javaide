@@ -1,5 +1,9 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
+import android.support.annotation.NonNull;
+
+import com.duy.ide.editor.view.IEditAreaView;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -7,7 +11,7 @@ import java.lang.reflect.Modifier;
  * Created by Duy on 20-Jul-17.
  */
 
-public class FieldDescription extends DescriptionImpl implements Member {
+public class FieldDescription extends JavaSuggestItemImpl implements Member {
     private String name, type;
     private int modifiers;
     private String value;
@@ -29,11 +33,16 @@ public class FieldDescription extends DescriptionImpl implements Member {
             }
         }
     }
+    @Override
+    public void onSelectThis(@NonNull IEditAreaView iEditAreaView) {
 
+    }
     @Override
     public char getTypeHeader() {
         return 'f'; //field
     }
+
+
 
     @Override
     public String getName() {
@@ -51,13 +60,8 @@ public class FieldDescription extends DescriptionImpl implements Member {
     }
 
     @Override
-    public String getInsertText() {
-        return name;
-    }
-
-    @Override
     public int getSuggestionPriority() {
-        return DescriptionImpl.FIELD_DESC;
+        return JavaSuggestItemImpl.FIELD_DESC;
     }
 
     @Override

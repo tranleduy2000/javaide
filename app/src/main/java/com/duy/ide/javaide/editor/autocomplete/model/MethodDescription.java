@@ -4,12 +4,13 @@ import android.support.annotation.NonNull;
 
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.view.CodeEditor;
+import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import static com.duy.ide.javaide.editor.autocomplete.model.DescriptionImpl.METHOD_DESC;
+import static com.duy.ide.javaide.editor.autocomplete.model.JavaSuggestItemImpl.METHOD_DESC;
 
 /**
  * Created by Duy on 20-Jul-17.
@@ -38,7 +39,10 @@ public class MethodDescription implements Member, SuggestItem {
             this.parameterTypes.add(parameterType.getName());
         }
     }
+    @Override
+    public void onSelectThis(@NonNull IEditAreaView iEditAreaView) {
 
+    }
     public ArrayList<String> getParameterTypes() {
         return parameterTypes;
     }

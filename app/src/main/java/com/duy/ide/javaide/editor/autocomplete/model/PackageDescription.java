@@ -1,8 +1,12 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
+import android.support.annotation.NonNull;
+
+import com.duy.ide.editor.view.IEditAreaView;
+
 import java.util.HashMap;
 
-public class PackageDescription extends DescriptionImpl {
+public class PackageDescription extends JavaSuggestItemImpl {
     private String name;
     private PackageDescription parent;
     private HashMap<String, PackageDescription> child = new HashMap<>();
@@ -15,7 +19,10 @@ public class PackageDescription extends DescriptionImpl {
     public static PackageDescription root() {
         return new PackageDescription("", null);
     }
+    @Override
+    public void onSelectThis(@NonNull IEditAreaView iEditAreaView) {
 
+    }
     @Override
     public char getTypeHeader() {
         return 'p';
@@ -34,11 +41,6 @@ public class PackageDescription extends DescriptionImpl {
     @Override
     public String getReturnType() {
         return null;
-    }
-
-    @Override
-    public String getInsertText() {
-        return name + (isLeaf() ? ";" : ".");
     }
 
 

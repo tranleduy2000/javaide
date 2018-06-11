@@ -17,7 +17,7 @@
 
 package com.duy.ide.javaide.editor.autocomplete.internal;
 
-import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteClassDeclared;
+import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteClassDeclared;
 
 import junit.framework.TestCase;
 

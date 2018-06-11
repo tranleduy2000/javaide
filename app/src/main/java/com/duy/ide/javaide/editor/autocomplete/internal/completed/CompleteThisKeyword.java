@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed;
+package com.duy.ide.javaide.editor.autocomplete.internal.completed;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;

@@ -17,7 +17,7 @@
 
 package com.duy.ide.javaide.editor.autocomplete.internal;
 
-import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteString;
+import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteString;
 
 import junit.framework.TestCase;
 

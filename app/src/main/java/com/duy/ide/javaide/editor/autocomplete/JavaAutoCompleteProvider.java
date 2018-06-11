@@ -31,7 +31,7 @@ import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
-import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteNewKeyword;
+import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteNewKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;

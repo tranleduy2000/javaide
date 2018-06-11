@@ -49,14 +49,18 @@ public abstract class JavaCompleteMatcherImpl implements IJavaCompleteMatcher {
 
     public static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
     public static final Pattern METHOD_NAME = IDENTIFIER;
-    public static final Pattern CLASS_NAME = IDENTIFIER;
     public static final Pattern VARIABLE_NAME = IDENTIFIER;
-    public static final Pattern PACKAGE_NAME = Pattern.compile(
-            "^" + IDENTIFIER.pattern() + "(\\." + IDENTIFIER.pattern() + ")*$");
+    //String or java.lang.String
+    public static final Pattern CLASS_NAME = Pattern.compile(
+            IDENTIFIER.pattern() + "(\\s*\\.\\s*" + IDENTIFIER.pattern() + ")*");
+    //java.util.*
+    public static final Pattern PACKAGE_NAME = CLASS_NAME;
+    //java.io.FileInputStream
+    public static final Pattern CONSTRUCTOR = CLASS_NAME;
 
     private static final String TAG = "JavaCompleteMatcherImpl";
 
-    protected void setInfo(ArrayList<SuggestItem> members, Editor editor, String incomplete) {
+    protected void setInfo(ArrayList<? extends SuggestItem> members, Editor editor, String incomplete) {
         for (SuggestItem member : members) {
             if (member instanceof JavaSuggestItemImpl) {
                 setInfo((JavaSuggestItemImpl) member, editor, incomplete);

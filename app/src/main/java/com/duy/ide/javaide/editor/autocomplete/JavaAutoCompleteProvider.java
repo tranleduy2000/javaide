@@ -31,7 +31,7 @@ import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
-import com.duy.ide.javaide.editor.autocomplete.internal.CompleteConstructor;
+import com.duy.ide.javaide.editor.autocomplete.internal.CompleteNewKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
@@ -107,7 +107,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     /**
      * Support complete java constructor
      */
-    private final CompleteConstructor mCompleteConstructor;
+    private final CompleteNewKeyword mCompleteNewKeyword;
     private final CompleteClassMember mCompleteClassMember;
     private final CompletePackage mCompletePackage;
 
@@ -139,7 +139,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         mClassLoader = new JavaDexClassLoader(Environment.getClasspathFile(context), outDir);
         mJavaPackageManager = new JavaPackageManager();
         mJavaParser = new JavaParser();
-        mCompleteConstructor = new CompleteConstructor(mClassLoader);
+        mCompleteNewKeyword = new CompleteNewKeyword(mClassLoader);
         mCompleteClassMember = new CompleteClassMember(mClassLoader);
         mCompletePackage = new CompletePackage(mJavaPackageManager);
     }
@@ -517,7 +517,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     @NonNull
     private ArrayList<SuggestItem> getConstructors(Editor editor, String incomplete) {
         ArrayList<SuggestItem> result = new ArrayList<>();
-        mCompleteConstructor.getSuggestion(editor, incomplete, result);
+        mCompleteNewKeyword.getSuggestion(editor, incomplete, result);
         return result;
     }
 

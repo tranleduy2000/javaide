@@ -294,18 +294,25 @@ public class JavaClassReader {
 
     @NonNull
     public ArrayList<ClassDescription> findClass(String simpleNamePrefix) {
-        Log.d(TAG, "findClass() called with: simpleNamePrefix = [" + simpleNamePrefix + "]");
+        Log.d(TAG, "findClass() called with: prefix = [" + simpleNamePrefix + "]");
 
         long start = System.currentTimeMillis();
-        ArrayList<ClassDescription> classDescriptions = new ArrayList<>();
-        List<Pair<String, Class>> classes = binarySearch(mSimpleClasses, simpleNamePrefix);
-        if (classes != null) {
-            for (Pair<String, Class> c : classes) {
-                classDescriptions.add(readClassByName(c.second.getName(), c.second));
+        ArrayList<ClassDescription> result = new ArrayList<>();
+
+        List<Pair<String, Class>> simple = binarySearch(mSimpleClasses, simpleNamePrefix);
+        if (simple != null) {
+            for (Pair<String, Class> c : simple) {
+                result.add(readClassByName(c.second.getName(), c.second));
             }
         }
+
+        ClassDescription full = readClassByName(simpleNamePrefix, null);
+        if (full != null) {
+            result.add(full);
+        }
+
         Log.d(TAG, "findClass: time " + simpleNamePrefix + " - " + (System.currentTimeMillis() - start));
-        return classDescriptions;
+        return result;
     }
 
     public boolean isLoaded() {

@@ -26,17 +26,29 @@ import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class CompleteConstructor implements IJavaCompleteMatcher {
-
+/**
+ * Suggest constructor
+ */
+public class CompleteNewKeyword extends JavaCompleteMatcherImpl {
+    private static final Pattern NEW_CLASS =
+            Pattern.compile("(\\s*new\\s+)(" + CONSTRUCTOR.pattern() + ")$", Pattern.MULTILINE);
     private final JavaDexClassLoader mClassLoader;
 
-    public CompleteConstructor(JavaDexClassLoader classLoader) {
+    public CompleteNewKeyword(JavaDexClassLoader classLoader) {
         mClassLoader = classLoader;
     }
 
     @Override
     public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
+        Matcher matcher = NEW_CLASS.matcher(statement);
+        if (matcher.find()) {
+            String incompleteCts = matcher.group(2);
+            getSuggestion(editor, incompleteCts, result);
+            return true;
+        }
         return false;
     }
 
@@ -47,13 +59,12 @@ public class CompleteConstructor implements IJavaCompleteMatcher {
         if (incomplete.isEmpty()) {
             return;
         }
+
+        //try to find constructor
         ArrayList<ClassDescription> classes = mClassLoader.findClassWithPrefix(incomplete);
         for (ClassDescription clazz : classes) {
             ArrayList<ConstructorDescription> constructors = clazz.getConstructors();
-            for (ConstructorDescription c : constructors) {
-                c.setEditor(editor);
-                c.setIncomplete(incomplete);
-            }
+            setInfo(constructors, editor, incomplete);
             suggestItems.addAll(constructors);
         }
     }

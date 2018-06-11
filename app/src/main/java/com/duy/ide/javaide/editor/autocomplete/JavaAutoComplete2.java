@@ -27,7 +27,7 @@ import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
-import com.duy.ide.javaide.editor.autocomplete.internal.CompleteConstructor;
+import com.duy.ide.javaide.editor.autocomplete.internal.CompleteNewKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteStaticAccess;
@@ -47,7 +47,7 @@ public class JavaAutoComplete2 implements SuggestionProvider {
     /**
      * Support complete java constructor
      */
-    private final CompleteConstructor mCompleteConstructor;
+    private final CompleteNewKeyword mCompleteNewKeyword;
     private final CompleteClassMember mCompleteClassMember;
     private final CompletePackage mCompletePackage;
     private final ArrayList<IJavaCompleteMatcher> mJavaAutoCompletes = new ArrayList<>();
@@ -62,7 +62,7 @@ public class JavaAutoComplete2 implements SuggestionProvider {
         mClassLoader = new JavaDexClassLoader(Environment.getClasspathFile(context), outDir);
         mJavaPackageManager = new JavaPackageManager();
         mJavaParser = new JavaParser();
-        mCompleteConstructor = new CompleteConstructor(mClassLoader);
+        mCompleteNewKeyword = new CompleteNewKeyword(mClassLoader);
         mCompleteClassMember = new CompleteClassMember(mClassLoader);
         mCompletePackage = new CompletePackage(mJavaPackageManager);
 
@@ -76,7 +76,7 @@ public class JavaAutoComplete2 implements SuggestionProvider {
 
     private void addAutoComplete() {
         mJavaAutoCompletes.add(new CompleteClassMember(mClassLoader));
-        mJavaAutoCompletes.add(new CompleteConstructor(mClassLoader));
+        mJavaAutoCompletes.add(new CompleteNewKeyword(mClassLoader));
         mJavaAutoCompletes.add(new CompleteKeyword());
         mJavaAutoCompletes.add(new CompletePackage(mJavaPackageManager));
         mJavaAutoCompletes.add(new CompleteStaticAccess());

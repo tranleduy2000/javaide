@@ -18,9 +18,12 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
 
+import android.text.Editable;
+
 import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
+import com.duy.ide.editor.view.IEditAreaView;
 
 /**
  * Created by Duy on 21-Jul-17.
@@ -55,5 +58,22 @@ public abstract class JavaSuggestItemImpl implements SuggestItem, Cloneable {
 
     public void setIncomplete(@NonNull String incomplete) {
         this.incomplete = incomplete;
+    }
+
+
+    protected void insertImpl(IEditAreaView editorView, String text) {
+
+        try {
+            final int length = getIncomplete().length();
+            final int cursor = getEditor().getCursor();
+            final int start = cursor - length;
+
+            Editable editable = editorView.getEditableText();
+            editable.replace(start, cursor, text);
+            editorView.setSelection(start + text.length());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -208,9 +208,9 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
             mContextType = CONTEXT_AFTER_DOT;
             //import or package declaration
-            if (Pattern.compile("^\\s*(import|package)\\s+").matcher(statement).find()) {
+            /*if (Pattern.compile("^\\s*(import|package)\\s+").matcher(statement).find()) {
                 progressImportPackage();
-            }
+            }*/
 
             //String literal
             /*else if (Pattern.compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
@@ -311,30 +311,30 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         }
     }
 
-    private void progressImportPackage() {
-        statement = statement.replaceAll("\\s+\\.", ".");
-        statement = statement.replaceAll("\\.\\s+", ".");
-        if (Pattern.compile("^\\s*(import)\\s+").matcher(statement).find()) {
-            //static import
-            if (Pattern.compile("^\\s*(import)\\s+(static)\\s+").matcher(statement).find()) {
-                mContextType = CONTEXT_IMPORT_STATIC;
-            } else { //normal import
-                mContextType = CONTEXT_IMPORT;
-            }
-            Pattern importStatic = Pattern.compile("^\\s*(import)\\s+(static\\s+)?");
-            Matcher matcher = importStatic.matcher(statement);
-            if (matcher.find()) {
-                mDotExpr = statement.substring(matcher.end());
-            }
-        } else {
-            mContextType = CONTEXT_PACKAGE_DECL;
-            Pattern _package = Pattern.compile("^\\s*(package)\\s+?");
-            Matcher matcher = _package.matcher(statement);
-            if (matcher.find()) {
-                mDotExpr = statement.substring(matcher.end());
-            }
-        }
-    }
+//    private void progressImportPackage() {
+//        statement = statement.replaceAll("\\s+\\.", ".");
+//        statement = statement.replaceAll("\\.\\s+", ".");
+//        if (Pattern.compile("^\\s*(import)\\s+").matcher(statement).find()) {
+//            //static import
+//            if (Pattern.compile("^\\s*(import)\\s+(static)\\s+").matcher(statement).find()) {
+//                mContextType = CONTEXT_IMPORT_STATIC;
+//            } else { //normal import
+//                mContextType = CONTEXT_IMPORT;
+//            }
+//            Pattern importStatic = Pattern.compile("^\\s*(import)\\s+(static\\s+)?");
+//            Matcher matcher = importStatic.matcher(statement);
+//            if (matcher.find()) {
+//                mDotExpr = statement.substring(matcher.end());
+//            }
+//        } else {
+//            mContextType = CONTEXT_PACKAGE_DECL;
+//            Pattern _package = Pattern.compile("^\\s*(package)\\s+?");
+//            Matcher matcher = _package.matcher(statement);
+//            if (matcher.find()) {
+//                mDotExpr = statement.substring(matcher.end());
+//            }
+//        }
+//    }
 
     public ArrayList<SuggestItem> generateSuggestion() {
         System.out.println("contextType = " + mContextType);

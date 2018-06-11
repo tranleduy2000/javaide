@@ -18,7 +18,6 @@
 package com.duy.ide.javaide.editor.autocomplete.model;
 
 import android.support.annotation.NonNull;
-import android.text.Editable;
 
 import com.duy.ide.editor.view.IEditAreaView;
 
@@ -61,19 +60,9 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member {
 
     @Override
     public void onSelectThis(@NonNull IEditAreaView editorView) {
-        try {
-            final int length = getIncomplete().length();
-            final int cursor = getEditor().getCursor();
-            final int start = cursor - length;
-
-            Editable editable = editorView.getEditableText();
-            editable.replace(start, cursor, name);
-            editorView.setSelection(start + name.length());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        insertImpl(editorView, name);
     }
+
 
     @Override
     public char getTypeHeader() {

@@ -219,7 +219,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             }*/
             //" type declaration		NOTE: not supported generic yet.
             /*else*/ {
-                Matcher matcher = Pattern.compile("^\\s?" + Patterns.RE_TYPE_DECL).matcher(statement);
+               /* Matcher matcher = Pattern.compile("^\\s?" + Patterns.RE_TYPE_DECL).matcher(statement);
                 if (matcher.find()) {
                     mDotExpr = statement.substring(matcher.start());
                     matcher = Pattern.compile("\\s+(extends|implements)(\\s+)(" + Patterns.RE_QUALID + ")").matcher(mDotExpr);
@@ -237,7 +237,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                     } else {
                         mContextType = CONTEXT_NEED_INTERFACE;
                     }
-                } //else {
+                }*/ //else {
 //                    matcher = Pattern.compile("(\\s*new\\s+)(" + Patterns.RE_QUALID + ")$").matcher(statement);
 //                    if (matcher.find()) {
 //                        statement = matcher.group(2);
@@ -253,7 +253,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             }
 
             //" all cases: " java.ut|" or " java.util.|" or "ja|"
-            if (mDotExpr.contains(".")) {
+          /*  if (mDotExpr.contains(".")) {
                 mIcompleteWord = mDotExpr.substring(mDotExpr.lastIndexOf(".") + 1);
                 mDotExpr = mDotExpr.substring(0, mDotExpr.lastIndexOf(".") + 1); //include "." character
             } else {
@@ -261,7 +261,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 mDotExpr = "";
             }
             //incomplete
-            return;
+            return;*/
 
         }
         //	" method parameters, treat methodname or 'new' as an incomplete word
@@ -272,7 +272,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             statement = statement.replaceAll("\\s*\\(\\s*$", "");
             //" new ClassName?
 
-            if (Pattern.compile("\\s*new\\s+" + Patterns.RE_QUALID + "$").matcher(statement).find()) {
+            /*if (Pattern.compile("\\s*new\\s+" + Patterns.RE_QUALID + "$").matcher(statement).find()) {
                 statement = statement.replaceAll("^\\s*new\\s+", "");
                 if (!Patterns.KEYWORDS.matcher(statement).find()) {
                     mIcompleteWord = "+";
@@ -281,7 +281,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                     return;
 
                 }
-            } else {
+            } else*/ {
                 Matcher matcher = Pattern.compile("\\s*" + Patterns.IDENTIFIER + "$").matcher(statement);
                 matcher.find();
                 pos = matcher.start();
@@ -361,24 +361,24 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 case CONTEXT_METHOD_PARAM:
                     result = completeAfterDot(mEditor.getText(), mDotExpr, mIcompleteWord);
                     break;
-                case CONTEXT_NEED_CONSTRUCTOR:
-                    result = getConstructors(mEditor, mDotExpr);
-                    break;
-                case CONTEXT_OTHER:
-                    result = new ArrayList<>();
-                    break;
+//                case CONTEXT_NEED_CONSTRUCTOR:
+//                    result = getConstructors(mEditor, mDotExpr);
+//                    break;
+//                case CONTEXT_OTHER:
+//                    result = new ArrayList<>();
+//                    break;
             }
         }
         //only complete word
         else if (!mIcompleteWord.isEmpty()) {
             //only need method
             switch (mContextType) {
-                case CONTEXT_METHOD_PARAM:
-                    result = completeMethodParams(mIcompleteWord);
-                    break;
-                case CONTEXT_NEED_CONSTRUCTOR:
-                    result = getConstructors(mEditor, mIcompleteWord);
-                    break;
+//                case CONTEXT_METHOD_PARAM:
+//                    result = completeMethodParams(mIcompleteWord);
+//                    break;
+//                case CONTEXT_NEED_CONSTRUCTOR:
+//                    result = getConstructors(mEditor, mIcompleteWord);
+//                    break;
                 default:
                     result = completeWord(mEditor.getText(), mIcompleteWord);
                     break;

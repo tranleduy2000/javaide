@@ -17,20 +17,5 @@
 
 package com.duy.ide.javaide.editor.autocomplete.internal;
 
-import com.duy.ide.code.api.SuggestItem;
-import com.duy.ide.editor.internal.suggestion.Editor;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public abstract class CompleteStaticAccess implements IJavaCompleteMatcher {
-    @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
-        return false;
-    }
-
-    @Override
-    public void getSuggestion(Editor editor, String incomplete, List<SuggestItem> suggestItems) {
-
-    }
+public class CompleteClassName {
 }

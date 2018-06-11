@@ -23,9 +23,9 @@ import com.duy.ide.editor.internal.suggestion.Editor;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CompleteStaticAccess implements IJavaCompleteMatcher {
+public abstract class CompleteWord extends JavaCompleteMatcherImpl {
     @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
+    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) throws Exception {
         return false;
     }
 

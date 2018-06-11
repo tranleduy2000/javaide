@@ -17,6 +17,8 @@
 
 package com.duy.ide.javaide.editor.autocomplete.internal;
 
+import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteClassDeclared;
+
 import junit.framework.TestCase;
 
 import static com.duy.ide.javaide.editor.autocomplete.internal.Patterns.TYPE_DECLARE_MODIFIERS;

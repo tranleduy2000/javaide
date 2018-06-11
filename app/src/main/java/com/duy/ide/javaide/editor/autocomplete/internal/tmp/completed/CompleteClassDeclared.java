@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal;
+package com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -23,6 +23,7 @@ import com.duy.common.interfaces.Filter;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
+import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.utils.DLog;
 
@@ -41,7 +42,8 @@ import java.util.regex.Pattern;
  */
 public class CompleteClassDeclared extends JavaCompleteMatcherImpl {
     //case: public class A
-    //case: public class Lamborghini extends Car
+    //case: public class Name extends OtherClass
+    //case: class Name extends C implements D
     static final Pattern CLASS_DECLARE = Pattern.compile(
             //more modifiers, public static final ....
             "((public|protected|private|abstract|static|final|strictfp)\\s+)*" +
@@ -73,18 +75,18 @@ public class CompleteClassDeclared extends JavaCompleteMatcherImpl {
             if (matcher.find()) {
                 if (DLog.DEBUG) DLog.d(TAG, "process: END_IMPLEMENTS found");
                 String incompleteInterface = matcher.group(1);
-                getSuggestionInternal(editor, incompleteInterface, result,
+                return getSuggestionInternal(editor, incompleteInterface, result,
                         "interface");
-                return true;
+
             }
 
             matcher = END_EXTENDS.matcher(statement);
             if (matcher.find()) {
                 if (DLog.DEBUG) DLog.d(TAG, "process: END_EXTENDS found");
                 String incompleteInterface = matcher.group(1);
-                getSuggestionInternal(editor, incompleteInterface, result,
+                return getSuggestionInternal(editor, incompleteInterface, result,
                         "class");
-                return true;
+
             }
 
         }
@@ -94,10 +96,12 @@ public class CompleteClassDeclared extends JavaCompleteMatcherImpl {
     /**
      * @param declareType - enum, class, annotation, interface
      */
-    private void getSuggestionInternal(@NonNull Editor editor,
-                                       @NonNull String incomplete,
-                                       @NonNull List<SuggestItem> result,
-                                       @Nullable String declareType) {
+    private boolean getSuggestionInternal(@NonNull Editor editor,
+                                          @NonNull String incomplete,
+                                          @NonNull List<SuggestItem> result,
+                                          @Nullable String declareType) {
+
+        //filter interfaces or classes
         Filter<Class> filter = null;
         switch (declareType) {
             case "interface":
@@ -133,8 +137,14 @@ public class CompleteClassDeclared extends JavaCompleteMatcherImpl {
         }
 
         ArrayList<ClassDescription> classes = mClassLoader.findAllWithPrefix(incomplete, filter);
-        setInfo(classes, editor, incomplete);
-        result.addAll(classes);
+        if (classes.size() > 0) {
+            setInfo(classes, editor, incomplete);
+            result.addAll(classes);
+            if (DLog.DEBUG) DLog.d(TAG, "getSuggestionInternal() returned: " + true);
+            return true;
+        }
+        if (DLog.DEBUG) DLog.d(TAG, "getSuggestionInternal() returned: " + false);
+        return false;
     }
 
     @Override

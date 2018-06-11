@@ -26,12 +26,11 @@ import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
-import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassDeclared;
+import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteClassDeclared;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteNewKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage;
-import com.duy.ide.javaide.editor.autocomplete.internal.CompleteStaticAccess;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteString;
 import com.duy.ide.javaide.editor.autocomplete.internal.IJavaCompleteMatcher;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
@@ -80,7 +79,6 @@ public class JavaAutoComplete2 implements SuggestionProvider {
         mJavaAutoCompletes.add(new CompleteNewKeyword(mClassLoader));
         mJavaAutoCompletes.add(new CompleteKeyword());
         mJavaAutoCompletes.add(new CompletePackage(mJavaPackageManager));
-        mJavaAutoCompletes.add(new CompleteStaticAccess());
         mJavaAutoCompletes.add(new CompleteString(mClassLoader));
         mJavaAutoCompletes.add(new CompleteClassDeclared(mClassLoader));
     }
@@ -93,7 +91,10 @@ public class JavaAutoComplete2 implements SuggestionProvider {
             String statement = getStatement(editor);
             for (IJavaCompleteMatcher autoComplete : mJavaAutoCompletes) {
                 try {
-                    autoComplete.process(editor, statement, result);
+                    boolean handled = autoComplete.process(editor, statement, result);
+                    if (handled) {
+                        break;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

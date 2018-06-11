@@ -15,10 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal;
+package com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed;
 
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
+import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
 import com.duy.ide.javaide.editor.autocomplete.model.KeywordDescription;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class CompleteKeyword extends JavaCompleteMatcherImpl {
         Set<String> s = new HashSet<>(Arrays.asList(kws));
         KEYWORDS = Collections.unmodifiableSet(s);
     }
+
     @Override
     public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
         if (statement.contains(" ")) {

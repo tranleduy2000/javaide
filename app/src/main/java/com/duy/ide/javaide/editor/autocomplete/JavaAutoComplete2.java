@@ -26,15 +26,16 @@ import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
-import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteClassDeclared;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
-import com.duy.ide.javaide.editor.autocomplete.internal.CompleteKeyword;
-import com.duy.ide.javaide.editor.autocomplete.internal.CompleteNewKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage;
-import com.duy.ide.javaide.editor.autocomplete.internal.CompleteString;
+import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteThisKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.IJavaCompleteMatcher;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
+import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteClassDeclared;
+import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteKeyword;
+import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteNewKeyword;
+import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteString;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
 
 import java.io.File;
@@ -81,6 +82,7 @@ public class JavaAutoComplete2 implements SuggestionProvider {
         mJavaAutoCompletes.add(new CompletePackage(mJavaPackageManager));
         mJavaAutoCompletes.add(new CompleteString(mClassLoader));
         mJavaAutoCompletes.add(new CompleteClassDeclared(mClassLoader));
+        mJavaAutoCompletes.add(new CompleteThisKeyword(mJavaParser));
     }
 
     @Override

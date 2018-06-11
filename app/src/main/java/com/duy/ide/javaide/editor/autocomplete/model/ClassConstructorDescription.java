@@ -31,12 +31,12 @@ import java.lang.reflect.Constructor;
  * Created by Duy on 20-Jul-17.
  */
 
-public class ConstructorDescription extends JavaSuggestItemImpl {
+public class ClassConstructorDescription extends JavaSuggestItemImpl {
     private Constructor constructor;
     private String simpleName;
     private String packageName;
 
-    public ConstructorDescription(Constructor constructor) {
+    public ClassConstructorDescription(Constructor constructor) {
         this.constructor = constructor;
         this.simpleName = JavaUtil.getSimpleName(constructor.getName());
         this.packageName = JavaUtil.getPackageName(constructor.getName());

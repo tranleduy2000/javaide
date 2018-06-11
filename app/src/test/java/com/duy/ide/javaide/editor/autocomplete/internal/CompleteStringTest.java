@@ -17,6 +17,8 @@
 
 package com.duy.ide.javaide.editor.autocomplete.internal;
 
+import com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed.CompleteString;
+
 import junit.framework.TestCase;
 
 import java.util.regex.Matcher;

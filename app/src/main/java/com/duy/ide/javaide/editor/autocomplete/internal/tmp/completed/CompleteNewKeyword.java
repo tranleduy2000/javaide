@@ -15,14 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal;
+package com.duy.ide.javaide.editor.autocomplete.internal.tmp.completed;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
+import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
+import com.duy.ide.javaide.editor.autocomplete.model.ClassConstructorDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.PrimitiveArrayConstructorDescription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +35,11 @@ import java.util.regex.Pattern;
  * Suggest constructor
  */
 public class CompleteNewKeyword extends JavaCompleteMatcherImpl {
-    private static final Pattern NEW_CLASS =
-            Pattern.compile("(\\s*new\\s+)(" + CONSTRUCTOR.pattern() + ")$", Pattern.MULTILINE);
+    private static final Pattern NEW_CLASS = Pattern.compile(
+            "(\\s*new\\s+)(" + CONSTRUCTOR.pattern() + ")$", Pattern.MULTILINE);
+    private static final String[] PRIMITIVE_ARRAY_TYPE =
+            {"boolean", "byte", "double", "char", "float", "int", "long", "short"};
+
     private final JavaDexClassLoader mClassLoader;
 
     public CompleteNewKeyword(JavaDexClassLoader classLoader) {
@@ -46,8 +51,7 @@ public class CompleteNewKeyword extends JavaCompleteMatcherImpl {
         Matcher matcher = NEW_CLASS.matcher(statement);
         if (matcher.find()) {
             String incompleteCts = matcher.group(2);
-            getSuggestion(editor, incompleteCts, result);
-            return true;
+            return getSuggestionInternal(editor, incompleteCts, result);
         }
         return false;
     }
@@ -56,17 +60,35 @@ public class CompleteNewKeyword extends JavaCompleteMatcherImpl {
     public void getSuggestion(@NonNull Editor editor,
                               @NonNull String incomplete,
                               @NonNull List<SuggestItem> suggestItems) {
+        getSuggestionInternal(editor, incomplete, suggestItems);
+    }
+
+    private boolean getSuggestionInternal(@NonNull Editor editor, @NonNull String incomplete,
+                                          @NonNull List<SuggestItem> suggestItems) {
         if (incomplete.isEmpty()) {
-            return;
+            return false;
         }
 
+        boolean handled = false;
         //try to find constructor
         ArrayList<ClassDescription> classes = mClassLoader.findAllWithPrefix(incomplete);
         for (ClassDescription clazz : classes) {
-            ArrayList<ConstructorDescription> constructors = clazz.getConstructors();
+            ArrayList<ClassConstructorDescription> constructors = clazz.getConstructors();
             setInfo(constructors, editor, incomplete);
             suggestItems.addAll(constructors);
+            handled = true;
         }
+        for (String type : PRIMITIVE_ARRAY_TYPE) {
+            if (type.startsWith(incomplete)) {
+                PrimitiveArrayConstructorDescription c
+                        = new PrimitiveArrayConstructorDescription(type);
+                setInfo(c, editor, incomplete);
+                suggestItems.add(c);
+                handled = true;
+            }
+        }
+
+        return handled;
     }
 
 }

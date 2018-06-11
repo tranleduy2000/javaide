@@ -26,7 +26,7 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.data.Pair;
 import com.duy.common.interfaces.Filter;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.ClassConstructorDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 
@@ -203,7 +203,7 @@ public class JavaClassReader {
             ClassDescription classDesc = new ClassDescription(clazz.getSimpleName(), clazz.getName(), superclass, 0);
             for (Constructor constructor : clazz.getConstructors()) {
                 if (Modifier.isPublic(constructor.getModifiers())) {
-                    classDesc.addConstructor(new ConstructorDescription(constructor));
+                    classDesc.addConstructor(new ClassConstructorDescription(constructor));
                 }
             }
             for (Field field : clazz.getDeclaredFields()) {

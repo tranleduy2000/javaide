@@ -41,7 +41,7 @@ public class ClassDescription extends JavaSuggestItemImpl {
     private final String simpleName;
     private final String className;
     private final String packageName;
-    private final ArrayList<ConstructorDescription> constructors;
+    private final ArrayList<ClassConstructorDescription> constructors;
     private final ArrayList<FieldDescription> fields;
     private final ArrayList<MethodDescription> methods;
 
@@ -76,7 +76,7 @@ public class ClassDescription extends JavaSuggestItemImpl {
 
         for (Constructor constructor : value.getConstructors()) {
             if (Modifier.isPublic(constructor.getModifiers())) {
-                addConstructor(new ConstructorDescription(constructor));
+                addConstructor(new ClassConstructorDescription(constructor));
             }
         }
         for (Field field : value.getDeclaredFields()) {
@@ -151,7 +151,7 @@ public class ClassDescription extends JavaSuggestItemImpl {
         return packageName;
     }
 
-    public ArrayList<ConstructorDescription> getConstructors() {
+    public ArrayList<ClassConstructorDescription> getConstructors() {
         return constructors;
     }
 
@@ -159,7 +159,7 @@ public class ClassDescription extends JavaSuggestItemImpl {
         return fields;
     }
 
-    public void addConstructor(ConstructorDescription constructorDescription) {
+    public void addConstructor(ClassConstructorDescription constructorDescription) {
         this.constructors.add(constructorDescription);
     }
 
@@ -183,7 +183,7 @@ public class ClassDescription extends JavaSuggestItemImpl {
     @SuppressWarnings("ConstantConditions")
     public ArrayList<SuggestItem> getMember(String prefix) {
         ArrayList<SuggestItem> result = new ArrayList<>();
-        for (ConstructorDescription constructor : constructors) {
+        for (ClassConstructorDescription constructor : constructors) {
             if (!prefix.isEmpty()) {
                 if (constructor.getName().startsWith(prefix)) {
                     result.add(constructor);

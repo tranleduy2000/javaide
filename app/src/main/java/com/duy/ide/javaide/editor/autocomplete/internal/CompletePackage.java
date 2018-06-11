@@ -80,11 +80,11 @@ public class CompletePackage extends JavaCompleteMatcherImpl {
 
     @Override
     public void getSuggestion(Editor editor, String expr, List<SuggestItem> suggestItems) {
-        getSuggestionImpl(editor, expr, suggestItems, false);
+        getSuggestionInternal(editor, expr, suggestItems, false);
     }
 
-    private void getSuggestionImpl(Editor editor, String expr, List<SuggestItem> suggestItems,
-                                   boolean addSemicolon) {
+    private void getSuggestionInternal(Editor editor, String expr, List<SuggestItem> suggestItems,
+                                       boolean addSemicolon) {
 
         //package must be contains dot (.)
         if (!expr.contains(".")) {

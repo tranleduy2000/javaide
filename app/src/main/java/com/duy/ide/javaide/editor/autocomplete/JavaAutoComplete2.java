@@ -43,27 +43,17 @@ import java.util.ArrayList;
 
 
 public class JavaAutoComplete2 implements SuggestionProvider {
-    /**
-     * Support complete java constructor
-     */
-    private final CompleteNewKeyword mCompleteNewKeyword;
-    private final CompleteClassMember mCompleteClassMember;
-    private final CompletePackage mCompletePackage;
     private final ArrayList<IJavaCompleteMatcher> mJavaAutoCompletes = new ArrayList<>();
     private JavaDexClassLoader mClassLoader;
     private JavaPackageManager mJavaPackageManager;
     private PackageImporter mPackageImporter;
     private JavaParser mJavaParser;
-    private String statement = ""; //statement before cursor
 
     public JavaAutoComplete2(Context context) {
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
         mClassLoader = new JavaDexClassLoader(Environment.getClasspathFile(context), outDir);
         mJavaPackageManager = new JavaPackageManager();
         mJavaParser = new JavaParser();
-        mCompleteNewKeyword = new CompleteNewKeyword(mClassLoader);
-        mCompleteClassMember = new CompleteClassMember(mClassLoader);
-        mCompletePackage = new CompletePackage(mJavaPackageManager);
 
         addAutoComplete();
     }

@@ -73,7 +73,7 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
     }
 
     @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) throws Exception {
+    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
         return getSuggestionInternal(editor, statement, result);
     }
 
@@ -89,6 +89,9 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
     }
 
     private boolean getKeyword(Editor editor, String incomplete, List<SuggestItem> suggestItems) {
+        if (incomplete.trim().isEmpty()) {
+            return false;
+        }
         boolean found = false;
         for (String keyword : KEYWORDS) {
             if (keyword.startsWith(incomplete) && !keyword.equals(incomplete)) {
@@ -103,7 +106,7 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
 
     private boolean getPossibleInCurrentFile(@NonNull Editor editor, @NonNull String incomplete,
                                              @NonNull List<SuggestItem> suggestItems) {
-        if (incomplete.endsWith(" ")) {
+        if (incomplete.trim().isEmpty()) {
             return false;
         }
         JCTree.JCCompilationUnit ast;
@@ -113,20 +116,19 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
             if (DLog.DEBUG) DLog.d(TAG, "process: can not parse");
             return false;
         }
-        ArrayList<SuggestItem> result = new ArrayList<>();
         //parse current file
-        getPossibleResult(editor, result, ast, incomplete);
+        getPossibleResult(editor, suggestItems, ast, incomplete);
 
         //find all class start with incomplete
         ArrayList<? extends SuggestItem> classes = mClassLoader.findAllWithPrefix(incomplete);
 
         setInfo(classes, editor, incomplete);
-        result.addAll(classes);
+        suggestItems.addAll(classes);
 
         return classes.size() > 0;
     }
 
-    private void getPossibleResult(Editor editor, ArrayList<SuggestItem> result,
+    private void getPossibleResult(Editor editor, List<SuggestItem> result,
                                    JCTree.JCCompilationUnit ast, String incomplete) {
         if (ast == null) {
             return;
@@ -157,7 +159,7 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
         }
     }
 
-    private void collectFromMethod(Editor editor, String incomplete, ArrayList<SuggestItem> result,
+    private void collectFromMethod(Editor editor, String incomplete, List<SuggestItem> result,
                                    JCTree.JCMethodDecl method) {
         //add field from start position of method to the cursor
         com.sun.tools.javac.util.List<JCTree.JCStatement> statements

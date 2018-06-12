@@ -41,16 +41,17 @@ import static com.sun.tools.javac.tree.JCTree.JCTypeParameter;
 import static com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 
 public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
-    private static final Pattern THIS_DOT = Pattern.compile("this\\s*\\.\\s*$");
-    private static final Pattern THIS_DOT_EXPR = Pattern.compile("this\\s*\\.\\s*(" + Patterns.IDENTIFIER.pattern() + ")$");
-    private static final String TAG = "CompleteThisAndSuperKey";
+    private static final Pattern THIS_DOT = Pattern.compile("(\\W)this\\s*\\.\\s*$");
+    private static final Pattern THIS_DOT_EXPR = Pattern.compile("\\Wthis\\s*\\.\\s*(" + Patterns.IDENTIFIER.pattern() + ")$");
+    private static final String TAG = "CompleteThisKeyword";
     private JavaParser mJavaParser;
 
     public CompleteThisKeyword(JavaParser javaParser) {
         this.mJavaParser = javaParser;
     }
 
-    protected static void addNonStaticMethods(JCMethodDecl method, Editor editor, String incomplete, ArrayList<SuggestItem> result) {
+    protected static void addNonStaticMethods(JCMethodDecl method, Editor editor, String incomplete,
+                                              List<SuggestItem> result) {
         if ((method.getModifiers().flags & STATIC) != 0) {
             if (DLog.DEBUG) DLog.d(TAG, "addNonStaticMethods: static method");
             return;
@@ -73,7 +74,7 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
     }
 
     protected static void addNonStaticVariable(JCVariableDecl member, Editor editor, String incomplete,
-                                               ArrayList<SuggestItem> result) {
+                                               List<SuggestItem> result) {
         JCVariableDecl field = member;
         if ((field.getModifiers().flags & STATIC) != 0) {
             if (DLog.DEBUG) DLog.d(TAG, "addNonStaticVariable: static variable");

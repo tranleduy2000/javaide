@@ -222,6 +222,9 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
                 return field;
             }
         }
+        if (getSuperclass() != null) {
+            return getSuperclass().getField(name);
+        }
         return null;
     }
 

@@ -20,9 +20,9 @@ package com.duy.ide.javaide.editor.autocomplete.model;
 import android.support.annotation.NonNull;
 
 import com.duy.ide.editor.view.IEditAreaView;
-import com.duy.ide.javaide.editor.autocomplete.dex.IClass;
-import com.duy.ide.javaide.editor.autocomplete.dex.IField;
-import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
+import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
+import com.duy.ide.javaide.editor.autocomplete.parser.IField;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassReader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

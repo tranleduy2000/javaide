@@ -19,10 +19,10 @@ package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.duy.ide.javaide.editor.autocomplete.dex.IClass;
-import com.duy.ide.javaide.editor.autocomplete.dex.IField;
-import com.duy.ide.javaide.editor.autocomplete.dex.IMethod;
-import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
+import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
+import com.duy.ide.javaide.editor.autocomplete.parser.IField;
+import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.utils.DLog;
 import com.sun.tools.javac.tree.JCTree;
 
@@ -52,9 +52,8 @@ public class TypeResolver {
         this.mUnit = unit;
     }
 
-    public void resolveType(@NonNull JCExpression expression) {
-
-        resolveTypeImpl(expression);
+    public IClass resolveType(@NonNull JCExpression expression) {
+        return resolveTypeImpl(expression);
     }
 
     @Nullable
@@ -98,15 +97,20 @@ public class TypeResolver {
 
                 // TODO: 13-Jun-18 find method in current class or import static
                 JCMethodInvocation jcMethod = (JCMethodInvocation) tree;
-                String methodName = jcMethod.getMethodSelect().toString();
+                JCExpression methodSelect = jcMethod.getMethodSelect();
+                if (methodSelect instanceof JCFieldAccess) {
+                    String methodName = ((JCFieldAccess) methodSelect).getIdentifier().toString();
 //                List<JCExpression> arguments = jcMethod.getArguments();
 //                IClass[] types = new IClass[arguments.size()];
-                // TODO: 13-Jun-18 support arg types
-                IMethod method = currentType.getMethod(methodName, null);
-                if (method == null) {
+                    // TODO: 13-Jun-18 support arg types
+                    IMethod method = currentType.getMethod(methodName, null);
+                    if (method == null) {
+                        throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
+                    }
+                    currentType = method.getMethodReturnType();
+                } else {
                     throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
                 }
-                currentType = method.getMethodReturnType();
             } else if (tree instanceof JCFieldAccess) {
                 if (currentType == null) {
                     throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
@@ -122,7 +126,7 @@ public class TypeResolver {
         }
 
         System.out.println("currentType = " + currentType);
-        return null;
+        return currentType;
     }
 
     private void throwCanNotResolveType(JCTree tree) {

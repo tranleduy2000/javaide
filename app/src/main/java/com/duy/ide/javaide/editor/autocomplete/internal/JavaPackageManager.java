@@ -22,7 +22,7 @@ import android.util.Log;
 
 import com.android.annotations.Nullable;
 import com.duy.android.compiler.project.JavaProject;
-import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
 
 import java.io.File;

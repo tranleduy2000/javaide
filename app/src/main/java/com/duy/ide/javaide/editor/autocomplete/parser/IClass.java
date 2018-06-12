@@ -15,10 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.dex;
+package com.duy.ide.javaide.editor.autocomplete.parser;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
+import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
+
+import java.util.ArrayList;
 
 public interface IClass {
     int getModifiers();
@@ -38,4 +42,8 @@ public interface IClass {
 
     @Nullable
     IField getField(@NonNull String name);
+
+    ArrayList<MethodDescription> getMethods();
+
+    ArrayList<FieldDescription> getFields();
 }

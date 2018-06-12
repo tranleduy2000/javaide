@@ -15,25 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.dex;
+package com.duy.ide.javaide.editor.autocomplete.parser;
 
-import com.duy.ide.javaide.editor.autocomplete.dex.wrapper.ClassWrapper;
+import com.android.annotations.NonNull;
 
-public class TypeConverter {
+public interface IMethod {
+    @NonNull
+    String getMethodName();
 
-    public static Class[] toClasses(IClass[] types) {
-        Class[] classes = new Class[types.length];
-        for (int i = 0; i < types.length; i++) {
-            classes[i] = types[i].getClass();
-        }
-        return classes;
-    }
+    @NonNull
+    IClass getMethodReturnType();
 
-    public static IClass[] toIClass(Class[] classes) {
-        IClass[] result = new IClass[classes.length];
-        for (int i = 0; i < classes.length; i++) {
-            result[i] = new ClassWrapper(classes[i]);
-        }
-        return result;
-    }
+    @NonNull
+    IClass[] getMethodParameterTypes();
+
+    int getModifiers();
 }

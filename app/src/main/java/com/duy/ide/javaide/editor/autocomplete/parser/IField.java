@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.dex;
+package com.duy.ide.javaide.editor.autocomplete.parser;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;

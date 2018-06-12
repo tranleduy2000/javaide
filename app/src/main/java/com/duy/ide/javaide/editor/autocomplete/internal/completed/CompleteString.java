@@ -19,8 +19,8 @@ package com.duy.ide.javaide.editor.autocomplete.internal.completed;
 
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
-import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassReader;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.utils.DLog;

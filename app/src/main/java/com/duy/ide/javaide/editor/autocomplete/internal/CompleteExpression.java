@@ -21,7 +21,10 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
+import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
+import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
 import com.duy.ide.javaide.utils.DLog;
 import com.sun.tools.javac.tree.JCTree;
@@ -84,26 +87,22 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
                 return false;
             }
 
-            analyse(expr.getExpression());
-            performComplete();
+            return performComplete(expr.getExpression(), result);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    private void performComplete() {
-
-    }
-
-    private void analyse(JCExpression jcExpression) {
+    private boolean performComplete(JCExpression jcExpression, ArrayList<SuggestItem> result) {
         if (DLog.DEBUG) DLog.d(TAG, "analyse: class = " + jcExpression.getClass());
         if (jcExpression instanceof JCErroneous) {
-            analyseErroneous((JCErroneous) jcExpression);
+            return analyseErroneous((JCErroneous) jcExpression, result);
         }
+        return false;
     }
 
-    private void analyseErroneous(JCErroneous jcErroneous) {
+    private boolean analyseErroneous(JCErroneous jcErroneous, ArrayList<SuggestItem> result) {
         System.out.println("CompleteExpression.analyseErroneous");
         List<? extends JCTree> errorTrees = jcErroneous.getErrorTrees();
         JCTree tree = errorTrees.get(0);
@@ -111,13 +110,37 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         //s.toLower, incomplete method but give JCFieldAccess
         if (tree instanceof JCFieldAccess) {
             JCFieldAccess jcFieldAccess = (JCFieldAccess) tree;
-            String incomplete = jcFieldAccess.getIdentifier().toString();
+            int startPosition = jcFieldAccess.getStartPosition();
+            String expressionString = jcFieldAccess.toString();
+            String incomplete = expressionString
+                    .substring(
+                            expressionString.length() - jcFieldAccess.getIdentifier().length(),
+                            mCursor - startPosition);
+            if (DLog.DEBUG) DLog.d(TAG, "incomplete = " + incomplete);
+
             JCExpression expression = jcFieldAccess.getExpression();
-            new TypeResolver(mClassLoader, mAst).resolveType(expression);
+            IClass type = new TypeResolver(mClassLoader, mAst).resolveType(expression);
+            if (type != null) {
+                ArrayList<MethodDescription> methods = type.getMethods();
+                for (MethodDescription method : methods) {
+                    if (method.getMethodName().startsWith(incomplete)) {
+                        result.add(method);
+                    }
+                }
+                ArrayList<FieldDescription> fields = type.getFields();
+                for (FieldDescription field : fields) {
+                    if (field.getFieldName().startsWith(incomplete)) {
+                        result.add(field);
+                    }
+                }
+
+                return true;
+            }
         }
         //s.toLower|Ca(), complete expression but wrong name
         else if (tree instanceof JCTree.JCMethodInvocation) {
         }
+        return false;
     }
 
     private void resolveType(JCCompilationUnit mAst, JCExpression expression) {

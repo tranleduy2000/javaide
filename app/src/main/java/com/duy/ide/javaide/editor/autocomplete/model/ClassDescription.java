@@ -24,10 +24,10 @@ import com.android.annotations.Nullable;
 import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.view.IEditAreaView;
-import com.duy.ide.javaide.editor.autocomplete.dex.IClass;
-import com.duy.ide.javaide.editor.autocomplete.dex.IField;
-import com.duy.ide.javaide.editor.autocomplete.dex.IMethod;
-import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
+import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
+import com.duy.ide.javaide.editor.autocomplete.parser.IField;
+import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 

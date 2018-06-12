@@ -34,6 +34,7 @@ import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
 import com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory;
 import com.duy.ide.javaide.editor.autocomplete.internal.Patterns;
+import com.duy.ide.javaide.editor.autocomplete.internal.StatementParser;
 import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteNewKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompletePackage;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
@@ -41,7 +42,6 @@ import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.JavaSuggestItemImpl;
 import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
-import com.duy.ide.javaide.editor.autocomplete.util.EditorUtil;
 import com.google.common.collect.Lists;
 import com.sun.tools.javac.tree.JCTree;
 
@@ -129,43 +129,6 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         mCompleteNewKeyword = new CompleteNewKeyword(mClassLoader);
         mCompleteClassMember = new CompleteClassMember(mClassLoader);
         mCompletePackage = new CompletePackage(mJavaPackageManager);
-    }
-
-    private static boolean not(boolean b) {
-        return !b;
-    }
-
-    public static String mergeLine(String statement) {
-        statement = cleanStatement(statement);
-        return statement;
-    }
-
-    public static String getCurrentLine(Editor editText) {
-        return EditorUtil.getLineBeforeCursor(editText, editText.getCursor());
-    }
-
-    /**
-     * set string literal empty, remove comments, trim begining or ending spaces
-     * case: ' 	sb. /* block comment"/ append( "stringliteral" ) // comment '
-     * return 'sb.append("")'
-     */
-    private static String cleanStatement(String code) {
-        if (code.matches("\\s*")) {
-            return "";
-        }
-        code = removeComment(code); //clear all comment
-        //clear all string content
-        code = code.replaceAll(Patterns.STRINGS.toString(), "\"\"");
-        code = EditorUtil.trimLeft(code);
-        code = code.replaceAll("[\n\t\r]", "");
-        return code;
-    }
-
-    /**
-     * remove all comment
-     */
-    private static String removeComment(String code) {
-        return code.replaceAll(Patterns.JAVA_COMMENTS.toString(), "");
     }
 
     private void resolveContextType(Editor editor, String statement) {
@@ -836,23 +799,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
      */
     @NonNull
     private String getStatement(Editor editor) {
-        String lineBeforeCursor = getCurrentLine(editor);
-        if (lineBeforeCursor.matches("^\\s*(import|package)\\s+")) {
-            return lineBeforeCursor;
-        }
-        int oldCursor = editor.getCursor();
-        int newCursor = oldCursor;
-        while (true) {
-            if (newCursor == 0) break;
-            char c = editor.getText().charAt(newCursor);
-            if (c == '{' || c == '}' || c == ';') {
-                newCursor++;
-                break;
-            }
-            newCursor--;
-        }
-        String statement = editor.getText().subSequence(newCursor, oldCursor).toString();
-        return mergeLine(statement);
+        return new StatementParser().resolveStatementFromCursor(editor);
     }
 
     public void load(JavaProject projectFile) {

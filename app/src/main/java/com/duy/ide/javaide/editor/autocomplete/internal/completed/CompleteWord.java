@@ -74,7 +74,7 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
 
     @Override
     public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) throws Exception {
-        return false;
+        return getSuggestionInternal(editor, statement, result);
     }
 
     @Override

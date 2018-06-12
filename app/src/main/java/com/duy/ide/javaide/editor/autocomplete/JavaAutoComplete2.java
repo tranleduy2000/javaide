@@ -19,7 +19,6 @@ package com.duy.ide.javaide.editor.autocomplete;
 
 import android.content.Context;
 
-import com.android.annotations.NonNull;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.ide.code.api.SuggestItem;
@@ -27,22 +26,21 @@ import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
-import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompletePackage;
-import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteThisKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.IJavaCompleteMatcher;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
+import com.duy.ide.javaide.editor.autocomplete.internal.StatementParser;
 import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteClassDeclared;
-import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteNewKeyword;
+import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompletePackage;
 import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteString;
+import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteThisKeyword;
+import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteWord;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import static com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider.getCurrentLine;
-import static com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider.mergeLine;
 
 public class JavaAutoComplete2 implements SuggestionProvider {
     /**
@@ -78,11 +76,11 @@ public class JavaAutoComplete2 implements SuggestionProvider {
     private void addAutoComplete() {
         mJavaAutoCompletes.add(new CompleteClassMember(mClassLoader));
         mJavaAutoCompletes.add(new CompleteNewKeyword(mClassLoader));
-        mJavaAutoCompletes.add(new CompleteKeyword());
         mJavaAutoCompletes.add(new CompletePackage(mJavaPackageManager));
         mJavaAutoCompletes.add(new CompleteString(mClassLoader));
         mJavaAutoCompletes.add(new CompleteClassDeclared(mClassLoader));
         mJavaAutoCompletes.add(new CompleteThisKeyword(mJavaParser));
+        mJavaAutoCompletes.add(new CompleteWord(mJavaParser, mClassLoader));
     }
 
     @Override
@@ -90,7 +88,7 @@ public class JavaAutoComplete2 implements SuggestionProvider {
         ArrayList<SuggestItem> result = new ArrayList<>();
         try {
 
-            String statement = getStatement(editor);
+            String statement = StatementParser.resolveStatementFromCursor(editor);
             for (IJavaCompleteMatcher autoComplete : mJavaAutoCompletes) {
                 try {
                     boolean handled = autoComplete.process(editor, statement, result);
@@ -105,31 +103,5 @@ public class JavaAutoComplete2 implements SuggestionProvider {
             e.printStackTrace();
         }
         return result;
-    }
-
-    /**
-     * " Search back from the cursor position till meeting '{' or ';'.
-     * " '{' means statement start, ';' means end of a previous statement.
-     *
-     * @return statement before cursor
-     * " Note: It's the base for parsing. And It's OK for most cases.
-     */
-    @NonNull
-    private String getStatement(Editor editor) {
-        String lineBeforeCursor = getCurrentLine(editor);
-        if (lineBeforeCursor.matches("^\\s*(import|package)\\s+")) {
-            return lineBeforeCursor;
-        }
-        int oldCursor = editor.getCursor();
-        int newCursor;
-        for (newCursor = oldCursor - 1; newCursor > 0; newCursor--) {
-            char c = editor.getText().charAt(newCursor);
-            if (c == '{' || c == '}' || c == ';') {
-                newCursor++;
-                break;
-            }
-        }
-        String statement = editor.getText().subSequence(newCursor, oldCursor).toString();
-        return mergeLine(statement);
     }
 }

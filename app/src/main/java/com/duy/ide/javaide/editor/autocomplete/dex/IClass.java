@@ -15,7 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal;
+package com.duy.ide.javaide.editor.autocomplete.dex;
 
-public class CompleteClassName {
+public interface IClass {
+    String getFullClassName();
+
+    String getSimpleName();
 }

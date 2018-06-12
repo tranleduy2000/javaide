@@ -26,6 +26,7 @@ import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
 import com.duy.ide.javaide.utils.DLog;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
+import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
 import com.sun.tools.javac.tree.JCTree.JCSynchronized;
 
 import java.util.ArrayList;
@@ -34,9 +35,11 @@ import java.util.Map;
 
 import static com.sun.tools.javac.tree.JCTree.JCBlock;
 import static com.sun.tools.javac.tree.JCTree.JCCase;
+import static com.sun.tools.javac.tree.JCTree.JCCatch;
 import static com.sun.tools.javac.tree.JCTree.JCClassDecl;
 import static com.sun.tools.javac.tree.JCTree.JCDoWhileLoop;
 import static com.sun.tools.javac.tree.JCTree.JCEnhancedForLoop;
+import static com.sun.tools.javac.tree.JCTree.JCErroneous;
 import static com.sun.tools.javac.tree.JCTree.JCExpression;
 import static com.sun.tools.javac.tree.JCTree.JCExpressionStatement;
 import static com.sun.tools.javac.tree.JCTree.JCForLoop;
@@ -81,29 +84,43 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
                 return false;
             }
 
-            JCExpression jcExpression = expr.getExpression();
-
-            analyse(expr);
+            analyse(expr.getExpression());
+            performComplete();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    private void debug(Expression expression) {
-//        if (DLog.DEBUG) {
-//            DLog.d(TAG, "expression = " + expression);
-//        }
-//
-//        LinkedList<JCTree> parents = expression.getParentOfExpression();
-//        for (JCTree tree : parents) {
-//            if (DLog.DEBUG) {
-//                DLog.d(TAG, "tree = " + tree);
-//            }
-//        }
+    private void performComplete() {
+
     }
 
-    private void analyse(Expression statement) {
+    private void analyse(JCExpression jcExpression) {
+        if (DLog.DEBUG) DLog.d(TAG, "analyse: class = " + jcExpression.getClass());
+        if (jcExpression instanceof JCErroneous) {
+            analyseErroneous((JCErroneous) jcExpression);
+        }
+    }
+
+    private void analyseErroneous(JCErroneous jcErroneous) {
+        System.out.println("CompleteExpression.analyseErroneous");
+        com.sun.tools.javac.util.List<? extends JCTree> errorTrees = jcErroneous.getErrorTrees();
+        JCTree tree = errorTrees.get(0);
+
+        //s.toLower, incomplete method but give JCFieldAccess
+        if (tree instanceof JCFieldAccess) {
+            JCFieldAccess jcFieldAccess = (JCFieldAccess) tree;
+            String incomplete = jcFieldAccess.getIdentifier().toString();
+            JCExpression expression = jcFieldAccess.getExpression();
+            new TypeResolver(mClassLoader, mAst).resolveType(expression);
+        }
+        //s.toLower|Ca(), complete expression but wrong name
+        else if (tree instanceof JCTree.JCMethodInvocation) {
+        }
+    }
+
+    private void resolveType(JCCompilationUnit mAst, JCExpression expression) {
 
     }
 
@@ -286,8 +303,8 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
                 return addRootIfNeeded(jcTry, result);
             }
 
-            com.sun.tools.javac.util.List<JCTree.JCCatch> catches = jcTry.getCatches();
-            for (JCTree.JCCatch aCatch : catches) {
+            com.sun.tools.javac.util.List<JCCatch> catches = jcTry.getCatches();
+            for (JCCatch aCatch : catches) {
                 JCVariableDecl parameter = aCatch.getParameter();
                 result = getExpressionFromStatement(parameter);
                 if (result == null) {

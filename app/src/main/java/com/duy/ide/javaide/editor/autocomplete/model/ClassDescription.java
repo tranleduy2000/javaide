@@ -23,6 +23,7 @@ import android.text.Editable;
 import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.view.IEditAreaView;
+import com.duy.ide.javaide.editor.autocomplete.dex.IClass;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
@@ -36,7 +37,7 @@ import java.util.ArrayList;
  * Created by Duy on 20-Jul-17.
  */
 
-public class ClassDescription extends JavaSuggestItemImpl {
+public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     private static final String TAG = "ClassDescription";
     private final String simpleName;
     private final String className;
@@ -126,7 +127,7 @@ public class ClassDescription extends JavaSuggestItemImpl {
             Editable editable = editorView.getEditableText();
             editable.delete(start, editorView.getSelectionStart());
             editable.insert(start, getSimpleName());
-            PackageImporter.importClass(editable, getClassName());
+            PackageImporter.importClass(editable, getFullClassName());
 
             if (DLog.DEBUG) DLog.d(TAG, "onSelectThis: import class " + this);
         } catch (Exception e) {
@@ -135,11 +136,11 @@ public class ClassDescription extends JavaSuggestItemImpl {
     }
 
 
-    public final String getSimpleName() {
+    public String getSimpleName() {
         return simpleName;
     }
 
-    public final String getClassName() {
+    public String getFullClassName() {
         return className;
     }
 

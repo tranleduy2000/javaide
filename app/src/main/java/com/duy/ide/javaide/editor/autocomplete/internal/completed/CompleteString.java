@@ -31,9 +31,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CompleteString extends JavaCompleteMatcherImpl {
-    static final Pattern STRING_DOT =
+    public static final Pattern STRING_DOT =
             Pattern.compile("\"\\s*\\.\\s*$", Pattern.MULTILINE);
-    static final Pattern STRING_DOT_EXPR
+    public static final Pattern STRING_DOT_EXPR
             = Pattern.compile("\"\\s*\\.\\s*(" + METHOD_NAME.pattern() + ")$");
     private static final String TAG = "CompleteString";
     private final JavaDexClassLoader mClassLoader;

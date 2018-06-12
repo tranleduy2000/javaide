@@ -17,23 +17,23 @@
 
 package com.duy.ide.javaide.editor.autocomplete.internal;
 
-import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteClassDeclared;
+import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteTypeDeclared;
 
 import junit.framework.TestCase;
 
 import static com.duy.ide.javaide.editor.autocomplete.internal.Patterns.TYPE_DECLARE_MODIFIERS;
 
-public class CompleteClassDeclaredTest extends TestCase {
+public class CompleteTypeDeclaredTest extends TestCase {
 
     public void test1() {
         boolean matches = "public class CompleteClassDeclaredTest extends TestCase"
-                .matches(CompleteClassDeclared.CLASS_DECLARE.pattern());
+                .matches(CompleteTypeDeclared.CLASS_DECLARE.pattern());
         assertTrue(matches);
     }
 
     public void test2() {
         boolean matches = "public class CompleteClassDeclaredTest"
-                .matches(CompleteClassDeclared.CLASS_DECLARE.pattern());
+                .matches(CompleteTypeDeclared.CLASS_DECLARE.pattern());
         assertTrue(matches);
     }
 

@@ -34,7 +34,7 @@ public class StatementParser {
             return lineBeforeCursor;
         }
         int oldCursor = editor.getCursor();
-        int newCursor = oldCursor;
+        int newCursor = oldCursor - 1;
         while (true) {
             if (newCursor == 0) break;
             char c = editor.getText().charAt(newCursor);

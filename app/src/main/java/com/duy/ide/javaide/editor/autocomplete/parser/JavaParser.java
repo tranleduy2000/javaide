@@ -80,13 +80,13 @@ public class JavaParser {
         };
         Log.instance(context).useSource(source);
         Parser parser = parserFactory.newParser(src,
-            /*keepDocComments=*/ true,
-            /*keepEndPos=*/ true,
-            /*keepLineMap=*/ true);
+                /*keepDocComments=*/ true,
+                /*keepEndPos=*/ true,
+                /*keepLineMap=*/ true);
         JCTree.JCCompilationUnit unit;
         unit = parser.parseCompilationUnit();
         unit.sourcefile = source;
-        android.util.Log.d(TAG, "parse: time " + (System.currentTimeMillis() - time) + " ms");
+        System.out.println(TAG + " parse: time " + (System.currentTimeMillis() - time) + " ms");
         return unit;
     }
 

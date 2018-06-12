@@ -40,11 +40,11 @@ import java.util.regex.Pattern;
  * public? enum Name
  * public? final? interface Name (extends otherInterfaces)?
  */
-public class CompleteClassDeclared extends JavaCompleteMatcherImpl {
+public class CompleteTypeDeclared extends JavaCompleteMatcherImpl {
     //case: public class A
     //case: public class Name extends OtherClass
     //case: class Name extends C implements D
-    static final Pattern CLASS_DECLARE = Pattern.compile(
+    public static final Pattern CLASS_DECLARE = Pattern.compile(
             //more modifiers, public static final ....
             "((public|protected|private|abstract|static|final|strictfp)\\s+)*" +
                     //type
@@ -62,7 +62,7 @@ public class CompleteClassDeclared extends JavaCompleteMatcherImpl {
     private static final String TAG = "CompleteClassDeclared";
     private JavaDexClassLoader mClassLoader;
 
-    public CompleteClassDeclared(JavaDexClassLoader classLoader) {
+    public CompleteTypeDeclared(JavaDexClassLoader classLoader) {
 
         mClassLoader = classLoader;
     }

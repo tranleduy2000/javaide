@@ -134,6 +134,10 @@ public class EditorUtil {
         String text = editor.getText();
         while (start > 0 && text.charAt(start) != '\n') {
             start = start - 1;
+            if (start >= 0 && text.charAt(start) == '\n'){
+                start++;
+                break;
+            }
         }
         return editor.getText().substring(start, cursor - 1);
     }

@@ -25,6 +25,7 @@ import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.dex.IClass;
 import com.duy.ide.javaide.editor.autocomplete.dex.IMethod;
+import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Method;
@@ -43,19 +44,19 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
 
     public MethodDescription(String name, IClass returnType,
                              long modifiers, ArrayList<String> parameterTypes) {
-        this.mName = name;
-        this.mReturnType = returnType;
-        this.mModifiers = (int) modifiers;
-        this.mParameterTypes = parameterTypes;
+        mName = name;
+        mReturnType = returnType;
+        mModifiers = (int) modifiers;
+        mParameterTypes = parameterTypes;
     }
 
     public MethodDescription(@NonNull Method method) {
-        this.mName = method.getName();
-        this.mModifiers = method.getModifiers();
-        this.mReturnType = new ClassDescription(method.getReturnType());
+        mName = method.getName();
+        mModifiers = method.getModifiers();
+        mReturnType = JavaClassReader.getInstance().getClassWrapper(method.getReturnType());
         Class<?>[] parameterTypes = method.getParameterTypes();
         for (Class<?> parameterType : parameterTypes) {
-            this.mParameterTypes.add(parameterType.getName());
+            mParameterTypes.add(parameterType.getName());
         }
     }
 

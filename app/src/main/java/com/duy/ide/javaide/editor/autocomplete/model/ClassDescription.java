@@ -27,6 +27,7 @@ import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.dex.IClass;
 import com.duy.ide.javaide.editor.autocomplete.dex.IField;
 import com.duy.ide.javaide.editor.autocomplete.dex.IMethod;
+import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
@@ -53,34 +54,12 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
 
     public ClassDescription(Class c) {
         mClassName = c.getName();
-
-        if (c.getSuperclass() != null && !c.getSuperclass().equals(Object.class)) {
-            mSuperClass = new ClassDescription(c.getSuperclass());
+        if (c.getSuperclass() != null) {
+            mSuperClass = JavaClassReader.getInstance().getClassWrapper(c.getSuperclass());
         } else {
             mSuperClass = null;
         }
         mModifiers = c.getModifiers();
-
-        for (Constructor constructor : c.getConstructors()) {
-            if (Modifier.isPublic(constructor.getModifiers())) {
-                addConstructor(new ClassConstructorDescription(constructor));
-            }
-        }
-
-        for (Field field : c.getDeclaredFields()) {
-            if (Modifier.isPublic(field.getModifiers())) {
-                if (!field.getName().equals(field.getDeclaringClass().getName())) {
-                    addField(new FieldDescription(field));
-                }
-            }
-        }
-
-        for (Method method : c.getMethods()) {
-            if (Modifier.isPublic(method.getModifiers())) {
-                addMethod(new MethodDescription(method));
-            }
-        }
-
     }
 
     @Override
@@ -230,6 +209,9 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
                 return method;
             }
         }
+        if (getSuperclass() != null) {
+            return getSuperclass().getMethod(methodName, argsType);
+        }
         return null;
     }
 
@@ -241,5 +223,27 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
             }
         }
         return null;
+    }
+
+    public void initMembers(Class c) {
+        for (Constructor constructor : c.getConstructors()) {
+            if (Modifier.isPublic(constructor.getModifiers())) {
+                addConstructor(new ClassConstructorDescription(constructor));
+            }
+        }
+
+        for (Field field : c.getDeclaredFields()) {
+            if (Modifier.isPublic(field.getModifiers())) {
+                if (!field.getName().equals(field.getDeclaringClass().getName())) {
+                    addField(new FieldDescription(field));
+                }
+            }
+        }
+
+        for (Method method : c.getMethods()) {
+            if (Modifier.isPublic(method.getModifiers())) {
+                addMethod(new MethodDescription(method));
+            }
+        }
     }
 }

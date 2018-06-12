@@ -54,7 +54,7 @@ public class JavaClassReader {
      * All classes sorted by simple class name
      */
     private final ArrayList<Pair<String, Class>> mSimpleClasses = new ArrayList<>();
-    private final HashMap<String, ClassDescription> mCache = new HashMap<>();
+    private final HashMap<String, ClassDescription> mLoaded = new HashMap<>();
 
     private boolean loaded = false;
     private File mClasspath;
@@ -74,6 +74,10 @@ public class JavaClassReader {
         if (INSTANCE == null) {
             INSTANCE = new JavaClassReader(classpath, tempDir);
         }
+        return INSTANCE;
+    }
+
+    public static JavaClassReader getInstance() {
         return INSTANCE;
     }
 
@@ -195,8 +199,9 @@ public class JavaClassReader {
      * @param instance      - instant of full class name, can use {@link Class#forName(String)}
      */
     @Nullable
-    public ClassDescription readClassByName(String fullClassName, @Nullable Class instance) {
-        ClassDescription cache = mCache.get(fullClassName);
+    public ClassDescription readClassByName(String fullClassName,
+                                            @Nullable Class instance) {
+        ClassDescription cache = mLoaded.get(fullClassName);
         if (cache != null) {
             return cache;
         }
@@ -207,10 +212,24 @@ public class JavaClassReader {
         }
         if (clazz != null) {
             ClassDescription classDesc = new ClassDescription(clazz);
-            mCache.put(fullClassName, classDesc);
+            mLoaded.put(fullClassName, classDesc);
+            //careful, infinity loop if init member in cts
+            classDesc.initMembers(clazz);
             return classDesc;
         }
         return null;
+    }
+
+    @Nullable
+    public ClassDescription getClassWrapper(@NonNull Class clazz) {
+        ClassDescription cache = mLoaded.get(clazz.getName());
+        if (cache != null) {
+            return cache;
+        }
+        ClassDescription classDesc = new ClassDescription(clazz);
+        mLoaded.put(clazz.getName(), classDesc);
+        classDesc.initMembers(clazz);
+        return classDesc;
     }
 
     /**

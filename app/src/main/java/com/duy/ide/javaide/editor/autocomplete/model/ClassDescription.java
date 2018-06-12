@@ -24,11 +24,11 @@ import com.android.annotations.Nullable;
 import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.view.IEditAreaView;
+import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.IField;
 import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassReader;
-import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Constructor;
@@ -51,6 +51,7 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     @Nullable
     private final ClassDescription mSuperClass;
     private final int mModifiers;
+    private boolean mPrimitive;
 
     public ClassDescription(Class c) {
         mClassName = c.getName();
@@ -60,6 +61,7 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
             mSuperClass = null;
         }
         mModifiers = c.getModifiers();
+        mPrimitive = c.isPrimitive();
     }
 
     @Override
@@ -199,6 +201,11 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
         }
         return this.getSuperclass().getFullClassName()
                 .equals(java.lang.Enum.class.getName());
+    }
+
+    @Override
+    public boolean isPrimitive() {
+        return false;
     }
 
     @Override

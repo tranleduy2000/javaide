@@ -109,7 +109,7 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
                 result.append(",");
 
             }
-            result.append(parameterType);
+            result.append(JavaUtil.getSimpleName(parameterType));
         }
         return result.toString();
     }
@@ -121,7 +121,7 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
 
     @Override
     public String getReturnType() {
-        return mReturnType.getFullClassName();
+        return mReturnType.getSimpleName();
     }
 
     @Override

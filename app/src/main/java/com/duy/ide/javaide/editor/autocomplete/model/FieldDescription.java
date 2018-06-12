@@ -54,7 +54,7 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member, IFi
                 if (primitive) {
                     value = o.toString();
                 } else {
-                    value = o.getClass().getName();
+                    value = o.getClass().getSimpleName();
                 }
             } catch (Exception ignored) {
             }
@@ -88,7 +88,7 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member, IFi
 
     @Override
     public String getReturnType() {
-        return mType.toString();
+        return mType.getSimpleName();
     }
 
     @Override

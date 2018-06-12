@@ -35,7 +35,6 @@ public abstract class JavaSuggestItemImpl implements SuggestItem, Cloneable {
     public static final int CLASS_DESC = 2;
     public static final int OTHER_DESC = 3;
 
-    protected long lastUsed;
     private Editor editor;
     private String incomplete;
 

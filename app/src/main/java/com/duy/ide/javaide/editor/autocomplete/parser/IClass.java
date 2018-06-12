@@ -37,6 +37,8 @@ public interface IClass {
 
     boolean isEnum();
 
+    boolean isPrimitive();
+
     @Nullable
     IMethod getMethod(@NonNull String methodName, @Nullable IClass[] argsType);
 
@@ -46,4 +48,5 @@ public interface IClass {
     ArrayList<MethodDescription> getMethods();
 
     ArrayList<FieldDescription> getFields();
+
 }

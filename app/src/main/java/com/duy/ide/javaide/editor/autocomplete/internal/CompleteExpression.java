@@ -67,6 +67,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
     private Map<JCTree, Integer> mEndPositions;
     private JCCompilationUnit mAst;
     private int mCursor;
+    private Editor mEditor;
 
     public CompleteExpression(@NonNull JavaParser javaParser,
                               @NonNull JavaDexClassLoader classLoader) {
@@ -111,11 +112,13 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         if (tree instanceof JCFieldAccess) {
             JCFieldAccess jcFieldAccess = (JCFieldAccess) tree;
             int startPosition = jcFieldAccess.getStartPosition();
-            String expressionString = jcFieldAccess.toString();
-            String incomplete = expressionString
-                    .substring(
-                            expressionString.length() - jcFieldAccess.getIdentifier().length(),
-                            mCursor - startPosition);
+            int cursorOffset = mCursor - startPosition;
+            int incompleteLength = jcFieldAccess.getIdentifier().length();
+            String incomplete = jcFieldAccess.getIdentifier().toString();
+            //simple hack, improve later
+            if (incomplete.equals("<error>")) {
+                incomplete = "";
+            }
             if (DLog.DEBUG) DLog.d(TAG, "incomplete = " + incomplete);
 
             JCExpression expression = jcFieldAccess.getExpression();
@@ -124,12 +127,14 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
                 ArrayList<MethodDescription> methods = type.getMethods();
                 for (MethodDescription method : methods) {
                     if (method.getMethodName().startsWith(incomplete)) {
+                        setInfo(method, mEditor, incomplete);
                         result.add(method);
                     }
                 }
                 ArrayList<FieldDescription> fields = type.getFields();
                 for (FieldDescription field : fields) {
                     if (field.getFieldName().startsWith(incomplete)) {
+                        setInfo(methods, mEditor, incomplete);
                         result.add(field);
                     }
                 }
@@ -153,6 +158,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
     }
 
     public void prepare(Editor editor, JCCompilationUnit ast) {
+        mEditor = editor;
         mCursor = editor.getCursor();
         mAst = ast;
         mEndPositions = ast.endPositions;

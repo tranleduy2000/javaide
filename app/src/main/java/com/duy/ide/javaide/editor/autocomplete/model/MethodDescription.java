@@ -95,7 +95,23 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
 
     @Override
     public String getName() {
-        return mName;
+        return mName + "(" + paramsToString() + ")";
+    }
+
+    private String paramsToString() {
+        StringBuilder result = new StringBuilder();
+        boolean firstTime = true;
+        ArrayList<String> parameterTypes = getParameterTypes();
+        for (String parameterType : parameterTypes) {
+            if (firstTime) {
+                firstTime = false;
+            } else {
+                result.append(",");
+
+            }
+            result.append(parameterType);
+        }
+        return result.toString();
     }
 
     @Override

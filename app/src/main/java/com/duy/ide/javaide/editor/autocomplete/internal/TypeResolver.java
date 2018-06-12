@@ -129,10 +129,6 @@ public class TypeResolver {
         return currentType;
     }
 
-    private void throwCanNotResolveType(JCTree tree) {
-        throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
-    }
-
     @Nullable
     private List<JCTree> extractExpression(JCExpression expression) {
         JCTree last = expression;

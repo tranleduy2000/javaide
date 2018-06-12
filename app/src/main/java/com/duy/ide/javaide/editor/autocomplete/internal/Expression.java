@@ -18,9 +18,9 @@
 package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.util.List;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import static com.sun.tools.javac.tree.JCTree.JCExpression;
 

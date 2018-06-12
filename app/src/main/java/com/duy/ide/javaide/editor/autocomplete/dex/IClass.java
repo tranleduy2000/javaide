@@ -17,8 +17,25 @@
 
 package com.duy.ide.javaide.editor.autocomplete.dex;
 
+import com.android.annotations.NonNull;
+import com.android.annotations.Nullable;
+
 public interface IClass {
+    int getModifiers();
+
+    @Nullable
     String getFullClassName();
 
+    @Nullable
     String getSimpleName();
+
+    boolean isInterface();
+
+    boolean isEnum();
+
+    @Nullable
+    IMethod getMethod(@NonNull String methodName, @Nullable IClass[] argsType);
+
+    @Nullable
+    IField getField(@NonNull String name);
 }

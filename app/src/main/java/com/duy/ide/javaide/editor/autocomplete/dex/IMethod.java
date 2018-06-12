@@ -17,5 +17,17 @@
 
 package com.duy.ide.javaide.editor.autocomplete.dex;
 
+import com.android.annotations.NonNull;
+
 public interface IMethod {
+    @NonNull
+    String getMethodName();
+
+    @NonNull
+    IClass getMethodReturnType();
+
+    @NonNull
+    IClass[] getMethodParameterTypes();
+
+    int getModifiers();
 }

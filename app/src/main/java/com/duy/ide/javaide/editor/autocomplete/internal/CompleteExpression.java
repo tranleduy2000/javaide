@@ -105,7 +105,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
 
     private void analyseErroneous(JCErroneous jcErroneous) {
         System.out.println("CompleteExpression.analyseErroneous");
-        com.sun.tools.javac.util.List<? extends JCTree> errorTrees = jcErroneous.getErrorTrees();
+        List<? extends JCTree> errorTrees = jcErroneous.getErrorTrees();
         JCTree tree = errorTrees.get(0);
 
         //s.toLower, incomplete method but give JCFieldAccess
@@ -167,7 +167,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         Expression result;
         if (statement instanceof JCBlock) {
             JCBlock jcBlock = (JCBlock) statement;
-            com.sun.tools.javac.util.List<JCStatement> statements = jcBlock.getStatements();
+            List<JCStatement> statements = jcBlock.getStatements();
             return addRootIfNeeded(jcBlock/*root*/,
                     getExpressionFromStatements(statements));
 
@@ -205,7 +205,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
 
         } else if (statement instanceof JCForLoop) {
             JCForLoop jcForLoop = (JCForLoop) statement;
-            com.sun.tools.javac.util.List<JCStatement> initializer = jcForLoop.getInitializer();
+            List<JCStatement> initializer = jcForLoop.getInitializer();
             result = getExpressionFromStatements(initializer);
             if (result != null) {
                 return addRootIfNeeded(jcForLoop, result);
@@ -216,7 +216,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
                 return new Expression(jcForLoop, condition);
             }
 
-            com.sun.tools.javac.util.List<JCExpressionStatement> update = jcForLoop.getUpdate();
+            List<JCExpressionStatement> update = jcForLoop.getUpdate();
             result = getExpressionFromStatements(update);
             if (result != null) {
                 return addRootIfNeeded(jcForLoop, result);
@@ -265,13 +265,13 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
                 return new Expression(jcSwitch, jcExpression);
             }
 
-            com.sun.tools.javac.util.List<JCCase> jcCases = jcSwitch.getCases();
+            List<JCCase> jcCases = jcSwitch.getCases();
             for (JCCase jcCase : jcCases) {
                 JCExpression jcCaseExpression = jcCase.getExpression();
                 if (isCursorInsideTree(jcCaseExpression)) {
                     return new Expression(jcCase, jcCaseExpression);
                 }
-                com.sun.tools.javac.util.List<JCStatement> statements = jcCase.getStatements();
+                List<JCStatement> statements = jcCase.getStatements();
                 result = getExpressionFromStatements(statements);
                 if (result != null) {
                     return result;
@@ -303,7 +303,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
                 return addRootIfNeeded(jcTry, result);
             }
 
-            com.sun.tools.javac.util.List<JCCatch> catches = jcTry.getCatches();
+            List<JCCatch> catches = jcTry.getCatches();
             for (JCCatch aCatch : catches) {
                 JCVariableDecl parameter = aCatch.getParameter();
                 result = getExpressionFromStatement(parameter);
@@ -353,7 +353,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         }
         Expression expression = null;
         //members of class: methods, field, inner class
-        com.sun.tools.javac.util.List<JCTree> members = tree.getMembers();
+        List<JCTree> members = tree.getMembers();
         for (JCTree member : members) {
             if (member instanceof JCMethodDecl) {
                 expression = getExpressionFromMethod((JCMethodDecl) member);
@@ -378,7 +378,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         System.out.println("CompleteExpression.getExpressionFromMethod");
 
         Expression expression;
-        com.sun.tools.javac.util.List<JCVariableDecl> parameters = method.getParameters();
+        List<JCVariableDecl> parameters = method.getParameters();
 
         for (JCVariableDecl parameter : parameters) {
             expression = getExpressionFromStatement(parameter);
@@ -395,7 +395,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
 
     @Nullable
     private Expression getExpressionFromStatements(
-            @NonNull com.sun.tools.javac.util.List<? extends JCStatement> statements) {
+            @NonNull List<? extends JCStatement> statements) {
         for (JCStatement statement : statements) {
             Expression expression = getExpressionFromStatement(statement);
             if (expression != null) {

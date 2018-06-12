@@ -20,6 +20,8 @@ package com.duy.ide.javaide.editor.autocomplete.internal;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.ide.javaide.editor.autocomplete.dex.IClass;
+import com.duy.ide.javaide.editor.autocomplete.dex.IField;
+import com.duy.ide.javaide.editor.autocomplete.dex.IMethod;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
 import com.duy.ide.javaide.utils.DLog;
 import com.sun.tools.javac.tree.JCTree;
@@ -56,37 +58,75 @@ public class TypeResolver {
     }
 
     @Nullable
-    private IClass resolveTypeImpl(@NonNull JCExpression expression) {
+    private IClass resolveTypeImpl(@NonNull final JCExpression expression) {
         List<JCTree> list = extractExpression(expression);
-        if (expression instanceof JCIdent) {
-            JCIdent jcIdent = (JCIdent) expression;
-
-            //variable declaration, static import or inner class
-            //case: variableDecl
-            JCVariableDecl variableDecl = getVariableDeclaration(mUnit, jcIdent);
-            if (DLog.DEBUG) DLog.d(TAG, "variableDecl = " + variableDecl);
-            if (variableDecl != null) {
-                String className = variableDecl.getType().toString();
-                List<JCImport> imports = mUnit.getImports();
-                for (JCImport jcImport : imports) {
-                    String fullClassName = jcImport.getQualifiedIdentifier().toString();
-                    if (fullClassName.equals(className) ||
-                            fullClassName.endsWith("." + className)) {
-                        className = fullClassName;
-                        break;
-                    }
-                }
-                System.out.println("className = " + className);
-                IClass classDesc =
-                        mClassLoader.getClassReader().readClassByName(className, null);
-                return classDesc;
-            }
-
-            //case: static import
-
-            //case inner class
+        if (list == null) {
+            return null;
         }
+        IClass currentType = null;
+        for (JCTree tree : list) {
+            //only once time on this case
+            if (tree instanceof JCIdent) {
+                if (currentType != null) {
+                    throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
+
+                }
+
+                JCIdent jcIdent = (JCIdent) tree;
+
+                //variable declaration, static import or inner class
+                //case: variableDecl
+                JCVariableDecl variableDecl = getVariableDeclaration(mUnit, jcIdent);
+                if (DLog.DEBUG) DLog.d(TAG, "variableDecl = " + variableDecl);
+                if (variableDecl != null) {
+                    String className = variableDecl.getType().toString();
+                    List<JCImport> imports = mUnit.getImports();
+                    for (JCImport jcImport : imports) {
+                        String fullClassName = jcImport.getQualifiedIdentifier().toString();
+                        if (fullClassName.equals(className) ||
+                                fullClassName.endsWith("." + className)) {
+                            className = fullClassName;
+                            break;
+                        }
+                    }
+                    System.out.println("className = " + className);
+                    currentType = mClassLoader.getClassReader().readClassByName(className, null);
+                }
+                // TODO: 13-Jun-18  case: static import
+                // TODO: 13-Jun-18  case inner class
+            } else if (tree instanceof JCMethodInvocation) {
+
+                // TODO: 13-Jun-18 find method in current class or import static
+                JCMethodInvocation jcMethod = (JCMethodInvocation) tree;
+                String methodName = jcMethod.getMethodSelect().toString();
+//                List<JCExpression> arguments = jcMethod.getArguments();
+//                IClass[] types = new IClass[arguments.size()];
+                // TODO: 13-Jun-18 support arg types
+                IMethod method = currentType.getMethod(methodName, null);
+                if (method == null) {
+                    throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
+                }
+                currentType = method.getMethodReturnType();
+            } else if (tree instanceof JCFieldAccess) {
+                if (currentType == null) {
+                    throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
+                }
+
+                String name = ((JCFieldAccess) tree).getIdentifier().toString();
+                IField field = currentType.getField(name);
+                if (field == null) {
+                    throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
+                }
+                currentType = field.getFieldType();
+            }
+        }
+
+        System.out.println("currentType = " + currentType);
         return null;
+    }
+
+    private void throwCanNotResolveType(JCTree tree) {
+        throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
     }
 
     @Nullable

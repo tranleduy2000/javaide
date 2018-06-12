@@ -134,13 +134,13 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
             return;
         }
         //current file declare
-        com.sun.tools.javac.util.List<JCTree> typeDecls = ast.getTypeDecls();
+        List<JCTree> typeDecls = ast.getTypeDecls();
         if (typeDecls.isEmpty()) {
             return;
         }
         JCTree jcTree = typeDecls.get(0);
         if (jcTree instanceof JCTree.JCClassDecl) {
-            com.sun.tools.javac.util.List<JCTree> members =
+            List<JCTree> members =
                     ((JCTree.JCClassDecl) jcTree).getMembers();
             for (JCTree member : members) {
                 if (member instanceof JCTree.JCVariableDecl) {
@@ -162,7 +162,7 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
     private void collectFromMethod(Editor editor, String incomplete, List<SuggestItem> result,
                                    JCTree.JCMethodDecl method) {
         //add field from start position of method to the cursor
-        com.sun.tools.javac.util.List<JCTree.JCStatement> statements
+        List<JCTree.JCStatement> statements
                 = method.getBody().getStatements();
         for (JCTree.JCStatement statement : statements) {
             if (statement instanceof JCTree.JCVariableDecl) {
@@ -171,7 +171,7 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
             }
         }
         //add params
-        com.sun.tools.javac.util.List<JCTree.JCVariableDecl> parameters = method.getParameters();
+        List<JCTree.JCVariableDecl> parameters = method.getParameters();
         for (JCTree.JCVariableDecl parameter : parameters) {
             addNonStaticVariable(parameter, editor, incomplete, result);
         }

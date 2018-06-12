@@ -20,6 +20,8 @@ package com.duy.ide.javaide.editor.autocomplete.model;
 import android.support.annotation.NonNull;
 
 import com.duy.ide.editor.view.IEditAreaView;
+import com.duy.ide.javaide.editor.autocomplete.dex.IClass;
+import com.duy.ide.javaide.editor.autocomplete.dex.IField;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -28,23 +30,23 @@ import java.lang.reflect.Modifier;
  * Created by Duy on 20-Jul-17.
  */
 
-public class FieldDescription extends JavaSuggestItemImpl implements Member {
-    private String name, type;
-    private int modifiers;
+public class FieldDescription extends JavaSuggestItemImpl implements Member, IField {
+    private String name;
+    private IClass mType;
+    private int mModifiers;
     private String value;
 
-    public FieldDescription(String name, String type, int modifiers) {
+    public FieldDescription(String name, IClass type, int modifiers) {
         this.name = name;
-        this.type = type;
-        this.modifiers = modifiers;
+        this.mModifiers = modifiers;
     }
 
     public FieldDescription(Field field) {
         this.name = field.getName();
-        this.type = field.getType().getName();
-        this.modifiers = field.getModifiers();
+        this.mType = new ClassDescription(field.getType());
+        this.mModifiers = field.getModifiers();
 
-        if (Modifier.isStatic(modifiers)) {
+        if (Modifier.isStatic(mModifiers)) {
             try {
                 boolean primitive = field.getType().isPrimitive();
                 Object o = field.get(null);
@@ -85,7 +87,7 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member {
 
     @Override
     public String getReturnType() {
-        return type;
+        return mType.toString();
     }
 
     @Override
@@ -94,12 +96,33 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member {
     }
 
     @Override
+    public String toString() {
+        return name;
+    }
+
+
+    @Override
     public int getModifiers() {
-        return modifiers;
+        return mModifiers;
     }
 
     @Override
-    public String toString() {
+    public String getFieldName() {
         return name;
+    }
+
+    @Override
+    public IClass getFieldType() {
+        return mType;
+    }
+
+    @Override
+    public int getFieldModifiers() {
+        return mModifiers;
+    }
+
+    @Override
+    public Object getFieldValue() {
+        return value;
     }
 }

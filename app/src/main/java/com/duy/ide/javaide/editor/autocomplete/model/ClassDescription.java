@@ -20,10 +20,13 @@ package com.duy.ide.javaide.editor.autocomplete.model;
 
 import android.text.Editable;
 
+import com.android.annotations.Nullable;
 import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.dex.IClass;
+import com.duy.ide.javaide.editor.autocomplete.dex.IField;
+import com.duy.ide.javaide.editor.autocomplete.dex.IMethod;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
@@ -39,69 +42,55 @@ import java.util.ArrayList;
 
 public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     private static final String TAG = "ClassDescription";
-    private final String simpleName;
-    private final String className;
-    private final String packageName;
-    private final ArrayList<ClassConstructorDescription> constructors;
-    private final ArrayList<FieldDescription> fields;
-    private final ArrayList<MethodDescription> methods;
+    private final String mClassName;
+    private final ArrayList<ClassConstructorDescription> mConstructors = new ArrayList<>();
+    private final ArrayList<FieldDescription> mFields = new ArrayList<>();
+    private final ArrayList<MethodDescription> mMethods = new ArrayList<>();
+    private final ArrayList<ClassDescription> mImplements = new ArrayList<>();
+    @Nullable
+    private final ClassDescription mSuperClass;
+    private final int mModifiers;
 
-    private String extend;
+    public ClassDescription(Class c) {
+        mClassName = c.getName();
 
-    public ClassDescription(String simpleName, String className, String extend, long lastUsed) {
-        this.simpleName = simpleName;
-        this.className = className;
-        this.extend = extend;
-        packageName = JavaUtil.getPackageName(className);
-        this.lastUsed = 0;
-
-        constructors = new ArrayList<>();
-        fields = new ArrayList<>();
-        methods = new ArrayList<>();
-    }
-
-    @SuppressWarnings("unused")
-    public ClassDescription(Class value) {
-        this.simpleName = value.getSimpleName();
-        this.className = value.getName();
-        if (value.getSuperclass() != null) {
-            this.extend = value.getSuperclass().getName();
+        if (c.getSuperclass() != null && !c.getSuperclass().equals(Object.class)) {
+            mSuperClass = new ClassDescription(c.getSuperclass());
+        } else {
+            mSuperClass = null;
         }
-        this.packageName = JavaUtil.getPackageName(className);
-        this.lastUsed = 0;
+        mModifiers = c.getModifiers();
 
-
-        constructors = new ArrayList<>();
-        fields = new ArrayList<>();
-        methods = new ArrayList<>();
-
-        for (Constructor constructor : value.getConstructors()) {
+        for (Constructor constructor : c.getConstructors()) {
             if (Modifier.isPublic(constructor.getModifiers())) {
                 addConstructor(new ClassConstructorDescription(constructor));
             }
         }
-        for (Field field : value.getDeclaredFields()) {
+
+        for (Field field : c.getDeclaredFields()) {
             if (Modifier.isPublic(field.getModifiers())) {
                 if (!field.getName().equals(field.getDeclaringClass().getName())) {
                     addField(new FieldDescription(field));
                 }
             }
         }
-        for (Method method : value.getMethods()) {
+
+        for (Method method : c.getMethods()) {
             if (Modifier.isPublic(method.getModifiers())) {
                 addMethod(new MethodDescription(method));
             }
         }
+
     }
 
     @Override
     public String getName() {
-        return simpleName + " (" + packageName + ")";
+        return getSimpleName() + " (" + getPackageName() + ")";
     }
 
     @Override
     public final String getDescription() {
-        return packageName;
+        return getPackageName();
     }
 
     @Override
@@ -137,61 +126,63 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
 
 
     public String getSimpleName() {
-        return simpleName;
+        return JavaUtil.getSimpleName(mClassName);
     }
+
 
     public String getFullClassName() {
-        return className;
+        return mClassName;
     }
 
-    public final String getSuperClass() {
-        return extend;
+    @Nullable
+    public final ClassDescription getSuperclass() {
+        return mSuperClass;
     }
 
     public final String getPackageName() {
-        return packageName;
+        return JavaUtil.getPackageName(mClassName);
     }
 
     public ArrayList<ClassConstructorDescription> getConstructors() {
-        return constructors;
+        return mConstructors;
     }
 
     public ArrayList<FieldDescription> getFields() {
-        return fields;
+        return mFields;
     }
 
     public void addConstructor(ClassConstructorDescription constructorDescription) {
-        this.constructors.add(constructorDescription);
+        this.mConstructors.add(constructorDescription);
     }
 
     public void addField(FieldDescription fieldDescription) {
-        fields.add(fieldDescription);
+        mFields.add(fieldDescription);
     }
 
     public void addMethod(MethodDescription methodDescription) {
-        methods.add(methodDescription);
+        mMethods.add(methodDescription);
     }
 
     public ArrayList<MethodDescription> getMethods() {
-        return methods;
+        return mMethods;
     }
 
     @Override
     public String toString() {
-        return simpleName + "(" + packageName + ")";
+        return mClassName;
     }
 
     @SuppressWarnings("ConstantConditions")
     public ArrayList<SuggestItem> getMember(String prefix) {
         ArrayList<SuggestItem> result = new ArrayList<>();
-        for (ClassConstructorDescription constructor : constructors) {
+        for (ClassConstructorDescription constructor : mConstructors) {
             if (!prefix.isEmpty()) {
                 if (constructor.getName().startsWith(prefix)) {
                     result.add(constructor);
                 }
             }
         }
-        for (FieldDescription field : fields) {
+        for (FieldDescription field : mFields) {
             if (prefix.isEmpty() || field.getName().startsWith(prefix)) {
                 result.add(field);
             }
@@ -201,10 +192,54 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     }
 
     public void getMethods(ArrayList<SuggestItem> result, String prefix) {
-        for (MethodDescription method : methods) {
+        for (MethodDescription method : mMethods) {
             if (prefix.isEmpty() || method.getName().startsWith(prefix)) {
                 result.add(method);
             }
         }
+    }
+
+
+    @Override
+    public int getModifiers() {
+        return mModifiers;
+    }
+
+    @Override
+    public boolean isInterface() {
+        return false;
+    }
+
+
+    public boolean isEnum() {
+        // An enum must both directly extend java.lang.Enum and have
+        // the ENUM bit set; classes for specialized enum constants
+        // don't do the former.
+        if (getSuperclass() == null) {
+            return false;
+        }
+        return this.getSuperclass().getFullClassName()
+                .equals(java.lang.Enum.class.getName());
+    }
+
+    @Override
+    public IMethod getMethod(String methodName, IClass[] argsType) {
+        // TODO: 13-Jun-18 support types
+        for (MethodDescription method : mMethods) {
+            if (method.getMethodName().equals(methodName)) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public IField getField(String name) {
+        for (FieldDescription field : mFields) {
+            if (field.getFieldName().equals(name)) {
+                return field;
+            }
+        }
+        return null;
     }
 }

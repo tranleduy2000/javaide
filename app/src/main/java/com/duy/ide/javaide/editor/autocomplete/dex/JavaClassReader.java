@@ -26,23 +26,16 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.data.Pair;
 import com.duy.common.interfaces.Filter;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.ClassConstructorDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
-import java.util.WeakHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -54,24 +47,34 @@ import dalvik.system.DexClassLoader;
 
 public class JavaClassReader {
 
-
     private static final String TAG = "JavaClassReader";
+    private static JavaClassReader INSTANCE;
+
+    /**
+     * All classes sorted by simple class name
+     */
+    private final ArrayList<Pair<String, Class>> mSimpleClasses = new ArrayList<>();
+    private final HashMap<String, ClassDescription> mCache = new HashMap<>();
+
     private boolean loaded = false;
-    private String classpath;
-    private String tempDir;
+    private File mClasspath;
+    private File mTempDir;
     /**
      * All classes sorted by full class name
      */
     private ArrayList<Class> mClasses = new ArrayList<>();
-    /**
-     * All classes sorted by simple class name
-     */
-    private ArrayList<Pair<String, Class>> mSimpleClasses = new ArrayList<>();
-    private WeakHashMap<String, ClassDescription> mCache = new WeakHashMap<>();
 
-    public JavaClassReader(String classpath, String tempDir) {
-        this.classpath = classpath;
-        this.tempDir = tempDir;
+
+    private JavaClassReader(File classpath, File tempDir) {
+        this.mClasspath = classpath;
+        this.mTempDir = tempDir;
+    }
+
+    public static JavaClassReader getInstance(File classpath, File tempDir) {
+        if (INSTANCE == null) {
+            INSTANCE = new JavaClassReader(classpath, tempDir);
+        }
+        return INSTANCE;
     }
 
     public ArrayList<Class> getAllClasses() {
@@ -82,14 +85,14 @@ public class JavaClassReader {
         ArrayList<Class> classes = new ArrayList<>();
         boolean android = projectFolder instanceof AndroidAppProject;
         //load all class from classpath
-        if (classpath != null) {
-            classes.addAll(getAllClassesFromJar(android, classpath));
+        if (mClasspath != null) {
+            classes.addAll(getAllClassesFromJar(android, mClasspath));
         }
         if (projectFolder.getDirBuildDexedLibs().listFiles() != null
                 && projectFolder.getDirBuildDexedLibs().listFiles().length > 0) {
             for (File lib : projectFolder.getDirBuildDexedLibs().listFiles()) {
                 if (lib.getPath().endsWith(".jar")) {
-                    classes.addAll(getAllClassesFromJar(android, lib.getPath()));
+                    classes.addAll(getAllClassesFromJar(android, lib));
                 } else if (lib.getPath().endsWith(".dex")) {
                     classes.addAll(getAllClassesFromDex(android, lib.getPath()));
                 }
@@ -100,7 +103,9 @@ public class JavaClassReader {
 
     private Collection<? extends Class> getAllClassesFromDex(boolean android, String path) {
         Log.d(TAG, "getAllClassesFromDex() called with: android = [" + android + "], path = [" + path + "]");
-        DexClassLoader dexClassLoader = new DexClassLoader(path, tempDir, null, ClassLoader.getSystemClassLoader());
+        DexClassLoader dexClassLoader = new DexClassLoader(path,
+                mTempDir.getAbsolutePath(),
+                null, ClassLoader.getSystemClassLoader());
         ArrayList<Class> classes = new ArrayList<>();
         try {
             dalvik.system.DexFile dexFile = new dalvik.system.DexFile(path);
@@ -123,8 +128,10 @@ public class JavaClassReader {
         return classes;
     }
 
-    private ArrayList<Class> getAllClassesFromJar(boolean android, String path) {
-        DexClassLoader dexClassLoader = new DexClassLoader(path, tempDir, null, ClassLoader.getSystemClassLoader());
+    private ArrayList<Class> getAllClassesFromJar(boolean android, File path) {
+        DexClassLoader dexClassLoader = new DexClassLoader(path.getPath(),
+                mTempDir.getAbsolutePath(),
+                null, ClassLoader.getSystemClassLoader());
         ArrayList<Class> classes = new ArrayList<>();
         try {
             JarFile jarFile = new JarFile(path);
@@ -199,25 +206,7 @@ public class JavaClassReader {
             clazz = binarySearch(javaLangClass);
         }
         if (clazz != null) {
-            String superclass = clazz.getSuperclass() != null ? clazz.getSuperclass().getName() : "";
-            ClassDescription classDesc = new ClassDescription(clazz.getSimpleName(), clazz.getName(), superclass, 0);
-            for (Constructor constructor : clazz.getConstructors()) {
-                if (Modifier.isPublic(constructor.getModifiers())) {
-                    classDesc.addConstructor(new ClassConstructorDescription(constructor));
-                }
-            }
-            for (Field field : clazz.getDeclaredFields()) {
-                if (Modifier.isPublic(field.getModifiers())) {
-                    if (!field.getName().equals(field.getDeclaringClass().getName())) {
-                        classDesc.addField(new FieldDescription(field));
-                    }
-                }
-            }
-            for (Method method : clazz.getMethods()) {
-                if (Modifier.isPublic(method.getModifiers())) {
-                    classDesc.addMethod(new MethodDescription(method));
-                }
-            }
+            ClassDescription classDesc = new ClassDescription(clazz);
             mCache.put(fullClassName, classDesc);
             return classDesc;
         }

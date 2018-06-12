@@ -57,7 +57,7 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
             return;
         }
         if (method.getName().toString().startsWith(incomplete)) {
-            com.sun.tools.javac.util.List<JCTypeParameter> typeParameters
+            List<JCTypeParameter> typeParameters
                     = method.getTypeParameters();
             ArrayList<String> paramsStr = new ArrayList<>();
             for (JCTypeParameter typeParameter : typeParameters) {
@@ -65,7 +65,8 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
             }
             MethodDescription desc = new MethodDescription(
                     method.getName().toString(),
-                    method.getReturnType().toString(),
+                    // TODO: 13-Jun-18 resolve return type
+                    /*method.getReturnType().toString()*/ null,
                     method.getModifiers().flags,
                     paramsStr);
             setInfo(desc, editor, incomplete);
@@ -85,7 +86,7 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
             int flags = (int) field.getModifiers().flags;
             FieldDescription desc = new FieldDescription(
                     field.getName().toString(),
-                    field.getType().toString(),
+                    /*field.getType().toString(),*/ null,
                     flags);
             setInfo(desc, editor, incomplete);
             result.add(desc);
@@ -134,13 +135,13 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
             return;
         }
         //current file declare
-        com.sun.tools.javac.util.List<JCTree> typeDecls = unit.getTypeDecls();
+        List<JCTree> typeDecls = unit.getTypeDecls();
         if (typeDecls.isEmpty()) {
             return;
         }
         JCTree jcTree = typeDecls.get(0);
         if (jcTree instanceof JCClassDecl) {
-            com.sun.tools.javac.util.List<JCTree> members =
+            List<JCTree> members =
                     ((JCClassDecl) jcTree).getMembers();
             for (JCTree member : members) {
                 if (member instanceof JCVariableDecl) {

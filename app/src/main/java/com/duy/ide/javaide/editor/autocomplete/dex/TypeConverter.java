@@ -17,23 +17,23 @@
 
 package com.duy.ide.javaide.editor.autocomplete.dex;
 
-import com.android.annotations.NonNull;
+import com.duy.ide.javaide.editor.autocomplete.dex.wrapper.ClassWrapper;
 
-public class JavaClassWrapper implements IClass {
-    private Class<?> c;
+public class TypeConverter {
 
-    public JavaClassWrapper(@NonNull Class<?> c) {
-        this.c = c;
+    public static Class[] toClasses(IClass[] types) {
+        Class[] classes = new Class[types.length];
+        for (int i = 0; i < types.length; i++) {
+            classes[i] = types[i].getClass();
+        }
+        return classes;
     }
 
-    @Override
-    public String getFullClassName() {
-        return c.getName();
+    public static IClass[] toIClass(Class[] classes) {
+        IClass[] result = new IClass[classes.length];
+        for (int i = 0; i < classes.length; i++) {
+            result[i] = new ClassWrapper(classes[i]);
+        }
+        return result;
     }
-
-    @Override
-    public String getSimpleName() {
-        return c.getSimpleName();
-    }
-
 }

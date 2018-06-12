@@ -62,7 +62,7 @@ public class JavaDexClassLoader {
     private JavaClassReader mClassReader;
 
     public JavaDexClassLoader(File classpath, File outDir) {
-        mClassReader = new JavaClassReader(classpath.getPath(), outDir.getPath());
+        mClassReader = JavaClassReader.getInstance(classpath, outDir);
     }
 
     public JavaClassReader getClassReader() {

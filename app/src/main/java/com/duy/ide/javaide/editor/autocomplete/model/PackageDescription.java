@@ -21,11 +21,12 @@ import android.support.annotation.NonNull;
 import android.text.Editable;
 
 import com.duy.ide.editor.view.IEditAreaView;
+import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompletePackage;
 
 import java.util.HashMap;
 
 /**
- * @see com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage
+ * @see CompletePackage
  */
 public class PackageDescription extends JavaSuggestItemImpl {
     private String mName;

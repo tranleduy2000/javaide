@@ -31,12 +31,11 @@ import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaClassReader;
 import com.duy.ide.javaide.editor.autocomplete.dex.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
-import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteNewKeyword;
-import com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
-import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory;
 import com.duy.ide.javaide.editor.autocomplete.internal.Patterns;
+import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteNewKeyword;
+import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompletePackage;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.JavaSuggestItemImpl;
@@ -80,8 +79,6 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     public static final int KIND_THIS = KIND_MEMBER + 1;
     public static final int KIND_SUPER = KIND_THIS + 1;
     public static final int KIND_BUILTIN_TYPE = KIND_SUPER + 1;
-    public static final int KIND_STRING_TYPE = KIND_BUILTIN_TYPE + 1;
-    public static final int KIND_ARRAY_TYPE = KIND_STRING_TYPE + 1;
 
     public static final int CONTEXT_OTHER = 0;
     public static final int CONTEXT_AFTER_DOT = CONTEXT_OTHER + 1;
@@ -94,14 +91,6 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
      * Suggest class constructor
      */
     public static final int CONTEXT_NEED_CONSTRUCTOR = CONTEXT_NEED_TYPE + 1;
-    /**
-     * Suggest class name
-     */
-    public static final int CONTEXT_NEED_CLASS = CONTEXT_NEED_CONSTRUCTOR + 1;
-    /**
-     * Suggest interface name
-     */
-    public static final int CONTEXT_NEED_INTERFACE = CONTEXT_NEED_CLASS + 1;
 
     private static final String TAG = "AutoCompleteProvider";
     /**
@@ -113,13 +102,11 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     private JavaDexClassLoader mClassLoader;
     private JavaPackageManager mJavaPackageManager;
-    private PackageImporter mPackageImporter;
     private JavaParser mJavaParser;
 
     @Nullable
     private JCTree.JCCompilationUnit unit;
 
-    private String statement = ""; //statement before cursor
     private String mDotExpr = ""; //expression end with .
     /**
      * incomplete word
@@ -181,7 +168,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return code.replaceAll(Patterns.JAVA_COMMENTS.toString(), "");
     }
 
-    private void resolveContextType(Editor editor) {
+    private void resolveContextType(Editor editor, String statement) {
         try {
             this.unit = mJavaParser.parse(editor.getText());
         } catch (Exception e) {
@@ -205,64 +192,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             if (!isValid) {
                 return;
             }
-
             mContextType = CONTEXT_AFTER_DOT;
-            //import or package declaration
-            /*if (Pattern.compile("^\\s*(import|package)\\s+").matcher(statement).find()) {
-                progressImportPackage();
-            }*/
-
-            //String literal
-            /*else if (Pattern.compile("\"\\s*\\.\\s*$").matcher(statement).find()) {
-                mDotExpr = statement.replaceAll("\\s*\\.\\s*$", ".");
-                return;
-            }*/
-            //" type declaration		NOTE: not supported generic yet.
-            /*else*/ {
-               /* Matcher matcher = Pattern.compile("^\\s?" + Patterns.RE_TYPE_DECL).matcher(statement);
-                if (matcher.find()) {
-                    mDotExpr = statement.substring(matcher.start());
-                    matcher = Pattern.compile("\\s+(extends|implements)(\\s+)(" + Patterns.RE_QUALID + ")").matcher(mDotExpr);
-                    if (not(matcher.find())) {
-                        // TODO: 13-Aug-17 suggest class
-                        return;
-
-                    }
-                    mDotExpr = matcher.group(3);
-                    mContextType = CONTEXT_NEED_TYPE;
-                    //need class name or interface name
-                    if (matcher.group(1).equals("extends")) {
-                        mContextType = CONTEXT_NEED_CLASS;
-
-                    } else {
-                        mContextType = CONTEXT_NEED_INTERFACE;
-                    }
-                }*/ //else {
-//                    matcher = Pattern.compile("(\\s*new\\s+)(" + Patterns.RE_QUALID + ")$").matcher(statement);
-//                    if (matcher.find()) {
-//                        statement = matcher.group(2);
-//                        if (!Patterns.RE_KEYWORDS.matcher(statement).find()) {
-//                            mIcompleteWord = statement;
-//                            mDotExpr = "";
-//                            mContextType = CONTEXT_NEED_CONSTRUCTOR;
-//                            return;
-//                        }
-//                    }
-//                    mDotExpr = extractCleanExpr(statement);
-               // }
-            }
-
-            //" all cases: " java.ut|" or " java.util.|" or "ja|"
-          /*  if (mDotExpr.contains(".")) {
-                mIcompleteWord = mDotExpr.substring(mDotExpr.lastIndexOf(".") + 1);
-                mDotExpr = mDotExpr.substring(0, mDotExpr.lastIndexOf(".") + 1); //include "." character
-            } else {
-                mIcompleteWord = mDotExpr;
-                mDotExpr = "";
-            }
-            //incomplete
-            return;*/
-
         }
         //	" method parameters, treat methodname or 'new' as an incomplete word
         else if (Pattern.compile("\\(\\s*$").matcher(statement).find()) {
@@ -270,71 +200,16 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             mContextType = CONTEXT_METHOD_PARAM;
             int pos = statement.lastIndexOf("(");
             statement = statement.replaceAll("\\s*\\(\\s*$", "");
-            //" new ClassName?
-
-            /*if (Pattern.compile("\\s*new\\s+" + Patterns.RE_QUALID + "$").matcher(statement).find()) {
-                statement = statement.replaceAll("^\\s*new\\s+", "");
-                if (!Patterns.KEYWORDS.matcher(statement).find()) {
-                    mIcompleteWord = "+";
-                    mDotExpr = statement;
-                    mContextType = CONTEXT_NEED_CONSTRUCTOR;
-                    return;
-
-                }
-            } else*/ {
-                Matcher matcher = Pattern.compile("\\s*" + Patterns.IDENTIFIER + "$").matcher(statement);
-                matcher.find();
-                pos = matcher.start();
-                //case: "method(|)", "this(|)", "super(|)"
-                if (pos == 0) {
-                    statement = statement.replaceAll("^\\s*", "");
-                    //treat "this" or "super" as a type name
-                    if (statement.equals("this") || statement.equals("supper")) {
-                        mDotExpr = statement;
-                        mIcompleteWord = "+";
-                        return;
-
-                    } else if (!Patterns.KEYWORDS.matcher(statement).find()) {
-                        mIcompleteWord = statement;
-                        return;
-
-                    }
-                }
+            {
                 //case expr.method(|)
-                else if (statement.charAt(pos - 1) == '.' &&
+                if (statement.charAt(pos - 1) == '.' &&
                         !Patterns.KEYWORDS.matcher(statement.substring(0, statement.lastIndexOf("."))).find()) {
                     mDotExpr = extractCleanExpr(statement.substring(0, statement.lastIndexOf(".")));
                     mIcompleteWord = statement.substring(statement.lastIndexOf(".") + 1);
-                    return;
                 }
             }
         }
     }
-
-//    private void progressImportPackage() {
-//        statement = statement.replaceAll("\\s+\\.", ".");
-//        statement = statement.replaceAll("\\.\\s+", ".");
-//        if (Pattern.compile("^\\s*(import)\\s+").matcher(statement).find()) {
-//            //static import
-//            if (Pattern.compile("^\\s*(import)\\s+(static)\\s+").matcher(statement).find()) {
-//                mContextType = CONTEXT_IMPORT_STATIC;
-//            } else { //normal import
-//                mContextType = CONTEXT_IMPORT;
-//            }
-//            Pattern importStatic = Pattern.compile("^\\s*(import)\\s+(static\\s+)?");
-//            Matcher matcher = importStatic.matcher(statement);
-//            if (matcher.find()) {
-//                mDotExpr = statement.substring(matcher.end());
-//            }
-//        } else {
-//            mContextType = CONTEXT_PACKAGE_DECL;
-//            Pattern _package = Pattern.compile("^\\s*(package)\\s+?");
-//            Matcher matcher = _package.matcher(statement);
-//            if (matcher.find()) {
-//                mDotExpr = statement.substring(matcher.end());
-//            }
-//        }
-//    }
 
     public ArrayList<SuggestItem> generateSuggestion() {
         System.out.println("contextType = " + mContextType);
@@ -350,7 +225,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         if (!mDotExpr.isEmpty()) {
             switch (mContextType) {
                 case CONTEXT_AFTER_DOT:
-                    result = completeAfterDot(mEditor.getText(), mDotExpr, mIcompleteWord);
+                    result = completExpression(mEditor.getText(), mDotExpr, mIcompleteWord);
                     break;
                 case CONTEXT_IMPORT:
                 case CONTEXT_IMPORT_STATIC:
@@ -358,27 +233,12 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 case CONTEXT_NEED_TYPE:
                     result = getMember(mDotExpr, mIcompleteWord);
                     break;
-                case CONTEXT_METHOD_PARAM:
-                    result = completeAfterDot(mEditor.getText(), mDotExpr, mIcompleteWord);
-                    break;
-//                case CONTEXT_NEED_CONSTRUCTOR:
-//                    result = getConstructors(mEditor, mDotExpr);
-//                    break;
-//                case CONTEXT_OTHER:
-//                    result = new ArrayList<>();
-//                    break;
             }
         }
         //only complete word
         else if (!mIcompleteWord.isEmpty()) {
             //only need method
             switch (mContextType) {
-//                case CONTEXT_METHOD_PARAM:
-//                    result = completeMethodParams(mIcompleteWord);
-//                    break;
-//                case CONTEXT_NEED_CONSTRUCTOR:
-//                    result = getConstructors(mEditor, mIcompleteWord);
-//                    break;
                 default:
                     result = completeWord(mEditor.getText(), mIcompleteWord);
                     break;
@@ -408,14 +268,12 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         }
         incomplete = incomplete.trim();
         ArrayList<SuggestItem> result = new ArrayList<>();
-        if (mContextType != CONTEXT_PACKAGE_DECL) {
-            //parse current file
-            getPossibleResultInCurrentFile(result, unit, incomplete);
-            ArrayList<? extends SuggestItem> classes = mClassLoader.findAllWithPrefix(incomplete);
-            setInfo(classes);
-            result.addAll(classes);
+        //parse current file
+        getPossibleResultInCurrentFile(result, unit, incomplete);
+        ArrayList<? extends SuggestItem> classes = mClassLoader.findAllWithPrefix(incomplete);
+        setInfo(classes);
+        result.addAll(classes);
 
-        }
         Collections.sort(result, new Comparator<SuggestItem>() {
             @Override
             public int compare(SuggestItem o1, SuggestItem o2) {
@@ -548,7 +406,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
      * " Precondition:	expr must end with '.'
      * " return members of the value of expression
      */
-    private ArrayList<SuggestItem> completeAfterDot(String source, String dotExpr, String incomplete) {
+    private ArrayList<SuggestItem> completExpression(String source, String dotExpr, String incomplete) {
         ArrayList<String> items = parseExpr(dotExpr);
         if (items.size() == 0) {
             return new ArrayList<>();
@@ -559,7 +417,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             return getMember(dotExpr, String.class.getName());
         }
 
-        ArrayList<SuggestItem> ti = new ArrayList<>();
+        ArrayList<SuggestItem> result = new ArrayList<>();
         int ii = 1; //item index;
         @ItemKind
         int itemKind = 0;
@@ -586,10 +444,10 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             //  " cases: "this.|", "super.|", "ClassName.this.|", "ClassName.super.|", "TypeName.class.|"
             String itemAtK = items.get(k);
             if (itemAtK.equals("class") || itemAtK.equals("this") || itemAtK.equals("super")) {
-                ti = getClassMembers(
+                result = getClassMembers(
                         itemAtK.equals("class") ? "java.lang.Class" : join(items, 0, k, "."),
                         incomplete);
-                if (!ti.isEmpty()) {
+                if (!result.isEmpty()) {
                     itemKind = !itemAtK.equals("this") ? KIND_THIS : !itemAtK.equals("super") ? KIND_SUPER : KIND_NONE;
                     ii = k + 1;
                 }
@@ -597,14 +455,14 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             //   " case: "java.io.File.|"
             else {
                 String className = join(items, 0, i - 1, ".");
-                ti = getStaticAccess(className);
+                result = getStaticAccess(className);
             }
         }
 
         //"
         //" first item
         //"
-        if (ti.isEmpty()) {
+        if (result.isEmpty()) {
             // cases:
             // 1) "int.|", "void.|"	- primitive type or pseudo-type, return `class`
             // 2) "this.|", "super.|"	- special reference
@@ -616,31 +474,31 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 if (SourceVersion.isKeyword(ident)) {
                     // 1)
                     if (ident.equals("void") || isBuiltinType(ident)) {
-                        ti = getClassMembers(int.class.getName(), incomplete);
+                        result = getClassMembers(int.class.getName(), incomplete);
                         itemKind = KIND_BUILTIN_TYPE;
                     }
                     // 2)
                     else if (ident.equals("this") || ident.equals("super")) {
                         itemKind = ident.equals("this") ? KIND_THIS : ident.equals("super") ? KIND_SUPER : KIND_NONE;
-                        ti = getClassMembers(ident, incomplete);
+                        result = getClassMembers(ident, incomplete);
                     }
                 } else {
                     // 3)
                     String typeName = getDeclaredClassName(source, ident);
                     if (!typeName.isEmpty()) {
                         if (typeName.charAt(0) == '[' && typeName.charAt(typeName.length() - 1) == ']') {
-                            ti = getClassMembers(Object[].class.getName(), incomplete);
+                            result = getClassMembers(Object[].class.getName(), incomplete);
                         } else if (!typeName.equals("void") && !isBuiltinType(typeName)) {
-                            ti = getClassMembers(typeName, incomplete);
+                            result = getClassMembers(typeName, incomplete);
                         }
                     } else { //typeName is empty
                         // 4) TypeName.|
-                        ti = getClassMembers(ident, incomplete);
+                        result = getClassMembers(ident, incomplete);
                         itemKind = KIND_MEMBER;
 
                         // 5) package
-                        if (ti.isEmpty()) {
-                            ti = getMember(dotExpr, incomplete);
+                        if (result.isEmpty()) {
+                            result = getMember(dotExpr, incomplete);
                             itemKind = KIND_PACKAGE;
                         }
                     }
@@ -648,7 +506,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             }
             //" method invocation:	"method().|"	- "this.method().|"
             else if (Pattern.compile("^\\s*" + Patterns.IDENTIFIER + "\\s*\\(").matcher(items.get(0)).find()) {
-                ti = methodInvocation(items.get(0), ti, itemKind);
+                result = methodInvocation(items.get(0), result, itemKind);
             }
             //" array type, return `class`: "int[] [].|", "java.lang.String[].|", "NestedClass[].|"
             else if (items.get(0).matches(Patterns.RE_ARRAY_TYPE.toString())) {
@@ -656,7 +514,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 if (matcher.find()) {
                     String qid = matcher.group(1); //class name
                     if (isBuiltinType(qid) || (!isKeyword(qid) && !getClassMembers(qid, incomplete).isEmpty())) {
-                        ti = getClassMembers(int.class.getName(), incomplete);
+                        result = getClassMembers(int.class.getName(), incomplete);
                         itemKind = KIND_MEMBER;
                     }
                 }
@@ -670,9 +528,9 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 Matcher matcher = compile.matcher(clean);
                 if (matcher.find()) {
                     if (matcher.group(2).charAt(0) == '[') {
-                        ti = getClassMembers(int[].class.getName(), incomplete);
+                        result = getClassMembers(int[].class.getName(), incomplete);
                     } else if (matcher.group(2).charAt(0) == '(') {
-                        ti = getClassMembers(matcher.group(1), incomplete);
+                        result = getClassMembers(matcher.group(1), incomplete);
                     }
                 }
             }
@@ -680,7 +538,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             else if (Patterns.RE_CASTING.matcher(items.get(0)).find()) {
                 Matcher matcher = Patterns.RE_CASTING.matcher(items.get(0));
                 if (matcher.find()) {
-                    ti = getClassMembers(matcher.group(1), incomplete);
+                    result = getClassMembers(matcher.group(1), incomplete);
                 }
             }
             //" array access:	"var[i][j].|"		Note: "var[i][]" is incorrect
@@ -690,7 +548,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 String typeName = matcher.group(1);
                 typeName = getDeclaredClassName(source, typeName);
                 if (!typeName.isEmpty()) {
-                    ti = arrayAccess(typeName, items.get(0));
+                    result = arrayAccess(typeName, items.get(0));
                 }
             }
         }
@@ -699,11 +557,11 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         /*
          * next items
          */
-        while (!ti.isEmpty() && ii < items.size()) {
+        while (!result.isEmpty() && ii < items.size()) {
             // method invocation:	"PrimaryExpr.method(parameters)[].|"
             if (Pattern.compile("^\\s*" + Patterns.IDENTIFIER + "\\s*\\(").matcher(items.get(ii)).find()) {
                 Log.d(TAG, "completeAfterDot: RE_IDENTIFIER ( ");
-                ti = methodInvocation(items.get(ii), ti, itemKind);
+                result = methodInvocation(items.get(ii), result, itemKind);
                 itemKind = KIND_NONE;
                 ii++;
                 continue;
@@ -721,29 +579,20 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
                 //" type members
                 else if (itemKind == KIND_MEMBER && bracket.isEmpty()) {
                     if (ident.equals("class") || ident.equals("this") || ident.equals("super")) {
-                        ti = getClassMembers(ident.equals("class") ?
+                        result = getClassMembers(ident.equals("class") ?
                                 "java.lang.Class" : join(items, 0, ii - 1, "."), incomplete);
                         itemKind = ident.equals("this") ? KIND_THIS : ident.equals("super") ? KIND_SUPER : KIND_NONE;
                     } else if (!isKeyword(ident) /*&& type == class*/) {
                         //accessible static field
-                        //ti = get info of stattic field
+                        //result = get info of stattic field
                     }
                 }
             }
         }
-        return filter(ti, incomplete);
+        return filter(result, incomplete);
     }
 
     private ArrayList<SuggestItem> arrayAccess(String typeName, String s) {
-        return null;
-    }
-
-    private String substitute(String input, Pattern pattern, int group, String replaceBy) {
-        StringBuilder stringBuilder = new StringBuilder(input);
-        Matcher matcher = pattern.matcher(stringBuilder);
-        if (matcher.find()) {
-            stringBuilder.replace(matcher.start(), matcher.end(), matcher.group(group));
-        }
         return null;
     }
 
@@ -974,26 +823,6 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return -1;
     }
 
-    private int searchPairBackward(String str, int index, char open, char close) {
-        int count = 1;
-        if (str.charAt(index) != open) {
-            return -1;
-        }
-        int i = 0;
-        while (i >= 0) {
-            if (str.charAt(i) == open) {
-                count--;
-                if (count == 0) {
-                    return i;
-                }
-            } else if (str.charAt(i) == close) {
-                count++;
-            }
-            i--;
-        }
-        return -1;
-    }
-
     private String extractCleanExpr(String statement) {
         return statement.replaceAll("[\n\t\r]", "");
     }
@@ -1026,22 +855,6 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return mergeLine(statement);
     }
 
-    private int findChar(Editor editor, String s) {
-        int selectionEnd = editor.getCursor();
-        while (selectionEnd > -1 && editor.getText().charAt(selectionEnd) != s.charAt(0)) {
-            selectionEnd--;
-        }
-        return selectionEnd;
-    }
-
-    private boolean inComment() {
-        return false;
-    }
-
-    private boolean inString() {
-        return false;
-    }
-
     public void load(JavaProject projectFile) {
         mClassLoader.loadAllClasses(projectFile);
         mJavaPackageManager.init(projectFile, mClassLoader.getClassReader());
@@ -1055,7 +868,8 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     public ArrayList<SuggestItem> getSuggestions(Editor editor) {
         try {
             mEditor = editor;
-            this.resolveContextType(editor);
+            String statement = getStatement(editor);
+            this.resolveContextType(editor, statement);
             ArrayList<SuggestItem> complete = generateSuggestion();
             return complete;
         } catch (Exception e) {
@@ -1064,10 +878,6 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return new ArrayList<>();
     }
 
-
-    public void dispose() {
-        mClassLoader.getClassReader().dispose();
-    }
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({CONTEXT_AFTER_DOT, CONTEXT_METHOD_PARAM, CONTEXT_IMPORT, CONTEXT_IMPORT_STATIC,

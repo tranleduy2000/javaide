@@ -15,11 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal;
+package com.duy.ide.javaide.editor.autocomplete.internal.completed;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
+import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
+import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
 import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
 import com.duy.ide.javaide.utils.DLog;
 

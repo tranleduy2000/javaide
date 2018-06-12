@@ -104,8 +104,7 @@ public class PackageImporter {
         int first = firstMatch(editor, PatternFactory.IMPORT);
         int last = PatternFactory.lastMatch(editor, PatternFactory.IMPORT);
         if (first >= 0 && last > first) {
-            editor.replace(first, last, ""); //clear import
-            editor.insert(first, imp); //insert new
+            editor.replace(first, last, imp);
         } else {
             int i = lastMatch(editor, PatternFactory.PACKAGE);
             if (i < 0) {

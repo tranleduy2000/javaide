@@ -34,6 +34,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.sun.tools.javac.code.Flags.STATIC;
+import static com.sun.tools.javac.tree.JCTree.JCClassDecl;
+import static com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
+import static com.sun.tools.javac.tree.JCTree.JCMethodDecl;
+import static com.sun.tools.javac.tree.JCTree.JCTypeParameter;
+import static com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 
 public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
     private static final Pattern THIS_DOT = Pattern.compile("this\\s*\\.\\s*$");
@@ -45,11 +50,52 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
         this.mJavaParser = javaParser;
     }
 
+    protected static void addNonStaticMethods(JCMethodDecl method, Editor editor, String incomplete, ArrayList<SuggestItem> result) {
+        if ((method.getModifiers().flags & STATIC) != 0) {
+            if (DLog.DEBUG) DLog.d(TAG, "addNonStaticMethods: static method");
+            return;
+        }
+        if (method.getName().toString().startsWith(incomplete)) {
+            com.sun.tools.javac.util.List<JCTypeParameter> typeParameters
+                    = method.getTypeParameters();
+            ArrayList<String> paramsStr = new ArrayList<>();
+            for (JCTypeParameter typeParameter : typeParameters) {
+                paramsStr.add(typeParameter.toString());
+            }
+            MethodDescription desc = new MethodDescription(
+                    method.getName().toString(),
+                    method.getReturnType().toString(),
+                    method.getModifiers().flags,
+                    paramsStr);
+            setInfo(desc, editor, incomplete);
+            result.add(desc);
+        }
+    }
+
+    protected static void addNonStaticVariable(JCVariableDecl member, Editor editor, String incomplete,
+                                               ArrayList<SuggestItem> result) {
+        JCVariableDecl field = member;
+        if ((field.getModifiers().flags & STATIC) != 0) {
+            if (DLog.DEBUG) DLog.d(TAG, "addNonStaticVariable: static variable");
+            return;
+        }
+
+        if (field.getName().toString().startsWith(incomplete)) {
+            int flags = (int) field.getModifiers().flags;
+            FieldDescription desc = new FieldDescription(
+                    field.getName().toString(),
+                    field.getType().toString(),
+                    flags);
+            setInfo(desc, editor, incomplete);
+            result.add(desc);
+        }
+    }
+
     @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) throws Exception {
+    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
         Matcher matcher = THIS_DOT.matcher(statement);
         if (matcher.find()) {
-            JCTree.JCCompilationUnit ast;
+            JCCompilationUnit ast;
             try {
                 ast = mJavaParser.parse(editor.getText());
             } catch (Exception e) {
@@ -61,7 +107,7 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
         }
         matcher = THIS_DOT_EXPR.matcher(statement);
         if (matcher.find()) {
-            JCTree.JCCompilationUnit ast;
+            JCCompilationUnit ast;
             try {
                 ast = mJavaParser.parse(editor.getText());
             } catch (Exception e) {
@@ -81,7 +127,7 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
     }
 
     private void getSuggestionInternal(@NonNull Editor editor, @NonNull ArrayList<SuggestItem> result,
-                                       @NonNull JCTree.JCCompilationUnit unit,
+                                       @NonNull JCCompilationUnit unit,
                                        @NonNull String incomplete) {
         if (unit == null) {
             return;
@@ -92,78 +138,17 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
             return;
         }
         JCTree jcTree = typeDecls.get(0);
-        if (jcTree instanceof JCTree.JCClassDecl) {
+        if (jcTree instanceof JCClassDecl) {
             com.sun.tools.javac.util.List<JCTree> members =
-                    ((JCTree.JCClassDecl) jcTree).getMembers();
+                    ((JCClassDecl) jcTree).getMembers();
             for (JCTree member : members) {
-                if (member instanceof JCTree.JCVariableDecl) {
-                    addNonStaticVariable(member, editor, incomplete, result);
-                } else if (member instanceof JCTree.JCMethodDecl) {
-                    JCTree.JCMethodDecl method = (JCTree.JCMethodDecl) member;
+                if (member instanceof JCVariableDecl) {
+                    addNonStaticVariable((JCVariableDecl) member, editor, incomplete, result);
+                } else if (member instanceof JCMethodDecl) {
+                    JCMethodDecl method = (JCMethodDecl) member;
                     addNonStaticMethods(method, editor, incomplete, result);
-/*
-                    //if the cursor in method scope
-                    if (method.getStartPosition() <= editor.getCursor()
-                            && method.getBody().getEndPosition(unit.endPositions) >= editor.getCursor()) {
-                        //add field from start position of method to the cursor
-                        com.sun.tools.javac.util.List<JCTree.JCStatement> statements
-                                = method.getBody().getStatements();
-                        for (JCTree.JCStatement statement : statements) {
-                            if (statement instanceof JCTree.JCVariableDecl) {
-                                JCTree.JCVariableDecl field = (JCTree.JCVariableDecl) statement;
-                                addVariable(field, incomplete, result);
-                            }
-                        }
-                        //add params
-                        com.sun.tools.javac.util.List<JCTree.JCVariableDecl> parameters = method.getParameters();
-                        for (JCTree.JCVariableDecl parameter : parameters) {
-                            JCTree.JCVariableDecl field = parameter;
-                            addVariable(field, incomplete, result);
-                        }
-                    }*/
                 }
             }
-        }
-    }
-
-    private void addNonStaticMethods(JCTree.JCMethodDecl method, Editor editor, String incomplete, ArrayList<SuggestItem> result) {
-        if ((method.getModifiers().flags & STATIC) != 0) {
-            if (DLog.DEBUG) DLog.d(TAG, "addNonStaticMethods: static method");
-            return;
-        }
-        if (method.getName().toString().startsWith(incomplete)) {
-            com.sun.tools.javac.util.List<JCTree.JCTypeParameter> typeParameters
-                    = method.getTypeParameters();
-            ArrayList<String> paramsStr = new ArrayList<>();
-            for (JCTree.JCTypeParameter typeParameter : typeParameters) {
-                paramsStr.add(typeParameter.toString());
-            }
-            MethodDescription desc = new MethodDescription(
-                    method.getName().toString(),
-                    method.getReturnType().toString(),
-                    method.getModifiers().flags,
-                    paramsStr);
-            setInfo(desc, editor, incomplete);
-            result.add(desc);
-        }
-    }
-
-    private void addNonStaticVariable(JCTree member, Editor editor, String incomplete,
-                                      ArrayList<SuggestItem> result) {
-        JCTree.JCVariableDecl field = (JCTree.JCVariableDecl) member;
-        if ((field.getModifiers().flags & STATIC) != 0) {
-            if (DLog.DEBUG) DLog.d(TAG, "addNonStaticVariable: static variable");
-            return;
-        }
-
-        if (field.getName().toString().startsWith(incomplete)) {
-            int flags = (int) field.getModifiers().flags;
-            FieldDescription desc = new FieldDescription(
-                    field.getName().toString(),
-                    field.getType().toString(),
-                    flags);
-            setInfo(desc, editor, incomplete);
-            result.add(desc);
         }
     }
 }

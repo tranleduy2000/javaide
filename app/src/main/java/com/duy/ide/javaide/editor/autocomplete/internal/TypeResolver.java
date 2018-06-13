@@ -52,13 +52,13 @@ public class TypeResolver {
         this.mUnit = unit;
     }
 
-    public IClass resolveType(@NonNull JCExpression expression) {
-        return resolveTypeImpl(expression);
+    public IClass resolveType(@NonNull JCExpression expression, int cursor) {
+        return resolveTypeImpl(expression, cursor);
     }
 
     @Nullable
-    private IClass resolveTypeImpl(@NonNull final JCExpression expression) {
-        List<JCTree> list = extractExpression(expression);
+    private IClass resolveTypeImpl(@NonNull final JCExpression expression, int cursor) {
+        List<JCTree> list = extractExpressionAtCursor(expression, cursor);
         if (list == null) {
             return null;
         }
@@ -130,10 +130,13 @@ public class TypeResolver {
     }
 
     @Nullable
-    private List<JCTree> extractExpression(JCExpression expression) {
+    private List<JCTree> extractExpressionAtCursor(JCExpression expression, int cursor) {
         JCTree last = expression;
         LinkedList<JCTree> list = new LinkedList<>();
         while (last != null) {
+            if (getEndPosition(last) > cursor){
+                break;
+            }
             list.addFirst(last);
             if (last instanceof JCMethodInvocation) {
                 JCExpression methodSelect = ((JCMethodInvocation) last).getMethodSelect();

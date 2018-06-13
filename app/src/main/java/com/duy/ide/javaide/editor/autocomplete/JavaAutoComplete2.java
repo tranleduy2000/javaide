@@ -24,7 +24,6 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteExpression;
 import com.duy.ide.javaide.editor.autocomplete.internal.IJavaCompleteMatcher;
@@ -37,13 +36,16 @@ import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteString
 import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteThisKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteTypeDeclared;
 import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteWord;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
+import com.duy.ide.javaide.utils.DLog;
 
 import java.io.File;
 import java.util.ArrayList;
 
 
 public class JavaAutoComplete2 implements SuggestionProvider {
+    private static final String TAG = "JavaAutoComplete2";
     private final ArrayList<IJavaCompleteMatcher> mJavaAutoCompletes = new ArrayList<>();
     private JavaDexClassLoader mClassLoader;
     private JavaPackageManager mJavaPackageManager;
@@ -77,6 +79,7 @@ public class JavaAutoComplete2 implements SuggestionProvider {
 
     @Override
     public ArrayList<SuggestItem> getSuggestions(Editor editor) {
+        long time = System.currentTimeMillis();
         ArrayList<SuggestItem> result = new ArrayList<>();
         try {
 
@@ -94,6 +97,8 @@ public class JavaAutoComplete2 implements SuggestionProvider {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (DLog.DEBUG)
+            DLog.d(TAG, "getSuggestions: time = " + (System.currentTimeMillis() - time));
         return result;
     }
 }

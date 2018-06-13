@@ -82,7 +82,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
             JCCompilationUnit ast = mJavaParser.parse(editor.getText());
             prepare(editor, ast);
 
-            Expression expr = getStatementFromAst(editor.getCursor());
+            Expression expr = getExpressionAtCursor(editor.getCursor());
             if (DLog.DEBUG) DLog.d(TAG, "expr = " + expr);
             if (expr == null) {
                 return false;
@@ -122,7 +122,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
             if (DLog.DEBUG) DLog.d(TAG, "incomplete = " + incomplete);
 
             JCExpression expression = jcFieldAccess.getExpression();
-            IClass type = new TypeResolver(mClassLoader, mAst).resolveType(expression);
+            IClass type = new TypeResolver(mClassLoader, mAst).resolveType(expression, mCursor);
             if (type != null) {
                 ArrayList<MethodDescription> methods = type.getMethods();
                 for (MethodDescription method : methods) {
@@ -165,10 +165,10 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
     }
 
     @Nullable
-    private Expression getStatementFromAst(int cursor) {
+    private Expression getExpressionAtCursor(int cursor) {
         //root
         for (JCTree jcTree : mAst.getTypeDecls()) {
-            Expression expression = getStatementContainsCursor(jcTree);
+            Expression expression = getExpressionContainsCursor(jcTree);
             if (expression != null) {
                 return expression;
             }
@@ -177,14 +177,14 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
     }
 
     @Nullable
-    private Expression getStatementContainsCursor(JCTree tree) {
+    private Expression getExpressionContainsCursor(JCTree tree) {
         if (!isCursorInsideTree(tree)) {
             return null;
         }
 
         //class declared
         if (tree instanceof JCClassDecl) {
-            return getStatementFromClass((JCClassDecl) tree);
+            return getExpressionFromClass((JCClassDecl) tree);
         }
         return null;
     }
@@ -201,7 +201,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
                     getExpressionFromStatements(statements));
 
         } else if (statement instanceof JCClassDecl) {
-            return getStatementFromClass((JCClassDecl) statement);
+            return getExpressionFromClass((JCClassDecl) statement);
 
         } else if (statement instanceof JCDoWhileLoop) {
             JCDoWhileLoop jcDoWhileLoop = (JCDoWhileLoop) statement;
@@ -374,7 +374,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
     }
 
     @Nullable
-    private Expression getStatementFromClass(JCClassDecl tree) {
+    private Expression getExpressionFromClass(JCClassDecl tree) {
         System.out.println("CompleteExpression.getStatementFromClass");
 
         if (!isCursorInsideTree(tree)) {
@@ -392,7 +392,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
 
             } else if (member instanceof JCClassDecl) {
 
-                expression = getStatementFromClass((JCClassDecl) member);
+                expression = getExpressionFromClass((JCClassDecl) member);
             }
 
             if (expression != null) {

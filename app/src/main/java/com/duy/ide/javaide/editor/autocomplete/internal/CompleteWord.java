@@ -15,14 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal.completed;
+package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
-import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
 import com.duy.ide.javaide.editor.autocomplete.model.KeywordDescription;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
 import com.duy.ide.javaide.utils.DLog;
@@ -35,8 +34,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteThisKeyword.addMethod;
-import static com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteThisKeyword.addVariable;
+import static com.duy.ide.javaide.editor.autocomplete.internal.CompleteThisKeyword.addMethod;
+import static com.duy.ide.javaide.editor.autocomplete.internal.CompleteThisKeyword.addVariable;
 
 /**
  * Final complete, no context, suggest class name, method name,
@@ -74,7 +73,7 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
     }
 
     @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
+    public boolean process(JCTree.JCCompilationUnit ast, Editor editor, Expression expression, String statement, ArrayList<SuggestItem> result) {
         return getSuggestionInternal(editor, statement, result);
     }
 

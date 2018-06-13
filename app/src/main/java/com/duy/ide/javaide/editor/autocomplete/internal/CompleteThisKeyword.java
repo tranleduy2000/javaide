@@ -15,17 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal.completed;
+package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
-import com.duy.ide.javaide.editor.autocomplete.internal.Patterns;
 import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
-import com.duy.ide.javaide.utils.DLog;
 import com.sun.tools.javac.tree.JCTree;
 
 import java.util.ArrayList;
@@ -83,28 +80,14 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
     }
 
     @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
+    public boolean process(JCCompilationUnit ast, Editor editor, Expression expression, String statement, ArrayList<SuggestItem> result) {
         Matcher matcher = THIS_DOT.matcher(statement);
         if (matcher.find()) {
-            JCCompilationUnit ast;
-            try {
-                ast = mJavaParser.parse(editor.getText());
-            } catch (Exception e) {
-                if (DLog.DEBUG) DLog.d(TAG, "process: can not parse");
-                return false;
-            }
             getSuggestionInternal(editor, result, ast, "");
             return true;
         }
         matcher = THIS_DOT_EXPR.matcher(statement);
         if (matcher.find()) {
-            JCCompilationUnit ast;
-            try {
-                ast = mJavaParser.parse(editor.getText());
-            } catch (Exception e) {
-                if (DLog.DEBUG) DLog.d(TAG, "process: can not parse");
-                return false;
-            }
             String incomplete = matcher.group(1);
             getSuggestionInternal(editor, result, ast, incomplete);
             return true;

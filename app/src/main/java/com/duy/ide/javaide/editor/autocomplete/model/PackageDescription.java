@@ -21,7 +21,7 @@ import android.support.annotation.NonNull;
 import android.text.Editable;
 
 import com.duy.ide.editor.view.IEditAreaView;
-import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompletePackage;
+import com.duy.ide.javaide.editor.autocomplete.internal.CompletePackage;
 
 import java.util.HashMap;
 

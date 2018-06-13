@@ -15,15 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal.completed;
+package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
 import com.duy.ide.javaide.editor.autocomplete.parser.PackageManager;
 import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
 import com.duy.ide.javaide.utils.DLog;
+import com.sun.tools.javac.tree.JCTree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class CompletePackage extends JavaCompleteMatcherImpl {
     }
 
     @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
+    public boolean process(JCTree.JCCompilationUnit ast, Editor editor, Expression expression, String statement, ArrayList<SuggestItem> result) {
         Matcher matcher = PACKAGE.matcher(statement);
         if (matcher.find()) {
             if (DLog.DEBUG) DLog.d(TAG, "process: package found");

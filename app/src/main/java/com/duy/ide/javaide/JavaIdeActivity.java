@@ -50,7 +50,7 @@ import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.editor.IEditorDelegate;
 import com.duy.ide.javaide.diagnostic.parser.aapt.AaptOutputParser;
 import com.duy.ide.javaide.diagnostic.parser.java.JavaOutputParser;
-import com.duy.ide.javaide.editor.autocomplete.JavaAutoComplete2;
+import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.editor.format.JavaIdeCodeFormatProvider;
 import com.duy.ide.javaide.menu.JavaMenuManager;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
@@ -141,7 +141,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
 //                        JavaAutoCompleteProvider provider;
 //                        provider = new JavaAutoCompleteProvider(JavaIdeActivity.this);
 //                        provider.load(mProject);
-                        JavaAutoComplete2 provider = new JavaAutoComplete2(JavaIdeActivity.this);
+                        JavaAutoCompleteProvider provider = new JavaAutoCompleteProvider(JavaIdeActivity.this);
                         provider.load(mProject);
                         mAutoCompleteProvider = provider;
                         populateAutoCompleteService(mAutoCompleteProvider);

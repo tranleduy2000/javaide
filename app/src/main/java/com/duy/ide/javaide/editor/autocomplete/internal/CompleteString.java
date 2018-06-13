@@ -15,16 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal.completed;
+package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
 import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.utils.DLog;
+import com.sun.tools.javac.tree.JCTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class CompleteString extends JavaCompleteMatcherImpl {
     }
 
     @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> suggestItems) {
+    public boolean process(JCTree.JCCompilationUnit ast, Editor editor, Expression expression, String statement, ArrayList<SuggestItem> suggestItems) {
         Matcher matcher = STRING_DOT.matcher(statement);
         if (matcher.find()) {
             if (DLog.DEBUG) DLog.d(TAG, "process: string dot found");

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal.completed;
+package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -24,9 +24,8 @@ import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
-import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
-import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.utils.DLog;
+import com.sun.tools.javac.tree.JCTree;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ public class CompleteTypeDeclared extends JavaCompleteMatcherImpl {
     }
 
     @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
+    public boolean process(JCTree.JCCompilationUnit ast, Editor editor, Expression expression, String statement, ArrayList<SuggestItem> result) {
         Matcher matcher = CLASS_DECLARE.matcher(statement);
         if (matcher.find()) {
             matcher = END_IMPLEMENTS.matcher(statement);

@@ -15,16 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal.completed;
+package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
 import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.PrimitiveArrayConstructorDescription;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
+import com.sun.tools.javac.tree.JCTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,9 @@ public class CompleteNewKeyword extends JavaCompleteMatcherImpl {
     }
 
     @Override
-    public boolean process(Editor editor, String statement, ArrayList<SuggestItem> result) {
+    public boolean process(JCTree.JCCompilationUnit ast,
+                           Editor editor, Expression expression,
+                           String statement, ArrayList<SuggestItem> result) {
         Matcher matcher = NEW_CLASS.matcher(statement);
         if (matcher.find()) {
             String incompleteCts = matcher.group(2);

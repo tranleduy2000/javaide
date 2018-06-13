@@ -19,7 +19,7 @@ package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassReader;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.utils.DLog;
@@ -51,8 +51,8 @@ public class CompleteClassMember extends JavaCompleteMatcherImpl implements IJav
             className = "";
             incomplete = expression;
         }
-        JavaClassReader classReader = mClassLoader.getClassReader();
-        ClassDescription clazz = classReader.readClassByName(className, null);
+        JavaClassManager classReader = mClassLoader.getClassReader();
+        ClassDescription clazz = classReader.getParsedClass(className, null);
         if (clazz != null) {
             if (DLog.DEBUG) DLog.d(TAG, "getSuggestion: found " + className);
             ArrayList<SuggestItem> members = clazz.getMember(incomplete);

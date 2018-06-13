@@ -23,7 +23,7 @@ import com.android.annotations.Nullable;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.IField;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassReader;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -48,7 +48,7 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member, IFi
 
     public FieldDescription(Field field) {
         this.mName = field.getName();
-        this.mType = JavaClassReader.getInstance().getClassWrapper(field.getType());
+        this.mType = JavaClassManager.getInstance().getClassWrapper(field.getType());
         this.mModifiers = field.getModifiers();
 
         if (Modifier.isStatic(mModifiers)) {

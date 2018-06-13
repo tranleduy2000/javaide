@@ -29,7 +29,7 @@ import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassReader;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
@@ -515,7 +515,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
             ArrayList<String> possibleClassName = getPossibleClassName(src, ident, "");
             for (String className : possibleClassName) {
-                ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(className, null);
+                ClassDescription classDescription = mClassLoader.getClassReader().getParsedClass(className, null);
                 if (classDescription != null) {
                     return className;
                 }
@@ -538,7 +538,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     @NonNull
     private ArrayList<SuggestItem> getStaticAccess(String className) {
-        ClassDescription classDescription = mClassLoader.getClassReader().readClassByName(className, null);
+        ClassDescription classDescription = mClassLoader.getClassReader().getParsedClass(className, null);
         ArrayList<SuggestItem> result = new ArrayList<>();
         if (classDescription != null) {
             for (FieldDescription fieldDescription : classDescription.getFields()) {
@@ -559,8 +559,8 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     private ArrayList<SuggestItem> getClassMembers(String fullClassName, String incomplete) {
         ArrayList<SuggestItem> descriptions = new ArrayList<>();
-        JavaClassReader classReader = mClassLoader.getClassReader();
-        ClassDescription clazz = classReader.readClassByName(fullClassName, null);
+        JavaClassManager classReader = mClassLoader.getClassReader();
+        ClassDescription clazz = classReader.getParsedClass(fullClassName, null);
         if (clazz != null) {
             ArrayList<SuggestItem> members = clazz.getMember(incomplete);
             setInfo(members);

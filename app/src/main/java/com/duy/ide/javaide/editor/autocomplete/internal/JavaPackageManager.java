@@ -22,7 +22,7 @@ import android.util.Log;
 
 import com.android.annotations.Nullable;
 import com.duy.android.compiler.project.JavaProject;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassReader;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
 
 import java.io.File;
@@ -41,7 +41,7 @@ public class JavaPackageManager {
         root = PackageDescription.root();
     }
 
-    public void init(JavaProject projectFile, JavaClassReader classReader) {
+    public void init(JavaProject projectFile, JavaClassManager classReader) {
         Log.d(TAG, "init() called with: classReader = [" + classReader + "]");
 
         ArrayList<Class> classes = classReader.getAllClasses();

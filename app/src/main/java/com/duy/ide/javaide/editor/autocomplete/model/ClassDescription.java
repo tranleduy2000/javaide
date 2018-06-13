@@ -29,7 +29,7 @@ import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.IField;
 import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassReader;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Constructor;
@@ -58,7 +58,7 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     public ClassDescription(Class c) {
         mClassName = c.getName();
         if (c.getSuperclass() != null) {
-            mSuperClass = JavaClassReader.getInstance().getClassWrapper(c.getSuperclass());
+            mSuperClass = JavaClassManager.getInstance().getClassWrapper(c.getSuperclass());
         } else {
             mSuperClass = null;
         }

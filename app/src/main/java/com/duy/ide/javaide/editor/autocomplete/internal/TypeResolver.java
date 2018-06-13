@@ -90,7 +90,7 @@ public class TypeResolver {
                         }
                     }
                     System.out.println("className = " + className);
-                    currentType = mClassLoader.getClassReader().readClassByName(className, null);
+                    currentType = mClassLoader.getClassReader().getParsedClass(className, null);
                 }
                 // TODO: 13-Jun-18  case: static import
                 // TODO: 13-Jun-18  case inner class

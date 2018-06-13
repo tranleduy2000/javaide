@@ -59,13 +59,13 @@ public class JavaDexClassLoader {
     };
 
     private static final String TAG = "JavaDexClassLoader";
-    private JavaClassReader mClassReader;
+    private JavaClassManager mClassReader;
 
     public JavaDexClassLoader(File classpath, File outDir) {
-        mClassReader = JavaClassReader.getInstance(classpath, outDir);
+        mClassReader = JavaClassManager.getInstance(classpath, outDir);
     }
 
-    public JavaClassReader getClassReader() {
+    public JavaClassManager getClassReader() {
         return mClassReader;
     }
 
@@ -99,7 +99,7 @@ public class JavaDexClassLoader {
 
 
     public ClassDescription loadClass(String className) {
-        return mClassReader.readClassByName(className, null);
+        return mClassReader.getParsedClass(className, null);
     }
 
     public void loadAllClasses(JavaProject projectFile) {

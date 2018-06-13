@@ -26,7 +26,7 @@ import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassReader;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
 
 import java.lang.reflect.Method;
@@ -54,7 +54,7 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
     public MethodDescription(@NonNull Method method) {
         mName = method.getName();
         mModifiers = method.getModifiers();
-        mReturnType = JavaClassReader.getInstance().getClassWrapper(method.getReturnType());
+        mReturnType = JavaClassManager.getInstance().getClassWrapper(method.getReturnType());
         Class<?>[] parameterTypes = method.getParameterTypes();
         for (Class<?> parameterType : parameterTypes) {
             mParameterTypes.add(parameterType.getName());
@@ -98,7 +98,7 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
             }
             cursor++;
         }
-        if (getMethodReturnType().getFullClassName().equals(void.class.getName())) {
+        if (void.class.getName().equals(getMethodReturnType().getFullClassName())) {
             return true;
         }
         return false;
@@ -141,6 +141,9 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
 
     @Override
     public String getReturnType() {
+        if (mReturnType == null) {
+            return "";
+        }
         return mReturnType.getSimpleName();
     }
 

@@ -78,15 +78,23 @@ public class TypeResolver {
                 JCVariableDecl variableDecl = getVariableDeclaration(mUnit, jcIdent);
                 if (DLog.DEBUG) DLog.d(TAG, "variableDecl = " + variableDecl);
                 if (variableDecl != null) {
-                    String className = variableDecl.getType().toString();
+                    String className;
+                    if (variableDecl.getType() instanceof JCTree.JCTypeApply) {   //generic
+                        className = ((JCTree.JCTypeApply) variableDecl.getType()).getType().toString();
+                    } else {
+                        className = variableDecl.getType().toString();
+                    }
                     //try to find full class name
                     className = findImportedClassName(className);
+                    currentType = mClassLoader.getClassReader().getParsedClass(className);
+                } else {
+                    //case: System.out -> find imported class, this expression can be static access
+                    String className = findImportedClassName(jcIdent.getName().toString());
                     currentType = mClassLoader.getClassReader().getParsedClass(className);
                 }
                 // TODO: 13-Jun-18  case: static import
                 // TODO: 13-Jun-18  case inner class
             } else if (tree instanceof JCMethodInvocation) {
-
                 // TODO: 13-Jun-18 find method in current class or import static
                 JCMethodInvocation jcMethod = (JCMethodInvocation) tree;
                 JCExpression methodSelect = jcMethod.getMethodSelect();

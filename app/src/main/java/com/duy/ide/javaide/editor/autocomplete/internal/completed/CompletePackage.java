@@ -21,7 +21,7 @@ import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
-import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
+import com.duy.ide.javaide.editor.autocomplete.parser.PackageManager;
 import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
 import com.duy.ide.javaide.utils.DLog;
 
@@ -49,10 +49,10 @@ public class CompletePackage extends JavaCompleteMatcherImpl {
             = Pattern.compile("^\\s*import(\\s+static)?\\s+([_A-Za-z0-9.]+)");
 
     @NonNull
-    private final JavaPackageManager mJavaPackageManager;
+    private final PackageManager mPackageManager;
 
-    public CompletePackage(@NonNull JavaPackageManager javaPackageManager) {
-        mJavaPackageManager = javaPackageManager;
+    public CompletePackage(@NonNull PackageManager packageManager) {
+        mPackageManager = packageManager;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class CompletePackage extends JavaCompleteMatcherImpl {
         String completedPart = expr.substring(0, lastDotIndex /*not contains dot*/);
         String incompletePart = expr.substring(lastDotIndex + 1);
 
-        PackageDescription packages = mJavaPackageManager.trace(completedPart);
+        PackageDescription packages = mPackageManager.trace(completedPart);
         if (packages != null) {
             //members of current package
             //such as java has more member (util, io, lang)

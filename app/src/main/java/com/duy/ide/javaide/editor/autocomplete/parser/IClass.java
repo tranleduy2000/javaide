@@ -19,12 +19,15 @@ package com.duy.ide.javaide.editor.autocomplete.parser;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
+import com.duy.ide.code.api.SuggestItem;
+import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public interface IClass {
+public interface IClass extends SuggestItem {
     int getModifiers();
 
     @Nullable
@@ -39,6 +42,8 @@ public interface IClass {
 
     boolean isPrimitive();
 
+    boolean isAnnotation();
+
     @Nullable
     IMethod getMethod(@NonNull String methodName, @Nullable IClass[] argsType);
 
@@ -47,6 +52,12 @@ public interface IClass {
 
     ArrayList<MethodDescription> getMethods();
 
+    @Nullable
+    IClass getSuperclass();
+
     ArrayList<FieldDescription> getFields();
 
+    List<SuggestItem> getMember(String prefix);
+
+    List<ConstructorDescription> getConstructors();
 }

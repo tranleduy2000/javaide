@@ -27,7 +27,7 @@ import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteExpression;
 import com.duy.ide.javaide.editor.autocomplete.internal.IJavaCompleteMatcher;
-import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
+import com.duy.ide.javaide.editor.autocomplete.parser.PackageManager;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
 import com.duy.ide.javaide.editor.autocomplete.internal.StatementParser;
 import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteNewKeyword;
@@ -48,14 +48,14 @@ public class JavaAutoComplete2 implements SuggestionProvider {
     private static final String TAG = "JavaAutoComplete2";
     private final ArrayList<IJavaCompleteMatcher> mJavaAutoCompletes = new ArrayList<>();
     private JavaDexClassLoader mClassLoader;
-    private JavaPackageManager mJavaPackageManager;
+    private PackageManager mPackageManager;
     private PackageImporter mPackageImporter;
     private JavaParser mJavaParser;
 
     public JavaAutoComplete2(Context context) {
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
         mClassLoader = new JavaDexClassLoader(Environment.getClasspathFile(context), outDir);
-        mJavaPackageManager = new JavaPackageManager();
+        mPackageManager = new PackageManager();
         mJavaParser = new JavaParser();
 
         addAutoComplete();
@@ -63,14 +63,14 @@ public class JavaAutoComplete2 implements SuggestionProvider {
 
     public void load(JavaProject projectFile) {
         mClassLoader.loadAllClasses(projectFile);
-        mJavaPackageManager.init(projectFile, mClassLoader.getClassReader());
+        mPackageManager.init(projectFile, mClassLoader.getClassReader());
     }
 
     private void addAutoComplete() {
         mJavaAutoCompletes.add(new CompleteExpression(mJavaParser, mClassLoader));
         mJavaAutoCompletes.add(new CompleteClassMember(mClassLoader));
         mJavaAutoCompletes.add(new CompleteNewKeyword(mClassLoader));
-        mJavaAutoCompletes.add(new CompletePackage(mJavaPackageManager));
+        mJavaAutoCompletes.add(new CompletePackage(mPackageManager));
         mJavaAutoCompletes.add(new CompleteString(mClassLoader));
         mJavaAutoCompletes.add(new CompleteTypeDeclared(mClassLoader));
         mJavaAutoCompletes.add(new CompleteThisKeyword(mJavaParser));

@@ -15,14 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.editor.autocomplete.internal;
+package com.duy.ide.javaide.editor.autocomplete.parser;
 
 import android.os.FileObserver;
 import android.util.Log;
 
 import com.android.annotations.Nullable;
 import com.duy.android.compiler.project.JavaProject;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.model.PackageDescription;
 
 import java.io.File;
@@ -32,21 +31,21 @@ import java.util.ArrayList;
  * Created by Duy on 20-Jul-17.
  */
 
-public class JavaPackageManager {
+public class PackageManager {
     private static final String TAG = "AutoCompletePackage";
     private PackageDescription root;
     private FileObserver fileObserver;
 
-    public JavaPackageManager() {
+    public PackageManager() {
         root = PackageDescription.root();
     }
 
     public void init(JavaProject projectFile, JavaClassManager classReader) {
         Log.d(TAG, "init() called with: classReader = [" + classReader + "]");
 
-        ArrayList<Class> classes = classReader.getAllClasses();
-        for (Class aClass : classes) {
-            root.put(aClass.getName());
+        ArrayList<IClass> classes = classReader.getAllClasses();
+        for (IClass clazz : classes) {
+            root.put(clazz.getFullClassName());
         }
         // TODO: 16-Aug-17 file watcher
 //        final String parentPath = projectFile.getDirSrcJava().getPath();

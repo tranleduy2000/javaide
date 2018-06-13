@@ -51,9 +51,9 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     private final ArrayList<MethodDescription> mMethods = new ArrayList<>();
     private final ArrayList<ClassDescription> mImplements = new ArrayList<>();
     @Nullable
-    private final ClassDescription mSuperClass;
+    private final IClass mSuperClass;
     private final int mModifiers;
-    private final boolean mPrimitive;
+    private final boolean mPrimitive, mAnnotation, mEum;
 
     public ClassDescription(Class c) {
         mClassName = c.getName();
@@ -64,6 +64,8 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
         }
         mModifiers = c.getModifiers();
         mPrimitive = c.isPrimitive();
+        mAnnotation = c.isAnnotation();
+        mEum = c.isEnum();
     }
 
     @Override
@@ -117,8 +119,9 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
         return mClassName;
     }
 
+    @Override
     @Nullable
-    public ClassDescription getSuperclass() {
+    public IClass getSuperclass() {
         return mSuperClass;
     }
 
@@ -195,19 +198,17 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
 
 
     public boolean isEnum() {
-        // An enum must both directly extend java.lang.Enum and have
-        // the ENUM bit set; classes for specialized enum constants
-        // don't do the former.
-        if (getSuperclass() == null) {
-            return false;
-        }
-        return this.getSuperclass().getFullClassName()
-                .equals(java.lang.Enum.class.getName());
+        return mEum;
     }
 
     @Override
     public boolean isPrimitive() {
-        return false;
+        return mPrimitive;
+    }
+
+    @Override
+    public boolean isAnnotation() {
+        return mAnnotation;
     }
 
     @Override

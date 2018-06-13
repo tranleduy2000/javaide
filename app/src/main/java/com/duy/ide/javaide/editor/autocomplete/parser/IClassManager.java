@@ -15,17 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.common.interfaces;
+package com.duy.ide.javaide.editor.autocomplete.parser;
 
-/**
- * Simple filter acting as a boolean predicate. Method accepts return true if
- * the supplied element matches against the filter.
- */
-public interface Filter<T> {
-    /**
-     * Does this element match against the filter?
-     * @param t element to be checked
-     * @return true if the element satisfy constraints imposed by filter
-     */
-    boolean accept(T t);
+import android.support.annotation.Nullable;
+
+import com.android.annotations.NonNull;
+import com.duy.common.interfaces.Filter;
+
+import java.util.List;
+
+public interface IClassManager {
+    void update(IClass clazz);
+
+    void remove(String fullClassName);
+
+    @NonNull
+    List<IClass> find(@NonNull String simpleNamePrefix,
+                      @Nullable Filter<IClass> filter);
 }

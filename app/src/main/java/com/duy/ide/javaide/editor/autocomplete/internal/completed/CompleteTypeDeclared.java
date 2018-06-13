@@ -22,6 +22,7 @@ import com.android.annotations.Nullable;
 import com.duy.common.interfaces.Filter;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
+import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
@@ -102,12 +103,12 @@ public class CompleteTypeDeclared extends JavaCompleteMatcherImpl {
                                           @Nullable String declareType) {
 
         //filter interfaces or classes
-        Filter<Class> filter = null;
+        Filter<IClass> filter = null;
         switch (declareType) {
             case "interface":
-                filter = new Filter<Class>() {
+                filter = new Filter<IClass>() {
                     @Override
-                    public boolean accepts(Class clazz) {
+                    public boolean accept(IClass clazz) {
                         if (Modifier.isFinal(clazz.getModifiers())) {
                             return false;
                         }
@@ -120,9 +121,9 @@ public class CompleteTypeDeclared extends JavaCompleteMatcherImpl {
                 };
                 break;
             case "class":
-                filter = new Filter<Class>() {
+                filter = new Filter<IClass>() {
                     @Override
-                    public boolean accepts(Class clazz) {
+                    public boolean accept(IClass clazz) {
                         if (Modifier.isFinal(clazz.getModifiers())) {
                             return false;
                         }
@@ -136,7 +137,7 @@ public class CompleteTypeDeclared extends JavaCompleteMatcherImpl {
                 break;
         }
 
-        ArrayList<ClassDescription> classes = mClassLoader.findAllWithPrefix(incomplete, filter);
+        List<IClass> classes = mClassLoader.findAllWithPrefix(incomplete, filter);
         if (classes.size() > 0) {
             setInfo(classes, editor, incomplete);
             result.addAll(classes);

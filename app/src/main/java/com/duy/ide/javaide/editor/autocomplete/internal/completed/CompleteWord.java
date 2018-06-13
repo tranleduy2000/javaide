@@ -20,6 +20,7 @@ package com.duy.ide.javaide.editor.autocomplete.internal.completed;
 import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
+import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
 import com.duy.ide.javaide.editor.autocomplete.model.KeywordDescription;
@@ -120,7 +121,7 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
         getPossibleResult(editor, suggestItems, ast, incomplete);
 
         //find all class start with incomplete
-        ArrayList<? extends SuggestItem> classes = mClassLoader.findAllWithPrefix(incomplete);
+        List<IClass> classes = mClassLoader.findAllWithPrefix(incomplete);
 
         setInfo(classes, editor, incomplete);
         suggestItems.addAll(classes);

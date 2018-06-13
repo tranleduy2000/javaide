@@ -22,43 +22,40 @@ import android.support.annotation.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.interfaces.Filter;
-import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Duy on 20-Jul-17.
  */
 
 public class JavaDexClassLoader {
-    private static final Filter<Class> mClassFilter = new Filter<Class>() {
+    private static final Filter<IClass> mClassFilter = new Filter<IClass>() {
         @Override
-        public boolean accepts(Class aClass) {
-            return !(aClass.isAnnotation() || aClass.isInterface() || aClass.isEnum()
-                    && aClass.isAnonymousClass() || aClass.isSynthetic());
+        public boolean accept(IClass aClass) {
+            return !(aClass.isAnnotation() || aClass.isInterface() || aClass.isEnum());
         }
     };
-    private static final Filter<Class> mEnumFilter = new Filter<Class>() {
+    private static final Filter<IClass> mEnumFilter = new Filter<IClass>() {
         @Override
-        public boolean accepts(Class aClass) {
+        public boolean accept(IClass aClass) {
             return aClass.isEnum();
         }
     };
-    private static final Filter<Class> mInterfaceFilter = new Filter<Class>() {
+    private static final Filter<IClass> mInterfaceFilter = new Filter<IClass>() {
         @Override
-        public boolean accepts(Class aClass) {
+        public boolean accept(IClass aClass) {
             return aClass.isInterface();
         }
     };
-    private static final Filter<Class> mAnnotationFilter = new Filter<Class>() {
+    private static final Filter<IClass> mAnnotationFilter = new Filter<IClass>() {
         @Override
-        public boolean accepts(Class aClass) {
+        public boolean accept(IClass aClass) {
             return aClass.isAnnotation();
         }
     };
 
-    private static final String TAG = "JavaDexClassLoader";
     private JavaClassManager mClassReader;
 
     public JavaDexClassLoader(File classpath, File outDir) {
@@ -70,39 +67,35 @@ public class JavaDexClassLoader {
     }
 
     @NonNull
-    public ArrayList<ClassDescription> findAllWithPrefix(String simpleNamePrefix) {
+    public List<IClass> findAllWithPrefix(String simpleNamePrefix) {
         return mClassReader.find(simpleNamePrefix, null);
     }
 
     @NonNull
-    public ArrayList<ClassDescription> findAllWithPrefix(@NonNull String simpleNamePrefix,
-                                                         @Nullable Filter<Class> filter) {
+    public List<IClass> findAllWithPrefix(@NonNull String simpleNamePrefix,
+                                          @Nullable Filter<IClass> filter) {
         return mClassReader.find(simpleNamePrefix, filter);
     }
 
-    public ArrayList<ClassDescription> findClasses(String simpleNamePrefix) {
+    public List<IClass> findClasses(String simpleNamePrefix) {
         return mClassReader.find(simpleNamePrefix, mClassFilter);
     }
 
-    public ArrayList<ClassDescription> findInterfaces(String simpleNamePrefix) {
+    public List<IClass> findInterfaces(String simpleNamePrefix) {
         return mClassReader.find(simpleNamePrefix, mInterfaceFilter);
     }
 
-    public ArrayList<ClassDescription> findEnums(String simpleNamePrefix) {
+    public List<IClass> findEnums(String simpleNamePrefix) {
         return mClassReader.find(simpleNamePrefix, mEnumFilter);
 
     }
 
-    public ArrayList<ClassDescription> findAnnotations(String simpleNamePrefix) {
+    public List<IClass> findAnnotations(String simpleNamePrefix) {
         return mClassReader.find(simpleNamePrefix, mAnnotationFilter);
     }
 
 
-    public ClassDescription loadClass(String className) {
-        return mClassReader.getParsedClass(className, null);
-    }
-
     public void loadAllClasses(JavaProject projectFile) {
-        mClassReader.load(projectFile);
+        mClassReader.loadFromProject(projectFile);
     }
 }

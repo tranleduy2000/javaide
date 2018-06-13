@@ -22,7 +22,7 @@ import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.model.JavaSuggestItemImpl;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public abstract class JavaCompleteMatcherImpl implements IJavaCompleteMatcher {
@@ -59,7 +59,7 @@ public abstract class JavaCompleteMatcherImpl implements IJavaCompleteMatcher {
 
     private static final String TAG = "JavaCompleteMatcherImpl";
 
-    protected static void setInfo(ArrayList<? extends SuggestItem> members, Editor editor, String incomplete) {
+    protected static void setInfo(List<? extends SuggestItem> members, Editor editor, String incomplete) {
         for (SuggestItem member : members) {
             if (member instanceof JavaSuggestItemImpl) {
                 setInfo((JavaSuggestItemImpl) member, editor, incomplete);

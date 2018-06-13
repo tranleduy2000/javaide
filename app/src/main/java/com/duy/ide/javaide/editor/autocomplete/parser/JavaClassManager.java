@@ -18,56 +18,48 @@
 package com.duy.ide.javaide.editor.autocomplete.parser;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.android.annotations.NonNull;
-import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.data.Pair;
 import com.duy.common.interfaces.Filter;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import dalvik.system.DexClassLoader;
 
 /**
  * Created by Duy on 20-Jul-17.
  */
 
-public class JavaClassManager {
+public class JavaClassManager implements IClassManager {
 
     private static final String TAG = "JavaClassReader";
     private static JavaClassManager INSTANCE;
 
     /**
-     * All classes sorted by simple class name
+     * All classes sorted by simple class name, fastest find list of classes start with prefix
      */
-    private final ArrayList<Pair<String, Class>> mSimpleClasses = new ArrayList<>();
-    private final HashMap<String, ClassDescription> mLoaded = new HashMap<>();
-
-    private boolean loaded = false;
-    private File mClasspath;
-    private File mTempDir;
+    private final ArrayList<Pair<String, IClass>> mSimpleNames = new ArrayList<>();
     /**
-     * All classes sorted by full class name
+     * All classes sorted by full class name, use for faster find class name by using binary search
      */
-    private ArrayList<Class> mClasses = new ArrayList<>();
+    private final ArrayList<IClass> mFullNames = new ArrayList<>();
+    /**
+     * Map contains parsed class, parsed class is java class in jar file or from user
+     */
+    private final HashMap<String, IClass> mLoaded = new HashMap<>();
 
+    private File mBootClasspath;
+    private File mTempDir;
 
-    private JavaClassManager(File classpath, File tempDir) {
-        this.mClasspath = classpath;
-        this.mTempDir = tempDir;
+    private JavaClassManager(File bootClassPath, File tempDir) {
+        mBootClasspath = bootClassPath;
+        mTempDir = tempDir;
     }
 
     public static JavaClassManager getInstance(File classpath, File tempDir) {
@@ -78,151 +70,49 @@ public class JavaClassManager {
     }
 
     public static JavaClassManager getInstance() {
+        if (INSTANCE == null) {
+            throw new RuntimeException("JavaClassManager not init");
+        }
         return INSTANCE;
     }
 
-    public ArrayList<Class> getAllClasses() {
-        return mClasses;
+    @NonNull
+    public ArrayList<IClass> getAllClasses() {
+        return mFullNames;
     }
 
-    public ArrayList<Class> getAllClassesFromProject(@NonNull JavaProject projectFolder) {
-        ArrayList<Class> classes = new ArrayList<>();
-        boolean android = projectFolder instanceof AndroidAppProject;
-        //load all class from classpath
-        if (mClasspath != null) {
-            classes.addAll(getAllClassesFromJar(android, mClasspath));
-        }
-        if (projectFolder.getDirBuildDexedLibs().listFiles() != null
-                && projectFolder.getDirBuildDexedLibs().listFiles().length > 0) {
-            for (File lib : projectFolder.getDirBuildDexedLibs().listFiles()) {
-                if (lib.getPath().endsWith(".jar")) {
-                    classes.addAll(getAllClassesFromJar(android, lib));
-                } else if (lib.getPath().endsWith(".dex")) {
-                    classes.addAll(getAllClassesFromDex(android, lib.getPath()));
-                }
-            }
-        }
-        return classes;
-    }
-
-    private Collection<? extends Class> getAllClassesFromDex(boolean android, String path) {
-        Log.d(TAG, "getAllClassesFromDex() called with: android = [" + android + "], path = [" + path + "]");
-        DexClassLoader dexClassLoader = new DexClassLoader(path,
-                mTempDir.getAbsolutePath(),
-                null, ClassLoader.getSystemClassLoader());
-        ArrayList<Class> classes = new ArrayList<>();
-        try {
-            dalvik.system.DexFile dexFile = new dalvik.system.DexFile(path);
-            for (Enumeration<String> iter = dexFile.entries(); iter.hasMoreElements(); ) {
-                String className = iter.nextElement();
-                try {
-                    if (android) {
-                        Class c = dexClassLoader.loadClass(className);
-                        classes.add(c);
-                    } else if (!className.startsWith("android")) {
-                        Class c = dexClassLoader.loadClass(className);
-                        classes.add(c);
-                    }
-                } catch (ClassNotFoundException e1) {
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return classes;
-    }
-
-    private ArrayList<Class> getAllClassesFromJar(boolean android, File path) {
-        DexClassLoader dexClassLoader = new DexClassLoader(path.getPath(),
-                mTempDir.getAbsolutePath(),
-                null, ClassLoader.getSystemClassLoader());
-        ArrayList<Class> classes = new ArrayList<>();
-        try {
-            JarFile jarFile = new JarFile(path);
-            Enumeration<JarEntry> e = jarFile.entries();
-
-            while (e.hasMoreElements()) {
-                JarEntry je = e.nextElement();
-                if (je.isDirectory() || !je.getName().endsWith(".class")) {
-                    continue;
-                }
-                String className = je.getName().substring(0, je.getName().length() - 6);
-                className = className.replace('/', '.');
-                try {
-                    if (android) {
-                        Class c = dexClassLoader.loadClass(className);
-                        classes.add(c);
-                    } else if (!className.startsWith("android")) {
-                        Class c = dexClassLoader.loadClass(className);
-                        classes.add(c);
-                    }
-                } catch (ClassNotFoundException e1) {
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return classes;
-    }
-
-    public void load(JavaProject projectFolder) {
-        mClasses.clear();
-        mClasses.addAll(getAllClassesFromProject(projectFolder));
+    public void loadFromProject(JavaProject project) {
         long time = System.currentTimeMillis();
-        Collections.sort(mClasses, new Comparator<Class>() {
+
+        CompiledClassLoader classLoader = new CompiledClassLoader(mBootClasspath, mTempDir);
+        ArrayList<Class> classes = classLoader.getCompiledClassesFromProject(project);
+        Collections.sort(classes, new Comparator<Class>() {
             @Override
             public int compare(Class o1, Class o2) {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-
-        for (Class mClass : mClasses) {
-            mSimpleClasses.add(new Pair<>(mClass.getSimpleName(), mClass));
+        for (Class clazz : classes) {
+            update(getClassWrapper(clazz));
         }
-        Collections.sort(mSimpleClasses, new Comparator<Pair<String, Class>>() {
-            @Override
-            public int compare(Pair<String, Class> o1, Pair<String, Class> o2) {
-                return o1.first.compareTo(o2.first);
-            }
-        });
-
-        System.out.println("load classes " + (System.currentTimeMillis() - time));
-        loaded = true;
-    }
-
-    public void dispose() {
-        mClasses.clear();
+        System.out.println("Loaded classes " + (System.currentTimeMillis() - time));
     }
 
     /**
-     * @param fullClassName - full class name
-     * @param instance      - instant of full class name, can use {@link Class#forName(String)}
+     * @param fullName - full class name
      */
     @Nullable
-    public ClassDescription getParsedClass(String fullClassName,
-                                           @Nullable Class instance) {
-        ClassDescription cache = mLoaded.get(fullClassName);
+    public IClass getParsedClass(String fullName) {
+        IClass cache = mLoaded.get(fullName);
         if (cache != null) {
             return cache;
-        }
-        Class clazz = instance != null ? instance : binarySearch(fullClassName);
-        if (clazz == null) {
-            String javaLangClass = "java.lang." + fullClassName;
-            clazz = binarySearch(javaLangClass);
-        }
-        if (clazz != null) {
-            ClassDescription classDesc = new ClassDescription(clazz);
-            mLoaded.put(fullClassName, classDesc);
-            //careful, infinity loop if init member in cts
-            classDesc.initMembers(clazz);
-            return classDesc;
         }
         return null;
     }
 
     @NonNull
-    public ClassDescription getClassWrapper(@NonNull Class clazz) {
-        ClassDescription cache = mLoaded.get(clazz.getName());
+    public IClass getClassWrapper(@NonNull Class clazz) {
+        IClass cache = mLoaded.get(clazz.getName());
         if (cache != null) {
             return cache;
         }
@@ -232,41 +122,68 @@ public class JavaClassManager {
         return classDesc;
     }
 
-    public void insertParsedClass(String fullName, ClassDescription classDescription) {
-        mLoaded.put(fullName, classDescription);
-    }
+    @Override
+    public void update(IClass value) {
+        String fullClassName = value.getFullClassName();
+        if (mLoaded.containsKey(fullClassName)) {
+            mLoaded.put(fullClassName, value);
+            return;
+        }
 
-    /**
-     * search class
-     *
-     * @param className - full class name
-     */
-    @Nullable
-    private Class binarySearch(String className) {
-        int left = 0;
-        int right = mClasses.size() - 1;
-        while (left <= right) {
-            int mid = (left + right) / 2;
-            Class value = mClasses.get(mid);
-            if (value.getName().equals(className)) {
-                return value;
-            }
-            if (value.getName().compareTo(className) < 0) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+        for (int i = 0; i < mFullNames.size(); i++) {
+            IClass iClass = mFullNames.get(i);
+            if (fullClassName.compareTo(iClass.getFullClassName()) > 0) {
+                mFullNames.add(i, value);
+                break;
             }
         }
-        return null;
+
+        String simpleName = value.getSimpleName();
+        for (int i = 0; i < mSimpleNames.size(); i++) {
+            Pair<String, IClass> pair = mSimpleNames.get(i);
+            if (simpleName.compareTo(pair.first) > 0) {
+                mSimpleNames.add(i, new Pair<>(simpleName, value));
+            }
+        }
+    }
+
+    @Override
+    public void remove(String fullClassName) {
+        IClass remove = mLoaded.remove(fullClassName);
+        int index = Collections.binarySearch(mFullNames, remove,
+                new Comparator<IClass>() {
+                    @Override
+                    public int compare(IClass o1, IClass o2) {
+                        return o1.getFullClassName().compareTo(o2.getFullClassName());
+                    }
+                });
+        if (index >= 0) {
+            mFullNames.remove(index);
+        }
+        Pair<String, IClass> key = new Pair<>(remove.getSimpleName(), remove);
+        index = Collections.binarySearch(mSimpleNames, key,
+                new Comparator<Pair<String, IClass>>() {
+                    @Override
+                    public int compare(Pair<String, IClass> o1,
+                                       Pair<String, IClass> o2) {
+                        return o1.first.compareTo(o2.first);
+                    }
+                });
+        if (index >= 0) {
+            mSimpleNames.remove(index);
+        }
     }
 
     /**
      * search class with binary search
      *
-     * @param simpleName - simple class name
+     * @param classes - sorted classes by name
+     * @param prefix  - prefix if class name
      */
     @Nullable
-    private List<Pair<String, Class>> binarySearch(ArrayList<Pair<String, Class>> classes, String simpleName) {
+    private List<Pair<String, IClass>> binarySearch(
+            @NonNull List<Pair<String, IClass>> classes,
+            @NonNull String prefix) {
         //find left index
         int start = -1, end = -1;
         int left = 0;
@@ -274,23 +191,30 @@ public class JavaClassManager {
         //search left most
         while (left <= right) {
             int mid = (left + right) / 2;
-            String midValue = classes.get(mid).first.substring(0, Math.min(classes.get(mid).first.length(),
-                    simpleName.length()));
-            if (midValue.compareTo(simpleName) < 0) { //mid < key
+            String name = classes.get(mid).first;
+            String midValue = name.substring(0, Math.min(name.length(), prefix.length()));
+            if (midValue.compareTo(prefix) < 0) { //mid < key
                 left = mid + 1;
-            } else if (midValue.compareTo(simpleName) > 0) {
+            } else if (midValue.compareTo(prefix) > 0) {
                 right = mid - 1;
             } else {
+                //now mid = key, find upper and lower bound with linear search
                 start = mid;
                 end = mid;
                 //exit here
-                while (start >= 0 && classes.get(start).first.substring(0, Math.min(classes.get(start).first.length(),
-                        simpleName.length())).equals(simpleName)) {
+                while (start >= 0 &&
+                        classes.get(start)
+                                .first
+                                .substring(0, Math.min(classes.get(start).first.length(), prefix.length()))
+                                .equals(prefix)) {
                     start--;
                 }
                 //exit here
-                while (end < classes.size() && classes.get(end).first.substring(0, Math.min(classes.get(end).first.length(),
-                        simpleName.length())).equals(simpleName)) {
+                while (end < classes.size() &&
+                        classes.get(end)
+                                .first
+                                .substring(0, Math.min(classes.get(end).first.length(), prefix.length()))
+                                .equals(prefix)) {
                     end++;
                 }
                 start++;
@@ -298,34 +222,31 @@ public class JavaClassManager {
                 break;
             }
         }
-        if (end >= 0 && start >= 0 && end - start + 1 >= 1) {
+        if (end >= 0 && start >= 0 && end - start + 1 /*length*/ >= 1) {
             return classes.subList(start, end + 1);
         }
         return null;
     }
 
+    @Override
     @NonNull
-    public ArrayList<ClassDescription> find(@NonNull String simpleNamePrefix,
-                                            @Nullable Filter<Class> filter) {
-        ArrayList<ClassDescription> result = new ArrayList<>();
+    public List<IClass> find(@NonNull String simpleNamePrefix,
+                             @Nullable Filter<IClass> filter) {
+        ArrayList<IClass> result = new ArrayList<>();
 
         //find with simple name
-        List<Pair<String, Class>> simple = binarySearch(mSimpleClasses, simpleNamePrefix);
+        List<Pair<String, IClass>> simple = binarySearch(mSimpleNames, simpleNamePrefix);
         if (simple != null) {
-            for (Pair<String, Class> c : simple) {
+            for (Pair<String, IClass> c : simple) {
                 if (filter != null) {
-                    if (!filter.accepts(c.second)) {
+                    if (!filter.accept(c.second)) {
                         continue;
                     }
                 }
-                ClassDescription classDescription = getClassWrapper(c.second);
-                result.add(classDescription);
+                result.add(c.second);
             }
         }
         return result;
     }
 
-    public boolean isLoaded() {
-        return loaded;
-    }
 }

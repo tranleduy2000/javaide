@@ -20,11 +20,11 @@ package com.duy.ide.javaide.editor.autocomplete.internal.completed;
 import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
 import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.PrimitiveArrayConstructorDescription;
+import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,9 +71,9 @@ public class CompleteNewKeyword extends JavaCompleteMatcherImpl {
 
         boolean handled = false;
         //try to find constructor
-        ArrayList<ClassDescription> classes = mClassLoader.findAllWithPrefix(incomplete);
-        for (ClassDescription clazz : classes) {
-            ArrayList<ConstructorDescription> constructors = clazz.getConstructors();
+        List<IClass> classes = mClassLoader.findAllWithPrefix(incomplete);
+        for (IClass clazz : classes) {
+            List<ConstructorDescription> constructors = clazz.getConstructors();
             setInfo(constructors, editor, incomplete);
             suggestItems.addAll(constructors);
             handled = true;

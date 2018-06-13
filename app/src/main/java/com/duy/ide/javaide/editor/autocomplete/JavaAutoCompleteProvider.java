@@ -28,20 +28,20 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.CompleteClassMember;
-import com.duy.ide.javaide.editor.autocomplete.internal.JavaPackageManager;
 import com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory;
 import com.duy.ide.javaide.editor.autocomplete.internal.Patterns;
 import com.duy.ide.javaide.editor.autocomplete.internal.StatementParser;
 import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteNewKeyword;
 import com.duy.ide.javaide.editor.autocomplete.internal.completed.CompletePackage;
-import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.JavaSuggestItemImpl;
+import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
+import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
+import com.duy.ide.javaide.editor.autocomplete.parser.PackageManager;
 import com.google.common.collect.Lists;
 import com.sun.tools.javac.tree.JCTree;
 
@@ -101,7 +101,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     private final CompletePackage mCompletePackage;
 
     private JavaDexClassLoader mClassLoader;
-    private JavaPackageManager mJavaPackageManager;
+    private PackageManager mPackageManager;
     private JavaParser mJavaParser;
 
     @Nullable
@@ -124,11 +124,11 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     public JavaAutoCompleteProvider(Context context) {
         File outDir = context.getDir("dex", Context.MODE_PRIVATE);
         mClassLoader = new JavaDexClassLoader(Environment.getClasspathFile(context), outDir);
-        mJavaPackageManager = new JavaPackageManager();
+        mPackageManager = new PackageManager();
         mJavaParser = new JavaParser();
         mCompleteNewKeyword = new CompleteNewKeyword(mClassLoader);
         mCompleteClassMember = new CompleteClassMember(mClassLoader);
-        mCompletePackage = new CompletePackage(mJavaPackageManager);
+        mCompletePackage = new CompletePackage(mPackageManager);
     }
 
     private void resolveContextType(Editor editor, String statement) {
@@ -233,7 +233,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         ArrayList<SuggestItem> result = new ArrayList<>();
         //parse current file
 //        getPossibleResultInCurrentFile(result, unit, incomplete);
-        ArrayList<? extends SuggestItem> classes = mClassLoader.findAllWithPrefix(incomplete);
+        List<IClass> classes = mClassLoader.findAllWithPrefix(incomplete);
         setInfo(classes);
         result.addAll(classes);
 
@@ -246,7 +246,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         return result;
     }
 
-    private void setInfo(ArrayList<? extends SuggestItem> items) {
+    private void setInfo(List<? extends SuggestItem> items) {
         for (SuggestItem item : items) {
             if (item instanceof JavaSuggestItemImpl) {
                 ((JavaSuggestItemImpl) item).setEditor(mEditor);
@@ -515,8 +515,8 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
             ArrayList<String> possibleClassName = getPossibleClassName(src, ident, "");
             for (String className : possibleClassName) {
-                ClassDescription classDescription = mClassLoader.getClassReader().getParsedClass(className, null);
-                if (classDescription != null) {
+                IClass clazz = mClassLoader.getClassReader().getParsedClass(className);
+                if (clazz != null) {
                     return className;
                 }
             }
@@ -538,16 +538,16 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     @NonNull
     private ArrayList<SuggestItem> getStaticAccess(String className) {
-        ClassDescription classDescription = mClassLoader.getClassReader().getParsedClass(className, null);
+        IClass clazz = mClassLoader.getClassReader().getParsedClass(className);
         ArrayList<SuggestItem> result = new ArrayList<>();
-        if (classDescription != null) {
-            for (FieldDescription fieldDescription : classDescription.getFields()) {
+        if (clazz != null) {
+            for (FieldDescription fieldDescription : clazz.getFields()) {
                 if (Modifier.isStatic(fieldDescription.getModifiers())
                         && Modifier.isPublic(fieldDescription.getModifiers())) {
                     result.add(fieldDescription);
                 }
             }
-            for (IMethod method : classDescription.getMethods()) {
+            for (IMethod method : clazz.getMethods()) {
                 if (Modifier.isStatic(method.getModifiers())
                         && Modifier.isPublic(method.getModifiers())) {
 //                    result.add(method);
@@ -560,9 +560,9 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     private ArrayList<SuggestItem> getClassMembers(String fullClassName, String incomplete) {
         ArrayList<SuggestItem> descriptions = new ArrayList<>();
         JavaClassManager classReader = mClassLoader.getClassReader();
-        ClassDescription clazz = classReader.getParsedClass(fullClassName, null);
+        IClass clazz = classReader.getParsedClass(fullClassName);
         if (clazz != null) {
-            ArrayList<SuggestItem> members = clazz.getMember(incomplete);
+            List<SuggestItem> members = clazz.getMember(incomplete);
             setInfo(members);
             descriptions.addAll(members);
         }
@@ -729,11 +729,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
 
     public void load(JavaProject projectFile) {
         mClassLoader.loadAllClasses(projectFile);
-        mJavaPackageManager.init(projectFile, mClassLoader.getClassReader());
-    }
-
-    public boolean isLoaded() {
-        return mClassLoader.getClassReader().isLoaded();
+        mPackageManager.init(projectFile, mClassLoader.getClassReader());
     }
 
     @Override

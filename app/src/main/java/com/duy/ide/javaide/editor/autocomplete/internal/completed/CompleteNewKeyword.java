@@ -22,7 +22,7 @@ import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.internal.JavaCompleteMatcherImpl;
-import com.duy.ide.javaide.editor.autocomplete.model.ClassConstructorDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.editor.autocomplete.model.PrimitiveArrayConstructorDescription;
 
@@ -73,7 +73,7 @@ public class CompleteNewKeyword extends JavaCompleteMatcherImpl {
         //try to find constructor
         ArrayList<ClassDescription> classes = mClassLoader.findAllWithPrefix(incomplete);
         for (ClassDescription clazz : classes) {
-            ArrayList<ClassConstructorDescription> constructors = clazz.getConstructors();
+            ArrayList<ConstructorDescription> constructors = clazz.getConstructors();
             setInfo(constructors, editor, incomplete);
             suggestItems.addAll(constructors);
             handled = true;

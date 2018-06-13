@@ -20,6 +20,7 @@ package com.duy.ide.javaide.editor.autocomplete.model;
 
 import android.text.Editable;
 
+import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.common.DLog;
 import com.duy.ide.code.api.SuggestItem;
@@ -43,15 +44,16 @@ import java.util.ArrayList;
 
 public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     private static final String TAG = "ClassDescription";
+    @NonNull
     private final String mClassName;
-    private final ArrayList<ClassConstructorDescription> mConstructors = new ArrayList<>();
+    private final ArrayList<ConstructorDescription> mConstructors = new ArrayList<>();
     private final ArrayList<FieldDescription> mFields = new ArrayList<>();
     private final ArrayList<MethodDescription> mMethods = new ArrayList<>();
     private final ArrayList<ClassDescription> mImplements = new ArrayList<>();
     @Nullable
     private final ClassDescription mSuperClass;
     private final int mModifiers;
-    private boolean mPrimitive;
+    private final boolean mPrimitive;
 
     public ClassDescription(Class c) {
         mClassName = c.getName();
@@ -105,26 +107,26 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
         }
     }
 
-
+    @Override
     public String getSimpleName() {
         return JavaUtil.getSimpleName(mClassName);
     }
 
-
+    @Override
     public String getFullClassName() {
         return mClassName;
     }
 
     @Nullable
-    public final ClassDescription getSuperclass() {
+    public ClassDescription getSuperclass() {
         return mSuperClass;
     }
 
-    public final String getPackageName() {
+    public String getPackageName() {
         return JavaUtil.getPackageName(mClassName);
     }
 
-    public ArrayList<ClassConstructorDescription> getConstructors() {
+    public ArrayList<ConstructorDescription> getConstructors() {
         return mConstructors;
     }
 
@@ -132,7 +134,7 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
         return mFields;
     }
 
-    public void addConstructor(ClassConstructorDescription constructorDescription) {
+    public void addConstructor(ConstructorDescription constructorDescription) {
         this.mConstructors.add(constructorDescription);
     }
 
@@ -156,7 +158,7 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     @SuppressWarnings("ConstantConditions")
     public ArrayList<SuggestItem> getMember(String prefix) {
         ArrayList<SuggestItem> result = new ArrayList<>();
-        for (ClassConstructorDescription constructor : mConstructors) {
+        for (ConstructorDescription constructor : mConstructors) {
             if (!prefix.isEmpty()) {
                 if (constructor.getName().startsWith(prefix)) {
                     result.add(constructor);
@@ -238,7 +240,7 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     public void initMembers(Class c) {
         for (Constructor constructor : c.getConstructors()) {
             if (Modifier.isPublic(constructor.getModifiers())) {
-                addConstructor(new ClassConstructorDescription(constructor));
+                addConstructor(new ConstructorDescription(constructor));
             }
         }
 

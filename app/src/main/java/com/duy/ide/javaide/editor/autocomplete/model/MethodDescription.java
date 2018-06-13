@@ -22,6 +22,7 @@ import android.text.Editable;
 
 import com.android.annotations.Nullable;
 import com.duy.ide.code.api.SuggestItem;
+import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
@@ -68,11 +69,12 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
 
             Editable editable = editorView.getEditableText();
             editable.delete(start, editorView.getSelectionStart());
-            String text = JavaUtil.getSimpleName(mName) + "();";
+            String simpleName = JavaUtil.getSimpleName(mName);
+            String text = simpleName + "()" + (shouldAddSemicolon(getEditor()) ? ";" : "");
             if (getParameterTypes().size() > 0) {
                 //Should end method?
                 editable.insert(start, text);
-                editorView.setSelection(start + text.length() - 2 /*(*/);
+                editorView.setSelection(start + simpleName.length() + 1/*(*/);
             } else {
                 editable.insert(start, text);
                 editorView.setSelection(start + text.length());
@@ -80,8 +82,25 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
-
+    private boolean shouldAddSemicolon(Editor editor) {
+        int cursor = editor.getCursor();
+        String text = editor.getText();
+        while (cursor < editor.length()) {
+            char c = text.charAt(cursor);
+            if (c == ' ' || c == '\n') {
+                cursor++;
+                continue;
+            }
+            if (c == ';') {
+                return false;
+            }
+        }
+        if (getMethodReturnType().getFullClassName().equals(void.class.getName())) {
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<String> getParameterTypes() {

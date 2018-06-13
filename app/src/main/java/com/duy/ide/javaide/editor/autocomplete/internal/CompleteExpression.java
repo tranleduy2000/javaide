@@ -357,6 +357,10 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
             if (isCursorInsideTree(initializer)) {
                 return new Expression(jcVariableDecl, initializer);
             }
+            JCExpression vartype = jcVariableDecl.vartype;
+            if (isCursorInsideTree(vartype)) {
+                return new Expression(jcVariableDecl, vartype);
+            }
         } else if (statement instanceof JCWhileLoop) {
             JCWhileLoop jcWhileLoop = (JCWhileLoop) statement;
             JCExpression condition = jcWhileLoop.getCondition();

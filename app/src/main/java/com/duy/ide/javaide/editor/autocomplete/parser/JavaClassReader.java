@@ -220,7 +220,7 @@ public class JavaClassReader {
         return null;
     }
 
-    @Nullable
+    @NonNull
     public ClassDescription getClassWrapper(@NonNull Class clazz) {
         ClassDescription cache = mLoaded.get(clazz.getName());
         if (cache != null) {

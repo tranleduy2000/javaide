@@ -19,6 +19,7 @@ package com.duy.ide.javaide.editor.autocomplete.model;
 
 import android.support.annotation.NonNull;
 
+import com.android.annotations.Nullable;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.IField;
@@ -32,18 +33,21 @@ import java.lang.reflect.Modifier;
  */
 
 public class FieldDescription extends JavaSuggestItemImpl implements Member, IField {
-    private String name;
+    @NonNull
+    private String mName;
+    @NonNull
     private IClass mType;
     private int mModifiers;
+    @Nullable
     private String value;
 
-    public FieldDescription(String name, IClass type, int modifiers) {
-        this.name = name;
+    public FieldDescription(@NonNull String name, IClass type, int modifiers) {
+        this.mName = name;
         this.mModifiers = modifiers;
     }
 
     public FieldDescription(Field field) {
-        this.name = field.getName();
+        this.mName = field.getName();
         this.mType = JavaClassReader.getInstance().getClassWrapper(field.getType());
         this.mModifiers = field.getModifiers();
 
@@ -63,7 +67,7 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member, IFi
 
     @Override
     public void onSelectThis(@NonNull IEditAreaView editorView) {
-        insertImpl(editorView, name);
+        insertImpl(editorView, mName);
     }
 
 
@@ -75,9 +79,9 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member, IFi
     @Override
     public String getName() {
         if (value == null) {
-            return name;
+            return mName;
         } else {
-            return name + "(" + value + ")";
+            return mName + "(" + value + ")";
         }
     }
 
@@ -88,6 +92,9 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member, IFi
 
     @Override
     public String getReturnType() {
+        if (mType == null) {
+            return "";
+        }
         return mType.getSimpleName();
     }
 
@@ -98,7 +105,7 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member, IFi
 
     @Override
     public String toString() {
-        return name;
+        return mName;
     }
 
 
@@ -109,7 +116,7 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member, IFi
 
     @Override
     public String getFieldName() {
-        return name;
+        return mName;
     }
 
     @Override

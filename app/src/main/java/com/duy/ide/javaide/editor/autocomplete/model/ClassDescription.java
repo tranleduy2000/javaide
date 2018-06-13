@@ -70,6 +70,9 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
 
     @Override
     public String getName() {
+        if (getPackageName().isEmpty()) {
+            return getSimpleName();
+        }
         return getSimpleName() + " (" + getPackageName() + ")";
     }
 

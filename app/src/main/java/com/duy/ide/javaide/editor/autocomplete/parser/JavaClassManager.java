@@ -39,6 +39,7 @@ import java.util.List;
 public class JavaClassManager implements IClassManager {
 
     private static final String TAG = "JavaClassReader";
+    private static final String JAVA_DOT_LANG_DOT = "java.lang.";
     private static JavaClassManager INSTANCE;
 
     /**
@@ -86,14 +87,8 @@ public class JavaClassManager implements IClassManager {
 
         CompiledClassLoader classLoader = new CompiledClassLoader(mBootClasspath, mTempDir);
         ArrayList<Class> classes = classLoader.getCompiledClassesFromProject(project);
-        Collections.sort(classes, new Comparator<Class>() {
-            @Override
-            public int compare(Class o1, Class o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
         for (Class clazz : classes) {
-            update(getClassWrapper(clazz));
+            getClassWrapper(clazz);
         }
         System.out.println("Loaded classes " + (System.currentTimeMillis() - time));
     }
@@ -107,7 +102,7 @@ public class JavaClassManager implements IClassManager {
         if (cache != null) {
             return cache;
         }
-        return null;
+        return mLoaded.get(JAVA_DOT_LANG_DOT + fullName);
     }
 
     @NonNull
@@ -116,10 +111,10 @@ public class JavaClassManager implements IClassManager {
         if (cache != null) {
             return cache;
         }
-        ClassDescription classDesc = new ClassDescription(clazz);
-        mLoaded.put(clazz.getName(), classDesc);
-        classDesc.initMembers(clazz);
-        return classDesc;
+        ClassDescription wrapper = new ClassDescription(clazz);
+        update(wrapper);
+        wrapper.initMembers(clazz);
+        return wrapper;
     }
 
     @Override
@@ -129,20 +124,40 @@ public class JavaClassManager implements IClassManager {
             mLoaded.put(fullClassName, value);
             return;
         }
+        mLoaded.put(fullClassName, value);
 
-        for (int i = 0; i < mFullNames.size(); i++) {
-            IClass iClass = mFullNames.get(i);
-            if (fullClassName.compareTo(iClass.getFullClassName()) > 0) {
-                mFullNames.add(i, value);
-                break;
+        if (mFullNames.size() == 0) {
+            mFullNames.add(value);
+        } else {
+            boolean found = false;
+            for (int i = 0; i < mFullNames.size(); i++) {
+                IClass iClass = mFullNames.get(i);
+                if (fullClassName.compareTo(iClass.getFullClassName()) <= 0) {
+                    mFullNames.add(i, value);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                mFullNames.add(value);
             }
         }
-
         String simpleName = value.getSimpleName();
-        for (int i = 0; i < mSimpleNames.size(); i++) {
-            Pair<String, IClass> pair = mSimpleNames.get(i);
-            if (simpleName.compareTo(pair.first) > 0) {
-                mSimpleNames.add(i, new Pair<>(simpleName, value));
+        Pair<String, IClass> simplePair = new Pair<>(simpleName, value);
+        if (mSimpleNames.size() == 0) {
+            mSimpleNames.add(simplePair);
+        } else {
+            boolean found = false;
+            for (int i = 0; i < mSimpleNames.size(); i++) {
+                Pair<String, IClass> pair = mSimpleNames.get(i);
+                if (simpleName.compareTo(pair.first) <= 0) {
+                    mSimpleNames.add(i, simplePair);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                mSimpleNames.add(simplePair);
             }
         }
     }

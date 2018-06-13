@@ -48,6 +48,7 @@ public class PackageImporter {
     public static void importClass(Editable editor, String className) {
         String packageName = JavaUtil.getPackageName(className);
         if (getImportedClassName(editor, className) == null
+                && !packageName.isEmpty()
                 && !packageName.equals("java.lang")
                 && !packageName.equals(EditorUtil.getCurrentPackage(editor))) {
             organizeImports(editor, "import " + className + ";");

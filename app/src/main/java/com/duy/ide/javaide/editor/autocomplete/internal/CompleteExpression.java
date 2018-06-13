@@ -36,10 +36,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.sun.tools.javac.tree.JCTree.JCAssign;
+import static com.sun.tools.javac.tree.JCTree.JCAssignOp;
+import static com.sun.tools.javac.tree.JCTree.JCBinary;
 import static com.sun.tools.javac.tree.JCTree.JCBlock;
 import static com.sun.tools.javac.tree.JCTree.JCCase;
 import static com.sun.tools.javac.tree.JCTree.JCCatch;
 import static com.sun.tools.javac.tree.JCTree.JCClassDecl;
+import static com.sun.tools.javac.tree.JCTree.JCConditional;
 import static com.sun.tools.javac.tree.JCTree.JCDoWhileLoop;
 import static com.sun.tools.javac.tree.JCTree.JCEnhancedForLoop;
 import static com.sun.tools.javac.tree.JCTree.JCErroneous;
@@ -47,13 +51,16 @@ import static com.sun.tools.javac.tree.JCTree.JCExpression;
 import static com.sun.tools.javac.tree.JCTree.JCExpressionStatement;
 import static com.sun.tools.javac.tree.JCTree.JCForLoop;
 import static com.sun.tools.javac.tree.JCTree.JCIf;
+import static com.sun.tools.javac.tree.JCTree.JCInstanceOf;
 import static com.sun.tools.javac.tree.JCTree.JCLabeledStatement;
 import static com.sun.tools.javac.tree.JCTree.JCMethodDecl;
+import static com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
 import static com.sun.tools.javac.tree.JCTree.JCReturn;
 import static com.sun.tools.javac.tree.JCTree.JCStatement;
 import static com.sun.tools.javac.tree.JCTree.JCSwitch;
 import static com.sun.tools.javac.tree.JCTree.JCThrow;
 import static com.sun.tools.javac.tree.JCTree.JCTry;
+import static com.sun.tools.javac.tree.JCTree.JCUnary;
 import static com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import static com.sun.tools.javac.tree.JCTree.JCWhileLoop;
 
@@ -120,7 +127,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
             return performCompleteFieldAccess(jcFieldAccess, result);
         }
         //s.toLower|Ca(), complete expression but wrong name
-        else if (tree instanceof JCTree.JCMethodInvocation) {
+        else if (tree instanceof JCMethodInvocation) {
         }
         return false;
     }
@@ -219,7 +226,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
             JCDoWhileLoop jcDoWhileLoop = (JCDoWhileLoop) statement;
             JCExpression cond = jcDoWhileLoop.cond;
             if (isCursorInsideTree(cond)) {
-                return new Expression(statement, cond);
+                return resolveExactlyExpression(statement, cond);
             }
 
             JCStatement body = jcDoWhileLoop.getStatement();
@@ -230,7 +237,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
             JCEnhancedForLoop jcEnhancedForLoop = (JCEnhancedForLoop) statement;
             JCExpression expression = jcEnhancedForLoop.getExpression();
             if (isCursorInsideTree(expression)) {
-                return new Expression(jcEnhancedForLoop, expression);
+                return resolveExactlyExpression(jcEnhancedForLoop, expression);
             }
 
             JCVariableDecl variable = jcEnhancedForLoop.getVariable();
@@ -241,7 +248,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         } else if (statement instanceof JCExpressionStatement) {
             JCExpression expression = ((JCExpressionStatement) statement).getExpression();
             if (isCursorInsideTree(expression)) {
-                return new Expression(statement, expression);
+                return resolveExactlyExpression(statement, expression);
             }
 
         } else if (statement instanceof JCForLoop) {
@@ -254,7 +261,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
 
             JCExpression condition = jcForLoop.getCondition();
             if (isCursorInsideTree(condition)) {
-                return new Expression(jcForLoop, condition);
+                return resolveExactlyExpression(jcForLoop, condition);
             }
 
             List<JCExpressionStatement> update = jcForLoop.getUpdate();
@@ -271,7 +278,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
             JCIf jcIf = (JCIf) statement;
             JCExpression condition = jcIf.getCondition();
             if (isCursorInsideTree(condition)) {
-                return new Expression(jcIf, condition);
+                return resolveExactlyExpression(jcIf, condition);
             }
 
             JCStatement thenStatement = jcIf.getThenStatement();
@@ -297,20 +304,20 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
             JCReturn jcReturn = (JCReturn) statement;
             JCExpression expression = jcReturn.getExpression();
             if (isCursorInsideTree(expression)) {
-                return new Expression(jcReturn, expression);
+                return resolveExactlyExpression(jcReturn, expression);
             }
         } else if (statement instanceof JCSwitch) {
             JCSwitch jcSwitch = (JCSwitch) statement;
             JCExpression jcExpression = jcSwitch.getExpression();
             if (isCursorInsideTree(jcExpression)) {
-                return new Expression(jcSwitch, jcExpression);
+                return resolveExactlyExpression(jcSwitch, jcExpression);
             }
 
             List<JCCase> jcCases = jcSwitch.getCases();
             for (JCCase jcCase : jcCases) {
                 JCExpression jcCaseExpression = jcCase.getExpression();
                 if (isCursorInsideTree(jcCaseExpression)) {
-                    return new Expression(jcCase, jcCaseExpression);
+                    return resolveExactlyExpression(jcCase, jcCaseExpression);
                 }
                 List<JCStatement> statements = jcCase.getStatements();
                 result = getExpressionFromStatements(statements);
@@ -322,7 +329,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
             JCSynchronized jcSynchronized = (JCSynchronized) statement;
             JCExpression jcExpression = jcSynchronized.getExpression();
             if (isCursorInsideTree(jcExpression)) {
-                return new Expression(jcSynchronized, jcExpression);
+                return resolveExactlyExpression(jcSynchronized, jcExpression);
             }
 
             JCBlock block = jcSynchronized.getBlock();
@@ -333,7 +340,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         } else if (statement instanceof JCThrow) {
             JCThrow jcThrow = (JCThrow) statement;
             if (isCursorInsideTree(jcThrow.getExpression())) {
-                return new Expression(jcThrow, jcThrow.getExpression());
+                return resolveExactlyExpression(jcThrow, jcThrow.getExpression());
             }
 
         } else if (statement instanceof JCTry) {
@@ -367,17 +374,17 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
             JCVariableDecl jcVariableDecl = (JCVariableDecl) statement;
             JCExpression initializer = jcVariableDecl.getInitializer();
             if (isCursorInsideTree(initializer)) {
-                return new Expression(jcVariableDecl, initializer);
+                return resolveExactlyExpression(jcVariableDecl, initializer);
             }
             JCExpression vartype = jcVariableDecl.vartype;
             if (isCursorInsideTree(vartype)) {
-                return new Expression(jcVariableDecl, vartype);
+                return resolveExactlyExpression(jcVariableDecl, vartype);
             }
         } else if (statement instanceof JCWhileLoop) {
             JCWhileLoop jcWhileLoop = (JCWhileLoop) statement;
             JCExpression condition = jcWhileLoop.getCondition();
             if (isCursorInsideTree(condition)) {
-                return new Expression(jcWhileLoop, condition);
+                return resolveExactlyExpression(jcWhileLoop, condition);
             }
 
             JCStatement body = jcWhileLoop.getStatement();
@@ -387,6 +394,83 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         }
 
         return null;
+    }
+
+    private Expression resolveExactlyExpression(JCTree parent, JCExpression expression) {
+        //i < number
+        if (expression instanceof JCAssign) {
+            JCAssign jcAssign = (JCAssign) expression;
+            JCExpression lhs = jcAssign.getVariable();
+            if (isCursorInsideTree(lhs)) {
+                return addRootIfNeeded(
+                        parent, resolveExactlyExpression(jcAssign, lhs));
+            }
+            JCExpression rhs = jcAssign.getExpression();
+            if (isCursorInsideTree(rhs)) {
+                return addRootIfNeeded(
+                        parent, resolveExactlyExpression(jcAssign, rhs));
+            }
+        } else if (expression instanceof JCAssignOp) {
+            JCAssignOp jcAssign = (JCAssignOp) expression;
+            JCExpression lhs = jcAssign.getVariable();
+            if (isCursorInsideTree(lhs)) {
+                return addRootIfNeeded(
+                        parent, resolveExactlyExpression(jcAssign, lhs));
+            }
+            JCExpression rhs = jcAssign.getExpression();
+            if (isCursorInsideTree(rhs)) {
+                return addRootIfNeeded(
+                        parent, resolveExactlyExpression(jcAssign, rhs));
+            }
+        } else if (expression instanceof JCBinary) {
+            JCBinary jcBinary = (JCBinary) expression;
+            JCExpression leftOperand = jcBinary.getLeftOperand();
+            if (isCursorInsideTree(leftOperand)) {
+                return addRootIfNeeded(
+                        parent, resolveExactlyExpression(jcBinary, leftOperand));
+            }
+            JCExpression rightOperand = jcBinary.getRightOperand();
+            if (isCursorInsideTree(rightOperand)) {
+                return addRootIfNeeded(
+                        parent, resolveExactlyExpression(jcBinary, rightOperand));
+            }
+        } else if (expression instanceof JCConditional) {
+            JCConditional jcConditional = (JCConditional) expression;
+            JCExpression condition = jcConditional.getCondition();
+            if (isCursorInsideTree(condition)) {
+                return addRootIfNeeded(
+                        parent, resolveExactlyExpression(jcConditional, condition));
+            }
+
+            JCExpression trueExpression = jcConditional.getTrueExpression();
+            if (isCursorInsideTree(trueExpression)) {
+                return addRootIfNeeded(
+                        parent, resolveExactlyExpression(jcConditional, trueExpression));
+            }
+
+            JCExpression falseExpression = jcConditional.getFalseExpression();
+            if (isCursorInsideTree(falseExpression)) {
+                return addRootIfNeeded(
+                        parent, resolveExactlyExpression(jcConditional, falseExpression));
+            }
+
+        } else if (expression instanceof JCInstanceOf) {
+            JCInstanceOf jcInstanceOf = (JCInstanceOf) expression;
+            JCExpression lhs = jcInstanceOf.getExpression();
+            if (isCursorInsideTree(lhs)) {
+                return addRootIfNeeded(
+                        parent, resolveExactlyExpression(jcInstanceOf, lhs));
+            }
+        } else if (expression instanceof JCUnary) {
+            JCUnary jcUnary = (JCUnary) expression;
+            JCExpression jcExpression = jcUnary.getExpression();
+            if (isCursorInsideTree(jcExpression)) {
+                return addRootIfNeeded(
+                        parent, resolveExactlyExpression(jcUnary, jcExpression));
+            }
+        }
+
+        return new Expression(parent, expression);
     }
 
     @Nullable

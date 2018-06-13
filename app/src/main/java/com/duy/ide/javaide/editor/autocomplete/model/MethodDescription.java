@@ -99,6 +99,10 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
                 break;
             }
         }
+
+        if (getMethodReturnType() == null) {
+            return true;
+        }
         if (void.class.getName().equals(getMethodReturnType().getFullClassName())) {
             return true;
         }

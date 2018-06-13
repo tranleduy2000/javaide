@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.sun.tools.javac.code.Flags.STATIC;
 import static com.sun.tools.javac.tree.JCTree.JCClassDecl;
 import static com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
 import static com.sun.tools.javac.tree.JCTree.JCMethodDecl;
@@ -50,12 +49,8 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
         this.mJavaParser = javaParser;
     }
 
-    protected static void addNonStaticMethods(JCMethodDecl method, Editor editor, String incomplete,
-                                              List<SuggestItem> result) {
-        if ((method.getModifiers().flags & STATIC) != 0) {
-            if (DLog.DEBUG) DLog.d(TAG, "addNonStaticMethods: static method");
-            return;
-        }
+    protected static void addMethod(JCMethodDecl method, Editor editor, String incomplete,
+                                    List<SuggestItem> result) {
         if (method.getName().toString().startsWith(incomplete)) {
             List<JCTypeParameter> typeParameters
                     = method.getTypeParameters();
@@ -74,18 +69,12 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
         }
     }
 
-    protected static void addNonStaticVariable(JCVariableDecl member, Editor editor, String incomplete,
-                                               List<SuggestItem> result) {
-        JCVariableDecl field = member;
-        if ((field.getModifiers().flags & STATIC) != 0) {
-            if (DLog.DEBUG) DLog.d(TAG, "addNonStaticVariable: static variable");
-            return;
-        }
-
-        if (field.getName().toString().startsWith(incomplete)) {
-            int flags = (int) field.getModifiers().flags;
+    protected static void addVariable(JCVariableDecl member, Editor editor, String incomplete,
+                                      List<SuggestItem> result) {
+        if (member.getName().toString().startsWith(incomplete)) {
+            int flags = (int) member.getModifiers().flags;
             FieldDescription desc = new FieldDescription(
-                    field.getName().toString(),
+                    member.getName().toString(),
                     /*field.getType().toString(),*/ null,
                     flags);
             setInfo(desc, editor, incomplete);
@@ -145,10 +134,10 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
                     ((JCClassDecl) jcTree).getMembers();
             for (JCTree member : members) {
                 if (member instanceof JCVariableDecl) {
-                    addNonStaticVariable((JCVariableDecl) member, editor, incomplete, result);
+                    addVariable((JCVariableDecl) member, editor, incomplete, result);
                 } else if (member instanceof JCMethodDecl) {
                     JCMethodDecl method = (JCMethodDecl) member;
-                    addNonStaticMethods(method, editor, incomplete, result);
+                    addMethod(method, editor, incomplete, result);
                 }
             }
         }

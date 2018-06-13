@@ -35,8 +35,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteThisKeyword.addNonStaticMethods;
-import static com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteThisKeyword.addNonStaticVariable;
+import static com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteThisKeyword.addMethod;
+import static com.duy.ide.javaide.editor.autocomplete.internal.completed.CompleteThisKeyword.addVariable;
 
 /**
  * Final complete, no context, suggest class name, method name,
@@ -145,10 +145,10 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
                     ((JCTree.JCClassDecl) jcTree).getMembers();
             for (JCTree member : members) {
                 if (member instanceof JCTree.JCVariableDecl) {
-                    addNonStaticVariable((JCTree.JCVariableDecl) member, editor, incomplete, result);
+                    addVariable((JCTree.JCVariableDecl) member, editor, incomplete, result);
                 } else if (member instanceof JCTree.JCMethodDecl) {
                     JCTree.JCMethodDecl method = (JCTree.JCMethodDecl) member;
-                    addNonStaticMethods(method, editor, incomplete, result);
+                    addMethod(method, editor, incomplete, result);
 
                     //if the cursor in method scope
                     if (method.getStartPosition() <= editor.getCursor()
@@ -168,13 +168,13 @@ public class CompleteWord extends JavaCompleteMatcherImpl {
         for (JCTree.JCStatement statement : statements) {
             if (statement instanceof JCTree.JCVariableDecl) {
                 JCTree.JCVariableDecl field = (JCTree.JCVariableDecl) statement;
-                addNonStaticVariable(field, editor, incomplete, result);
+                addVariable(field, editor, incomplete, result);
             }
         }
         //add params
         List<JCTree.JCVariableDecl> parameters = method.getParameters();
         for (JCTree.JCVariableDecl parameter : parameters) {
-            addNonStaticVariable(parameter, editor, incomplete, result);
+            addVariable(parameter, editor, incomplete, result);
         }
 
     }

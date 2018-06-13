@@ -71,7 +71,6 @@ public class TypeResolver {
                     throw new UnsupportedOperationException(exceptionMessage + tree);
 
                 }
-
                 JCIdent jcIdent = (JCIdent) tree;
 
                 //variable declaration, static import or inner class
@@ -80,16 +79,8 @@ public class TypeResolver {
                 if (DLog.DEBUG) DLog.d(TAG, "variableDecl = " + variableDecl);
                 if (variableDecl != null) {
                     String className = variableDecl.getType().toString();
-                    List<JCImport> imports = mUnit.getImports();
-                    for (JCImport jcImport : imports) {
-                        String fullClassName = jcImport.getQualifiedIdentifier().toString();
-                        if (fullClassName.equals(className) ||
-                                fullClassName.endsWith("." + className)) {
-                            className = fullClassName;
-                            break;
-                        }
-                    }
-                    System.out.println("className = " + className);
+                    //try to find full class name
+                    className = findImportedClassName(className);
                     currentType = mClassLoader.getClassReader().getParsedClass(className);
                 }
                 // TODO: 13-Jun-18  case: static import
@@ -125,6 +116,23 @@ public class TypeResolver {
                     throw new UnsupportedOperationException(exceptionMessage + tree);
                 }
                 currentType = field.getFieldType();
+            } else if (tree instanceof JCTree.JCArrayAccess) {
+                JCIdent jcIdent = (JCIdent) ((JCTree.JCArrayAccess) tree).getExpression();
+
+                //variable declaration, static import or inner class
+                //case: variableDecl
+                JCVariableDecl variableDecl = getVariableDeclaration(mUnit, jcIdent);
+                if (DLog.DEBUG) DLog.d(TAG, "variableDecl = " + variableDecl);
+                if (variableDecl != null) {
+                    if (!(variableDecl.getType() instanceof JCTree.JCArrayTypeTree)) {
+                        throw new UnsupportedOperationException("can not resolve type of array access " + tree);
+                    }
+                    String className = ((JCTree.JCArrayTypeTree) variableDecl.getType())
+                            .getType().toString();
+                    //try to find full class name
+                    className = findImportedClassName(className);
+                    currentType = mClassLoader.getClassReader().getParsedClass(className);
+                }
             }
         }
 
@@ -132,36 +140,66 @@ public class TypeResolver {
         return currentType;
     }
 
+    @NonNull
+    private String findImportedClassName(@NonNull String className) {
+        List<JCImport> imports = mUnit.getImports();
+        for (JCImport jcImport : imports) {
+            String fullName = jcImport.getQualifiedIdentifier().toString();
+            if (fullName.equals(className) || fullName.endsWith("." + className)) {
+                return fullName;
+            }
+        }
+        return className;
+    }
+
 
     @Nullable
     private List<JCTree> extractExpressionAtCursor(JCExpression expression, int cursor) {
-        JCTree last = expression;
+        JCTree tree = expression;
         LinkedList<JCTree> list = new LinkedList<>();
-        while (last != null) {
-            if (getEndPosition(last) > cursor) {
+        while (tree != null) {
+            if (getEndPosition(tree) > cursor) {
                 break;
             }
-            list.addFirst(last);
-            if (last instanceof JCMethodInvocation) {
-                JCExpression methodSelect = ((JCMethodInvocation) last).getMethodSelect();
-                if (methodSelect instanceof JCIdent) {
+            if (tree instanceof JCMethodInvocation) {
+                list.addFirst(tree);
+
+                JCExpression methodSelect = ((JCMethodInvocation) tree).getMethodSelect();
+                if (methodSelect instanceof JCIdent) { //var.method()
                     //not need add to list because it belong to method
-                    last = null;
                     break;
-                } else if (methodSelect instanceof JCFieldAccess) {
-                    last = ((JCFieldAccess) methodSelect).getExpression();
-                } else {
+                } else if (methodSelect instanceof JCFieldAccess) { //var.method().method()
+                    tree = ((JCFieldAccess) methodSelect).getExpression();
+
+                } else { //unsupported
                     if (DLog.DEBUG) {
                         DLog.w(TAG, "extractExpression: can not resolve type of expression "
                                 + expression);
                     }
                     return null;
                 }
-            } else if (last instanceof JCFieldAccess) {
-                last = ((JCFieldAccess) last).getExpression();
-            } else if (last instanceof JCIdent) {
-                last = null;
-            } else {
+            } else if (tree instanceof JCFieldAccess) {  //var.field
+                list.addFirst(tree);
+                //select before
+                tree = ((JCFieldAccess) tree).getExpression();
+
+            } else if (tree instanceof JCIdent) { //var, it should be before any expression
+                list.addFirst(tree);
+                break;
+
+            } else if (tree instanceof JCTree.JCArrayAccess) { //variable.array[i].toString
+                list.addFirst(tree);
+                //select declare name
+                tree = ((JCTree.JCArrayAccess) tree).getExpression(); //select array name
+                if (tree instanceof JCIdent) {
+                    break;
+                } else if (tree instanceof JCFieldAccess) {
+                    //accept
+                    System.out.println("tree instanceof JCFieldAccess");
+                } else {
+                    throw new UnsupportedOperationException("can not extract expression at array " + tree);
+                }
+            } else { //unsupported
                 if (DLog.DEBUG) {
                     DLog.w(TAG, "extractExpression: can not resolve type of expression "
                             + expression);

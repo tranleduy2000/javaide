@@ -103,6 +103,9 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         return false;
     }
 
+    /**
+     * Suggestion method, variable
+     */
     private boolean performCompleteIdent(JCTree.JCIdent jcIdent, ArrayList<SuggestItem> result) {
         return false;
     }
@@ -132,7 +135,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
             ArrayList<FieldDescription> fields = type.getFields();
             for (FieldDescription field : fields) {
                 if (field.getFieldName().startsWith(incomplete)) {
-                    setInfo(methods, mEditor, incomplete);
+                    setInfo(field, mEditor, incomplete);
                     result.add(field);
                 }
             }

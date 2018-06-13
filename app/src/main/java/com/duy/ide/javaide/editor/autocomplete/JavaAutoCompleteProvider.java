@@ -35,7 +35,6 @@ import com.duy.ide.javaide.editor.autocomplete.internal.Expression;
 import com.duy.ide.javaide.editor.autocomplete.internal.ExpressionResolver;
 import com.duy.ide.javaide.editor.autocomplete.internal.IJavaCompleteMatcher;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
-import com.duy.ide.javaide.editor.autocomplete.internal.StatementParser;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
@@ -93,11 +92,13 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
             Expression expression = resolver.getExpressionAtCursor();
 
             //like a hack for simple suggestion
-            String statement = StatementParser.resolveStatementFromCursor(editor);
+            JCTree.JCExpression jcExpression = expression.getExpression();
+            int startPosition = jcExpression.getStartPosition();
+            String statement = editor.getText().substring(startPosition, editor.getCursor());
 
             for (IJavaCompleteMatcher autoComplete : mJavaAutoCompletes) {
                 try {
-                    boolean handled = autoComplete.process(ast, editor, expression, statement,result);
+                    boolean handled = autoComplete.process(ast, editor, expression, statement, result);
                     if (handled) {
                         break;
                     }

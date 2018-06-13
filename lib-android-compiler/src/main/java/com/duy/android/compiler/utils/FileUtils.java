@@ -523,10 +523,11 @@ public class FileUtils {
             throw new IOException("Destination '" + destFile + "' exists but is a directory");
         }
 
-        try (FileInputStream fis = new FileInputStream(srcFile);
-             FileChannel input = fis.getChannel();
-             FileOutputStream fos = new FileOutputStream(destFile);
-             FileChannel output = fos.getChannel()) {
+        try {
+            FileInputStream fis = new FileInputStream(srcFile);
+            FileChannel input = fis.getChannel();
+            FileOutputStream fos = new FileOutputStream(destFile);
+            FileChannel output = fos.getChannel();
             final long size = input.size(); // TODO See IO-386
             long pos = 0;
             long count = 0;
@@ -539,6 +540,8 @@ public class FileUtils {
                 }
                 pos += bytesCopied;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         final long srcLen = srcFile.length(); // TODO See IO-386

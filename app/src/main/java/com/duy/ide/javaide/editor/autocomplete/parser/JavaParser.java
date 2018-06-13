@@ -86,7 +86,6 @@ public class JavaParser {
         JCTree.JCCompilationUnit unit;
         unit = parser.parseCompilationUnit();
         unit.sourcefile = source;
-        System.out.println(TAG + " parse: time " + (System.currentTimeMillis() - time) + " ms");
         return unit;
     }
 

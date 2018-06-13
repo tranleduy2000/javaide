@@ -62,12 +62,13 @@ public class TypeResolver {
         if (list == null) {
             return null;
         }
+        String exceptionMessage = "Can not resolve type of expression ";
         IClass currentType = null;
         for (JCTree tree : list) {
             //only once time on this case
             if (tree instanceof JCIdent) {
                 if (currentType != null) {
-                    throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
+                    throw new UnsupportedOperationException(exceptionMessage + tree);
 
                 }
 
@@ -100,26 +101,28 @@ public class TypeResolver {
                 JCExpression methodSelect = jcMethod.getMethodSelect();
                 if (methodSelect instanceof JCFieldAccess) {
                     String methodName = ((JCFieldAccess) methodSelect).getIdentifier().toString();
-//                List<JCExpression> arguments = jcMethod.getArguments();
-//                IClass[] types = new IClass[arguments.size()];
+                    List<JCExpression> arguments = jcMethod.getArguments();
+                    IClass[] types = new IClass[arguments.size()];
                     // TODO: 13-Jun-18 support arg types
                     IMethod method = currentType.getMethod(methodName, null);
                     if (method == null) {
-                        throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
+                        throw new UnsupportedOperationException(exceptionMessage + tree);
                     }
                     currentType = method.getMethodReturnType();
+                } else if (methodSelect instanceof JCIdent) { //method in current class
+                    //findNonStaticMethodInAst(mUnit, ((JCIdent) methodSelect).getName().toString(), null);
                 } else {
-                    throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
+                    throw new UnsupportedOperationException(exceptionMessage + tree);
                 }
             } else if (tree instanceof JCFieldAccess) {
                 if (currentType == null) {
-                    throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
+                    throw new UnsupportedOperationException(exceptionMessage + tree);
                 }
 
                 String name = ((JCFieldAccess) tree).getIdentifier().toString();
                 IField field = currentType.getField(name);
                 if (field == null) {
-                    throw new UnsupportedOperationException("Can not resolve type of expression " + tree);
+                    throw new UnsupportedOperationException(exceptionMessage + tree);
                 }
                 currentType = field.getFieldType();
             }
@@ -129,12 +132,13 @@ public class TypeResolver {
         return currentType;
     }
 
+
     @Nullable
     private List<JCTree> extractExpressionAtCursor(JCExpression expression, int cursor) {
         JCTree last = expression;
         LinkedList<JCTree> list = new LinkedList<>();
         while (last != null) {
-            if (getEndPosition(last) > cursor){
+            if (getEndPosition(last) > cursor) {
                 break;
             }
             list.addFirst(last);
@@ -170,9 +174,8 @@ public class TypeResolver {
     }
 
     @Nullable
-    private JCVariableDecl getVariableDeclaration(JCCompilationUnit unit,
-                                                  JCIdent jcIdent) {
-        List<JCImport> imports = unit.getImports();
+    private JCVariableDecl getVariableDeclaration(final JCCompilationUnit unit,
+                                                  final JCIdent jcIdent) {
         List<JCTree> typeDecls = unit.getTypeDecls();
         for (JCTree typeDecl : typeDecls) {
             List<JCVariableDecl> variableDeclaration = getVariableDeclaration(typeDecl, jcIdent);
@@ -202,12 +205,20 @@ public class TypeResolver {
                         result.add(variableDecl);
                     }
                 } else if (member instanceof JCMethodDecl) { //method
-                    JCBlock body = ((JCMethodDecl) member).getBody();
-                    List<JCVariableDecl> tmp = getVariableDeclaration(body, jcIdent);
+                    JCMethodDecl jcMethodDecl = (JCMethodDecl) member;
+                    JCBlock body = jcMethodDecl.getBody();
+                    List<JCVariableDecl> list = getVariableDeclaration(body, jcIdent);
                     //local variable
-                    if (!tmp.isEmpty()) {
+                    if (!list.isEmpty()) {
                         result.clear();
-                        result.addAll(tmp);
+                        result.addAll(list);
+                    }
+
+                    List<JCVariableDecl> parameters = jcMethodDecl.getParameters();
+                    for (JCVariableDecl parameter : parameters) {
+                        if (canBeSampleVariable(jcMethodDecl, parameter, jcIdent)) {
+                            result.add(parameter);
+                        }
                     }
                 } else if (member instanceof JCBlock) {
                     List<JCVariableDecl> tmp = getVariableDeclaration(member, jcIdent);
@@ -243,13 +254,31 @@ public class TypeResolver {
         }
 
         //identifier inside or equal scope if variable o
+        //-------------------------------------------
+        // private ArrayList list = new ArrayList();
+        // void method(){
+        //      list.toString()
+        //}
+        //-------------------------------------------
+        // void method(ArrayList list){
+        //      list.toString()
+        //}
+        //-------------------------------------------
+        //void method(){
+        //      ArrayList list;
+        //      list.toString()
+        //}
         if (isChildOfParent(parent, ident)) {
+            int startPosition = variable.getStartPosition();
+            int startPosition1 = ident.getStartPosition();
+
             return true;
         }
         return false;
     }
 
     private boolean isChildOfParent(JCTree parent, JCTree child) {
+        //scope of child inside parent
         return parent.getStartPosition() <= child.getStartPosition()
                 && getEndPosition(parent) >= getEndPosition(child);
     }

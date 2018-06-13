@@ -97,13 +97,19 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
 
     private boolean performComplete(JCExpression jcExpression, ArrayList<SuggestItem> result) {
         if (DLog.DEBUG) DLog.d(TAG, "analyse: class = " + jcExpression.getClass());
+        //error expression
         if (jcExpression instanceof JCErroneous) {
-            return analyseErroneous((JCErroneous) jcExpression, result);
+            return performCompleteErroneous((JCErroneous) jcExpression, result);
+        }
+        //arrayList.to <-  JCFieldAccess
+        //arrayList.add("Hello");
+        else if (jcExpression instanceof JCFieldAccess) {
+            return performCompleteFieldAccess((JCFieldAccess) jcExpression, result);
         }
         return false;
     }
 
-    private boolean analyseErroneous(JCErroneous jcErroneous, ArrayList<SuggestItem> result) {
+    private boolean performCompleteErroneous(JCErroneous jcErroneous, ArrayList<SuggestItem> result) {
         System.out.println("CompleteExpression.analyseErroneous");
         List<? extends JCTree> errorTrees = jcErroneous.getErrorTrees();
         JCTree tree = errorTrees.get(0);
@@ -111,39 +117,45 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         //s.toLower, incomplete method but give JCFieldAccess
         if (tree instanceof JCFieldAccess) {
             JCFieldAccess jcFieldAccess = (JCFieldAccess) tree;
-            int startPosition = jcFieldAccess.getStartPosition();
-            int cursorOffset = mCursor - startPosition;
-            int incompleteLength = jcFieldAccess.getIdentifier().length();
-            String incomplete = jcFieldAccess.getIdentifier().toString();
-            //simple hack, improve later
-            if (incomplete.equals("<error>")) {
-                incomplete = "";
-            }
-            if (DLog.DEBUG) DLog.d(TAG, "incomplete = " + incomplete);
-
-            JCExpression expression = jcFieldAccess.getExpression();
-            IClass type = new TypeResolver(mClassLoader, mAst).resolveType(expression, mCursor);
-            if (type != null) {
-                ArrayList<MethodDescription> methods = type.getMethods();
-                for (MethodDescription method : methods) {
-                    if (method.getMethodName().startsWith(incomplete)) {
-                        setInfo(method, mEditor, incomplete);
-                        result.add(method);
-                    }
-                }
-                ArrayList<FieldDescription> fields = type.getFields();
-                for (FieldDescription field : fields) {
-                    if (field.getFieldName().startsWith(incomplete)) {
-                        setInfo(methods, mEditor, incomplete);
-                        result.add(field);
-                    }
-                }
-
-                return true;
-            }
+            return performCompleteFieldAccess(jcFieldAccess, result);
         }
         //s.toLower|Ca(), complete expression but wrong name
         else if (tree instanceof JCTree.JCMethodInvocation) {
+        }
+        return false;
+    }
+
+    private boolean performCompleteFieldAccess(@NonNull JCFieldAccess jcFieldAccess,
+                                               @NonNull ArrayList<SuggestItem> result) {
+        int startPosition = jcFieldAccess.getStartPosition();
+        int cursorOffset = mCursor - startPosition;
+        int incompleteLength = jcFieldAccess.getIdentifier().length();
+        String incomplete = jcFieldAccess.getIdentifier().toString();
+        //simple hack, improve later
+        if (incomplete.equals("<error>")) {
+            incomplete = "";
+        }
+        if (DLog.DEBUG) DLog.d(TAG, "incomplete = " + incomplete);
+
+        JCExpression expression = jcFieldAccess.getExpression();
+        IClass type = new TypeResolver(mClassLoader, mAst).resolveType(expression, mCursor);
+        if (type != null) {
+            ArrayList<MethodDescription> methods = type.getMethods();
+            for (MethodDescription method : methods) {
+                if (method.getMethodName().startsWith(incomplete)) {
+                    setInfo(method, mEditor, incomplete);
+                    result.add(method);
+                }
+            }
+            ArrayList<FieldDescription> fields = type.getFields();
+            for (FieldDescription field : fields) {
+                if (field.getFieldName().startsWith(incomplete)) {
+                    setInfo(methods, mEditor, incomplete);
+                    result.add(field);
+                }
+            }
+
+            return true;
         }
         return false;
     }
@@ -379,7 +391,7 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
 
     @Nullable
     private Expression getExpressionFromClass(JCClassDecl tree) {
-        System.out.println("CompleteExpression.getStatementFromClass");
+        System.out.println("CompleteExpression.getExpressionFromClass");
 
         if (!isCursorInsideTree(tree)) {
             return null;

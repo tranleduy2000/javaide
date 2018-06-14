@@ -42,6 +42,10 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
     private int mModifiers;
     private ArrayList<String> mParameterTypes = new ArrayList<>();
     private ArrayList<IClass> mParameters = new ArrayList<>();
+
+    /**
+     * Return type of method, null if it is constructor
+     */
     @Nullable
     private IClass mReturnType;
 

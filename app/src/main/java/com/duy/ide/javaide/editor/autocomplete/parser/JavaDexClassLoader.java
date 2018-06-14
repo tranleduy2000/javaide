@@ -22,7 +22,6 @@ import android.support.annotation.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.interfaces.Filter;
-import com.sun.tools.javac.tree.JCTree;
 
 import java.io.File;
 import java.util.List;
@@ -100,7 +99,9 @@ public class JavaDexClassLoader {
         mClassReader.loadFromProject(projectFile);
     }
 
-    public void updateClass(JCTree.JCCompilationUnit ast) {
-        // TODO: 14-Jun-18
+    public void updateClass(List<IClass> classes) {
+        for (IClass aClass : classes) {
+            mClassReader.update(aClass);
+        }
     }
 }

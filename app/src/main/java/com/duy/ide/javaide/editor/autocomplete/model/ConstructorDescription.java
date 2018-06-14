@@ -23,23 +23,34 @@ import android.text.Editable;
 import com.duy.ide.BuildConfig;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
+import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaUtil;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Duy on 20-Jul-17.
  */
 
 public class ConstructorDescription extends JavaSuggestItemImpl {
-    private Constructor constructor;
-    private String simpleName;
-    private String packageName;
+    private ArrayList<IClass> mParameterTypes = new ArrayList<>();
+    private String mConstructorName;
 
     public ConstructorDescription(Constructor constructor) {
-        this.constructor = constructor;
-        this.simpleName = JavaUtil.getSimpleName(constructor.getName());
-        this.packageName = JavaUtil.getPackageName(constructor.getName());
+        mConstructorName = constructor.getName();
+        Class[] parameterTypes = constructor.getParameterTypes();
+        for (Class parameterType : parameterTypes) {
+            IClass type = JavaClassManager.getInstance().getClassWrapper(parameterType);
+            mParameterTypes.add(type);
+        }
+    }
+
+    public ConstructorDescription(String name, List<IClass> paramTypes) {
+        mConstructorName = name;
+        mParameterTypes.addAll(paramTypes);
     }
 
     @Override
@@ -50,16 +61,16 @@ public class ConstructorDescription extends JavaSuggestItemImpl {
             final int start = cursor - length;
 
             Editable editable = editorView.getEditableText();
-            if (constructor.getParameterTypes().length > 0) {
-                editable.replace(start, cursor, simpleName + "()");
-                editorView.setSelection(start + simpleName.length() + 1 /*between two parentheses*/);
+            if (getParameterTypes().size() > 0) {
+                editable.replace(start, cursor, getSimpleName() + "()");
+                editorView.setSelection(start + getSimpleName().length() + 1 /*between two parentheses*/);
             } else {
-                String text = simpleName + "();";
+                String text = getSimpleName() + "();";
                 editable.replace(start, cursor, text);
                 editorView.setSelection(start + text.length());
             }
 
-            PackageImporter.importClass(editorView.getEditableText(), constructor.getName());
+            PackageImporter.importClass(editorView.getEditableText(), mConstructorName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,7 +78,7 @@ public class ConstructorDescription extends JavaSuggestItemImpl {
 
     @Override
     public String getName() {
-        return simpleName + "(" + paramsToString(constructor.getParameterTypes()) + ")";
+        return getSimpleName() + "(" + paramsToString(getParameterTypes()) + ")";
     }
 
     @Override
@@ -78,7 +89,7 @@ public class ConstructorDescription extends JavaSuggestItemImpl {
 
     @Override
     public String getDescription() {
-        return packageName;
+        return "Class constructor";
     }
 
     @Override
@@ -89,14 +100,13 @@ public class ConstructorDescription extends JavaSuggestItemImpl {
 
     @Override
     public String toString() {
-        Class<?>[] parameterTypes = constructor.getParameterTypes();
-        return JavaUtil.getSimpleName(constructor.getName()) + "(" + paramsToString(parameterTypes) + ")";
+        return getSimpleName() + "()";
     }
 
-    private String paramsToString(@NonNull Class<?>[] parameterTypes) {
+    private String paramsToString(@NonNull ArrayList<IClass> parameterTypes) {
         StringBuilder result = new StringBuilder();
         boolean firstTime = true;
-        for (Class<?> parameterType : parameterTypes) {
+        for (IClass parameterType : parameterTypes) {
             if (firstTime) {
                 firstTime = false;
             } else {
@@ -105,5 +115,13 @@ public class ConstructorDescription extends JavaSuggestItemImpl {
             result.append(parameterType.getSimpleName());
         }
         return result.toString();
+    }
+
+    public ArrayList<IClass> getParameterTypes() {
+        return mParameterTypes;
+    }
+
+    private String getSimpleName() {
+        return JavaUtil.getSimpleName(mConstructorName);
     }
 }

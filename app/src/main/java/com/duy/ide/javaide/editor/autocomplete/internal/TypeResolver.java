@@ -250,11 +250,16 @@ public class TypeResolver {
                         return variableDecl;
                     }
 
-                    return getVariableDeclarationFromStatements(member,
+                    variableDecl = getVariableDeclarationFromStatements(member,
                             ((JCMethodDecl) member).getParameters(), jcIdent);
-
+                    if (variableDecl != null) {
+                        return variableDecl;
+                    }
                 } else {
-                    return getVariableDeclaration(member, jcIdent);
+                    JCVariableDecl variableDecl = getVariableDeclaration(member, jcIdent);
+                    if (variableDecl != null) {
+                        return variableDecl;
+                    }
                 }
             }
         } else if (parent instanceof JCTree.JCDoWhileLoop) {

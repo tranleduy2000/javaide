@@ -144,9 +144,12 @@ public class JavaUtil {
 
     @Nullable
     public static IClass jcTypeToClass(JCTree.JCCompilationUnit unit, JCTree type) {
+        if (type == null) {
+            return null;
+        }
         String className;
         if (type instanceof JCTree.JCTypeApply) {   //generic
-            className = ((JCTree.JCTypeApply) type).getType().toString();
+            return jcTypeToClass(unit, ((JCTree.JCTypeApply) type).getType());
         } else {
             className = type.toString();
         }

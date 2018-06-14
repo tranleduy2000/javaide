@@ -24,6 +24,7 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.data.Pair;
 import com.duy.common.interfaces.Filter;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
+import com.duy.ide.javaide.utils.DLog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -119,6 +120,7 @@ public class JavaClassManager implements IClassManager {
 
     @Override
     public void update(IClass value) {
+        if (DLog.DEBUG) DLog.d(TAG, "update() called with: value = [" + value + "]");
         String fullClassName = value.getFullClassName();
         if (mLoaded.containsKey(fullClassName)) {
             mLoaded.put(fullClassName, value);

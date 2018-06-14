@@ -39,26 +39,28 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member, IFi
     private IClass mType;
     private int mModifiers;
     @Nullable
-    private String value;
+    private String mValue;
 
-    public FieldDescription(@NonNull String name, IClass type, int modifiers) {
-        this.mName = name;
-        this.mModifiers = modifiers;
+    public FieldDescription(int modifiers, IClass type, @NonNull String name, String initValue) {
+        mName = name;
+        mType = type;
+        mModifiers = modifiers;
+        mValue = initValue;
     }
 
     public FieldDescription(Field field) {
-        this.mName = field.getName();
-        this.mType = JavaClassManager.getInstance().getClassWrapper(field.getType());
-        this.mModifiers = field.getModifiers();
+        mName = field.getName();
+        mType = JavaClassManager.getInstance().getClassWrapper(field.getType());
+        mModifiers = field.getModifiers();
 
         if (Modifier.isStatic(mModifiers)) {
             try {
                 boolean primitive = field.getType().isPrimitive();
                 Object o = field.get(null);
                 if (primitive) {
-                    value = o.toString();
+                    mValue = o.toString();
                 } else {
-                    value = o.getClass().getSimpleName();
+                    mValue = o.getClass().getSimpleName();
                 }
             } catch (Exception ignored) {
             }
@@ -78,16 +80,16 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member, IFi
 
     @Override
     public String getName() {
-        if (value == null) {
+        if (mValue == null) {
             return mName;
         } else {
-            return mName + "(" + value + ")";
+            return mName + "(" + mValue + ")";
         }
     }
 
     @Override
     public String getDescription() {
-        return value;
+        return mValue;
     }
 
     @Override
@@ -131,6 +133,6 @@ public class FieldDescription extends JavaSuggestItemImpl implements Member, IFi
 
     @Override
     public Object getFieldValue() {
-        return value;
+        return mValue;
     }
 }

@@ -35,6 +35,7 @@ import com.duy.ide.javaide.editor.autocomplete.internal.Expression;
 import com.duy.ide.javaide.editor.autocomplete.internal.ExpressionResolver;
 import com.duy.ide.javaide.editor.autocomplete.internal.IJavaCompleteMatcher;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
+import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
@@ -44,6 +45,7 @@ import com.sun.tools.javac.tree.JCTree;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class JavaAutoCompleteProvider implements SuggestionProvider {
@@ -85,8 +87,10 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
         ArrayList<SuggestItem> result = new ArrayList<>();
         try {
             JCTree.JCCompilationUnit ast = mJavaParser.parse(editor.getText());
+            List<IClass> classes = mJavaParser.parseClasses(ast);
+
             //should be update java class in Java class manager
-            mClassLoader.updateClass(ast);
+            mClassLoader.updateClass(classes);
 
             ExpressionResolver resolver = new ExpressionResolver(ast, editor);
             Expression expression = resolver.getExpressionAtCursor();

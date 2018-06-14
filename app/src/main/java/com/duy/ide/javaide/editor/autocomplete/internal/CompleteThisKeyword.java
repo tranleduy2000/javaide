@@ -71,9 +71,10 @@ public class CompleteThisKeyword extends JavaCompleteMatcherImpl {
         if (member.getName().toString().startsWith(incomplete)) {
             int flags = (int) member.getModifiers().flags;
             FieldDescription desc = new FieldDescription(
-                    member.getName().toString(),
+                    flags,
                     /*field.getType().toString(),*/ null,
-                    flags);
+                    member.getName().toString(),
+                    null);
             setInfo(desc, editor, incomplete);
             result.add(desc);
         }

@@ -153,11 +153,11 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
         this.mConstructors.add(constructorDescription);
     }
 
-    public void addField(FieldDescription fieldDescription) {
+    public void addField(IField fieldDescription) {
         mFields.add(fieldDescription);
     }
 
-    public void addMethod(MethodDescription methodDescription) {
+    public void addMethod(IMethod methodDescription) {
         mMethods.add(methodDescription);
     }
 

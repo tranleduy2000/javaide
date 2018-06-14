@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.AndroidProjectManager;
+import com.duy.ide.BuildConfig;
 import com.duy.ide.R;
 import com.duy.ide.javaide.editor.autocomplete.internal.Patterns;
 
@@ -118,7 +119,7 @@ public class DialogNewAndroidProject extends AppCompatDialogFragment implements 
             String mainLayoutName = layoutName.getText().toString();
             String appName = editAppName.getText().toString();
             String projectName = appName.replaceAll("\\s+", "");
-            boolean useAppCompat = /*mAppCompat.isChecked()*/ true;
+            boolean useAppCompat = BuildConfig.DEBUG;
             try {
                 AndroidProjectManager projectManager = new AndroidProjectManager(getContext());
                 AndroidAppProject project = projectManager.createNewProject(getContext(),

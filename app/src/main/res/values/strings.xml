@@ -135,9 +135,8 @@
     <string name="title_premium_version">Premium version</string>
     <string name="button_purchase">Purchase</string>
     <string name="message_premium">This app is free and no ads.
-        To support developer, you can buy premium version with 1$. Some locked features: \n
+        To support developer, you can buy premium version with 2$. Some locked features: \n
         1. Editor color schemes (320+ themes)\n
-        2. Change editor fonts (5+ fonts)\n
     </string>
     <string name="button_purchase_restore">Restore</string>
 

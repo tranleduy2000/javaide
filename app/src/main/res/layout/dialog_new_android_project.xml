@@ -9,13 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="@string/create_new_java_project" />
+            android:text="@string/new_android_project"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -49,7 +51,7 @@
                 android:id="@+id/edit_activity_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Activity Name"
+                android:hint="Activity name"
                 android:text="MainActivity" />
         </android.support.design.widget.TextInputLayout>
 
@@ -61,7 +63,7 @@
                 android:id="@+id/edit_layout_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Layout Name"
+                android:hint="Layout name"
                 android:text="activity_main.xml" />
         </android.support.design.widget.TextInputLayout>
 
@@ -86,15 +88,16 @@
             android:gravity="end"
             android:orientation="horizontal">
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_cancel"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@android:string/cancel" />
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_create"
-                style="@style/Base.Widget.AppCompat.Button.Colored"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@android:string/ok" />

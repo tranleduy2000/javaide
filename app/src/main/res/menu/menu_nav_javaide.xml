@@ -23,12 +23,12 @@
         android:id="@+id/action_premium"
         android:icon="@drawable/baseline_lock_open_24"
         android:title="@string/title_premium_version"
-        android:visible="false" />
+        android:visible="true" />
     <item
         android:id="@+id/action_editor_color_scheme"
         android:icon="@drawable/ic_color_lens_white_24dp"
         android:title="@string/editor_theme"
-        android:visible="false" />
+        android:visible="true" />
 
     <item
         android:id="@+id/action_see_logcat"

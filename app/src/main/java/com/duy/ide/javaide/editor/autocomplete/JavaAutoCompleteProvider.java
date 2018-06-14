@@ -72,7 +72,7 @@ public class JavaAutoCompleteProvider implements SuggestionProvider {
     }
 
     private void addAutoComplete() {
-        mJavaAutoCompletes.add(new CompleteExpression(mJavaParser, mClassLoader));
+        mJavaAutoCompletes.add(new CompleteExpression(mClassLoader));
         mJavaAutoCompletes.add(new CompleteNewKeyword(mClassLoader));
         mJavaAutoCompletes.add(new CompletePackage(mPackageManager));
         mJavaAutoCompletes.add(new CompleteString(mClassLoader));

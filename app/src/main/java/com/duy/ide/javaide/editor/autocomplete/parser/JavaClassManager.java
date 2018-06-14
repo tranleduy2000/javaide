@@ -25,9 +25,15 @@ import com.duy.common.data.Pair;
 import com.duy.common.interfaces.Filter;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.utils.DLog;
+import com.sun.tools.javac.tree.JCTree;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -91,6 +97,31 @@ public class JavaClassManager implements IClassManager {
         for (Class clazz : classes) {
             getClassWrapper(clazz);
         }
+
+        JavaParser parser = new JavaParser();
+        ArrayList<File> javaSrcDirs = project.getJavaSrcDirs();
+        for (File javaSrcDir : javaSrcDirs) {
+            Collection<File> javaFiles = FileUtils.listFiles(
+                    javaSrcDir,
+                    new String[]{"java"},
+                    true);
+            for (File javaFile : javaFiles) {
+                if (DLog.DEBUG) DLog.d(TAG, "loadFromProject: parsing class " + javaFile);
+                try {
+                    FileInputStream input = new FileInputStream(javaFile);
+                    String content = IOUtils.toString(input, "UTF-8");
+                    input.close();
+                    JCTree.JCCompilationUnit ast = parser.parse(content);
+                    List<IClass> parseClasses = parser.parseClasses(ast);
+                    for (IClass aClass : parseClasses) {
+                        update(aClass);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         System.out.println("Loaded classes " + (System.currentTimeMillis() - time));
     }
 

@@ -134,6 +134,14 @@ public class JavaParser {
                 classDecl.getKind() == Tree.Kind.ANNOTATION_TYPE,
                 classDecl.getKind() == Tree.Kind.ENUM);
 
+        IClass extendsClass = JavaUtil.jcTypeToClass(unit, classDecl.getExtendsClause());
+        if (extendsClass != null) {
+            clazz.setSuperclass(extendsClass);
+        } else {
+            clazz.setSuperclass(JavaClassManager.getInstance().getParsedClass(Object.class.getName()));
+        }
+
+
         List<JCTree> members = classDecl.getMembers();
         for (JCTree member : members) {
             if (member instanceof JCTree.JCMethodDecl) {

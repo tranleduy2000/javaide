@@ -50,10 +50,14 @@ public class TypeResolver {
     private static final String TAG = "TypeResolver";
     private JavaDexClassLoader mClassLoader;
     private JCCompilationUnit mUnit;
+    private IClass mCurrentType;
 
-    public TypeResolver(JavaDexClassLoader classLoader, JCCompilationUnit unit) {
+    public TypeResolver(JavaDexClassLoader classLoader,
+                        JCCompilationUnit unit,
+                        IClass currentType) {
         mClassLoader = classLoader;
-        this.mUnit = unit;
+        mUnit = unit;
+        mCurrentType = currentType;
     }
 
     public IClass resolveType(@NonNull JCExpression expression, int cursor) {
@@ -67,14 +71,10 @@ public class TypeResolver {
             return null;
         }
         String exceptionMessage = "Can not resolve type of expression ";
-        IClass currentType = null;
+        IClass currentType = mCurrentType;
         for (JCTree tree : list) {
             //only once time on this case
             if (tree instanceof JCIdent) {
-                if (currentType != null) {
-                    throw new UnsupportedOperationException(exceptionMessage + tree);
-
-                }
                 JCIdent jcIdent = (JCIdent) tree;
 
                 //variable declaration, static import or inner class
@@ -105,7 +105,12 @@ public class TypeResolver {
                     }
                     currentType = method.getMethodReturnType();
                 } else if (methodSelect instanceof JCIdent) { //method in current class
-                    //findNonStaticMethodInAst(mUnit, ((JCIdent) methodSelect).getName().toString(), null);
+                    String methodName = ((JCIdent) methodSelect).getName().toString();
+                    IMethod method = currentType.getMethod(methodName, null);
+                    if (method == null) {
+                        throw new UnsupportedOperationException(exceptionMessage + tree);
+                    }
+                    currentType = method.getMethodReturnType();
                 } else {
                     throw new UnsupportedOperationException(exceptionMessage + tree);
                 }

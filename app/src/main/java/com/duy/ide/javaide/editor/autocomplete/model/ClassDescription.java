@@ -231,6 +231,7 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
                 return method;
             }
         }
+
         if (getSuperclass() != null) {
             return getSuperclass().getMethod(methodName, argsType);
         }
@@ -262,6 +263,11 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
 
         if (c.getSuperclass() != null) {
             mSuperClass = JavaClassManager.getInstance().getClassWrapper(c.getSuperclass());
+        } else {
+            if (!getFullClassName().equals(Object.class.getName())
+                    && mSuperClass == null) {
+                mSuperClass = JavaClassManager.getInstance().getParsedClass(Object.class.getName());
+            }
         }
 
         for (Constructor constructor : c.getConstructors()) {
@@ -283,5 +289,9 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
                 addMethod(new MethodDescription(method));
             }
         }
+    }
+
+    public void setSuperclass(IClass superclass) {
+        this.mSuperClass = superclass;
     }
 }

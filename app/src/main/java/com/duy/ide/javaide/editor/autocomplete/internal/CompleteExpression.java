@@ -23,8 +23,8 @@ import com.duy.ide.editor.internal.suggestion.Editor;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.IField;
 import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
-import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
 import com.duy.ide.javaide.utils.DLog;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
@@ -42,16 +42,16 @@ import static com.sun.tools.javac.tree.JCTree.JCExpression;
  */
 public class CompleteExpression extends JavaCompleteMatcherImpl {
     private static final String TAG = "CompleteExpression";
-    private final JavaParser mJavaParser;
     private final JavaDexClassLoader mClassLoader;
     private Map<JCTree, Integer> mEndPositions;
+
     private JCCompilationUnit mAst;
+    private IClass mCurrentType;
+
     private int mCursor;
     private Editor mEditor;
 
-    public CompleteExpression(@NonNull JavaParser javaParser,
-                              @NonNull JavaDexClassLoader classLoader) {
-        mJavaParser = javaParser;
+    public CompleteExpression(@NonNull JavaDexClassLoader classLoader) {
         mClassLoader = classLoader;
     }
 
@@ -60,6 +60,20 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         mCursor = editor.getCursor();
         mAst = ast;
         mEndPositions = ast.endPositions;
+
+        List<JCTree> typeDecls = mAst.getTypeDecls();
+        for (JCTree typeDecl : typeDecls) {
+            if (typeDecl instanceof JCTree.JCClassDecl) {
+                int startPosition = typeDecl.getStartPosition();
+                int endPosition = typeDecl.getEndPosition(mEndPositions);
+                if (startPosition <= mCursor && mCursor <= endPosition) {
+                    String simpleName = ((JCTree.JCClassDecl) typeDecl).getSimpleName().toString();
+                    JCExpression packageName = ast.getPackageName();
+                    mCurrentType = JavaClassManager.getInstance()
+                            .getParsedClass(packageName + "." + simpleName);
+                }
+            }
+        }
     }
 
     @Override
@@ -123,7 +137,8 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         if (DLog.DEBUG) DLog.d(TAG, "incomplete = " + incomplete);
 
         JCExpression expression = jcFieldAccess.getExpression();
-        IClass type = new TypeResolver(mClassLoader, mAst).resolveType(expression, mCursor);
+        IClass type = new TypeResolver(mClassLoader, mAst, mCurrentType)
+                .resolveType(expression, mCursor);
         if (type != null) {
             List<IMethod> methods = type.getMethods();
             for (IMethod method : methods) {

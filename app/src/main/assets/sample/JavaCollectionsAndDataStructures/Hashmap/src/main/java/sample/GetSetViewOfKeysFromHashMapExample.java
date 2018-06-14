@@ -11,27 +11,27 @@ import java.util.Set;
 
 public class GetSetViewOfKeysFromHashMapExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create HashMap object
-    HashMap hMap = new HashMap();
+        //create HashMap object
+        HashMap hMap = new HashMap();
 
-    //add key value pairs to HashMap
-    hMap.put("1", "One");
-    hMap.put("2", "Two");
-    hMap.put("3", "Three");
+        //add key value pairs to HashMap
+        hMap.put("1", "One");
+        hMap.put("2", "Two");
+        hMap.put("3", "Three");
 
     /*
       get Set of keys contained in HashMap using
       Set keySet() method of HashMap class
     */
 
-    Set st = hMap.keySet();
+        Set st = hMap.keySet();
 
-    System.out.println("Set created from HashMap Keys contains :");
-    //iterate through the Set of keys
-    Iterator itr = st.iterator();
-    while (itr.hasNext()) System.out.println(itr.next());
+        System.out.println("Set created from HashMap Keys contains :");
+        //iterate through the Set of keys
+        Iterator itr = st.iterator();
+        while (itr.hasNext()) System.out.println(itr.next());
 
     /*
        Please note that resultant Set object is backed by the HashMap.
@@ -40,13 +40,13 @@ public class GetSetViewOfKeysFromHashMapExample {
        addition.
     */
 
-    //remove 2 from Set
-    st.remove("2");
+        //remove 2 from Set
+        st.remove("2");
 
-    //check if original HashMap still contains 2
-    boolean blnExists = hMap.containsKey("2");
-    System.out.println("Does HashMap contain 2 ? " + blnExists);
-  }
+        //check if original HashMap still contains 2
+        boolean blnExists = hMap.containsKey("2");
+        System.out.println("Does HashMap contain 2 ? " + blnExists);
+    }
 }
 
 /*

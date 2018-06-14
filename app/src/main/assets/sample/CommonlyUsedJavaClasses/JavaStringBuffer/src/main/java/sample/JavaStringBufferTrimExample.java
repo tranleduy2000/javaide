@@ -6,44 +6,44 @@ package sample;
 
 public class JavaStringBufferTrimExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create StringBuffer object
-    StringBuffer sbf = new StringBuffer("   Hello World  !  ");
+        //create StringBuffer object
+        StringBuffer sbf = new StringBuffer("   Hello World  !  ");
 
-    /*
-     * Method 1: convert StringBuffer to string and use trim method of
-     * String.
-     */
+        /*
+         * Method 1: convert StringBuffer to string and use trim method of
+         * String.
+         */
 
-    String str = sbf.toString().trim();
+        String str = sbf.toString().trim();
 
-    System.out.println("StringBuffer trim: \"" + str + "\"");
+        System.out.println("StringBuffer trim: \"" + str + "\"");
 
-    /*
-     * Method 2: Create method to trim contents of StringBuffer
-     * using substring method.
-     */
+        /*
+         * Method 2: Create method to trim contents of StringBuffer
+         * using substring method.
+         */
 
-    System.out.println("\"" + trim(sbf) + "\"");
-  }
-
-  private static String trim(StringBuffer sbf) {
-
-    int start, end;
-
-    //find the first character which is not space
-    for (start = 0; start < sbf.length(); start++) {
-      if (sbf.charAt(start) != ' ') break;
+        System.out.println("\"" + trim(sbf) + "\"");
     }
 
-    //find the last character which is not space
-    for (end = sbf.length(); end > start; end--) {
-      if (sbf.charAt(end - 1) != ' ') break;
-    }
+    private static String trim(StringBuffer sbf) {
 
-    return sbf.substring(start, end);
-  }
+        int start, end;
+
+        //find the first character which is not space
+        for (start = 0; start < sbf.length(); start++) {
+            if (sbf.charAt(start) != ' ') break;
+        }
+
+        //find the last character which is not space
+        for (end = sbf.length(); end > start; end--) {
+            if (sbf.charAt(end - 1) != ' ') break;
+        }
+
+        return sbf.substring(start, end);
+    }
 }
 
 /*

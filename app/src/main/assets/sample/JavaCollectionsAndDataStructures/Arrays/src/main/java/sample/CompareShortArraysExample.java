@@ -9,10 +9,10 @@ import java.util.Arrays;
 
 public class CompareShortArraysExample {
 
-  public static void main(String[] args) {
-    //create short arrays
-    short[] shortArray1 = new short[]{107, 93, 58};
-    short[] shortArray2 = new short[]{107, 93, 58};
+    public static void main(String[] args) {
+        //create short arrays
+        short[] shortArray1 = new short[]{107, 93, 58};
+        short[] shortArray2 = new short[]{107, 93, 58};
 
     /*
       To compare two short arrays use,
@@ -22,15 +22,15 @@ public class CompareShortArraysExample {
       if they contain same elements in same order.
     */
 
-    boolean blnResult = Arrays.equals(shortArray1, shortArray2);
-    System.out.println("Are two short arrays equal ? : " + blnResult);
+        boolean blnResult = Arrays.equals(shortArray1, shortArray2);
+        System.out.println("Are two short arrays equal ? : " + blnResult);
 
     /*
       Please note that two short array references pointing to null are
       considered as equal.
     */
 
-  }
+    }
 }
 
 /*

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CreateListOfNCopiesExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
     /*
       To create a List containing n copies of specified Object use,
@@ -21,14 +21,14 @@ public class CreateListOfNCopiesExample {
       specified Object.
     */
 
-    List list = Collections.nCopies(5, "A");
+        List list = Collections.nCopies(5, "A");
 
-    //iterate through newly created list
-    System.out.println("List contains, ");
-    Iterator itr = list.iterator();
+        //iterate through newly created list
+        System.out.println("List contains, ");
+        Iterator itr = list.iterator();
 
-    while (itr.hasNext()) System.out.println(itr.next());
-  }
+        while (itr.hasNext()) System.out.println(itr.next());
+    }
 }
 
 /*

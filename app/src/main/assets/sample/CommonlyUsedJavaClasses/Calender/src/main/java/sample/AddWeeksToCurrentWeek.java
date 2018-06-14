@@ -9,45 +9,45 @@ import java.util.Calendar;
 
 public class AddWeeksToCurrentWeek {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create Calendar instance
-    Calendar now = Calendar.getInstance();
+        //create Calendar instance
+        Calendar now = Calendar.getInstance();
 
-    System.out.println(
-            "Current date : "
-                    + (now.get(Calendar.MONTH) + 1)
-                    + "-"
-                    + now.get(Calendar.DATE)
-                    + "-"
-                    + now.get(Calendar.YEAR));
+        System.out.println(
+                "Current date : "
+                        + (now.get(Calendar.MONTH) + 1)
+                        + "-"
+                        + now.get(Calendar.DATE)
+                        + "-"
+                        + now.get(Calendar.YEAR));
 
-    System.out.println("Current week of month is : " + now.get(Calendar.WEEK_OF_MONTH));
+        System.out.println("Current week of month is : " + now.get(Calendar.WEEK_OF_MONTH));
 
-    System.out.println("Current week of year is : " + now.get(Calendar.WEEK_OF_YEAR));
+        System.out.println("Current week of year is : " + now.get(Calendar.WEEK_OF_YEAR));
 
-    //add week to current date using Calendar.add method
-    now.add(Calendar.WEEK_OF_YEAR, 1);
+        //add week to current date using Calendar.add method
+        now.add(Calendar.WEEK_OF_YEAR, 1);
 
-    System.out.println(
-            "date after one week : "
-                    + (now.get(Calendar.MONTH) + 1)
-                    + "-"
-                    + now.get(Calendar.DATE)
-                    + "-"
-                    + now.get(Calendar.YEAR));
+        System.out.println(
+                "date after one week : "
+                        + (now.get(Calendar.MONTH) + 1)
+                        + "-"
+                        + now.get(Calendar.DATE)
+                        + "-"
+                        + now.get(Calendar.YEAR));
 
-    //substract week from current date
-    now = Calendar.getInstance();
-    now.add(Calendar.WEEK_OF_YEAR, -50);
-    System.out.println(
-            "date before 50 weeks : "
-                    + (now.get(Calendar.MONTH) + 1)
-                    + "-"
-                    + now.get(Calendar.DATE)
-                    + "-"
-                    + now.get(Calendar.YEAR));
-  }
+        //substract week from current date
+        now = Calendar.getInstance();
+        now.add(Calendar.WEEK_OF_YEAR, -50);
+        System.out.println(
+                "date before 50 weeks : "
+                        + (now.get(Calendar.MONTH) + 1)
+                        + "-"
+                        + now.get(Calendar.DATE)
+                        + "-"
+                        + now.get(Calendar.YEAR));
+    }
 }
 
 /*

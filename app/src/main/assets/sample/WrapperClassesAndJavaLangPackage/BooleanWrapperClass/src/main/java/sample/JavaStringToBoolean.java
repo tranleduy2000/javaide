@@ -6,18 +6,18 @@ package sample;
 */
 public class JavaStringToBoolean {
 
-  public static void main(String[] args) {
-    //construct String object
-    String str = "false";
+    public static void main(String[] args) {
+        //construct String object
+        String str = "false";
 
-    //1. Convert using constructor
-    Boolean blnObj1 = new Boolean(str);
-    System.out.println(blnObj1);
+        //1. Convert using constructor
+        Boolean blnObj1 = new Boolean(str);
+        System.out.println(blnObj1);
 
-    //2. Use valueOf method of Boolean class. This is a static method.
-    Boolean blnObj2 = Boolean.valueOf(str);
-    System.out.println(blnObj2);
-  }
+        //2. Use valueOf method of Boolean class. This is a static method.
+        Boolean blnObj2 = Boolean.valueOf(str);
+        System.out.println(blnObj2);
+    }
 }
 
 /*

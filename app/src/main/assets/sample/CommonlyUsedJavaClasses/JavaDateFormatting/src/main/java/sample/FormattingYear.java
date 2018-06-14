@@ -10,21 +10,21 @@ import java.util.Date;
 
 public class FormattingYear {
 
-  public static void main(String[] args) {
-    //create Date object
-    Date date = new Date();
+    public static void main(String[] args) {
+        //create Date object
+        Date date = new Date();
 
-    //formatting year in yy format like 07, 08 etc
-    String strDateFormat = "yy";
-    SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+        //formatting year in yy format like 07, 08 etc
+        String strDateFormat = "yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
 
-    System.out.println("Current year in yy format : " + sdf.format(date));
+        System.out.println("Current year in yy format : " + sdf.format(date));
 
-    //formatting year in yyyy format like 2007, 2008 etc.
-    strDateFormat = "yyyy";
-    sdf = new SimpleDateFormat(strDateFormat);
-    System.out.println("Current year in yyyy format : " + sdf.format(date));
-  }
+        //formatting year in yyyy format like 2007, 2008 etc.
+        strDateFormat = "yyyy";
+        sdf = new SimpleDateFormat(strDateFormat);
+        System.out.println("Current year in yyyy format : " + sdf.format(date));
+    }
 }
 
 /*

@@ -10,17 +10,17 @@ import java.util.HashSet;
 
 public class FindMinimumOfHashSetExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create a HashSet object
-    HashSet hashSet = new HashSet();
+        //create a HashSet object
+        HashSet hashSet = new HashSet();
 
-    //Add elements to HashSet
-    hashSet.add(new Long("923740927"));
-    hashSet.add(new Long("4298748382"));
-    hashSet.add(new Long("2374324832"));
-    hashSet.add(new Long("2473483643"));
-    hashSet.add(new Long("32987432984"));
+        //Add elements to HashSet
+        hashSet.add(new Long("923740927"));
+        hashSet.add(new Long("4298748382"));
+        hashSet.add(new Long("2374324832"));
+        hashSet.add(new Long("2473483643"));
+        hashSet.add(new Long("32987432984"));
 
     /*
        To find minimum element of Java HashSet use,
@@ -30,10 +30,10 @@ public class FindMinimumOfHashSetExample {
        its natural ordering.
     */
 
-    Object obj = Collections.min(hashSet);
+        Object obj = Collections.min(hashSet);
 
-    System.out.println("Minimum Element of Java HashSet is : " + obj);
-  }
+        System.out.println("Minimum Element of Java HashSet is : " + obj);
+    }
 }
 /*
 Output would be

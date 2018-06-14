@@ -9,10 +9,10 @@ import java.util.HashMap;
 
 public class JavaHashMapExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create object of HashMap
-    HashMap hMap = new HashMap();
+        //create object of HashMap
+        HashMap hMap = new HashMap();
 
     /*
       Add key value pair to HashMap using
@@ -22,8 +22,8 @@ public class JavaHashMapExample {
       to the key or null if no value mapped to the key.
     */
 
-    hMap.put("One", new Integer(1));
-    hMap.put("Two", new Integer(2));
+        hMap.put("One", new Integer(1));
+        hMap.put("Two", new Integer(2));
 
     /*
       Please note that put method accepts Objects. Java Primitive values CAN NOT
@@ -31,16 +31,16 @@ public class JavaHashMapExample {
       wrapper class first.
     */
 
-    //retrieve value using Object get(Object key) method of Java HashMap class
-    Object obj = hMap.get("One");
-    System.out.println(obj);
+        //retrieve value using Object get(Object key) method of Java HashMap class
+        Object obj = hMap.get("One");
+        System.out.println(obj);
 
     /*
       Please note that the return type of get method is an Object. The value must
       be casted to the original class.
     */
 
-  }
+    }
 }
 /*
 Output of the program would be

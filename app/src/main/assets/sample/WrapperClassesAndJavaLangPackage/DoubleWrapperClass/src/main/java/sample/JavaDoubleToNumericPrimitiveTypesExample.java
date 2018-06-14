@@ -12,29 +12,29 @@ package sample;
 
 public class JavaDoubleToNumericPrimitiveTypesExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    Double dObj = new Double("10.50");
-    //use byteValue method of Double class to convert it into byte type.
-    byte b = dObj.byteValue();
-    System.out.println(b);
+        Double dObj = new Double("10.50");
+        //use byteValue method of Double class to convert it into byte type.
+        byte b = dObj.byteValue();
+        System.out.println(b);
 
-    //use shortValue method of Double class to convert it into short type.
-    short s = dObj.shortValue();
-    System.out.println(s);
+        //use shortValue method of Double class to convert it into short type.
+        short s = dObj.shortValue();
+        System.out.println(s);
 
-    //use intValue method of Double class to convert it into int type.
-    int i = dObj.intValue();
-    System.out.println(i);
+        //use intValue method of Double class to convert it into int type.
+        int i = dObj.intValue();
+        System.out.println(i);
 
-    //use floatValue method of Double class to convert it into float type.
-    float f = dObj.floatValue();
-    System.out.println(f);
+        //use floatValue method of Double class to convert it into float type.
+        float f = dObj.floatValue();
+        System.out.println(f);
 
-    //use doubleValue method of Double class to convert it into double type.
-    double d = dObj.doubleValue();
-    System.out.println(d);
-  }
+        //use doubleValue method of Double class to convert it into double type.
+        double d = dObj.doubleValue();
+        System.out.println(d);
+    }
 }
 
 /*

@@ -6,16 +6,16 @@ package sample;
 */
 
 public class JavaStringToByteArray {
-  public static void main(String args[]) {
+    public static void main(String args[]) {
 
-    //Java String object
-    String str = "Hello World";
+        //Java String object
+        String str = "Hello World";
 
-    /*
-     * To convert Java String to byte array, use
-     * byte[] getBytes() method of Java String class.
-     */
+        /*
+         * To convert Java String to byte array, use
+         * byte[] getBytes() method of Java String class.
+         */
 
-    byte[] bytes = str.getBytes();
-  }
+        byte[] bytes = str.getBytes();
+    }
 }

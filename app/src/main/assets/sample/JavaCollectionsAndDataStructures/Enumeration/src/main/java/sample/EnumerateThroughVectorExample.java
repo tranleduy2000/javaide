@@ -10,18 +10,18 @@ import java.util.Vector;
 
 public class EnumerateThroughVectorExample {
 
-  public static void main(String[] args) {
-    //create a Vector object
-    Vector v = new Vector();
+    public static void main(String[] args) {
+        //create a Vector object
+        Vector v = new Vector();
 
-    //populate the Vector
-    v.add("One");
-    v.add("Two");
-    v.add("Three");
-    v.add("Four");
+        //populate the Vector
+        v.add("One");
+        v.add("Two");
+        v.add("Three");
+        v.add("Four");
 
-    //Get Enumeration of Vector's elements using elements() method
-    Enumeration e = v.elements();
+        //Get Enumeration of Vector's elements using elements() method
+        Enumeration e = v.elements();
 
     /*
       Enumeration provides two methods to enumerate through the elements.
@@ -30,10 +30,10 @@ public class EnumerateThroughVectorExample {
       the next element in enumeration.
     */
 
-    System.out.println("Elements of the Vector are : ");
+        System.out.println("Elements of the Vector are : ");
 
-    while (e.hasMoreElements()) System.out.println(e.nextElement());
-  }
+        while (e.hasMoreElements()) System.out.println(e.nextElement());
+    }
 }
 /*
 Output would be

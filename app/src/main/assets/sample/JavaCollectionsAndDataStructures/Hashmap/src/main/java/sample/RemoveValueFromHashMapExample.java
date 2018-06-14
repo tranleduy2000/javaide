@@ -9,15 +9,15 @@ import java.util.HashMap;
 
 public class RemoveValueFromHashMapExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create HashMap object
-    HashMap hMap = new HashMap();
+        //create HashMap object
+        HashMap hMap = new HashMap();
 
-    //add key value pairs to HashMap
-    hMap.put("1", "One");
-    hMap.put("2", "Two");
-    hMap.put("3", "Three");
+        //add key value pairs to HashMap
+        hMap.put("1", "One");
+        hMap.put("2", "Two");
+        hMap.put("3", "Three");
 
     /*
       To remove a key value pair from HashMap use
@@ -26,9 +26,9 @@ public class RemoveValueFromHashMapExample {
       was mapped.
     */
 
-    Object obj = hMap.remove("2");
-    System.out.println(obj + " Removed from HashMap");
-  }
+        Object obj = hMap.remove("2");
+        System.out.println(obj + " Removed from HashMap");
+    }
 }
 /*
 Output would be

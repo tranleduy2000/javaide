@@ -11,16 +11,16 @@ import java.util.Collections;
 
 public class BinarySearchArrayListExample {
 
-  public static void main(String[] args) {
-    //create an ArrayList object
-    ArrayList arrayList = new ArrayList();
+    public static void main(String[] args) {
+        //create an ArrayList object
+        ArrayList arrayList = new ArrayList();
 
-    //Add elements to Arraylist
-    arrayList.add("1");
-    arrayList.add("4");
-    arrayList.add("2");
-    arrayList.add("5");
-    arrayList.add("3");
+        //Add elements to Arraylist
+        arrayList.add("1");
+        arrayList.add("4");
+        arrayList.add("2");
+        arrayList.add("5");
+        arrayList.add("3");
 
     /*
       To Search an element of Java ArrayList using binary search algorithm use,
@@ -38,15 +38,15 @@ public class BinarySearchArrayListExample {
       using binarySearch method.
     */
 
-    //First sort an ArrayList using sort method of Collections class
-    Collections.sort(arrayList);
-    System.out.println("Sorted ArrayList contains : " + arrayList);
+        //First sort an ArrayList using sort method of Collections class
+        Collections.sort(arrayList);
+        System.out.println("Sorted ArrayList contains : " + arrayList);
 
-    //search an element using binarySearch method of Collections class
-    int index = Collections.binarySearch(arrayList, "4");
+        //search an element using binarySearch method of Collections class
+        int index = Collections.binarySearch(arrayList, "4");
 
-    System.out.println("Element found at : " + index);
-  }
+        System.out.println("Element found at : " + index);
+    }
 }
 
 /*

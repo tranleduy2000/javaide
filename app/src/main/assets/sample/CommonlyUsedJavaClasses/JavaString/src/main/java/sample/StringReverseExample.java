@@ -6,10 +6,10 @@ package sample;
 
 public class StringReverseExample {
 
-  public static void main(String args[]) {
-    //declare orinial string
-    String strOriginal = "Hello World";
-    System.out.println("Original String : " + strOriginal);
+    public static void main(String args[]) {
+        //declare orinial string
+        String strOriginal = "Hello World";
+        System.out.println("Original String : " + strOriginal);
 
     /*
     The easiest way to reverse a given string is to use reverse()
@@ -18,10 +18,10 @@ public class StringReverseExample {
     cast it back to String using toString() method of StringBuffer
     */
 
-    strOriginal = new StringBuffer(strOriginal).reverse().toString();
+        strOriginal = new StringBuffer(strOriginal).reverse().toString();
 
-    System.out.println("Reversed String : " + strOriginal);
-  }
+        System.out.println("Reversed String : " + strOriginal);
+    }
 }
 
 /*

@@ -9,46 +9,46 @@ import java.util.Calendar;
 
 public class GetCurrentDateTimeExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //get instance of Calendar class
-    Calendar now = Calendar.getInstance();
+        //get instance of Calendar class
+        Calendar now = Calendar.getInstance();
 
-    /*
-     * Calendar class has several contstants which represents current date
-     * and time values
-     */
+        /*
+         * Calendar class has several contstants which represents current date
+         * and time values
+         */
 
-    //get current date, year and month
-    System.out.println("Current Year is : " + now.get(Calendar.YEAR));
-    //month start from 0 to 11
-    System.out.println("Current Month is : " + (now.get(Calendar.MONTH) + 1));
-    System.out.println("Current Date is : " + now.get(Calendar.DATE));
+        //get current date, year and month
+        System.out.println("Current Year is : " + now.get(Calendar.YEAR));
+        //month start from 0 to 11
+        System.out.println("Current Month is : " + (now.get(Calendar.MONTH) + 1));
+        System.out.println("Current Date is : " + now.get(Calendar.DATE));
 
-    //get current time information
-    System.out.println("Current Hour in 12 hour format is : " + now.get(Calendar.HOUR));
-    System.out.println("Current Hour in 24 hour format is : " + now.get(Calendar.HOUR_OF_DAY));
-    System.out.println("Current Minute is : " + now.get(Calendar.MINUTE));
-    System.out.println("Current Second is : " + now.get(Calendar.SECOND));
-    System.out.println("Current Millisecond is : " + now.get(Calendar.MILLISECOND));
+        //get current time information
+        System.out.println("Current Hour in 12 hour format is : " + now.get(Calendar.HOUR));
+        System.out.println("Current Hour in 24 hour format is : " + now.get(Calendar.HOUR_OF_DAY));
+        System.out.println("Current Minute is : " + now.get(Calendar.MINUTE));
+        System.out.println("Current Second is : " + now.get(Calendar.SECOND));
+        System.out.println("Current Millisecond is : " + now.get(Calendar.MILLISECOND));
 
-    //display full date time
-    System.out.println(
-            "Current full date time is : "
-                    + (now.get(Calendar.MONTH) + 1)
-                    + "-"
-                    + now.get(Calendar.DATE)
-                    + "-"
-                    + now.get(Calendar.YEAR)
-                    + " "
-                    + now.get(Calendar.HOUR_OF_DAY)
-                    + ":"
-                    + now.get(Calendar.MINUTE)
-                    + ":"
-                    + now.get(Calendar.SECOND)
-                    + "."
-                    + now.get(Calendar.MILLISECOND));
-  }
+        //display full date time
+        System.out.println(
+                "Current full date time is : "
+                        + (now.get(Calendar.MONTH) + 1)
+                        + "-"
+                        + now.get(Calendar.DATE)
+                        + "-"
+                        + now.get(Calendar.YEAR)
+                        + " "
+                        + now.get(Calendar.HOUR_OF_DAY)
+                        + ":"
+                        + now.get(Calendar.MINUTE)
+                        + ":"
+                        + now.get(Calendar.SECOND)
+                        + "."
+                        + now.get(Calendar.MILLISECOND));
+    }
 }
 
 /*

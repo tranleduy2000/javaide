@@ -10,19 +10,19 @@ import java.util.Vector;
 
 public class ReverseOrderVectorExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create a Vector object
-    Vector v = new Vector();
+        //create a Vector object
+        Vector v = new Vector();
 
-    //Add elements to Vector
-    v.add("A");
-    v.add("B");
-    v.add("C");
-    v.add("D");
-    v.add("E");
+        //Add elements to Vector
+        v.add("A");
+        v.add("B");
+        v.add("C");
+        v.add("D");
+        v.add("E");
 
-    System.out.println("Before Reverse Order, Vector Contains : " + v);
+        System.out.println("Before Reverse Order, Vector Contains : " + v);
 
     /*
       To reverse the order of all elements of Java Vector use,
@@ -31,10 +31,10 @@ public class ReverseOrderVectorExample {
       This method reverse the order of elements of specified list.
     */
 
-    Collections.reverse(v);
+        Collections.reverse(v);
 
-    System.out.println("After Reverse Order, Vector Contains : " + v);
-  }
+        System.out.println("After Reverse Order, Vector Contains : " + v);
+    }
 }
 
 /*

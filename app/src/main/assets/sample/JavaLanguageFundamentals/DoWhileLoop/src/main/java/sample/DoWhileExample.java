@@ -6,30 +6,30 @@ package sample;
 
 public class DoWhileExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    /*
-     * Do while loop executes statment until certain condition become false.
-     * Syntax of do while loop is
-     *
-     * do
-     *   <loop body>
-     * while(<condition>);
-     *
-     * where <condition> is a boolean expression.
-     *
-     * Please not that the condition is evaluated after executing the loop body.
-     * So loop will be executed at least once even if the condition is false.
-     */
+        /*
+         * Do while loop executes statment until certain condition become false.
+         * Syntax of do while loop is
+         *
+         * do
+         *   <loop body>
+         * while(<condition>);
+         *
+         * where <condition> is a boolean expression.
+         *
+         * Please not that the condition is evaluated after executing the loop body.
+         * So loop will be executed at least once even if the condition is false.
+         */
 
-    int i = 0;
+        int i = 0;
 
-    do {
-      System.out.println("i is : " + i);
-      i++;
+        do {
+            System.out.println("i is : " + i);
+            i++;
 
-    } while (i < 5);
-  }
+        } while (i < 5);
+    }
 }
 
 /*

@@ -9,10 +9,10 @@ import java.util.Arrays;
 
 public class CompareIntArraysExample {
 
-  public static void main(String[] args) {
-    //create int arrays
-    int[] intArray1 = new int[]{27, 78, 1023};
-    int[] intArray2 = new int[]{27, 78, 1023};
+    public static void main(String[] args) {
+        //create int arrays
+        int[] intArray1 = new int[]{27, 78, 1023};
+        int[] intArray2 = new int[]{27, 78, 1023};
 
     /*
       To compare two int arrays use,
@@ -22,15 +22,15 @@ public class CompareIntArraysExample {
       if they contain same elements in same order.
     */
 
-    boolean blnResult = Arrays.equals(intArray1, intArray2);
-    System.out.println("Are two int arrays equal ? : " + blnResult);
+        boolean blnResult = Arrays.equals(intArray1, intArray2);
+        System.out.println("Are two int arrays equal ? : " + blnResult);
 
     /*
       Please note that two int array references pointing to null are
       considered as equal.
     */
 
-  }
+    }
 }
 
 /*

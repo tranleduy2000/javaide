@@ -10,19 +10,19 @@ import java.util.Vector;
 
 public class ReplaceAllVectorExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create a Vector object
-    Vector v = new Vector();
+        //create a Vector object
+        Vector v = new Vector();
 
-    //Add elements to Vector
-    v.add("A");
-    v.add("B");
-    v.add("A");
-    v.add("C");
-    v.add("D");
+        //Add elements to Vector
+        v.add("A");
+        v.add("B");
+        v.add("A");
+        v.add("C");
+        v.add("D");
 
-    System.out.println("Vector Contains : " + v);
+        System.out.println("Vector Contains : " + v);
 
     /*
       To replace all occurrences of specified element of Java Vector use,
@@ -33,10 +33,10 @@ public class ReplaceAllVectorExample {
 
     */
 
-    Collections.replaceAll(v, "A", "Replace All");
+        Collections.replaceAll(v, "A", "Replace All");
 
-    System.out.println("After Replace All, Vector Contains : " + v);
-  }
+        System.out.println("After Replace All, Vector Contains : " + v);
+    }
 }
 
 /*

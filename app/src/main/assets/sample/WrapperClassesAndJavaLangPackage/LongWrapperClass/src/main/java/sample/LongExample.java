@@ -8,22 +8,22 @@ package sample;
 
 public class LongExample {
 
-  public static void main(String[] args) {
-    //create a Long object using one the below given constructors
-    //1. Create a Long object from long
-    long l = 10;
-    Long longObj1 = new Long(l);
+    public static void main(String[] args) {
+        //create a Long object using one the below given constructors
+        //1. Create a Long object from long
+        long l = 10;
+        Long longObj1 = new Long(l);
 
     /*
     2. Create a Long object from String. Please note that this method can
     throw NumberFormatException if string doesnt contain parsable number.
     */
-    Long longObj2 = new Long("5");
+        Long longObj2 = new Long("5");
 
-    //print value of Long objects
-    System.out.println(longObj1);
-    System.out.println(longObj2);
-  }
+        //print value of Long objects
+        System.out.println(longObj1);
+        System.out.println(longObj2);
+    }
 }
 
 /*

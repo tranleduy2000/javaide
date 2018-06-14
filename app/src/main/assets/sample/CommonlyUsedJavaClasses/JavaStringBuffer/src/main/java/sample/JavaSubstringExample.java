@@ -7,7 +7,7 @@ be used to get substring of the given java string object.
 
 public class JavaSubstringExample {
 
-  public static void main(String args[]) {
+    public static void main(String args[]) {
 
     /*
     Java String class defines two methods to get substring from the given
@@ -27,19 +27,19 @@ public class JavaSubstringExample {
     is negative and if startIndex of endIndex is grater than the string length.
     */
 
-    String name = "Hello World";
+        String name = "Hello World";
 
     /*
     This will print the substring starting from index 6
     */
-    System.out.println(name.substring(6));
+        System.out.println(name.substring(6));
 
     /*
     This will print the substring starting from index 0 upto 4 not 5.
     IMPORTANT : Here startIndex is inclusive while endIndex is exclusive.
     */
-    System.out.println(name.substring(0, 5));
-  }
+        System.out.println(name.substring(0, 5));
+    }
 }
 
 /*

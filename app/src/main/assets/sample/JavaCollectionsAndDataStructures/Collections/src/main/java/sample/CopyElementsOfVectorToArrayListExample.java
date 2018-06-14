@@ -11,25 +11,25 @@ import java.util.Vector;
 
 public class CopyElementsOfVectorToArrayListExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create a Vector object
-    Vector v = new Vector();
+        //create a Vector object
+        Vector v = new Vector();
 
-    //Add elements to Vector
-    v.add("1");
-    v.add("2");
-    v.add("3");
+        //Add elements to Vector
+        v.add("1");
+        v.add("2");
+        v.add("3");
 
-    //create an ArrayList object
-    ArrayList arrayList = new ArrayList();
+        //create an ArrayList object
+        ArrayList arrayList = new ArrayList();
 
-    //Add elements to Arraylist
-    arrayList.add("One");
-    arrayList.add("Two");
-    arrayList.add("Three");
-    arrayList.add("Four");
-    arrayList.add("Five");
+        //Add elements to Arraylist
+        arrayList.add("One");
+        arrayList.add("Two");
+        arrayList.add("Three");
+        arrayList.add("Four");
+        arrayList.add("Five");
 
     /*
       To copy elements of Java Vector to Java ArrayList use,
@@ -43,18 +43,18 @@ public class CopyElementsOfVectorToArrayListExample {
       unaffected.
     */
 
-    System.out.println("Before copy ArrayList Contains : " + arrayList);
+        System.out.println("Before copy ArrayList Contains : " + arrayList);
 
-    //copy all elements of Vector to ArrayList using copy method of Collections class
-    Collections.copy(arrayList, v);
+        //copy all elements of Vector to ArrayList using copy method of Collections class
+        Collections.copy(arrayList, v);
 
     /*
       Please note that, If ArrayList is not long enough to hold all elements of
       Vector, it throws IndexOutOfBoundsException.
     */
 
-    System.out.println("After Copy ArrayList Contains : " + arrayList);
-  }
+        System.out.println("After Copy ArrayList Contains : " + arrayList);
+    }
 }
 
 /*

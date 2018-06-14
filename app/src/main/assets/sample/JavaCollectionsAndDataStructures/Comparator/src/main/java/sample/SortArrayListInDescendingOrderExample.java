@@ -11,35 +11,35 @@ import java.util.Comparator;
 
 public class SortArrayListInDescendingOrderExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create an ArrayList object
-    ArrayList arrayList = new ArrayList();
+        //create an ArrayList object
+        ArrayList arrayList = new ArrayList();
 
-    //Add elements to Arraylist
-    arrayList.add("A");
-    arrayList.add("B");
-    arrayList.add("C");
-    arrayList.add("D");
-    arrayList.add("E");
+        //Add elements to Arraylist
+        arrayList.add("A");
+        arrayList.add("B");
+        arrayList.add("C");
+        arrayList.add("D");
+        arrayList.add("E");
 
     /*
       To get comparator that imposes reverse order on a Collection use
       static Comparator reverseOrder() method of Collections class
     */
 
-    Comparator comparator = Collections.reverseOrder();
+        Comparator comparator = Collections.reverseOrder();
 
-    System.out.println("Before sorting ArrayList in descending order : " + arrayList);
+        System.out.println("Before sorting ArrayList in descending order : " + arrayList);
 
     /*
       To sort an ArrayList using comparator use,
       static void sort(List list, Comparator c) method of Collections class.
     */
 
-    Collections.sort(arrayList, comparator);
-    System.out.println("After sorting ArrayList in descending order : " + arrayList);
-  }
+        Collections.sort(arrayList, comparator);
+        System.out.println("After sorting ArrayList in descending order : " + arrayList);
+    }
 }
 
 /*

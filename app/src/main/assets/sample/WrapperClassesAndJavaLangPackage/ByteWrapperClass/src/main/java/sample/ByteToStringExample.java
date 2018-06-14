@@ -6,13 +6,13 @@ package sample;
 
 public class ByteToStringExample {
 
-  public static void main(String[] args) {
-    Byte bObj = new Byte("10");
+    public static void main(String[] args) {
+        Byte bObj = new Byte("10");
 
-    //use toString method of Byte class to convert Byte into String.
-    String str = bObj.toString();
-    System.out.println("Byte converted to String as " + str);
-  }
+        //use toString method of Byte class to convert Byte into String.
+        String str = bObj.toString();
+        System.out.println("Byte converted to String as " + str);
+    }
 }
 
 /*

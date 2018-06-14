@@ -7,7 +7,7 @@ package sample;
 
 public class GenerateRandomIntByRange {
 
-  public static void main(String args[]) {
+    public static void main(String args[]) {
 
     /*
     The "(int)" parses the double to an int value replace 10 with
@@ -23,7 +23,7 @@ public class GenerateRandomIntByRange {
     will return a value in the range [-50;50]
     */
 
-    int random = (int) (Math.random() * 10) + 5;
-    System.out.println(random);
-  }
+        int random = (int) (Math.random() * 10) + 5;
+        System.out.println(random);
+    }
 }

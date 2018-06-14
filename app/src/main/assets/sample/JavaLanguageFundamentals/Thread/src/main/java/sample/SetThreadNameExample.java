@@ -7,26 +7,26 @@ package sample;
 
 public class SetThreadNameExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //get currently running thread object
-    Thread currentThread = Thread.currentThread();
-    System.out.println(currentThread);
+        //get currently running thread object
+        Thread currentThread = Thread.currentThread();
+        System.out.println(currentThread);
 
-    /*
-     * To set name of thread, use
-     * void setName(String threadName) method of
-     * Thread class.
-     */
+        /*
+         * To set name of thread, use
+         * void setName(String threadName) method of
+         * Thread class.
+         */
 
-    currentThread.setName("Set Thread Name Example");
+        currentThread.setName("Set Thread Name Example");
 
-    /*
-     * To get the name of thread use,
-     * String getName() method of Thread class.
-     */
-    System.out.println("Thread Name : " + currentThread.getName());
-  }
+        /*
+         * To get the name of thread use,
+         * String getName() method of Thread class.
+         */
+        System.out.println("Thread Name : " + currentThread.getName());
+    }
 }
 
 /*

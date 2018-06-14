@@ -10,10 +10,10 @@ import java.util.LinkedHashMap;
 
 public class JavaLinkedHashMapExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create object of LinkedHashMap
-    LinkedHashMap lHashMap = new LinkedHashMap();
+        //create object of LinkedHashMap
+        LinkedHashMap lHashMap = new LinkedHashMap();
 
     /*
       Add key value pair to LinkedHashMap using
@@ -23,8 +23,8 @@ public class JavaLinkedHashMapExample {
       to the key or null if no value mapped to the key.
     */
 
-    lHashMap.put("One", new Integer(1));
-    lHashMap.put("Two", new Integer(2));
+        lHashMap.put("One", new Integer(1));
+        lHashMap.put("Two", new Integer(2));
 
     /*
       Please note that put method accepts Objects. Java Primitive values CAN NOT
@@ -32,16 +32,16 @@ public class JavaLinkedHashMapExample {
       wrapper class first.
     */
 
-    //retrieve value using Object get(Object key) method of Java LinkedHashMap class
-    Object obj = lHashMap.get("One");
-    System.out.println(obj);
+        //retrieve value using Object get(Object key) method of Java LinkedHashMap class
+        Object obj = lHashMap.get("One");
+        System.out.println(obj);
 
     /*
       Please note that the return type of get method is an Object. The value must
       be casted to the original class.
     */
 
-  }
+    }
 }
 /*
 Output of the program would be

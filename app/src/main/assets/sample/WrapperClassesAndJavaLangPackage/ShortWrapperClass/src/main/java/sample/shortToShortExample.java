@@ -6,16 +6,16 @@ package sample;
 
 public class shortToShortExample {
 
-  public static void main(String[] args) {
-    short s = 10;
+    public static void main(String[] args) {
+        short s = 10;
 
     /*
     Use Short constructor to convert short primitive type to Short object.
     */
 
-    Short sObj = new Short(s);
-    System.out.println(sObj);
-  }
+        Short sObj = new Short(s);
+        System.out.println(sObj);
+    }
 }
 
 /*

@@ -6,16 +6,16 @@ package sample;
 
 public class byteToByteExample {
 
-  public static void main(String[] args) {
-    byte i = 10;
+    public static void main(String[] args) {
+        byte i = 10;
 
     /*
     Use Byte constructor to convert byte primitive type to Byte object.
     */
 
-    Byte bObj = new Byte(i);
-    System.out.println(bObj);
-  }
+        Byte bObj = new Byte(i);
+        System.out.println(bObj);
+    }
 }
 
 /*

@@ -11,9 +11,9 @@ import java.util.List;
 
 public class GetSynchronizedListFromArrayListExample {
 
-  public static void main(String[] args) {
-    //create an ArrayList object
-    ArrayList arrayList = new ArrayList();
+    public static void main(String[] args) {
+        //create an ArrayList object
+        ArrayList arrayList = new ArrayList();
 
     /*
       Java ArrayList is NOT synchronized. To get synchronized list from
@@ -21,12 +21,12 @@ public class GetSynchronizedListFromArrayListExample {
       static void synchronizedList(List list) method of Collections class.
     */
 
-    List list = Collections.synchronizedList(arrayList);
+        List list = Collections.synchronizedList(arrayList);
 
     /*
        Use this list object to prevent any unsynchronized access to original
        ArrayList object.
     */
 
-  }
+    }
 }

@@ -9,19 +9,19 @@ import java.util.ArrayList;
 
 public class SearchAnElementInArrayListExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create an ArrayList object
-    ArrayList arrayList = new ArrayList();
+        //create an ArrayList object
+        ArrayList arrayList = new ArrayList();
 
-    //Add elements to Arraylist
-    arrayList.add("1");
-    arrayList.add("2");
-    arrayList.add("3");
-    arrayList.add("4");
-    arrayList.add("5");
-    arrayList.add("1");
-    arrayList.add("2");
+        //Add elements to Arraylist
+        arrayList.add("1");
+        arrayList.add("2");
+        arrayList.add("3");
+        arrayList.add("4");
+        arrayList.add("5");
+        arrayList.add("1");
+        arrayList.add("2");
 
     /*
       To check whether the specified element exists in Java ArrayList use
@@ -30,8 +30,8 @@ public class SearchAnElementInArrayListExample {
       otherwise.
     */
 
-    boolean blnFound = arrayList.contains("2");
-    System.out.println("Does arrayList contain 2 ? " + blnFound);
+        boolean blnFound = arrayList.contains("2");
+        System.out.println("Does arrayList contain 2 ? " + blnFound);
 
     /*
       To get an index of specified element in ArrayList use
@@ -40,9 +40,9 @@ public class SearchAnElementInArrayListExample {
       It returns -1 if not found.
     */
 
-    int index = arrayList.indexOf("4");
-    if (index == -1) System.out.println("ArrayList does not contain 4");
-    else System.out.println("ArrayList contains 4 at index :" + index);
+        int index = arrayList.indexOf("4");
+        if (index == -1) System.out.println("ArrayList does not contain 4");
+        else System.out.println("ArrayList contains 4 at index :" + index);
 
     /*
       To get last index of specified element in ArrayList use
@@ -51,10 +51,10 @@ public class SearchAnElementInArrayListExample {
       specified element in ArrayList. It returns -1 if not found.
     */
 
-    int lastIndex = arrayList.lastIndexOf("1");
-    if (lastIndex == -1) System.out.println("ArrayList does not contain 1");
-    else System.out.println("Last occurrence of 1 in ArrayList is at index :" + lastIndex);
-  }
+        int lastIndex = arrayList.lastIndexOf("1");
+        if (lastIndex == -1) System.out.println("ArrayList does not contain 1");
+        else System.out.println("Last occurrence of 1 in ArrayList is at index :" + lastIndex);
+    }
 }
 /*
 Output would be

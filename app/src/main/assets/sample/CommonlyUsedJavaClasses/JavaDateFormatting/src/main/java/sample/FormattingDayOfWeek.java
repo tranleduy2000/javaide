@@ -10,22 +10,22 @@ import java.util.Date;
 
 public class FormattingDayOfWeek {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create Date object
-    Date date = new Date();
+        //create Date object
+        Date date = new Date();
 
-    //formatting day of week in E format like Sun, Mon etc.
-    String strDateFormat = "E";
-    SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+        //formatting day of week in E format like Sun, Mon etc.
+        String strDateFormat = "E";
+        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
 
-    System.out.println("Current day of week in E format : " + sdf.format(date));
+        System.out.println("Current day of week in E format : " + sdf.format(date));
 
-    //formatting day of week in EEEE format like Sunday, Monday etc.
-    strDateFormat = "EEEE";
-    sdf = new SimpleDateFormat(strDateFormat);
-    System.out.println("Current day of week in EEEE format : " + sdf.format(date));
-  }
+        //formatting day of week in EEEE format like Sunday, Monday etc.
+        strDateFormat = "EEEE";
+        sdf = new SimpleDateFormat(strDateFormat);
+        System.out.println("Current day of week in EEEE format : " + sdf.format(date));
+    }
 }
 
 /*

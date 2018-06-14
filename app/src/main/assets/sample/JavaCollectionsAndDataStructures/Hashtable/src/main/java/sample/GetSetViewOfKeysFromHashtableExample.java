@@ -12,27 +12,27 @@ import java.util.Set;
 
 public class GetSetViewOfKeysFromHashtableExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create Hashtable object
-    Hashtable ht = new Hashtable();
+        //create Hashtable object
+        Hashtable ht = new Hashtable();
 
-    //add key value pairs to Hashtable
-    ht.put("1", "One");
-    ht.put("2", "Two");
-    ht.put("3", "Three");
+        //add key value pairs to Hashtable
+        ht.put("1", "One");
+        ht.put("2", "Two");
+        ht.put("3", "Three");
 
     /*
       get Set of keys contained in Hashtable using
       Set keySet() method of Hashtable class
     */
 
-    Set st = ht.keySet();
+        Set st = ht.keySet();
 
-    System.out.println("Set created from Hashtable Keys contains :");
-    //iterate through the Set of keys
-    Iterator itr = st.iterator();
-    while (itr.hasNext()) System.out.println(itr.next());
+        System.out.println("Set created from Hashtable Keys contains :");
+        //iterate through the Set of keys
+        Iterator itr = st.iterator();
+        while (itr.hasNext()) System.out.println(itr.next());
 
     /*
        Please note that resultant Set object is backed by the Hashtable.
@@ -41,14 +41,14 @@ public class GetSetViewOfKeysFromHashtableExample {
        addition.
     */
 
-    //remove 2 from Set
-    st.remove("2");
+        //remove 2 from Set
+        st.remove("2");
 
-    //print keys of original Hashtable
-    System.out.println("Hashtable keys after removal from Set are :");
-    Enumeration e = ht.keys();
-    while (e.hasMoreElements()) System.out.println(e.nextElement());
-  }
+        //print keys of original Hashtable
+        System.out.println("Hashtable keys after removal from Set are :");
+        Enumeration e = ht.keys();
+        while (e.hasMoreElements()) System.out.println(e.nextElement());
+    }
 }
 
 /*

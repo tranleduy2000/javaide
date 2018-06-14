@@ -11,41 +11,41 @@ import java.util.StringTokenizer;
 
 public class ParseCSVFileExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    try {
+        try {
 
-      //csv file containing data
-      String strFile = "C:/FileIO/example.csv";
+            //csv file containing data
+            String strFile = "C:/FileIO/example.csv";
 
-      //create BufferedReader to read csv file
-      BufferedReader br = new BufferedReader(new FileReader(strFile));
-      String strLine = "";
-      StringTokenizer st = null;
-      int lineNumber = 0, tokenNumber = 0;
+            //create BufferedReader to read csv file
+            BufferedReader br = new BufferedReader(new FileReader(strFile));
+            String strLine = "";
+            StringTokenizer st = null;
+            int lineNumber = 0, tokenNumber = 0;
 
-      //read comma separated file line by line
-      while ((strLine = br.readLine()) != null) {
-        lineNumber++;
+            //read comma separated file line by line
+            while ((strLine = br.readLine()) != null) {
+                lineNumber++;
 
-        //break comma separated line using ","
-        st = new StringTokenizer(strLine, ",");
+                //break comma separated line using ","
+                st = new StringTokenizer(strLine, ",");
 
-        while (st.hasMoreTokens()) {
-          //display csv values
-          tokenNumber++;
-          System.out.println(
-                  "Line # " + lineNumber + ", Token # " + tokenNumber + ", Token : " + st.nextToken());
+                while (st.hasMoreTokens()) {
+                    //display csv values
+                    tokenNumber++;
+                    System.out.println(
+                            "Line # " + lineNumber + ", Token # " + tokenNumber + ", Token : " + st.nextToken());
+                }
+
+                //reset token number
+                tokenNumber = 0;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Exception while reading csv file: " + e);
         }
-
-        //reset token number
-        tokenNumber = 0;
-      }
-
-    } catch (Exception e) {
-      System.out.println("Exception while reading csv file: " + e);
     }
-  }
 }
 
 /*

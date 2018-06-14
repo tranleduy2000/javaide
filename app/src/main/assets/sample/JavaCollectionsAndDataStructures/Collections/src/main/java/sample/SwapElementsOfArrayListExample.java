@@ -10,19 +10,19 @@ import java.util.Collections;
 
 public class SwapElementsOfArrayListExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create an ArrayList object
-    ArrayList arrayList = new ArrayList();
+        //create an ArrayList object
+        ArrayList arrayList = new ArrayList();
 
-    //Add elements to Arraylist
-    arrayList.add("A");
-    arrayList.add("B");
-    arrayList.add("C");
-    arrayList.add("D");
-    arrayList.add("E");
+        //Add elements to Arraylist
+        arrayList.add("A");
+        arrayList.add("B");
+        arrayList.add("C");
+        arrayList.add("D");
+        arrayList.add("E");
 
-    System.out.println("Before swaping, ArrayList contains : " + arrayList);
+        System.out.println("Before swaping, ArrayList contains : " + arrayList);
 
     /*
       To swap elements of Java ArrayList use,
@@ -37,10 +37,10 @@ public class SwapElementsOfArrayListExample {
       any of the index values is not in range.
     */
 
-    Collections.swap(arrayList, 0, 4);
+        Collections.swap(arrayList, 0, 4);
 
-    System.out.println("After swaping, ArrayList contains : " + arrayList);
-  }
+        System.out.println("After swaping, ArrayList contains : " + arrayList);
+    }
 }
 
 /*

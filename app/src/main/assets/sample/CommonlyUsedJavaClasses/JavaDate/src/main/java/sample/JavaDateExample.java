@@ -13,14 +13,14 @@ Java Calendar class should be used for date manipulation instead.
 
 public class JavaDateExample {
 
-  public static void main(String args[]) {
+    public static void main(String args[]) {
     /*
     Create date object with current date and time.
     */
 
-    Date date = new Date();
-    System.out.println("Today is " + date);
-  }
+        Date date = new Date();
+        System.out.println("Today is " + date);
+    }
 }
 
 /*

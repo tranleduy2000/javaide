@@ -9,10 +9,10 @@ import java.util.Arrays;
 
 public class CompareCharArraysExample {
 
-  public static void main(String[] args) {
-    //create character arrays
-    char[] charArray1 = new char[]{'d', 'h', 'r', 'f'};
-    char[] charArray2 = new char[]{'d', 'h', 'r', 'f'};
+    public static void main(String[] args) {
+        //create character arrays
+        char[] charArray1 = new char[]{'d', 'h', 'r', 'f'};
+        char[] charArray2 = new char[]{'d', 'h', 'r', 'f'};
 
     /*
       To compare two char arrays use,
@@ -22,15 +22,15 @@ public class CompareCharArraysExample {
       if they contain same elements in same order.
     */
 
-    boolean blnResult = Arrays.equals(charArray1, charArray2);
-    System.out.println("Are two char arrays equal ? : " + blnResult);
+        boolean blnResult = Arrays.equals(charArray1, charArray2);
+        System.out.println("Are two char arrays equal ? : " + blnResult);
 
     /*
       Please note that two char array references pointing to null are
       considered as equal.
     */
 
-  }
+    }
 }
 
 /*

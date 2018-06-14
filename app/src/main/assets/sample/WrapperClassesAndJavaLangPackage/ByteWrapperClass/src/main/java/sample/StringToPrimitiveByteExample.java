@@ -7,9 +7,9 @@ package sample;
 
 public class StringToPrimitiveByteExample {
 
-  public static void main(String[] args) {
-    //declare String object
-    String str = new String("10");
+    public static void main(String[] args) {
+        //declare String object
+        String str = new String("10");
 
     /*
     use parseInt method of Byte class to convert String into byte primitive
@@ -17,9 +17,9 @@ public class StringToPrimitiveByteExample {
     Please note that this method can throw a NumberFormatException if the string
     is not parsable to byte.
     */
-    byte b = Byte.parseByte(str);
-    System.out.println(b);
-  }
+        byte b = Byte.parseByte(str);
+        System.out.println(b);
+    }
 }
 
 /*

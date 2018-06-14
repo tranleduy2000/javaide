@@ -9,10 +9,10 @@ import java.util.Arrays;
 
 public class CompareDoubleArraysExample {
 
-  public static void main(String[] args) {
-    //create double arrays
-    double[] dblArray1 = new double[]{10.3221, 789.23, 427.213};
-    double[] dblArray2 = new double[]{10.3221, 789.23, 427.213};
+    public static void main(String[] args) {
+        //create double arrays
+        double[] dblArray1 = new double[]{10.3221, 789.23, 427.213};
+        double[] dblArray2 = new double[]{10.3221, 789.23, 427.213};
 
     /*
       To compare two double arrays use,
@@ -25,8 +25,8 @@ public class CompareDoubleArraysExample {
       new Double(d1).equals(new Double(d2))
     */
 
-    boolean blnResult = Arrays.equals(dblArray1, dblArray2);
-    System.out.println("Are two double arrays equal ? : " + blnResult);
+        boolean blnResult = Arrays.equals(dblArray1, dblArray2);
+        System.out.println("Are two double arrays equal ? : " + blnResult);
 
     /*
       Please note that two double array references pointing to null are
@@ -35,7 +35,7 @@ public class CompareDoubleArraysExample {
       considered as unequal.
     */
 
-  }
+    }
 }
 
 /*

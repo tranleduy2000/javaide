@@ -11,9 +11,9 @@ import java.util.TreeMap;
 
 public class GetSynchronizedMapFromTreeMapExample {
 
-  public static void main(String[] args) {
-    //create TreeMap object
-    TreeMap treeMap = new TreeMap();
+    public static void main(String[] args) {
+        //create TreeMap object
+        TreeMap treeMap = new TreeMap();
 
     /*
       Java TreeMap is NOT synchronized. To get synchronized Map from
@@ -21,12 +21,12 @@ public class GetSynchronizedMapFromTreeMapExample {
       static void synchronizedMap(Map map) method of Collections class.
     */
 
-    Map map = Collections.synchronizedMap(treeMap);
+        Map map = Collections.synchronizedMap(treeMap);
 
     /*
        Use this map object to prevent any unsynchronized access to original
        TreeMap object.
     */
 
-  }
+    }
 }

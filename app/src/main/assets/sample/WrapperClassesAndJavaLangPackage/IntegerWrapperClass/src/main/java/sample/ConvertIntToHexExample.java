@@ -7,15 +7,15 @@ package sample;
 
 public class ConvertIntToHexExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    int i = 32;
+        int i = 32;
 
-    String strHexNumber = Integer.toHexString(i);
+        String strHexNumber = Integer.toHexString(i);
 
-    System.out.println("Convert decimal number to hexadecimal number example");
-    System.out.println("Hexadecimal value of " + i + " is " + strHexNumber);
-  }
+        System.out.println("Convert decimal number to hexadecimal number example");
+        System.out.println("Hexadecimal value of " + i + " is " + strHexNumber);
+    }
 }
 
 /*

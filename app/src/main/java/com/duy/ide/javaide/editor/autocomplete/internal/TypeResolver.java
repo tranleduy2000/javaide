@@ -26,11 +26,13 @@ import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.utils.DLog;
 import com.sun.tools.javac.tree.JCTree;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.sun.tools.javac.tree.JCTree.JCArrayAccess;
+import static com.sun.tools.javac.tree.JCTree.JCArrayTypeTree;
 import static com.sun.tools.javac.tree.JCTree.JCBlock;
+import static com.sun.tools.javac.tree.JCTree.JCCatch;
 import static com.sun.tools.javac.tree.JCTree.JCClassDecl;
 import static com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
 import static com.sun.tools.javac.tree.JCTree.JCExpression;
@@ -40,6 +42,8 @@ import static com.sun.tools.javac.tree.JCTree.JCImport;
 import static com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 import static com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
 import static com.sun.tools.javac.tree.JCTree.JCStatement;
+import static com.sun.tools.javac.tree.JCTree.JCTry;
+import static com.sun.tools.javac.tree.JCTree.JCTypeApply;
 import static com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 
 public class TypeResolver {
@@ -79,8 +83,8 @@ public class TypeResolver {
                 if (DLog.DEBUG) DLog.d(TAG, "variableDecl = " + variableDecl);
                 if (variableDecl != null) {
                     String className;
-                    if (variableDecl.getType() instanceof JCTree.JCTypeApply) {   //generic
-                        className = ((JCTree.JCTypeApply) variableDecl.getType()).getType().toString();
+                    if (variableDecl.getType() instanceof JCTypeApply) {   //generic
+                        className = ((JCTypeApply) variableDecl.getType()).getType().toString();
                     } else {
                         className = variableDecl.getType().toString();
                     }
@@ -124,18 +128,18 @@ public class TypeResolver {
                     throw new UnsupportedOperationException(exceptionMessage + tree);
                 }
                 currentType = field.getFieldType();
-            } else if (tree instanceof JCTree.JCArrayAccess) {
-                JCIdent jcIdent = (JCIdent) ((JCTree.JCArrayAccess) tree).getExpression();
+            } else if (tree instanceof JCArrayAccess) {
+                JCIdent jcIdent = (JCIdent) ((JCArrayAccess) tree).getExpression();
 
                 //variable declaration, static import or inner class
                 //case: variableDecl
                 JCVariableDecl variableDecl = getVariableDeclaration(mUnit, jcIdent);
                 if (DLog.DEBUG) DLog.d(TAG, "variableDecl = " + variableDecl);
                 if (variableDecl != null) {
-                    if (!(variableDecl.getType() instanceof JCTree.JCArrayTypeTree)) {
+                    if (!(variableDecl.getType() instanceof JCArrayTypeTree)) {
                         throw new UnsupportedOperationException("can not resolve type of array access " + tree);
                     }
-                    String className = ((JCTree.JCArrayTypeTree) variableDecl.getType())
+                    String className = ((JCArrayTypeTree) variableDecl.getType())
                             .getType().toString();
                     //try to find full class name
                     className = findImportedClassName(className);
@@ -195,10 +199,10 @@ public class TypeResolver {
                 list.addFirst(tree);
                 break;
 
-            } else if (tree instanceof JCTree.JCArrayAccess) { //variable.array[i].toString
+            } else if (tree instanceof JCArrayAccess) { //variable.array[i].toString
                 list.addFirst(tree);
                 //select declare name
-                tree = ((JCTree.JCArrayAccess) tree).getExpression(); //select array name
+                tree = ((JCArrayAccess) tree).getExpression(); //select array name
                 if (tree instanceof JCIdent) {
                     break;
                 } else if (tree instanceof JCFieldAccess) {
@@ -224,77 +228,145 @@ public class TypeResolver {
                                                   final JCIdent jcIdent) {
         List<JCTree> typeDecls = unit.getTypeDecls();
         for (JCTree typeDecl : typeDecls) {
-            List<JCVariableDecl> variableDeclaration = getVariableDeclaration(typeDecl, jcIdent);
-            if (!variableDeclaration.isEmpty()) {
-                //ambiguous
-                if (variableDeclaration.size() > 1) {
-                    return null;
-                } else {
-                    return variableDeclaration.get(0);
-                }
+            JCVariableDecl variableDecl = getVariableDeclaration(typeDecl, jcIdent);
+            if (variableDecl != null) {
+                return variableDecl;
             }
         }
         return null;
     }
 
-    @NonNull
-    private List<JCVariableDecl> getVariableDeclaration(final JCTree parent,
-                                                        final JCIdent jcIdent) {
-        List<JCVariableDecl> result = new ArrayList<>();
-        if (parent instanceof JCClassDecl) {
+    /**
+     * Visit all scope and find variable declaration when given jcIdent
+     *
+     * @param parent - parent block to find
+     */
+    @Nullable
+    private JCVariableDecl getVariableDeclaration(final JCTree parent,
+                                                  final JCIdent jcIdent) {
+        // TODO: 14-Jun-18 need add parent if jcIdent to resolve exactly scope
+        if (parent instanceof JCBlock) {
+            List<JCStatement> statements = ((JCBlock) parent).getStatements();
+            return getVariableDeclarationFromStatements(parent, statements, jcIdent);
+
+        } else if (parent instanceof JCTree.JCCase) {
+            JCTree.JCCase jcCase = (JCTree.JCCase) parent;
+            return getVariableDeclarationFromStatements(parent, jcCase.getStatements(), jcIdent);
+
+        } else if (parent instanceof JCClassDecl) {
             List<JCTree> members = ((JCClassDecl) parent).getMembers();
             //all member equals scope
             for (JCTree member : members) {
                 if (member instanceof JCVariableDecl) { //variable
                     JCVariableDecl variableDecl = (JCVariableDecl) member;
                     if (canBeSampleVariable(parent, variableDecl, jcIdent)) {
-                        result.add(variableDecl);
+                        return variableDecl;
                     }
                 } else if (member instanceof JCMethodDecl) { //method
                     JCMethodDecl jcMethodDecl = (JCMethodDecl) member;
-                    JCBlock body = jcMethodDecl.getBody();
-                    List<JCVariableDecl> list = getVariableDeclaration(body, jcIdent);
-                    //local variable
-                    if (!list.isEmpty()) {
-                        result.clear();
-                        result.addAll(list);
+                    JCBlock jcMethodDeclBody = jcMethodDecl.getBody();
+                    JCVariableDecl variableDecl = getVariableDeclaration(jcMethodDeclBody, jcIdent);
+                    if (variableDecl != null) {
+                        return variableDecl;
                     }
 
-                    List<JCVariableDecl> parameters = jcMethodDecl.getParameters();
-                    for (JCVariableDecl parameter : parameters) {
-                        if (canBeSampleVariable(jcMethodDecl, parameter, jcIdent)) {
-                            result.add(parameter);
-                        }
-                    }
-                } else if (member instanceof JCBlock) {
-                    List<JCVariableDecl> tmp = getVariableDeclaration(member, jcIdent);
-                    //local variable
-                    if (!tmp.isEmpty()) {
-                        result.clear();
-                        result.addAll(tmp);
-                    }
+                    return getVariableDeclarationFromStatements(member,
+                            ((JCMethodDecl) member).getParameters(), jcIdent);
+
+                } else {
+                    return getVariableDeclaration(member, jcIdent);
                 }
             }
-        } else if (parent instanceof JCBlock) {
-            List<JCStatement> statements = ((JCBlock) parent).getStatements();
-            for (JCStatement statement : statements) {
-                if (statement instanceof JCVariableDecl) {
-                    JCVariableDecl variableDecl = (JCVariableDecl) statement;
-                    if (canBeSampleVariable(parent, variableDecl, jcIdent)) {
-                        result.add(variableDecl);
-                    }
+        } else if (parent instanceof JCTree.JCDoWhileLoop) {
+            return getVariableDeclaration(((JCTree.JCDoWhileLoop) parent).getStatement(), jcIdent);
+
+        } else if (parent instanceof JCTree.JCEnhancedForLoop) {
+            JCVariableDecl variable = ((JCTree.JCEnhancedForLoop) parent).getVariable();
+            if (canBeSampleVariable(parent, variable, jcIdent)) {
+                return variable;
+            }
+            return getVariableDeclaration(((JCTree.JCEnhancedForLoop) parent).getStatement(), jcIdent);
+
+        } else if (parent instanceof JCTree.JCForLoop) {
+            List<JCStatement> initializer = ((JCTree.JCForLoop) parent).getInitializer();
+            JCVariableDecl variableDecl = getVariableDeclarationFromStatements(parent, initializer, jcIdent);
+            if (variableDecl != null) {
+                return variableDecl;
+            }
+            return getVariableDeclaration(((JCTree.JCForLoop) parent).getStatement(), jcIdent);
+
+        } else if (parent instanceof JCTree.JCIf) {
+            JCTree.JCIf jcIf = (JCTree.JCIf) parent;
+            JCStatement thenStatement = jcIf.getThenStatement();
+            JCVariableDecl variableDecl = getVariableDeclaration(thenStatement, jcIdent);
+            if (variableDecl != null) {
+                return variableDecl;
+            }
+            JCStatement elseStatement = jcIf.getElseStatement();
+            if (elseStatement != null) {
+                return getVariableDeclaration(elseStatement, jcIdent);
+            }
+
+        } else if (parent instanceof JCTree.JCLabeledStatement) {
+            return getVariableDeclaration(((JCTree.JCLabeledStatement) parent).getStatement(), jcIdent);
+
+        } else if (parent instanceof JCTree.JCSynchronized) {
+            return getVariableDeclaration(((JCTree.JCSynchronized) parent).getBlock(), jcIdent);
+
+        } else if (parent instanceof JCTry) {
+            JCTry jcTry = (JCTry) parent;
+            JCBlock jcTryBlock = jcTry.getBlock();
+            JCVariableDecl variableDecl = getVariableDeclaration(jcTryBlock, jcIdent);
+            if (variableDecl != null) {
+                return variableDecl;
+            }
+            for (JCCatch jcCatch : jcTry.getCatches()) {
+                JCVariableDecl parameter = jcCatch.getParameter();
+                if (canBeSampleVariable(jcCatch, parameter, jcIdent)) {
+                    return parameter;
+                }
+                JCBlock jcCatchBlock = jcCatch.getBlock();
+                variableDecl = getVariableDeclaration(jcCatchBlock, jcIdent);
+                if (variableDecl != null) {
+                    return variableDecl;
+                }
+            }
+
+        } else if (parent instanceof JCTree.JCWhileLoop) {
+            return getVariableDeclaration(((JCTree.JCWhileLoop) parent).getStatement(), jcIdent);
+
+        }
+        return null;
+    }
+
+    @Nullable
+    private JCVariableDecl getVariableDeclarationFromStatements(JCTree parent,
+                                                                List<? extends JCStatement> statements,
+                                                                JCIdent jcIdent) {
+        for (JCStatement statement : statements) {
+            if (statement instanceof JCVariableDecl) {
+                JCVariableDecl variableDecl = (JCVariableDecl) statement;
+                if (canBeSampleVariable(parent, variableDecl, jcIdent)) {
+                    return variableDecl;
+                }
+            } else {
+                JCVariableDecl variableDecl = getVariableDeclaration(statement, jcIdent);
+                if (variableDecl != null) {
+                    return variableDecl;
                 }
             }
         }
-        return result;
+        return null;
     }
+
 
     /**
      * @param parent - scope of variable
      */
-    private boolean canBeSampleVariable(JCTree parent,
-                                        JCVariableDecl variable,
-                                        JCIdent ident) {
+    private boolean canBeSampleVariable(@NonNull JCTree parent,
+                                        @NonNull JCVariableDecl variable,
+            /*should all parent if identifier*/
+                                        @NonNull JCIdent ident) {
         if (!variable.getName().equals(ident.getName())) {
             return false;
         }

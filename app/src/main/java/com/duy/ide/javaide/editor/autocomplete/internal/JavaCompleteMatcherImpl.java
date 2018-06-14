@@ -69,8 +69,10 @@ public abstract class JavaCompleteMatcherImpl implements IJavaCompleteMatcher {
         }
     }
 
-    protected static void setInfo(JavaSuggestItemImpl member, Editor editor, String incomplete) {
-        member.setEditor(editor);
-        member.setIncomplete(incomplete);
+    protected static void setInfo(Object member, Editor editor, String incomplete) {
+        if (member instanceof JavaSuggestItemImpl) {
+            ((JavaSuggestItemImpl) member).setEditor(editor);
+            ((JavaSuggestItemImpl) member).setIncomplete(incomplete);
+        }
     }
 }

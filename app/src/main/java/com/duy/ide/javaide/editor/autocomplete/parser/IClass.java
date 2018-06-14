@@ -21,8 +21,6 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.javaide.editor.autocomplete.model.ConstructorDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,12 +48,12 @@ public interface IClass extends SuggestItem {
     @Nullable
     IField getField(@NonNull String name);
 
-    ArrayList<MethodDescription> getMethods();
+    List<IMethod> getMethods();
 
     @Nullable
     IClass getSuperclass();
 
-    ArrayList<FieldDescription> getFields();
+    ArrayList<IField> getFields();
 
     List<SuggestItem> getMember(String prefix);
 

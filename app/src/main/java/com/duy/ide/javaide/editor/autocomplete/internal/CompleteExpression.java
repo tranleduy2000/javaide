@@ -20,9 +20,9 @@ package com.duy.ide.javaide.editor.autocomplete.internal;
 import com.android.annotations.NonNull;
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.model.FieldDescription;
-import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
+import com.duy.ide.javaide.editor.autocomplete.parser.IField;
+import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
 import com.duy.ide.javaide.utils.DLog;
@@ -125,15 +125,15 @@ public class CompleteExpression extends JavaCompleteMatcherImpl {
         JCExpression expression = jcFieldAccess.getExpression();
         IClass type = new TypeResolver(mClassLoader, mAst).resolveType(expression, mCursor);
         if (type != null) {
-            ArrayList<MethodDescription> methods = type.getMethods();
-            for (MethodDescription method : methods) {
+            List<IMethod> methods = type.getMethods();
+            for (IMethod method : methods) {
                 if (method.getMethodName().startsWith(incomplete)) {
                     setInfo(method, mEditor, incomplete);
                     result.add(method);
                 }
             }
-            ArrayList<FieldDescription> fields = type.getFields();
-            for (FieldDescription field : fields) {
+            ArrayList<IField> fields = type.getFields();
+            for (IField field : fields) {
                 if (field.getFieldName().startsWith(incomplete)) {
                     setInfo(field, mEditor, incomplete);
                     result.add(field);

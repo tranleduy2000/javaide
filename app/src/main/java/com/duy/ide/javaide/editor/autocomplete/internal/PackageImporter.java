@@ -23,7 +23,7 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.duy.ide.javaide.editor.autocomplete.util.EditorUtil;
-import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;

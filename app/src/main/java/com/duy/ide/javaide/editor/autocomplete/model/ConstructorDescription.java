@@ -23,7 +23,7 @@ import android.text.Editable;
 import com.duy.ide.BuildConfig;
 import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.internal.PackageImporter;
-import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaUtil;
 
 import java.lang.reflect.Constructor;
 

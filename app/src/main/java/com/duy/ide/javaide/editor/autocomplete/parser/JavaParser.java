@@ -18,7 +18,10 @@
 package com.duy.ide.javaide.editor.autocomplete.parser;
 
 import com.android.annotations.Nullable;
+import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
+import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 import com.google.common.collect.ImmutableList;
+import com.sun.source.tree.Tree;
 import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.parser.Parser;
 import com.sun.tools.javac.parser.ParserFactory;
@@ -30,8 +33,11 @@ import com.sun.tools.javac.util.Options;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import javax.lang.model.element.Modifier;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.DiagnosticListener;
@@ -40,6 +46,9 @@ import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardLocation;
 
 import static com.google.common.base.Charsets.UTF_8;
+import static com.sun.tools.javac.tree.JCTree.JCClassDecl;
+import static com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
+import static com.sun.tools.javac.tree.JCTree.JCModifiers;
 
 /**
  * Created by Duy on 16-Aug-17.
@@ -47,6 +56,9 @@ import static com.google.common.base.Charsets.UTF_8;
 
 public class JavaParser {
     private static final String TAG = "JavaParser";
+    private static final String DOT = ".";
+    private static final String CONSTRUCTOR_NAME = "<init>";
+
     private Context context;
     private ParserFactory parserFactory;
     private DiagnosticCollector<JavaFileObject> diagnostics;
@@ -67,8 +79,9 @@ public class JavaParser {
         parserFactory = ParserFactory.instance(context);
     }
 
+
     @Nullable
-    public JCTree.JCCompilationUnit parse(final String src) {
+    public JCCompilationUnit parse(final String src) {
         if (!canParse) return null;
         long time = System.currentTimeMillis();
 
@@ -83,7 +96,7 @@ public class JavaParser {
                 /*keepDocComments=*/ true,
                 /*keepEndPos=*/ true,
                 /*keepLineMap=*/ true);
-        JCTree.JCCompilationUnit unit;
+        JCCompilationUnit unit;
         unit = parser.parseCompilationUnit();
         unit.sourcefile = source;
         return unit;
@@ -93,5 +106,87 @@ public class JavaParser {
     public List<Diagnostic<? extends JavaFileObject>> getDiagnostics() {
         if (!canParse) return null;
         return diagnostics.getDiagnostics();
+    }
+
+    public List<IClass> parseClasses(JCCompilationUnit unit) {
+        List<IClass> classes = new ArrayList<>();
+        List<JCTree> typeDecls = unit.getTypeDecls();
+        for (JCTree typeDecl : typeDecls) {
+            if (typeDecl instanceof JCClassDecl) {
+                classes.add(parseClass(unit, (JCClassDecl) typeDecl));
+            }
+        }
+        return classes;
+    }
+
+    private IClass parseClass(JCCompilationUnit unit, JCClassDecl classDecl) {
+        final String className = unit.getPackageName() + DOT + classDecl.getSimpleName();
+        final int modifiers = JavaUtil.toJavaModifiers(classDecl.getModifiers().getFlags());
+
+        ClassDescription clazz = new ClassDescription(
+                className,
+                modifiers,
+                false,
+                classDecl.getKind() == Tree.Kind.ANNOTATION_TYPE,
+                classDecl.getKind() == Tree.Kind.ENUM);
+
+        List<JCTree> members = classDecl.getMembers();
+        for (JCTree member : members) {
+            if (member instanceof JCTree.JCMethodDecl) {
+                addMethodToClass(unit, clazz, (JCTree.JCMethodDecl) member);
+            } else if (member instanceof JCTree.JCVariableDecl) {
+
+            }
+        }
+        //now add constructor
+        //add methods
+        return null;
+    }
+
+    private void addMethodToClass(JCCompilationUnit unit,
+                                  ClassDescription clazz, JCTree.JCMethodDecl member) {
+        if (member.getName().toString().equals(CONSTRUCTOR_NAME)) {
+            addConstructor(clazz, member);
+            return;
+        }
+        final String methodName = member.getName().toString();
+        final int modifiers = JavaUtil.toJavaModifiers(member.getModifiers().getFlags());
+
+        final List<IClass> methodParameters = new ArrayList<>();
+        List<JCTree.JCVariableDecl> parameters = member.getParameters();
+        for (JCTree.JCVariableDecl parameter : parameters) {
+            JCTree type = parameter.getType();
+            IClass paramType = JavaUtil.jcTypeToClass(unit, type);
+            methodParameters.add(paramType);
+        }
+
+        IClass returnType = JavaUtil.jcTypeToClass(unit, member.getReturnType());
+
+        MethodDescription methodDescription = new MethodDescription(
+                methodName,
+                modifiers,
+                methodParameters,
+                returnType);
+        clazz.addMethod(methodDescription);
+    }
+
+
+    private void addConstructor(ClassDescription clazz, JCTree.JCMethodDecl member) {
+
+    }
+
+    private JCClassDecl resolveClassSimpleName(List<JCTree> typeDecls) {
+        for (JCTree typeDecl : typeDecls) {
+            if (typeDecl instanceof JCClassDecl) {
+                JCModifiers modifiers = ((JCClassDecl) typeDecl).getModifiers();
+                Set<Modifier> flags = modifiers.getFlags();
+                for (Modifier flag : flags) {
+                    if (flag.equals(Modifier.PUBLIC)) {
+                        return (JCClassDecl) typeDecl;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

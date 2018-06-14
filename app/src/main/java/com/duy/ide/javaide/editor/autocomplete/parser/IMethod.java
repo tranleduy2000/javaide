@@ -18,8 +18,9 @@
 package com.duy.ide.javaide.editor.autocomplete.parser;
 
 import com.android.annotations.NonNull;
+import com.duy.ide.code.api.SuggestItem;
 
-public interface IMethod {
+public interface IMethod extends SuggestItem {
     @NonNull
     String getMethodName();
 

@@ -19,8 +19,8 @@ package com.duy.ide.javaide.editor.autocomplete.internal;
 
 import com.duy.ide.code.api.SuggestItem;
 import com.duy.ide.editor.internal.suggestion.Editor;
-import com.duy.ide.javaide.editor.autocomplete.model.MethodDescription;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
+import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
 import com.duy.ide.javaide.utils.DLog;
@@ -70,7 +70,7 @@ public class CompleteString extends JavaCompleteMatcherImpl {
         IClass stringClass = reader.getParsedClass(String.class.getName());
         assert stringClass != null;
         ArrayList<SuggestItem> methods = new ArrayList<>();
-        for (MethodDescription method : stringClass.getMethods()) {
+        for (IMethod method : stringClass.getMethods()) {
             if (method.getMethodName().startsWith(incomplete)) {
                 suggestItems.add(method);
             }

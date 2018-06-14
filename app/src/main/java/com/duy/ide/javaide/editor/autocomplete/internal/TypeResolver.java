@@ -23,12 +23,14 @@ import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.IField;
 import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaDexClassLoader;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaUtil;
 import com.duy.ide.javaide.utils.DLog;
 import com.sun.tools.javac.tree.JCTree;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.duy.ide.javaide.editor.autocomplete.parser.JavaUtil.findImportedClassName;
 import static com.sun.tools.javac.tree.JCTree.JCArrayAccess;
 import static com.sun.tools.javac.tree.JCTree.JCArrayTypeTree;
 import static com.sun.tools.javac.tree.JCTree.JCBlock;
@@ -38,12 +40,10 @@ import static com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
 import static com.sun.tools.javac.tree.JCTree.JCExpression;
 import static com.sun.tools.javac.tree.JCTree.JCFieldAccess;
 import static com.sun.tools.javac.tree.JCTree.JCIdent;
-import static com.sun.tools.javac.tree.JCTree.JCImport;
 import static com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 import static com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
 import static com.sun.tools.javac.tree.JCTree.JCStatement;
 import static com.sun.tools.javac.tree.JCTree.JCTry;
-import static com.sun.tools.javac.tree.JCTree.JCTypeApply;
 import static com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 
 public class TypeResolver {
@@ -82,18 +82,10 @@ public class TypeResolver {
                 JCVariableDecl variableDecl = getVariableDeclaration(mUnit, jcIdent);
                 if (DLog.DEBUG) DLog.d(TAG, "variableDecl = " + variableDecl);
                 if (variableDecl != null) {
-                    String className;
-                    if (variableDecl.getType() instanceof JCTypeApply) {   //generic
-                        className = ((JCTypeApply) variableDecl.getType()).getType().toString();
-                    } else {
-                        className = variableDecl.getType().toString();
-                    }
-                    //try to find full class name
-                    className = findImportedClassName(className);
-                    currentType = mClassLoader.getClassReader().getParsedClass(className);
+                    currentType = JavaUtil.jcTypeToClass(mUnit, variableDecl.getType());
                 } else {
                     //case: System.out -> find imported class, this expression can be static access
-                    String className = findImportedClassName(jcIdent.getName().toString());
+                    String className = findImportedClassName(mUnit, jcIdent.getName().toString());
                     currentType = mClassLoader.getClassReader().getParsedClass(className);
                 }
                 // TODO: 13-Jun-18  case: static import
@@ -142,7 +134,7 @@ public class TypeResolver {
                     String className = ((JCArrayTypeTree) variableDecl.getType())
                             .getType().toString();
                     //try to find full class name
-                    className = findImportedClassName(className);
+                    className = findImportedClassName(mUnit, className);
                     currentType = mClassLoader.getClassReader().getParsedClass(className);
                 }
             }
@@ -150,18 +142,6 @@ public class TypeResolver {
 
         System.out.println("currentType = " + currentType);
         return currentType;
-    }
-
-    @NonNull
-    private String findImportedClassName(@NonNull String className) {
-        List<JCImport> imports = mUnit.getImports();
-        for (JCImport jcImport : imports) {
-            String fullName = jcImport.getQualifiedIdentifier().toString();
-            if (fullName.equals(className) || fullName.endsWith("." + className)) {
-                return fullName;
-            }
-        }
-        return className;
     }
 
 

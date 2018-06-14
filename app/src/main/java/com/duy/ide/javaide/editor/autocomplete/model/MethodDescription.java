@@ -27,32 +27,44 @@ import com.duy.ide.editor.view.IEditAreaView;
 import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
-import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Duy on 20-Jul-17.
  */
 
 public class MethodDescription extends JavaSuggestItemImpl implements Member, SuggestItem, IMethod {
-    private String mName;
+    private String mMethodName;
     private int mModifiers;
     private ArrayList<String> mParameterTypes = new ArrayList<>();
+    private ArrayList<IClass> mParameters = new ArrayList<>();
     @Nullable
     private IClass mReturnType;
 
     public MethodDescription(String name, IClass returnType,
                              long modifiers, ArrayList<String> parameterTypes) {
-        mName = name;
+        mMethodName = name;
         mReturnType = returnType;
         mModifiers = (int) modifiers;
         mParameterTypes = parameterTypes;
     }
 
+    public MethodDescription(@NonNull String methodName,
+                             int modifiers,
+                             @NonNull List<IClass> parameters,
+                             @Nullable IClass returnType) {
+        mMethodName = methodName;
+        mModifiers = modifiers;
+        mParameters.addAll(parameters);
+        mReturnType = returnType;
+    }
+
     public MethodDescription(@NonNull Method method) {
-        mName = method.getName();
+        mMethodName = method.getName();
         mModifiers = method.getModifiers();
         mReturnType = JavaClassManager.getInstance().getClassWrapper(method.getReturnType());
         Class<?>[] parameterTypes = method.getParameterTypes();
@@ -69,7 +81,7 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
 
             Editable editable = editorView.getEditableText();
             editable.delete(start, editorView.getSelectionStart());
-            String simpleName = JavaUtil.getSimpleName(mName);
+            String simpleName = JavaUtil.getSimpleName(mMethodName);
             String text = simpleName + "()" + (shouldAddSemicolon(getEditor()) ? ";" : "");
             if (getParameterTypes().size() > 0) {
                 //Should end method?
@@ -120,7 +132,7 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
 
     @Override
     public String getName() {
-        return mName + "(" + paramsToString() + ")";
+        return mMethodName + "(" + paramsToString() + ")";
     }
 
     private String paramsToString() {
@@ -168,7 +180,7 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
             }
             params.append(JavaUtil.getSimpleName(parameterType)).append(",");
         }
-        return mName + "(" + params.toString() + ")";
+        return mMethodName + "(" + params.toString() + ")";
     }
 
     @Override
@@ -178,7 +190,7 @@ public class MethodDescription extends JavaSuggestItemImpl implements Member, Su
 
     @Override
     public String getMethodName() {
-        return mName;
+        return mMethodName;
     }
 
     @Override

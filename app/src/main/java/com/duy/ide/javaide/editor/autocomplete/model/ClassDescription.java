@@ -30,13 +30,14 @@ import com.duy.ide.javaide.editor.autocomplete.parser.IClass;
 import com.duy.ide.javaide.editor.autocomplete.parser.IField;
 import com.duy.ide.javaide.editor.autocomplete.parser.IMethod;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaClassManager;
-import com.duy.ide.javaide.editor.autocomplete.util.JavaUtil;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Duy on 20-Jul-17.
@@ -47,25 +48,33 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     @NonNull
     private final String mClassName;
     private final ArrayList<ConstructorDescription> mConstructors = new ArrayList<>();
-    private final ArrayList<FieldDescription> mFields = new ArrayList<>();
-    private final ArrayList<MethodDescription> mMethods = new ArrayList<>();
-    private final ArrayList<ClassDescription> mImplements = new ArrayList<>();
-    @Nullable
-    private final IClass mSuperClass;
+    private final ArrayList<IField> mFields = new ArrayList<>();
+    private final ArrayList<IMethod> mMethods = new ArrayList<>();
+    private final ArrayList<IClass> mImplements = new ArrayList<>();
     private final int mModifiers;
     private final boolean mPrimitive, mAnnotation, mEum;
 
+    //init later
+    @Nullable
+    private IClass mSuperClass;
+
     public ClassDescription(Class c) {
         mClassName = c.getName();
-        if (c.getSuperclass() != null) {
-            mSuperClass = JavaClassManager.getInstance().getClassWrapper(c.getSuperclass());
-        } else {
-            mSuperClass = null;
-        }
         mModifiers = c.getModifiers();
         mPrimitive = c.isPrimitive();
         mAnnotation = c.isAnnotation();
         mEum = c.isEnum();
+    }
+
+    public ClassDescription(String className, int modifiers,
+                            boolean isPrimitive,
+                            boolean isAnnotation,
+                            boolean isEnum) {
+        mClassName = className;
+        mModifiers = modifiers;
+        mPrimitive = isPrimitive;
+        mAnnotation = isAnnotation;
+        mEum = isEnum;
     }
 
     @Override
@@ -136,7 +145,7 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
         return mConstructors;
     }
 
-    public ArrayList<FieldDescription> getFields() {
+    public ArrayList<IField> getFields() {
         return mFields;
     }
 
@@ -152,7 +161,7 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
         mMethods.add(methodDescription);
     }
 
-    public ArrayList<MethodDescription> getMethods() {
+    public List<IMethod> getMethods() {
         return mMethods;
     }
 
@@ -171,8 +180,8 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
                 }
             }
         }
-        for (FieldDescription field : mFields) {
-            if (prefix.isEmpty() || field.getName().startsWith(prefix)) {
+        for (IField field : mFields) {
+            if (prefix.isEmpty() || field.getFieldName().startsWith(prefix)) {
                 result.add(field);
             }
         }
@@ -181,8 +190,8 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     }
 
     public void getMethods(ArrayList<SuggestItem> result, String prefix) {
-        for (MethodDescription method : mMethods) {
-            if (prefix.isEmpty() || method.getName().startsWith(prefix)) {
+        for (IMethod method : mMethods) {
+            if (prefix.isEmpty() || method.getMethodName().startsWith(prefix)) {
                 result.add(method);
             }
         }
@@ -217,7 +226,7 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
     @Override
     public IMethod getMethod(String methodName, IClass[] argsType) {
         // TODO: 13-Jun-18 support types
-        for (MethodDescription method : mMethods) {
+        for (IMethod method : mMethods) {
             if (method.getMethodName().equals(methodName)) {
                 return method;
             }
@@ -230,7 +239,7 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
 
     @Override
     public IField getField(String name) {
-        for (FieldDescription field : mFields) {
+        for (IField field : mFields) {
             if (field.getFieldName().equals(name)) {
                 return field;
             }
@@ -241,7 +250,20 @@ public class ClassDescription extends JavaSuggestItemImpl implements IClass {
         return null;
     }
 
+    /**
+     * Lazy init
+     */
     public void initMembers(Class c) {
+        mImplements.clear();
+        Class[] interfaces = c.getInterfaces();
+        for (Class anInterface : interfaces) {
+            mImplements.add(JavaClassManager.getInstance().getClassWrapper(anInterface));
+        }
+
+        if (c.getSuperclass() != null) {
+            mSuperClass = JavaClassManager.getInstance().getClassWrapper(c.getSuperclass());
+        }
+
         for (Constructor constructor : c.getConstructors()) {
             if (Modifier.isPublic(constructor.getModifiers())) {
                 addConstructor(new ConstructorDescription(constructor));

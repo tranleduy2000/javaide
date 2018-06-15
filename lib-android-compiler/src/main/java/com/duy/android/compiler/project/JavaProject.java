@@ -279,6 +279,9 @@ public class JavaProject {
         return dirBuildIntermediates;
     }
 
+    public File getDirBuildOutput() {
+        return dirBuildOutput;
+    }
 
     @Override
     public String toString() {

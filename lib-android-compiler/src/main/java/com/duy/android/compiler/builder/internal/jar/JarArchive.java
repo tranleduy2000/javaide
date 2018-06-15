@@ -43,27 +43,21 @@ import java.util.jar.Manifest;
 public class JarArchive {
     private boolean mVerbose;
     @Nullable
-    private JarOptions mOptions;
-
-    public JarArchive(boolean verbose, @Nullable JarOptions options) {
-        mVerbose = verbose;
-        mOptions = options;
-    }
+    private JarOptions jarOptions;
+    private File outputFile;
 
     public JarArchive(boolean verbose) {
         mVerbose = verbose;
-        mOptions = null;
     }
 
     public void createJarArchive(JavaProject project) throws IOException {
         //input file
         File classesFolder = project.getDirBuildClasses();
-        File archiveFile = project.getOutJarArchive();
 
         // Open archive file
-        FileOutputStream stream = new FileOutputStream(archiveFile);
+        FileOutputStream stream = new FileOutputStream(outputFile);
 
-        Manifest manifest = buildManifest(getOptions());
+        Manifest manifest = buildManifest(getJarOptions());
 
         //Create the jar file
         JarOutputStream out = new JarOutputStream(stream, manifest);
@@ -134,11 +128,15 @@ public class JarArchive {
         }
     }
 
-    public JarOptions getOptions() {
-        return mOptions;
+    public JarOptions getJarOptions() {
+        return jarOptions;
     }
 
-    public void setOptions(JarOptions mOptions) {
-        this.mOptions = mOptions;
+    public void setJarOptions(JarOptions mOptions) {
+        this.jarOptions = mOptions;
+    }
+
+    public void setOutputFile(File outputFile) {
+        this.outputFile = outputFile;
     }
 }

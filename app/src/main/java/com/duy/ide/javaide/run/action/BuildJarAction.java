@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.android.annotations.NonNull;
 import com.duy.android.compiler.builder.BuildTask;
 import com.duy.android.compiler.builder.IBuilder;
-import com.duy.android.compiler.builder.JavaBuilder;
+import com.duy.android.compiler.builder.JarBuilder;
 import com.duy.android.compiler.builder.internal.jar.JarOptions;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.interfaces.Action;
@@ -51,9 +51,9 @@ public class BuildJarAction implements Action<JavaIdeActivity>, JarConfigDialog.
     }
 
     @Override
-    public void onCompleteConfig(JarOptions jarOptions) {
+    public void onCompleteConfig(@NonNull JarOptions jarOptions) {
         final DiagnosticPresenter diagnosticPresenter = mActivity.getDiagnosticPresenter();
-        final IBuilder<JavaProject> builder = new JavaBuilder(mActivity, mProject);
+        final IBuilder<JavaProject> builder = new JarBuilder(mActivity, mProject, jarOptions);
 
         builder.setStdOut(new PrintStream(diagnosticPresenter.getStandardOutput()));
         builder.setStdErr(new PrintStream(diagnosticPresenter.getErrorOutput()));
@@ -75,7 +75,7 @@ public class BuildJarAction implements Action<JavaIdeActivity>, JarConfigDialog.
                     @Override
                     public void onComplete() {
                         mActivity.updateUIFinishCompile();
-                        Toast.makeText(mActivity, R.string.compile_success, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, R.string.build_success, Toast.LENGTH_SHORT).show();
                     }
                 };
         BuildTask<JavaProject> buildTask = new BuildTask<>(builder, listener);

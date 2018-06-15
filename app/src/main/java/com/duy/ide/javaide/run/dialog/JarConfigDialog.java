@@ -145,7 +145,7 @@ public class JarConfigDialog extends AppCompatDialogFragment {
     }
 
     public interface JarConfigListener {
-        void onCompleteConfig(JarOptions jarOptions);
+        void onCompleteConfig(@NonNull JarOptions jarOptions);
     }
 
 }

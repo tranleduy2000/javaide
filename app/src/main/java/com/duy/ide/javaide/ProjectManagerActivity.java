@@ -74,8 +74,6 @@ public abstract class ProjectManagerActivity extends IdeActivity
         setupToolbar();
         createProjectIfNeed();
 
-        mPreferences.setAppTheme(1);
-        mPreferences.setEditorTheme("allure-contrast.json.properties");
     }
 
     @Override

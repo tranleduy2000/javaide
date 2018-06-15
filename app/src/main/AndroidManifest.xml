@@ -29,7 +29,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".javaide.theme.ThemeActivity" />
+        <activity
+            android:name=".javaide.theme.ThemeActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".javaide.sample.activities.JavaSampleActivity" />
         <activity
             android:name=".javaide.run.activities.ExecuteActivity"

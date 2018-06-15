@@ -22,6 +22,8 @@ import android.support.multidex.MultiDexApplication;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
+import com.duy.ide.javaide.setting.IdePreferenceManager;
+
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -47,6 +49,8 @@ public class JavaApplication extends MultiDexApplication {
 
         //for log cat
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+        IdePreferenceManager.setDefaultValues(this);
     }
 
     public void addStdOut(PrintStream out) {

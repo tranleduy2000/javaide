@@ -62,6 +62,7 @@ import com.duy.ide.javaide.theme.ThemeActivity;
 import com.duy.ide.javaide.uidesigner.inflate.DialogLayoutPreview;
 import com.duy.ide.javaide.utils.RootUtils;
 import com.duy.ide.javaide.utils.StoreUtil;
+import com.jecelyin.editor.v2.common.Command;
 import com.jecelyin.editor.v2.manager.MenuManager;
 import com.jecelyin.editor.v2.widget.menu.MenuDef;
 import com.pluscubed.logcat.ui.LogcatActivity;
@@ -413,6 +414,9 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
                         onProjectCreated(javaProject);
                     }
                 }
+                break;
+            case RC_CHANGE_THEME:
+                doCommandForAllEditor(new Command(Command.CommandEnum.REFRESH_THEME));
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);

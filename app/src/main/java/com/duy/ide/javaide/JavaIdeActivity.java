@@ -121,9 +121,11 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
 
     }
 
-    private void populateAutoCompleteService(SuggestionProvider provider) {
+    private void populateAutoCompleteService(@NonNull SuggestionProvider provider) {
         for (IEditorDelegate delegate : getTabManager().getEditorPagerAdapter().getAllEditor()) {
-            delegate.setSuggestionProvider(provider);
+            if (delegate != null) {
+                delegate.setSuggestionProvider(provider);
+            }
         }
     }
 

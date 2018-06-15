@@ -7,13 +7,10 @@ import android.util.Log;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.android.compiler.env.Environment;
-
-import org.apache.commons.io.IOUtils;
+import com.duy.common.io.IOUtils;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,14 +68,9 @@ public class JavaProject {
         File file = new File(javaSrcDirs.get(0), currentPackage.replace(".", File.separator));
         if (!file.exists()) file.mkdirs();
         File classf = new File(file, className + ".java");
-        FileOutputStream output = null;
         try {
-            output = new FileOutputStream(classf);
-            IOUtils.write(content, output);
-            output.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            IOUtils.writeAndClose(content, classf);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -197,7 +189,7 @@ public class JavaProject {
         File mainFile = new File(pkgPath, simpleName + ".java");
         if (!mainFile.exists()) {
             String content = Template.createClass(packageName, simpleName);
-            com.duy.android.compiler.utils.IOUtils.writeAndClose(content, mainFile);
+            IOUtils.writeAndClose(content, mainFile);
         }
     }
 

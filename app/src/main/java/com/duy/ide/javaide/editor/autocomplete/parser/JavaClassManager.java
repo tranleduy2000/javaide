@@ -28,10 +28,8 @@ import com.duy.ide.javaide.utils.DLog;
 import com.sun.tools.javac.tree.JCTree;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -108,9 +106,7 @@ public class JavaClassManager implements IClassManager {
                         true);
                 for (File javaFile : javaFiles) {
                     if (DLog.DEBUG) DLog.d(TAG, "loadFromProject: parsing class " + javaFile);
-                    FileInputStream input = new FileInputStream(javaFile);
-                    String content = IOUtils.toString(input, "UTF-8");
-                    input.close();
+                    String content = com.duy.android.compiler.utils.IOUtils.toString(javaFile);
                     JCTree.JCCompilationUnit ast = parser.parse(content);
                     List<IClass> parseClasses = parser.parseClasses(ast);
                     for (IClass aClass : parseClasses) {

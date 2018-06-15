@@ -14,8 +14,8 @@ import com.duy.android.compiler.builder.internal.dependency.LibraryDependencyImp
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.library.LibraryCache;
 import com.duy.android.compiler.utils.FileUtils;
+import com.duy.common.io.IOUtils;
 
-import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 
 import java.io.File;

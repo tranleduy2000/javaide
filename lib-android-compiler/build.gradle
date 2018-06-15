@@ -44,6 +44,7 @@ dependencies {
     api project(':dx')
     api project(':jdk-1_7')
     api project(':aosp:builder')
+    api project(':common')
     api 'org.eclipse.jdt.core.compiler:ecj:4.6.1'
     api 'net.sf.kxml:kxml2:2.3.0'
 
@@ -53,7 +54,7 @@ dependencies {
 
     api 'com.google.guava:guava:25.1-android'
     //noinspection GradleDependency newer version cause crash
-    api 'commons-io:commons-io:2.2'
+    //api 'commons-io:commons-io:2.2'
     api 'commons-codec:commons-codec:1.10'
     api 'org.apache.maven:maven-project:2.2.1'
     api 'org.codehaus.plexus:plexus-archiver:3.6.0'

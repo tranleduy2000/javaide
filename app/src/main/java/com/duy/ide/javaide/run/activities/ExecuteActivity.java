@@ -25,10 +25,10 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
-import com.duy.ide.javaide.JavaApplication;
 import com.duy.android.compiler.java.Java;
-import com.duy.android.compiler.utils.IOUtils;
+import com.duy.common.io.IOUtils;
 import com.duy.ide.R;
+import com.duy.ide.javaide.JavaApplication;
 import com.duy.ide.javaide.activities.BaseActivity;
 import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
 import com.duy.ide.javaide.run.view.ConsoleEditText;
@@ -130,7 +130,7 @@ public class ExecuteActivity extends BaseActivity {
         }
 
         JavaParser parser = new JavaParser();
-        JCTree.JCCompilationUnit unit = parser.parse(IOUtils.toStringAndClose(mainClassFile));
+        JCTree.JCCompilationUnit unit = parser.parse(IOUtils.toString(mainClassFile));
         JCTree.JCExpression packageName = unit.getPackageName();
         String simpleName = mainClassFile.getName().substring(0, mainClassFile.getName().indexOf("."));
         return packageName + "." + simpleName;

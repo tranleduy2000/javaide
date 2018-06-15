@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.duy.android.compiler.utils.IOUtils;
+import com.duy.common.io.IOUtils;
 import com.duy.ide.R;
 import com.duy.ide.javaide.FileChangeListener;
 import com.duy.ide.javaide.editor.autocomplete.internal.PatternFactory;

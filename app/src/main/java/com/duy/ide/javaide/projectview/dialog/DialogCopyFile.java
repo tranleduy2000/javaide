@@ -52,7 +52,6 @@ public class DialogCopyFile extends BaseDialog {
     public AlertDialog show() {
         AlertDialog.Builder builder = getBuilder();
         builder.setTitle(R.string.copy_file);
-        builder.setView(R.layout.dialog_new_file);
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View view = layoutInflater.inflate(R.layout.dialog_new_file, null);
@@ -86,7 +85,6 @@ public class DialogCopyFile extends BaseDialog {
         });
 
         builder.setView(view);
-        builder.show();
 
         AlertDialog dialog = builder.create();
         dialog.show();

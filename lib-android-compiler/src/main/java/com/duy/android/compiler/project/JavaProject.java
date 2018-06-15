@@ -59,6 +59,7 @@ public class JavaProject {
     private File dexFile;
     private File outJarArchive;
     private File dirGenerated;
+
     public JavaProject(File root, @Nullable String packageName) {
         this.packageName = packageName;
         this.dirRoot = root;
@@ -196,9 +197,7 @@ public class JavaProject {
         File mainFile = new File(pkgPath, simpleName + ".java");
         if (!mainFile.exists()) {
             String content = Template.createClass(packageName, simpleName);
-            FileOutputStream output = new FileOutputStream(mainFile);
-            IOUtils.write(content, output);
-            output.close();
+            com.duy.android.compiler.utils.IOUtils.writeAndClose(content, mainFile);
         }
     }
 

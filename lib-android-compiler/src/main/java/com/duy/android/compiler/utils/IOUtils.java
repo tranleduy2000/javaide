@@ -30,7 +30,7 @@ public class IOUtils {
 
     public static void writeAndClose(String content, File file) throws IOException {
         FileOutputStream output = new FileOutputStream(file);
-        org.apache.commons.io.IOUtils.write(content, output);
+        output.write(content.getBytes());
         output.close();
     }
 }

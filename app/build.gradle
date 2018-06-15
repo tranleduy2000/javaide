@@ -113,7 +113,7 @@ dependencies {
     api 'com.yqritc:recyclerview-flexibledivider:1.2.9'
     api 'com.sothree.slidinguppanel:library:3.4.0'
     //noinspection GradleDependency newer version cause crash
-    api 'commons-io:commons-io:2.3'
+    api 'commons-io:commons-io:2.2'
     api 'com.simplecityapps:recyclerview-fastscroll:1.0.18'
     api 'org.apache.commons:commons-lang3:3.7'
     api 'com.google.guava:guava:25.1-android'

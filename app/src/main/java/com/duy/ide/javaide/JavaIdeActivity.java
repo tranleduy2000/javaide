@@ -54,6 +54,7 @@ import com.duy.ide.javaide.diagnostic.parser.java.JavaOutputParser;
 import com.duy.ide.javaide.editor.autocomplete.JavaAutoCompleteProvider;
 import com.duy.ide.javaide.editor.format.JavaIdeCodeFormatProvider;
 import com.duy.ide.javaide.menu.JavaMenuManager;
+import com.duy.ide.javaide.run.action.BuildJarAction;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.ide.javaide.run.dialog.DialogRunConfig;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
@@ -81,6 +82,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
     private static final int RC_BUILD_PROJECT = 131;
     private static final int RC_REVIEW_LAYOUT = 741;
     private static final int RC_CHANGE_THEME = 350;
+    private static final int RC_BUILD_JAR = 799;
     private InAppPurchaseHelper mInAppPurchaseHelper;
     private ProgressBar mCompileProgress;
     private SuggestionProvider mAutoCompleteProvider;
@@ -233,6 +235,11 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
             case R.id.action_editor_color_scheme:
                 startActivityForResult(new Intent(this, ThemeActivity.class), RC_CHANGE_THEME);
                 break;
+            case R.id.action_build_jar:
+                saveAll(RC_BUILD_JAR);
+                break;
+            case R.id.action_run_jar:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -259,6 +266,11 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
                     dialogPreview.show(getSupportFragmentManager(), DialogLayoutPreview.TAG);
                 } else {
                     Toast.makeText(this, "Can not find file", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case RC_BUILD_JAR:
+                if (mProject != null) {
+                    new BuildJarAction(mProject).execute(this);
                 }
                 break;
         }

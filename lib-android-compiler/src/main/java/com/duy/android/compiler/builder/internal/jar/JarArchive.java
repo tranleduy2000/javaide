@@ -81,15 +81,9 @@ public class JarArchive {
     @NonNull
     private Manifest buildManifest(@Nullable JarOptions options) {
         Manifest manifest = new Manifest();
-        Attributes attrs = manifest.getMainAttributes();
-
+        manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
         if (options != null) {
-            attrs.put(Attributes.Name.MANIFEST_VERSION, options.getManifestVersion());
-            if (options.getMainClass() != null) {
-                attrs.put(Attributes.Name.MAIN_CLASS, options.getMainClass());
-            }
-        } else {
-            attrs.put(Attributes.Name.MANIFEST_VERSION, "1.0");
+            manifest.getMainAttributes().putAll(options.getAttributes());
         }
         return manifest;
     }

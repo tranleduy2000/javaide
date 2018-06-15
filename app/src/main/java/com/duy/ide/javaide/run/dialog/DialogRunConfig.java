@@ -40,13 +40,11 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.ide.R;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+import static com.duy.ide.javaide.editor.autocomplete.parser.JavaUtil.listClassName;
 
 /**
  * Created by Duy on 17-Jul-17.
@@ -149,29 +147,16 @@ public class DialogRunConfig extends AppCompatDialogFragment {
     }
 
     private void setupSpinnerMainClass(View view, JavaProject projectFile) {
-        ArrayList<String> names = listClassName(projectFile.getJavaSrcDirs().get(0));
+        ArrayList<File> javaSrcDirs = projectFile.getJavaSrcDirs();
+        ArrayList<String> names = new ArrayList<>();
+        for (File javaSrcDir : javaSrcDirs) {
+            names.addAll(listClassName(javaSrcDir));
+        }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, names);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         mClasses = view.findViewById(R.id.spinner_main_class);
         mClasses.setAdapter(adapter);
-    }
-
-    public ArrayList<String> listClassName(File src) {
-        if (!src.exists()) return new ArrayList<>();
-
-        String[] exts = new String[]{"java"};
-        Collection<File> files = FileUtils.listFiles(src, exts, true);
-
-        ArrayList<String> classes = new ArrayList<>();
-        String srcPath = src.getPath();
-        for (File file : files) {
-            String javaPath = file.getPath();
-            javaPath = javaPath.substring(srcPath.length() + 1, javaPath.length() - 5); //.java
-            javaPath = javaPath.replace(File.separator, ".");
-            classes.add(javaPath);
-        }
-        return classes;
     }
 
 

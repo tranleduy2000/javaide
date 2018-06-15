@@ -38,7 +38,17 @@
         android:id="@+id/action_sample"
         android:icon="@drawable/ic_code_white_24dp"
         android:title="@string/sample_code_java" />
-
+    <item android:title="Build">
+        <menu>
+            <item
+                android:id="@+id/action_build_jar"
+                android:title="Build jar archive">
+            </item>
+            <item
+                android:id="@+id/action_run_jar"
+                android:title="Run jar archive" />
+        </menu>
+    </item>
     <item
         android:id="@+id/action_report_bug"
         android:icon="@drawable/ic_bug_report_white_24dp"

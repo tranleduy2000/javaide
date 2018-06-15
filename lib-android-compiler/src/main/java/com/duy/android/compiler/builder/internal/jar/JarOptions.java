@@ -18,13 +18,12 @@
 package com.duy.android.compiler.builder.internal.jar;
 
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
+
+import java.util.jar.Attributes;
 
 public interface JarOptions {
     @NonNull
-    String getManifestVersion();
+    Attributes getAttributes();
 
-    @Nullable
-    String getMainClass();
-
+    void setAttributes(Attributes attributes);
 }

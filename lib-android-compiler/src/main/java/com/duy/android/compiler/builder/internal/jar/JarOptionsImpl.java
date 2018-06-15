@@ -15,7 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.duy.ide.javaide.run.dialog;
+package com.duy.android.compiler.builder.internal.jar;
 
-public class DialogSelectClass {
+
+import java.util.jar.Attributes;
+
+public class JarOptionsImpl implements JarOptions {
+    private java.util.jar.Attributes attributes;
+
+
+    public JarOptionsImpl(Attributes attributes) {
+        this.attributes = attributes;
+    }
+
+    @Override
+    public Attributes getAttributes() {
+        return attributes;
+    }
+
+    @Override
+    public void setAttributes(Attributes attributes) {
+        this.attributes = attributes;
+    }
+
 }

@@ -218,7 +218,7 @@ public class AndroidAppProject extends JavaProject {
             array.put(item);
         }
         String str = jsonObject.toString(1);
-        org.apache.commons.io.IOUtils.write(str, new FileOutputStream(file), "UTF-8");
+        IOUtils.write(str, new FileOutputStream(file), "UTF-8");
     }
 
     public String getPackageForR() {

@@ -21,8 +21,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-
-import org.apache.commons.io.IOUtils;
+import com.duy.common.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

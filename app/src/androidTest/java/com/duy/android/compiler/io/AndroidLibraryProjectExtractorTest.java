@@ -10,11 +10,8 @@ import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.library.LibraryCache;
 import com.duy.android.compiler.project.AndroidAppProject;
 import com.duy.android.compiler.project.AndroidProjectManager;
-import com.duy.android.compiler.repo.maven.ArtifactDownloader;
-import com.duy.android.compiler.repo.maven.MojoExecutionException;
-import com.duy.android.compiler.repo.maven.MojoFailureException;
+import com.duy.common.io.IOUtils;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
@@ -90,7 +87,7 @@ public class AndroidLibraryProjectExtractorTest {
     }
 
     @Test
-    public void testDownload() throws IOException, MojoFailureException, MojoExecutionException {
+    public void testDownload() throws IOException {
         Context context = InstrumentationRegistry.getTargetContext();
 
         File pomFile = new File(Environment.getSdkAppDir(), "appcompat-v7-27.1.1.pom");
@@ -109,8 +106,5 @@ public class AndroidLibraryProjectExtractorTest {
         }
         MavenProject mavenProject = new MavenProject(model);
         System.out.println("mavenProject = " + mavenProject);
-
-        ArtifactDownloader artifactDownloader = new ArtifactDownloader(context, mavenProject);
-        artifactDownloader.execute();
     }
 }

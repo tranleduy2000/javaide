@@ -48,7 +48,7 @@ public class Premium {
      * @param context - Android context
      */
     public static boolean isPremiumUser(Context context) {
-        return IS_PREMIUM || PremiumFileUtil.licenseCached(context) || true;
+        return IS_PREMIUM || PremiumFileUtil.licenseCached(context);
     }
 
     /**

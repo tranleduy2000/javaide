@@ -41,6 +41,7 @@ import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.android.compiler.utils.ProjectUtils;
 import com.duy.common.purchase.InAppPurchaseHelper;
+import com.duy.common.purchase.Premium;
 import com.duy.ide.R;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.code.api.SuggestionProvider;
@@ -171,6 +172,9 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
     @Override
     protected void onCreateNavigationMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_nav_javaide, menu);
+        if (Premium.isPremiumUser(this)) {
+            menu.findItem(R.id.action_premium).setVisible(false);
+        }
         super.onCreateNavigationMenu(menu);
     }
 

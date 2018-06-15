@@ -28,7 +28,6 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
-        exclude 'META-INF/plexus/components.xml'
         exclude 'META-INF/INDEX.LIST'
     }
 }
@@ -54,9 +53,8 @@ dependencies {
 
     api 'com.google.guava:guava:25.1-android'
     //noinspection GradleDependency newer version cause crash
-    //api 'commons-io:commons-io:2.2'
+    api 'commons-io:commons-io:2.3'
     api 'commons-codec:commons-codec:1.10'
     api 'org.apache.maven:maven-project:2.2.1'
-    api 'org.codehaus.plexus:plexus-archiver:3.6.0'
     api 'com.google.code.gson:gson:2.8.1'
 }

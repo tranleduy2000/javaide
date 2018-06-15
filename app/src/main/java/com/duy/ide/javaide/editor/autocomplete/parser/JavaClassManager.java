@@ -23,6 +23,7 @@ import com.android.annotations.NonNull;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.data.Pair;
 import com.duy.common.interfaces.Filter;
+import com.duy.common.io.IOUtils;
 import com.duy.ide.javaide.editor.autocomplete.model.ClassDescription;
 import com.duy.ide.javaide.utils.DLog;
 import com.sun.tools.javac.tree.JCTree;
@@ -106,7 +107,7 @@ public class JavaClassManager implements IClassManager {
                         true);
                 for (File javaFile : javaFiles) {
                     if (DLog.DEBUG) DLog.d(TAG, "loadFromProject: parsing class " + javaFile);
-                    String content = com.duy.android.compiler.utils.IOUtils.toString(javaFile);
+                    String content = IOUtils.toString(javaFile);
                     JCTree.JCCompilationUnit ast = parser.parse(content);
                     List<IClass> parseClasses = parser.parseClasses(ast);
                     for (IClass aClass : parseClasses) {

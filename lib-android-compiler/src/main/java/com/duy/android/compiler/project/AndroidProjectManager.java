@@ -222,7 +222,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         outFile.getParentFile().mkdirs();
         FileOutputStream output = new FileOutputStream(outFile);
         InputStream input = context.getAssets().open(assetsPath);
-        org.apache.commons.io.IOUtils.copy(input, output);
+        IOUtils.copy(input, output);
         input.close();
         output.close();
     }
@@ -230,7 +230,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
     private void saveFile(File file, String content) throws IOException {
         file.getParentFile().mkdirs();
         FileOutputStream output = new FileOutputStream(file);
-        org.apache.commons.io.IOUtils.write(content, output);
+        IOUtils.write(content, output);
         output.close();
     }
 

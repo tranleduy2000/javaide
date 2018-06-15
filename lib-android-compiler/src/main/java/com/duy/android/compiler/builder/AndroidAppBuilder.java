@@ -75,17 +75,6 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
     }
 
 
-    public void stdout(String message) {
-        if (mVerbose) {
-            mStdout.println(message);
-        }
-    }
-
-    public void stderr(String stderr) {
-        if (mVerbose) {
-            mStderr.println(stderr);
-        }
-    }
 
     public boolean isVerbose() {
         return mVerbose;

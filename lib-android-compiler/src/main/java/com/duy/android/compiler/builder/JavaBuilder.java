@@ -45,17 +45,7 @@ public class JavaBuilder extends BuilderImpl<JavaProject> {
     }
 
 
-    public void stdout(String message) {
-        if (mVerbose) {
-            mStdout.println(message);
-        }
-    }
 
-    public void stderr(String stderr) {
-        if (mVerbose) {
-            mStderr.println(stderr);
-        }
-    }
 
     public boolean isVerbose() {
         return mVerbose;

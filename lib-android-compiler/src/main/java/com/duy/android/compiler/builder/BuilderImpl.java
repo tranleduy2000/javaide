@@ -57,17 +57,31 @@ public abstract class BuilderImpl<T extends JavaProject> implements IBuilder<T> 
         mStdout = stdOut;
     }
 
-    public void setLogger(ILogger logger) {
-        this.mLogger = logger;
-    }
-
     @Override
     public ILogger getLogger() {
         return mLogger;
     }
 
+    public void setLogger(ILogger logger) {
+        this.mLogger = logger;
+    }
+
     @Override
     public void setStdErr(PrintStream stdErr) {
         mStderr = stdErr;
+    }
+
+    @Override
+    public void stdout(String message) {
+        if (mVerbose) {
+            mStdout.println(message);
+        }
+    }
+
+    @Override
+    public void stderr(String stderr) {
+        if (mVerbose) {
+            mStderr.println(stderr);
+        }
     }
 }

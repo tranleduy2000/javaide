@@ -58,6 +58,11 @@ public abstract class BuilderImpl<T extends JavaProject> implements IBuilder<T> 
     }
 
     @Override
+    public PrintStream getStdout() {
+        return mStdout;
+    }
+
+    @Override
     public ILogger getLogger() {
         return mLogger;
     }
@@ -84,4 +89,15 @@ public abstract class BuilderImpl<T extends JavaProject> implements IBuilder<T> 
             mStderr.println(stderr);
         }
     }
+
+    @Override
+    public Context getContext() {
+        return mContext;
+    }
+
+    @Override
+    public boolean isVerbose() {
+        return mVerbose;
+    }
+
 }

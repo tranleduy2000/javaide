@@ -2,7 +2,7 @@ package com.duy.android.compiler.builder.task.java;
 
 import com.duy.android.compiler.builder.IBuilder;
 import com.duy.android.compiler.builder.task.Task;
-import com.duy.android.compiler.java.JarArchive;
+import com.duy.android.compiler.builder.internal.jar.JarArchive;
 import com.duy.android.compiler.project.JavaProject;
 
 public class JarTask extends Task<JavaProject> {

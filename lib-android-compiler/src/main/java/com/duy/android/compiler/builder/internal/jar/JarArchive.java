@@ -45,13 +45,14 @@ public class JarArchive {
     @Nullable
     private JarOptions mOptions;
 
-    public JarArchive(boolean verbose, JarOptions options) {
-        this.mVerbose = verbose;
-        this.mOptions = options;
+    public JarArchive(boolean verbose, @Nullable JarOptions options) {
+        mVerbose = verbose;
+        mOptions = options;
     }
 
     public JarArchive(boolean verbose) {
-        this.mVerbose = verbose;
+        mVerbose = verbose;
+        mOptions = null;
     }
 
     public void createJarArchive(JavaProject project) throws IOException {

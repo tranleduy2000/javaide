@@ -18,7 +18,6 @@ import com.duy.android.compiler.builder.task.java.CompileJavaTask;
 import com.duy.android.compiler.builder.task.java.DexTask;
 import com.duy.android.compiler.project.AndroidAppProject;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 
 /**
@@ -43,6 +42,10 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
         mProcessExecutor = new RuntimeProcessExecutor();
     }
 
+    @Override
+    public AndroidAppProject getProject() {
+        return mProject;
+    }
 
     @Override
     public boolean build(BuildType buildType) {
@@ -75,24 +78,4 @@ public class AndroidAppBuilder extends BuilderImpl<AndroidAppProject> {
     }
 
 
-
-    public boolean isVerbose() {
-        return mVerbose;
-    }
-
-    public Context getContext() {
-        return mContext;
-    }
-
-    public AndroidAppProject getProject() {
-        return mProject;
-    }
-
-    public PrintStream getStdout() {
-        return mStdout;
-    }
-
-    public ProcessExecutor getProcessExecutor() {
-        return mProcessExecutor;
-    }
 }

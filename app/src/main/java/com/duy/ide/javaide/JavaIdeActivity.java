@@ -46,6 +46,7 @@ import com.duy.ide.R;
 import com.duy.ide.code.api.CodeFormatProvider;
 import com.duy.ide.code.api.SuggestionProvider;
 import com.duy.ide.diagnostic.DiagnosticContract;
+import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.diagnostic.model.Message;
 import com.duy.ide.diagnostic.parser.PatternAwareOutputParser;
 import com.duy.ide.editor.IEditorDelegate;
@@ -303,13 +304,13 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
 
                 @Override
                 public void onError(Exception e) {
-                    updateUIFinish();
+                    updateUIFinishCompile();
                     Toast.makeText(JavaIdeActivity.this, R.string.failed_msg, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onComplete() {
-                    updateUIFinish();
+                    updateUIFinishCompile();
                     Toast.makeText(JavaIdeActivity.this, R.string.build_success, Toast.LENGTH_SHORT).show();
                     mFilePresenter.refresh(mProject);
                     RootUtils.installApk(JavaIdeActivity.this, ((AndroidAppProject) mProject).getApkSigned());
@@ -343,12 +344,12 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
                 Toast.makeText(JavaIdeActivity.this, R.string.failed_msg,
                         Toast.LENGTH_SHORT).show();
                 mDiagnosticPresenter.showPanel();
-                updateUIFinish();
+                updateUIFinishCompile();
             }
 
             @Override
             public void onComplete() {
-                updateUIFinish();
+                updateUIFinishCompile();
                 Toast.makeText(JavaIdeActivity.this, R.string.compile_success,
                         Toast.LENGTH_SHORT).show();
                 runJava(mProject);
@@ -454,7 +455,7 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
         }
     }
 
-    private void updateUiStartCompile() {
+    public void updateUiStartCompile() {
         setMenuStatus(R.id.action_run, MenuDef.STATUS_DISABLED);
         if (mCompileProgress != null) {
             mCompileProgress.setVisibility(View.VISIBLE);
@@ -465,11 +466,15 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
         mDiagnosticPresenter.clear();
     }
 
-    private void updateUIFinish() {
+    public void updateUIFinishCompile() {
         setMenuStatus(R.id.action_run, MenuDef.STATUS_NORMAL);
         if (mCompileProgress != null) {
             mCompileProgress.setVisibility(View.GONE);
         }
+    }
+
+    public DiagnosticPresenter getDiagnosticPresenter() {
+        return mDiagnosticPresenter;
     }
 
 }

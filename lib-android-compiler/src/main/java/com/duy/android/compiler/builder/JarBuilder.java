@@ -1,44 +1,47 @@
-/*
- * Copyright (C) 2018 Tran Le Duy
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 package com.duy.android.compiler.builder;
 
 import android.content.Context;
 
+import com.android.annotations.NonNull;
+import com.duy.android.compiler.builder.internal.jar.JarOptions;
 import com.duy.android.compiler.builder.model.BuildType;
+import com.duy.android.compiler.builder.task.CleanTask;
+import com.duy.android.compiler.builder.task.Task;
+import com.duy.android.compiler.builder.task.java.CompileJavaTask;
+import com.duy.android.compiler.builder.task.java.DexTask;
+import com.duy.android.compiler.builder.task.java.JarTask;
 import com.duy.android.compiler.project.JavaProject;
+
+import java.util.ArrayList;
 
 public class JarBuilder extends BuilderImpl<JavaProject> {
 
-    private final JavaProject javaProject;
+    private final JarOptions mJarOptions;
+    private JavaProject mProject;
 
-    public JarBuilder(Context context, JavaProject javaProject) {
+    public JarBuilder(@NonNull Context context,
+                      @NonNull JavaProject project,
+                      @NonNull JarOptions jarOptions) {
         super(context);
-        this.javaProject = javaProject;
+        mProject = project;
+        mJarOptions = jarOptions;
     }
 
     @Override
     public JavaProject getProject() {
-        return javaProject;
+        return mProject;
     }
 
     @Override
     public boolean build(BuildType buildType) {
-        return false;
+        if (mVerbose) {
+            mStdout.println("Starting build jar archive");
+        }
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(new CleanTask(this));
+        tasks.add(new CompileJavaTask(this));
+        tasks.add(new JarTask(this, mJarOptions));
+        return runTasks(tasks);
     }
 
 }

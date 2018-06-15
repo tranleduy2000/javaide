@@ -17,28 +17,68 @@
 
 package com.duy.ide.javaide.run.action;
 
+import android.widget.Toast;
+
 import com.android.annotations.NonNull;
+import com.duy.android.compiler.builder.BuildTask;
+import com.duy.android.compiler.builder.IBuilder;
+import com.duy.android.compiler.builder.JavaBuilder;
 import com.duy.android.compiler.builder.internal.jar.JarOptions;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.common.interfaces.Action;
+import com.duy.ide.R;
+import com.duy.ide.diagnostic.DiagnosticPresenter;
 import com.duy.ide.javaide.JavaIdeActivity;
 import com.duy.ide.javaide.run.dialog.JarConfigDialog;
 
+import java.io.PrintStream;
+
 public class BuildJarAction implements Action<JavaIdeActivity>, JarConfigDialog.JarConfigListener {
-    private JavaProject project;
+    private JavaProject mProject;
+    private JavaIdeActivity mActivity;
 
     public BuildJarAction(JavaProject project) {
-        this.project = project;
+        this.mProject = project;
     }
 
     @Override
     public void execute(@NonNull JavaIdeActivity javaIdeActivity) {
-        JarConfigDialog jarConfigDialog = JarConfigDialog.newInstance(project, this);
-        jarConfigDialog.show(javaIdeActivity.getSupportFragmentManager(), JarConfigDialog.class.getName());
+        this.mActivity = javaIdeActivity;
+        JarConfigDialog jarConfigDialog = JarConfigDialog.newInstance(mProject, this);
+        jarConfigDialog.show(
+                javaIdeActivity.getSupportFragmentManager(),
+                JarConfigDialog.class.getName());
     }
 
     @Override
     public void onCompleteConfig(JarOptions jarOptions) {
+        final DiagnosticPresenter diagnosticPresenter = mActivity.getDiagnosticPresenter();
+        final IBuilder<JavaProject> builder = new JavaBuilder(mActivity, mProject);
 
+        builder.setStdOut(new PrintStream(diagnosticPresenter.getStandardOutput()));
+        builder.setStdErr(new PrintStream(diagnosticPresenter.getErrorOutput()));
+
+        final BuildTask.CompileListener<JavaProject> listener =
+                new BuildTask.CompileListener<JavaProject>() {
+                    @Override
+                    public void onStart() {
+                        mActivity.updateUiStartCompile();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Toast.makeText(mActivity, R.string.failed_msg, Toast.LENGTH_SHORT).show();
+                        diagnosticPresenter.showPanel();
+                        mActivity.updateUIFinishCompile();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        mActivity.updateUIFinishCompile();
+                        Toast.makeText(mActivity, R.string.compile_success, Toast.LENGTH_SHORT).show();
+                    }
+                };
+        BuildTask<JavaProject> buildTask = new BuildTask<>(builder, listener);
+        buildTask.execute();
     }
 }

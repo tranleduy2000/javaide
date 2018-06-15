@@ -64,7 +64,7 @@
             android:text="@android:string/cancel" />
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_create"
+            android:id="@+id/btn_ok"
             style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

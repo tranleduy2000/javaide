@@ -42,10 +42,12 @@
         <menu>
             <item
                 android:id="@+id/action_build_jar"
+                android:icon="@drawable/ic_jar_file_format"
                 android:title="Build jar archive">
             </item>
             <item
                 android:id="@+id/action_run_jar"
+                android:icon="@drawable/ic_jar_file_format"
                 android:title="Run jar archive" />
         </menu>
     </item>

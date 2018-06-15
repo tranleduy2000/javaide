@@ -58,6 +58,7 @@ import com.duy.ide.javaide.menu.JavaMenuManager;
 import com.duy.ide.javaide.run.action.BuildJarAction;
 import com.duy.ide.javaide.run.activities.ExecuteActivity;
 import com.duy.ide.javaide.run.dialog.DialogRunConfig;
+import com.duy.ide.javaide.run.dialog.RunJarDialog;
 import com.duy.ide.javaide.sample.activities.JavaSampleActivity;
 import com.duy.ide.javaide.setting.CompilerSettingActivity;
 import com.duy.ide.javaide.theme.PremiumDialog;
@@ -240,9 +241,15 @@ public class JavaIdeActivity extends ProjectManagerActivity implements DialogRun
                 saveAll(RC_BUILD_JAR);
                 break;
             case R.id.action_run_jar:
+                runJar();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void runJar() {
+        RunJarDialog runJarDialog = RunJarDialog.newInstance();
+        runJarDialog.show(getSupportFragmentManager(), RunJarDialog.class.getName());
     }
 
     @Override

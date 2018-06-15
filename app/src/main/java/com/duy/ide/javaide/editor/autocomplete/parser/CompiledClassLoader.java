@@ -93,7 +93,7 @@ class CompiledClassLoader {
                 } catch (ClassNotFoundException e1) {
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return classes;

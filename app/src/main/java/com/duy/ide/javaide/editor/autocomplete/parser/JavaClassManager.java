@@ -91,23 +91,23 @@ public class JavaClassManager implements IClassManager {
 
     public void loadFromProject(JavaProject project) {
         long time = System.currentTimeMillis();
+        try {
 
-        CompiledClassLoader classLoader = new CompiledClassLoader(mBootClasspath, mTempDir);
-        ArrayList<Class> classes = classLoader.getCompiledClassesFromProject(project);
-        for (Class clazz : classes) {
-            getClassWrapper(clazz);
-        }
+            CompiledClassLoader classLoader = new CompiledClassLoader(mBootClasspath, mTempDir);
+            ArrayList<Class> classes = classLoader.getCompiledClassesFromProject(project);
+            for (Class clazz : classes) {
+                getClassWrapper(clazz);
+            }
 
-        JavaParser parser = new JavaParser();
-        ArrayList<File> javaSrcDirs = project.getJavaSrcDirs();
-        for (File javaSrcDir : javaSrcDirs) {
-            Collection<File> javaFiles = FileUtils.listFiles(
-                    javaSrcDir,
-                    new String[]{"java"},
-                    true);
-            for (File javaFile : javaFiles) {
-                if (DLog.DEBUG) DLog.d(TAG, "loadFromProject: parsing class " + javaFile);
-                try {
+            JavaParser parser = new JavaParser();
+            ArrayList<File> javaSrcDirs = project.getJavaSrcDirs();
+            for (File javaSrcDir : javaSrcDirs) {
+                Collection<File> javaFiles = FileUtils.listFiles(
+                        javaSrcDir,
+                        new String[]{"java"},
+                        true);
+                for (File javaFile : javaFiles) {
+                    if (DLog.DEBUG) DLog.d(TAG, "loadFromProject: parsing class " + javaFile);
                     FileInputStream input = new FileInputStream(javaFile);
                     String content = IOUtils.toString(input, "UTF-8");
                     input.close();
@@ -116,10 +116,10 @@ public class JavaClassManager implements IClassManager {
                     for (IClass aClass : parseClasses) {
                         update(aClass);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
 
         System.out.println("Loaded classes " + (System.currentTimeMillis() - time));

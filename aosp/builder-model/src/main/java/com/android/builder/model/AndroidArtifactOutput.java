@@ -17,7 +17,7 @@
 package com.android.builder.model;
 
 import com.android.annotations.NonNull;
-import com.android.build.VariantOutput;
+//import com.android.build.VariantOutput; this file is not exist
 
 import java.io.File;
 
@@ -25,7 +25,7 @@ import java.io.File;
  * The Actual output for a {@link AndroidArtifact}, which can be one file at the minimum or
  * several APKs in case of pure splits configuration.
  */
-public interface AndroidArtifactOutput extends VariantOutput {
+public interface AndroidArtifactOutput /*extends VariantOutput*/ {
 
     /**
      * Returns the name of the task used to generate this artifact output.

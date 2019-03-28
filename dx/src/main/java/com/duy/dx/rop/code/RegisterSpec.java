@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeBearer;
-import com.duy.dx .util.ToHuman;
-import java.util.HashMap;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeBearer;
+import com.duy.dx.util.ToHuman;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Combination of a register number and a type, used as the sources and
@@ -33,11 +33,17 @@ public final class RegisterSpec
     public static final String PREFIX = "v";
 
     /** {@code non-null;} intern table for instances */
-    private static final HashMap<Object, RegisterSpec> theInterns =
-        new HashMap<Object, RegisterSpec>(1000);
+    private static final ConcurrentHashMap<Object, RegisterSpec> theInterns =
+        new ConcurrentHashMap<Object, RegisterSpec>(10_000, 0.75f);
 
     /** {@code non-null;} common comparison instance used while interning */
-    private static final ForComparison theInterningItem = new ForComparison();
+    private static final ThreadLocal<ForComparison> theInterningItem =
+            new ThreadLocal<ForComparison>() {
+                @Override
+                protected ForComparison initialValue() {
+                    return new ForComparison();
+                }
+            };
 
     /** {@code >= 0;} register number */
     private final int reg;
@@ -62,18 +68,17 @@ public final class RegisterSpec
      */
     private static RegisterSpec intern(int reg, TypeBearer type,
             LocalItem local) {
-        synchronized (theInterns) {
-            theInterningItem.set(reg, type, local);
-            RegisterSpec found = theInterns.get(theInterningItem);
-
-            if (found != null) {
-                return found;
+        ForComparison interningItem = theInterningItem.get();
+        interningItem.set(reg, type, local);
+        RegisterSpec found = theInterns.get(interningItem);
+        if (found == null) {
+            found = interningItem.toRegisterSpec();
+            RegisterSpec existing = theInterns.putIfAbsent(found, found);
+            if (existing != null) {
+                return existing;
             }
-
-            found = theInterningItem.toRegisterSpec();
-            theInterns.put(found, found);
-            return found;
         }
+        return found;
     }
 
     /**
@@ -164,6 +169,10 @@ public final class RegisterSpec
     /** {@inheritDoc} */
     @Override
     public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
         if (!(other instanceof RegisterSpec)) {
             if (other instanceof ForComparison) {
                 ForComparison fc = (ForComparison) other;
@@ -214,7 +223,8 @@ public final class RegisterSpec
     }
 
     /**
-     * Helper for {@link #equals} and {@link #ForComparison.equals},
+     * Helper for {@link #equals} and
+     * {@link com.duy.dx.rop.code.RegisterSpec.ForComparison#equals},
      * which actually does the test.
      *
      * @param reg value of the instance variable, for another instance
@@ -237,11 +247,14 @@ public final class RegisterSpec
      * @param other {@code non-null;} spec to compare to
      * @return {@code -1..1;} standard result of comparison
      */
+    @Override
     public int compareTo(RegisterSpec other) {
         if (this.reg < other.reg) {
             return -1;
         } else if (this.reg > other.reg) {
             return 1;
+        } else if (this == other) {
+            return 0;
         }
 
         int compare = type.getType().compareTo(other.type.getType());
@@ -266,7 +279,8 @@ public final class RegisterSpec
     }
 
     /**
-     * Helper for {@link #hashCode} and {@link #ForComparison.hashCode},
+     * Helper for {@link #hashCode} and
+     * {@link com.duy.dx.rop.code.RegisterSpec.ForComparison#hashCode},
      * which actually does the calculation.
      *
      * @param reg value of the instance variable
@@ -288,31 +302,37 @@ public final class RegisterSpec
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         return toString0(true);
     }
 
     /** {@inheritDoc} */
+    @Override
     public Type getType() {
         return type.getType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public TypeBearer getFrameType() {
         return type.getFrameType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getBasicType() {
         return type.getBasicType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getBasicFrameType() {
         return type.getBasicFrameType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final boolean isConstant() {
         return false;
     }
@@ -572,7 +592,7 @@ public final class RegisterSpec
      * @return {@code non-null;} the string form
      */
     private String toString0(boolean human) {
-        StringBuffer sb = new StringBuffer(40);
+        StringBuilder sb = new StringBuilder(40);
 
         sb.append(regString());
         sb.append(":");
@@ -596,6 +616,10 @@ public final class RegisterSpec
         }
 
         return sb.toString();
+    }
+
+    public static void clearInternTable() {
+        theInterns.clear();
     }
 
     /**

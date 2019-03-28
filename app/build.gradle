@@ -79,14 +79,6 @@ configurations {
 }
 
 dependencies {
-    androidTestImplementation "com.android.support:support-annotations:$supportLibVersion"
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation 'junit:junit:4.12'
-
     api fileTree(dir: 'libs', include: ['*.jar'])
 
     api project(':treeview')
@@ -98,15 +90,15 @@ dependencies {
     api project(':lib-n-ide-release-10')
 
     //firebase sdk
-    api "com.google.firebase:firebase-core:16.0.0"
-    api 'com.crashlytics.sdk.android:crashlytics:2.9.3'
+    api "com.google.firebase:firebase-core:16.0.8"
+    api 'com.crashlytics.sdk.android:crashlytics:2.9.9'
 
     api 'io.github.kobakei:ratethisapp:1.2.0'
     api 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     api 'com.miguelcatalan:materialsearchview:1.4.0'
 
     /*Lib n-ide*/
-    api 'com.google.code.gson:gson:2.8.1'
+    api 'com.google.code.gson:gson:2.8.4'
     api 'com.anjlab.android.iab.v3:library:1.0.44'
     api 'org.apmem.tools:layouts:1.10@aar'
     api 'com.makeramen:roundedimageview:2.2.1'

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .io;
+package com.duy.dx.io;
 
-import com.duy.dx .io.instructions.InstructionCodec;
-import com.duy.dx .util.Hex;
+import com.duy.dx.io.instructions.InstructionCodec;
+import com.duy.dx.util.Hex;
 
 /**
  * Information about each Dalvik opcode.
@@ -931,6 +931,30 @@ public final class OpcodeInfo {
         new Info(Opcodes.USHR_INT_LIT8, "ushr-int/lit8",
             InstructionCodec.FORMAT_22B, IndexType.NONE);
 
+    public static final Info INVOKE_POLYMORPHIC =
+        new Info(Opcodes.INVOKE_POLYMORPHIC, "invoke-polymorphic",
+            InstructionCodec.FORMAT_45CC, IndexType.METHOD_AND_PROTO_REF);
+
+    public static final Info INVOKE_POLYMORPHIC_RANGE =
+        new Info(Opcodes.INVOKE_POLYMORPHIC_RANGE, "invoke-polymorphic/range",
+            InstructionCodec.FORMAT_4RCC, IndexType.METHOD_AND_PROTO_REF);
+
+    public static final Info INVOKE_CUSTOM =
+        new Info(Opcodes.INVOKE_CUSTOM, "invoke-custom",
+            InstructionCodec.FORMAT_35C, IndexType.CALL_SITE_REF);
+
+    public static final Info INVOKE_CUSTOM_RANGE =
+        new Info(Opcodes.INVOKE_CUSTOM_RANGE, "invoke-custom/range",
+            InstructionCodec.FORMAT_3RC, IndexType.CALL_SITE_REF);
+
+    public static final Info CONST_METHOD_HANDLE =
+        new Info(Opcodes.CONST_METHOD_HANDLE, "const-method-handle",
+            InstructionCodec.FORMAT_21C, IndexType.METHOD_HANDLE_REF);
+
+    public static final Info CONST_METHOD_TYPE =
+        new Info(Opcodes.CONST_METHOD_TYPE, "const-method-type",
+            InstructionCodec.FORMAT_21C, IndexType.PROTO_REF);
+
     // END(opcode-info-defs)
 
     // Static initialization.
@@ -1164,6 +1188,12 @@ public final class OpcodeInfo {
         set(SHL_INT_LIT8);
         set(SHR_INT_LIT8);
         set(USHR_INT_LIT8);
+        set(INVOKE_POLYMORPHIC);
+        set(INVOKE_POLYMORPHIC_RANGE);
+        set(INVOKE_CUSTOM);
+        set(INVOKE_CUSTOM_RANGE);
+        set(CONST_METHOD_HANDLE);
+        set(CONST_METHOD_TYPE);
         // END(opcode-info-init)
     }
 
@@ -1175,7 +1205,7 @@ public final class OpcodeInfo {
     }
 
     /**
-     * Gets the {@link @Info} for the given opcode value.
+     * Gets the {@link Info} for the given opcode value.
      *
      * @param opcode {@code Opcodes.MIN_VALUE..Opcodes.MAX_VALUE;} the
      * opcode value

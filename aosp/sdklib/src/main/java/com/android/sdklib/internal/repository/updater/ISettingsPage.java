@@ -58,6 +58,13 @@ public interface ISettingsPage {
     String KEY_SHOW_UPDATE_ONLY = "sdkman.show.update.only"; //$NON-NLS-1$
 
     /**
+     * Setting to ask for permission before restarting ADB.
+     * Type: Boolean.
+     * Default: False.
+     */
+    String KEY_ASK_ADB_RESTART = "sdkman.ask.adb.restart";   //$NON-NLS-1$
+
+    /**
      * Setting to use the {@link DownloadCache}, for small manifest XML files.
      * Type: Boolean.
      * Default: True.

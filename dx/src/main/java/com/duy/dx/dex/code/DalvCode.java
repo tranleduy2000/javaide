@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.type.Type;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.type.Type;
 import java.util.HashSet;
 
 /**

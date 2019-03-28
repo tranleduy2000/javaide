@@ -87,7 +87,8 @@ public final class ClassDef {
         return staticValuesOffset;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         if (buffer == null) {
             return typeIndex + " " + supertypeIndex;
         }

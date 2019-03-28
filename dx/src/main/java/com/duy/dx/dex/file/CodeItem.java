@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
 import com.duy.dex.util.ExceptionWithContext;
-import com.duy.dx .dex.code.DalvCode;
-import com.duy.dx .dex.code.DalvInsnList;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstMethodRef;
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeList;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
+import com.duy.dx.dex.code.DalvCode;
+import com.duy.dx.dex.code.DalvInsnList;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstMethodRef;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeList;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
 import java.io.PrintWriter;
 
 /**
@@ -104,6 +104,7 @@ public final class CodeItem extends OffsettedItem {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addContents(DexFile file) {
         MixedItemSection byteData = file.getByteData();
         TypeIdsSection typeIds = file.getTypeIds();
@@ -189,6 +190,7 @@ public final class CodeItem extends OffsettedItem {
          * constants need to be assigned indices.
          */
         code.assignIndices(new DalvCode.AssignIndicesCallback() {
+                @Override
                 public int getIndex(Constant cst) {
                     IndexedItem item = file.findItemOrNull(cst);
                     if (item == null) {

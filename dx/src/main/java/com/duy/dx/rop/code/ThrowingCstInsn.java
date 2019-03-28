@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeList;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeList;
 
 /**
  * Instruction which contains an explicit reference to a constant
@@ -45,7 +45,7 @@ public final class ThrowingCstInsn
         super(opcode, position, null, sources, cst);
 
         if (opcode.getBranchingness() != Rop.BRANCH_THROW) {
-            throw new IllegalArgumentException("bogus branchingness");
+            throw new IllegalArgumentException("opcode with invalid branchingness: " + opcode.getBranchingness());
         }
 
         if (catches == null) {

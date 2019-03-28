@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.iface;
+package com.duy.dx.cf.iface;
 
-import com.duy.dx .util.FixedSizeList;
+import com.duy.dx.util.FixedSizeList;
 
 /**
  * Standard implementation of {@link FieldList}, which directly stores
@@ -33,6 +33,7 @@ public final class StdFieldList extends FixedSizeList implements FieldList {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Field get(int n) {
         return (Field) get0(n);
     }

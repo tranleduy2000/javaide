@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
-import com.duy.dx .util.ToHuman;
+import com.duy.dx.util.ToHuman;
 
 /**
  * Base class for constants of all sorts.
@@ -45,6 +45,7 @@ public abstract class Constant
      *
      * This compares in class-major and value-minor order.
      */
+    @Override
     public final int compareTo(Constant other) {
         Class clazz = getClass();
         Class otherClazz = other.getClass();

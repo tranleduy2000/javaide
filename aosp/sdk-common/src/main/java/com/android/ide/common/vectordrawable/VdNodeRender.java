@@ -16,18 +16,10 @@
 
 package com.android.ide.common.vectordrawable;
 
-
 import android.graphics.Path;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Given an array of VdPath.Node, generate a Path object.
- * In another word, this is the engine which converts the pathData into
- * a Path object, which is able to draw on Swing components.
- * The logic and math here are the same as PathParser.java in framework.
- */
 class VdNodeRender {
     private static Logger logger = Logger.getLogger(VdNodeRender.class
             .getSimpleName());
@@ -36,13 +28,13 @@ class VdNodeRender {
         float[] current = new float[6];
         char lastCmd = ' ';
         for (int i = 0; i < node.length; i++) {
-            addCommand(path, current, node[i].type, lastCmd, node[i].params);
+            addCommand(path, current, node[i].type, lastCmd,node[i].params);
             lastCmd = node[i].type;
         }
     }
 
     private static void addCommand(Path path, float[] current, char cmd,
-                                   char lastCmd, float[] val) {
+            char lastCmd, float[] val) {
 
         int incr = 2;
 
@@ -169,7 +161,7 @@ class VdNodeRender {
                 case 'S':
                     reflectCtrl = (lastCmd == 'c' || lastCmd == 's' || lastCmd == 'C' || lastCmd == 'S');
                     path.addArc(reflectCtrl ? 2 * cx - cpx : cx, reflectCtrl ? 2
-                                    * cy - cpy : cy, val[k + 0], val[k + 1], val[k + 2],
+                            * cy - cpy : cy, val[k + 0], val[k + 1], val[k + 2],
                             val[k + 3]);
                     cpx = (val[k + 0]);
                     cpy = (val[k + 1]);
@@ -216,7 +208,7 @@ class VdNodeRender {
                     // (rx ry x-axis-rotation large-arc-flag sweep-flag x y)
                     drawArc(path, cx, cy, val[k + 5] + cx, val[k + 6] + cy,
                             val[k + 0], val[k + 1], val[k + 2], val[k + 3] != 0,
-                            val[k + 4] != 0);
+                                    val[k + 4] != 0);
                     cx += val[k + 5];
                     cy += val[k + 6];
                     cpx = cx;
@@ -226,7 +218,7 @@ class VdNodeRender {
                 case 'A':
                     drawArc(path, cx, cy, val[k + 5], val[k + 6], val[k + 0],
                             val[k + 1], val[k + 2], val[k + 3] != 0,
-                            val[k + 4] != 0);
+                                    val[k + 4] != 0);
                     cx = val[k + 5];
                     cy = val[k + 6];
                     cpx = cx;
@@ -246,8 +238,8 @@ class VdNodeRender {
     }
 
     private static void drawArc(Path p, float x0, float y0, float x1,
-                                float y1, float a, float b, float theta, boolean isMoreThanHalf,
-                                boolean isPositiveArc) {
+            float y1, float a, float b, float theta, boolean isMoreThanHalf,
+            boolean isPositiveArc) {
 
         logger.log(Level.FINE, "(" + x0 + "," + y0 + ")-(" + x1 + "," + y1
                 + ") {" + a + " " + b + "}");
@@ -319,7 +311,7 @@ class VdNodeRender {
         cy = tcx * sinTheta + cy * cosTheta;
         logger.log(
                 Level.FINE,
-                "cx, cy, a, b, x0, y0, thetaD, eta0, sweep = " + cx + " , "
+                        "cx, cy, a, b, x0, y0, thetaD, eta0, sweep = " + cx + " , "
                         + cy + " , " + a + " , " + b + " , " + x0 + " , " + y0
                         + " , " + Math.toDegrees(thetaD) + " , "
                         + Math.toDegrees(eta0) + " , " + Math.toDegrees(sweep));
@@ -330,20 +322,20 @@ class VdNodeRender {
     /**
      * Converts an arc to cubic Bezier segments and records them in p.
      *
-     * @param p     The target for the cubic Bezier segments
-     * @param cx    The x coordinate center of the ellipse
-     * @param cy    The y coordinate center of the ellipse
-     * @param a     The radius of the ellipse in the horizontal direction
-     * @param b     The radius of the ellipse in the vertical direction
-     * @param e1x   E(eta1) x coordinate of the starting point of the arc
-     * @param e1y   E(eta2) y coordinate of the starting point of the arc
+     * @param p The target for the cubic Bezier segments
+     * @param cx The x coordinate center of the ellipse
+     * @param cy The y coordinate center of the ellipse
+     * @param a The radius of the ellipse in the horizontal direction
+     * @param b The radius of the ellipse in the vertical direction
+     * @param e1x E(eta1) x coordinate of the starting point of the arc
+     * @param e1y E(eta2) y coordinate of the starting point of the arc
      * @param theta The angle that the ellipse bounding rectangle makes with the horizontal plane
      * @param start The start angle of the arc on the ellipse
      * @param sweep The angle (positive or negative) of the sweep of the arc on the ellipse
      */
     private static void arcToBezier(Path p, double cx, double cy, double a,
-                                    double b, double e1x, double e1y, double theta, double start,
-                                    double sweep) {
+            double b, double e1x, double e1y, double theta, double start,
+            double sweep) {
         // Taken from equations at:
         // http://spaceroots.org/documents/ellipse/node8.html
         // and http://www.spaceroots.org/documents/ellipse/node22.html

@@ -71,16 +71,16 @@ dependencies {
 
     userGuideStyleSheets 'docbook:docbook-xsl:1.75.2@zip'
 
-    fonts  \
-         "lato:regular:6:v0SdcGFAl2aezM9Vq_aFTQ@ttf",
-            "lato:regular-italic:6:LqowQDslGv4DmUBAfWa2Vw@ttf",
-            "lato:bold:6:DvlFBScY1r-FMtZSYIYoYw@ttf",
-            "lato:bold-italic:6:HkF_qI1x_noxlxhrhMQYEKCWcynf_cDxXwCLxiixG1c@ttf",
-            "roboto:regular:14:zN7GBFwfMP4uA6AR0HCoLQ@ttf",
-            "ubuntumono:regular:3:ViZhet7Ak-LRXZMXzuAfkZ0EAVxt0G0biEntp43Qt6E@ttf",
-            "ubuntumono:regular-italic:3:KAKuHXAHZOeECOWAHsRKA-LrC4Du4e_yfTJ8Ol60xk0@ttf",
-            "ubuntumono:bold:3:ceqTZGKHipo8pJj4molytp_TkvowlIOtbR7ePgFOpF4@ttf",
-            "ubuntumono:bold-italic:3:n_d8tv_JOIiYyMXR4eaV9WsGzsqhEorxQDpu60nfWEc@ttf"
+    fonts \
+        "lato:regular:6:v0SdcGFAl2aezM9Vq_aFTQ@ttf",
+        "lato:regular-italic:6:LqowQDslGv4DmUBAfWa2Vw@ttf",
+        "lato:bold:6:DvlFBScY1r-FMtZSYIYoYw@ttf",
+        "lato:bold-italic:6:HkF_qI1x_noxlxhrhMQYEKCWcynf_cDxXwCLxiixG1c@ttf",
+        "roboto:regular:14:zN7GBFwfMP4uA6AR0HCoLQ@ttf",
+        "ubuntumono:regular:3:ViZhet7Ak-LRXZMXzuAfkZ0EAVxt0G0biEntp43Qt6E@ttf",
+        "ubuntumono:regular-italic:3:KAKuHXAHZOeECOWAHsRKA-LrC4Du4e_yfTJ8Ol60xk0@ttf",
+        "ubuntumono:bold:3:ceqTZGKHipo8pJj4molytp_TkvowlIOtbR7ePgFOpF4@ttf",
+        "ubuntumono:bold-italic:3:n_d8tv_JOIiYyMXR4eaV9WsGzsqhEorxQDpu60nfWEc@ttf"
 
     groovydocGroovy 'org.codehaus.groovy:groovy-all:2.3.6'
 
@@ -122,9 +122,9 @@ tasks.withType(UserGuideTransformTask) {
 
     if (name in ["pdfUserguideDocbook", "userguideFragmentSrc"]) {
         // These will only be valid for releases, but that's ok
-        javadocUrl = "http://www.gradle.org/docs/${-> version}/javadoc"
-        groovydocUrl = "http://www.gradle.org/docs/${-> version}/groovydoc"
-        dsldocUrl = "http://www.gradle.org/docs/${-> version}/dsl"
+        javadocUrl = "http://www.gradle.org/docs/${->version}/javadoc"
+        groovydocUrl = "http://www.gradle.org/docs/${->version}/groovydoc"
+        dsldocUrl = "http://www.gradle.org/docs/${->version}/dsl"
     } else {
         javadocUrl = '../javadoc'
         groovydocUrl = '../groovydoc'
@@ -233,10 +233,10 @@ task dslHtml(type: Docbook2Xhtml) {
 }
 
 task dslHtmlZip(type: Zip) {
-    dependsOn dslHtml
-    from dslHtml.destDir
-    destinationDir docsDir
-    baseName 'gradle-dsl'
+  dependsOn dslHtml
+  from dslHtml.destDir
+  destinationDir docsDir
+  baseName 'gradle-dsl'
 }
 
 def javaApiUrl = "http://docs.oracle.com/javase/1.6.0/docs/api/"
@@ -259,9 +259,9 @@ task javadocAll(type: Javadoc) {
         options.addStringOption 'Xdoclint:none', '-quiet'
     }
 //    options.addStringOption "stylesheetfile", stylesheetFile.absolutePath
-    source publicGroovyProjects.collect { project -> project.sourceSets.main.allJava }
+    source publicGroovyProjects.collect {project -> project.sourceSets.main.allJava }
     destinationDir = new File(docsDir, 'javadoc')
-    classpath = files(publicGroovyProjects.collect { project -> [project.sourceSets.main.compileClasspath, project.sourceSets.main.output] })
+    classpath = files(publicGroovyProjects.collect {project -> [project.sourceSets.main.compileClasspath, project.sourceSets.main.output] })
 //    include 'org/gradle/*'
 //    include 'org/gradle/api/**'
     include 'com/android/build/gradle/**'
@@ -269,7 +269,7 @@ task javadocAll(type: Javadoc) {
     include 'com/android/builder/**'
 //    exclude '**/internal/**'
     options.links(javaApiUrl, groovyApiUrl, "http://maven.apache.org/ref/2.2.1/maven-core/apidocs",
-            "http://maven.apache.org/ref/2.2.1/maven-model/apidocs")
+        "http://maven.apache.org/ref/2.2.1/maven-model/apidocs")
     doFirst {
         title = "Android plugin API $version"
     }
@@ -290,7 +290,7 @@ task configureGroovydocAll {
 
 task groovydocAll(type: Groovydoc, dependsOn: configureGroovydocAll) {
     group = 'documentation'
-    source publicGroovyProjects.collect { project ->
+    source publicGroovyProjects.collect {project ->
         def main = project.sourceSets.main
         try {
             main.groovy + main.java
@@ -302,7 +302,7 @@ task groovydocAll(type: Groovydoc, dependsOn: configureGroovydocAll) {
 
     // Groovydoc runs static initializers, and at least ProjectBuilder's initializers depend on runtime classes
     // http://jira.codehaus.org/browse/GROOVY-7096
-    classpath = files(publicGroovyProjects.collect { project -> [project.sourceSets.main.runtimeClasspath, project.sourceSets.main.output] })
+    classpath = files(publicGroovyProjects.collect {project -> [project.sourceSets.main.runtimeClasspath, project.sourceSets.main.output] })
 
     includes = javadocAll.includes
     excludes = javadocAll.excludes

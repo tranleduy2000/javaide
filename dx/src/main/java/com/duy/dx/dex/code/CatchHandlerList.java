@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .util.FixedSizeList;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.util.FixedSizeList;
+import com.duy.dx.util.Hex;
 
 /**
  * Ordered list of (exception type, handler address) entries.
@@ -50,6 +50,7 @@ public final class CatchHandlerList extends FixedSizeList
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         return toHuman("", "");
     }
@@ -133,6 +134,7 @@ public final class CatchHandlerList extends FixedSizeList
     }
 
     /** {@inheritDoc} */
+    @Override
     public int compareTo(CatchHandlerList other) {
         if (this == other) {
             // Easy out.
@@ -207,6 +209,7 @@ public final class CatchHandlerList extends FixedSizeList
         }
 
         /** {@inheritDoc} */
+        @Override
         public int compareTo(Entry other) {
             if (handler < other.handler) {
                 return -1;

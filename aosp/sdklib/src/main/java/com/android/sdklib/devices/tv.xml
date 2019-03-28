@@ -14,8 +14,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<d:devices xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xmlns:d="http://schemas.android.com/sdk/devices/1">
+<d:devices xmlns:d="http://schemas.android.com/sdk/devices/1">
     <d:device>
         <d:name>Android TV (1080p)</d:name>
         <d:id>tv_1080p</d:id>

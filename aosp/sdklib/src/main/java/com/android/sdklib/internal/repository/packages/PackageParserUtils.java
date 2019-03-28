@@ -24,8 +24,8 @@ import com.android.sdklib.internal.repository.archives.HostOs;
 import com.android.sdklib.internal.repository.archives.LegacyArch;
 import com.android.sdklib.internal.repository.archives.LegacyOs;
 import com.android.sdklib.repository.FullRevision;
-import com.android.sdklib.repository.NoPreviewRevision;
 import com.android.sdklib.repository.MajorRevision;
+import com.android.sdklib.repository.NoPreviewRevision;
 import com.android.sdklib.repository.PkgProps;
 import com.android.sdklib.repository.SdkRepoConstants;
 

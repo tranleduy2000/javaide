@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashSet;
@@ -125,10 +125,13 @@ public class DeadCodeRemover {
     private void pruneDeadInstructions() {
         HashSet<SsaInsn> deletedInsns = new HashSet<SsaInsn>();
 
-        ssaMeth.computeReachability();
+        BitSet reachable = ssaMeth.computeReachability();
+        ArrayList<SsaBasicBlock> blocks = ssaMeth.getBlocks();
+        int blockIndex = 0;
 
-        for (SsaBasicBlock block : ssaMeth.getBlocks()) {
-            if (block.isReachable()) continue;
+        while ((blockIndex = reachable.nextClearBit(blockIndex)) < blocks.size()) {
+            SsaBasicBlock block = blocks.get(blockIndex);
+            blockIndex++;
 
             // Prune instructions from unreachable blocks
             for (int i = 0; i < block.getInsns().size(); i++) {
@@ -239,6 +242,7 @@ public class DeadCodeRemover {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitMoveInsn (NormalSsaInsn insn) {
             // If we're tracking local vars, some moves have side effects.
             if (!hasSideEffect(insn)) {
@@ -247,6 +251,7 @@ public class DeadCodeRemover {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitPhiInsn (PhiInsn phi) {
             // If we're tracking local vars, then some phis have side effects.
             if (!hasSideEffect(phi)) {
@@ -255,6 +260,7 @@ public class DeadCodeRemover {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitNonMoveInsn (NormalSsaInsn insn) {
             RegisterSpec result = insn.getResult();
             if (!hasSideEffect(insn) && result != null) {

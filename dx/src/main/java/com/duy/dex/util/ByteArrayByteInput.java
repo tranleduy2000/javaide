@@ -25,7 +25,8 @@ public final class ByteArrayByteInput implements ByteInput {
         this.bytes = bytes;
     }
 
-    @Override public byte readByte() {
+    @Override
+    public byte readByte() {
         return bytes[position++];
     }
 }

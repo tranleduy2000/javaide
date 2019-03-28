@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.direct;
+package com.duy.dx.cf.direct;
 
-import com.duy.dx .cf.code.ByteOps;
-import com.duy.dx .cf.code.BytecodeArray;
-import com.duy.dx .cf.code.SwitchList;
-import com.duy.dx .cf.iface.ParseObserver;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstDouble;
-import com.duy.dx .rop.cst.CstFloat;
-import com.duy.dx .rop.cst.CstInteger;
-import com.duy.dx .rop.cst.CstKnownNull;
-import com.duy.dx .rop.cst.CstLong;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .util.ByteArray;
-import com.duy.dx .util.Hex;
+import com.duy.dx.cf.code.ByteOps;
+import com.duy.dx.cf.code.BytecodeArray;
+import com.duy.dx.cf.code.SwitchList;
+import com.duy.dx.cf.iface.ParseObserver;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstDouble;
+import com.duy.dx.rop.cst.CstFloat;
+import com.duy.dx.rop.cst.CstInteger;
+import com.duy.dx.rop.cst.CstKnownNull;
+import com.duy.dx.rop.cst.CstLong;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.util.ByteArray;
+import com.duy.dx.util.Hex;
 import java.util.ArrayList;
 
 /**
@@ -62,16 +62,19 @@ public class CodeObserver implements BytecodeArray.Visitor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitInvalid(int opcode, int offset, int length) {
         observer.parsed(bytes, offset, length, header(offset));
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitNoArgs(int opcode, int offset, int length, Type type) {
         observer.parsed(bytes, offset, length, header(offset));
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitLocal(int opcode, int offset, int length,
             int idx, Type type, int value) {
         String idxStr = (length <= 3) ? Hex.u1(idx) : Hex.u2(idx);
@@ -94,6 +97,7 @@ public class CodeObserver implements BytecodeArray.Visitor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitConstant(int opcode, int offset, int length,
             Constant cst, int value) {
         if (cst instanceof CstKnownNull) {
@@ -140,6 +144,7 @@ public class CodeObserver implements BytecodeArray.Visitor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitBranch(int opcode, int offset, int length,
                             int target) {
         String targetStr = (length <= 3) ? Hex.u2(target) : Hex.u4(target);
@@ -148,10 +153,11 @@ public class CodeObserver implements BytecodeArray.Visitor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitSwitch(int opcode, int offset, int length,
             SwitchList cases, int padding) {
         int sz = cases.size();
-        StringBuffer sb = new StringBuffer(sz * 20 + 100);
+        StringBuilder sb = new StringBuilder(sz * 20 + 100);
 
         sb.append(header(offset));
         if (padding != 0) {
@@ -174,6 +180,7 @@ public class CodeObserver implements BytecodeArray.Visitor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitNewarray(int offset, int length, CstType cst,
             ArrayList<Constant> intVals) {
         String commentOrSpace = (length == 1) ? " // " : " ";
@@ -184,11 +191,13 @@ public class CodeObserver implements BytecodeArray.Visitor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setPreviousOffset(int offset) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPreviousOffset() {
         return -1;
     }

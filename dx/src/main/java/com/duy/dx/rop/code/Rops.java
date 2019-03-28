@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstBaseMethodRef;
-import com.duy.dx .rop.cst.CstMethodRef;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.Prototype;
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeBearer;
-import com.duy.dx .rop.type.TypeList;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstBaseMethodRef;
+import com.duy.dx.rop.cst.CstCallSiteRef;
+import com.duy.dx.rop.cst.CstMethodRef;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.Prototype;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeBearer;
+import com.duy.dx.rop.type.TypeList;
 
 /**
  * Standard instances of {@link Rop}.
@@ -1231,6 +1232,18 @@ public final class Rops {
                 meth = meth.withFirstParameter(definer.getClassType());
                 return opInvokeInterface(meth);
             }
+            case RegOps.INVOKE_POLYMORPHIC: {
+                CstBaseMethodRef cstMeth = (CstMethodRef) cst;
+                Prototype proto = cstMeth.getPrototype();
+                CstType definer = cstMeth.getDefiningClass();
+                Prototype meth = proto.withFirstParameter(definer.getClassType());
+                return opInvokePolymorphic(meth);
+            }
+            case RegOps.INVOKE_CUSTOM: {
+                CstCallSiteRef cstInvokeDynamicRef = (CstCallSiteRef) cst;
+                Prototype proto = cstInvokeDynamicRef.getPrototype();
+                return opInvokeCustom(proto);
+            }
         }
 
         throw new RuntimeException("unknown opcode " + RegOps.opName(opcode));
@@ -1854,7 +1867,7 @@ public final class Rops {
      * type. The result may be a shared instance.
      *
      * @param arrayType {@code non-null;} type of array being created
-     * @param count {@code >= 0;} number of elements that the array should have
+     * @param count {@code count >= 0;} number of elements that the array should have
      * @return {@code non-null;} an appropriate instance
      */
     public static Rop opFilledNewArray(TypeBearer arrayType, int count) {
@@ -2038,6 +2051,34 @@ public final class Rops {
      */
     public static Rop opInvokeInterface(Prototype meth) {
         return new Rop(RegOps.INVOKE_INTERFACE,
+                       meth.getParameterFrameTypes(),
+                       StdTypeList.THROWABLE);
+    }
+
+    /**
+     * Returns the appropriate {@code invoke-polymorphic} rop for the
+     * given type. The result is typically a newly-allocated instance.
+     *
+     * @param meth {@code non-null;} descriptor of the method, including the
+     * {@code this} parameter
+     * @return {@code non-null;} an appropriate instance
+     */
+    public static Rop opInvokePolymorphic(Prototype meth) {
+        return new Rop(RegOps.INVOKE_POLYMORPHIC,
+                       meth.getParameterFrameTypes(),
+                       StdTypeList.THROWABLE);
+    }
+
+    /**
+     * Returns the appropriate {@code invoke-dynamic} rop for the
+     * given type. The result is typically a newly-allocated instance.
+     *
+     * @param meth {@code non-null;} descriptor of the method, including the
+     * {@code this} parameter
+     * @return {@code non-null;} an appropriate instance
+     */
+    private static Rop opInvokeCustom(Prototype meth) {
+        return new Rop(RegOps.INVOKE_CUSTOM,
                        meth.getParameterFrameTypes(),
                        StdTypeList.THROWABLE);
     }

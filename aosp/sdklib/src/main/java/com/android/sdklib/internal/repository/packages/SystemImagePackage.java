@@ -28,11 +28,17 @@ import com.android.sdklib.SdkManager;
 import com.android.sdklib.SystemImage;
 import com.android.sdklib.devices.Abi;
 import com.android.sdklib.internal.repository.sources.SdkSource;
-import com.android.sdklib.repository.*;
+import com.android.sdklib.repository.IDescription;
+import com.android.sdklib.repository.MajorRevision;
+import com.android.sdklib.repository.PkgProps;
+import com.android.sdklib.repository.SdkAddonConstants;
+import com.android.sdklib.repository.SdkRepoConstants;
+import com.android.sdklib.repository.SdkSysImgConstants;
 import com.android.sdklib.repository.descriptors.IPkgDesc;
 import com.android.sdklib.repository.descriptors.IdDisplay;
 import com.android.sdklib.repository.descriptors.PkgDesc;
 import com.android.sdklib.repository.local.LocalSysImgPkgInfo;
+
 import org.w3c.dom.Node;
 
 import java.io.File;

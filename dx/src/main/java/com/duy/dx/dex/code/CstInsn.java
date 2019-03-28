@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .rop.cst.Constant;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.util.Hex;
 
 /**
  * Instruction which has a single constant argument in addition
@@ -115,7 +117,7 @@ public final class CstInsn extends FixedSizeInsn {
      */
     public int getIndex() {
         if (index < 0) {
-            throw new RuntimeException("index not yet set for " + constant);
+            throw new IllegalStateException("index not yet set for " + constant);
         }
 
         return index;
@@ -136,7 +138,7 @@ public final class CstInsn extends FixedSizeInsn {
      * Sets the constant's index. It is only valid to call this method once
      * per instance.
      *
-     * @param index {@code >= 0;} the constant pool index
+     * @param index {@code index >= 0;} the constant pool index
      */
     public void setIndex(int index) {
         if (index < 0) {
@@ -144,7 +146,7 @@ public final class CstInsn extends FixedSizeInsn {
         }
 
         if (this.index >= 0) {
-            throw new RuntimeException("index already set");
+            throw new IllegalStateException("index already set");
         }
 
         this.index = index;
@@ -158,7 +160,7 @@ public final class CstInsn extends FixedSizeInsn {
      */
     public int getClassIndex() {
         if (classIndex < 0) {
-            throw new RuntimeException("class index not yet set");
+            throw new IllegalStateException("class index not yet set");
         }
 
         return classIndex;
@@ -183,7 +185,7 @@ public final class CstInsn extends FixedSizeInsn {
      * with reference constants that this method should ever be
      * called. It is only valid to call this method once per instance.
      *
-     * @param index {@code >= 0;} the constant's class's constant pool index
+     * @param index {@code index >= 0;} the constant's class's constant pool index
      */
     public void setClassIndex(int index) {
         if (index < 0) {
@@ -191,7 +193,7 @@ public final class CstInsn extends FixedSizeInsn {
         }
 
         if (this.classIndex >= 0) {
-            throw new RuntimeException("class index already set");
+            throw new IllegalStateException("class index already set");
         }
 
         this.classIndex = index;
@@ -201,5 +203,34 @@ public final class CstInsn extends FixedSizeInsn {
     @Override
     protected String argString() {
         return constant.toHuman();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String cstString() {
+        if (constant instanceof CstString) {
+            return ((CstString) constant).toQuoted();
+        }
+        return constant.toHuman();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String cstComment() {
+        if (!hasIndex()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder(20);
+        sb.append(getConstant().typeName());
+        sb.append('@');
+
+        if (index < 65536) {
+            sb.append(Hex.u2(index));
+        } else {
+            sb.append(Hex.u4(index));
+        }
+
+        return sb.toString();
     }
 }

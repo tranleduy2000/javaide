@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .command.dump;
+package com.duy.dx.command.dump;
 
 /**
  * contains command line parsedArgs values

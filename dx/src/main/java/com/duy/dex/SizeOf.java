@@ -107,4 +107,17 @@ public final class SizeOf {
      * handler_off ushort
      */
     public static final int TRY_ITEM = UINT + USHORT + USHORT;
+
+    /**
+     * call_site_off uint
+     */
+    public static final int CALL_SITE_ID_ITEM = UINT;
+
+    /**
+     * method_handle_type ushort
+     * unused ushort
+     * field_or_method_id ushort
+     * unused ushort
+     */
+    public static final int METHOD_HANDLE_ITEM = USHORT + USHORT + USHORT + USHORT;
 }

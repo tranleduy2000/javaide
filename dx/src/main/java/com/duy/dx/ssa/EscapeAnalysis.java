@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.Exceptions;
-import com.duy.dx .rop.code.FillArrayDataInsn;
-import com.duy.dx .rop.code.Insn;
-import com.duy.dx .rop.code.PlainCstInsn;
-import com.duy.dx .rop.code.PlainInsn;
-import com.duy.dx .rop.code.RegOps;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.Rop;
-import com.duy.dx .rop.code.Rops;
-import com.duy.dx .rop.code.ThrowingCstInsn;
-import com.duy.dx .rop.code.ThrowingInsn;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstLiteralBits;
-import com.duy.dx .rop.cst.CstMethodRef;
-import com.duy.dx .rop.cst.CstNat;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.cst.TypedConstant;
-import com.duy.dx .rop.cst.Zeroes;
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx.rop.code.Exceptions;
+import com.duy.dx.rop.code.FillArrayDataInsn;
+import com.duy.dx.rop.code.Insn;
+import com.duy.dx.rop.code.PlainCstInsn;
+import com.duy.dx.rop.code.PlainInsn;
+import com.duy.dx.rop.code.RegOps;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.Rop;
+import com.duy.dx.rop.code.Rops;
+import com.duy.dx.rop.code.ThrowingCstInsn;
+import com.duy.dx.rop.code.ThrowingInsn;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstLiteralBits;
+import com.duy.dx.rop.cst.CstMethodRef;
+import com.duy.dx.rop.cst.CstNat;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.cst.TypedConstant;
+import com.duy.dx.rop.cst.Zeroes;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeBearer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashSet;
@@ -97,11 +97,11 @@ public class EscapeAnalysis {
     }
 
     /** method we're processing */
-    private SsaMethod ssaMeth;
+    private final SsaMethod ssaMeth;
     /** ssaMeth.getRegCount() */
-    private int regCount;
+    private final int regCount;
     /** Lattice values for each object register group */
-    private ArrayList<EscapeSet> latticeValues;
+    private final ArrayList<EscapeSet> latticeValues;
 
     /**
      * Constructs an instance.
@@ -689,17 +689,21 @@ public class EscapeAnalysis {
      */
     private void run() {
         ssaMeth.forEachBlockDepthFirstDom(new SsaBasicBlock.Visitor() {
+            @Override
             public void visitBlock (SsaBasicBlock block,
                     SsaBasicBlock unused) {
                 block.forEachInsn(new SsaInsn.Visitor() {
+                    @Override
                     public void visitMoveInsn(NormalSsaInsn insn) {
                         // do nothing
                     }
 
+                    @Override
                     public void visitPhiInsn(PhiInsn insn) {
                         // do nothing
                     }
 
+                    @Override
                     public void visitNonMoveInsn(NormalSsaInsn insn) {
                         processInsn(insn);
                     }

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .util.IntList;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.util.IntList;
 
 /**
  * This class maps one register space into another, with
@@ -25,7 +25,7 @@ import com.duy.dx .util.IntList;
  */
 public class BasicRegisterMapper extends RegisterMapper {
     /** indexed by old register, containing new name */
-    private IntList oldToNew;
+    private final IntList oldToNew;
 
     /** running count of used registers in new namespace */
     private int runningCountNewRegisters;

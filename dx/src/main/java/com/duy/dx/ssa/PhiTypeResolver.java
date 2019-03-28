@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .cf.code.Merger;
-import com.duy.dx .rop.code.LocalItem;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx.cf.code.Merger;
+import com.duy.dx.rop.code.LocalItem;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeBearer;
 import java.util.BitSet;
 import java.util.List;
 

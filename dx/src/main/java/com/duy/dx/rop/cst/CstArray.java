@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
-import com.duy.dx .util.FixedSizeList;
+import com.duy.dx.util.FixedSizeList;
 
 /**
  * Constant type to represent a fixed array of other constants.
  */
-public final class CstArray extends Constant {
+public class CstArray extends Constant {
     /** {@code non-null;} the actual list of contents */
     private final List list;
 
@@ -81,6 +81,7 @@ public final class CstArray extends Constant {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         return list.toHuman("{", ", ", "}");
     }
@@ -110,6 +111,7 @@ public final class CstArray extends Constant {
         }
 
         /** {@inheritDoc} */
+        @Override
         public int compareTo(List other) {
             int thisSize = size();
             int otherSize = other.size();

@@ -36,7 +36,6 @@ import com.android.sdklib.repository.descriptors.IdDisplay;
 import com.android.sdklib.repository.descriptors.PkgDesc;
 import com.android.sdklib.repository.local.LocalAddonPkgInfo;
 import com.android.utils.Pair;
-import com.google.common.collect.ImmutableList;
 
 import org.w3c.dom.Node;
 

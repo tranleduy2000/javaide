@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
-import com.duy.dx .rop.code.LocalItem;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.type.Prototype;
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx.rop.code.LocalItem;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.type.Prototype;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeBearer;
 import java.util.ArrayList;
 
 /**
@@ -96,11 +96,13 @@ public abstract class BaseMachine implements Machine {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Prototype getPrototype() {
         return prototype;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void clearArgs() {
         argCount = 0;
         auxType = null;
@@ -116,6 +118,7 @@ public abstract class BaseMachine implements Machine {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void popArgs(Frame frame, int count) {
         ExecutionStack stack = frame.getStack();
 
@@ -134,6 +137,7 @@ public abstract class BaseMachine implements Machine {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void popArgs(Frame frame, Prototype prototype) {
         StdTypeList types = prototype.getParameterTypes();
         int size = types.size();
@@ -152,6 +156,7 @@ public abstract class BaseMachine implements Machine {
         }
     }
 
+    @Override
     public final void popArgs(Frame frame, Type type) {
         // Use the above method to do the actual popping...
         popArgs(frame, 1);
@@ -164,6 +169,7 @@ public abstract class BaseMachine implements Machine {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void popArgs(Frame frame, Type type1, Type type2) {
         // Use the above method to do the actual popping...
         popArgs(frame, 2);
@@ -182,6 +188,7 @@ public abstract class BaseMachine implements Machine {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void popArgs(Frame frame, Type type1, Type type2,
             Type type3) {
         // Use the above method to do the actual popping...
@@ -206,6 +213,7 @@ public abstract class BaseMachine implements Machine {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void localArg(Frame frame, int idx) {
         clearArgs();
         args[0] = frame.getLocals().get(idx);
@@ -214,21 +222,25 @@ public abstract class BaseMachine implements Machine {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void localInfo(boolean local) {
         localInfo = local;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void auxType(Type type) {
         auxType = type;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void auxIntArg(int value) {
         auxInt = value;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void auxCstArg(Constant cst) {
         if (cst == null) {
             throw new NullPointerException("cst == null");
@@ -238,11 +250,13 @@ public abstract class BaseMachine implements Machine {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void auxTargetArg(int target) {
         auxTarget = target;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void auxSwitchArg(SwitchList cases) {
         if (cases == null) {
             throw new NullPointerException("cases == null");
@@ -252,11 +266,13 @@ public abstract class BaseMachine implements Machine {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void auxInitValues(ArrayList<Constant> initValues) {
         auxInitValues = initValues;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void localTarget(int idx, Type type, LocalItem local) {
         localTarget = RegisterSpec.makeLocalOptional(idx, type, local);
     }

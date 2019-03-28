@@ -41,7 +41,8 @@ public final class EncodedValue implements Comparable<EncodedValue> {
         out.write(data);
     }
 
-    @Override public int compareTo(EncodedValue other) {
+    @Override
+    public int compareTo(EncodedValue other) {
         int size = Math.min(data.length, other.data.length);
         for (int i = 0; i < size; i++) {
             if (data[i] != other.data[i]) {
@@ -51,7 +52,8 @@ public final class EncodedValue implements Comparable<EncodedValue> {
         return data.length - other.data.length;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return Integer.toHexString(data[0] & 0xff) + "...(" + data.length + ")";
     }
 }

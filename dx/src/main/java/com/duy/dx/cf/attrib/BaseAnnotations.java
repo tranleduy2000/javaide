@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.attrib;
+package com.duy.dx.cf.attrib;
 
-import com.duy.dx .rop.annotation.Annotations;
-import com.duy.dx .util.MutabilityException;
+import com.duy.dx.rop.annotation.Annotations;
+import com.duy.dx.util.MutabilityException;
 
 /**
  * Base class for annotations attributes.
@@ -56,6 +56,7 @@ public abstract class BaseAnnotations extends BaseAttribute {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int byteLength() {
         // Add six for the standard attribute header.
         return byteLength + 6;

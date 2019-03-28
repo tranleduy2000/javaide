@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.RegisterSpecSet;
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .ssa.RegisterMapper;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.RegisterSpecSet;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.ssa.RegisterMapper;
 
 /**
  * Pseudo-instruction which is used to hold a snapshot of the
@@ -80,7 +80,7 @@ public final class LocalSnapshot extends ZeroSizeInsn {
     protected String listingString0(boolean noteIndices) {
         int sz = locals.size();
         int max = locals.getMaxSize();
-        StringBuffer sb = new StringBuffer(100 + sz * 40);
+        StringBuilder sb = new StringBuilder(100 + sz * 40);
 
         sb.append("local-snapshot");
 

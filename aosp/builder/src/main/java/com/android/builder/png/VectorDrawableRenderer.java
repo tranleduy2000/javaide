@@ -16,6 +16,9 @@
 
 package com.android.builder.png;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+
 import com.android.annotations.NonNull;
 import com.android.ide.common.res2.ResourcePreprocessor;
 import com.android.ide.common.resources.configuration.DensityQualifier;
@@ -38,9 +41,6 @@ import java.util.Collection;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Generates PNG images (and XML copies) from VectorDrawable files.
@@ -128,9 +128,9 @@ public class VectorDrawableRenderer implements ResourcePreprocessor {
             }
 
             final VdPreview.TargetSize imageSize = VdPreview.TargetSize.createSizeFromScale(scaleFactor);
-//            BufferedImage image = VdPreview.getPreviewFromVectorXml(imageSize, xmlContent, null);
-//            checkState(image != null, "Generating the image failed.");
-//            ImageIO.write(image, "png", toBeGenerated);
+            /*Bitmap image = VdPreview.getPreviewFromVectorXml(imageSize, xmlContent, null);
+            checkState(image != null, "Generating the image failed.");
+            Image.write(image, "png", toBeGenerated);*/
         }
     }
 

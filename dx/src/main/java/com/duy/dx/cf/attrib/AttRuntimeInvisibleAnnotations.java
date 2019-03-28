@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.attrib;
+package com.duy.dx.cf.attrib;
 
-import com.duy.dx .rop.annotation.Annotations;
+import com.duy.dx.rop.annotation.Annotations;
 
 /**
  * Attribute class for standard {@code RuntimeInvisibleAnnotations}

@@ -51,11 +51,13 @@ public final class Annotation implements Comparable<Annotation> {
         encodedAnnotation.writeTo(out);
     }
 
-    @Override public int compareTo(Annotation other) {
+    @Override
+    public int compareTo(Annotation other) {
         return encodedAnnotation.compareTo(other.encodedAnnotation);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return dex == null
                 ? visibility + " " + getTypeIndex()
                 : visibility + " " + dex.typeNames().get(getTypeIndex());

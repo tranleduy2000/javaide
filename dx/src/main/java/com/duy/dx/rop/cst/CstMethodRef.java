@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
 /**
  * Constants of type {@code CONSTANT_Methodref_info}.

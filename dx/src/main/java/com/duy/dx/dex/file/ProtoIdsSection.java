@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.type.Prototype;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstProtoRef;
+import com.duy.dx.rop.type.Prototype;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
 import java.util.Collection;
 import java.util.TreeMap;
 
@@ -53,7 +54,22 @@ public final class ProtoIdsSection extends UniformItemSection {
     /** {@inheritDoc} */
     @Override
     public IndexedItem get(Constant cst) {
-        throw new UnsupportedOperationException("unsupported");
+        if (cst == null) {
+            throw new NullPointerException("cst == null");
+        }
+
+        if (!(cst instanceof CstProtoRef)) {
+            throw new IllegalArgumentException("cst not instance of CstProtoRef");
+        }
+
+        throwIfNotPrepared();
+        CstProtoRef protoRef = (CstProtoRef) cst;
+        IndexedItem result = protoIds.get(protoRef.getPrototype());
+        if (result == null) {
+            throw new IllegalArgumentException("not found");
+        }
+
+        return result;
     }
 
     /**

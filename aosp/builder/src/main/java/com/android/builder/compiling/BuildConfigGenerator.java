@@ -15,6 +15,8 @@
  */
 package com.android.builder.compiling;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.core.AndroidBuilder;
@@ -34,8 +36,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.Modifier;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Class able to generate a BuildConfig class in an Android project.

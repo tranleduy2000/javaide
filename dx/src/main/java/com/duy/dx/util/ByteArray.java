@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx .util;
+package com.duy.dx.util;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  * Wrapper for a {@code byte[]}, which provides read-only access and
@@ -95,7 +96,8 @@ public final class ByteArray {
      */
     public ByteArray slice(int start, int end) {
         checkOffsets(start, end);
-        return new ByteArray(bytes, start + this.start, end + this.start);
+        byte[] slicedOut = Arrays.copyOfRange(bytes, start, end);
+        return new ByteArray(slicedOut);
     }
 
     /**
@@ -103,16 +105,11 @@ public final class ByteArray {
      * offset into this instance.
      *
      * @param offset offset into this instance
-     * @param bytes {@code non-null;} (alleged) underlying array
      * @return corresponding offset into {@code bytes}
      * @throws IllegalArgumentException thrown if {@code bytes} is
      * not the underlying array of this instance
      */
-    public int underlyingOffset(int offset, byte[] bytes) {
-        if (bytes != this.bytes) {
-            throw new IllegalArgumentException("wrong bytes");
-        }
-
+    public int underlyingOffset(int offset) {
         return start + offset;
     }
 
@@ -250,7 +247,7 @@ public final class ByteArray {
     /**
      * Gets a {@code DataInputStream} that reads from this instance,
      * with the cursor starting at the beginning of this instance's data.
-     * <b>Note:</b> The returned instance may be cast to {@link #GetCursor}
+     * <b>Note:</b> The returned instance may be cast to {@link GetCursor}
      * if needed.
      *
      * @return {@code non-null;} an appropriately-constructed
@@ -263,7 +260,7 @@ public final class ByteArray {
     /**
      * Gets a {@code InputStream} that reads from this instance,
      * with the cursor starting at the beginning of this instance's data.
-     * <b>Note:</b> The returned instance may be cast to {@link #GetCursor}
+     * <b>Note:</b> The returned instance may be cast to {@link GetCursor}
      * if needed.
      *
      * @return {@code non-null;} an appropriately-constructed
@@ -282,7 +279,7 @@ public final class ByteArray {
          *
          * @return {@code 0..size();} the cursor
          */
-        public int getCursor();
+        int getCursor();
     }
 
     /**
@@ -301,6 +298,7 @@ public final class ByteArray {
             mark = 0;
         }
 
+        @Override
         public int read() throws IOException {
             if (cursor >= size) {
                 return -1;
@@ -311,6 +309,7 @@ public final class ByteArray {
             return result;
         }
 
+        @Override
         public int read(byte[] arr, int offset, int length) {
             if ((offset + length) > arr.length) {
                 length = arr.length - offset;
@@ -326,18 +325,22 @@ public final class ByteArray {
             return length;
         }
 
+        @Override
         public int available() {
             return size - cursor;
         }
 
+        @Override
         public void mark(int reserve) {
             mark = cursor;
         }
 
+        @Override
         public void reset() {
             cursor = mark;
         }
 
+        @Override
         public boolean markSupported() {
             return true;
         }
@@ -345,11 +348,11 @@ public final class ByteArray {
 
     /**
      * Helper class for {@link #makeDataInputStream}. This is used
-     * simply so that the cursor of a wrapped {@link #MyInputStream}
+     * simply so that the cursor of a wrapped {@link MyInputStream}
      * instance may be easily determined.
      */
     public static class MyDataInputStream extends DataInputStream {
-        /** {@code non-null;} the underlying {@link #MyInputStream} */
+        /** {@code non-null;} the underlying {@link MyInputStream} */
         private final MyInputStream wrapped;
 
         public MyDataInputStream(MyInputStream wrapped) {

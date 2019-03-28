@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .util.MutabilityControl;
+import com.duy.dx.util.MutabilityControl;
 
 /**
  * Set of {@link RegisterSpec} instances, where a given register number
@@ -100,7 +100,7 @@ public final class RegisterSpecSet
     @Override
     public String toString() {
         int len = specs.length;
-        StringBuffer sb = new StringBuffer(len * 25);
+        StringBuilder sb = new StringBuilder(len * 25);
 
         sb.append('{');
 

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
-import com.duy.dx .util.IntList;
-import com.duy.dx .util.MutabilityControl;
+import com.duy.dx.util.IntList;
+import com.duy.dx.util.MutabilityControl;
 
 /**
  * List of (value, target) mappings representing the choices of a

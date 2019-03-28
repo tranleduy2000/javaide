@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .io;
+package com.duy.dx.io;
 
 import com.duy.dex.DexException;
-import com.duy.dx .io.instructions.DecodedInstruction;
+import com.duy.dx.io.instructions.DecodedInstruction;
 
 /**
  * Walks through a block of code and calls visitor call backs.
@@ -28,6 +28,8 @@ public final class CodeReader {
     private Visitor typeVisitor = null;
     private Visitor fieldVisitor = null;
     private Visitor methodVisitor = null;
+    private Visitor methodAndProtoVisitor = null;
+    private Visitor callSiteVisitor = null;
 
     /**
      * Sets {@code visitor} as the visitor for all instructions.
@@ -38,6 +40,8 @@ public final class CodeReader {
         typeVisitor = visitor;
         fieldVisitor = visitor;
         methodVisitor = visitor;
+        methodAndProtoVisitor = visitor;
+        callSiteVisitor = visitor;
     }
 
     /**
@@ -76,6 +80,16 @@ public final class CodeReader {
         methodVisitor = visitor;
     }
 
+    /** Sets {@code visitor} as the visitor for all method and proto instructions. */
+    public void setMethodAndProtoVisitor(Visitor visitor) {
+        methodAndProtoVisitor = visitor;
+    }
+
+    /** Sets {@code visitor} as the visitor for all call site instructions. */
+    public void setCallSiteVisitor(Visitor visitor) {
+        callSiteVisitor = visitor;
+    }
+
     public void visitAll(DecodedInstruction[] decodedInstructions)
             throws DexException {
         int size = decodedInstructions.length;
@@ -100,10 +114,12 @@ public final class CodeReader {
         Visitor visitor = null;
 
         switch (OpcodeInfo.getIndexType(one.getOpcode())) {
-            case STRING_REF: visitor = stringVisitor; break;
-            case TYPE_REF:   visitor = typeVisitor;   break;
-            case FIELD_REF:  visitor = fieldVisitor;  break;
-            case METHOD_REF: visitor = methodVisitor; break;
+            case STRING_REF:           visitor = stringVisitor;         break;
+            case TYPE_REF:             visitor = typeVisitor;           break;
+            case FIELD_REF:            visitor = fieldVisitor;          break;
+            case METHOD_REF:           visitor = methodVisitor;         break;
+            case METHOD_AND_PROTO_REF: visitor = methodAndProtoVisitor; break;
+            case CALL_SITE_REF:        visitor = callSiteVisitor;       break;
         }
 
         if (visitor == null) {

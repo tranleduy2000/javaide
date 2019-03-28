@@ -28,10 +28,10 @@ import java.util.List;
 
 /**
  * Represents a file in a resource folders.
- * <p>
+ *
  * It contains a link to the {@link File}, the qualifier string (which is the name of the folder
  * after the first '-' character), a list of {@link ResourceItem} and a type.
- * <p>
+ *
  * The type of the file is based on whether the file is located in a values folder (FileType.MULTI)
  * or in another folder (FileType.SINGLE).
  */
@@ -43,17 +43,17 @@ public class ResourceFile extends DataFile<ResourceItem> {
 
     /**
      * Creates a resource file with a single resource item.
-     * <p>
+     *
      * The source file is set on the item with {@link ResourceItem#setSource(DataFile)}
-     * <p>
+     *
      * The type of the ResourceFile will be {@link FileType#SINGLE_FILE}.
      *
-     * @param file       the File
-     * @param item       the resource item
+     * @param file the File
+     * @param item the resource item
      * @param qualifiers the qualifiers.
      */
     public ResourceFile(@NonNull File file, @NonNull ResourceItem item,
-                        @NonNull String qualifiers) {
+            @NonNull String qualifiers) {
         super(file, FileType.SINGLE_FILE);
         mQualifiers = qualifiers;
         init(item);
@@ -61,22 +61,22 @@ public class ResourceFile extends DataFile<ResourceItem> {
 
     /**
      * Creates a resource file with a list of resource items.
-     * <p>
+     *
      * The source file is set on the items with {@link ResourceItem#setSource(DataFile)}
-     * <p>
+     *
      * The type of the ResourceFile will be {@link FileType#XML_VALUES}.
      *
-     * @param file       the File
-     * @param items      the resource items
+     * @param file the File
+     * @param items the resource items
      * @param qualifiers the qualifiers.
      */
     public ResourceFile(@NonNull File file, @NonNull List<ResourceItem> items,
-                        @NonNull String qualifiers) {
+            @NonNull String qualifiers) {
         this(file, items, qualifiers, FileType.XML_VALUES);
     }
 
     private ResourceFile(@NonNull File file, @NonNull List<ResourceItem> items,
-                         @NonNull String qualifiers, @NonNull FileType fileType) {
+            @NonNull String qualifiers, @NonNull FileType fileType) {
         super(file, fileType);
         mQualifiers = qualifiers;
         init(items);

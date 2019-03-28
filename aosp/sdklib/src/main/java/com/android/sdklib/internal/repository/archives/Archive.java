@@ -20,10 +20,10 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
 import com.android.annotations.VisibleForTesting.Visibility;
-import com.android.sdklib.repository.IDescription;
 import com.android.sdklib.internal.repository.packages.Package;
 import com.android.sdklib.internal.repository.sources.SdkSource;
 import com.android.sdklib.io.FileOp;
+import com.android.sdklib.repository.IDescription;
 
 import java.io.File;
 import java.util.Properties;

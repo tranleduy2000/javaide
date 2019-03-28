@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.cst;
+package com.duy.dx.cf.cst;
 
 /**
  * Tags for constant pool constants.

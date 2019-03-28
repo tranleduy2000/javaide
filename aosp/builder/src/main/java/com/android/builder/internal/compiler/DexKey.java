@@ -31,14 +31,17 @@ import java.io.File;
  */
 @Immutable
 class DexKey extends PreProcessCache.Key {
-    private final boolean mJumboMode = false;
+    private final boolean mJumboMode;
 
-    private DexKey(@NonNull File sourceFile, @NonNull FullRevision buildToolsRevision) {
-        super(sourceFile, buildToolsRevision);
+    static DexKey of(@NonNull File sourceFile, @NonNull FullRevision buildToolsRevision,
+            boolean jumboMode) {
+        return new DexKey(sourceFile, buildToolsRevision, jumboMode);
     }
 
-    public static DexKey of(@NonNull File sourceFile, @NonNull FullRevision buildToolsRevision) {
-        return new DexKey(sourceFile, buildToolsRevision);
+    private DexKey(@NonNull File sourceFile, @NonNull FullRevision buildToolsRevision,
+            boolean jumboMode) {
+        super(sourceFile, buildToolsRevision);
+        mJumboMode = jumboMode;
     }
 
     boolean isJumboMode() {
@@ -56,13 +59,20 @@ class DexKey extends PreProcessCache.Key {
         if (!super.equals(o)) {
             return false;
         }
+
+        DexKey dexKey = (DexKey) o;
+
+        if (mJumboMode != dexKey.mJumboMode) {
+            return false;
+        }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result;
+        result = 31 * result + (mJumboMode ? 1 : 0);
         return result;
     }
 }

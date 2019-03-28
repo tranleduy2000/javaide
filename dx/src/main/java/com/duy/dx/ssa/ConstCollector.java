@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.LocalItem;
-import com.duy.dx .rop.code.PlainCstInsn;
-import com.duy.dx .rop.code.PlainInsn;
-import com.duy.dx .rop.code.RegOps;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.Rop;
-import com.duy.dx .rop.code.Rops;
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .rop.code.ThrowingCstInsn;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.TypedConstant;
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx.rop.code.LocalItem;
+import com.duy.dx.rop.code.PlainCstInsn;
+import com.duy.dx.rop.code.PlainInsn;
+import com.duy.dx.rop.code.RegOps;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.Rop;
+import com.duy.dx.rop.code.Rops;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.rop.code.ThrowingCstInsn;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.TypedConstant;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.TypeBearer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,13 +54,13 @@ public class ConstCollector {
      * to return false for const-string insns whose exceptions are not
      * caught in the current method.
      */
-    private static boolean COLLECT_STRINGS = false;
+    private static final boolean COLLECT_STRINGS = false;
 
     /**
      * If true, allow one local var to be involved with a collected const.
      * Turned off because it mostly just inserts more moves.
      */
-    private static boolean COLLECT_ONE_LOCAL = false;
+    private static final boolean COLLECT_ONE_LOCAL = false;
 
     /** method we're processing */
     private final SsaMethod ssaMeth;
@@ -240,6 +240,7 @@ public class ConstCollector {
 
         // Sort by use, with most used at the beginning of the list.
         Collections.sort(constantList, new Comparator<Constant>() {
+            @Override
             public int compare(Constant a, Constant b) {
                 int ret;
                 ret = countUses.get(b) - countUses.get(a);

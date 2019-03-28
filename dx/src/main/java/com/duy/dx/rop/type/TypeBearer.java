@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.type;
+package com.duy.dx.rop.type;
 
-import com.duy.dx .util.ToHuman;
+import com.duy.dx.util.ToHuman;
 
 /**
  * Object which has an associated type, possibly itself.

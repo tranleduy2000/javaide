@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .io;
+package com.duy.dx.io;
 
 /**
  * The various types that an index in a Dalvik instruction might refer to.
@@ -41,6 +41,12 @@ public enum IndexType {
     /** field reference index */
     FIELD_REF,
 
+    /** method index and a proto index */
+    METHOD_AND_PROTO_REF,
+
+    /** call site reference index */
+    CALL_SITE_REF,
+
     /** inline method index (for inline linked method invocations) */
     INLINE_METHOD,
 
@@ -48,5 +54,11 @@ public enum IndexType {
     VTABLE_OFFSET,
 
     /** direct field offset (for static linked field accesses) */
-    FIELD_OFFSET;
+    FIELD_OFFSET,
+
+    /** method handle reference index (for loading constant method handles) */
+    METHOD_HANDLE_REF,
+
+    /** proto reference index (for loading constant proto ref) */
+    PROTO_REF;
 }

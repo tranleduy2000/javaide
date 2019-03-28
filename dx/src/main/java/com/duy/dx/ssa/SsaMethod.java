@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.BasicBlockList;
-import com.duy.dx .rop.code.Insn;
-import com.duy.dx .rop.code.PlainInsn;
-import com.duy.dx .rop.code.RegOps;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.Rop;
-import com.duy.dx .rop.code.RopMethod;
-import com.duy.dx .rop.code.Rops;
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .util.IntList;
+import com.duy.dx.rop.code.BasicBlockList;
+import com.duy.dx.rop.code.Insn;
+import com.duy.dx.rop.code.PlainInsn;
+import com.duy.dx.rop.code.RegOps;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.Rop;
+import com.duy.dx.rop.code.RopMethod;
+import com.duy.dx.rop.code.Rops;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.util.IntList;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -339,48 +339,25 @@ public final class SsaMethod {
     }
 
     /**
-     * Returns the count of reachable blocks in this method: blocks that have
-     * predecessors (or are the start block)
+     * Computes reachability for all blocks in the method.
      *
-     * @return {@code >= 0;} number of reachable basic blocks
+     * @return a BitSet of reachable blocks.
      */
-    public int getCountReachableBlocks() {
-        int ret = 0;
+    public BitSet computeReachability() {
+        final int size = blocks.size();
+        BitSet reachableUnvisited = new BitSet(size);
+        BitSet reachableVisited = new BitSet(size);
 
-        for (SsaBasicBlock b : blocks) {
-            // Blocks that have been disconnected don't count.
-            if (b.isReachable()) {
-                ret++;
-            }
+        reachableUnvisited.set(getEntryBlock().getIndex());
+
+        int index;
+        while ((index = reachableUnvisited.nextSetBit(0)) != -1) {
+            reachableVisited.set(index);
+            reachableUnvisited.or(blocks.get(index).getSuccessors());
+            reachableUnvisited.andNot(reachableVisited);
         }
 
-        return ret;
-    }
-
-    /**
-     * Computes reachability for all blocks in the method. First clears old
-     * values from all blocks, then starts with the entry block and walks down
-     * the control flow graph, marking all blocks it finds as reachable.
-     */
-    public void computeReachability() {
-        for (SsaBasicBlock block : blocks) {
-            block.setReachable(0);
-        }
-
-        ArrayList<SsaBasicBlock> blockList = new ArrayList<SsaBasicBlock>();
-        blockList.add(this.getEntryBlock());
-
-        while (!blockList.isEmpty()) {
-            SsaBasicBlock block = blockList.remove(0);
-            if (block.isReachable()) continue;
-
-            block.setReachable(1);
-            BitSet succs = block.getSuccessors();
-            for (int i = succs.nextSetBit(0); i >= 0;
-                     i = succs.nextSetBit(i + 1)) {
-                blockList.add(blocks.get(i));
-            }
-        }
+        return reachableVisited;
     }
 
     /**
@@ -417,12 +394,15 @@ public final class SsaMethod {
         definitionList = new SsaInsn[getRegCount()];
 
         forEachInsn(new SsaInsn.Visitor() {
+            @Override
             public void visitMoveInsn (NormalSsaInsn insn) {
                 definitionList[insn.getResult().getReg()] = insn;
             }
+            @Override
             public void visitPhiInsn (PhiInsn phi) {
                 definitionList[phi.getResult().getReg()] = phi;
             }
+            @Override
             public void visitNonMoveInsn (NormalSsaInsn insn) {
                 RegisterSpec result = insn.getResult();
                 if (result != null) {
@@ -450,14 +430,17 @@ public final class SsaMethod {
 
         forEachInsn(new SsaInsn.Visitor() {
             /** {@inheritDoc} */
+            @Override
             public void visitMoveInsn (NormalSsaInsn insn) {
                 addToUses(insn);
             }
             /** {@inheritDoc} */
+            @Override
             public void visitPhiInsn (PhiInsn phi) {
                 addToUses(phi);
             }
             /** {@inheritDoc} */
+            @Override
             public void visitNonMoveInsn (NormalSsaInsn insn) {
                 addToUses(insn);
             }
@@ -820,15 +803,17 @@ public final class SsaMethod {
      * @param deletedInsns {@code non-null;} insns to delete
      */
     public void deleteInsns(Set<SsaInsn> deletedInsns) {
-        for (SsaBasicBlock block : getBlocks()) {
+        for (SsaInsn deletedInsn : deletedInsns) {
+            SsaBasicBlock block = deletedInsn.getBlock();
             ArrayList<SsaInsn> insns = block.getInsns();
 
             for (int i = insns.size() - 1; i >= 0; i--) {
                 SsaInsn insn = insns.get(i);
 
-                if (deletedInsns.contains(insn)) {
+                if (deletedInsn == insn) {
                     onInsnRemoved(insn);
                     insns.remove(i);
+                    break;
                 }
             }
 

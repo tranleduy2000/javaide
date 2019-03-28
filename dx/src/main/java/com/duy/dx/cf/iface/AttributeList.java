@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.iface;
+package com.duy.dx.cf.iface;
 
 /**
  * Interface for lists of attributes.

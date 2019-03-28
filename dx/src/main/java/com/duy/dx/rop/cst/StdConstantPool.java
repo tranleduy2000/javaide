@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
 import com.duy.dex.util.ExceptionWithContext;
-import com.duy.dx .util.Hex;
-import com.duy.dx .util.MutabilityControl;
+import com.duy.dx.util.Hex;
+import com.duy.dx.util.MutabilityControl;
 
 /**
  * Standard implementation of {@link ConstantPool}, which directly stores
@@ -48,11 +48,13 @@ public final class StdConstantPool
     }
 
     /** {@inheritDoc} */
+    @Override
     public int size() {
         return entries.length;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Constant getOrNull(int n) {
         try {
             return entries[n];
@@ -63,6 +65,7 @@ public final class StdConstantPool
     }
 
     /** {@inheritDoc} */
+    @Override
     public Constant get0Ok(int n) {
         if (n == 0) {
             return null;
@@ -72,6 +75,7 @@ public final class StdConstantPool
     }
 
     /** {@inheritDoc} */
+    @Override
     public Constant get(int n) {
         try {
             Constant result = entries[n];
@@ -92,6 +96,7 @@ public final class StdConstantPool
      *
      * @return the returned array may contain null entries.
      */
+    @Override
     public Constant[] getEntries() {
         return entries;
     }

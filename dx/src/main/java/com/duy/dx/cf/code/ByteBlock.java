@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
-import com.duy.dx .util.Hex;
-import com.duy.dx .util.IntList;
-import com.duy.dx .util.LabeledItem;
+import com.duy.dx.util.Hex;
+import com.duy.dx.util.IntList;
+import com.duy.dx.util.LabeledItem;
 
 /**
  * Representation of a basic block in a bytecode array.
@@ -102,6 +102,7 @@ public final class ByteBlock implements LabeledItem {
      *
      * @return {@code >= 0;} the label
      */
+    @Override
     public int getLabel() {
         return label;
     }

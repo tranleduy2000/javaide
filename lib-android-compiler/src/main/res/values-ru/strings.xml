@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="classpath_desc">Classpath - это параметр в виртуальной машине Java или в компиляторе Java, который указывает местоположение пользовательских классов и пакетов. (Android.jar)</string>
+    <string name="pref_title_java_format_type">Тип формата</string>
+    <string name="can_not_find_androidmanifest">Не удаётся найти AndroidManifest.xml</string>
+    <string name="can_not_find_settings_gradle_try_to_create_new_project">Не удаётся найти settings.gradle, попробуйте создать новый проект</string>
+    <string name="starting_build_android_project">Запущена сборка android проекта</string>
+    <string name="build_type">Тип сборки</string>
+    <string name="starting_build_jar_archive">Starting build jar archive</string>
+    <string name="starting_build_java_project">Starting build java project</string>
+    <string name="create_jar_archive">Создать jar архив</string>
+    <string name="output_jar_archive">Output jar archive:</string>
+    <string name="dex_libs_completed">Dex libs completed</string>
+    <string name="merge_all_dexed_files_completed">Слияние всех dexed файлов завершено</string>
+    <string name="manifest_merging_failed">Не удалось объединить манифест. Смотрите в консоли для получения дополнительной информации.</string>
+    <string name="sign_apk">Подпись apk</string>
+    <string name="sign_debug_apk">Подпись debug apk</string>
+
+</resources>

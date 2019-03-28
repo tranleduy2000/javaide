@@ -346,7 +346,7 @@ public class ProjectCreator {
             createDirs(projectFolder, SdkConstants.FD_OUTPUT);
             createDirs(projectFolder, SdkConstants.FD_NATIVE_LIBS);
 
-            if (!isTestProject) {
+            if (isTestProject == false) {
                 /* Make res files only for non test projects */
                 File valueFolder = createDirs(resourceFolder, SdkConstants.FD_RES_VALUES);
                 installTargetTemplate("strings.template", new File(valueFolder, "strings.xml"),

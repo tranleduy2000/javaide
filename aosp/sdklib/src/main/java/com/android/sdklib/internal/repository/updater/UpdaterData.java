@@ -16,10 +16,14 @@
 
 package com.android.sdklib.internal.repository.updater;
 
+import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.VisibleForTesting;
 import com.android.annotations.VisibleForTesting.Visibility;
+import com.android.prefs.AndroidLocation.AndroidLocationException;
 import com.android.sdklib.SdkManager;
+import com.android.sdklib.internal.avd.AvdManager;
+import com.android.sdklib.internal.repository.AdbWrapper;
 import com.android.sdklib.internal.repository.DownloadCache;
 import com.android.sdklib.internal.repository.ITask;
 import com.android.sdklib.internal.repository.ITaskFactory;
@@ -96,6 +100,7 @@ public class UpdaterData implements IUpdaterData {
     private ITaskFactory mTaskFactory;
 
     private SdkManager mSdkManager;
+    private AvdManager mAvdManager;
     /**
      * The current {@link PackageLoader} to use.
      * Lazily created in {@link #getPackageLoader()}.
@@ -106,6 +111,7 @@ public class UpdaterData implements IUpdaterData {
      * Lazily created in {@link #getDownloadCache()}.
      */
     private DownloadCache mDownloadCache;
+    private AndroidLocationException mAvdManagerInitError;
 
     /**
      * Creates a new updater data.
@@ -166,6 +172,11 @@ public class UpdaterData implements IUpdaterData {
     }
 
     @Override
+    public AvdManager getAvdManager() {
+        return mAvdManager;
+    }
+
+    @Override
     public SettingsController getSettingsController() {
         return mSettingsController;
     }
@@ -197,6 +208,26 @@ public class UpdaterData implements IUpdaterData {
      * @return True if an error occurred, false if we should continue.
      */
     public boolean checkIfInitFailed() {
+        if (mAvdManagerInitError != null) {
+            String example;
+            if (SdkConstants.currentPlatform() == SdkConstants.PLATFORM_WINDOWS) {
+                example = "%USERPROFILE%";     //$NON-NLS-1$
+            } else {
+                example = "~";                 //$NON-NLS-1$
+            }
+
+            String error = String.format(
+                "The AVD manager normally uses the user's profile directory to store " +
+                "AVD files. However it failed to find the default profile directory. " +
+                "\n" +
+                "To fix this, please set the environment variable ANDROID_SDK_HOME to " +
+                "a valid path such as \"%s\".",
+                example);
+
+            displayInitError(error);
+
+            return true;
+        }
         return false;
     }
 
@@ -217,12 +248,27 @@ public class UpdaterData implements IUpdaterData {
     }
 
     /**
-     * Initializes the {@link SdkManager} .
+     * Initializes the {@link SdkManager} and the {@link AvdManager}.
      * Extracted so that we can override this in unit tests.
      */
     @VisibleForTesting(visibility=Visibility.PRIVATE)
     protected void initSdk() {
         setSdkManager(SdkManager.createManager(mOsSdkRoot, mSdkLog));
+        try {
+          mAvdManager = null;
+          mAvdManager = AvdManager.getInstance(mSdkManager.getLocalSdk(), mSdkLog);
+        } catch (AndroidLocationException e) {
+            mSdkLog.error(e, "Unable to read AVDs: " + e.getMessage());  //$NON-NLS-1$
+
+            // Note: we used to continue here, but the thing is that
+            // mAvdManager==null so nothing is really going to work as
+            // expected. Let's just display an error later in checkIfInitFailed()
+            // and abort right there. This step is just too early in the SWT
+            // setup process to display a message box yet.
+
+            mAvdManagerInitError = e;
+        }
+
         // notify listeners.
         broadcastOnSdkReload();
     }
@@ -272,10 +318,35 @@ public class UpdaterData implements IUpdaterData {
         // reload SDK
         mSdkManager.reloadSdk(mSdkLog);
 
+        // reload AVDs
+        if (mAvdManager != null) {
+            try {
+                mAvdManager.reloadAvds(mSdkLog);
+            } catch (AndroidLocationException e) {
+                // FIXME
+            }
+        }
+
         mLocalSdkParser.clearPackages();
 
         // notify listeners
         broadcastOnSdkReload();
+    }
+
+    /**
+     * Reloads the AVDs.
+     * <p/>
+     * This does not notify the listeners.
+     */
+    public void reloadAvds() {
+        // reload AVDs
+        if (mAvdManager != null) {
+            try {
+                mAvdManager.reloadAvds(mSdkLog);
+            } catch (AndroidLocationException e) {
+                mSdkLog.error(e, null);
+            }
+        }
     }
 
     /**
@@ -465,11 +536,30 @@ public class UpdaterData implements IUpdaterData {
                     }
                 }
 
+                if (installedAddon) {
+                    // Update the USB vendor ids for adb
+                    try {
+                        mSdkManager.updateAdb();
+                        monitor.log("Updated ADB to support the USB devices declared in the SDK add-ons.");
+                    } catch (Exception e) {
+                        mSdkLog.error(e, "Update ADB failed");
+                        monitor.logError("failed to update adb to support the USB devices declared in the SDK add-ons.");
+                    }
+                }
 
                 if (preInstallHookInvoked) {
                     broadcastPostInstallHook();
                 }
 
+                if (installedAddon || installedPlatformTools) {
+                    // We need to restart ADB. Actually since we don't know if it's even
+                    // running, maybe we should just kill it and not start it.
+                    // Note: it turns out even under Windows we don't need to kill adb
+                    // before updating the tools folder, as adb.exe is (surprisingly) not
+                    // locked.
+
+                    askForAdbRestart(monitor);
+                }
 
                 if (installedTools) {
                     notifyToolsNeedsToBeRestarted(flags);
@@ -537,6 +627,21 @@ public class UpdaterData implements IUpdaterData {
             return n;
         }
 
+    }
+
+    /**
+     * Attempts to restart ADB.
+     * <p/>
+     * If the "ask before restart" setting is set (the default), prompt the user whether
+     * now is a good time to restart ADB.
+     */
+    protected void askForAdbRestart(ITaskMonitor monitor) {
+        // Restart ADB if we don't need to ask.
+        if (!getSettingsController().getSettings().getAskBeforeAdbRestart()) {
+            AdbWrapper adb = new AdbWrapper(getOsSdkRoot(), monitor);
+            adb.stopAdb();
+            adb.startAdb();
+        }
     }
 
     protected void notifyToolsNeedsToBeRestarted(int flags) {

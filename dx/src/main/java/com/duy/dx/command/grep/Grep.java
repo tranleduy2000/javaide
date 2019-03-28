@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.dx .command.grep;
+package com.duy.dx.command.grep;
 
 import com.duy.dex.ClassData;
 import com.duy.dex.ClassDef;
 import com.duy.dex.Dex;
 import com.duy.dex.EncodedValueReader;
 import com.duy.dex.MethodId;
-import com.duy.dx .io.CodeReader;
-import com.duy.dx .io.instructions.DecodedInstruction;
+import com.duy.dx.io.CodeReader;
+import com.duy.dx.io.instructions.DecodedInstruction;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,6 +46,7 @@ public final class Grep {
         stringIds = getStringIds(dex, pattern);
 
         codeReader.setStringVisitor(new CodeReader.Visitor() {
+            @Override
             public void visit(DecodedInstruction[] all, DecodedInstruction one) {
                 encounterString(one.getIndex());
             }

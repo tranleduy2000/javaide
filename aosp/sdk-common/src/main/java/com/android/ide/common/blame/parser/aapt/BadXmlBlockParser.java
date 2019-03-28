@@ -17,8 +17,8 @@ package com.android.ide.common.blame.parser.aapt;
 
 import com.android.annotations.NonNull;
 import com.android.ide.common.blame.Message;
-import com.android.ide.common.blame.parser.ParsingFailedException;
 import com.android.ide.common.blame.parser.util.OutputLineReader;
+import com.android.ide.common.blame.parser.ParsingFailedException;
 import com.android.utils.ILogger;
 
 import java.util.List;

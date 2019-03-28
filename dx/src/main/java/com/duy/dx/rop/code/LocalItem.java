@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .rop.cst.CstString;
+import com.duy.dx.rop.cst.CstString;
 
 /**
  * A local variable item: either a name or a signature or both.
@@ -88,6 +88,7 @@ public class LocalItem implements Comparable<LocalItem> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int compareTo(LocalItem local) {
         int ret;
 

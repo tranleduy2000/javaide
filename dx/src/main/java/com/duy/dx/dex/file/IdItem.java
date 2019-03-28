@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.cst.CstType;
+import com.duy.dx.rop.cst.CstType;
 
 /**
  * Representation of a reference to an item inside a Dalvik file.

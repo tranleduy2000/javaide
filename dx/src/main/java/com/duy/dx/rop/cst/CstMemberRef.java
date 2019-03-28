@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
 /**
  * Constants of type {@code CONSTANT_*ref_info}.
@@ -98,6 +98,7 @@ public abstract class CstMemberRef extends TypedConstant {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String toHuman() {
         return definingClass.toHuman() + '.' + nat.toHuman();
     }

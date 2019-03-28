@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.util.Hex;
 
 /**
  * Constants of type {@code CONSTANT_Long_info}.
@@ -61,6 +61,7 @@ public final class CstLong
     }
 
     /** {@inheritDoc} */
+    @Override
     public Type getType() {
         return Type.LONG;
     }
@@ -72,6 +73,7 @@ public final class CstLong
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         return Long.toString(getLongBits());
     }

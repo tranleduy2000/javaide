@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .rop.type.TypeBearer;
-import com.duy.dx .util.MutabilityControl;
+import com.duy.dx.rop.type.TypeBearer;
+import com.duy.dx.util.MutabilityControl;
 import java.util.HashMap;
 
 /**

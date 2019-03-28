@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -25,7 +25,7 @@ import java.util.HashSet;
  * Lengauer-Tarjan method.
  *
  * See A Fast Algorithm for Finding Dominators in a Flowgraph
- * T. Lengauer & R. Tarjan, ACM TOPLAS July 1979, pgs 121-141.
+ * T. Lengauer &amp; R. Tarjan, ACM TOPLAS July 1979, pgs 121-141.
  *
  * This implementation runs in time O(n log n).  The time bound
  * could be changed to O(n * ack(n)) with a small change to the link and eval,
@@ -255,6 +255,7 @@ public final class Dominators {
     private class DfsWalker implements SsaBasicBlock.Visitor {
         private int dfsNum = 0;
 
+        @Override
         public void visitBlock(SsaBasicBlock v, SsaBasicBlock parent) {
             DFSInfo bbInfo = new DFSInfo();
             bbInfo.semidom = ++dfsNum;

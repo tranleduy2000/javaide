@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.SourcePosition;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.SourcePosition;
 
 /**
  * Instruction which has no extra info beyond the basics provided for in

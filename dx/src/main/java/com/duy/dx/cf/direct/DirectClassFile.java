@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.direct;
+package com.duy.dx.cf.direct;
 
-import com.duy.dx .cf.attrib.AttSourceFile;
-import com.duy.dx .cf.cst.ConstantPoolParser;
-import com.duy.dx .cf.iface.Attribute;
-import com.duy.dx .cf.iface.AttributeList;
-import com.duy.dx .cf.iface.ClassFile;
-import com.duy.dx .cf.iface.FieldList;
-import com.duy.dx .cf.iface.MethodList;
-import com.duy.dx .cf.iface.ParseException;
-import com.duy.dx .cf.iface.ParseObserver;
-import com.duy.dx .cf.iface.StdAttributeList;
-import com.duy.dx .rop.code.AccessFlags;
-import com.duy.dx .rop.cst.ConstantPool;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.cst.StdConstantPool;
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeList;
-import com.duy.dx .util.ByteArray;
-import com.duy.dx .util.Hex;
+import com.duy.dx.cf.attrib.AttBootstrapMethods;
+import com.duy.dx.cf.attrib.AttSourceFile;
+import com.duy.dx.cf.code.BootstrapMethodsList;
+import com.duy.dx.cf.cst.ConstantPoolParser;
+import com.duy.dx.cf.iface.Attribute;
+import com.duy.dx.cf.iface.AttributeList;
+import com.duy.dx.cf.iface.ClassFile;
+import com.duy.dx.cf.iface.FieldList;
+import com.duy.dx.cf.iface.MethodList;
+import com.duy.dx.cf.iface.ParseException;
+import com.duy.dx.cf.iface.ParseObserver;
+import com.duy.dx.cf.iface.StdAttributeList;
+import com.duy.dx.rop.code.AccessFlags;
+import com.duy.dx.rop.cst.ConstantPool;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.cst.StdConstantPool;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeList;
+import com.duy.dx.util.ByteArray;
+import com.duy.dx.util.Hex;
 
 /**
  * Class file with info taken from a {@code byte[]} or slice thereof.
@@ -50,9 +52,11 @@ public class DirectClassFile implements ClassFile {
      * See http://en.wikipedia.org/wiki/Java_class_file for an up-to-date
      * list of version numbers. Currently known (taken from that table) are:
      *
-     *     J2SE 7.0 = 51 (0x33 hex),
-     *     J2SE 6.0 = 50 (0x32 hex),
-     *     J2SE 5.0 = 49 (0x31 hex),
+     *     Java SE 9 = 53 (0x35 hex),
+     *     Java SE 8 = 52 (0x34 hex),
+     *     Java SE 7 = 51 (0x33 hex),
+     *     Java SE 6.0 = 50 (0x32 hex),
+     *     Java SE 5.0 = 49 (0x31 hex),
      *     JDK 1.4 = 48 (0x30 hex),
      *     JDK 1.3 = 47 (0x2F hex),
      *     JDK 1.2 = 46 (0x2E hex),
@@ -69,7 +73,7 @@ public class DirectClassFile implements ClassFile {
      *
      * Note: if you change this, please change "java.class.version" in System.java.
      */
-    private static final int CLASS_FILE_MAX_MAJOR_VERSION = 51;
+    private static final int CLASS_FILE_MAX_MAJOR_VERSION = 53;
 
     /** maximum {@code .class} file minor version */
     private static final int CLASS_FILE_MAX_MINOR_VERSION = 0;
@@ -247,72 +251,96 @@ public class DirectClassFile implements ClassFile {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getMagic() {
         parseToInterfacesIfNecessary();
         return getMagic0();
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getMinorVersion() {
         parseToInterfacesIfNecessary();
         return getMinorVersion0();
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getMajorVersion() {
         parseToInterfacesIfNecessary();
         return getMajorVersion0();
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getAccessFlags() {
         parseToInterfacesIfNecessary();
         return accessFlags;
     }
 
     /** {@inheritDoc} */
+    @Override
     public CstType getThisClass() {
         parseToInterfacesIfNecessary();
         return thisClass;
     }
 
     /** {@inheritDoc} */
+    @Override
     public CstType getSuperclass() {
         parseToInterfacesIfNecessary();
         return superClass;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ConstantPool getConstantPool() {
         parseToInterfacesIfNecessary();
         return pool;
     }
 
     /** {@inheritDoc} */
+    @Override
     public TypeList getInterfaces() {
         parseToInterfacesIfNecessary();
         return interfaces;
     }
 
     /** {@inheritDoc} */
+    @Override
     public FieldList getFields() {
         parseToEndIfNecessary();
         return fields;
     }
 
     /** {@inheritDoc} */
+    @Override
     public MethodList getMethods() {
         parseToEndIfNecessary();
         return methods;
     }
 
     /** {@inheritDoc} */
+    @Override
     public AttributeList getAttributes() {
         parseToEndIfNecessary();
         return attributes;
     }
 
     /** {@inheritDoc} */
+    @Override
+    public BootstrapMethodsList getBootstrapMethods() {
+        AttBootstrapMethods bootstrapMethodsAttribute =
+                (AttBootstrapMethods) getAttributes().findFirst(AttBootstrapMethods.ATTRIBUTE_NAME);
+        if (bootstrapMethodsAttribute != null) {
+            return bootstrapMethodsAttribute.getBootstrapMethods();
+        } else {
+            return BootstrapMethodsList.EMPTY;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public CstString getSourceFile() {
         AttributeList attribs = getAttributes();
         Attribute attSf = attribs.findFirst(AttSourceFile.ATTRIBUTE_NAME);
@@ -415,21 +443,29 @@ public class DirectClassFile implements ClassFile {
     }
 
     /**
-     * Sees if the .class file header magic/version are within
-     * range.
+     * Sees if the .class file header magic has the good value.
      *
      * @param magic the value of a classfile "magic" field
+     * @return true if the magic is valid
+     */
+    private boolean isGoodMagic(int magic) {
+        return magic == CLASS_FILE_MAGIC;
+    }
+
+    /**
+     * Sees if the .class file header version are within
+     * range.
+     *
      * @param minorVersion the value of a classfile "minor_version" field
      * @param majorVersion the value of a classfile "major_version" field
-     * @return true iff the parameters are valid and within range
+     * @return true if the parameters are valid and within range
      */
-    private boolean isGoodVersion(int magic, int minorVersion,
-            int majorVersion) {
+    private boolean isGoodVersion(int minorVersion, int majorVersion) {
         /* Valid version ranges are typically of the form
          * "A.0 through B.C inclusive" where A <= B and C >= 0,
          * which is why we don't have a CLASS_FILE_MIN_MINOR_VERSION.
          */
-        if (magic == CLASS_FILE_MAGIC && minorVersion >= 0) {
+        if (minorVersion >= 0) {
             /* Check against max first to handle the case where
              * MIN_MAJOR == MAX_MAJOR.
              */
@@ -467,13 +503,14 @@ public class DirectClassFile implements ClassFile {
             /* Make sure that this looks like a valid class file with a
              * version that we can handle.
              */
-            if (!isGoodVersion(getMagic0(), getMinorVersion0(),
-                               getMajorVersion0())) {
-                throw new ParseException("bad class file magic (" +
-                                         Hex.u4(getMagic0()) +
-                                         ") or version (" +
-                                         Hex.u2(getMajorVersion0()) + "." +
-                                         Hex.u2(getMinorVersion0()) + ")");
+            if (!isGoodMagic(getMagic0())) {
+                throw new ParseException("bad class file magic (" + Hex.u4(getMagic0()) + ")");
+            }
+
+            if (!isGoodVersion(getMinorVersion0(), getMajorVersion0())) {
+                throw new ParseException("unsupported class file version " +
+                                         getMajorVersion0() + "." +
+                                         getMinorVersion0());
             }
         }
 
@@ -617,28 +654,33 @@ public class DirectClassFile implements ClassFile {
         }
 
         /** {@inheritDoc} */
+        @Override
         public boolean isMutable() {
             return false;
         }
 
         /** {@inheritDoc} */
+        @Override
         public int size() {
             return size;
         }
 
         /** {@inheritDoc} */
+        @Override
         public int getWordCount() {
             // It is the same as size because all elements are classes.
             return size;
         }
 
         /** {@inheritDoc} */
+        @Override
         public Type getType(int n) {
             int idx = bytes.getUnsignedShort(n * 2);
             return ((CstType) pool.get(idx)).getClassType();
         }
 
         /** {@inheritDoc} */
+        @Override
         public TypeList withAddedType(Type type) {
             throw new UnsupportedOperationException("unsupported");
         }

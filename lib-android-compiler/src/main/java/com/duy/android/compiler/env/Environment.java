@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class Environment {
     private static final String APP_NAME = "JavaNIDE";
-    private static final int ANDROID_API = 27;
+    private static final int ANDROID_API = 28;
 
     public static void install(Context context) throws IOException {
         Assets.copyAssets(context.getAssets(), "sdk", getRootDir(context));
@@ -72,12 +72,12 @@ public class Environment {
     }
 
     public static File getSdCardLibraryExtractedFolder() {
-        File dir = new File(getSdkAppDir(), ".cached/bundleFolder");
+        File dir = new File(getSdkAppDir(), ".libs/bundleFolder");
         return mkdirsIfNotExist(dir);
     }
 
     public static File getSdCardLibraryBundleFolder() {
-        File dir = new File(getSdkAppDir(), ".cached/bundle");
+        File dir = new File(getSdkAppDir(), ".libs/bundle");
         return mkdirsIfNotExist(dir);
     }
 

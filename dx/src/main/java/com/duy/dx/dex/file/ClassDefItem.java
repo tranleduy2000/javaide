@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
 import com.duy.dex.SizeOf;
-import com.duy.dx .rop.annotation.Annotations;
-import com.duy.dx .rop.annotation.AnnotationsList;
-import com.duy.dx .rop.code.AccessFlags;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstArray;
-import com.duy.dx .rop.cst.CstFieldRef;
-import com.duy.dx .rop.cst.CstMethodRef;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.TypeList;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
-import com.duy.dx .util.Writers;
-
+import com.duy.dx.rop.annotation.Annotations;
+import com.duy.dx.rop.annotation.AnnotationsList;
+import com.duy.dx.rop.code.AccessFlags;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstArray;
+import com.duy.dx.rop.cst.CstFieldRef;
+import com.duy.dx.rop.cst.CstMethodRef;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.TypeList;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
+import com.duy.dx.util.Writers;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;

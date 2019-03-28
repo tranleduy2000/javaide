@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .io.instructions;
+package com.duy.dx.io.instructions;
 
 /**
  * Output stream of code units, for writing out Dalvik bytecode.

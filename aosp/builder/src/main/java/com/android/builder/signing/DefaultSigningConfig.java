@@ -22,6 +22,7 @@ import com.android.builder.model.SigningConfig;
 import com.android.ide.common.signing.KeystoreHelper;
 import com.android.prefs.AndroidLocation.AndroidLocationException;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.io.File;
 import java.security.KeyStore;

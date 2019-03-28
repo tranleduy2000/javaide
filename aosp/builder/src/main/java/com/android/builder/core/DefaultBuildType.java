@@ -30,11 +30,15 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
     private final String mName;
     private boolean mDebuggable = false;
     private boolean mPseudoLocalesEnabled = false;
+    private boolean mTestCoverageEnabled = false;
     private boolean mJniDebuggable = false;
+    private boolean mRenderscriptDebuggable = false;
+    private int mRenderscriptOptimLevel = 3;
     private String mApplicationIdSuffix = null;
     private String mVersionNameSuffix = null;
     private boolean mMinifyEnabled = false;
     private SigningConfig mSigningConfig = null;
+    private boolean mEmbedMicroApp = true;
 
     private boolean mZipAlignEnabled = true;
 
@@ -46,11 +50,16 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
         _initWith(that);
 
         setDebuggable(that.isDebuggable());
+        setTestCoverageEnabled(that.isTestCoverageEnabled());
+        setJniDebuggable(that.isJniDebuggable());
+        setRenderscriptDebuggable(that.isRenderscriptDebuggable());
+        setRenderscriptOptimLevel(that.getRenderscriptOptimLevel());
         setApplicationIdSuffix(that.getApplicationIdSuffix());
         setVersionNameSuffix(that.getVersionNameSuffix());
-        setMinifyEnabled(that.isMinifyEnabled());
+        setMinifyEnabled(that.isMinifyEnabled() );
         setZipAlignEnabled(that.isZipAlignEnabled());
         setSigningConfig(that.getSigningConfig());
+        setEmbedMicroApp(that.isEmbedMicroApp());
         setPseudoLocalesEnabled(that.isPseudoLocalesEnabled());
 
         return this;
@@ -65,37 +74,59 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
         return mName;
     }
 
-    /**
-     * Whether this build type should generate a debuggable apk.
-     */
+    /** Whether this build type should generate a debuggable apk. */
     @NonNull
     public BuildType setDebuggable(boolean debuggable) {
         mDebuggable = debuggable;
         return this;
     }
 
-    /**
-     * Whether this build type should generate a debuggable apk.
-     */
+    /** Whether this build type should generate a debuggable apk. */
     @Override
     public boolean isDebuggable() {
         // Accessing coverage data requires a debuggable package.
-        return mDebuggable;
+        return mDebuggable || mTestCoverageEnabled;
+    }
+
+
+    public void setTestCoverageEnabled(boolean testCoverageEnabled) {
+        mTestCoverageEnabled = testCoverageEnabled;
+    }
+
+    /**
+     * Whether test coverage is enabled for this build type.
+     *
+     * <p>If enabled this uses Jacoco to capture coverage and creates a report in the build
+     * directory.
+     *
+     * <p>The version of Jacoco can be configured with:
+     * <pre>
+     * android {
+     *   jacoco {
+     *     version = '0.6.2.201302030002'
+     *   }
+     * }
+     * </pre>
+     *
+     */
+    @Override
+    public boolean isTestCoverageEnabled() {
+        return mTestCoverageEnabled;
+    }
+
+    public void setPseudoLocalesEnabled(boolean pseudoLocalesEnabled) {
+        mPseudoLocalesEnabled = pseudoLocalesEnabled;
     }
 
     /**
      * Whether to generate pseudo locale in the APK.
-     * <p>
+     *
      * <p>If enabled, 2 fake pseudo locales (en-XA and ar-XB) will be added to the APK to help
      * test internationalization support in the app.
      */
     @Override
     public boolean isPseudoLocalesEnabled() {
         return mPseudoLocalesEnabled;
-    }
-
-    public void setPseudoLocalesEnabled(boolean pseudoLocalesEnabled) {
-        mPseudoLocalesEnabled = pseudoLocalesEnabled;
     }
 
     /**
@@ -116,6 +147,35 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
     }
 
     /**
+     * Whether the build type is configured to generate an apk with debuggable RenderScript code.
+     */
+    @Override
+    public boolean isRenderscriptDebuggable() {
+        return mRenderscriptDebuggable;
+    }
+
+    /**
+     * Whether the build type is configured to generate an apk with debuggable RenderScript code.
+     */
+    public BuildType setRenderscriptDebuggable(boolean renderscriptDebugBuild) {
+        mRenderscriptDebuggable = renderscriptDebugBuild;
+        return this;
+    }
+
+    /**
+     * Optimization level to use by the renderscript compiler.
+     */
+    @Override
+    public int getRenderscriptOptimLevel() {
+        return mRenderscriptOptimLevel;
+    }
+
+    /** Optimization level to use by the renderscript compiler. */
+    public void setRenderscriptOptimLevel(int renderscriptOptimLevel) {
+        mRenderscriptOptimLevel = renderscriptOptimLevel;
+    }
+
+    /**
      * Application id suffix applied to this build type.
      */
     @NonNull
@@ -133,75 +193,80 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
         return mApplicationIdSuffix;
     }
 
-    /**
-     * Version name suffix.
-     */
+    /** Version name suffix. */
     @NonNull
     public BuildType setVersionNameSuffix(@Nullable String versionNameSuffix) {
         mVersionNameSuffix = versionNameSuffix;
         return this;
     }
 
-    /**
-     * Version name suffix.
-     */
+    /** Version name suffix. */
     @Override
     @Nullable
     public String getVersionNameSuffix() {
         return mVersionNameSuffix;
     }
 
-    /**
-     * Whether Minify is enabled for this build type.
-     */
+    /** Whether Minify is enabled for this build type. */
     @NonNull
     public BuildType setMinifyEnabled(boolean enabled) {
         mMinifyEnabled = enabled;
         return this;
     }
 
-    /**
-     * Whether Minify is enabled for this build type.
-     */
+    /** Whether Minify is enabled for this build type. */
     @Override
     public boolean isMinifyEnabled() {
         return mMinifyEnabled;
     }
 
 
-    /**
-     * Whether zipalign is enabled for this build type.
-     */
+    /** Whether zipalign is enabled for this build type. */
     @NonNull
     public BuildType setZipAlignEnabled(boolean zipAlign) {
         mZipAlignEnabled = zipAlign;
         return this;
     }
 
-    /**
-     * Whether zipalign is enabled for this build type.
-     */
+    /** Whether zipalign is enabled for this build type. */
     @Override
     public boolean isZipAlignEnabled() {
         return mZipAlignEnabled;
     }
 
-    /**
-     * Sets the signing configuration. e.g.: {@code signingConfig signingConfigs.myConfig}
-     */
+    /** Sets the signing configuration. e.g.: {@code signingConfig signingConfigs.myConfig} */
     @NonNull
     public BuildType setSigningConfig(@Nullable SigningConfig signingConfig) {
         mSigningConfig = signingConfig;
         return this;
     }
 
-    /**
-     * Sets the signing configuration. e.g.: {@code signingConfig signingConfigs.myConfig}
-     */
+    /** Sets the signing configuration. e.g.: {@code signingConfig signingConfigs.myConfig} */
     @Override
     @Nullable
     public SigningConfig getSigningConfig() {
         return mSigningConfig;
+    }
+
+    /**
+     * Whether a linked Android Wear app should be embedded in variant using this build type.
+     *
+     * <p>Wear apps can be linked with the following code:
+     *
+     * <pre>
+     * dependencies {
+     *   freeWearApp project(:wear:free') // applies to variant using the free flavor
+     *   wearApp project(':wear:base') // applies to all other variants
+     * }
+     * </pre>
+     */
+    @Override
+    public boolean isEmbedMicroApp() {
+        return mEmbedMicroApp;
+    }
+
+    public void setEmbedMicroApp(boolean embedMicroApp) {
+        mEmbedMicroApp = embedMicroApp;
     }
 
     @Override
@@ -214,10 +279,14 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
 
         return Objects.equal(mName, buildType.mName) &&
                 mDebuggable == buildType.mDebuggable &&
+                mTestCoverageEnabled == buildType.mTestCoverageEnabled &&
                 mJniDebuggable == buildType.mJniDebuggable &&
                 mPseudoLocalesEnabled == buildType.mPseudoLocalesEnabled &&
+                mRenderscriptDebuggable == buildType.mRenderscriptDebuggable &&
+                mRenderscriptOptimLevel == buildType.mRenderscriptOptimLevel &&
                 mMinifyEnabled == buildType.mMinifyEnabled &&
                 mZipAlignEnabled == buildType.mZipAlignEnabled &&
+                mEmbedMicroApp == buildType.mEmbedMicroApp &&
                 Objects.equal(mApplicationIdSuffix, buildType.mApplicationIdSuffix) &&
                 Objects.equal(mVersionNameSuffix, buildType.mVersionNameSuffix) &&
                 Objects.equal(mSigningConfig, buildType.mSigningConfig);
@@ -229,13 +298,17 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
                 super.hashCode(),
                 mName,
                 mDebuggable,
+                mTestCoverageEnabled,
                 mJniDebuggable,
                 mPseudoLocalesEnabled,
+                mRenderscriptDebuggable,
+                mRenderscriptOptimLevel,
                 mApplicationIdSuffix,
                 mVersionNameSuffix,
                 mMinifyEnabled,
                 mZipAlignEnabled,
-                mSigningConfig);
+                mSigningConfig,
+                mEmbedMicroApp);
     }
 
     @Override
@@ -244,13 +317,17 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
         return MoreObjects.toStringHelper(this)
                 .add("name", mName)
                 .add("debuggable", mDebuggable)
+                .add("testCoverageEnabled", mTestCoverageEnabled)
                 .add("jniDebuggable", mJniDebuggable)
                 .add("pseudoLocalesEnabled", mPseudoLocalesEnabled)
+                .add("renderscriptDebuggable", mRenderscriptDebuggable)
+                .add("renderscriptOptimLevel", mRenderscriptOptimLevel)
                 .add("applicationIdSuffix", mApplicationIdSuffix)
                 .add("versionNameSuffix", mVersionNameSuffix)
                 .add("minifyEnabled", mMinifyEnabled)
                 .add("zipAlignEnabled", mZipAlignEnabled)
                 .add("signingConfig", mSigningConfig)
+                .add("embedMicroApp", mEmbedMicroApp)
                 .add("mBuildConfigFields", getBuildConfigFields())
                 .add("mResValues", getResValues())
                 .add("mProguardFiles", getProguardFiles())

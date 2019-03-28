@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
-import com.duy.dx .cf.iface.ParseException;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.ConstantPool;
-import com.duy.dx .rop.cst.CstDouble;
-import com.duy.dx .rop.cst.CstFloat;
-import com.duy.dx .rop.cst.CstInteger;
-import com.duy.dx .rop.cst.CstKnownNull;
-import com.duy.dx .rop.cst.CstLiteralBits;
-import com.duy.dx .rop.cst.CstLong;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .util.Bits;
-import com.duy.dx .util.ByteArray;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.ConstantPool;
+import com.duy.dx.rop.cst.CstDouble;
+import com.duy.dx.rop.cst.CstFloat;
+import com.duy.dx.rop.cst.CstInteger;
+import com.duy.dx.rop.cst.CstInvokeDynamic;
+import com.duy.dx.rop.cst.CstKnownNull;
+import com.duy.dx.rop.cst.CstLiteralBits;
+import com.duy.dx.rop.cst.CstLong;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.util.Bits;
+import com.duy.dx.util.ByteArray;
+import com.duy.dx.util.Hex;
 import java.util.ArrayList;
 
 /**
@@ -774,7 +774,11 @@ public final class BytecodeArray {
                     return 5;
                 }
                 case ByteOps.INVOKEDYNAMIC: {
-                  throw new ParseException("invokedynamic not supported");
+                    int idx = bytes.getUnsignedShort(offset + 1);
+                    // Skip to must-be-zero bytes at offsets 3 and 4
+                    CstInvokeDynamic cstInvokeDynamic = (CstInvokeDynamic) pool.get(idx);
+                    visitor.visitConstant(opcode, offset, 5, cstInvokeDynamic, 0);
+                    return 5;
                 }
                 case ByteOps.NEWARRAY: {
                     return parseNewarray(offset, visitor);
@@ -1292,52 +1296,61 @@ public final class BytecodeArray {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitInvalid(int opcode, int offset, int length) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitNoArgs(int opcode, int offset, int length,
                 Type type) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitLocal(int opcode, int offset, int length,
                 int idx, Type type, int value) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitConstant(int opcode, int offset, int length,
                 Constant cst, int value) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitBranch(int opcode, int offset, int length,
                 int target) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitSwitch(int opcode, int offset, int length,
                 SwitchList cases, int padding) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitNewarray(int offset, int length, CstType type,
                 ArrayList<Constant> initValues) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void setPreviousOffset(int offset) {
             previousOffset = offset;
         }
 
         /** {@inheritDoc} */
+        @Override
         public int getPreviousOffset() {
             return previousOffset;
         }

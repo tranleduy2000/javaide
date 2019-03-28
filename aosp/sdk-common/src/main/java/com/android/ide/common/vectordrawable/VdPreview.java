@@ -16,30 +16,20 @@
 
 package com.android.ide.common.vectordrawable;
 
-import android.graphics.Bitmap;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.ide.common.util.AssetUtil;
 import com.google.common.base.Charsets;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import android.graphics.Bitmap;//TODO fix it:
+import java.io.*;
 
-/**
- * Generate a Image based on the VectorDrawable's XML content.
- *
- * <p>This class also contains a main method, which can be used to preview a vector drawable file.
- */
 public class VdPreview {
 
     private static final String ANDROID_ALPHA = "android:alpha";
@@ -49,14 +39,6 @@ public class VdPreview {
     public static final int MAX_PREVIEW_IMAGE_SIZE = 4096;
     public static final int MIN_PREVIEW_IMAGE_SIZE = 1;
 
-    /**
-     * This encapsulates the information used to determine the preview image size.
-     * The reason we have different ways here is that both Studio UI and build process need
-     * to use this common code path to generate images for vectordrawable.
-     * When {@value mUseWidth} is true, use {@code mImageMaxDimension} as the maximum
-     * dimension value while keeping the aspect ratio.
-     * Otherwise, use {@code mImageScale} to scale the image based on the XML's size information.
-     */
     public static class TargetSize {
         private boolean mUseWidth;
 
@@ -78,10 +60,6 @@ public class VdPreview {
         }
     }
 
-    /**
-     * Since we allow overriding the vector drawable's size, we also need to keep
-     * the original size and aspect ratio.
-     */
     public static class SourceSize {
         public int getHeight() {
             return mSourceHeight;
@@ -95,10 +73,6 @@ public class VdPreview {
         private int mSourceHeight;
     }
 
-
-    /**
-     * @return a format object for XML formatting.
-     */
     @NonNull
     private static OutputFormat getPrettyPrintFormat() {
         OutputFormat format = new OutputFormat();
@@ -110,9 +84,6 @@ public class VdPreview {
         return format;
     }
 
-    /**
-     * Get the vector drawable's original size.
-     */
     public static SourceSize getVdOriginalSize(@NonNull Document document) {
         Element root = document.getDocumentElement();
         SourceSize srcSize = new SourceSize();
@@ -129,18 +100,6 @@ public class VdPreview {
         return srcSize;
     }
 
-    /**
-     * The UI can override some properties of the Vector drawable.
-     * In order to override in an uniform way, we re-parse the XML file
-     * and pick the appropriate attributes to override.
-     *
-     * @param document the parsed document of original VectorDrawable's XML file.
-     * @param info incoming override information for VectorDrawable.
-     * @param errorLog log for the parsing errors and warnings.
-     * @param srcSize as an output, store the original size of the VectorDrawable
-     * @return the overridden XML file in one string. If exception happens
-     * or no attributes needs to be overriden, return null.
-     */
     @Nullable
     public static String overrideXmlContent(@NonNull Document document,
                                             @NonNull VdOverrideInfo info,
@@ -209,14 +168,6 @@ public class VdPreview {
         }
     }
 
-    /**
-     * Query the dimension info and override it if needed.
-     *
-     * @param overrideValue the dimension value to override with.
-     * @param nodeAttr the node who contains dimension info.
-     * @param override if true then override the dimension.
-     * @return the original dimension value.
-     */
     private static int parseDimension(int overrideValue, Node nodeAttr, boolean override) {
         assert nodeAttr != null;
         String content = nodeAttr.getTextContent();
@@ -229,20 +180,10 @@ public class VdPreview {
         return originalValue;
     }
 
-    /**
-     * This generates an image according to the VectorDrawable's content {@code xmlFileContent}.
-     * At the same time, {@vdErrorLog} captures all the errors found during parsing.
-     * The size of image is determined by the {@code size}.
-     *
-     * @param targetSize the size of result image.
-     * @param xmlFileContent  VectorDrawable's XML file's content.
-     * @param vdErrorLog      log for the parsing errors and warnings.
-     * @return an preview image according to the VectorDrawable's XML
-     */
     @Nullable
     public static Bitmap getPreviewFromVectorXml(@NonNull TargetSize targetSize,
-                                                 @Nullable String xmlFileContent,
-                                                 @Nullable StringBuilder vdErrorLog) {
+                                                        @Nullable String xmlFileContent,
+                                                        @Nullable StringBuilder vdErrorLog) {
         if (xmlFileContent == null || xmlFileContent.isEmpty()) {
             return null;
         }
@@ -283,9 +224,7 @@ public class VdPreview {
             imageHeight = vdHeight * imageScale;
         }
 
-        // Create the image according to the vectorDrawable's aspect ratio.
-
-        Bitmap image = AssetUtil.newArgbBitmap((int)imageWidth, (int)imageHeight);
+        Bitmap image = AssetUtil.newArgbBufferedImage((int)imageWidth, (int)imageHeight);
         vdTree.drawIntoImage(image);
         return image;
     }

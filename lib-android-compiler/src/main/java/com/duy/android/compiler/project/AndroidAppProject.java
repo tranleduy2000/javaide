@@ -111,13 +111,15 @@ public class AndroidAppProject extends JavaProject {
         getAssetsDir();
 
         File resDir = resDirs.get(0);
-        new File(resDir, "menu").mkdirs();
-        new File(resDir, "layout").mkdirs();
         new File(resDir, "drawable").mkdirs();
-        new File(resDir, "drawable-hdpi").mkdirs();
-        new File(resDir, "drawable-xhdpi").mkdirs();
-        new File(resDir, "drawable-xxhdpi").mkdirs();
-        new File(resDir, "drawable-xxxhdpi").mkdirs();
+        new File(resDir, "drawable-v24").mkdirs();
+        new File(resDir, "layout").mkdirs();
+        new File(resDir, "mipmap-anydpi-v26").mkdirs();
+        new File(resDir, "mipmap-hdpi").mkdirs();
+        new File(resDir, "mipmap-mdpi").mkdirs();
+        new File(resDir, "mipmap-xhdpi").mkdirs();
+        new File(resDir, "mipmap-xxhdpi").mkdirs();
+        new File(resDir, "mipmap-xxxhdpi").mkdirs();
         new File(resDir, "values").mkdirs();
     }
 

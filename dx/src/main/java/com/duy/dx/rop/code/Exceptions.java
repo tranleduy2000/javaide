@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
 
 /**
  * Common exception types.
@@ -64,14 +64,14 @@ public final class Exceptions {
     public static final StdTypeList LIST_Error = StdTypeList.make(TYPE_Error);
 
     /**
-     * {@code non-null;} the list {@code[java.lang.Error,
-     * java.lang.ArithmeticException]}
+     * {@code non-null;} the list {@code [java.lang.Error,
+     * java.lang.ArithmeticException] }
      */
     public static final StdTypeList LIST_Error_ArithmeticException =
         StdTypeList.make(TYPE_Error, TYPE_ArithmeticException);
 
     /**
-     * {@code non-null;} the list {@code[java.lang.Error,
+     * {@code non-null;} the list {@code [java.lang.Error,
      * java.lang.ClassCastException]}
      */
     public static final StdTypeList LIST_Error_ClassCastException =

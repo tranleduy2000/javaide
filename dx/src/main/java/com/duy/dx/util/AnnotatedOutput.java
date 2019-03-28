@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .util;
+package com.duy.dx.util;
 
 /**
  * Interface for a binary output destination that may be augmented

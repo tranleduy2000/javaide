@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
 import java.util.ArrayList;
 
 /**
@@ -180,7 +180,7 @@ public final class MapItem extends OffsettedItem {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(100);
+        StringBuilder sb = new StringBuilder(100);
 
         sb.append(getClass().getName());
         sb.append('{');

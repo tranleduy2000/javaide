@@ -19,14 +19,39 @@ package com.android.builder.core;
 import com.android.annotations.NonNull;
 import com.android.builder.model.AndroidProject;
 import com.android.builder.model.ArtifactMetaData;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Type of a variant.
  */
 public enum VariantType {
     DEFAULT,
-    LIBRARY,;
+    LIBRARY,
+    ANDROID_TEST(
+            "androidTest",
+            "AndroidTest",
+            true,
+            AndroidProject.ARTIFACT_ANDROID_TEST,
+            ArtifactMetaData.TYPE_ANDROID),
+    UNIT_TEST(
+            "test",
+            "UnitTest",
+            false,
+            AndroidProject.ARTIFACT_UNIT_TEST,
+            ArtifactMetaData.TYPE_JAVA),
+    ;
 
+    public static ImmutableList<VariantType> getTestingTypes() {
+        ImmutableList.Builder<VariantType> result = ImmutableList.builder();
+        for (VariantType variantType : values()) {
+            if (variantType.isForTesting()) {
+                result.add(variantType);
+            }
+        }
+        return result.build();
+    }
+
+    private final boolean mIsForTesting;
     private final String mPrefix;
     private final String mSuffix;
     private final boolean isSingleBuildType;
@@ -35,6 +60,7 @@ public enum VariantType {
 
     /** App or library variant. */
     VariantType() {
+        this.mIsForTesting = false;
         this.mPrefix = "";
         this.mSuffix = "";
         this.mArtifactName = AndroidProject.ARTIFACT_MAIN;
@@ -51,9 +77,18 @@ public enum VariantType {
             int artifactType) {
         this.mArtifactName = artifactName;
         this.mArtifactType = artifactType;
+        this.mIsForTesting = true;
         this.mPrefix = prefix;
         this.mSuffix = suffix;
         this.isSingleBuildType = isSingleBuildType;
+    }
+
+    /**
+     * Returns true if the variant is automatically generated for testing purposed, false
+     * otherwise.
+     */
+    public boolean isForTesting() {
+        return mIsForTesting;
     }
 
     /**

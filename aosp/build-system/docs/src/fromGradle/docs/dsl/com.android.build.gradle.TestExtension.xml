@@ -3,28 +3,18 @@
         <title>Properties</title>
         <table>
             <thead>
-                <tr>
-                    <td>Name</td>
-                </tr>
+                <tr><td>Name</td></tr>
             </thead>
-            <tr>
-                <td>applicationVariants</td>
-            </tr>
-            <tr>
-                <td>targetProjectPath</td>
-            </tr>
-            <tr>
-                <td>targetVariant</td>
-            </tr>
+            <tr><td>applicationVariants</td></tr>
+            <tr><td>targetProjectPath</td></tr>
+            <tr><td>targetVariant</td></tr>
         </table>
     </section>
     <section>
         <title>Methods</title>
         <table>
             <thead>
-                <tr>
-                    <td>Name</td>
-                </tr>
+                <tr><td>Name</td></tr>
             </thead>
         </table>
     </section>

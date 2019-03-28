@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .io.instructions;
+package com.duy.dx.io.instructions;
 
 import com.duy.dex.DexException;
-import com.duy.dx .io.IndexType;
-import com.duy.dx .io.OpcodeInfo;
-import com.duy.dx .io.Opcodes;
-import com.duy.dx .util.Hex;
+import com.duy.dx.io.IndexType;
+import com.duy.dx.io.OpcodeInfo;
+import com.duy.dx.io.Opcodes;
+import com.duy.dx.util.Hex;
 import java.io.EOFException;
 
 /**
@@ -475,4 +475,14 @@ public abstract class DecodedInstruction {
      * with the given one.
      */
     public abstract DecodedInstruction withIndex(int newIndex);
+
+    /** Update the instruction with a new 45cc or 4rcc proto index. */
+    public DecodedInstruction withProtoIndex(int newIndex, int newProtoIndex) {
+        throw new IllegalStateException(getClass().toString());
+    }
+
+    /** Returns a 45cc or 4rcc proto index. */
+    public short getProtoIndex() {
+        throw new IllegalStateException(getClass().toString());
+    }
 }

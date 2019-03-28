@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
 import com.duy.dex.util.ExceptionWithContext;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeBearer;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeBearer;
+import com.duy.dx.util.Hex;
 
 /**
  * Representation of an array of local variables, with Java semantics.
  *
  * <p><b>Note:</b> For the most part, the documentation for this class
- * ignores the distinction between {@link com.duy.dx .rop.type.Type} and {@link
- * com.duy.dx .rop.type.TypeBearer}.</p>
+ * ignores the distinction between {@link com.duy.dx.rop.type.Type} and {@link
+ * com.duy.dx.rop.type.TypeBearer}.</p>
  */
 public class OneLocalsArray extends LocalsArray {
     /** {@code non-null;} actual array */
@@ -45,7 +45,8 @@ public class OneLocalsArray extends LocalsArray {
         locals = new TypeBearer[maxLocals];
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public OneLocalsArray copy() {
         OneLocalsArray result = new OneLocalsArray(locals.length);
 
@@ -54,7 +55,8 @@ public class OneLocalsArray extends LocalsArray {
         return result;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public void annotate(ExceptionWithContext ex) {
         for (int i = 0; i < locals.length; i++) {
             TypeBearer type = locals[i];
@@ -63,7 +65,8 @@ public class OneLocalsArray extends LocalsArray {
         }
     }
 
-    /** {@inheritDoc*/
+    /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         StringBuilder sb = new StringBuilder();
 
@@ -76,7 +79,8 @@ public class OneLocalsArray extends LocalsArray {
         return sb.toString();
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public void makeInitialized(Type type) {
         int len = locals.length;
 
@@ -96,12 +100,14 @@ public class OneLocalsArray extends LocalsArray {
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getMaxLocals() {
         return locals.length;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public void set(int idx, TypeBearer type) {
         throwIfImmutable();
 
@@ -131,23 +137,27 @@ public class OneLocalsArray extends LocalsArray {
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public void set(RegisterSpec spec) {
         set(spec.getReg(), spec);
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public void invalidate(int idx) {
         throwIfImmutable();
         locals[idx] = null;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public TypeBearer getOrNull(int idx) {
         return locals[idx];
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public TypeBearer get(int idx) {
         TypeBearer result = locals[idx];
 
@@ -158,7 +168,8 @@ public class OneLocalsArray extends LocalsArray {
         return result;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public TypeBearer getCategory1(int idx) {
         TypeBearer result = get(idx);
         Type type = result.getType();
@@ -174,7 +185,8 @@ public class OneLocalsArray extends LocalsArray {
         return result;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public TypeBearer getCategory2(int idx) {
         TypeBearer result = get(idx);
 
@@ -185,7 +197,7 @@ public class OneLocalsArray extends LocalsArray {
         return result;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     @Override
     public LocalsArray merge(LocalsArray other) {
         if (other instanceof OneLocalsArray) {
@@ -217,7 +229,7 @@ public class OneLocalsArray extends LocalsArray {
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     @Override
     public LocalsArraySet mergeWithSubroutineCaller
             (LocalsArray other, int predLabel) {

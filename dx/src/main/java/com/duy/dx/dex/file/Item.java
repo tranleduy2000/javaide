@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx.util.AnnotatedOutput;
 
 /**
  * Base class for any structurally-significant and (potentially)

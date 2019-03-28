@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.cst.Constant;
+import com.duy.dx.rop.cst.Constant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;

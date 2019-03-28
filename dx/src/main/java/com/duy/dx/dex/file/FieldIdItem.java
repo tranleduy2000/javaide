@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.cst.CstFieldRef;
+import com.duy.dx.rop.cst.CstFieldRef;
 
 /**
  * Representation of a field reference inside a Dalvik file.

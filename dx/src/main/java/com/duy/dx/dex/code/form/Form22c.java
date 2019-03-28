@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code.form;
+package com.duy.dx.dex.code.form;
 
-import com.duy.dx .dex.code.CstInsn;
-import com.duy.dx .dex.code.DalvInsn;
-import com.duy.dx .dex.code.InsnFormat;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstFieldRef;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx.dex.code.CstInsn;
+import com.duy.dx.dex.code.DalvInsn;
+import com.duy.dx.dex.code.InsnFormat;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstFieldRef;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.util.AnnotatedOutput;
 import java.util.BitSet;
 
 /**
@@ -47,14 +47,14 @@ public final class Form22c extends InsnFormat {
     public String insnArgString(DalvInsn insn) {
         RegisterSpecList regs = insn.getRegisters();
         return regs.get(0).regString() + ", " + regs.get(1).regString() +
-            ", " + cstString(insn);
+            ", " + insn.cstString();
     }
 
     /** {@inheritDoc} */
     @Override
     public String insnCommentString(DalvInsn insn, boolean noteIndices) {
         if (noteIndices) {
-            return cstComment(insn);
+            return insn.cstComment();
         } else {
             return "";
         }

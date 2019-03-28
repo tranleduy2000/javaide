@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa.back;
+package com.duy.dx.ssa.back;
 
-import com.duy.dx .dex.DexOptions;
-import com.duy.dx .rop.code.CstInsn;
-import com.duy.dx .rop.code.LocalItem;
-import com.duy.dx .rop.code.RegOps;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.Rop;
-import com.duy.dx .rop.cst.CstInteger;
-import com.duy.dx .ssa.InterferenceRegisterMapper;
-import com.duy.dx .ssa.NormalSsaInsn;
-import com.duy.dx .ssa.Optimizer;
-import com.duy.dx .ssa.PhiInsn;
-import com.duy.dx .ssa.RegisterMapper;
-import com.duy.dx .ssa.SsaBasicBlock;
-import com.duy.dx .ssa.SsaInsn;
-import com.duy.dx .ssa.SsaMethod;
-import com.duy.dx .util.IntIterator;
-import com.duy.dx .util.IntSet;
+import com.duy.dx.dex.DexOptions;
+import com.duy.dx.rop.code.CstInsn;
+import com.duy.dx.rop.code.LocalItem;
+import com.duy.dx.rop.code.RegOps;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.Rop;
+import com.duy.dx.rop.cst.CstInteger;
+import com.duy.dx.ssa.InterferenceRegisterMapper;
+import com.duy.dx.ssa.NormalSsaInsn;
+import com.duy.dx.ssa.Optimizer;
+import com.duy.dx.ssa.PhiInsn;
+import com.duy.dx.ssa.RegisterMapper;
+import com.duy.dx.ssa.SsaBasicBlock;
+import com.duy.dx.ssa.SsaInsn;
+import com.duy.dx.ssa.SsaMethod;
+import com.duy.dx.util.IntIterator;
+import com.duy.dx.util.IntSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Map;
@@ -698,16 +698,19 @@ public class FirstFitLocalCombiningAllocator extends RegisterAllocator {
     private void analyzeInstructions() {
         ssaMeth.forEachInsn(new SsaInsn.Visitor() {
             /** {@inheritDoc} */
+            @Override
             public void visitMoveInsn(NormalSsaInsn insn) {
                 processInsn(insn);
             }
 
             /** {@inheritDoc} */
+            @Override
             public void visitPhiInsn(PhiInsn insn) {
                 processInsn(insn);
             }
 
             /** {@inheritDoc} */
+            @Override
             public void visitNonMoveInsn(NormalSsaInsn insn) {
                 processInsn(insn);
             }

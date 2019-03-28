@@ -26,8 +26,6 @@ android {
     }
 }
 dependencies {
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.assertj:assertj-core:3.10.0'
     api fileTree(dir: 'libs', include: ['*.jar'])
 }
 

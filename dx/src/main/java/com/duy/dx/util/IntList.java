@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .util;
+package com.duy.dx.util;
 
 import java.util.Arrays;
 
@@ -139,7 +139,7 @@ public final class IntList extends MutabilityControl {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(size * 5 + 10);
+        StringBuilder sb = new StringBuilder(size * 5 + 10);
 
         sb.append('{');
 

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
-import com.duy.dx .rop.type.Type;
+import com.duy.dx.rop.type.Type;
 
 /**
  * Constants of type {@code CONSTANT_Fieldref_info}.
@@ -58,6 +58,7 @@ public final class CstFieldRef extends CstMemberRef {
      *
      * @return {@code non-null;} the field's type
      */
+    @Override
     public Type getType() {
         return getNat().getFieldType();
     }

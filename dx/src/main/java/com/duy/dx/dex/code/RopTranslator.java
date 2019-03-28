@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .dex.DexOptions;
-import com.duy.dx .io.Opcodes;
-import com.duy.dx .rop.code.BasicBlock;
-import com.duy.dx .rop.code.BasicBlockList;
-import com.duy.dx .rop.code.FillArrayDataInsn;
-import com.duy.dx .rop.code.Insn;
-import com.duy.dx .rop.code.LocalVariableInfo;
-import com.duy.dx .rop.code.PlainCstInsn;
-import com.duy.dx .rop.code.PlainInsn;
-import com.duy.dx .rop.code.RegOps;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.RegisterSpecSet;
-import com.duy.dx .rop.code.Rop;
-import com.duy.dx .rop.code.RopMethod;
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .rop.code.SwitchInsn;
-import com.duy.dx .rop.code.ThrowingCstInsn;
-import com.duy.dx .rop.code.ThrowingInsn;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstInteger;
-import com.duy.dx .util.Bits;
-import com.duy.dx .util.IntList;
+import com.duy.dx.dex.DexOptions;
+import com.duy.dx.io.Opcodes;
+import com.duy.dx.rop.code.BasicBlock;
+import com.duy.dx.rop.code.BasicBlockList;
+import com.duy.dx.rop.code.FillArrayDataInsn;
+import com.duy.dx.rop.code.Insn;
+import com.duy.dx.rop.code.InvokePolymorphicInsn;
+import com.duy.dx.rop.code.LocalVariableInfo;
+import com.duy.dx.rop.code.PlainCstInsn;
+import com.duy.dx.rop.code.PlainInsn;
+import com.duy.dx.rop.code.RegOps;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.RegisterSpecSet;
+import com.duy.dx.rop.code.Rop;
+import com.duy.dx.rop.code.RopMethod;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.rop.code.SwitchInsn;
+import com.duy.dx.rop.code.ThrowingCstInsn;
+import com.duy.dx.rop.code.ThrowingInsn;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstInteger;
+import com.duy.dx.util.Bits;
+import com.duy.dx.util.IntList;
 import java.util.ArrayList;
 
 /**
@@ -83,7 +84,7 @@ public final class RopTranslator {
      * true if the parameters to this method happen to be in proper order
      * at the end of the frame (as the optimizer emits them)
      */
-    private boolean paramsAreInOrder;
+    private final boolean paramsAreInOrder;
 
     /**
      * Translates a {@link RopMethod}. This may modify the given
@@ -526,6 +527,7 @@ public final class RopTranslator {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitPlainInsn(PlainInsn insn) {
             Rop rop = insn.getOpcode();
             if (rop.getOpcode() == RegOps.MARK_LOCAL) {
@@ -574,6 +576,7 @@ public final class RopTranslator {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitPlainCstInsn(PlainCstInsn insn) {
             SourcePosition pos = insn.getPosition();
             Dop opcode = RopToDop.dopFor(insn);
@@ -611,6 +614,7 @@ public final class RopTranslator {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitSwitchInsn(SwitchInsn insn) {
             SourcePosition pos = insn.getPosition();
             IntList cases = insn.getCases();
@@ -685,6 +689,32 @@ public final class RopTranslator {
         }
 
         /** {@inheritDoc} */
+        @Override
+        public void visitInvokePolymorphicInsn(InvokePolymorphicInsn insn) {
+            SourcePosition pos = insn.getPosition();
+            Dop opcode = RopToDop.dopFor(insn);
+            Rop rop = insn.getOpcode();
+
+            if (rop.getBranchingness() != Rop.BRANCH_THROW) {
+                throw new RuntimeException("Expected BRANCH_THROW got " + rop.getBranchingness());
+            } else if (!rop.isCallLike()) {
+                throw new RuntimeException("Expected call-like operation");
+            }
+
+            addOutput(lastAddress);
+
+            RegisterSpecList regs = insn.getSources();
+            Constant[] constants = new Constant[] {
+                insn.getPolymorphicMethod(),
+                insn.getCallSiteProto()
+                };
+            DalvInsn di = new MultiCstInsn(opcode, pos, regs, constants);
+
+            addOutput(di);
+        }
+
+        /** {@inheritDoc} */
+        @Override
         public void visitThrowingCstInsn(ThrowingCstInsn insn) {
             SourcePosition pos = insn.getPosition();
             Dop opcode = RopToDop.dopFor(insn);
@@ -692,7 +722,7 @@ public final class RopTranslator {
             Constant cst = insn.getConstant();
 
             if (rop.getBranchingness() != Rop.BRANCH_THROW) {
-                throw new RuntimeException("shouldn't happen");
+                throw new RuntimeException("Expected BRANCH_THROW got " + rop.getBranchingness());
             }
 
             addOutput(lastAddress);
@@ -738,6 +768,7 @@ public final class RopTranslator {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitThrowingInsn(ThrowingInsn insn) {
             SourcePosition pos = insn.getPosition();
             Dop opcode = RopToDop.dopFor(insn);
@@ -764,6 +795,7 @@ public final class RopTranslator {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitFillArrayDataInsn(FillArrayDataInsn insn) {
             SourcePosition pos = insn.getPosition();
             Constant cst = insn.getConstant();
@@ -815,7 +847,7 @@ public final class RopTranslator {
     private class LocalVariableAwareTranslationVisitor
             extends TranslationVisitor {
         /** {@code non-null;} local variable info */
-        private LocalVariableInfo locals;
+        private final LocalVariableInfo locals;
 
         /**
          * Constructs an instance.

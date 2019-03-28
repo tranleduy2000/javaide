@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .util;
+package com.duy.dx.util;
 
 /**
  * Very simple base class that implements a flag to control the mutability

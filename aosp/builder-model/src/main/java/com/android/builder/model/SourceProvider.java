@@ -68,6 +68,14 @@ public interface SourceProvider {
     Collection<File> getAidlDirectories();
 
     /**
+     * Returns the renderscript source folders.
+     *
+     * @return a list of folders. They may not all exist.
+     */
+    @NonNull
+    Collection<File> getRenderscriptDirectories();
+
+    /**
      * Returns the C source folders.
      *
      * @return a list of folders. They may not all exist.

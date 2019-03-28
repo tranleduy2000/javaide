@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.Insn;
-import com.duy.dx .rop.code.LocalItem;
-import com.duy.dx .rop.code.RegOps;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.Rop;
+import com.duy.dx.rop.code.Insn;
+import com.duy.dx.rop.code.LocalItem;
+import com.duy.dx.rop.code.RegOps;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.Rop;
 
 /**
  * A "normal" (non-phi) instruction in SSA form. Always wraps a rop insn.
@@ -116,6 +116,7 @@ public final class NormalSsaInsn extends SsaInsn implements Cloneable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         return toRopInsn().toHuman();
     }

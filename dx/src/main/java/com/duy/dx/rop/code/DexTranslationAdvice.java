@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .rop.cst.CstInteger;
-import com.duy.dx .rop.type.Type;
+import com.duy.dx.rop.cst.CstInteger;
+import com.duy.dx.rop.type.Type;
 
 /**
  * Implementation of {@link TranslationAdvice} which represents what
@@ -54,6 +54,7 @@ public final class DexTranslationAdvice
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasConstantOperation(Rop opcode,
             RegisterSpec sourceA, RegisterSpec sourceB) {
         if (sourceA.getType() != Type.INT) {
@@ -99,6 +100,7 @@ public final class DexTranslationAdvice
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean requiresSourcesInOrder(Rop opcode,
             RegisterSpecList sources) {
 
@@ -124,6 +126,7 @@ public final class DexTranslationAdvice
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getMaxOptimalRegisterCount() {
         return 16;
     }

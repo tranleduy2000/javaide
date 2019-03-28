@@ -17,8 +17,8 @@
 package com.android.sdklib.internal.repository.packages;
 
 import com.android.sdklib.repository.FullRevision;
-import com.android.sdklib.repository.MajorRevision;
 import com.android.sdklib.repository.FullRevision.PreviewComparison;
+import com.android.sdklib.repository.MajorRevision;
 
 
 

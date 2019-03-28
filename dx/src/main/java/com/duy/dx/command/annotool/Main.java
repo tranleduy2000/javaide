@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .command.annotool;
+package com.duy.dx.command.annotool;
 
 import java.lang.annotation.ElementType;
 import java.util.EnumSet;

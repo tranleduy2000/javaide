@@ -19,9 +19,9 @@ package com.android.sdklib.repository.descriptors;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.sdklib.AndroidVersion;
+import com.android.sdklib.repository.FullRevision;
 import com.android.sdklib.repository.IListDescription;
 import com.android.sdklib.repository.License;
-import com.android.sdklib.repository.FullRevision;
 import com.android.sdklib.repository.MajorRevision;
 import com.android.sdklib.repository.PreciseRevision;
 

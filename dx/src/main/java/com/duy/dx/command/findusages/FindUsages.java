@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.duy.dx .command.findusages;
+package com.duy.dx.command.findusages;
 
 import com.duy.dex.ClassData;
 import com.duy.dex.ClassDef;
 import com.duy.dex.Dex;
 import com.duy.dex.FieldId;
 import com.duy.dex.MethodId;
-import com.duy.dx .io.CodeReader;
-import com.duy.dx .io.OpcodeInfo;
-import com.duy.dx .io.instructions.DecodedInstruction;
+import com.duy.dx.io.CodeReader;
+import com.duy.dx.io.OpcodeInfo;
+import com.duy.dx.io.instructions.DecodedInstruction;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.HashSet;
@@ -76,6 +76,7 @@ public final class FindUsages {
         }
 
         codeReader.setFieldVisitor(new CodeReader.Visitor() {
+            @Override
             public void visit(DecodedInstruction[] all,
                     DecodedInstruction one) {
                 int fieldId = one.getIndex();
@@ -87,6 +88,7 @@ public final class FindUsages {
         });
 
         codeReader.setMethodVisitor(new CodeReader.Visitor() {
+            @Override
             public void visit(DecodedInstruction[] all, DecodedInstruction one) {
                 int methodId = one.getIndex();
                 if (methodIds.contains(methodId)) {

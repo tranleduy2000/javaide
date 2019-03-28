@@ -16,8 +16,6 @@
 
 package com.android.utils;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.android.annotations.NonNull;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -27,6 +25,8 @@ import com.google.common.io.Files;
 
 import java.io.File;
 import java.io.IOException;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class FileUtils {
     public static void deleteFolder(final File folder) throws IOException {

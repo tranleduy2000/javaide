@@ -14,47 +14,52 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.direct;
+package com.duy.dx.cf.direct;
 
-import com.duy.dx .cf.attrib.AttAnnotationDefault;
-import com.duy.dx .cf.attrib.AttCode;
-import com.duy.dx .cf.attrib.AttConstantValue;
-import com.duy.dx .cf.attrib.AttDeprecated;
-import com.duy.dx .cf.attrib.AttEnclosingMethod;
-import com.duy.dx .cf.attrib.AttExceptions;
-import com.duy.dx .cf.attrib.AttInnerClasses;
-import com.duy.dx .cf.attrib.AttLineNumberTable;
-import com.duy.dx .cf.attrib.AttLocalVariableTable;
-import com.duy.dx .cf.attrib.AttLocalVariableTypeTable;
-import com.duy.dx .cf.attrib.AttRuntimeInvisibleAnnotations;
-import com.duy.dx .cf.attrib.AttRuntimeInvisibleParameterAnnotations;
-import com.duy.dx .cf.attrib.AttRuntimeVisibleAnnotations;
-import com.duy.dx .cf.attrib.AttRuntimeVisibleParameterAnnotations;
-import com.duy.dx .cf.attrib.AttSignature;
-import com.duy.dx .cf.attrib.AttSourceFile;
-import com.duy.dx .cf.attrib.AttSynthetic;
-import com.duy.dx .cf.attrib.InnerClassList;
-import com.duy.dx .cf.code.ByteCatchList;
-import com.duy.dx .cf.code.BytecodeArray;
-import com.duy.dx .cf.code.LineNumberList;
-import com.duy.dx .cf.code.LocalVariableList;
-import com.duy.dx .cf.iface.Attribute;
-import com.duy.dx .cf.iface.ParseException;
-import com.duy.dx .cf.iface.ParseObserver;
-import com.duy.dx .cf.iface.StdAttributeList;
-import com.duy.dx .rop.annotation.AnnotationVisibility;
-import com.duy.dx .rop.annotation.Annotations;
-import com.duy.dx .rop.annotation.AnnotationsList;
-import com.duy.dx .rop.code.AccessFlags;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.ConstantPool;
-import com.duy.dx .rop.cst.CstNat;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.cst.TypedConstant;
-import com.duy.dx .rop.type.TypeList;
-import com.duy.dx .util.ByteArray;
-import com.duy.dx .util.Hex;
+import com.duy.dx.cf.attrib.AttAnnotationDefault;
+import com.duy.dx.cf.attrib.AttBootstrapMethods;
+import com.duy.dx.cf.attrib.AttCode;
+import com.duy.dx.cf.attrib.AttConstantValue;
+import com.duy.dx.cf.attrib.AttDeprecated;
+import com.duy.dx.cf.attrib.AttEnclosingMethod;
+import com.duy.dx.cf.attrib.AttExceptions;
+import com.duy.dx.cf.attrib.AttInnerClasses;
+import com.duy.dx.cf.attrib.AttLineNumberTable;
+import com.duy.dx.cf.attrib.AttLocalVariableTable;
+import com.duy.dx.cf.attrib.AttLocalVariableTypeTable;
+import com.duy.dx.cf.attrib.AttRuntimeInvisibleAnnotations;
+import com.duy.dx.cf.attrib.AttRuntimeInvisibleParameterAnnotations;
+import com.duy.dx.cf.attrib.AttRuntimeVisibleAnnotations;
+import com.duy.dx.cf.attrib.AttRuntimeVisibleParameterAnnotations;
+import com.duy.dx.cf.attrib.AttSignature;
+import com.duy.dx.cf.attrib.AttSourceDebugExtension;
+import com.duy.dx.cf.attrib.AttSourceFile;
+import com.duy.dx.cf.attrib.AttSynthetic;
+import com.duy.dx.cf.attrib.InnerClassList;
+import com.duy.dx.cf.code.BootstrapMethodArgumentsList;
+import com.duy.dx.cf.code.BootstrapMethodsList;
+import com.duy.dx.cf.code.ByteCatchList;
+import com.duy.dx.cf.code.BytecodeArray;
+import com.duy.dx.cf.code.LineNumberList;
+import com.duy.dx.cf.code.LocalVariableList;
+import com.duy.dx.cf.iface.Attribute;
+import com.duy.dx.cf.iface.ParseException;
+import com.duy.dx.cf.iface.ParseObserver;
+import com.duy.dx.cf.iface.StdAttributeList;
+import com.duy.dx.rop.annotation.AnnotationVisibility;
+import com.duy.dx.rop.annotation.Annotations;
+import com.duy.dx.rop.annotation.AnnotationsList;
+import com.duy.dx.rop.code.AccessFlags;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.ConstantPool;
+import com.duy.dx.rop.cst.CstMethodHandle;
+import com.duy.dx.rop.cst.CstNat;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.cst.TypedConstant;
+import com.duy.dx.rop.type.TypeList;
+import com.duy.dx.util.ByteArray;
+import com.duy.dx.util.Hex;
 import java.io.IOException;
 
 /**
@@ -80,6 +85,9 @@ public class StdAttributeFactory
             int offset, int length, ParseObserver observer) {
         switch (context) {
             case CTX_CLASS: {
+                if (name == AttBootstrapMethods.ATTRIBUTE_NAME) {
+                    return bootstrapMethods(cf, offset, length, observer);
+                }
                 if (name == AttDeprecated.ATTRIBUTE_NAME) {
                     return deprecated(cf, offset, length, observer);
                 }
@@ -102,6 +110,9 @@ public class StdAttributeFactory
                 }
                 if (name == AttSignature.ATTRIBUTE_NAME) {
                     return signature(cf, offset, length, observer);
+                }
+                if (name == AttSourceDebugExtension.ATTRIBUTE_NAME) {
+                    return sourceDebugExtension(cf, offset, length, observer);
                 }
                 if (name == AttSourceFile.ATTRIBUTE_NAME) {
                     return sourceFile(cf, offset, length, observer);
@@ -202,6 +213,31 @@ public class StdAttributeFactory
         Constant cst = ap.parseValueAttribute();
 
         return new AttAnnotationDefault(cst, length);
+    }
+
+    /**
+     * Parses a {@code BootstrapMethods} attribute.
+     */
+    private Attribute bootstrapMethods(DirectClassFile cf, int offset, int length,
+            ParseObserver observer) {
+        if (length < 2) {
+            return throwSeverelyTruncated();
+        }
+
+        ByteArray bytes = cf.getBytes();
+        int numMethods = bytes.getUnsignedShort(offset);
+        if (observer != null) {
+            observer.parsed(bytes, offset, 2,
+                            "num_boostrap_methods: " + Hex.u2(numMethods));
+        }
+
+        offset += 2;
+        length -= 2;
+
+        BootstrapMethodsList methods = parseBootstrapMethods(bytes, cf.getConstantPool(),
+                                                             cf.getThisClass(), numMethods,
+                                                             offset, length, observer);
+        return new AttBootstrapMethods(methods);
     }
 
     /**
@@ -692,6 +728,23 @@ public class StdAttributeFactory
     }
 
     /**
+     * Parses a {@code SourceDebugExtesion} attribute.
+     */
+    private Attribute sourceDebugExtension(DirectClassFile cf, int offset, int length,
+                                           ParseObserver observer) {
+        ByteArray bytes = cf.getBytes().slice(offset, offset + length);
+        CstString smapString = new CstString(bytes);
+        Attribute result = new AttSourceDebugExtension(smapString);
+
+        if (observer != null) {
+            String decoded = smapString.getString();
+            observer.parsed(bytes, offset, length, "sourceDebugExtension: " + decoded);
+        }
+
+        return result;
+    }
+
+    /**
      * Parses a {@code SourceFile} attribute.
      */
     private Attribute sourceFile(DirectClassFile cf, int offset, int length,
@@ -758,5 +811,51 @@ public class StdAttributeFactory
     private static Attribute throwBadLength(int expected) {
         throw new ParseException("bad attribute length; expected length " +
                                  Hex.u4(expected));
+    }
+
+    private BootstrapMethodsList parseBootstrapMethods(ByteArray bytes, ConstantPool constantPool,
+            CstType declaringClass, int numMethods, int offset, int length, ParseObserver observer)
+        throws ParseException {
+        BootstrapMethodsList methods = new BootstrapMethodsList(numMethods);
+        for (int methodIndex = 0; methodIndex < numMethods; ++methodIndex) {
+            if (length < 4) {
+                throwTruncated();
+            }
+
+            int methodRef = bytes.getUnsignedShort(offset);
+            int numArguments = bytes.getUnsignedShort(offset + 2);
+
+            if (observer != null) {
+                observer.parsed(bytes, offset, 2, "bootstrap_method_ref: " + Hex.u2(methodRef));
+                observer.parsed(bytes, offset + 2, 2,
+                                "num_bootstrap_arguments: " + Hex.u2(numArguments));
+            }
+
+            offset += 4;
+            length -= 4;
+            if (length < numArguments * 2) {
+                throwTruncated();
+            }
+
+            BootstrapMethodArgumentsList arguments = new BootstrapMethodArgumentsList(numArguments);
+            for (int argIndex = 0; argIndex < numArguments; ++argIndex, offset += 2, length -= 2) {
+                int argumentRef = bytes.getUnsignedShort(offset);
+                if (observer != null) {
+                    observer.parsed(bytes, offset, 2,
+                                    "bootstrap_arguments[" + argIndex + "]" + Hex.u2(argumentRef));
+                }
+                arguments.set(argIndex, constantPool.get(argumentRef));
+            }
+            arguments.setImmutable();
+            Constant cstMethodRef = constantPool.get(methodRef);
+            methods.set(methodIndex, declaringClass, (CstMethodHandle) cstMethodRef, arguments);
+        }
+        methods.setImmutable();
+
+        if (length != 0) {
+            throwBadLength(length);
+        }
+
+        return methods;
     }
 }

@@ -16,30 +16,14 @@
 
 package com.android.ide.common.rendering.api;
 
+import android.graphics.Bitmap;//TODO fix it
+
 public interface IAnimationListener {
-    /**
-     * Called when a new animation frame is available for display.
-     *
-     * <p>The {@link RenderSession} object is provided as a convenience. It should be queried
-     * for the image through {@link RenderSession#getImage()}.
-     *
-     * <p>If no {@link IImageFactory} is used, then each new animation frame will be rendered
-     * in its own new {@link Bitmap} object. However if an image factory is used, and it
-     * always re-use the same object, then the image is only guaranteed to be valid during
-     * this method call. As soon as this method return the image content will be overridden
-     * with new drawing.
-     *
-     */
+
     void onNewFrame(RenderSession scene);
 
-    /**
-     * Called when the animation is done playing.
-     */
     void done(Result result);
 
-    /**
-     * Return true to cancel the animation.
-     */
     boolean isCanceled();
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.attrib;
+package com.duy.dx.cf.attrib;
 
 /**
  * Attribute class for standard {@code Synthetic} attributes.
@@ -31,6 +31,7 @@ public final class AttSynthetic extends BaseAttribute {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int byteLength() {
         return 6;
     }

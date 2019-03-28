@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.Insn;
-import com.duy.dx .rop.code.LocalItem;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.Rop;
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeBearer;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.code.Insn;
+import com.duy.dx.rop.code.LocalItem;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.Rop;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeBearer;
+import com.duy.dx.util.Hex;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -328,6 +328,7 @@ public final class PhiInsn extends SsaInsn {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         return toHumanWithInline(null);
     }
@@ -340,7 +341,7 @@ public final class PhiInsn extends SsaInsn {
      * @return human-readable string for listing dumps
      */
     protected final String toHumanWithInline(String extra) {
-        StringBuffer sb = new StringBuffer(80);
+        StringBuilder sb = new StringBuilder(80);
 
         sb.append(SourcePosition.NO_INFO);
         sb.append(": phi");

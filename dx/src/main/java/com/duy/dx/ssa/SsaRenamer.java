@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.LocalItem;
-import com.duy.dx .rop.code.PlainInsn;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.Rops;
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .util.IntList;
+import com.duy.dx.rop.code.LocalItem;
+import com.duy.dx.rop.code.PlainInsn;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.Rops;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.util.IntList;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -158,9 +158,11 @@ public class SsaRenamer implements Runnable {
      * Performs renaming transformation, modifying the method's instructions
      * in-place.
      */
+    @Override
     public void run() {
         // Rename each block in dom-tree DFS order.
         ssaMeth.forEachBlockDepthFirstDom(new SsaBasicBlock.Visitor() {
+            @Override
             public void visitBlock (SsaBasicBlock block,
                     SsaBasicBlock unused) {
                 new BlockRenamer(block).process();
@@ -471,6 +473,7 @@ public class SsaRenamer implements Runnable {
          *
          * Phi insns have their result registers renamed.
          */
+        @Override
         public void visitPhiInsn(PhiInsn phi) {
             /* don't process sources for phi's */
             processResultReg(phi);
@@ -484,6 +487,7 @@ public class SsaRenamer implements Runnable {
          * assignment. If they represent a local variable assignement, they
          * are preserved.
          */
+        @Override
         public void visitMoveInsn(NormalSsaInsn insn) {
             /*
              * For moves: copy propogate the move if we can, but don't
@@ -584,6 +588,7 @@ public class SsaRenamer implements Runnable {
          * renamed to a new SSA register which is then added to the current
          * register mapping.
          */
+        @Override
         public void visitNonMoveInsn(NormalSsaInsn insn) {
             /* for each use of some variable X in S */
             insn.mapSourceRegisters(mapper);
@@ -626,6 +631,7 @@ public class SsaRenamer implements Runnable {
          */
         private void updateSuccessorPhis() {
             PhiInsn.Visitor visitor = new PhiInsn.Visitor() {
+                @Override
                 public void visitPhiInsn (PhiInsn insn) {
                     int ropReg;
 

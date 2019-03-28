@@ -14,36 +14,37 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.cf;
+package com.duy.dx.dex.cf;
 
-import com.duy.dx .cf.attrib.AttAnnotationDefault;
-import com.duy.dx .cf.attrib.AttEnclosingMethod;
-import com.duy.dx .cf.attrib.AttExceptions;
-import com.duy.dx .cf.attrib.AttInnerClasses;
-import com.duy.dx .cf.attrib.AttRuntimeInvisibleAnnotations;
-import com.duy.dx .cf.attrib.AttRuntimeInvisibleParameterAnnotations;
-import com.duy.dx .cf.attrib.AttRuntimeVisibleAnnotations;
-import com.duy.dx .cf.attrib.AttRuntimeVisibleParameterAnnotations;
-import com.duy.dx .cf.attrib.AttSignature;
-import com.duy.dx .cf.attrib.InnerClassList;
-import com.duy.dx .cf.direct.DirectClassFile;
-import com.duy.dx .cf.iface.AttributeList;
-import com.duy.dx .cf.iface.Method;
-import com.duy.dx .cf.iface.MethodList;
-import com.duy.dx .dex.file.AnnotationUtils;
-import com.duy.dx .rop.annotation.Annotation;
-import com.duy.dx .rop.annotation.AnnotationVisibility;
-import com.duy.dx .rop.annotation.Annotations;
-import com.duy.dx .rop.annotation.AnnotationsList;
-import com.duy.dx .rop.annotation.NameValuePair;
-import com.duy.dx .rop.code.AccessFlags;
-import com.duy.dx .rop.cst.CstMethodRef;
-import com.duy.dx .rop.cst.CstNat;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeList;
-import com.duy.dx .util.Warning;
+import com.duy.dx.cf.attrib.AttAnnotationDefault;
+import com.duy.dx.cf.attrib.AttEnclosingMethod;
+import com.duy.dx.cf.attrib.AttExceptions;
+import com.duy.dx.cf.attrib.AttInnerClasses;
+import com.duy.dx.cf.attrib.AttRuntimeInvisibleAnnotations;
+import com.duy.dx.cf.attrib.AttRuntimeInvisibleParameterAnnotations;
+import com.duy.dx.cf.attrib.AttRuntimeVisibleAnnotations;
+import com.duy.dx.cf.attrib.AttRuntimeVisibleParameterAnnotations;
+import com.duy.dx.cf.attrib.AttSignature;
+import com.duy.dx.cf.attrib.AttSourceDebugExtension;
+import com.duy.dx.cf.attrib.InnerClassList;
+import com.duy.dx.cf.direct.DirectClassFile;
+import com.duy.dx.cf.iface.AttributeList;
+import com.duy.dx.cf.iface.Method;
+import com.duy.dx.cf.iface.MethodList;
+import com.duy.dx.dex.file.AnnotationUtils;
+import com.duy.dx.rop.annotation.Annotation;
+import com.duy.dx.rop.annotation.AnnotationVisibility;
+import com.duy.dx.rop.annotation.Annotations;
+import com.duy.dx.rop.annotation.AnnotationsList;
+import com.duy.dx.rop.annotation.NameValuePair;
+import com.duy.dx.rop.code.AccessFlags;
+import com.duy.dx.rop.cst.CstMethodRef;
+import com.duy.dx.rop.cst.CstNat;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeList;
+import com.duy.dx.util.Warning;
 import java.util.ArrayList;
 
 /**
@@ -88,9 +89,14 @@ import java.util.ArrayList;
     public static Annotations getAnnotations(AttributeList attribs) {
         Annotations result = getAnnotations0(attribs);
         Annotation signature = getSignature(attribs);
+        Annotation sourceDebugExtension = getSourceDebugExtension(attribs);
 
         if (signature != null) {
             result = Annotations.combine(result, signature);
+        }
+
+        if (sourceDebugExtension != null) {
+            result = Annotations.combine(result, sourceDebugExtension);
         }
 
         return result;
@@ -212,6 +218,18 @@ import java.util.ArrayList;
         }
 
         return AnnotationUtils.makeSignature(signature.getSignature());
+    }
+
+
+    private static Annotation getSourceDebugExtension(AttributeList attribs) {
+        AttSourceDebugExtension extension = (AttSourceDebugExtension)
+            attribs.findFirst(AttSourceDebugExtension.ATTRIBUTE_NAME);
+
+        if (extension == null) {
+            return null;
+        }
+
+        return AnnotationUtils.makeSourceDebugExtension(extension.getSmapString());
     }
 
     /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .command.findusages;
+package com.duy.dx.command.findusages;
 
 import com.duy.dex.Dex;
 import java.io.File;

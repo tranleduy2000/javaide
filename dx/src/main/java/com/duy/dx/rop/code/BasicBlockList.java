@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.TypeList;
-import com.duy.dx .util.Hex;
-import com.duy.dx .util.IntList;
-import com.duy.dx .util.LabeledList;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.TypeList;
+import com.duy.dx.util.Hex;
+import com.duy.dx.util.IntList;
+import com.duy.dx.util.LabeledList;
 
 /**
  * List of {@link BasicBlock} instances.
@@ -150,7 +150,7 @@ public final class BasicBlockList extends LabeledList {
     /**
      * Gets the first block in the list with the given label, if any.
      *
-     * @param label {@code >= 0;} the label to look for
+     * @param label {@code label >= 0;} the label to look for
      * @return {@code non-null;} the so-labelled block
      * @throws IllegalArgumentException thrown if the label isn't found
      */
@@ -331,32 +331,44 @@ public final class BasicBlockList extends LabeledList {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitPlainInsn(PlainInsn insn) {
             visit(insn);
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitPlainCstInsn(PlainCstInsn insn) {
             visit(insn);
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitSwitchInsn(SwitchInsn insn) {
             visit(insn);
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitThrowingCstInsn(ThrowingCstInsn insn) {
             visit(insn);
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitThrowingInsn(ThrowingInsn insn) {
             visit(insn);
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitFillArrayDataInsn(FillArrayDataInsn insn) {
+            visit(insn);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void visitInvokePolymorphicInsn(InvokePolymorphicInsn insn) {
             visit(insn);
         }
 

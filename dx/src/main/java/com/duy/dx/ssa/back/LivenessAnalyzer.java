@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa.back;
+package com.duy.dx.ssa.back;
 
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .ssa.PhiInsn;
-import com.duy.dx .ssa.SsaBasicBlock;
-import com.duy.dx .ssa.SsaInsn;
-import com.duy.dx .ssa.SsaMethod;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.ssa.PhiInsn;
+import com.duy.dx.ssa.SsaBasicBlock;
+import com.duy.dx.ssa.SsaInsn;
+import com.duy.dx.ssa.SsaMethod;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -244,14 +245,15 @@ public class LivenessAnalyzer {
 
     /**
      * Ensures that all the phi result registers for all the phis in the
-     * same basic block interfere with each other. This is needed since
+     * same basic block interfere with each other, and also that a phi's source
+     * registers interfere with the result registers from other phis. This is needed since
      * the dead code remover has allowed through "dead-end phis" whose
      * results are not used except as local assignments. Without this step,
      * a the result of a dead-end phi might be assigned the same register
      * as the result of another phi, and the phi removal move scheduler may
      * generate moves that over-write the live result.
      *
-     * @param ssaMeth {@code non-null;} method to pricess
+     * @param ssaMeth {@code non-null;} method to process
      * @param interference {@code non-null;} interference graph
      */
     private static void coInterferePhis(SsaMethod ssaMeth,
@@ -267,10 +269,21 @@ public class LivenessAnalyzer {
                         continue;
                     }
 
-                    interference.add(phis.get(i).getResult().getReg(),
-                        phis.get(j).getResult().getReg());
+                    SsaInsn first = phis.get(i);
+                    SsaInsn second = phis.get(j);
+                    coInterferePhiRegisters(interference, first.getResult(), second.getSources());
+                    coInterferePhiRegisters(interference, second.getResult(), first.getSources());
+                    interference.add(first.getResult().getReg(), second.getResult().getReg());
                 }
             }
+        }
+    }
+
+    private static void coInterferePhiRegisters(InterferenceGraph interference, RegisterSpec result,
+            RegisterSpecList sources) {
+        int resultReg = result.getReg();
+        for (int i = 0; i < sources.size(); ++i) {
+            interference.add(resultReg, sources.get(i).getReg());
         }
     }
 }

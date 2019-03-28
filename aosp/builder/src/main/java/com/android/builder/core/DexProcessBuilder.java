@@ -16,6 +16,8 @@
 
 package com.android.builder.core;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.ide.common.process.JavaProcessInfo;
@@ -37,8 +39,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A builder to create a dex-specific ProcessInfoBuilder
@@ -147,10 +147,20 @@ public class DexProcessBuilder extends ProcessEnvBuilder<DexProcessBuilder> {
         builder.setClasspath(dx);
         builder.setMain("com.android.dx.command.Main");
 
+        if (dexOptions.getJavaMaxHeapSize() != null) {
+            builder.addJvmArg("-Xmx" + dexOptions.getJavaMaxHeapSize());
+        } else {
+            builder.addJvmArg("-Xmx1024M");
+        }
+
         builder.addArgs("--dex");
 
         if (mVerbose) {
             builder.addArgs("--verbose");
+        }
+
+        if (dexOptions.getJumboMode()) {
+            builder.addArgs("--force-jumbo");
         }
 
         if (mIncremental) {

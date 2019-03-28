@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex;
+package com.duy.dx.dex;
 
 import com.duy.dex.DexFormat;
-
-import com.duy.dx .dex.code.DalvInsnList;
+import com.duy.dx.dex.code.DalvInsnList;
+import java.io.PrintStream;
 
 /**
  * Container for options used to control details of dex file generation.
  */
-public class DexOptions {
+public final class DexOptions {
 
     /**
      * Enable alignment support of 64-bit registers on Dalvik even registers. This is a temporary
@@ -38,16 +38,42 @@ public class DexOptions {
     */
     public boolean ALIGN_64BIT_REGS_IN_OUTPUT_FINISHER = ALIGN_64BIT_REGS_SUPPORT;
 
-    /** target API level */
-    public int targetApiLevel = DexFormat.API_NO_EXTENDED_OPCODES;
+    /** minimum SDK version targeted */
+    public int minSdkVersion = DexFormat.API_NO_EXTENDED_OPCODES;
 
     /** force generation of jumbo opcodes */
     public boolean forceJumbo = false;
 
+    /** Enable user override for default and static interface method invocation. */
+    public boolean allowAllInterfaceMethodInvokes = false;
+
+    /** output stream for reporting warnings */
+    public final PrintStream err;
+
+    public DexOptions() {
+        err = System.err;
+    }
+
+    public DexOptions(PrintStream stream) {
+        err = stream;
+    }
+
     /**
      * Gets the dex file magic number corresponding to this instance.
+     * @return string representing the dex file magic number
      */
     public String getMagic() {
-        return DexFormat.apiToMagic(targetApiLevel);
+        return DexFormat.apiToMagic(minSdkVersion);
+    }
+
+    /**
+     * Checks whether an API feature is supported.
+     * @param apiLevel the API level to test
+     * @return returns true if the current API level is at least sdkVersion
+     */
+    public boolean apiIsSupported(int apiLevel) {
+        // TODO: the naming here is awkward. Tooling may rely on the minSdkVersion,
+        // but it is referred to as API in DexFormat. Currently indistinguishable.
+        return minSdkVersion >= apiLevel;
     }
 }

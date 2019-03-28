@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.type;
+package com.duy.dx.rop.type;
 
-import com.duy.dx .util.FixedSizeList;
+import com.duy.dx.util.FixedSizeList;
 
 /**
  * Standard implementation of {@link TypeList}.
@@ -237,7 +237,7 @@ public final class StdTypeList
             return "<empty>";
         }
 
-        StringBuffer sb = new StringBuffer(100);
+        StringBuilder sb = new StringBuilder(100);
 
         for (int i = 0; i < size; i++) {
             if (i != 0) {
@@ -333,11 +333,13 @@ public final class StdTypeList
     }
 
     /** {@inheritDoc} */
+    @Override
     public Type getType(int n) {
         return get(n);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getWordCount() {
         int sz = size();
         int result = 0;
@@ -350,6 +352,7 @@ public final class StdTypeList
     }
 
     /** {@inheritDoc} */
+    @Override
     public TypeList withAddedType(Type type) {
         int sz = size();
         StdTypeList result = new StdTypeList(sz + 1);

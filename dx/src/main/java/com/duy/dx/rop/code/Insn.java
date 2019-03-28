@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeList;
-import com.duy.dx .util.ToHuman;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeList;
+import com.duy.dx.util.ToHuman;
 
 /**
  * A register-based instruction. An instruction is the combination of
@@ -102,6 +102,7 @@ public abstract class Insn implements ToHuman {
      *
      * @return {@code non-null;} the human string form
      */
+    @Override
     public String toHuman() {
         return toHumanWithInline(getInlineString());
     }
@@ -303,7 +304,7 @@ public abstract class Insn implements ToHuman {
      * @return {@code non-null;} the string form
      */
     protected final String toStringWithInline(String extra) {
-        StringBuffer sb = new StringBuffer(80);
+        StringBuilder sb = new StringBuilder(80);
 
         sb.append("Insn{");
         sb.append(position);
@@ -336,7 +337,7 @@ public abstract class Insn implements ToHuman {
      * @return {@code non-null;} the human string form
      */
     protected final String toHumanWithInline(String extra) {
-        StringBuffer sb = new StringBuffer(80);
+        StringBuilder sb = new StringBuilder(80);
 
         sb.append(position);
         sb.append(": ");
@@ -416,6 +417,13 @@ public abstract class Insn implements ToHuman {
          * @param insn {@code non-null;} the instruction to visit
          */
         public void visitFillArrayDataInsn(FillArrayDataInsn insn);
+
+        /**
+         * Visits a {@link InvokePolymorphicInsn}.
+         *
+         * @param insn {@code non-null;} the instruction to visit
+         */
+        public void visitInvokePolymorphicInsn(InvokePolymorphicInsn insn);
     }
 
     /**
@@ -424,32 +432,44 @@ public abstract class Insn implements ToHuman {
      */
     public static class BaseVisitor implements Visitor {
         /** {@inheritDoc} */
+        @Override
         public void visitPlainInsn(PlainInsn insn) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitPlainCstInsn(PlainCstInsn insn) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitSwitchInsn(SwitchInsn insn) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitThrowingCstInsn(ThrowingCstInsn insn) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitThrowingInsn(ThrowingInsn insn) {
             // This space intentionally left blank.
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitFillArrayDataInsn(FillArrayDataInsn insn) {
+            // This space intentionally left blank.
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void visitInvokePolymorphicInsn(InvokePolymorphicInsn insn) {
             // This space intentionally left blank.
         }
     }

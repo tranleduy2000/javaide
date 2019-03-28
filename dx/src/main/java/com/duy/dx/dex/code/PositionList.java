@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .util.FixedSizeList;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.util.FixedSizeList;
 
 /**
  * List of source position entries. This class includes a utility

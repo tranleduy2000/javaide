@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .util;
+package com.duy.dx.util;
 
 import com.duy.dex.util.ByteOutput;
 
@@ -46,6 +46,7 @@ public interface Output extends ByteOutput {
      *
      * @param value the value to write; all but the low 8 bits are ignored
      */
+    @Override
     public void writeByte(int value);
 
     /**

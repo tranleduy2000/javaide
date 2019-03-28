@@ -23,60 +23,49 @@ import com.duy.dx.Version;
  * to the right "actual" main.
  */
 public class Main {
-    private static String USAGE_MESSAGE =
-            "usage:\n" +
-                    "  dx --dex [--debug] [--verbose] [--positions=<style>] " +
-                    "[--no-locals]\n" +
-                    "  [--no-optimize] [--statistics] [--[no-]optimize-list=<file>] " +
-                    "[--no-strict]\n" +
-                    "  [--keep-classes] [--output=<file>] [--dump-to=<file>] " +
-                    "[--dump-width=<n>]\n" +
-                    "  [--dump-method=<name>[*]] [--verbose-dump] [--no-files] " +
-                    "[--core-library]\n" +
-                    "  [--num-threads=<n>] [--incremental] [--force-jumbo] [--no-warning]\n" +
-                    "  [--multi-dex [--main-dex-list=<file> [--minimal-main-dex]]\n" +
-                    "  [--input-list=<file>]\n" +
-                    "  [<file>.class | <file>.{zip,jar,apk} | <directory>] ...\n" +
-                    "    Convert a set of classfiles into a dex file, optionally " +
-                    "embedded in a\n" +
-                    "    jar/zip. Output name must end with one of: .dex .jar " +
-                    ".zip .apk or be a directory.\n" +
-                    "    Positions options: none, important, lines.\n" +
-                    "    --multi-dex: allows to generate several dex files if needed. " +
-                    "This option is \n" +
-                    "    exclusive with --incremental, causes --num-threads to be ignored " +
-                    "and only\n" +
-                    "    supports folder or archive output.\n" +
-                    "    --main-dex-list=<file>: <file> is a list of class file names, " +
-                    "classes defined by\n" +
-                    "    those class files are put in classes.dex.\n" +
-                    "    --minimal-main-dex: only classes selected by --main-dex-list are " +
-                    "to be put in\n" +
-                    "    the main dex.\n" +
-                    "    --input-list: <file> is a list of inputs.\n" +
-                    "    Each line in <file> must end with one of: .class .jar .zip .apk or be a directory.\n" +
-                    "  dx --annotool --annotation=<class> [--element=<element types>]\n" +
-                    "  [--print=<print types>]\n" +
-                    "  dx --dump [--debug] [--strict] [--bytes] [--optimize]\n" +
-                    "  [--basic-blocks | --rop-blocks | --ssa-blocks | --dot] " +
-                    "[--ssa-step=<step>]\n" +
-                    "  [--width=<n>] [<file>.class | <file>.txt] ...\n" +
-                    "    Dump classfiles, or transformations thereof, in a " +
-                    "human-oriented format.\n" +
-                    "  dx --find-usages <file.dex> <declaring type> <member>\n" +
-                    "    Find references and declarations to a field or method.\n" +
-                    "    declaring type: a class name in internal form, like " +
-                    "Ljava/lang/Object;\n" +
-                    "    member: a field or method name, like hashCode\n" +
-                    "  dx -J<option> ... <arguments, in one of the above " +
-                    "forms>\n" +
-                    "    Pass VM-specific options to the virtual machine that " +
-                    "runs dx.\n" +
-                    "  dx --version\n" +
-                    "    Print the version of this tool (" + Version.VERSION +
-                    ").\n" +
-                    "  dx --help\n" +
-                    "    Print this message.";
+    private static final String USAGE_MESSAGE =
+        "usage:\n" +
+        "  dx --dex [--debug] [--verbose] [--positions=<style>] [--no-locals]\n" +
+        "  [--no-optimize] [--statistics] [--[no-]optimize-list=<file>] [--no-strict]\n" +
+        "  [--keep-classes] [--output=<file>] [--dump-to=<file>] [--dump-width=<n>]\n" +
+        "  [--dump-method=<name>[*]] [--verbose-dump] [--no-files] [--core-library]\n" +
+        "  [--num-threads=<n>] [--incremental] [--force-jumbo] [--no-warning]\n" +
+        "  [--multi-dex [--main-dex-list=<file> [--minimal-main-dex]]\n" +
+        "  [--input-list=<file>] [--min-sdk-version=<n>]\n" +
+        "  [--allow-all-interface-method-invokes]\n" +
+        "  [<file>.class | <file>.{zip,jar,apk} | <directory>] ...\n" +
+        "    Convert a set of classfiles into a dex file, optionally embedded in a\n" +
+        "    jar/zip. Output name must end with one of: .dex .jar .zip .apk or be a\n" +
+        "    directory.\n" +
+        "    Positions options: none, important, lines.\n" +
+        "    --multi-dex: allows to generate several dex files if needed. This option is\n" +
+        "    exclusive with --incremental, causes --num-threads to be ignored and only\n" +
+        "    supports folder or archive output.\n" +
+        "    --main-dex-list=<file>: <file> is a list of class file names, classes\n" +
+        "    defined by those class files are put in classes.dex.\n" +
+        "    --minimal-main-dex: only classes selected by --main-dex-list are to be put\n" +
+        "    in the main dex.\n" +
+        "    --input-list: <file> is a list of inputs.\n" +
+        "    Each line in <file> must end with one of: .class .jar .zip .apk or be a\n" +
+        "    directory.\n" +
+        "    --min-sdk-version=<n>: Enable dex file features that require at least sdk\n" +
+        "    version <n>.\n" +
+        "  dx --annotool --annotation=<class> [--element=<element types>]\n" +
+        "  [--print=<print types>]\n" +
+        "  dx --dump [--debug] [--strict] [--bytes] [--optimize]\n" +
+        "  [--basic-blocks | --rop-blocks | --ssa-blocks | --dot] [--ssa-step=<step>]\n" +
+        "  [--width=<n>] [<file>.class | <file>.txt] ...\n" +
+        "    Dump classfiles, or transformations thereof, in a human-oriented format.\n" +
+        "  dx --find-usages <file.dex> <declaring type> <member>\n" +
+        "    Find references and declarations to a field or method.\n" +
+        "    <declaring type> is a class name in internal form, like Ljava/lang/Object;\n" +
+        "    <member> is a field or method name, like hashCode.\n" +
+        "  dx -J<option> ... <arguments, in one of the above forms>\n" +
+        "    Pass VM-specific options to the virtual machine that runs dx.\n" +
+        "  dx --version\n" +
+        "    Print the version of this tool (" + Version.VERSION + ").\n" +
+        "  dx --help\n" +
+        "    Print this message.";
 
     /**
      * This class is uninstantiable.
@@ -103,7 +92,7 @@ public class Main {
 
                 gotCmd = true;
                 if (arg.equals("--dex")) {
-                    return com.duy.dx.command.dexer.Main.main(without(args, i));
+                    return com.duy.dx.command.dexer.Main.main(without(args, i));//TODO fix it
                 } else if (arg.equals("--dump")) {
                     com.duy.dx.command.dump.Main.main(without(args, i));
                     break;
@@ -129,8 +118,7 @@ public class Main {
         } catch (RuntimeException ex) {
             System.err.println("\nUNEXPECTED TOP-LEVEL EXCEPTION:");
             ex.printStackTrace();
-            //todo fix it
-            return (2);
+            return (2);//TODO fix it
         } catch (Throwable ex) {
             System.err.println("\nUNEXPECTED TOP-LEVEL ERROR:");
             ex.printStackTrace();
@@ -138,12 +126,11 @@ public class Main {
                     || (ex instanceof NoSuchMethodError)) {
                 System.err.println(
                         "Note: You may be using an incompatible " +
-                                "virtual machine or class library.\n" +
-                                "(This program is known to be incompatible " +
-                                "with recent releases of GCJ.)");
+                        "virtual machine or class library.\n" +
+                        "(This program is known to be incompatible " +
+                        "with recent releases of GCJ.)");
             }
-            //todo fix it
-            return (3);
+            return (3);//TODO fix it
         }
 
         if (!gotCmd) {
@@ -153,10 +140,9 @@ public class Main {
 
         if (showUsage) {
             usage();
-            //todo fix it
-            return 1;
+            return 1;//TODO fix it
         }
-        return 1;
+        return 1;//TODO fix it
     }
 
     /**
@@ -164,8 +150,7 @@ public class Main {
      */
     private static int version() {
         System.err.println("dx version " + Version.VERSION);
-        //todo fix it
-        return 0;
+        return 0;//TODO fix it
     }
 
     /**
@@ -180,7 +165,7 @@ public class Main {
      * element.
      *
      * @param orig {@code non-null;} original array
-     * @param n    which element to omit
+     * @param n which element to omit
      * @return {@code non-null;} new array
      */
     private static String[] without(String[] orig, int n) {

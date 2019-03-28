@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.annotation.Annotations;
-import com.duy.dx .rop.annotation.AnnotationsList;
-import com.duy.dx .rop.cst.CstMethodRef;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
-import com.duy.dx .util.ToHuman;
-
+import com.duy.dx.rop.annotation.Annotations;
+import com.duy.dx.rop.annotation.AnnotationsList;
+import com.duy.dx.rop.cst.CstMethodRef;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
+import com.duy.dx.util.ToHuman;
 import java.util.ArrayList;
 
 /**
@@ -79,11 +78,13 @@ public final class ParameterAnnotationStruct
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
         return method.hashCode();
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean equals(Object other) {
         if (! (other instanceof ParameterAnnotationStruct)) {
             return false;
@@ -93,6 +94,7 @@ public final class ParameterAnnotationStruct
     }
 
     /** {@inheritDoc} */
+    @Override
     public int compareTo(ParameterAnnotationStruct other) {
         return method.compareTo(other.method);
     }
@@ -123,6 +125,7 @@ public final class ParameterAnnotationStruct
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         StringBuilder sb = new StringBuilder();
 

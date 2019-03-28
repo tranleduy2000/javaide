@@ -34,7 +34,8 @@ public final class TypeList implements Comparable<TypeList> {
         return types;
     }
 
-    @Override public int compareTo(TypeList other) {
+    @Override
+    public int compareTo(TypeList other) {
         for (int i = 0; i < types.length && i < other.types.length; i++) {
             if (types[i] != other.types[i]) {
                 return Unsigned.compare(types[i], other.types[i]);
@@ -43,7 +44,8 @@ public final class TypeList implements Comparable<TypeList> {
         return Unsigned.compare(types.length, other.types.length);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder result = new StringBuilder();
         result.append("(");
         for (int i = 0, typesLength = types.length; i < typesLength; i++) {

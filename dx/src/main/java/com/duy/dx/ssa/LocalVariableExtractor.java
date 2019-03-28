@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecSet;
-import com.duy.dx .util.IntList;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecSet;
+import com.duy.dx.util.IntList;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Code to figure out which local variables are active at which points in
  * a method. Stolen and retrofitted from
- * com.duy.dx .rop.code.LocalVariableExtractor
+ * com.android.dx.rop.code.LocalVariableExtractor
  *
  * TODO remove this. Allow Rop-form LocalVariableInfo to be passed in,
  * converted, and adapted through edge-splitting.

@@ -26,6 +26,7 @@ import com.android.ide.common.internal.PngCruncher;
 import com.android.ide.common.internal.PngException;
 import com.android.utils.ILogger;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +36,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * implementation of {@link PngCruncher} that queues request and
+ * implementation of {@link com.android.ide.common.internal.PngCruncher} that queues request and
  * use a pool or aapt server processes to serve those.
  */
 public class QueuedCruncher implements PngCruncher {
@@ -49,11 +50,11 @@ public class QueuedCruncher implements PngCruncher {
         private final Object sLock = new Object();
 
         /**
-         * Creates a new {@link QueuedCruncher} or return an existing one
+         * Creates a new {@link com.android.builder.png.QueuedCruncher} or return an existing one
          * based on the underlying AAPT executable location.
          * @param aaptLocation the APPT executable location.
          * @param logger the logger to use
-         * @return a new of existing instance of the {@link QueuedCruncher}
+         * @return a new of existing instance of the {@link com.android.builder.png.QueuedCruncher}
          */
         public QueuedCruncher newCruncher(
                 @NonNull String aaptLocation,

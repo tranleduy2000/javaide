@@ -16,13 +16,12 @@
 
 package com.duy.multidex;
 
-import com.duy.dx .cf.attrib.AttRuntimeVisibleAnnotations;
-import com.duy.dx .cf.direct.DirectClassFile;
-import com.duy.dx .cf.iface.Attribute;
-import com.duy.dx .cf.iface.FieldList;
-import com.duy.dx .cf.iface.HasAttribute;
-import com.duy.dx .cf.iface.MethodList;
-
+import com.duy.dx.cf.attrib.AttRuntimeVisibleAnnotations;
+import com.duy.dx.cf.direct.DirectClassFile;
+import com.duy.dx.cf.iface.Attribute;
+import com.duy.dx.cf.iface.FieldList;
+import com.duy.dx.cf.iface.HasAttribute;
+import com.duy.dx.cf.iface.MethodList;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
@@ -47,7 +46,7 @@ public class MainDexListBuilder {
 
     private static final String EOL = System.getProperty("line.separator");
 
-    private static String USAGE_MESSAGE =
+    private static final String USAGE_MESSAGE =
             "Usage:" + EOL + EOL +
             "Short version: Don't use this." + EOL + EOL +
             "Slightly longer version: This tool is used by mainDexClasses script to build" + EOL +
@@ -78,17 +77,13 @@ public class MainDexListBuilder {
             } else {
                 System.err.println("Invalid option " + args[argIndex]);
                 printUsage();
-//                System.exit(STATUS_ERROR);
-                System.err.println("exit code " + STATUS_ERROR);
-
+                System.err.println("exit code " + STATUS_ERROR);//TODO fix it
             }
             argIndex++;
         }
         if (args.length - argIndex != 2) {
             printUsage();
-//            System.exit(STATUS_ERROR);
-            System.err.println("exit code " + STATUS_ERROR);
-
+            System.exit(STATUS_ERROR);
         }
 
         try {
@@ -98,9 +93,7 @@ public class MainDexListBuilder {
             printList(toKeep);
         } catch (IOException e) {
             System.err.println("A fatal error occured: " + e.getMessage());
-//            System.exit(STATUS_ERROR);
-            System.err.println("exit code " + STATUS_ERROR);
-
+            System.err.println("exit code " + STATUS_ERROR);//TODO fix it
             return;
         }
     }

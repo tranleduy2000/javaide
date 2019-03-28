@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.iface;
+package com.duy.dx.cf.iface;
 
-import com.duy.dx .rop.cst.CstNat;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
+import com.duy.dx.rop.cst.CstNat;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
 
 /**
  * Interface representing members of class files (that is, fields and methods).
@@ -70,5 +70,6 @@ public interface Member extends HasAttribute {
      *
      * @return {@code non-null;} the constant pool
      */
+    @Override
     public AttributeList getAttributes();
 }

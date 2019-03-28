@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.util.Hex;
 
 /**
  * Information about a source position for code, which includes both a
@@ -70,7 +70,7 @@ public final class SourcePosition {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(50);
+        StringBuilder sb = new StringBuilder(50);
 
         if (sourceFile != null) {
             sb.append(sourceFile.toHuman());

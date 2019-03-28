@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.CstInsn;
-import com.duy.dx .rop.code.Insn;
-import com.duy.dx .rop.code.PlainInsn;
-import com.duy.dx .rop.code.RegOps;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.Rop;
-import com.duy.dx .rop.code.Rops;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstInteger;
-import com.duy.dx .rop.cst.TypedConstant;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx.rop.code.CstInsn;
+import com.duy.dx.rop.code.Insn;
+import com.duy.dx.rop.code.PlainInsn;
+import com.duy.dx.rop.code.RegOps;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.Rop;
+import com.duy.dx.rop.code.Rops;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstInteger;
+import com.duy.dx.rop.cst.TypedConstant;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeBearer;
 import java.util.ArrayList;
 import java.util.BitSet;
 
@@ -42,29 +42,29 @@ public class SCCP {
     private static final int CONSTANT = 1;
     private static final int VARYING = 2;
     /** method we're processing */
-    private SsaMethod ssaMeth;
+    private final SsaMethod ssaMeth;
     /** ssaMeth.getRegCount() */
-    private int regCount;
+    private final int regCount;
     /** Lattice values for each SSA register */
-    private int[] latticeValues;
+    private final int[] latticeValues;
     /** For those registers that are constant, this is the constant value */
-    private Constant[] latticeConstants;
+    private final Constant[] latticeConstants;
     /** Worklist of basic blocks to be processed */
-    private ArrayList<SsaBasicBlock> cfgWorklist;
+    private final ArrayList<SsaBasicBlock> cfgWorklist;
     /** Worklist of executed basic blocks with phis to be processed */
-    private ArrayList<SsaBasicBlock> cfgPhiWorklist;
+    private final ArrayList<SsaBasicBlock> cfgPhiWorklist;
     /** Bitset containing bits for each block that has been found executable */
-    private BitSet executableBlocks;
+    private final BitSet executableBlocks;
     /** Worklist for SSA edges.  This is a list of registers to process */
-    private ArrayList<SsaInsn> ssaWorklist;
+    private final ArrayList<SsaInsn> ssaWorklist;
     /**
      * Worklist for SSA edges that represent varying values.  It makes the
      * algorithm much faster if you move all values to VARYING as fast as
      * possible.
      */
-    private ArrayList<SsaInsn> varyingWorklist;
+    private final ArrayList<SsaInsn> varyingWorklist;
     /** Worklist of potential branches to convert to gotos */
-    private ArrayList<SsaInsn> branchWorklist;
+    private final ArrayList<SsaInsn> branchWorklist;
 
     private SCCP(SsaMethod ssaMeth) {
         this.ssaMeth = ssaMeth;

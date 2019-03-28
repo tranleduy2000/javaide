@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.iface;
+package com.duy.dx.cf.iface;
 
 /**
  * An element that can have {@link Attribute}

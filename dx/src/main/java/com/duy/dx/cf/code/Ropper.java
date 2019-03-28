@@ -14,35 +14,35 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
-import com.duy.dx .cf.iface.MethodList;
-import com.duy.dx .rop.code.AccessFlags;
-import com.duy.dx .rop.code.BasicBlock;
-import com.duy.dx .rop.code.BasicBlockList;
-import com.duy.dx .rop.code.Insn;
-import com.duy.dx .rop.code.InsnList;
-import com.duy.dx .rop.code.PlainCstInsn;
-import com.duy.dx .rop.code.PlainInsn;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.Rop;
-import com.duy.dx .rop.code.RopMethod;
-import com.duy.dx .rop.code.Rops;
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .rop.code.ThrowingCstInsn;
-import com.duy.dx .rop.code.ThrowingInsn;
-import com.duy.dx .rop.code.TranslationAdvice;
-import com.duy.dx .rop.cst.CstInteger;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.Prototype;
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeList;
-import com.duy.dx .util.Bits;
-import com.duy.dx .util.Hex;
-import com.duy.dx .util.IntList;
-
+import com.duy.dx.cf.iface.MethodList;
+import com.duy.dx.dex.DexOptions;
+import com.duy.dx.rop.code.AccessFlags;
+import com.duy.dx.rop.code.BasicBlock;
+import com.duy.dx.rop.code.BasicBlockList;
+import com.duy.dx.rop.code.Insn;
+import com.duy.dx.rop.code.InsnList;
+import com.duy.dx.rop.code.PlainCstInsn;
+import com.duy.dx.rop.code.PlainInsn;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.Rop;
+import com.duy.dx.rop.code.RopMethod;
+import com.duy.dx.rop.code.Rops;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.rop.code.ThrowingCstInsn;
+import com.duy.dx.rop.code.ThrowingInsn;
+import com.duy.dx.rop.code.TranslationAdvice;
+import com.duy.dx.rop.cst.CstInteger;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.Prototype;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeList;
+import com.duy.dx.util.Bits;
+import com.duy.dx.util.Hex;
+import com.duy.dx.util.IntList;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
@@ -343,9 +343,9 @@ public final class Ropper {
      * @return {@code non-null;} the converted instance
      */
     public static RopMethod convert(ConcreteMethod method,
-            TranslationAdvice advice, MethodList methods) {
+            TranslationAdvice advice, MethodList methods, DexOptions dexOptions) {
         try {
-            Ropper r = new Ropper(method, advice, methods);
+            Ropper r = new Ropper(method, advice, methods, dexOptions);
             r.doit();
             return r.getRopMethod();
         } catch (SimException ex) {
@@ -363,8 +363,10 @@ public final class Ropper {
      * @param advice {@code non-null;} translation advice to use
      * @param methods {@code non-null;} list of methods defined by the class
      *     that defines {@code method}.
+     * @param dexOptions {@code non-null;} options for dex output
      */
-    private Ropper(ConcreteMethod method, TranslationAdvice advice, MethodList methods) {
+    private Ropper(ConcreteMethod method, TranslationAdvice advice, MethodList methods,
+            DexOptions dexOptions) {
         if (method == null) {
             throw new NullPointerException("method == null");
         }
@@ -378,7 +380,7 @@ public final class Ropper {
         this.maxLabel = blocks.getMaxLabel();
         this.maxLocals = method.getMaxLocals();
         this.machine = new RopperMachine(this, method, advice, methods);
-        this.sim = new Simulator(machine, method);
+        this.sim = new Simulator(machine, method, dexOptions);
         this.startFrames = new Frame[maxLabel];
         this.subroutines = new Subroutine[maxLabel];
 
@@ -1351,6 +1353,7 @@ public final class Ropper {
          * Start at label 0 --  the param assignment block has nothing for us
          */
         forEachNonSubBlockDepthFirst(0, new BasicBlock.Visitor() {
+            @Override
             public void visitBlock(BasicBlock b) {
                 if (isSubroutineCaller(b)) {
                     reachableSubroutineCallerLabels.add(b.getLabel());
@@ -1408,6 +1411,7 @@ public final class Ropper {
         forEachNonSubBlockDepthFirst(getSpecialLabel(PARAM_ASSIGNMENT),
                 new BasicBlock.Visitor() {
 
+            @Override
             public void visitBlock(BasicBlock b) {
                 reachableLabels.add(b.getLabel());
             }

@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
-<d:devices
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:d="http://schemas.android.com/sdk/devices/1">
+<d:devices xmlns:d="http://schemas.android.com/sdk/devices/1">
 
     <d:device>
         <d:name>2.7" QVGA</d:name>

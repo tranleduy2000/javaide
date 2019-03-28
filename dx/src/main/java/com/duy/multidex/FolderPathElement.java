@@ -25,9 +25,9 @@ import java.util.ArrayList;
 /**
  * A folder element.
  */
-class FolderPathElement implements com.duy.multidex.ClassPathElement {
+class FolderPathElement implements ClassPathElement {
 
-    private File baseFolder;
+    private final File baseFolder;
 
     public FolderPathElement(File baseFolder) {
         this.baseFolder = baseFolder;

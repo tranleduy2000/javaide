@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.attrib;
+package com.duy.dx.cf.attrib;
 
-import com.duy.dx .rop.cst.Constant;
+import com.duy.dx.rop.cst.Constant;
 
 /**
  * Attribute class for {@code AnnotationDefault} attributes.
  */
-public final class AttAnnotationDefault extends com.duy.dx .cf.attrib.BaseAttribute {
+public final class AttAnnotationDefault extends BaseAttribute {
     /** {@code non-null;} attribute name for attributes of this type */
     public static final String ATTRIBUTE_NAME = "AnnotationDefault";
 
@@ -51,6 +51,7 @@ public final class AttAnnotationDefault extends com.duy.dx .cf.attrib.BaseAttrib
     }
 
     /** {@inheritDoc} */
+    @Override
     public int byteLength() {
         // Add six for the standard attribute header.
         return byteLength + 6;

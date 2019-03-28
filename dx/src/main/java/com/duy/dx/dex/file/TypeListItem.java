@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeList;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeList;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
 
 /**
  * Representation of a list of class references.
@@ -62,6 +62,7 @@ public final class TypeListItem extends OffsettedItem {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addContents(DexFile file) {
         TypeIdsSection typeIds = file.getTypeIds();
         int sz = list.size();

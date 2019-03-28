@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
 import com.duy.dex.util.ExceptionWithContext;
-import com.duy.dx .dex.code.LocalList;
-import com.duy.dx .dex.code.PositionList;
-import static com.duy.dx .dex.file.DebugInfoConstants.DBG_ADVANCE_LINE;
-import static com.duy.dx .dex.file.DebugInfoConstants.DBG_ADVANCE_PC;
-import static com.duy.dx .dex.file.DebugInfoConstants.DBG_END_LOCAL;
-import static com.duy.dx .dex.file.DebugInfoConstants.DBG_END_SEQUENCE;
-import static com.duy.dx .dex.file.DebugInfoConstants.DBG_FIRST_SPECIAL;
-import static com.duy.dx .dex.file.DebugInfoConstants.DBG_LINE_BASE;
-import static com.duy.dx .dex.file.DebugInfoConstants.DBG_LINE_RANGE;
-import static com.duy.dx .dex.file.DebugInfoConstants.DBG_RESTART_LOCAL;
-import static com.duy.dx .dex.file.DebugInfoConstants.DBG_SET_PROLOGUE_END;
-import static com.duy.dx .dex.file.DebugInfoConstants.DBG_START_LOCAL;
-import static com.duy.dx .dex.file.DebugInfoConstants.DBG_START_LOCAL_EXTENDED;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .rop.cst.CstMethodRef;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.Prototype;
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.ByteArrayAnnotatedOutput;
+import com.duy.dx.dex.code.LocalList;
+import com.duy.dx.dex.code.PositionList;
+import static com.duy.dx.dex.file.DebugInfoConstants.DBG_ADVANCE_LINE;
+import static com.duy.dx.dex.file.DebugInfoConstants.DBG_ADVANCE_PC;
+import static com.duy.dx.dex.file.DebugInfoConstants.DBG_END_LOCAL;
+import static com.duy.dx.dex.file.DebugInfoConstants.DBG_END_SEQUENCE;
+import static com.duy.dx.dex.file.DebugInfoConstants.DBG_FIRST_SPECIAL;
+import static com.duy.dx.dex.file.DebugInfoConstants.DBG_LINE_BASE;
+import static com.duy.dx.dex.file.DebugInfoConstants.DBG_LINE_RANGE;
+import static com.duy.dx.dex.file.DebugInfoConstants.DBG_RESTART_LOCAL;
+import static com.duy.dx.dex.file.DebugInfoConstants.DBG_SET_PROLOGUE_END;
+import static com.duy.dx.dex.file.DebugInfoConstants.DBG_START_LOCAL;
+import static com.duy.dx.dex.file.DebugInfoConstants.DBG_START_LOCAL_EXTENDED;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.rop.cst.CstMethodRef;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.Prototype;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.ByteArrayAnnotatedOutput;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -501,10 +501,12 @@ public final class DebugInfoEncoder {
 
         // Sort ascending by address.
         Collections.sort (result, new Comparator<PositionList.Entry>() {
+            @Override
             public int compare (PositionList.Entry a, PositionList.Entry b) {
                 return a.getAddress() - b.getAddress();
             }
 
+            @Override
             public boolean equals (Object obj) {
                return obj == this;
             }
@@ -558,10 +560,12 @@ public final class DebugInfoEncoder {
 
         // Sort by ascending register.
         Collections.sort(result, new Comparator<LocalList.Entry>() {
+            @Override
             public int compare(LocalList.Entry a, LocalList.Entry b) {
                 return a.getRegister() - b.getRegister();
             }
 
+            @Override
             public boolean equals(Object obj) {
                return obj == this;
             }

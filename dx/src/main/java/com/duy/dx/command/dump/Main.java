@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .command.dump;
+package com.duy.dx.command.dump;
 
 import com.duy.dex.util.FileUtils;
-import com.duy.dx .cf.iface.ParseException;
-import com.duy.dx .util.HexParser;
+import com.duy.dx.cf.iface.ParseException;
+import com.duy.dx.util.HexParser;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -26,7 +26,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class Main {
 
-    static Args parsedArgs = new Args();
+    private final Args parsedArgs = new Args();
 
     /**
      * This class is uninstantiable.
@@ -35,10 +35,14 @@ public class Main {
         // This space intentionally left blank.
     }
 
+    public static void main(String[] args) {
+        new Main().run(args);
+    }
+
     /**
      * Run!
      */
-    public static void main(String[] args) {
+    private void run(String[] args) {
         int at = 0;
 
         for (/*at*/; at < args.length; at++) {
@@ -112,7 +116,7 @@ public class Main {
      * @param name {@code non-null;} name of the file
      * @param bytes {@code non-null;} contents of the file
      */
-    private static void processOne(String name, byte[] bytes) {
+    private void processOne(String name, byte[] bytes) {
         if (parsedArgs.dotDump) {
             DotDumper.dump(bytes, name, parsedArgs);
         } else if (parsedArgs.basicBlocks) {

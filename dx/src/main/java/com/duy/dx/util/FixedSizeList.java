@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .util;
+package com.duy.dx.util;
 
 import java.util.Arrays;
 
@@ -82,6 +82,7 @@ public class FixedSizeList
      * This method will only work if every element of the list
      * implements {@link ToHuman}.
      */
+    @Override
     public String toHuman() {
         String name = getClass().getName();
 
@@ -248,7 +249,7 @@ public class FixedSizeList
     private String toString0(String prefix, String separator, String suffix,
                              boolean human) {
         int len = arr.length;
-        StringBuffer sb = new StringBuffer(len * 10 + 10);
+        StringBuilder sb = new StringBuilder(len * 10 + 10);
 
         if (prefix != null) {
             sb.append(prefix);

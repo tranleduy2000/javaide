@@ -16,10 +16,9 @@
 
 package com.android.ide.common.rendering.api;
 
-import android.graphics.Bitmap;
-
 import com.android.ide.common.rendering.api.Result.Status;
 
+import android.graphics.Bitmap;//TODO fix it
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +91,7 @@ public class RenderSession {
      */
     public Bitmap getImage() {
         return null;
-    }
+    }//TODO fix it
 
     /**
      * Returns true if the current image alpha channel is relevant.

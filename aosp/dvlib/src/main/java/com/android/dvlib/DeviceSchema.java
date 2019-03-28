@@ -56,117 +56,182 @@ public class DeviceSchema {
      * Valid version numbers are between 1 and this number, included.
      */
     public static final int NS_LATEST_VERSION = 2;
+
+    /** The XML namespace of the latest device XML. */
+    public static final String NS_DEVICES_URI = getSchemaUri(NS_LATEST_VERSION);
+
+    /** Base for the devices XSD URI, without the terminal version number. */
+    private static final String NS_DEVICES_URI_BASE = "http://schemas.android.com/sdk/devices/";
+
+    /** Regex pattern to find the terminal version number in an XSD URI. */
+    static final String NS_DEVICES_URI_PATTERN = NS_DEVICES_URI_BASE + "([0-9]+)";   //$NON-NLS-1$
+
+    // ----- XML ----
+
     /**
      * The "devices" element is the root element of this schema.
-     * <p>
+     *
      * It must contain one or more "device" elements that each define the
      * hardware, software, and states for a given device.
      */
     public static final String NODE_DEVICES = "devices";
+
     /**
      * A "device" element contains a "hardware" element, a "software" element
      * for each API version it supports, and a "state" element for each possible
      * state the device could be in.
      */
     public static final String NODE_DEVICE = "device";
+
     /**
      * The "hardware" element contains all of the hardware information for a
      * given device.
      */
     public static final String NODE_HARDWARE = "hardware";
 
-    // ----- XML ----
     /**
      * The "software" element contains all of the software information for an
      * API version of the given device.
      */
     public static final String NODE_SOFTWARE = "software";
+
     /**
      * The "state" element contains all of the parameters for a given state of
      * the device. It's also capable of redefining hardware configurations if
      * they change based on state.
      */
     public static final String NODE_STATE = "state";
+
     public static final String NODE_KEYBOARD = "keyboard";
+
     public static final String NODE_TOUCH = "touch";
+
     public static final String NODE_GL_EXTENSIONS = "gl-extensions";
+
     public static final String NODE_GL_VERSION = "gl-version";
+
     public static final String NODE_NETWORKING = "networking";
+
     public static final String NODE_REMOVABLE_STORAGE = "removable-storage";
+
     public static final String NODE_FLASH = "flash";
+
     public static final String NODE_LIVE_WALLPAPER_SUPPORT = "live-wallpaper-support";
+
     public static final String NODE_STATUS_BAR = "status-bar";
+
     public static final String NODE_BUTTONS = "buttons";
+
     public static final String NODE_CAMERA = "camera";
+
     public static final String NODE_LOCATION = "location";
+
     public static final String NODE_GPU = "gpu";
+
     public static final String NODE_DOCK = "dock";
+
     public static final String NODE_YDPI = "ydpi";
-    public static final String NODE_POWER_TYPE = "power-type";
+
+    public static final String NODE_POWER_TYPE= "power-type";
+
     public static final String NODE_Y_DIMENSION = "y-dimension";
+
     public static final String NODE_SCREEN_RATIO = "screen-ratio";
+
     public static final String NODE_NAV_STATE = "nav-state";
+
     public static final String NODE_MIC = "mic";
+
     public static final String NODE_RAM = "ram";
+
     public static final String NODE_XDPI = "xdpi";
+
     public static final String NODE_DIMENSIONS = "dimensions";
+
     public static final String NODE_ABI = "abi";
+
     public static final String NODE_MECHANISM = "mechanism";
+
     public static final String NODE_MULTITOUCH = "multitouch";
+
     public static final String NODE_NAV = "nav";
+
     public static final String NODE_PIXEL_DENSITY = "pixel-density";
+
     public static final String NODE_SCREEN_ORIENTATION = "screen-orientation";
+
     public static final String NODE_AUTOFOCUS = "autofocus";
+
     public static final String NODE_SCREEN_SIZE = "screen-size";
+
     public static final String NODE_DESCRIPTION = "description";
+
     public static final String NODE_BLUETOOTH_PROFILES = "bluetooth-profiles";
+
     public static final String NODE_SCREEN = "screen";
+
     public static final String NODE_SENSORS = "sensors";
+
     public static final String NODE_DIAGONAL_LENGTH = "diagonal-length";
+
     public static final String NODE_SCREEN_TYPE = "screen-type";
+
     public static final String NODE_KEYBOARD_STATE = "keyboard-state";
+
     public static final String NODE_X_DIMENSION = "x-dimension";
+
     public static final String NODE_CPU = "cpu";
+
     public static final String NODE_INTERNAL_STORAGE = "internal-storage";
+
     public static final String NODE_META = "meta";
+
     public static final String NODE_ICONS = "icons";
+
     public static final String NODE_SIXTY_FOUR = "sixty-four";
+
     public static final String NODE_SIXTEEN = "sixteen";
+
     public static final String NODE_FRAME = "frame";
+
     public static final String NODE_PATH = "path";
+
     public static final String NODE_PORTRAIT_X_OFFSET = "portrait-x-offset";
+
     public static final String NODE_PORTRAIT_Y_OFFSET = "portrait-y-offset";
+
     public static final String NODE_LANDSCAPE_X_OFFSET = "landscape-x-offset";
+
     public static final String NODE_LANDSCAPE_Y_OFFSET = "landscape-y-offset";
+
     public static final String NODE_NAME = "name";
+
     public static final String NODE_ID = "id";
+
     public static final String NODE_API_LEVEL = "api-level";
+
     public static final String NODE_MANUFACTURER = "manufacturer";
+
     public static final String NODE_TAG_ID = "tag-id";
+
     public static final String NODE_BOOT_PROPS = "boot-props";
+
     public static final String NODE_BOOT_PROP = "boot-prop";
+
     public static final String NODE_PROP_NAME = "prop-name";
+
     public static final String NODE_PROP_VALUE = "prop-value";
+
     public static final String NODE_SKIN = "skin";
+
     public static final String ATTR_DEFAULT = "default";
+
     public static final String ATTR_UNIT = "unit";
+
     public static final String ATTR_NAME = "name";
-    /**
-     * Base for the devices XSD URI, without the terminal version number.
-     */
-    private static final String NS_DEVICES_URI_BASE = "http://schemas.android.com/sdk/devices/";
-    /**
-     * The XML namespace of the latest device XML.
-     */
-    public static final String NS_DEVICES_URI = getSchemaUri(NS_LATEST_VERSION);
-    /**
-     * Regex pattern to find the terminal version number in an XSD URI.
-     */
-    static final String NS_DEVICES_URI_PATTERN = NS_DEVICES_URI_BASE + "([0-9]+)";   //$NON-NLS-1$
 
     /**
      * Returns the URI of the SDK Repository schema for the given version number.
-     *
      * @param version Between 1 and {@link #NS_LATEST_VERSION} included.
      */
     public static String getSchemaUri(int version) {
@@ -178,7 +243,7 @@ public class DeviceSchema {
      *
      * @param version Between 1 and {@link #NS_LATEST_VERSION}, included.
      * @return An {@link InputStream} object for the local XSD file or
-     * null if there is no schema for the requested version.
+     *         null if there is no schema for the requested version.
      */
     public static InputStream getXsdStream(int version) {
         assert version >= 1 && version <= NS_LATEST_VERSION
@@ -202,7 +267,7 @@ public class DeviceSchema {
      * @param deviceXml The XML InputStream to validate.
      *                  The XML input stream must supports the mark/reset() methods
      *                  (that is its {@link InputStream#markSupported()} must return true)
-     *                  and which mark has already been set to the beginning of the stream.
+     *                   and which mark has already been set to the beginning of the stream.
      * @param out       The OutputStream for error messages.
      * @param parent    The parent directory of the input stream.
      * @return Whether the given input constitutes a valid devices file.
@@ -280,10 +345,10 @@ public class DeviceSchema {
      * declaration.
      *
      * @param xml An XML input stream that supports the mark/reset() methods
-     *            (that is its {@link InputStream#markSupported()} must return true)
-     *            and which mark has already been set to the beginning of the stream.
+     *              (that is its {@link InputStream#markSupported()} must return true)
+     *              and which mark has already been set to the beginning of the stream.
      * @return 1+ for a valid schema version
-     * or 0 if no schema could be found.
+     *         or 0 if no schema could be found.
      */
     public static int getXmlSchemaVersion(InputStream xml) {
         if (xml == null) {
@@ -315,12 +380,10 @@ public class DeviceSchema {
                 public void warning(SAXParseException e) throws SAXException {
                     // pass
                 }
-
                 @Override
                 public void fatalError(SAXParseException e) throws SAXException {
                     throw e;
                 }
-
                 @Override
                 public void error(SAXParseException e) throws SAXException {
                     throw e;
@@ -397,12 +460,12 @@ public class DeviceSchema {
      * schema.
      */
     private static class DevicesValidationHandler extends DefaultHandler {
-        private final File mDirectory;
-        private final PrintWriter mWriter;
-        private final StringBuilder mStringAccumulator = new StringBuilder();
         private boolean mValidDevicesFile = true;
         private boolean mDefaultSeen = false;
         private String mDeviceName;
+        private final File mDirectory;
+        private final PrintWriter mWriter;
+        private final StringBuilder mStringAccumulator = new StringBuilder();
 
         public DevicesValidationHandler(File directory, PrintWriter writer) {
             mDirectory = directory; // Possibly null

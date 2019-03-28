@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
 import com.duy.dex.util.ExceptionWithContext;
-import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx.util.AnnotatedOutput;
 
 /**
  * An item in a Dalvik file which is referenced by absolute offset.
@@ -111,6 +111,7 @@ public abstract class OffsettedItem extends Item
      * classes don't match then the objects are not equal), with
      * {@link #compareTo0} deciding same-class comparisons.
      */
+    @Override
     public final int compareTo(OffsettedItem other) {
         if (this == other) {
             return 0;

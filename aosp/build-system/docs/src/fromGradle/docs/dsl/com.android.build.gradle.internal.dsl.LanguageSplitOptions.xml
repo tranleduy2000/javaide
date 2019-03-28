@@ -19,26 +19,18 @@
         <title>Properties</title>
         <table>
             <thead>
-                <tr>
-                    <td>Name</td>
-                </tr>
+                <tr><td>Name</td></tr>
             </thead>
-            <tr>
-                <td>enable</td>
-            </tr>
+            <tr><td>enable</td></tr>
         </table>
     </section>
     <section>
         <title>Methods</title>
         <table>
             <thead>
-                <tr>
-                    <td>Name</td>
-                </tr>
+                <tr><td>Name</td></tr>
             </thead>
-            <tr>
-                <td>include</td>
-            </tr>
+            <tr><td>include</td></tr>
         </table>
     </section>
 </section>

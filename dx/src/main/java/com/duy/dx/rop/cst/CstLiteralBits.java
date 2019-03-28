@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
 /**
  * Constants which are literal bitwise values of some sort.

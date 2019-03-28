@@ -16,6 +16,9 @@
 
 package com.android.tools.lint.checks;
 
+import static com.android.SdkConstants.DOT_XML;
+import static com.android.tools.lint.detector.api.LintUtils.assertionsEnabled;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
@@ -38,73 +41,51 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.WeakHashMap;
 
-import static com.android.SdkConstants.DOT_XML;
-import static com.android.tools.lint.detector.api.LintUtils.assertionsEnabled;
-
 /**
  * Database of common typos / misspellings.
  */
 public class TypoLookup {
     private static final TypoLookup NONE = new TypoLookup();
 
-    /**
-     * String separating misspellings and suggested replacements in the text file
-     */
+    /** String separating misspellings and suggested replacements in the text file */
     private static final String WORD_SEPARATOR = "->";  //$NON-NLS-1$
 
-    /**
-     * Relative path to the typos database file within the Lint installation
-     */
+    /** Relative path to the typos database file within the Lint installation */
     private static final String XML_FILE_PATH = "tools/support/typos-%1$s.txt"; //$NON-NLS-1$
     private static final String FILE_HEADER = "Typo database used by Android lint\000";
     private static final int BINARY_FORMAT_VERSION = 2;
     private static final boolean DEBUG_FORCE_REGENERATE_BINARY = false;
     private static final boolean DEBUG_SEARCH = false;
     private static final boolean WRITE_STATS = false;
-    /**
-     * Default size to reserve for each API entry when creating byte buffer to build up data
-     */
+    /** Default size to reserve for each API entry when creating byte buffer to build up data */
     private static final int BYTES_PER_ENTRY = 28;
-    private static final WeakHashMap<String, TypoLookup> sInstanceMap =
-            new WeakHashMap<String, TypoLookup>();
+
     private byte[] mData;
     private int[] mIndices;
     private int mWordCount;
 
-    /**
-     * Use one of the {@link #get} factory methods instead
-     */
-    private TypoLookup(
-            @NonNull LintClient client,
-            @NonNull File xmlFile,
-            @Nullable File binaryFile) {
-        if (binaryFile != null) {
-            readData(client, xmlFile, binaryFile);
-        }
-    }
-
-    private TypoLookup() {
-    }
+    private static final WeakHashMap<String, TypoLookup> sInstanceMap =
+            new WeakHashMap<String, TypoLookup>();
 
     /**
      * Returns an instance of the Typo database for the given locale
      *
      * @param client the client to associate with this database - used only for
-     *               logging. The database object may be shared among repeated
-     *               invocations, and in that case client used will be the one
-     *               originally passed in. In other words, this parameter may be
-     *               ignored if the client created is not new.
+     *            logging. The database object may be shared among repeated
+     *            invocations, and in that case client used will be the one
+     *            originally passed in. In other words, this parameter may be
+     *            ignored if the client created is not new.
      * @param locale the locale to look up a typo database for (should be a
-     *               language code (ISO 639-1, two lowercase character names)
+     *            language code (ISO 639-1, two lowercase character names)
      * @param region the region to look up a typo database for (should be a two
-     *               letter ISO 3166-1 alpha-2 country code in upper case) language
-     *               code
+     *            letter ISO 3166-1 alpha-2 country code in upper case) language
+     *            code
      * @return a (possibly shared) instance of the typo database, or null if its
-     * data can't be found
+     *         data can't be found
      */
     @Nullable
     public static TypoLookup get(@NonNull LintClient client, @NonNull String locale,
-                                 @Nullable String region) {
+            @Nullable String region) {
         synchronized (TypoLookup.class) {
             String key = locale;
 
@@ -127,8 +108,8 @@ public class TypoLookup {
                     String build = System.getenv("ANDROID_BUILD_TOP");   //$NON-NLS-1$
                     if (build != null) {
                         file = new File(build, ("sdk/files/" //$NON-NLS-1$
-                                + path.substring(path.lastIndexOf('/') + 1))
-                                .replace('/', File.separatorChar));
+                                    + path.substring(path.lastIndexOf('/') + 1))
+                                      .replace('/', File.separatorChar));
                     }
                 }
 
@@ -157,12 +138,12 @@ public class TypoLookup {
     /**
      * Returns an instance of the typo database
      *
-     * @param client  the client to associate with this database - used only for
-     *                logging
+     * @param client the client to associate with this database - used only for
+     *            logging
      * @param xmlFile the XML file containing configuration data to use for this
-     *                database
+     *            database
      * @return a (possibly shared) instance of the typo database, or null
-     * if its data can't be found
+     *         if its data can't be found
      */
     @Nullable
     private static TypoLookup get(LintClient client, File xmlFile) {
@@ -235,9 +216,90 @@ public class TypoLookup {
         return false;
     }
 
-    /**
-     * See the {@link #readData(LintClient, File, File)} for documentation on the data format.
-     */
+    /** Use one of the {@link #get} factory methods instead */
+    private TypoLookup(
+            @NonNull LintClient client,
+            @NonNull File xmlFile,
+            @Nullable File binaryFile) {
+        if (binaryFile != null) {
+            readData(client, xmlFile, binaryFile);
+        }
+    }
+
+    private TypoLookup() {
+    }
+
+    private void readData(@NonNull LintClient client, @NonNull File xmlFile,
+            @NonNull File binaryFile) {
+        if (!binaryFile.exists()) {
+            client.log(null, "%1$s does not exist", binaryFile);
+            return;
+        }
+        long start = System.currentTimeMillis();
+        try {
+            MappedByteBuffer buffer = Files.map(binaryFile, MapMode.READ_ONLY);
+            assert buffer.order() == ByteOrder.BIG_ENDIAN;
+
+            // First skip the header
+            byte[] expectedHeader = FILE_HEADER.getBytes(Charsets.US_ASCII);
+            buffer.rewind();
+            for (int offset = 0; offset < expectedHeader.length; offset++) {
+                if (expectedHeader[offset] != buffer.get()) {
+                    client.log(null, "Incorrect file header: not an typo database cache " +
+                            "file, or a corrupt cache file");
+                    return;
+                }
+            }
+
+            // Read in the format number
+            if (buffer.get() != BINARY_FORMAT_VERSION) {
+                // Force regeneration of new binary data with up to date format
+                if (createCache(client, xmlFile, binaryFile)) {
+                    readData(client, xmlFile, binaryFile); // Recurse
+                }
+
+                return;
+            }
+
+            mWordCount = buffer.getInt();
+
+            // Read in the word table indices;
+            int count = mWordCount;
+            int[] offsets = new int[count];
+
+            // Another idea: I can just store the DELTAS in the file (and add them up
+            // when reading back in) such that it takes just ONE byte instead of four!
+
+            for (int i = 0; i < count; i++) {
+                offsets[i] = buffer.getInt();
+            }
+
+            // No need to read in the rest -- we'll just keep the whole byte array in memory
+            // TODO: Make this code smarter/more efficient.
+            int size = buffer.limit();
+            byte[] b = new byte[size];
+            buffer.rewind();
+            buffer.get(b);
+            mData = b;
+            mIndices = offsets;
+
+            // TODO: We only need to keep the data portion here since we've initialized
+            // the offset array separately.
+            // TODO: Investigate (profile) accessing the byte buffer directly instead of
+            // accessing a byte array.
+        } catch (IOException e) {
+            client.log(e, null);
+        }
+        if (WRITE_STATS) {
+            long end = System.currentTimeMillis();
+            System.out.println("\nRead typo database in " + (end - start)
+                    + " milliseconds.");
+            System.out.println("Size of data table: " + mData.length + " bytes ("
+                    + Integer.toString(mData.length/1024) + "k)\n");
+        }
+    }
+
+    /** See the {@link #readData(LintClient,File,File)} for documentation on the data format. */
     private static void writeDatabase(File file, List<String> lines) throws IOException {
         /*
          * 1. A file header, which is the exact contents of {@link FILE_HEADER} encoded
@@ -336,10 +398,10 @@ public class TypoLookup {
         if (WRITE_STATS) {
             System.out.println("Wrote " + words.size() + " word entries");
             System.out.print("Actual binary size: " + size + " bytes");
-            System.out.println(String.format(" (%.1fM)", size / (1024 * 1024.f)));
+            System.out.println(String.format(" (%.1fM)", size/(1024*1024.f)));
 
             System.out.println("Allocated size: " + (entryCount * BYTES_PER_ENTRY) + " bytes");
-            System.out.println("Required bytes per entry: " + (size / entryCount) + " bytes");
+            System.out.println("Required bytes per entry: " + (size/ entryCount) + " bytes");
         }
 
         // Now dump this out as a file
@@ -347,17 +409,28 @@ public class TypoLookup {
         byte[] b = new byte[size];
         buffer.rewind();
         buffer.get(b);
-        FileOutputStream output = new FileOutputStream(file);
+        FileOutputStream output = Files.newOutputStreamSupplier(file).getOutput();
         output.write(b);
         output.close();
     }
 
-    /**
-     * Comparison function: *only* used for ASCII strings
-     */
+    // For debugging only
+    private String dumpEntry(int offset) {
+        if (DEBUG_SEARCH) {
+            int end = offset;
+            while (mData[end] != 0) {
+                end++;
+            }
+            return new String(mData, offset, end - offset, Charsets.UTF_8);
+        } else {
+            return "<disabled>"; //$NON-NLS-1$
+        }
+    }
+
+    /** Comparison function: *only* used for ASCII strings */
     @VisibleForTesting
     static int compare(byte[] data, int offset, byte terminator, CharSequence s,
-                       int begin, int end) {
+            int begin, int end) {
         int i = offset;
         int j = begin;
         for (; ; i++, j++) {
@@ -410,12 +483,10 @@ public class TypoLookup {
         return data[i] - terminator;
     }
 
-    /**
-     * Comparison function used for general UTF-8 encoded strings
-     */
+    /** Comparison function used for general UTF-8 encoded strings */
     @VisibleForTesting
     static int compare(byte[] data, int offset, byte terminator, byte[] s,
-                       int begin, int end) {
+            int begin, int end) {
         int i = offset;
         int j = begin;
         for (; ; i++, j++) {
@@ -470,126 +541,17 @@ public class TypoLookup {
         return data[i] - terminator;
     }
 
-    static boolean isUpperCase(byte b) {
-        return Character.isUpperCase((char) b);
-    }
-
-    static byte toLowerCase(byte b) {
-        return (byte) Character.toLowerCase((char) b);
-    }
-
-    static boolean isSpace(byte b) {
-        return Character.isWhitespace((char) b);
-    }
-
-    static boolean isLetter(byte b) {
-        // Assume that multi byte characters represent letters in other languages.
-        // Obviously, it could be unusual punctuation etc but letters are more likely
-        // in this context.
-        return Character.isLetter((char) b) || (b & 0x80) != 0;
-    }
-
-    private void readData(@NonNull LintClient client, @NonNull File xmlFile,
-                          @NonNull File binaryFile) {
-        if (!binaryFile.exists()) {
-            client.log(null, "%1$s does not exist", binaryFile);
-            return;
-        }
-        long start = System.currentTimeMillis();
-        try {
-            MappedByteBuffer buffer = Files.map(binaryFile, MapMode.READ_ONLY);
-            assert buffer.order() == ByteOrder.BIG_ENDIAN;
-
-            // First skip the header
-            byte[] expectedHeader = FILE_HEADER.getBytes(Charsets.US_ASCII);
-            buffer.rewind();
-            for (int offset = 0; offset < expectedHeader.length; offset++) {
-                if (expectedHeader[offset] != buffer.get()) {
-                    client.log(null, "Incorrect file header: not an typo database cache " +
-                            "file, or a corrupt cache file");
-                    return;
-                }
-            }
-
-            // Read in the format number
-            if (buffer.get() != BINARY_FORMAT_VERSION) {
-                // Force regeneration of new binary data with up to date format
-                if (createCache(client, xmlFile, binaryFile)) {
-                    readData(client, xmlFile, binaryFile); // Recurse
-                }
-
-                return;
-            }
-
-            mWordCount = buffer.getInt();
-
-            // Read in the word table indices;
-            int count = mWordCount;
-            int[] offsets = new int[count];
-
-            // Another idea: I can just store the DELTAS in the file (and add them up
-            // when reading back in) such that it takes just ONE byte instead of four!
-
-            for (int i = 0; i < count; i++) {
-                offsets[i] = buffer.getInt();
-            }
-
-            // No need to read in the rest -- we'll just keep the whole byte array in memory
-            // TODO: Make this code smarter/more efficient.
-            int size = buffer.limit();
-            byte[] b = new byte[size];
-            buffer.rewind();
-            buffer.get(b);
-            mData = b;
-            mIndices = offsets;
-
-            // TODO: We only need to keep the data portion here since we've initialized
-            // the offset array separately.
-            // TODO: Investigate (profile) accessing the byte buffer directly instead of
-            // accessing a byte array.
-        } catch (IOException e) {
-            client.log(e, null);
-        }
-        if (WRITE_STATS) {
-            long end = System.currentTimeMillis();
-            System.out.println("\nRead typo database in " + (end - start)
-                    + " milliseconds.");
-            System.out.println("Size of data table: " + mData.length + " bytes ("
-                    + Integer.toString(mData.length / 1024) + "k)\n");
-        }
-    }
-
-    // "Character" handling for bytes. This assumes that the bytes correspond to Unicode
-    // characters in the ISO 8859-1 range, which is are encoded the same way in UTF-8.
-    // This obviously won't work to for example uppercase to lowercase conversions for
-    // multi byte characters, which means we simply won't catch typos if the dictionaries
-    // contain these. None of the currently included dictionaries do. However, it does
-    // help us properly deal with punctuation and spacing characters.
-
-    // For debugging only
-    private String dumpEntry(int offset) {
-        if (DEBUG_SEARCH) {
-            int end = offset;
-            while (mData[end] != 0) {
-                end++;
-            }
-            return new String(mData, offset, end - offset, Charsets.UTF_8);
-        } else {
-            return "<disabled>"; //$NON-NLS-1$
-        }
-    }
-
     /**
      * Look up whether this word is a typo, and if so, return the typo itself
      * and one or more likely meanings
      *
-     * @param text  the string containing the word
+     * @param text the string containing the word
      * @param begin the index of the first character in the word
-     * @param end   the index of the first character after the word. Note that the
-     *              search may extend <b>beyond</b> this index, if for example the
-     *              word matches a multi-word typo in the dictionary
+     * @param end the index of the first character after the word. Note that the
+     *            search may extend <b>beyond</b> this index, if for example the
+     *            word matches a multi-word typo in the dictionary
      * @return a list of the typo itself followed by the replacement strings if
-     * the word represents a typo, and null otherwise
+     *         the word represents a typo, and null otherwise
      */
     @Nullable
     public List<String> getTypos(@NonNull CharSequence text, int begin, int end) {
@@ -612,7 +574,7 @@ public class TypoLookup {
             int offset = mIndices[middle];
 
             if (DEBUG_SEARCH) {
-                System.out.println("Comparing string " + text + " with entry at " + offset
+                System.out.println("Comparing string " + text +" with entry at " + offset
                         + ": " + dumpEntry(offset));
             }
 
@@ -676,12 +638,12 @@ public class TypoLookup {
      * and one or more likely meanings
      *
      * @param utf8Text the string containing the word, encoded as UTF-8
-     * @param begin    the index of the first character in the word
-     * @param end      the index of the first character after the word. Note that the
-     *                 search may extend <b>beyond</b> this index, if for example the
-     *                 word matches a multi-word typo in the dictionary
+     * @param begin the index of the first character in the word
+     * @param end the index of the first character after the word. Note that the
+     *            search may extend <b>beyond</b> this index, if for example the
+     *            word matches a multi-word typo in the dictionary
      * @return a list of the typo itself followed by the replacement strings if
-     * the word represents a typo, and null otherwise
+     *         the word represents a typo, and null otherwise
      */
     @Nullable
     public List<String> getTypos(@NonNull byte[] utf8Text, int begin, int end) {
@@ -695,7 +657,7 @@ public class TypoLookup {
 
             if (DEBUG_SEARCH) {
                 String s = new String(Arrays.copyOfRange(utf8Text, begin, end), Charsets.UTF_8);
-                System.out.println("Comparing string " + s + " with entry at " + offset
+                System.out.println("Comparing string " + s +" with entry at " + offset
                         + ": " + dumpEntry(offset));
                 System.out.println("   middle=" + middle + ", low=" + low + ", high=" + high);
             }
@@ -704,7 +666,7 @@ public class TypoLookup {
             int compare = compare(mData, offset, (byte) 0, utf8Text, begin, end);
 
             if (DEBUG_SEARCH) {
-                System.out.println(" signum=" + (int) Math.signum(compare) + ", delta=" + compare);
+                System.out.println(" signum=" + (int)Math.signum(compare) + ", delta=" + compare);
             }
 
             if (compare == 0) {
@@ -786,5 +748,31 @@ public class TypoLookup {
         }
 
         return words;
+    }
+
+    // "Character" handling for bytes. This assumes that the bytes correspond to Unicode
+    // characters in the ISO 8859-1 range, which is are encoded the same way in UTF-8.
+    // This obviously won't work to for example uppercase to lowercase conversions for
+    // multi byte characters, which means we simply won't catch typos if the dictionaries
+    // contain these. None of the currently included dictionaries do. However, it does
+    // help us properly deal with punctuation and spacing characters.
+
+    static boolean isUpperCase(byte b) {
+        return Character.isUpperCase((char) b);
+    }
+
+    static byte toLowerCase(byte b) {
+        return (byte) Character.toLowerCase((char) b);
+    }
+
+    static boolean isSpace(byte b) {
+        return Character.isWhitespace((char) b);
+    }
+
+    static boolean isLetter(byte b) {
+        // Assume that multi byte characters represent letters in other languages.
+        // Obviously, it could be unusual punctuation etc but letters are more likely
+        // in this context.
+        return Character.isLetter((char) b) || (b & 0x80) != 0;
     }
 }

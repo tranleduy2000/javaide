@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
-import com.duy.dx .rop.type.Type;
+import com.duy.dx.rop.type.Type;
 
 /**
  * Constants of type {@code CONSTANT_NameAndType_info}.
@@ -129,6 +129,7 @@ public final class CstNat extends Constant {
      *
      * @return {@code non-null;} the human form
      */
+    @Override
     public String toHuman() {
         return name.toHuman() + ':' + descriptor.toHuman();
     }

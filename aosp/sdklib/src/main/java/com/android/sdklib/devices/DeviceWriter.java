@@ -16,8 +16,6 @@
 
 package com.android.sdklib.devices;
 
-import android.graphics.Point;
-
 import com.android.dvlib.DeviceSchema;
 import com.android.resources.UiMode;
 
@@ -26,6 +24,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import android.graphics.Point;//TODO fix it
 import java.io.File;
 import java.io.OutputStream;
 import java.util.Collection;

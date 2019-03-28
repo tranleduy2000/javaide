@@ -16,6 +16,9 @@
 
 package com.android.tools.lint.checks;
 
+import static com.android.SdkConstants.ANDROID_PKG;
+import static com.android.SdkConstants.DOT_XML;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.annotations.VisibleForTesting;
@@ -45,9 +48,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.android.SdkConstants.ANDROID_PKG;
-import static com.android.SdkConstants.DOT_XML;
 
 /**
  * Database for API checking: Allows quick lookup of a given class, method or field
@@ -608,7 +608,7 @@ public class ApiLookup {
         if (file.exists()) {
             file.delete();
         }
-        FileOutputStream output = new FileOutputStream(file);
+        FileOutputStream output = Files.newOutputStreamSupplier(file).getOutput();
         output.write(b);
         output.close();
     }

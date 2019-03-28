@@ -20,7 +20,6 @@ import com.android.resources.Keyboard;
 import com.android.resources.Navigation;
 import com.android.resources.TouchScreen;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
@@ -41,260 +40,36 @@ public final class ManifestData {
      * attribute glEsVersion set.
      */
     public static final int GL_ES_VERSION_NOT_SET = -1;
-    /**
-     * List of all activities
-     */
-    final ArrayList<Activity> mActivities = new ArrayList<Activity>();
-    /**
-     * List of all instrumentations declared by the manifest
-     */
-    final ArrayList<Instrumentation> mInstrumentations =
-            new ArrayList<Instrumentation>();
-    /**
-     * List of all libraries in use declared by the manifest
-     */
-    final ArrayList<UsesLibrary> mLibraries = new ArrayList<UsesLibrary>();
-    /**
-     * List of all feature in use declared by the manifest
-     */
-    final ArrayList<UsesFeature> mFeatures = new ArrayList<UsesFeature>();
-    /**
-     * Application package
-     */
+
+    /** Application package */
     String mPackage;
-    /**
-     * Application version Code, null if the attribute is not present.
-     */
+    /** Application version Code, null if the attribute is not present. */
     Integer mVersionCode = null;
-    /**
-     * Launcher activity
-     */
+    /** List of all activities */
+    final ArrayList<Activity> mActivities = new ArrayList<Activity>();
+    /** Launcher activity */
     Activity mLauncherActivity = null;
-    /**
-     * list of process names declared by the manifest
-     */
+    /** list of process names declared by the manifest */
     Set<String> mProcesses = null;
-    /**
-     * debuggable attribute value. If null, the attribute is not present.
-     */
+    /** debuggable attribute value. If null, the attribute is not present. */
     Boolean mDebuggable = null;
+    /** API level requirement. if null the attribute was not present. */
+    private String mMinSdkVersionString = null;
+    /** API level requirement. Default is 1 even if missing. If value is a codename, then it'll be
+     * 0 instead. */
+    private int mMinSdkVersion = 1;
+    private int mTargetSdkVersion = 0;
+    /** List of all instrumentations declared by the manifest */
+    final ArrayList<Instrumentation> mInstrumentations =
+        new ArrayList<Instrumentation>();
+    /** List of all libraries in use declared by the manifest */
+    final ArrayList<UsesLibrary> mLibraries = new ArrayList<UsesLibrary>();
+    /** List of all feature in use declared by the manifest */
+    final ArrayList<UsesFeature> mFeatures = new ArrayList<UsesFeature>();
+
     SupportsScreens mSupportsScreensFromManifest;
     SupportsScreens mSupportsScreensValues;
     UsesConfiguration mUsesConfiguration;
-    /**
-     * API level requirement. if null the attribute was not present.
-     */
-    private String mMinSdkVersionString = null;
-    /**
-     * API level requirement. Default is 1 even if missing. If value is a codename, then it'll be
-     * 0 instead.
-     */
-    private int mMinSdkVersion = 1;
-    private int mTargetSdkVersion = 0;
-
-    /**
-     * Returns the package defined in the manifest, if found.
-     *
-     * @return The package name or null if not found.
-     */
-    public String getPackage() {
-        return mPackage;
-    }
-
-    /**
-     * Returns the versionCode value defined in the manifest, if found, null otherwise.
-     *
-     * @return the versionCode or null if not found.
-     */
-    public Integer getVersionCode() {
-        return mVersionCode;
-    }
-
-    /**
-     * Returns the list of activities found in the manifest.
-     *
-     * @return An array of fully qualified class names, or empty if no activity were found.
-     */
-    public Activity[] getActivities() {
-        return mActivities.toArray(new Activity[mActivities.size()]);
-    }
-
-    /**
-     * Returns the name of one activity found in the manifest, that is configured to show
-     * up in the HOME screen.
-     *
-     * @return the fully qualified name of a HOME activity or null if none were found.
-     */
-    public Activity getLauncherActivity() {
-        return mLauncherActivity;
-    }
-
-    /**
-     * Returns the list of process names declared by the manifest.
-     */
-    public String[] getProcesses() {
-        if (mProcesses != null) {
-            return mProcesses.toArray(new String[mProcesses.size()]);
-        }
-
-        return new String[0];
-    }
-
-    /**
-     * Returns the <code>debuggable</code> attribute value or null if it is not set.
-     */
-    public Boolean getDebuggable() {
-        return mDebuggable;
-    }
-
-    /**
-     * Returns the <code>minSdkVersion</code> attribute, or null if it's not set.
-     */
-    public String getMinSdkVersionString() {
-        return mMinSdkVersionString;
-    }
-
-    /**
-     * Sets the value of the <code>minSdkVersion</code> attribute.
-     *
-     * @param minSdkVersion the string value of the attribute in the manifest.
-     */
-    public void setMinSdkVersionString(String minSdkVersion) {
-        mMinSdkVersionString = minSdkVersion;
-        if (mMinSdkVersionString != null) {
-            try {
-                mMinSdkVersion = Integer.parseInt(mMinSdkVersionString);
-            } catch (NumberFormatException e) {
-                mMinSdkVersion = MIN_SDK_CODENAME;
-            }
-        }
-    }
-
-    /**
-     * Returns the <code>minSdkVersion</code> attribute, or 0 if it's not set or is a codename.
-     *
-     * @see #getMinSdkVersionString()
-     */
-    public int getMinSdkVersion() {
-        return mMinSdkVersion;
-    }
-
-    /**
-     * Sets the value of the <code>minSdkVersion</code> attribute.
-     *
-     * @param targetSdkVersion the string value of the attribute in the manifest.
-     */
-    public void setTargetSdkVersionString(String targetSdkVersion) {
-        if (targetSdkVersion != null) {
-            try {
-                mTargetSdkVersion = Integer.parseInt(targetSdkVersion);
-            } catch (NumberFormatException e) {
-                // keep the value at 0.
-            }
-        }
-    }
-
-    /**
-     * Returns the <code>targetSdkVersion</code> attribute, or the same value as
-     * {@link #getMinSdkVersion()} if it was not set in the manifest.
-     */
-    public int getTargetSdkVersion() {
-        if (mTargetSdkVersion == 0) {
-            return getMinSdkVersion();
-        }
-
-        return mTargetSdkVersion;
-    }
-
-    /**
-     * Returns the list of instrumentations found in the manifest.
-     *
-     * @return An array of {@link Instrumentation}, or empty if no instrumentations were
-     * found.
-     */
-    public Instrumentation[] getInstrumentations() {
-        return mInstrumentations.toArray(new Instrumentation[mInstrumentations.size()]);
-    }
-
-    /**
-     * Returns the list of libraries in use found in the manifest.
-     *
-     * @return An array of {@link UsesLibrary} objects, or empty if no libraries were found.
-     */
-    public UsesLibrary[] getUsesLibraries() {
-        return mLibraries.toArray(new UsesLibrary[mLibraries.size()]);
-    }
-
-    /**
-     * Returns the list of features in use found in the manifest.
-     *
-     * @return An array of {@link UsesFeature} objects, or empty if no libraries were found.
-     */
-    public UsesFeature[] getUsesFeatures() {
-        return mFeatures.toArray(new UsesFeature[mFeatures.size()]);
-    }
-
-    /**
-     * Returns the glEsVersion from a <uses-feature> or {@link #GL_ES_VERSION_NOT_SET} if not set.
-     */
-    public int getGlEsVersion() {
-        for (UsesFeature feature : mFeatures) {
-            if (feature.mGlEsVersion > 0) {
-                return feature.mGlEsVersion;
-            }
-        }
-        return GL_ES_VERSION_NOT_SET;
-    }
-
-    /**
-     * Returns the {@link SupportsScreens} object representing the <code>supports-screens</code>
-     * node, or null if the node doesn't exist at all.
-     * Some values in the {@link SupportsScreens} instance maybe null, indicating that they
-     * were not present in the manifest. To get an instance that contains the values, as seen
-     * by the Android platform when the app is running, use {@link #getSupportsScreensValues()}.
-     */
-    public SupportsScreens getSupportsScreensFromManifest() {
-        return mSupportsScreensFromManifest;
-    }
-
-    /**
-     * Returns an always non-null instance of {@link SupportsScreens} that's been initialized with
-     * the default values, and the values from the manifest.
-     * The default values depends on the manifest values for minSdkVersion and targetSdkVersion.
-     */
-    public synchronized SupportsScreens getSupportsScreensValues() {
-        if (mSupportsScreensValues == null) {
-            if (mSupportsScreensFromManifest == null) {
-                mSupportsScreensValues = SupportsScreens.getDefaultValues(getTargetSdkVersion());
-            } else {
-                // get a SupportsScreen that replace the missing values with default values.
-                mSupportsScreensValues = mSupportsScreensFromManifest.resolveSupportsScreensValues(
-                        getTargetSdkVersion());
-            }
-        }
-
-        return mSupportsScreensValues;
-    }
-
-    /**
-     * Returns the {@link UsesConfiguration} object representing the <code>uses-configuration</code>
-     * node, or null if the node doesn't exist at all.
-     */
-    public UsesConfiguration getUsesConfiguration() {
-        return mUsesConfiguration;
-    }
-
-    void addProcessName(String processName) {
-        if (mProcesses == null) {
-            mProcesses = new TreeSet<String>();
-        }
-
-        if (processName.startsWith(":")) {
-            mProcesses.add(mPackage + processName);
-        } else {
-            mProcesses.add(processName);
-        }
-    }
 
     /**
      * Instrumentation info obtained from manifest
@@ -326,7 +101,7 @@ public final class ManifestData {
     /**
      * Activity info obtained from the manifest.
      */
-    public static final class Activity implements Serializable {
+    public static final class Activity {
         private final String mName;
         private final boolean mIsExported;
         private boolean mHasAction = false;
@@ -358,8 +133,7 @@ public final class ManifestData {
             mHasAction = hasAction;
         }
 
-        /**
-         * If the activity doesn't yet have a filter set for the launcher, this resets both
+        /** If the activity doesn't yet have a filter set for the launcher, this resets both
          * flags. This is to handle multiple intent-filters where one could have the valid
          * action, and another one of the valid category.
          */
@@ -381,7 +155,7 @@ public final class ManifestData {
     /**
      * Class representing the <code>supports-screens</code> node in the manifest.
      * By default, all the getters will return null if there was no value defined in the manifest.
-     * <p>
+     *
      * To get an instance with all the actual values, use {@link #resolveSupportsScreensValues(int)}
      */
     public static final class SupportsScreens {
@@ -397,7 +171,6 @@ public final class ManifestData {
         /**
          * Instantiate an instance from a string. The string must have been created with
          * {@link #getEncodedValues()}.
-         *
          * @param value the string.
          */
         public SupportsScreens(String value) {
@@ -413,7 +186,6 @@ public final class ManifestData {
         /**
          * Returns an instance of {@link SupportsScreens} initialized with the default values
          * based on the given targetSdkVersion.
-         *
          * @param targetSdkVersion
          */
         public static SupportsScreens getDefaultValues(int targetSdkVersion) {
@@ -424,7 +196,7 @@ public final class ManifestData {
             // non normal screens were not supported by default. After they are considered
             // supported.
             result.mResizeable = result.mAnyDensity = result.mSmallScreens = result.mLargeScreens =
-                    targetSdkVersion <= 3 ? Boolean.FALSE : Boolean.TRUE;
+                targetSdkVersion <= 3 ? Boolean.FALSE : Boolean.TRUE;
 
             return result;
         }
@@ -432,9 +204,8 @@ public final class ManifestData {
         /**
          * Returns a version of the receiver for which all values have been set, even if they
          * were not present in the manifest.
-         *
          * @param targetSdkVersion the target api level of the app, since this has an effect
-         *                         on default values.
+         * on default values.
          */
         public SupportsScreens resolveSupportsScreensValues(int targetSdkVersion) {
             SupportsScreens result = getDefaultValues(targetSdkVersion);
@@ -528,11 +299,11 @@ public final class ManifestData {
                 // (or null), we can simply check they are identical and not bother with
                 // calling equals (which would require to check != null.
                 // see #getConstanntBoolean(Boolean)
-                return mResizeable == support.mResizeable &&
-                        mAnyDensity == support.mAnyDensity &&
-                        mSmallScreens == support.mSmallScreens &&
-                        mNormalScreens == support.mNormalScreens &&
-                        mLargeScreens == support.mLargeScreens;
+                return mResizeable    == support.mResizeable &&
+                       mAnyDensity    == support.mAnyDensity &&
+                       mSmallScreens  == support.mSmallScreens &&
+                       mNormalScreens == support.mNormalScreens &&
+                       mLargeScreens  == support.mLargeScreens;
             }
 
             return false;
@@ -544,11 +315,11 @@ public final class ManifestData {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((mAnyDensity == null) ? 0 : mAnyDensity.hashCode());
-            result = prime * result + ((mLargeScreens == null) ? 0 : mLargeScreens.hashCode());
+            result = prime * result + ((mAnyDensity    == null) ? 0 : mAnyDensity.hashCode());
+            result = prime * result + ((mLargeScreens  == null) ? 0 : mLargeScreens.hashCode());
             result = prime * result + ((mNormalScreens == null) ? 0 : mNormalScreens.hashCode());
-            result = prime * result + ((mResizeable == null) ? 0 : mResizeable.hashCode());
-            result = prime * result + ((mSmallScreens == null) ? 0 : mSmallScreens.hashCode());
+            result = prime * result + ((mResizeable    == null) ? 0 : mResizeable.hashCode());
+            result = prime * result + ((mSmallScreens  == null) ? 0 : mSmallScreens.hashCode());
             return result;
         }
 
@@ -556,7 +327,6 @@ public final class ManifestData {
          * Returns true if the two instances support the same screen sizes.
          * This is similar to {@link #equals(Object)} except that it ignores the values of
          * {@link #getAnyDensity()} and {@link #getResizeable()}.
-         *
          * @param support the other instance to compare to.
          * @return true if the two instances support the same screen sizes.
          */
@@ -568,7 +338,7 @@ public final class ManifestData {
 
             // This only checks that matter here are the screen sizes. resizeable and anyDensity
             // are not checked.
-            return mSmallScreens == support.mSmallScreens &&
+            return  mSmallScreens == support.mSmallScreens &&
                     mNormalScreens == support.mNormalScreens &&
                     mLargeScreens == support.mLargeScreens;
         }
@@ -576,7 +346,6 @@ public final class ManifestData {
         /**
          * Returns true if the two instances have strictly different screen size support.
          * This means that there is no screen size that they both support.
-         *
          * @param support the other instance to compare to.
          * @return true if they are strictly different.
          */
@@ -598,9 +367,8 @@ public final class ManifestData {
          * anyDensity), and considers that
          * {@link #hasStrictlyDifferentScreenSupportAs(SupportsScreens)} returns true and
          * {@link #overlapWith(SupportsScreens)} returns false.
-         *
          * @throws IllegalArgumentException if the two instanced are not strictly different or
-         *                                  overlap each other
+         * overlap each other
          * @see #hasStrictlyDifferentScreenSupportAs(SupportsScreens)
          * @see #overlapWith(SupportsScreens)
          */
@@ -672,7 +440,6 @@ public final class ManifestData {
          * Returns true if the two instance overlap with each other.
          * This can happen if one instances supports a size, when the other instance doesn't while
          * supporting a size above and a size below.
-         *
          * @param otherSS the other supports-screens to compare to.
          */
         public boolean overlapWith(SupportsScreens otherSS) {
@@ -779,6 +546,201 @@ public final class ManifestData {
          */
         public TouchScreen getReqTouchScreen() {
             return mReqTouchScreen;
+        }
+    }
+
+    /**
+     * Returns the package defined in the manifest, if found.
+     * @return The package name or null if not found.
+     */
+    public String getPackage() {
+        return mPackage;
+    }
+
+    /**
+     * Returns the versionCode value defined in the manifest, if found, null otherwise.
+     * @return the versionCode or null if not found.
+     */
+    public Integer getVersionCode() {
+        return mVersionCode;
+    }
+
+    /**
+     * Returns the list of activities found in the manifest.
+     * @return An array of fully qualified class names, or empty if no activity were found.
+     */
+    public Activity[] getActivities() {
+        return mActivities.toArray(new Activity[mActivities.size()]);
+    }
+
+    /**
+     * Returns the name of one activity found in the manifest, that is configured to show
+     * up in the HOME screen.
+     * @return the fully qualified name of a HOME activity or null if none were found.
+     */
+    public Activity getLauncherActivity() {
+        return mLauncherActivity;
+    }
+
+    /**
+     * Returns the list of process names declared by the manifest.
+     */
+    public String[] getProcesses() {
+        if (mProcesses != null) {
+            return mProcesses.toArray(new String[mProcesses.size()]);
+        }
+
+        return new String[0];
+    }
+
+    /**
+     * Returns the <code>debuggable</code> attribute value or null if it is not set.
+     */
+    public Boolean getDebuggable() {
+        return mDebuggable;
+    }
+
+    /**
+     * Returns the <code>minSdkVersion</code> attribute, or null if it's not set.
+     */
+    public String getMinSdkVersionString() {
+        return mMinSdkVersionString;
+    }
+
+    /**
+     * Sets the value of the <code>minSdkVersion</code> attribute.
+     * @param minSdkVersion the string value of the attribute in the manifest.
+     */
+    public void setMinSdkVersionString(String minSdkVersion) {
+        mMinSdkVersionString = minSdkVersion;
+        if (mMinSdkVersionString != null) {
+            try {
+                mMinSdkVersion = Integer.parseInt(mMinSdkVersionString);
+            } catch (NumberFormatException e) {
+                mMinSdkVersion = MIN_SDK_CODENAME;
+            }
+        }
+    }
+
+    /**
+     * Returns the <code>minSdkVersion</code> attribute, or 0 if it's not set or is a codename.
+     * @see #getMinSdkVersionString()
+     */
+    public int getMinSdkVersion() {
+        return mMinSdkVersion;
+    }
+
+
+    /**
+     * Sets the value of the <code>minSdkVersion</code> attribute.
+     * @param targetSdkVersion the string value of the attribute in the manifest.
+     */
+    public void setTargetSdkVersionString(String targetSdkVersion) {
+        if (targetSdkVersion != null) {
+            try {
+                mTargetSdkVersion = Integer.parseInt(targetSdkVersion);
+            } catch (NumberFormatException e) {
+                // keep the value at 0.
+            }
+        }
+    }
+
+    /**
+     * Returns the <code>targetSdkVersion</code> attribute, or the same value as
+     * {@link #getMinSdkVersion()} if it was not set in the manifest.
+     */
+    public int getTargetSdkVersion() {
+        if (mTargetSdkVersion == 0) {
+            return getMinSdkVersion();
+        }
+
+        return mTargetSdkVersion;
+    }
+
+    /**
+     * Returns the list of instrumentations found in the manifest.
+     * @return An array of {@link Instrumentation}, or empty if no instrumentations were
+     * found.
+     */
+    public Instrumentation[] getInstrumentations() {
+        return mInstrumentations.toArray(new Instrumentation[mInstrumentations.size()]);
+    }
+
+    /**
+     * Returns the list of libraries in use found in the manifest.
+     * @return An array of {@link UsesLibrary} objects, or empty if no libraries were found.
+     */
+    public UsesLibrary[] getUsesLibraries() {
+        return mLibraries.toArray(new UsesLibrary[mLibraries.size()]);
+    }
+
+    /**
+     * Returns the list of features in use found in the manifest.
+     * @return An array of {@link UsesFeature} objects, or empty if no libraries were found.
+     */
+    public UsesFeature[] getUsesFeatures() {
+        return mFeatures.toArray(new UsesFeature[mFeatures.size()]);
+    }
+
+    /**
+     * Returns the glEsVersion from a <uses-feature> or {@link #GL_ES_VERSION_NOT_SET} if not set.
+     */
+    public int getGlEsVersion() {
+        for (UsesFeature feature : mFeatures) {
+            if (feature.mGlEsVersion > 0) {
+                return feature.mGlEsVersion;
+            }
+        }
+        return GL_ES_VERSION_NOT_SET;
+    }
+
+    /**
+     * Returns the {@link SupportsScreens} object representing the <code>supports-screens</code>
+     * node, or null if the node doesn't exist at all.
+     * Some values in the {@link SupportsScreens} instance maybe null, indicating that they
+     * were not present in the manifest. To get an instance that contains the values, as seen
+     * by the Android platform when the app is running, use {@link #getSupportsScreensValues()}.
+     */
+    public SupportsScreens getSupportsScreensFromManifest() {
+        return mSupportsScreensFromManifest;
+    }
+
+    /**
+     * Returns an always non-null instance of {@link SupportsScreens} that's been initialized with
+     * the default values, and the values from the manifest.
+     * The default values depends on the manifest values for minSdkVersion and targetSdkVersion.
+     */
+    public synchronized SupportsScreens getSupportsScreensValues() {
+        if (mSupportsScreensValues == null) {
+            if (mSupportsScreensFromManifest == null) {
+                mSupportsScreensValues = SupportsScreens.getDefaultValues(getTargetSdkVersion());
+            } else {
+                // get a SupportsScreen that replace the missing values with default values.
+                mSupportsScreensValues = mSupportsScreensFromManifest.resolveSupportsScreensValues(
+                        getTargetSdkVersion());
+            }
+        }
+
+        return mSupportsScreensValues;
+    }
+
+    /**
+     * Returns the {@link UsesConfiguration} object representing the <code>uses-configuration</code>
+     * node, or null if the node doesn't exist at all.
+     */
+    public UsesConfiguration getUsesConfiguration() {
+        return mUsesConfiguration;
+    }
+
+    void addProcessName(String processName) {
+        if (mProcesses == null) {
+            mProcesses = new TreeSet<String>();
+        }
+
+        if (processName.startsWith(":")) {
+            mProcesses.add(mPackage + processName);
+        } else {
+            mProcesses.add(processName);
         }
     }
 

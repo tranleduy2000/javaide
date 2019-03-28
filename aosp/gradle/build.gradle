@@ -26,7 +26,6 @@ dependencies {
     // https://mvnrepository.com/artifact/org.gradle/gradle-core
     api group: 'org.gradle', name: 'gradle-core', version: '3.0'
 
-    testImplementation 'junit:junit:4.12'
     //noinspection GradleDependency
     //testImplementation 'commons-io:commons-io:2.3'
 }

@@ -1,9 +1,7 @@
 package PACKAGE;
 
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
-import PACKAGE.R;
+import android.os.Bundle;
 
 public class ACTIVITY_NAME extends AppCompatActivity {
 
@@ -11,7 +9,5 @@ public class ACTIVITY_NAME extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
     }
-
 }

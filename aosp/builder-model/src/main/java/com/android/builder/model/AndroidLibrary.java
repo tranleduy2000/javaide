@@ -117,6 +117,14 @@ public interface AndroidLibrary extends Library {
     File getAidlFolder();
 
     /**
+     * Returns the location of the renderscript import folder.
+     *
+     * @return a File for the folder. The file may not point to an existing folder.
+     */
+    @NonNull
+    File getRenderscriptFolder();
+
+    /**
      * Returns the location of the proguard files.
      *
      * @return a File for the file. The file may not point to an existing file.

@@ -18,14 +18,11 @@ package com.android.sdklib.repository;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.android.sdklib.SdkManager;
-import com.android.utils.FileUtils;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 /**

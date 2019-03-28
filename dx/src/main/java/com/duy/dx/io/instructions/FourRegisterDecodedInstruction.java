@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .io.instructions;
+package com.duy.dx.io.instructions;
 
-import com.duy.dx .io.IndexType;
+import com.duy.dx.io.IndexType;
 
 /**
  * A decoded Dalvik instruction which has five register arguments.
@@ -48,32 +48,38 @@ public final class FourRegisterDecodedInstruction extends DecodedInstruction {
         this.d = d;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getRegisterCount() {
         return 4;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getA() {
         return a;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getB() {
         return b;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getC() {
         return c;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getD() {
         return d;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public DecodedInstruction withIndex(int newIndex) {
         return new FourRegisterDecodedInstruction(
                 getFormat(), getOpcode(), newIndex, getIndexType(),

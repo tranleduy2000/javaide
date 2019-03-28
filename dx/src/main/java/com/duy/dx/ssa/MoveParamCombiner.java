@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.CstInsn;
-import com.duy.dx .rop.code.LocalItem;
-import com.duy.dx .rop.code.RegOps;
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.cst.CstInteger;
+import com.duy.dx.rop.code.CstInsn;
+import com.duy.dx.rop.code.LocalItem;
+import com.duy.dx.rop.code.RegOps;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.cst.CstInteger;
 import java.util.HashSet;
 import java.util.List;
 
@@ -58,10 +58,13 @@ public class MoveParamCombiner {
         final HashSet<SsaInsn> deletedInsns = new HashSet();
 
         ssaMeth.forEachInsn(new SsaInsn.Visitor() {
+            @Override
             public void visitMoveInsn (NormalSsaInsn insn) {
             }
+            @Override
             public void visitPhiInsn (PhiInsn phi) {
             }
+            @Override
             public void visitNonMoveInsn (NormalSsaInsn insn) {
                 if (insn.getOpcode().getOpcode() != RegOps.MOVE_PARAM) {
                     return;
@@ -104,12 +107,14 @@ public class MoveParamCombiner {
                      */
 
                     RegisterMapper mapper = new RegisterMapper() {
-                        /** @inheritDoc */
+                        /** {@inheritDoc} */
+                        @Override
                         public int getNewRegisterCount() {
                             return ssaMeth.getRegCount();
                         }
 
-                        /** @inheritDoc */
+                        /** {@inheritDoc} */
+                        @Override
                         public RegisterSpec map(RegisterSpec registerSpec) {
                             if (registerSpec.getReg() == specB.getReg()) {
                                 return specA;

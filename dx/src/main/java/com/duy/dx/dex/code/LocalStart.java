@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .ssa.RegisterMapper;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.ssa.RegisterMapper;
 
 /**
  * Pseudo-instruction which is used to introduce a new local variable. That

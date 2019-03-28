@@ -14,35 +14,37 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .dex.DexOptions;
-import com.duy.dx .dex.code.form.Form10t;
-import com.duy.dx .dex.code.form.Form10x;
-import com.duy.dx .dex.code.form.Form11n;
-import com.duy.dx .dex.code.form.Form11x;
-import com.duy.dx .dex.code.form.Form12x;
-import com.duy.dx .dex.code.form.Form20t;
-import com.duy.dx .dex.code.form.Form21c;
-import com.duy.dx .dex.code.form.Form21h;
-import com.duy.dx .dex.code.form.Form21s;
-import com.duy.dx .dex.code.form.Form21t;
-import com.duy.dx .dex.code.form.Form22b;
-import com.duy.dx .dex.code.form.Form22c;
-import com.duy.dx .dex.code.form.Form22s;
-import com.duy.dx .dex.code.form.Form22t;
-import com.duy.dx .dex.code.form.Form22x;
-import com.duy.dx .dex.code.form.Form23x;
-import com.duy.dx .dex.code.form.Form30t;
-import com.duy.dx .dex.code.form.Form31c;
-import com.duy.dx .dex.code.form.Form31i;
-import com.duy.dx .dex.code.form.Form31t;
-import com.duy.dx .dex.code.form.Form32x;
-import com.duy.dx .dex.code.form.Form35c;
-import com.duy.dx .dex.code.form.Form3rc;
-import com.duy.dx .dex.code.form.Form51l;
-import com.duy.dx .dex.code.form.SpecialFormat;
-import com.duy.dx .io.Opcodes;
+import com.duy.dx.dex.DexOptions;
+import com.duy.dx.dex.code.form.Form10t;
+import com.duy.dx.dex.code.form.Form10x;
+import com.duy.dx.dex.code.form.Form11n;
+import com.duy.dx.dex.code.form.Form11x;
+import com.duy.dx.dex.code.form.Form12x;
+import com.duy.dx.dex.code.form.Form20t;
+import com.duy.dx.dex.code.form.Form21c;
+import com.duy.dx.dex.code.form.Form21h;
+import com.duy.dx.dex.code.form.Form21s;
+import com.duy.dx.dex.code.form.Form21t;
+import com.duy.dx.dex.code.form.Form22b;
+import com.duy.dx.dex.code.form.Form22c;
+import com.duy.dx.dex.code.form.Form22s;
+import com.duy.dx.dex.code.form.Form22t;
+import com.duy.dx.dex.code.form.Form22x;
+import com.duy.dx.dex.code.form.Form23x;
+import com.duy.dx.dex.code.form.Form30t;
+import com.duy.dx.dex.code.form.Form31c;
+import com.duy.dx.dex.code.form.Form31i;
+import com.duy.dx.dex.code.form.Form31t;
+import com.duy.dx.dex.code.form.Form32x;
+import com.duy.dx.dex.code.form.Form35c;
+import com.duy.dx.dex.code.form.Form3rc;
+import com.duy.dx.dex.code.form.Form45cc;
+import com.duy.dx.dex.code.form.Form4rcc;
+import com.duy.dx.dex.code.form.Form51l;
+import com.duy.dx.dex.code.form.SpecialFormat;
+import com.duy.dx.io.Opcodes;
 
 /**
  * Standard instances of {@link Dop} and utility methods for getting
@@ -935,6 +937,30 @@ public final class Dops {
         new Dop(Opcodes.USHR_INT_LIT8, Opcodes.USHR_INT,
             Opcodes.NO_NEXT, Form22b.THE_ONE, true);
 
+    public static final Dop INVOKE_POLYMORPHIC =
+        new Dop(Opcodes.INVOKE_POLYMORPHIC, Opcodes.INVOKE_POLYMORPHIC,
+            Opcodes.INVOKE_POLYMORPHIC_RANGE, Form45cc.THE_ONE, false);
+
+    public static final Dop INVOKE_POLYMORPHIC_RANGE =
+        new Dop(Opcodes.INVOKE_POLYMORPHIC_RANGE, Opcodes.INVOKE_POLYMORPHIC,
+            Opcodes.NO_NEXT, Form4rcc.THE_ONE, false);
+
+    public static final Dop INVOKE_CUSTOM =
+        new Dop(Opcodes.INVOKE_CUSTOM, Opcodes.INVOKE_CUSTOM,
+            Opcodes.INVOKE_CUSTOM_RANGE, Form35c.THE_ONE, false);
+
+    public static final Dop INVOKE_CUSTOM_RANGE =
+        new Dop(Opcodes.INVOKE_CUSTOM_RANGE, Opcodes.INVOKE_CUSTOM,
+            Opcodes.NO_NEXT, Form3rc.THE_ONE, false);
+
+    public static final Dop CONST_METHOD_HANDLE =
+        new Dop(Opcodes.CONST_METHOD_HANDLE, Opcodes.CONST_METHOD_HANDLE,
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
+
+    public static final Dop CONST_METHOD_TYPE =
+        new Dop(Opcodes.CONST_METHOD_TYPE, Opcodes.CONST_METHOD_TYPE,
+            Opcodes.NO_NEXT, Form21c.THE_ONE, true);
+
     // END(dops)
 
     // Static initialization.
@@ -1162,6 +1188,12 @@ public final class Dops {
         set(SHL_INT_LIT8);
         set(SHR_INT_LIT8);
         set(USHR_INT_LIT8);
+        set(INVOKE_POLYMORPHIC);
+        set(INVOKE_POLYMORPHIC_RANGE);
+        set(INVOKE_CUSTOM);
+        set(INVOKE_CUSTOM_RANGE);
+        set(CONST_METHOD_HANDLE);
+        set(CONST_METHOD_TYPE);
         // END(dops-init)
     }
 

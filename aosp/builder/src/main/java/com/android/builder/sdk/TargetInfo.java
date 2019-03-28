@@ -24,19 +24,22 @@ import com.android.sdklib.IAndroidTarget;
  * The SDK Target information needed to build a project.
  */
 public class TargetInfo {
+
     @NonNull
     private final IAndroidTarget mTarget;
     @NonNull
     private final BuildToolInfo mBuildToolInfo;
 
-    TargetInfo(@NonNull IAndroidTarget target, @NonNull BuildToolInfo buildToolInfo) {
+    TargetInfo(
+            @NonNull IAndroidTarget target,
+            @NonNull BuildToolInfo buildToolInfo) {
+
         mTarget = target;
         mBuildToolInfo = buildToolInfo;
     }
 
     /**
      * Returns the compilation target
-     *
      * @return the target.
      */
     @NonNull
@@ -46,7 +49,6 @@ public class TargetInfo {
 
     /**
      * Returns the BuildToolInfo
-     *
      * @return the build tool info
      */
     @NonNull

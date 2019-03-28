@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeBearer;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeBearer;
+import com.duy.dx.util.Hex;
 
 /**
  * Representation of a subroutine return address. In Java verification,
@@ -52,31 +52,37 @@ public final class ReturnAddress implements TypeBearer {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         return toString();
     }
 
     /** {@inheritDoc} */
+    @Override
     public Type getType() {
         return Type.RETURN_ADDRESS;
     }
 
     /** {@inheritDoc} */
+    @Override
     public TypeBearer getFrameType() {
         return this;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getBasicType() {
         return Type.RETURN_ADDRESS.getBasicType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getBasicFrameType() {
         return Type.RETURN_ADDRESS.getBasicFrameType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isConstant() {
         return false;
     }

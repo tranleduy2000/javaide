@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
 import com.duy.dex.Leb128;
-import com.duy.dx .rop.code.AccessFlags;
-import com.duy.dx .rop.cst.CstFieldRef;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.code.AccessFlags;
+import com.duy.dx.rop.cst.CstFieldRef;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
 import java.io.PrintWriter;
 
 /**
@@ -54,11 +54,13 @@ public final class EncodedField extends EncodedMember
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
         return field.hashCode();
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean equals(Object other) {
         if (! (other instanceof EncodedField)) {
             return false;
@@ -75,6 +77,7 @@ public final class EncodedField extends EncodedMember
      * case that two different items with the same method constant
      * ever appear in the same list (or same file, even).</p>
      */
+    @Override
     public int compareTo(EncodedField other) {
         return field.compareTo(other.field);
     }
@@ -82,7 +85,7 @@ public final class EncodedField extends EncodedMember
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(100);
+        StringBuilder sb = new StringBuilder(100);
 
         sb.append(getClass().getName());
         sb.append('{');
@@ -107,6 +110,7 @@ public final class EncodedField extends EncodedMember
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         return field.toHuman();
     }

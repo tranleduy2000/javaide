@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.iface;
+package com.duy.dx.cf.iface;
 
-import com.duy.dx .rop.cst.TypedConstant;
+import com.duy.dx.rop.cst.TypedConstant;
 
 /**
  * Interface representing fields of class files.

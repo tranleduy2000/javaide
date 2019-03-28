@@ -160,21 +160,49 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         File resDir = project.getResDir();
 
         //drawable
+        copyAssets("templates/app/ic_launcher_background.xml",
+                new File(resDir, "drawable/ic_launcher_background.xml"));
+
+        //drawable v24
+        copyAssets("templates/app/ic_launcher_foreground_v24.xml",
+                new File(resDir, "drawable-v24/ic_launcher_foreground.xml"));
+
+        //mipmap
         copyAssets("templates/app/ic_launcher_hdpi.png",
-                new File(resDir, "drawable-xhdpi/ic_launcher.png"));
-        copyAssets("templates/app/ic_launcher_ldpi.png",
-                new File(resDir, "drawable-ldpi/ic_launcher.png"));
+                new File(resDir, "mipmap-hdpi/ic_launcher.png"));
         copyAssets("templates/app/ic_launcher_mdpi.png",
-                new File(resDir, "drawable-mdpi/ic_launcher.png"));
+                new File(resDir, "mipmap-mdpi/ic_launcher.png"));
         copyAssets("templates/app/ic_launcher_xhdpi.png",
-                new File(resDir, "drawable-xhdpi/ic_launcher.png"));
+                new File(resDir, "mipmap-xhdpi/ic_launcher.png"));
+        copyAssets("templates/app/ic_launcher_xxhdpi.png",
+                new File(resDir, "mipmap-xxhdpi/ic_launcher.png"));
+        copyAssets("templates/app/ic_launcher_xxxhdpi.png",
+                new File(resDir, "mipmap-xxxhdpi/ic_launcher.png"));
+
+        //mipmap round
+        copyAssets("templates/app/ic_launcher_round_hdpi.png",
+                new File(resDir, "mipmap-hdpi/ic_launcher_round.png"));
+        copyAssets("templates/app/ic_launcher_round_mdpi.png",
+                new File(resDir, "mipmap-mdpi/ic_launcher_round.png"));
+        copyAssets("templates/app/ic_launcher_round_xhdpi.png",
+                new File(resDir, "mipmap-xhdpi/ic_launcher_round.png"));
+        copyAssets("templates/app/ic_launcher_round_xxhdpi.png",
+                new File(resDir, "mipmap-xxhdpi/ic_launcher_round.png"));
+        copyAssets("templates/app/ic_launcher_round_xxxhdpi.png",
+                new File(resDir, "mipmap-xxxhdpi/ic_launcher_round.png"));
+
+        //mipmap-anydpi-v26
+        copyAssets("templates/app/ic_launcher_anydpi_v26.xml",
+                new File(resDir, "mipmap-anydpi-v26/ic_launcher.xml"));
+        copyAssets("templates/app/ic_launcher_round_anydpi_v26.xml",
+                new File(resDir, "mipmap-anydpi-v26/ic_launcher_round.xml"));
 
         //styles
         File style = new File(resDir, "values/styles.xml");
         String content = IOUtils.toString(
                 context.getAssets().open("templates/app/styles.xml"), "UTF-8");
         content = content.replace("APP_STYLE", useAppCompat
-                ? "Theme.AppCompat.Light" : "@android:style/Theme.Light");
+                ? "Theme.AppCompat.Light.DarkActionBar" : "@android:style/Theme.Light");
         saveFile(style, content);
 
         File string = new File(resDir, "values/strings.xml");
@@ -183,6 +211,12 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         content = content.replace("APP_NAME", appName);
         content = content.replace("MAIN_ACTIVITY_NAME", appName);
         saveFile(string, content);
+
+        //colors
+        File colors = new File(resDir, "values/colors.xml");
+        content = IOUtils.toString(
+                context.getAssets().open("templates/app/colors.xml"), "UTF-8");
+        saveFile(colors, content);
     }
 
     private void createManifest(AndroidAppProject project, String activityClass, String packageName,
@@ -237,23 +271,72 @@ public class AndroidProjectManager implements IAndroidProjectManager {
     private void copyLibrary(AndroidAppProject project, boolean useCompatLibrary)
             throws IOException, StreamException, SAXException, ParserConfigurationException {
         if (useCompatLibrary) {
+
+            //arch
+            addLib(project, "sdk/extras/android.arch.core/common/common-1.1.1.jar", "android.arch.core-common-1.1.1.jar");
+            addLib(project, "sdk/extras/android.arch.core/runtime/runtime-1.1.1.aar", "/android.arch.core/runtime-1.1.1");
+            addLib(project, "sdk/extras/android.arch.lifecycle/common/common-1.1.1.jar", "android.arch.lifecycle-common-1.1.1.jar");
+            addLib(project, "sdk/extras/android.arch.lifecycle/livedata/livedata-1.1.1.aar", "/android.arch.lifecycle/livedata-1.1.1");
+            addLib(project, "sdk/extras/android.arch.lifecycle/livedata-core/livedata-core-1.1.1.aar", "/android.arch.lifecycle/livedata-core-1.1.1");
+            addLib(project, "sdk/extras/android.arch.lifecycle/runtime/runtime-1.1.1.aar", "/android.arch.lifecycle/runtime-1.1.1");
+            addLib(project, "sdk/extras/android.arch.lifecycle/viewmodel/viewmodel-1.1.1.aar", "/android.arch.lifecycle/viewmodel-1.1.1");
+
             //v7
-            addLib(project, "libs/27.1.1/android.arch.core-common-1.1.0.jar", "android.arch.core-common-1.1.0.jar");
-            addLib(project, "libs/27.1.1/android.arch.core-runtime-1.1.0.aar", "android.arch.core-runtime-1.1.0");
-            addLib(project, "libs/27.1.1/android.arch.lifecycle-common-1.1.0.jar", "android.arch.lifecycle-common-1.1.0.jar");
-            addLib(project, "libs/27.1.1/android.arch.lifecycle-livedata-core-1.1.0.aar", "android.arch.lifecycle-livedata-core-1.1.0");
-            addLib(project, "libs/27.1.1/android.arch.lifecycle-runtime-1.1.0.aar", "android.arch.lifecycle-runtime-1.1.0");
-            addLib(project, "libs/27.1.1/android.arch.lifecycle-viewmodel-1.1.0.aar", "android.arch.lifecycle-viewmodel-1.1.0");
-            addLib(project, "libs/27.1.1/appcompat-v7-27.1.1.aar", "appcompat-v7-27.1.1");
-            addLib(project, "libs/27.1.1/animated-vector-drawable-27.1.1.aar", "animated-vector-drawable-27.1.1");
-            addLib(project, "libs/27.1.1/support-compat-27.1.1.aar", "support-compat-27.1.1");
-            addLib(project, "libs/27.1.1/support-core-ui-27.1.1.aar", "support-core-ui-27.1.1");
-            addLib(project, "libs/27.1.1/support-core-utils-27.1.1.aar", "support-core-utils-27.1.1");
-            addLib(project, "libs/27.1.1/support-fragment-27.1.1.aar", "support-fragment-27.1.1");
-            addLib(project, "libs/27.1.1/support-vector-drawable-27.1.1.aar", "support-vector-drawable-27.1.1");
-            addLib(project, "libs/27.1.1/support-annotations-27.1.1.jar", "support-annotations-27.1.1.jar");
-            addLib(project, "libs/27.1.1/support-media-compat-27.1.1.aar", "support-media-compat-27.1.1");
-            addLib(project, "libs/27.1.1/support-v4-27.1.1.aar", "support-v4-27.1.1");
+            addLib(project, "sdk/extras/com.android.support/animated-vector-drawable/animated-vector-drawable-28.0.0.aar", "/com.android.support/28.0.0/animated-vector-drawable");
+            addLib(project, "sdk/extras/com.android.support/appcompat-v7/appcompat-v7-28.0.0.aar", "/com.android.support/28.0.0/appcompat-v7");
+            addLib(project, "sdk/extras/com.android.support/asynclayoutinflater/asynclayoutinflater-28.0.0.aar", "/com.android.support/28.0.0/asynclayoutinflater");
+            addLib(project, "sdk/extras/com.android.support/coordinatorlayout/coordinatorlayout-28.0.0.aar", "/com.android.support/28.0.0/coordinatorlayout");
+            addLib(project, "sdk/extras/com.android.support/cursoradapter/cursoradapter-28.0.0.aar", "/com.android.support/28.0.0/cursoradapter");
+            addLib(project, "sdk/extras/com.android.support/customview/customview-28.0.0.aar", "/com.android.support/28.0.0/customview");
+            addLib(project, "sdk/extras/com.android.support/documentfile/documentfile-28.0.0.aar", "/com.android.support/28.0.0/documentfile");
+            addLib(project, "sdk/extras/com.android.support/drawerlayout/drawerlayout-28.0.0.aar", "/com.android.support/28.0.0/drawerlayout");
+            addLib(project, "sdk/extras/com.android.support/interpolator/interpolator-28.0.0.aar", "/com.android.support/28.0.0/interpolator");
+            addLib(project, "sdk/extras/com.android.support/loader/loader-28.0.0.aar", "/com.android.support/28.0.0/loader");
+            addLib(project, "sdk/extras/com.android.support/localbroadcastmanager/localbroadcastmanager-28.0.0.aar", "/com.android.support/28.0.0/localbroadcastmanager");
+            addLib(project, "sdk/extras/com.android.support/print/print-28.0.0.aar", "/com.android.support/28.0.0/print");
+            addLib(project, "sdk/extras/com.android.support/slidingpanelayout/slidingpanelayout-28.0.0.aar", "/com.android.support/28.0.0/slidingpanelayout");
+            addLib(project, "sdk/extras/com.android.support/support-annotations/support-annotations-28.0.0.jar", "support-annotations-28.0.0.jar");
+            addLib(project, "sdk/extras/com.android.support/support-compat/support-compat-28.0.0.aar", "/com.android.support/28.0.0/support-compat");
+            addLib(project, "sdk/extras/com.android.support/support-core-ui/support-core-ui-28.0.0.aar", "/com.android.support/28.0.0/support-core-ui");
+            addLib(project, "sdk/extras/com.android.support/support-core-utils/support-core-utils-28.0.0.aar", "/com.android.support/28.0.0/support-core-utils");
+            addLib(project, "sdk/extras/com.android.support/support-fragment/support-fragment-28.0.0.aar", "/com.android.support/28.0.0/support-fragment");
+            addLib(project, "sdk/extras/com.android.support/support-vector-drawable/support-vector-drawable-28.0.0.aar", "/com.android.support/28.0.0/support-vector-drawable");
+            addLib(project, "sdk/extras/com.android.support/swiperefreshlayout/swiperefreshlayout-28.0.0.aar", "/com.android.support/28.0.0/swiperefreshlayout");
+            addLib(project, "sdk/extras/com.android.support/versionedparcelable/versionedparcelable-28.0.0.aar", "/com.android.support/28.0.0/versionedparcelable");
+            addLib(project, "sdk/extras/com.android.support/viewpager/viewpager-28.0.0.aar", "/com.android.support/28.0.0/viewpager");
+            addLib(project, "sdk/extras/com.android.support.constraint/constraint-layout/constraint-layout-1.1.3.aar", "/com.android.support.constraint/1.1.3/constraint-layout-1.1.3");
+
+            //AndroidX
+            //addLib(project, "sdk/extras/androidx.arch.core/common/core-common-2.0.0.jar", "androidx.arch.core-common-2.0.0.jar");
+            //addLib(project, "sdk/extras/androidx.arch.core/runtime/core-runtime-2.0.0.aar", "/androidx.arch.core/core-runtime-2.0.0");
+            //addLib(project, "sdk/extras/androidx.lifecycle/common/lifecycle-common-2.0.0.jar", "androidx.lifecycle-common-2.0.0.jar");
+            //addLib(project, "sdk/extras/androidx.lifecycle/livedata/lifecycle-livedata-2.0.0.aar", "/androidx.lifecycle/lifecycle-livedata-2.0.0");
+            //addLib(project, "sdk/extras/androidx.lifecycle/livedata-core/lifecycle-livedata-core-2.0.0.aar", "/androidx.lifecycle/lifecycle-livedata-core-2.0.0");
+            //addLib(project, "sdk/extras/androidx.lifecycle/runtime/lifecycle-runtime-2.0.0.aar", "/androidx.lifecycle/lifecycle-runtime-2.0.0");
+            //addLib(project, "sdk/extras/androidx.lifecycle/viewmodel/lifecycle-viewmodel-2.0.0.aar", "/androidx.lifecycle/lifecycle-viewmodel-2.0.0");
+            //
+            //addLib(project, "sdk/extras/androidx.annotation/annotation/annotation-1.0.0.jar", "annotation-1.0.0.jar");
+            //addLib(project, "sdk/extras/androidx.appcompat/appcompat/appcompat-1.0.0.aar", "appcompat-1.0.0");
+            //addLib(project, "sdk/extras/androidx.asynclayoutinflater/asynclayoutinflater/asynclayoutinflater-1.0.0.aar", "asynclayoutinflater-1.0.0");
+            //addLib(project, "sdk/extras/androidx.coordinatorlayout/coordinatorlayout/coordinatorlayout-1.0.0.aar", "coordinatorlayout-1.0.0");
+            //addLib(project, "sdk/extras/androidx.core/core/core-1.0.0.aar", "core-1.0.0");
+            //addLib(project, "sdk/extras/androidx.cursoradapter/cursoradapter/cursoradapter-1.0.0.aar", "cursoradapter-1.0.0");
+            //addLib(project, "sdk/extras/androidx.customview/customview/customview-1.0.0.aar", "customview-1.0.0");
+            //addLib(project, "sdk/extras/androidx.documentfile/documentfile/documentfile-1.0.0.aar", "documentfile-1.0.0");
+            //addLib(project, "sdk/extras/androidx.drawerlayout/drawerlayout/drawerlayout-1.0.0.aar", "drawerlayout-1.0.0");
+            //addLib(project, "sdk/extras/androidx.fragment/fragment/fragment-1.0.0.aar", "fragment-1.0.0");
+            //addLib(project, "sdk/extras/androidx.interpolator/interpolator/interpolator-1.0.0.aar", "interpolator-1.0.0");
+            //addLib(project, "sdk/extras/androidx.legacy-support-core-ui/legacy-support-core-ui/legacy-support-core-ui-1.0.0.aar", "legacy-support-core-ui-1.0.0");
+            //addLib(project, "sdk/extras/androidx.legacy-support-core-utils/legacy-support-core-utils/legacy-support-core-utils-1.0.0.aar", "legacy-support-core-utils-1.0.0");
+            //addLib(project, "sdk/extras/androidx.loader/loader/loader-1.0.0.aar", "loader-1.0.0");
+            //addLib(project, "sdk/extras/androidx.localbroadcastmanager/localbroadcastmanager/localbroadcastmanager-1.0.0.aar", "localbroadcastmanager-1.0.0");
+            //addLib(project, "sdk/extras/androidx.print/print/print-1.0.0.aar", "print-1.0.0");
+            //addLib(project, "sdk/extras/androidx.slidingpanelayout/slidingpanelayout/slidingpanelayout-1.0.0.aar", "slidingpanelayout-1.0.0");
+            //addLib(project, "sdk/extras/androidx.swiperefreshlayout/swiperefreshlayout/swiperefreshlayout-1.0.0.aar", "swiperefreshlayout-1.0.0");
+            //addLib(project, "sdk/extras/androidx.vectordrawable/vectordrawable/vectordrawable-1.0.0.aar", "vectordrawable-1.0.0");
+            //addLib(project, "sdk/extras/androidx.vectordrawable/vectordrawable-animated/vectordrawable-animated-1.0.0.aar", "vectordrawable-animated-1.0.0");
+            //addLib(project, "sdk/extras/androidx.versionedparcelable/versionedparcelable/versionedparcelable-1.0.0.aar", "versionedparcelable-1.0.0");
+            //addLib(project, "sdk/extras/androidx.viewpager/viewpager/viewpager-1.0.0.aar", "viewpager-1.0.0");
         }
     }
 

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa.back;
+package com.duy.dx.ssa.back;
 
-import com.duy.dx .rop.code.BasicBlock;
-import com.duy.dx .rop.code.BasicBlockList;
-import com.duy.dx .rop.code.RegOps;
-import com.duy.dx .rop.code.RopMethod;
-import com.duy.dx .util.IntList;
+import com.duy.dx.rop.code.BasicBlock;
+import com.duy.dx.rop.code.BasicBlockList;
+import com.duy.dx.rop.code.RegOps;
+import com.duy.dx.rop.code.RopMethod;
+import com.duy.dx.util.IntList;
 import java.util.BitSet;
 
 /**

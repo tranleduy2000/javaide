@@ -184,11 +184,11 @@ public final class Message {
     @Override
     public int hashCode() {
         return Objects.hashCode(mKind, mText, mSourceFilePositions);
-    }
+    }//TODO fix it
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("kind", mKind).add("text", mText).add("sources",
+        return MoreObjects.toStringHelper(this).add("kind", mKind).add("text", mText).add("sources",//TODO fix it
                 mSourceFilePositions).toString();
     }
 }

@@ -8,6 +8,7 @@ import com.duy.android.compiler.builder.task.Task;
 import com.duy.android.compiler.builder.util.MD5Hash;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.dex.Dex;
+import com.duy.dx.command.dexer.DxContext;
 import com.duy.dx.merge.CollisionPolicy;
 import com.duy.dx.merge.DexMerger;
 
@@ -105,7 +106,7 @@ public class DexTask extends Task<JavaProject> {
         if (dexedLibs.length >= 1) {
             for (File dexedLib : dexedLibs) {
                 Dex[] toBeMerge = {new Dex(projectFile.getDexFile()), new Dex(dexedLib)};
-                DexMerger dexMerger = new DexMerger(toBeMerge, CollisionPolicy.FAIL);
+                DexMerger dexMerger = new DexMerger(toBeMerge, CollisionPolicy.FAIL, new DxContext());
                 Dex merged = dexMerger.merge();
                 merged.writeTo(projectFile.getDexFile());
             }

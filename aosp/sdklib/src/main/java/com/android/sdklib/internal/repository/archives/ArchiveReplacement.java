@@ -16,8 +16,8 @@
 
 package com.android.sdklib.internal.repository.archives;
 
-import com.android.sdklib.repository.IDescription;
 import com.android.sdklib.internal.repository.packages.Package;
+import com.android.sdklib.repository.IDescription;
 
 
 /**

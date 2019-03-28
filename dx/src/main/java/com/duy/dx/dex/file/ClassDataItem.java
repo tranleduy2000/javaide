@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstArray;
-import com.duy.dx .rop.cst.CstLiteralBits;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.cst.Zeroes;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.ByteArrayAnnotatedOutput;
-import com.duy.dx .util.Writers;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstArray;
+import com.duy.dx.rop.cst.CstLiteralBits;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.cst.Zeroes;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.ByteArrayAnnotatedOutput;
+import com.duy.dx.util.Writers;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;

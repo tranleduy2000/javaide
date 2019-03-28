@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .command.dump;
+package com.duy.dx.command.dump;
 
-import com.duy.dx .cf.direct.DirectClassFile;
-import com.duy.dx .cf.direct.StdAttributeFactory;
-import com.duy.dx .util.ByteArray;
+import com.duy.dx.cf.direct.DirectClassFile;
+import com.duy.dx.cf.direct.StdAttributeFactory;
+import com.duy.dx.util.ByteArray;
 import java.io.PrintStream;
 
 /**
@@ -65,9 +65,9 @@ public final class ClassDumper
         cf.setObserver(this);
         cf.getMagic(); // Force parsing to happen.
 
-        int at = getAt();
-        if (at != bytes.length) {
-            parsed(ba, at, bytes.length - at, "<extra data at end of file>");
+        int readBytes = getReadBytes();
+        if (readBytes != bytes.length) {
+            parsed(ba, readBytes, bytes.length - readBytes, "<extra data at end of file>");
         }
     }
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
 import com.duy.dex.DexFormat;
 import com.duy.dex.SizeOf;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
 
 /**
  * File header section of a {@code .dex} file.

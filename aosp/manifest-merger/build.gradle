@@ -25,6 +25,6 @@ dependencies {
     api project(':aosp:sdk-common')
 
     api 'net.sf.kxml:kxml2:2.3.0'
-    api 'com.google.code.gson:gson:2.8.1'
+    api 'com.google.code.gson:gson:2.8.4'
 }
 

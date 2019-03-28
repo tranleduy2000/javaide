@@ -96,7 +96,7 @@ public class FullRevision implements Comparable<FullRevision> {
         mPreviewType = previewType;
     }
 
-    public final int getMajor() {
+    public int getMajor() {
         return mMajor;
     }
 

@@ -14,31 +14,33 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
 import com.duy.dex.EncodedValueCodec;
-import com.duy.dx .rop.annotation.Annotation;
-import com.duy.dx .rop.annotation.NameValuePair;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstAnnotation;
-import com.duy.dx .rop.cst.CstArray;
-import com.duy.dx .rop.cst.CstBoolean;
-import com.duy.dx .rop.cst.CstByte;
-import com.duy.dx .rop.cst.CstChar;
-import com.duy.dx .rop.cst.CstDouble;
-import com.duy.dx .rop.cst.CstEnumRef;
-import com.duy.dx .rop.cst.CstFieldRef;
-import com.duy.dx .rop.cst.CstFloat;
-import com.duy.dx .rop.cst.CstInteger;
-import com.duy.dx .rop.cst.CstKnownNull;
-import com.duy.dx .rop.cst.CstLiteralBits;
-import com.duy.dx .rop.cst.CstLong;
-import com.duy.dx .rop.cst.CstMethodRef;
-import com.duy.dx .rop.cst.CstShort;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.annotation.Annotation;
+import com.duy.dx.rop.annotation.NameValuePair;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstAnnotation;
+import com.duy.dx.rop.cst.CstArray;
+import com.duy.dx.rop.cst.CstBoolean;
+import com.duy.dx.rop.cst.CstByte;
+import com.duy.dx.rop.cst.CstChar;
+import com.duy.dx.rop.cst.CstDouble;
+import com.duy.dx.rop.cst.CstEnumRef;
+import com.duy.dx.rop.cst.CstFieldRef;
+import com.duy.dx.rop.cst.CstFloat;
+import com.duy.dx.rop.cst.CstInteger;
+import com.duy.dx.rop.cst.CstKnownNull;
+import com.duy.dx.rop.cst.CstLiteralBits;
+import com.duy.dx.rop.cst.CstLong;
+import com.duy.dx.rop.cst.CstMethodHandle;
+import com.duy.dx.rop.cst.CstMethodRef;
+import com.duy.dx.rop.cst.CstProtoRef;
+import com.duy.dx.rop.cst.CstShort;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
 import java.util.Collection;
 
 /**
@@ -66,6 +68,12 @@ public final class ValueEncoder {
 
     /** annotation value type constant: {@code double} */
     private static final int VALUE_DOUBLE = 0x11;
+
+    /** annotation value type constant: {@code method type} */
+    private static final int VALUE_METHOD_TYPE = 0x15;
+
+    /** annotation value type constant: {@code method handle} */
+    private static final int VALUE_METHOD_HANDLE = 0x16;
 
     /** annotation value type constant: {@code string} */
     private static final int VALUE_STRING = 0x17;
@@ -153,6 +161,16 @@ public final class ValueEncoder {
                 EncodedValueCodec.writeRightZeroExtendedValue(out, type, value);
                 break;
             }
+            case VALUE_METHOD_TYPE: {
+                int index = file.getProtoIds().indexOf(((CstProtoRef) cst).getPrototype());
+                EncodedValueCodec.writeUnsignedIntegralValue(out, type, (long) index);
+                break;
+            }
+            case VALUE_METHOD_HANDLE: {
+                int index = file.getMethodHandles().indexOf((CstMethodHandle) cst);
+                EncodedValueCodec.writeUnsignedIntegralValue(out, type, (long) index);
+                break;
+            }
             case VALUE_STRING: {
                 int index = file.getStringIds().indexOf((CstString) cst);
                 EncodedValueCodec.writeUnsignedIntegralValue(out, type, (long) index);
@@ -231,6 +249,10 @@ public final class ValueEncoder {
             return VALUE_FLOAT;
         } else if (cst instanceof CstDouble) {
             return VALUE_DOUBLE;
+        } else if (cst instanceof CstProtoRef) {
+            return VALUE_METHOD_TYPE;
+        } else if (cst instanceof CstMethodHandle) {
+           return VALUE_METHOD_HANDLE;
         } else if (cst instanceof CstString) {
             return VALUE_STRING;
         } else if (cst instanceof CstType) {

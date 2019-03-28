@@ -39,6 +39,6 @@ public interface PatternAwareOutputParser {
      * @throws ParsingFailedException if something goes wrong (e.g. malformed output.)
      */
     boolean parse(@NonNull String line, @NonNull OutputLineReader reader,
-                  @NonNull List<Message> messages, @NonNull ILogger logger)
+            @NonNull List<Message> messages, @NonNull ILogger logger)
             throws ParsingFailedException;
 }

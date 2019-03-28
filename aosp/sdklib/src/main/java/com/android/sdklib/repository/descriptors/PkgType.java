@@ -114,7 +114,11 @@ public enum PkgType implements IPkgCapabilities {
      *  Cast the descriptor to {@link IPkgDescExtra} to get extra's specific attributes. */
     PKG_EXTRA(0x4000, SdkConstants.FD_EXTRAS,
             "{|$NAME|$VEND $PATH|}{?$FULL>1:, rev $FULL}",
-            false, true /*full-r*/, false, true /*path*/, false, true /*vend*/, false, false);
+            false, true /*full-r*/, false, true /*path*/, false, true /*vend*/, false, false),
+
+    /** The SDK/ndk folder. */
+    PKG_NDK(0x8000, SdkConstants.FD_NDK, "",
+                    false, true, false, false, false, false, false, false);
 
     /** A collection of all the known PkgTypes. */
     public static final EnumSet<PkgType> PKG_ALL = EnumSet.allOf(PkgType.class);

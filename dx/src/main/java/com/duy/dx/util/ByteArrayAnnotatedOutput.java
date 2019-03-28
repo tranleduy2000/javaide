@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.dx .util;
+package com.duy.dx.util;
 
+import com.duy.dex.Leb128;
 import com.duy.dex.util.ByteOutput;
 import com.duy.dex.util.ExceptionWithContext;
-import com.duy.dex.Leb128;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Implementation of {@link AnnotatedOutput} which stores the written data
@@ -144,11 +145,13 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getCursor() {
         return cursor;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void assertCursor(int expectedCursor) {
         if (cursor != expectedCursor) {
             throw new ExceptionWithContext("expected cursor " +
@@ -157,6 +160,7 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public void writeByte(int value) {
         int writeAt = cursor;
         int end = writeAt + 1;
@@ -173,6 +177,7 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public void writeShort(int value) {
         int writeAt = cursor;
         int end = writeAt + 2;
@@ -190,6 +195,7 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public void writeInt(int value) {
         int writeAt = cursor;
         int end = writeAt + 4;
@@ -209,6 +215,7 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public void writeLong(long value) {
         int writeAt = cursor;
         int end = writeAt + 8;
@@ -236,6 +243,7 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public int writeUleb128(int value) {
         if (stretchy) {
             ensureCapacity(cursor + 5); // pessimistic
@@ -246,6 +254,7 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public int writeSleb128(int value) {
         if (stretchy) {
             ensureCapacity(cursor + 5); // pessimistic
@@ -256,6 +265,7 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public void write(ByteArray bytes) {
         int blen = bytes.size();
         int writeAt = cursor;
@@ -273,6 +283,7 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public void write(byte[] bytes, int offset, int length) {
         int writeAt = cursor;
         int end = writeAt + length;
@@ -297,11 +308,13 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public void write(byte[] bytes) {
         write(bytes, 0, bytes.length);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void writeZeroes(int count) {
         if (count < 0) {
             throw new IllegalArgumentException("count < 0");
@@ -317,14 +330,15 @@ public final class ByteArrayAnnotatedOutput
         }
 
         /*
-         * There is no need to actually write zeroes, since the array is
-         * already preinitialized with zeroes.
+         * We need to write zeroes, since the array might be reused across different dx invocations.
          */
+        Arrays.fill(data, cursor, end, (byte) 0);
 
         cursor = end;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void alignTo(int alignment) {
         int mask = alignment - 1;
 
@@ -342,24 +356,27 @@ public final class ByteArrayAnnotatedOutput
         }
 
         /*
-         * There is no need to actually write zeroes, since the array is
-         * already preinitialized with zeroes.
+         * We need to write zeroes, since the array might be reused across different dx invocations.
          */
+        Arrays.fill(data, cursor, end, (byte) 0);
 
         cursor = end;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean annotates() {
         return (annotations != null);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isVerbose() {
         return verbose;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void annotate(String msg) {
         if (annotations == null) {
             return;
@@ -370,6 +387,7 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public void annotate(int amt, String msg) {
         if (annotations == null) {
             return;
@@ -391,6 +409,7 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endAnnotation() {
         if (annotations == null) {
             return;
@@ -404,6 +423,7 @@ public final class ByteArrayAnnotatedOutput
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getAnnotationWidth() {
         int leftWidth = 8 + (hexCols * 2) + (hexCols / 2);
 

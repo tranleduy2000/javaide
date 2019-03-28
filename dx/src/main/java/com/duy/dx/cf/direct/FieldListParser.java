@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.direct;
+package com.duy.dx.cf.direct;
 
-import com.duy.dx .cf.iface.AttributeList;
-import com.duy.dx .cf.iface.Member;
-import com.duy.dx .cf.iface.StdField;
-import com.duy.dx .cf.iface.StdFieldList;
-import com.duy.dx .rop.code.AccessFlags;
-import com.duy.dx .rop.cst.CstNat;
-import com.duy.dx .rop.cst.CstType;
+import com.duy.dx.cf.iface.AttributeList;
+import com.duy.dx.cf.iface.Member;
+import com.duy.dx.cf.iface.StdField;
+import com.duy.dx.cf.iface.StdFieldList;
+import com.duy.dx.rop.code.AccessFlags;
+import com.duy.dx.rop.cst.CstNat;
+import com.duy.dx.rop.cst.CstType;
 
 /**
  * Parser for lists of fields in a class file.

@@ -35,6 +35,31 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public interface MergeConsumer<I extends DataItem> {
 
     /**
+     * An exception thrown during by the consumer. It always contains the original exception as its
+     * cause.
+     */
+    class ConsumerException extends MergingException {
+
+        public ConsumerException(@NonNull Throwable cause) {
+            this(cause, SourceFile.UNKNOWN);
+        }
+
+        public ConsumerException(@NonNull Throwable cause, @NonNull File file) {
+            this(cause, new SourceFile(file));
+        }
+
+        private ConsumerException(@NonNull Throwable cause, @NonNull SourceFile file) {
+            super(cause, new Message(
+                    Message.Kind.ERROR,
+                    MoreObjects.firstNonNull(
+                            cause.getLocalizedMessage(),
+                            cause.getClass().getCanonicalName()),
+                    Throwables.getStackTraceAsString(cause),
+                    new SourceFilePosition(file, SourcePosition.UNKNOWN)));
+        }
+    }
+
+    /**
      * Called before the merge starts.
      */
     void start(@NonNull DocumentBuilderFactory factory) throws ConsumerException;
@@ -63,30 +88,5 @@ public interface MergeConsumer<I extends DataItem> {
     void removeItem(@NonNull I removedItem, @Nullable I replacedBy) throws ConsumerException;
 
     boolean ignoreItemInMerge(I item);
-
-    /**
-     * An exception thrown during by the consumer. It always contains the original exception as its
-     * cause.
-     */
-    class ConsumerException extends MergingException {
-
-        public ConsumerException(@NonNull Throwable cause) {
-            this(cause, SourceFile.UNKNOWN);
-        }
-
-        public ConsumerException(@NonNull Throwable cause, @NonNull File file) {
-            this(cause, new SourceFile(file));
-        }
-
-        private ConsumerException(@NonNull Throwable cause, @NonNull SourceFile file) {
-            super(cause, new Message(
-                    Message.Kind.ERROR,
-                    MoreObjects.firstNonNull(
-                            cause.getLocalizedMessage(),
-                            cause.getClass().getCanonicalName()),
-                    Throwables.getStackTraceAsString(cause),
-                    new SourceFilePosition(file, SourcePosition.UNKNOWN)));
-        }
-    }
 
 }

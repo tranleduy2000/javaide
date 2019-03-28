@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.cst.CstBaseMethodRef;
+import com.duy.dx.rop.cst.CstBaseMethodRef;
 
 /**
  * Representation of a method reference inside a Dalvik file.

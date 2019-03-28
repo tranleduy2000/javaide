@@ -336,6 +336,10 @@ public class PkgDesc implements IPkgDesc {
               .append(getAndroidVersion().getApiString());
             break;
 
+        case PKG_NDK:
+            sb.append("ndk");
+            break;
+
         default:
             throw new IllegalArgumentException("IID not defined for type " + mType.toString());
         }
@@ -1095,6 +1099,19 @@ public class PkgDesc implements IPkgDesc {
             p.mAndroidVersion = version;
             p.mMajorRevision  = revision;
             p.mMinToolsRev    = minToolsRev;
+            return p;
+        }
+
+        /**
+         * Creates a new NDK package descriptor.
+         *
+         * @param revision The revision of the NDK package.
+         * @return A {@link PkgDesc} describing this NDK package.
+         */
+        @NonNull
+        public static Builder newNdk(@NonNull FullRevision revision) {
+            Builder p = new Builder(PkgType.PKG_NDK);
+            p.mFullRevision = revision;
             return p;
         }
 

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .merge;
+package com.duy.dx.merge;
 
 import com.duy.dex.ClassDef;
 import com.duy.dex.Dex;
+import com.duy.dex.DexException;
 import java.util.Comparator;
 
 /**
@@ -26,6 +27,7 @@ import java.util.Comparator;
  */
 final class SortableType {
     public static final Comparator<SortableType> NULLS_LAST_ORDER = new Comparator<SortableType>() {
+        @Override
         public int compare(SortableType a, SortableType b) {
             if (a == b) {
                 return 0;
@@ -45,7 +47,7 @@ final class SortableType {
 
     private final Dex dex;
     private final IndexMap indexMap;
-    private ClassDef classDef;
+    private final ClassDef classDef;
     private int depth = -1;
 
     public SortableType(Dex dex, IndexMap indexMap, ClassDef classDef) {
@@ -79,6 +81,10 @@ final class SortableType {
         int max;
         if (classDef.getSupertypeIndex() == ClassDef.NO_INDEX) {
             max = 0; // this is Object.class or an interface
+        } else if (classDef.getSupertypeIndex() == classDef.getTypeIndex()) {
+            // This is an invalid class extending itself.
+            throw new DexException("Class with type index " + classDef.getTypeIndex()
+                    + " extends itself");
         } else {
             SortableType sortableSupertype = types[classDef.getSupertypeIndex()];
             if (sortableSupertype == null) {

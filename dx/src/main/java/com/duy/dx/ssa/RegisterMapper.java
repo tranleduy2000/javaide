@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .ssa;
+package com.duy.dx.ssa;
 
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.RegisterSpecSet;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.RegisterSpecSet;
 
 /**
  * Represents a mapping between two register numbering schemes.
@@ -30,7 +30,7 @@ public abstract class RegisterMapper {
     /**
      * Gets the count of registers (really, the total register width, since
      * category width is counted) in the new namespace.
-     * @return >= 0 width of new namespace.
+     * @return &ge; 0 width of new namespace.
      */
     public abstract int getNewRegisterCount();
 

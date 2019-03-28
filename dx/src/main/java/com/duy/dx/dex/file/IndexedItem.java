@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
 /**
  * An item in a Dalvik file which is referenced by index.

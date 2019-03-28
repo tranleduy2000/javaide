@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .io.instructions;
+package com.duy.dx.io.instructions;
 
 /**
  * A decoded Dalvik instruction which contains the payload for
@@ -42,7 +42,8 @@ public final class PackedSwitchPayloadDecodedInstruction
         this.targets = targets;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getRegisterCount() {
         return 0;
     }
@@ -55,7 +56,8 @@ public final class PackedSwitchPayloadDecodedInstruction
         return targets;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public DecodedInstruction withIndex(int newIndex) {
         throw new UnsupportedOperationException("no index in instruction");
     }

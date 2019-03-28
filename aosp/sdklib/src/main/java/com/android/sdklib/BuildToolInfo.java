@@ -39,20 +39,30 @@ import static com.android.SdkConstants.FN_BCC_COMPAT;
 import static com.android.SdkConstants.FN_DEXDUMP;
 import static com.android.SdkConstants.FN_DX;
 import static com.android.SdkConstants.FN_DX_JAR;
+import static com.android.SdkConstants.FN_JACK;
+import static com.android.SdkConstants.FN_JILL;
 import static com.android.SdkConstants.FN_LD_ARM;
 import static com.android.SdkConstants.FN_LD_MIPS;
 import static com.android.SdkConstants.FN_LD_X86;
+import static com.android.SdkConstants.FN_RENDERSCRIPT;
 import static com.android.SdkConstants.FN_SPLIT_SELECT;
 import static com.android.SdkConstants.FN_ZIPALIGN;
+import static com.android.SdkConstants.OS_FRAMEWORK_RS;
+import static com.android.SdkConstants.OS_FRAMEWORK_RS_CLANG;
 import static com.android.sdklib.BuildToolInfo.PathId.AAPT;
 import static com.android.sdklib.BuildToolInfo.PathId.AIDL;
+import static com.android.sdklib.BuildToolInfo.PathId.ANDROID_RS;
+import static com.android.sdklib.BuildToolInfo.PathId.ANDROID_RS_CLANG;
 import static com.android.sdklib.BuildToolInfo.PathId.BCC_COMPAT;
 import static com.android.sdklib.BuildToolInfo.PathId.DEXDUMP;
 import static com.android.sdklib.BuildToolInfo.PathId.DX;
 import static com.android.sdklib.BuildToolInfo.PathId.DX_JAR;
+import static com.android.sdklib.BuildToolInfo.PathId.JACK;
+import static com.android.sdklib.BuildToolInfo.PathId.JILL;
 import static com.android.sdklib.BuildToolInfo.PathId.LD_ARM;
 import static com.android.sdklib.BuildToolInfo.PathId.LD_MIPS;
 import static com.android.sdklib.BuildToolInfo.PathId.LD_X86;
+import static com.android.sdklib.BuildToolInfo.PathId.LLVM_RS_CC;
 import static com.android.sdklib.BuildToolInfo.PathId.SPLIT_SELECT;
 import static com.android.sdklib.BuildToolInfo.PathId.ZIP_ALIGN;
 
@@ -66,29 +76,93 @@ import static com.android.sdklib.BuildToolInfo.PathId.ZIP_ALIGN;
  */
 public class BuildToolInfo {
 
-    /**
-     * First version with native multi-dex support.
-     */
-    public static final int SDK_LEVEL_FOR_MULTIDEX_NATIVE_SUPPORT = 21;
-    /**
-     * Name of the file read by {@link #getRuntimeProps()}
-     */
+    /** Name of the file read by {@link #getRuntimeProps()} */
     private static final String FN_RUNTIME_PROPS = "runtime.properties";
+
     /**
      * Property in {@link #FN_RUNTIME_PROPS} indicating the desired runtime JVM.
      * Type: {@link NoPreviewRevision#toShortString()}, e.g. "1.7.0"
      */
     private static final String PROP_RUNTIME_JVM = "Runtime.Jvm";
+
     /**
-     * The build-tool revision.
+     * First version with native multi-dex support.
      */
+    public static final int SDK_LEVEL_FOR_MULTIDEX_NATIVE_SUPPORT = 21;
+
+    public enum PathId {
+        /** OS Path to the target's version of the aapt tool. */
+        AAPT("1.0.0"),
+        /** OS Path to the target's version of the aidl tool. */
+        AIDL("1.0.0"),
+        /** OS Path to the target's version of the dx tool. */
+        DX("1.0.0"),
+        /** OS Path to the target's version of the dx.jar file. */
+        DX_JAR("1.0.0"),
+        /** OS Path to the llvm-rs-cc binary for Renderscript. */
+        LLVM_RS_CC("1.0.0"),
+        /** OS Path to the Renderscript include folder. */
+        ANDROID_RS("1.0.0"),
+        /** OS Path to the Renderscript(clang) include folder. */
+        ANDROID_RS_CLANG("1.0.0"),
+
+        DEXDUMP("1.0.0"),
+
+        // --- NEW IN 18.1.0 ---
+
+        /** OS Path to the bcc_compat tool. */
+        BCC_COMPAT("18.1.0"),
+        /** OS Path to the ARM linker. */
+        LD_ARM("18.1.0"),
+        /** OS Path to the X86 linker. */
+        LD_X86("18.1.0"),
+        /** OS Path to the MIPS linker. */
+        LD_MIPS("18.1.0"),
+
+        // --- NEW IN 19.1.0 ---
+        ZIP_ALIGN("19.1.0"),
+
+        // --- NEW IN 21.x.y ---
+        JACK("21.1.0"),
+        JILL("21.1.0"),
+
+        SPLIT_SELECT("22.0.0");
+
+        /**
+         * min revision this element was introduced.
+         * Controls {@link BuildToolInfo#isValid(ILogger)}
+         */
+        private final FullRevision mMinRevision;
+
+        /**
+         * Creates the enum with a min revision in which this
+         * tools appeared in the build tools.
+         *
+         * @param minRevision the min revision.
+         */
+        PathId(@NonNull String minRevision) {
+            mMinRevision = FullRevision.parseRevision(minRevision);
+        }
+
+        /**
+         * Returns whether the enum of present in a given rev of the build tools.
+         *
+         * @param fullRevision the build tools revision.
+         * @return true if the tool is present.
+         */
+        boolean isPresentIn(@NonNull FullRevision fullRevision) {
+            return fullRevision.compareTo(mMinRevision) >= 0;
+        }
+    }
+
+    /** The build-tool revision. */
     @NonNull
     private final FullRevision mRevision;
-    /**
-     * The path to the build-tool folder specific to this revision.
-     */
+
+    /** The path to the build-tool folder specific to this revision. */
     @NonNull
     private final File mPath;
+
     private final Map<PathId, String> mPaths = Maps.newEnumMap(PathId.class);
 
     public BuildToolInfo(@NonNull FullRevision revision, @NonNull File path) {
@@ -99,12 +173,17 @@ public class BuildToolInfo {
         add(AIDL, FN_AIDL);
         add(DX, FN_DX);
         add(DX_JAR, FD_LIB + File.separator + FN_DX_JAR);
+        add(LLVM_RS_CC, FN_RENDERSCRIPT);
+        add(ANDROID_RS, OS_FRAMEWORK_RS);
+        add(ANDROID_RS_CLANG, OS_FRAMEWORK_RS_CLANG);
         add(DEXDUMP, FN_DEXDUMP);
         add(BCC_COMPAT, FN_BCC_COMPAT);
         add(LD_ARM, FN_LD_ARM);
         add(LD_X86, FN_LD_X86);
         add(LD_MIPS, FN_LD_MIPS);
         add(ZIP_ALIGN, FN_ZIPALIGN);
+        add(JACK, FN_JACK);
+        add(JILL, FN_JILL);
         add(SPLIT_SELECT, FN_SPLIT_SELECT);
     }
 
@@ -115,6 +194,9 @@ public class BuildToolInfo {
             @NonNull File aidl,
             @NonNull File dx,
             @NonNull File dxJar,
+            @NonNull File llmvRsCc,
+            @NonNull File androidRs,
+            @NonNull File androidRsClang,
             @Nullable File bccCompat,
             @Nullable File ldArm,
             @Nullable File ldX86,
@@ -126,6 +208,9 @@ public class BuildToolInfo {
         add(AIDL, aidl);
         add(DX, dx);
         add(DX_JAR, dxJar);
+        add(LLVM_RS_CC, llmvRsCc);
+        add(ANDROID_RS, androidRs);
+        add(ANDROID_RS_CLANG, androidRsClang);
         add(ZIP_ALIGN, zipAlign);
 
         if (bccCompat != null) {
@@ -188,7 +273,7 @@ public class BuildToolInfo {
      *
      * @param pathId the id representing the path to return.
      * @return The absolute path for that tool, with a / separator if it's a folder.
-     * Null if the path-id is unknown.
+     *         Null if the path-id is unknown.
      */
     public String getPath(PathId pathId) {
         assert pathId.isPresentIn(mRevision);
@@ -236,9 +321,9 @@ public class BuildToolInfo {
      * Checks whether this build-tools package can run on the current JVM.
      *
      * @return True if the build-tools package has a Runtime.Jvm property and it is lesser or
-     * equal to the current JVM version.
-     * False if the property is present and the requirement is not met.
-     * True if there's an error parsing either versions and the comparison cannot be made.
+     *  equal to the current JVM version.
+     *         False if the property is present and the requirement is not met.
+     *         True if there's an error parsing either versions and the comparison cannot be made.
      */
     public boolean canRunOnJvm() {
         Properties props = getRuntimeProps();
@@ -259,7 +344,7 @@ public class BuildToolInfo {
         }
     }
 
-    @VisibleForTesting(visibility = Visibility.PRIVATE)
+    @VisibleForTesting(visibility=Visibility.PRIVATE)
     @Nullable
     protected NoPreviewRevision getCurrentJvmVersion() throws NumberFormatException {
         String javav = System.getProperty("java.version");              //$NON-NLS-1$
@@ -302,76 +387,5 @@ public class BuildToolInfo {
         sb.append('}');
 
         return sb.toString();
-    }
-
-    public enum PathId {
-        /**
-         * OS Path to the target's version of the aapt tool.
-         */
-        AAPT("1.0.0"),
-        /**
-         * OS Path to the target's version of the aidl tool.
-         */
-        AIDL("1.0.0"),
-        /**
-         * OS Path to the target's version of the dx tool.
-         */
-        DX("1.0.0"),
-        /**
-         * OS Path to the target's version of the dx.jar file.
-         */
-        DX_JAR("1.0.0"),
-
-        DEXDUMP("1.0.0"),
-
-        // --- NEW IN 18.1.0 ---
-
-        /**
-         * OS Path to the bcc_compat tool.
-         */
-        BCC_COMPAT("18.1.0"),
-        /**
-         * OS Path to the ARM linker.
-         */
-        LD_ARM("18.1.0"),
-        /**
-         * OS Path to the X86 linker.
-         */
-        LD_X86("18.1.0"),
-        /**
-         * OS Path to the MIPS linker.
-         */
-        LD_MIPS("18.1.0"),
-
-        // --- NEW IN 19.1.0 ---
-        ZIP_ALIGN("19.1.0"),
-
-        SPLIT_SELECT("22.0.0");
-
-        /**
-         * min revision this element was introduced.
-         * Controls {@link BuildToolInfo#isValid(ILogger)}
-         */
-        private final FullRevision mMinRevision;
-
-        /**
-         * Creates the enum with a min revision in which this
-         * tools appeared in the build tools.
-         *
-         * @param minRevision the min revision.
-         */
-        PathId(@NonNull String minRevision) {
-            mMinRevision = FullRevision.parseRevision(minRevision);
-        }
-
-        /**
-         * Returns whether the enum of present in a given rev of the build tools.
-         *
-         * @param fullRevision the build tools revision.
-         * @return true if the tool is present.
-         */
-        boolean isPresentIn(@NonNull FullRevision fullRevision) {
-            return fullRevision.compareTo(mMinRevision) >= 0;
-        }
     }
 }

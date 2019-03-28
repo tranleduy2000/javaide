@@ -16,8 +16,6 @@
 
 package com.android.sdklib.devices;
 
-import android.graphics.Point;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.dvlib.DeviceSchema;
@@ -41,6 +39,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.graphics.Point;//TODO fix it
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;

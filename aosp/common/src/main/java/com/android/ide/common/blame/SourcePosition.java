@@ -16,8 +16,6 @@
 
 package com.android.ide.common.blame;
 
-import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
 import com.android.annotations.concurrency.Immutable;
 import com.google.common.base.Objects;
 

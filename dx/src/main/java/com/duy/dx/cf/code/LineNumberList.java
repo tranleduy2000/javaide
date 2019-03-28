@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
-import com.duy.dx .util.FixedSizeList;
+import com.duy.dx.util.FixedSizeList;
 
 /**
  * List of "line number" entries, which are the contents of

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .io;
+package com.duy.dx.io;
 
 import com.duy.dex.ClassDef;
 import com.duy.dex.Dex;

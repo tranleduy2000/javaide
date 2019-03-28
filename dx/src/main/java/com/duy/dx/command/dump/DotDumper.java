@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package com.duy.dx .command.dump;
+package com.duy.dx.command.dump;
 
-import com.duy.dx .cf.code.ConcreteMethod;
-import com.duy.dx .cf.code.Ropper;
-import com.duy.dx .cf.direct.DirectClassFile;
-import com.duy.dx .cf.direct.StdAttributeFactory;
-import com.duy.dx .cf.iface.Member;
-import com.duy.dx .cf.iface.Method;
-import com.duy.dx .cf.iface.ParseObserver;
-import com.duy.dx .rop.code.AccessFlags;
-import com.duy.dx .rop.code.BasicBlock;
-import com.duy.dx .rop.code.BasicBlockList;
-import com.duy.dx .rop.code.DexTranslationAdvice;
-import com.duy.dx .rop.code.RopMethod;
-import com.duy.dx .rop.code.TranslationAdvice;
-import com.duy.dx .ssa.Optimizer;
-import com.duy.dx .util.ByteArray;
-import com.duy.dx .util.Hex;
-import com.duy.dx .util.IntList;
+import com.duy.dx.cf.code.ConcreteMethod;
+import com.duy.dx.cf.code.Ropper;
+import com.duy.dx.cf.direct.DirectClassFile;
+import com.duy.dx.cf.direct.StdAttributeFactory;
+import com.duy.dx.cf.iface.Member;
+import com.duy.dx.cf.iface.Method;
+import com.duy.dx.cf.iface.ParseObserver;
+import com.duy.dx.dex.DexOptions;
+import com.duy.dx.rop.code.AccessFlags;
+import com.duy.dx.rop.code.BasicBlock;
+import com.duy.dx.rop.code.BasicBlockList;
+import com.duy.dx.rop.code.DexTranslationAdvice;
+import com.duy.dx.rop.code.RopMethod;
+import com.duy.dx.rop.code.TranslationAdvice;
+import com.duy.dx.ssa.Optimizer;
+import com.duy.dx.util.ByteArray;
+import com.duy.dx.util.Hex;
+import com.duy.dx.util.IntList;
 
 /**
  * Dumps the pred/succ graph of methods into a format compatible
@@ -46,6 +47,7 @@ public class DotDumper implements ParseObserver {
     private final boolean strictParse;
     private final boolean optimize;
     private final Args args;
+    private final DexOptions dexOptions;
 
     static void dump(byte[] bytes, String filePath, Args args) {
         new DotDumper(bytes, filePath, args).run();
@@ -57,6 +59,7 @@ public class DotDumper implements ParseObserver {
         this.strictParse = args.strictParse;
         this.optimize = args.optimize;
         this.args = args;
+        this.dexOptions = new DexOptions();
     }
 
     private void run() {
@@ -86,20 +89,24 @@ public class DotDumper implements ParseObserver {
         return args.method == null || args.method.equals(name);
     }
 
+    @Override
     public void changeIndent(int indentDelta) {
         // This space intentionally left blank.
     }
 
+    @Override
     public void parsed(ByteArray bytes, int offset, int len, String human) {
         // This space intentionally left blank.
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startParsingMember(ByteArray bytes, int offset, String name,
                                    String descriptor) {
         // This space intentionally left blank.
     }
 
+    @Override
     public void endParsingMember(ByteArray bytes, int offset, String name,
                                  String descriptor, Member member) {
         if (!(member instanceof Method)) {
@@ -115,7 +122,7 @@ public class DotDumper implements ParseObserver {
 
         TranslationAdvice advice = DexTranslationAdvice.THE_ONE;
         RopMethod rmeth =
-            Ropper.convert(meth, advice, classFile.getMethods());
+            Ropper.convert(meth, advice, classFile.getMethods(), dexOptions);
 
         if (optimize) {
             boolean isStatic = AccessFlags.isStatic(meth.getAccessFlags());

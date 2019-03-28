@@ -16,8 +16,7 @@
 
 package com.android.sdklib.devices;
 
-import android.graphics.Point;
-
+import android.graphics.Point;//TODO fix it
 import com.android.annotations.Nullable;
 
 import java.io.File;

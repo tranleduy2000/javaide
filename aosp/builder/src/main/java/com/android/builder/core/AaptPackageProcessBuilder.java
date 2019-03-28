@@ -16,6 +16,9 @@
 
 package com.android.builder.core;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.dependency.SymbolFileProvider;
@@ -37,49 +40,33 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Builds the ProcessInfo necessary for an aapt package invocation
  */
 public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProcessBuilder> {
 
-    @NonNull
-    private final File mManifestFile;
-    @NonNull
-    private final AaptOptions mOptions;
-    @Nullable
-    Collection<String> mSplits;
-    @Nullable
-    String mPackageForR;
-    @Nullable
-    String mPreferredDensity;
-    @Nullable
-    private File mResFolder;
-    @Nullable
-    private File mAssetsFolder;
+    @NonNull private final File mManifestFile;
+    @NonNull private final AaptOptions mOptions;
+    @Nullable private File mResFolder;
+    @Nullable private File mAssetsFolder;
     private boolean mVerboseExec = false;
-    @Nullable
-    private String mSourceOutputDir;
-    @Nullable
-    private String mSymbolOutputDir;
-    @Nullable
-    private List<? extends SymbolFileProvider> mLibraries;
-    @Nullable
-    private String mResPackageOutput;
-    @Nullable
-    private String mProguardOutput;
-    @Nullable
-    private VariantType mType;
+    @Nullable private String mSourceOutputDir;
+    @Nullable private String mSymbolOutputDir;
+    @Nullable private List<? extends SymbolFileProvider> mLibraries;
+    @Nullable private String mResPackageOutput;
+    @Nullable private String mProguardOutput;
+    @Nullable private VariantType mType;
     private boolean mDebuggable = false;
     private boolean mPseudoLocalesEnabled = false;
-    @Nullable
-    private Collection<String> mResourceConfigs;
+    @Nullable private Collection<String> mResourceConfigs;
+    @Nullable Collection<String> mSplits;
+    @Nullable String mPackageForR;
+    @Nullable String mPreferredDensity;
 
     /**
+     *
      * @param manifestFile the location of the manifest file
-     * @param options      the {@link com.android.builder.model.AaptOptions}
+     * @param options the {@link com.android.builder.model.AaptOptions}
      */
     public AaptPackageProcessBuilder(
             @NonNull File manifestFile,
@@ -88,20 +75,6 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         checkNotNull(options, "options cannot be null.");
         mManifestFile = manifestFile;
         mOptions = options;
-    }
-
-    private static boolean isNullOrEmpty(@Nullable Collection<?> collection) {
-        return collection == null || collection.isEmpty();
-    }
-
-    private static Collection<String> getDensityResConfigs(Collection<String> resourceConfigs) {
-        return Collections2.filter(new ArrayList<String>(resourceConfigs),
-                new Predicate<String>() {
-                    @Override
-                    public boolean apply(@Nullable String input) {
-                        return Density.getEnum(input) != null;
-                    }
-                });
     }
 
     @NonNull
@@ -133,11 +106,6 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         return this;
     }
 
-    @Nullable
-    public String getSourceOutputDir() {
-        return mSourceOutputDir;
-    }
-
     /**
      * @param sourceOutputDir optional source folder to generate R.java
      * @return itself
@@ -148,8 +116,8 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
     }
 
     @Nullable
-    public String getSymbolOutputDir() {
-        return mSymbolOutputDir;
+    public String getSourceOutputDir() {
+        return mSourceOutputDir;
     }
 
     /**
@@ -161,9 +129,9 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         return this;
     }
 
-    @NonNull
-    public List<? extends SymbolFileProvider> getLibraries() {
-        return mLibraries == null ? ImmutableList.<SymbolFileProvider>of() : mLibraries;
+    @Nullable
+    public String getSymbolOutputDir() {
+        return mSymbolOutputDir;
     }
 
     /**
@@ -174,6 +142,11 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
             @NonNull List<? extends SymbolFileProvider> libraries) {
         mLibraries = libraries;
         return this;
+    }
+
+    @NonNull
+    public List<? extends SymbolFileProvider> getLibraries() {
+        return mLibraries == null ? ImmutableList.<SymbolFileProvider>of() : mLibraries;
     }
 
     /**
@@ -194,11 +167,6 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         return this;
     }
 
-    @Nullable
-    public VariantType getType() {
-        return mType;
-    }
-
     /**
      * @param type the type of the variant being built
      * @return itself
@@ -206,6 +174,11 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
     public AaptPackageProcessBuilder setType(@NonNull VariantType type) {
         this.mType = type;
         return this;
+    }
+
+    @Nullable
+    public VariantType getType() {
+        return mType;
     }
 
     /**
@@ -236,8 +209,18 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         return this;
     }
 
+
     public AaptPackageProcessBuilder setVerbose() {
         mVerboseExec = true;
+        return this;
+    }
+
+    /**
+     * @param packageForR Package override to generate the R class in a different package.
+     * @return itself
+     */
+    public AaptPackageProcessBuilder setPackageForR(@NonNull String packageForR) {
+        this.mPackageForR = packageForR;
         return this;
     }
 
@@ -249,7 +232,6 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
     /**
      * Specifies a preference for a particular density. Resources that do not match this density
      * and have variants that are a closer match are removed.
-     *
      * @param density the preferred density
      * @return itself
      */
@@ -259,17 +241,8 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
     }
 
     @Nullable
-    public String getPackageForR() {
+    String getPackageForR() {
         return mPackageForR;
-    }
-
-    /**
-     * @param packageForR Package override to generate the R class in a different package.
-     * @return itself
-     */
-    public AaptPackageProcessBuilder setPackageForR(@NonNull String packageForR) {
-        this.mPackageForR = packageForR;
-        return this;
     }
 
     public ProcessInfo build(
@@ -346,13 +319,21 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
             builder.addArgs("--debug-mode");
         }
 
-        if (mPackageForR != null) {
-            builder.addArgs("--custom-package", mPackageForR);
-            logger.verbose("Custom package for R class: '%s'", mPackageForR);
+        if (mType != VariantType.ANDROID_TEST) {
+            if (mPackageForR != null) {
+                builder.addArgs("--custom-package", mPackageForR);
+                logger.verbose("Custom package for R class: '%s'", mPackageForR);
+            }
         }
 
         if (mPseudoLocalesEnabled) {
-            builder.addArgs("--pseudo-localize");
+            if (buildToolInfo.getRevision().getMajor() >= 21) {
+                builder.addArgs("--pseudo-localize");
+            } else {
+                throw new RuntimeException(
+                        "Pseudolocalization is only available since Build Tools version 21.0.0,"
+                                + " please upgrade or turn it off.");
+            }
         }
 
         // library specific options
@@ -367,7 +348,12 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         }
 
         if (mOptions.getFailOnMissingConfigEntry()) {
-            builder.addArgs("--error-on-missing-config-entry");
+            if (buildToolInfo.getRevision().getMajor() > 20) {
+                builder.addArgs("--error-on-missing-config-entry");
+            } else {
+                throw new IllegalStateException("aaptOptions:failOnMissingConfigEntry cannot be used"
+                        + " with SDK Build Tools revision earlier than 21.0.0");
+            }
         }
 
         // never compress apks.
@@ -389,6 +375,11 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         if (!isNullOrEmpty(mResourceConfigs)) {
             resourceConfigs.addAll(mResourceConfigs);
         }
+        if (buildToolInfo.getRevision().getMajor() < 21 && mPreferredDensity != null) {
+            resourceConfigs.add(mPreferredDensity);
+            // when adding a density filter, also always add the nodpi option.
+            resourceConfigs.add(Density.NODPI.getResourceValue());
+        }
 
 
         // separate the density and language resource configs, since starting in 21, the
@@ -397,12 +388,17 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
         List<String> otherResourceConfigs = new ArrayList<String>();
         List<String> densityResourceConfigs = new ArrayList<String>();
         if (!resourceConfigs.isEmpty()) {
-            for (String resourceConfig : resourceConfigs) {
-                if (Density.getEnum(resourceConfig) != null) {
-                    densityResourceConfigs.add(resourceConfig);
-                } else {
-                    otherResourceConfigs.add(resourceConfig);
+            if (buildToolInfo.getRevision().getMajor() >= 21) {
+                for (String resourceConfig : resourceConfigs) {
+                    if (Density.getEnum(resourceConfig) != null) {
+                        densityResourceConfigs.add(resourceConfig);
+                    } else {
+                        otherResourceConfigs.add(resourceConfig);
+                    }
                 }
+            } else {
+                // before 21, everything is passed with -c option.
+                otherResourceConfigs = resourceConfigs;
             }
         }
         if (!otherResourceConfigs.isEmpty()) {
@@ -413,7 +409,7 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
             builder.addArgs("--preferred-density", densityResourceConfig);
         }
 
-        if (mPreferredDensity != null) {
+        if (buildToolInfo.getRevision().getMajor() >= 21 && mPreferredDensity != null) {
             if (!isNullOrEmpty(mResourceConfigs)) {
                 Collection<String> densityResConfig = getDensityResConfigs(mResourceConfigs);
                 if (!densityResConfig.isEmpty()) {
@@ -425,6 +421,13 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
                 }
             }
             builder.addArgs("--preferred-density", mPreferredDensity);
+        }
+
+        if (buildToolInfo.getRevision().getMajor() < 21 && mPreferredDensity != null) {
+            logger.warning(String.format("Warning : Project is building density based multiple APKs"
+                            + " but using tools version %1$s, you should upgrade to build-tools 21 or above"
+                            + " to ensure proper packaging of resources.",
+                    buildToolInfo.getRevision().getMajor()));
         }
 
         if (mSymbolOutputDir != null &&
@@ -477,5 +480,19 @@ public class AaptPackageProcessBuilder extends ProcessEnvBuilder<AaptPackageProc
                     Joiner.on(",").join(resConfigs),
                     Joiner.on("\",\"").join(mSplits)));
         }
+    }
+
+    private static boolean isNullOrEmpty(@Nullable Collection<?> collection) {
+        return collection == null || collection.isEmpty();
+    }
+
+    private static Collection<String> getDensityResConfigs(Collection<String> resourceConfigs) {
+        return Collections2.filter(new ArrayList<String>(resourceConfigs),
+                new Predicate<String>() {
+                    @Override
+                    public boolean apply(@Nullable String input) {
+                        return Density.getEnum(input) != null;
+                    }
+                });
     }
 }

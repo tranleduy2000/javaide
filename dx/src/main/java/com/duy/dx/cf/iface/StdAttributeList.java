@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.iface;
+package com.duy.dx.cf.iface;
 
-import com.duy.dx .util.FixedSizeList;
+import com.duy.dx.util.FixedSizeList;
 
 /**
  * Standard implementation of {@link AttributeList}, which directly stores
@@ -34,11 +34,13 @@ public final class StdAttributeList extends FixedSizeList
     }
 
     /** {@inheritDoc} */
+    @Override
     public Attribute get(int n) {
         return (Attribute) get0(n);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int byteLength() {
         int sz = size();
         int result = 2; // u2 attributes_count
@@ -51,6 +53,7 @@ public final class StdAttributeList extends FixedSizeList
     }
 
     /** {@inheritDoc} */
+    @Override
     public Attribute findFirst(String name) {
         int sz = size();
 
@@ -65,6 +68,7 @@ public final class StdAttributeList extends FixedSizeList
     }
 
     /** {@inheritDoc} */
+    @Override
     public Attribute findNext(Attribute attrib) {
         int sz = size();
         int at;

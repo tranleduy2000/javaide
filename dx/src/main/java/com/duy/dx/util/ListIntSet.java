@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .util;
+package com.duy.dx.util;
 
 import java.util.NoSuchElementException;
 
@@ -34,7 +34,8 @@ public class ListIntSet implements IntSet {
         ints.sort();
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public void add(int value) {
         int index = ints.binarysearch(value);
 
@@ -43,7 +44,8 @@ public class ListIntSet implements IntSet {
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public void remove(int value) {
         int index = ints.indexOf(value);
 
@@ -52,12 +54,14 @@ public class ListIntSet implements IntSet {
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public boolean has(int value) {
         return ints.indexOf(value) >= 0;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public void merge(IntSet other) {
         if (other instanceof ListIntSet) {
             ListIntSet o = (ListIntSet) other;
@@ -99,22 +103,26 @@ public class ListIntSet implements IntSet {
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int elements() {
         return ints.size();
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public IntIterator iterator() {
         return new IntIterator() {
             private int idx = 0;
 
-            /** @inheritDoc */
+            /** {@inheritDoc} */
+            @Override
             public boolean hasNext() {
                 return idx < ints.size();
             }
 
-            /** @inheritDoc */
+            /** {@inheritDoc} */
+            @Override
             public int next() {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
@@ -125,7 +133,8 @@ public class ListIntSet implements IntSet {
         };
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public String toString() {
         return ints.toString();
     }

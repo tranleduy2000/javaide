@@ -16,7 +16,7 @@
 
 package com.android.builder.tasks;
 
-import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects;//TODO fix it
 
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
@@ -54,7 +54,7 @@ public class BooleanLatch {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)//TODO fix it
                 .add("signaled", isSignalled())
                 .toString();
 

@@ -25,7 +25,7 @@ dependencies {
     api project(':aosp:layoutlib-api')
     api project(':aosp:dvlib')
 
-    api 'com.google.code.gson:gson:2.8.1'
+    api 'com.google.code.gson:gson:2.8.4'
     api 'org.apache.commons:commons-compress:1.16.1'
 
 //    api 'org.bouncycastle:bcpkix-jdk15on:1.56'

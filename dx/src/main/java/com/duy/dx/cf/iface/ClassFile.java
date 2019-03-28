@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.iface;
+package com.duy.dx.cf.iface;
 
-import com.duy.dx .rop.cst.ConstantPool;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.TypeList;
+import com.duy.dx.cf.code.BootstrapMethodsList;
+import com.duy.dx.rop.cst.ConstantPool;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.TypeList;
 
 /**
  * Interface for things which purport to be class files or reasonable
@@ -110,7 +111,14 @@ public interface ClassFile extends HasAttribute {
      *
      * @return {@code non-null;} the list of attributes
      */
+    @Override
     public AttributeList getAttributes();
+
+    /**
+     * Gets the bootstrap method {@code attributes}.
+     * @return {@code non-null;} the list of bootstrap methods
+     */
+    public BootstrapMethodsList getBootstrapMethods();
 
     /**
      * Gets the name out of the {@code SourceFile} attribute of this

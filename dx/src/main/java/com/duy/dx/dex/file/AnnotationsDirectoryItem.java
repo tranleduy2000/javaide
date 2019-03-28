@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.annotation.Annotations;
-import com.duy.dx .rop.annotation.AnnotationsList;
-import com.duy.dx .rop.cst.CstFieldRef;
-import com.duy.dx .rop.cst.CstMethodRef;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
-
+import com.duy.dx.rop.annotation.Annotations;
+import com.duy.dx.rop.annotation.AnnotationsList;
+import com.duy.dx.rop.cst.CstFieldRef;
+import com.duy.dx.rop.cst.CstMethodRef;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -241,6 +240,7 @@ public final class AnnotationsDirectoryItem extends OffsettedItem {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addContents(DexFile file) {
         MixedItemSection wordData = file.getWordData();
 

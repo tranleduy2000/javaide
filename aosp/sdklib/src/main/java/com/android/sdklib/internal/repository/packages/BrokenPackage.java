@@ -19,10 +19,10 @@ package com.android.sdklib.internal.repository.packages;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.sdklib.SdkManager;
-import com.android.sdklib.repository.IDescription;
 import com.android.sdklib.internal.repository.ITaskMonitor;
 import com.android.sdklib.internal.repository.archives.Archive;
 import com.android.sdklib.repository.FullRevision;
+import com.android.sdklib.repository.IDescription;
 import com.android.sdklib.repository.descriptors.IPkgDesc;
 
 import java.io.File;

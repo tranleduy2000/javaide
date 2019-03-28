@@ -35,30 +35,15 @@ import javax.xml.xpath.XPathExpressionException;
 
 class DefaultManifestParser implements ManifestParser {
 
-    private Optional<Object> mMinSdkVersion;
-    private Optional<Object> mTargetSdkVersion;
-    private Optional<Integer> mVersionCode;
-    private Optional<String> mPackage;
-    private Optional<String> mVersionName;
-
-    private static String getStringValue(@NonNull File file, @NonNull String xPath) {
-        XPath xpath = AndroidXPathFactory.newXPath();
-
-        try {
-            InputSource source = new InputSource(XmlUtils.getUtfReader(file));
-            return xpath.evaluate(xPath, source);
-        } catch (XPathExpressionException e) {
-            // won't happen.
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return null;
-    }
+    Optional<Object> mMinSdkVersion;
+    Optional<Object> mTargetSdkVersion;
+    Optional<Integer> mVersionCode;
+    Optional<String> mPackage;
+    Optional<String> mVersionName;
 
     @Nullable
     @Override
-    public synchronized String getPackage(@NonNull File manifestFile) {
+    public synchronized  String getPackage(@NonNull File manifestFile) {
         if (mPackage == null) {
             mPackage = Optional.fromNullable(getStringValue(manifestFile, "/manifest/@package"));
         }
@@ -67,7 +52,7 @@ class DefaultManifestParser implements ManifestParser {
 
     @Nullable
     @Override
-    public synchronized String getVersionName(@NonNull File manifestFile) {
+    public synchronized  String getVersionName(@NonNull File manifestFile) {
         if (mVersionName == null) {
             mVersionName = Optional.fromNullable(
                     getStringValue(manifestFile, "/manifest/@android:versionName"));
@@ -122,5 +107,20 @@ class DefaultManifestParser implements ManifestParser {
             }
         }
         return mTargetSdkVersion.or(-1);
+    }
+
+    private static String getStringValue(@NonNull File file, @NonNull String xPath) {
+        XPath xpath = AndroidXPathFactory.newXPath();
+
+        try {
+            InputSource source = new InputSource(XmlUtils.getUtfReader(file));
+            return xpath.evaluate(xPath, source);
+        } catch (XPathExpressionException e) {
+            // won't happen.
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
     }
 }

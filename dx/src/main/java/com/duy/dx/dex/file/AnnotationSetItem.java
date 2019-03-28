@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.annotation.Annotation;
-import com.duy.dx .rop.annotation.Annotations;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.annotation.Annotation;
+import com.duy.dx.rop.annotation.Annotations;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
 
 /**
  * Set of annotations, where no annotation type appears more than once.
@@ -113,6 +113,7 @@ public final class AnnotationSetItem extends OffsettedItem {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addContents(DexFile file) {
         MixedItemSection byteData = file.getByteData();
         int size = items.length;

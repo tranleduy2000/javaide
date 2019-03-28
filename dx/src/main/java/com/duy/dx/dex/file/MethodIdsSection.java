@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstBaseMethodRef;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
-
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstBaseMethodRef;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
 import java.util.Collection;
 import java.util.TreeMap;
 

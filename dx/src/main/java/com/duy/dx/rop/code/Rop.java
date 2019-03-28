@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .rop.type.StdTypeList;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeList;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.type.StdTypeList;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeList;
+import com.duy.dx.util.Hex;
 
 /**
  * Class that describes all the immutable parts of register-based operations.
@@ -107,7 +107,7 @@ public final class Rop {
         }
 
         if ((branchingness < BRANCH_MIN) || (branchingness > BRANCH_MAX)) {
-            throw new IllegalArgumentException("bogus branchingness");
+            throw new IllegalArgumentException("invalid branchingness: " + branchingness);
         }
 
         if ((exceptions.size() != 0) && (branchingness != BRANCH_THROW)) {
@@ -247,7 +247,7 @@ public final class Rop {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(40);
+        StringBuilder sb = new StringBuilder(40);
 
         sb.append("Rop{");
 

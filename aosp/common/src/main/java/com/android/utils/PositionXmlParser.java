@@ -16,8 +16,6 @@
 
 package com.android.utils;
 
-import static com.android.SdkConstants.UTF_8;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.ide.common.blame.SourcePosition;
@@ -50,6 +48,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import static com.android.SdkConstants.UTF_8;
 
 /**
  * A simple DOM XML parser which can retrieve exact beginning and end offsets

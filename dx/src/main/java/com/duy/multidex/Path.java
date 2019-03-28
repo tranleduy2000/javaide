@@ -16,9 +16,8 @@
 
 package com.duy.multidex;
 
-import com.duy.dx .cf.direct.DirectClassFile;
-import com.duy.dx .cf.direct.StdAttributeFactory;
-
+import com.duy.dx.cf.direct.DirectClassFile;
+import com.duy.dx.cf.direct.StdAttributeFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;

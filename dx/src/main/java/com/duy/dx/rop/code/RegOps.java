@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .util.Hex;
+import com.duy.dx.util.Hex;
 
 /**
  * All the register-based opcodes, and related utilities.
@@ -297,6 +297,22 @@ public final class RegOps {
     public static final int FILL_ARRAY_DATA = 57;
 
     /**
+     * {@code Tr, T0, T1...: any types; r: Tr; x: java.lang.invoke.MethodHandle;
+     * m: signature polymorphic method
+     * spec; y0: T0; y1: T1 ... :: r = x.m(y0, y1, ...)} (call signature
+     * polymorphic method)
+     */
+    public static final int INVOKE_POLYMORPHIC = 58;
+
+    /**
+     * {@Code Tr, T0, T1...: any types; r: Tr; m: method spec;
+     * y0: T0; y1: T1 ... :: r = m(y0, y1, ...)
+     * <b>Note:</b> The signature of the invoked target is determined by the
+     * dynamic invocation call site information.
+     */
+    public static final int INVOKE_CUSTOM = 59;
+
+    /**
      * This class is uninstantiable.
      */
     private RegOps() {
@@ -367,6 +383,8 @@ public final class RegOps {
             case MOVE_RESULT: return "move-result";
             case MOVE_RESULT_PSEUDO: return "move-result-pseudo";
             case FILL_ARRAY_DATA: return "fill-array-data";
+            case INVOKE_POLYMORPHIC: return "invoke-polymorphic";
+            case INVOKE_CUSTOM: return "invoke-custom";
         }
 
         return "unknown-" + Hex.u1(opcode);

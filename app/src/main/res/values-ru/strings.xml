@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ * Copyright (C) 2008 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<resources>
+    <string name="reset" translatable="false">Reset term</string>
+    <string name="paste">Вставить</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
+    <string name="ok">ОК</string>
+    <string name="new_file">Создать новый файл</string>
+    <string name="run">Run</string>
+    <string name="close">Закрыть</string>
+    <string name="setting">Настройки</string>
+    <string name="code_sample">Code sample</string>
+    <string name="edit">Edit</string>
+    <string name="copy">Копировать</string>
+    <string name="save_as">Сохранить как</string>
+    <string name="enter_new_file_name">Enter new file name</string>
+    <string name="path">"Путь: "</string>
+    <string name="remove_file_msg">"Do you want to delete file "</string>
+    <string name="delete_file">Удалить файл</string>
+    <string name="deleted">Deleted</string>
+    <string name="failed">Failed</string>
+    <string name="code_editor">Code editor</string>
+    <string name="user_interface">User interface</string>
+    <string name="find">Find</string>
+    <string name="find_replace">Find and replace</string>
+    <string name="replace">Replace</string>
+    <string name="regex">Regex</string>
+    <string name="auto_save">Авто сохранение</string>
+    <string name="goto_line">Go to line</string>
+    <string name="information">Информация</string>
+    <string name="report_bug">Report bug</string>
+
+
+    <string name="hide_status_bar">Скрыть статус бар</string>
+    <string name="hide_status_bar_desc">Hide the status bar in every screen of the app, including console. Restart the app to apply.</string>
+    <string name="file">File</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+    <string name="exit">Exit</string>
+    <string name="select">Select</string>
+    <string name="home">Home</string>
+
+    <string name="other">Другое</string>
+    <string name="logo">Logo</string>
+    <string name="max_page_desc">Number of maximum page display on the screen</string>
+    <string name="max_page">Max page editor</string>
+    <string name="open_file">Открыть файл</string>
+    <string name="max_history_edit">Max history steps</string>
+    <string name="copied">Copied</string>
+    <string name="insert_color">Insert color</string>
+    <string name="permission_denied_storage">Permission denied to read your external storage</string>
+    <string name="enable_ime_keyboard">Включить IME клавиатуру</string>
+    <string name="key_ime_keyboard" translatable="false">key_ime_keyboard</string>
+
+
+    <string name="keyboard">Клавиатура</string>
+    <string name="ime_desc">Allows your keyboard to show hints.</string>
+
+    <string name="java_for_android" translatable="false">Java на Android</string>
+
+    <string name="install" translatable="false">Установить</string>
+    <string name="new_java_project" translatable="false">Новый Java console проект</string>
+    <string name="new_android_project" translatable="false">Новый Android проект</string>
+    <string name="enter_name" translatable="false">Введите имя</string>
+    <string name="new_class" translatable="false">Создать новый class</string>
+    <string name="open_java_project">Открыть Java проект</string>
+    <string name="class_name">Имя класса</string>
+    <string name="kind">Kind</string>
+    <string name="package_name">Имя пакета</string>
+    <string name="visibility">Visibility</string>
+    <string name="public_">Public</string>
+    <string name="package_private">Package private</string>
+    <string name="modifiers">Modifiers</string>
+    <string name="none">None</string>
+    <string name="abstract_">Abstract</string>
+    <string name="final_">Final</string>
+    <string name="project_name">Имя проекта</string>
+    <string name="create_new_java_project">Создать Java проект</string>
+    <string name="java_package_name_com_example">Имя пакета (com.example)</string>
+    <string name="main_class_name_main">Main class name (Main)</string>
+    <string name="download_system_file">Download system files</string>
+
+    <string name="main_class">Main class</string>
+    <string name="program_arg">Program arguments</string>
+    <string name="enter_package">Введите имя пакета</string>
+    <string name="error">Ошибка</string>
+    <string name="config">Config</string>
+    <string name="project">Проект</string>
+    <string name="failed_msg">Compilation failed, see error messages</string>
+    <string name="compile_success">Компиляция завершена</string>
+    <string name="build_success">Сборка завершена</string>
+    <string name="sample_code_java">Java sample code</string>
+    <string name="learn">Learn</string>
+    <string name="zero">0</string>
+    <string name="application_name">Имя приложения</string>
+    <string name="start_install_system">System installation started</string>
+    <string name="can_not_find_launcher_activity">Can not find launcher activity in manifest</string>
+
+    <!--File-->
+    <string name="new_name">Новое имя</string>
+    <string name="copy_file">Копировать файл</string>
+    <string name="create_new_file">Создать новый файл</string>
+    <string name="open_android_project">Открыть Android проект</string>
+    <string name="select_file">Выбрать файл</string>
+
+    <!--Donate-->
+    <string name="donate_for_project">Project Donation</string>
+    <string name="thank_you_for_your_support_for_open_source_software">Thank you for supporting open source software.</string>
+    <string name="classes_link">https://github.com/tranleduy2000/javaide/blob/master/system/classes/classes.zip</string>
+    <string name="pref_key_install_root">pref_key_install_root</string>
+    <string name="console_running">Running</string>
+    <string name="console_stopped">Stopped</string>
+    <string name="compiler_setting">Настройки компилятора</string>
+    <string name="message_open_examples">This action will be create new project, previous project will be close</string>
+    <string name="warning">Внимание</string>
+    <string name="select_class_to_run">Select class to run</string>
+    <string name="create_main_function">Create main function</string>
+    <string name="title_menu_new">Новый</string>
+    <string name="title_menu_open">Открыть</string>
+
+    <string name="title_premium_version">Premium версия</string>
+    <string name="button_purchase">Purchase</string>
+    <string name="message_premium">This app is free and no ads.
+        To support developer, you can buy premium version with 2$. Some locked features: \n
+        1. Editor color schemes (320+ themes)\n
+    </string>
+    <string name="button_purchase_restore">Restore</string>
+
+    <string name="editor_theme">Редактор тем (Pro)</string>
+    <string name="selected_editor_theme">Selected %s. Restart app to apply theme.</string>
+    <string name="logcat">Logcat</string>
+
+    <string name="menu_build">Сборка</string>
+    <string name="menu_build_jar_archive">Сборка jar архива</string>
+    <string name="menu_cpp_nide">C/C++ N-IDE</string>
+    <string name="color_value">Color Value</string>
+    <string name="sample">Sample</string>
+    <string name="no_description">No description</string>
+    <string name="jar_file">Jar файл</string>
+    <string name="run_jar">Запустить jar</string>
+    <string name="run_configurations">Run Configurations</string>
+    <string name="title">Title</string>
+    <string name="activity_name">Activity name</string>
+    <string name="layout_name">Layout name</string>
+    <string name="launcher_activity">Launcher activity</string>
+    <string name="backwards_compatibility">Backwards Compatibility (Not recommend, If you want to using AppCompat, check it)</string>
+    <string name="manifest_attributes">Manifest attributes</string>
+    <string name="one_attr_in_one_line">One attr in one line, attr name and value separate by colon (:), e.g. Implementation-Version:1.0</string>
+    <string name="info">Информация...</string>
+</resources>

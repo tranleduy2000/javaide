@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
 import com.duy.dex.util.ExceptionWithContext;
-import com.duy.dx .dex.code.DalvCode;
-import com.duy.dx .dex.code.DalvInsnList;
-import com.duy.dx .dex.code.LocalList;
-import com.duy.dx .dex.code.PositionList;
-import com.duy.dx .rop.cst.CstMethodRef;
-import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx.dex.code.DalvCode;
+import com.duy.dx.dex.code.DalvInsnList;
+import com.duy.dx.dex.code.LocalList;
+import com.duy.dx.dex.code.PositionList;
+import com.duy.dx.rop.cst.CstMethodRef;
+import com.duy.dx.util.AnnotatedOutput;
 import java.io.PrintWriter;
 
 public class DebugInfoItem extends OffsettedItem {

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.iface;
+package com.duy.dx.cf.iface;
 
-import com.duy.dx .rop.code.AccessFlags;
-import com.duy.dx .rop.cst.CstNat;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.Prototype;
+import com.duy.dx.rop.code.AccessFlags;
+import com.duy.dx.rop.cst.CstNat;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.Prototype;
 
 /**
  * Standard implementation of {@link Method}, which directly stores
@@ -49,6 +49,7 @@ public final class StdMethod extends StdMember implements Method {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Prototype getEffectiveDescriptor() {
         return effectiveDescriptor;
     }

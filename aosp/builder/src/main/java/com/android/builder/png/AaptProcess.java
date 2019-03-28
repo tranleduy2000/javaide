@@ -23,6 +23,7 @@ import com.android.builder.tasks.Job;
 import com.android.utils.GrabProcessOutput;
 import com.android.utils.ILogger;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
 import java.io.File;
@@ -39,7 +40,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class AaptProcess {
 
     private static final int DEFAULT_SLAVE_APPT_TIMEOUT_IN_SECONDS = 5;
-    private static final int SLAVE_AAPT_TIMEOUT_IN_SECONDS = DEFAULT_SLAVE_APPT_TIMEOUT_IN_SECONDS;
+    private static final int SLAVE_AAPT_TIMEOUT_IN_SECONDS =
+            System.getenv("SLAVE_AAPT_TIMEOUT") == null
+                    ? DEFAULT_SLAVE_APPT_TIMEOUT_IN_SECONDS
+                    : Integer.parseInt(System.getenv("SLAVE_AAPT_TIMEOUT"));
 
     private final Process mProcess;
     private final ILogger mLogger;
@@ -55,7 +59,7 @@ public class AaptProcess {
         mProcess = process;
         mLogger = iLogger;
         GrabProcessOutput.grabProcessOutput(process, GrabProcessOutput.Wait.ASYNC,
-                mProcessOutputFacade);
+                        mProcessOutputFacade);
         mWriter = new OutputStreamWriter(mProcess.getOutputStream());
     }
 
@@ -66,7 +70,7 @@ public class AaptProcess {
      * {@link com.android.builder.tasks.Job#error()}
      * functions.
      *
-     * @param in  the source file to crunch
+     * @param in the source file to crunch
      * @param out where to place the crunched file
      * @param job the job to notify when the crunching is finished successfully or not.
      * @throws IOException
@@ -92,7 +96,7 @@ public class AaptProcess {
         mLogger.verbose("Processed(" + mProcess.hashCode() + ")" + in.getName() +
                 "job: " + job.toString());
         mMessages.add("Process(" + mProcess.hashCode() + ") processed " + in.getName() +
-                "job: " + job.toString());
+            "job: " + job.toString());
     }
 
     public void waitForReady() throws InterruptedException {
@@ -136,14 +140,13 @@ public class AaptProcess {
     public static class Builder {
         private final String mAaptLocation;
         private final ILogger mLogger;
-
         public Builder(@NonNull String aaptPath, @NonNull ILogger iLogger) {
             mAaptLocation = aaptPath;
             mLogger = iLogger;
         }
 
         public AaptProcess start() throws IOException, InterruptedException {
-            String[] command = new String[]{
+            String[] command = new String[] {
                     mAaptLocation,
                     "m",
             };
@@ -155,56 +158,16 @@ public class AaptProcess {
         }
     }
 
-    private static class NotifierProcessOutput implements GrabProcessOutput.IProcessOutput {
-
-        @NonNull
-        private final Job<AaptProcess> mJob;
-        @NonNull
-        private final ProcessOutputFacade mOwner;
-        @NonNull
-        private final ILogger mLogger;
-
-        NotifierProcessOutput(
-                @NonNull Job<AaptProcess> job,
-                @NonNull ProcessOutputFacade owner,
-                @NonNull ILogger iLogger) {
-            mOwner = owner;
-            mJob = job;
-            mLogger = iLogger;
-        }
-
-        @Override
-        public void out(@Nullable String line) {
-            if (line != null) {
-                mLogger.verbose("AAPT notify(%1$s): %2$s", mJob, line);
-                if (line.equalsIgnoreCase("Done")) {
-                    mOwner.reset();
-                    mJob.finished();
-                } else if (line.equalsIgnoreCase("Error")) {
-                    mOwner.reset();
-                    mJob.error();
-                } else {
-                    mLogger.verbose("AAPT(%1$s) discarded: %2$s", mJob, line);
-                }
-            }
-        }
-
-        @Override
-        public void err(@Nullable String line) {
-            if (line != null) {
-                mLogger.verbose("AAPT warning(%1$s), Job(%2$s): %3$s",
-                        mOwner.getProcess().hashCode(), mJob, line);
-                mLogger.warning("AAPT: %3$s",
-                        mOwner.getProcess().hashCode(), mJob, line);
-
-            }
-        }
-    }
-
     private class ProcessOutputFacade implements GrabProcessOutput.IProcessOutput {
-        @Nullable
-        NotifierProcessOutput notifier = null;
+        @Nullable NotifierProcessOutput notifier = null;
         AtomicBoolean ready = new AtomicBoolean(false);
+
+        synchronized void setNotifier(@NonNull NotifierProcessOutput notifierProcessOutput) {
+            if (notifier != null) {
+                throw new RuntimeException("Notifier already set, threading issue");
+            }
+            notifier = notifierProcessOutput;
+        }
 
         synchronized void reset() {
             notifier = null;
@@ -213,13 +176,6 @@ public class AaptProcess {
         @Nullable
         synchronized NotifierProcessOutput getNotifier() {
             return notifier;
-        }
-
-        synchronized void setNotifier(@NonNull NotifierProcessOutput notifierProcessOutput) {
-            if (notifier != null) {
-                throw new RuntimeException("Notifier already set, threading issue");
-            }
-            notifier = notifierProcessOutput;
         }
 
         @Override
@@ -259,7 +215,7 @@ public class AaptProcess {
             } else {
                 if (!mReady.get()) {
                     if (line.equals("ERROR: Unknown command 'm'")) {
-                        throw new RuntimeException("Invalid aapt version, version 21 or above is required");
+                       throw new RuntimeException("Invalid aapt version, version 21 or above is required");
                     }
                     mLogger.error(null, "AAPT err(%1$s): %2$s", mProcess.hashCode(), line);
                 } else {
@@ -271,6 +227,49 @@ public class AaptProcess {
 
         Process getProcess() {
             return mProcess;
+        }
+    }
+
+    private static class NotifierProcessOutput implements GrabProcessOutput.IProcessOutput {
+
+        @NonNull private final Job<AaptProcess> mJob;
+        @NonNull private final ProcessOutputFacade mOwner;
+        @NonNull private final ILogger mLogger;
+
+        NotifierProcessOutput(
+                @NonNull Job<AaptProcess> job,
+                @NonNull ProcessOutputFacade owner,
+                @NonNull ILogger iLogger) {
+            mOwner = owner;
+            mJob = job;
+            mLogger = iLogger;
+        }
+
+        @Override
+        public void out(@Nullable String line) {
+            if (line != null) {
+                mLogger.verbose("AAPT notify(%1$s): %2$s", mJob, line);
+                if (line.equalsIgnoreCase("Done")) {
+                    mOwner.reset();
+                    mJob.finished();
+                } else if (line.equalsIgnoreCase("Error")) {
+                    mOwner.reset();
+                    mJob.error();
+                } else {
+                    mLogger.verbose("AAPT(%1$s) discarded: %2$s", mJob, line);
+                }
+            }
+        }
+
+        @Override
+        public void err(@Nullable String line) {
+            if (line != null) {
+                mLogger.verbose("AAPT warning(%1$s), Job(%2$s): %3$s",
+                        mOwner.getProcess().hashCode(), mJob, line);
+                mLogger.warning("AAPT: %3$s",
+                        mOwner.getProcess().hashCode(), mJob, line);
+
+            }
         }
     }
 }

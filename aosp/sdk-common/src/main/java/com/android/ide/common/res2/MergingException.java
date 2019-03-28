@@ -24,6 +24,7 @@ import com.android.ide.common.blame.SourceFile;
 import com.android.ide.common.blame.SourceFilePosition;
 import com.android.ide.common.blame.SourcePosition;
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -55,89 +56,6 @@ public class MergingException extends Exception {
     protected MergingException(@Nullable Throwable cause, @NonNull Message... messages) {
         super(messages.length == 1 ? messages[0].getText() : MULTIPLE_ERRORS, cause);
         mMessages = ImmutableList.copyOf(messages);
-    }
-
-    public static Builder wrapException(@NonNull Throwable cause) {
-        return new Builder().wrapException(cause);
-    }
-
-    public static Builder withMessage(@NonNull String message, Object... args) {
-        return new Builder().withMessage(message, args);
-    }
-
-    public static void throwIfNonEmpty(Collection<Message> messages) throws MergingException {
-        if (!messages.isEmpty()) {
-            throw new MergingException(null, Iterables.toArray(messages, Message.class));
-        }
-    }
-
-    @NonNull
-    public List<Message> getMessages() {
-        return mMessages;
-    }
-
-    /**
-     * Computes the error message to display for this error
-     */
-    @NonNull
-    @Override
-    public String getMessage() {
-        List<String> messages = Lists.newArrayListWithCapacity(mMessages.size());
-        for (Message message : mMessages) {
-            StringBuilder sb = new StringBuilder();
-            List<SourceFilePosition> sourceFilePositions = message.getSourceFilePositions();
-            if (sourceFilePositions.size() > 1 || !sourceFilePositions.get(0)
-                    .equals(SourceFilePosition.UNKNOWN)) {
-                sb.append(Joiner.on('\t').join(sourceFilePositions));
-            }
-
-            String text = message.getText();
-            if (sb.length() > 0) {
-                sb.append(':').append(' ');
-
-                // ALWAYS insert the string "Error:" between the path and the message.
-                // This is done to make the error messages more simple to detect
-                // (since a generic path: message pattern can match a lot of output, basically
-                // any labeled output, and we don't want to do file existence checks on any random
-                // string to the left of a colon.)
-                if (!text.startsWith("Error: ")) {
-                    sb.append("Error: ");
-                }
-            } else if (!text.contains("Error: ")) {
-                sb.append("Error: ");
-            }
-
-            // If the error message already starts with the path, strip it out.
-            // This avoids redundant looking error messages you can end up with
-            // like for example for permission denied errors where the error message
-            // string itself contains the path as a prefix:
-            //    /my/full/path: /my/full/path (Permission denied)
-            if (sourceFilePositions.size() == 1) {
-                File file = sourceFilePositions.get(0).getFile().getSourceFile();
-                if (file != null) {
-                    String path = file.getAbsolutePath();
-                    if (text.startsWith(path)) {
-                        int stripStart = path.length();
-                        if (text.length() > stripStart && text.charAt(stripStart) == ':') {
-                            stripStart++;
-                        }
-                        if (text.length() > stripStart && text.charAt(stripStart) == ' ') {
-                            stripStart++;
-                        }
-                        text = text.substring(stripStart);
-                    }
-                }
-            }
-
-            sb.append(text);
-            messages.add(sb.toString());
-        }
-        return Joiner.on('\n').join(messages);
-    }
-
-    @Override
-    public String toString() {
-        return getMessage();
     }
 
     public static class Builder {
@@ -216,5 +134,89 @@ public class MergingException extends Exception {
                             new SourceFilePosition(mFile, mPosition)));
         }
 
+    }
+
+    public static Builder wrapException(@NonNull Throwable cause) {
+        return new Builder().wrapException(cause);
+    }
+
+    public static Builder withMessage(@NonNull String message, Object... args) {
+        return new Builder().withMessage(message, args);
+    }
+
+
+    public static void throwIfNonEmpty(Collection<Message> messages) throws MergingException {
+        if (!messages.isEmpty()) {
+            throw new MergingException(null, Iterables.toArray(messages, Message.class));
+        }
+    }
+
+    @NonNull
+    public List<Message> getMessages() {
+        return mMessages;
+    }
+
+    /**
+     * Computes the error message to display for this error
+     */
+    @NonNull
+    @Override
+    public String getMessage() {
+        List<String> messages = Lists.newArrayListWithCapacity(mMessages.size());
+        for (Message message : mMessages) {
+            StringBuilder sb = new StringBuilder();
+            List<SourceFilePosition> sourceFilePositions = message.getSourceFilePositions();
+            if (sourceFilePositions.size() > 1 || !sourceFilePositions.get(0)
+                    .equals(SourceFilePosition.UNKNOWN)) {
+                sb.append(Joiner.on('\t').join(sourceFilePositions));
+            }
+
+            String text = message.getText();
+            if (sb.length() > 0) {
+                sb.append(':').append(' ');
+
+                // ALWAYS insert the string "Error:" between the path and the message.
+                // This is done to make the error messages more simple to detect
+                // (since a generic path: message pattern can match a lot of output, basically
+                // any labeled output, and we don't want to do file existence checks on any random
+                // string to the left of a colon.)
+                if (!text.startsWith("Error: ")) {
+                    sb.append("Error: ");
+                }
+            } else if (!text.contains("Error: ")) {
+                sb.append("Error: ");
+            }
+
+            // If the error message already starts with the path, strip it out.
+            // This avoids redundant looking error messages you can end up with
+            // like for example for permission denied errors where the error message
+            // string itself contains the path as a prefix:
+            //    /my/full/path: /my/full/path (Permission denied)
+            if (sourceFilePositions.size() == 1) {
+                File file = sourceFilePositions.get(0).getFile().getSourceFile();
+                if (file != null) {
+                    String path = file.getAbsolutePath();
+                    if (text.startsWith(path)) {
+                        int stripStart = path.length();
+                        if (text.length() > stripStart && text.charAt(stripStart) == ':') {
+                            stripStart++;
+                        }
+                        if (text.length() > stripStart && text.charAt(stripStart) == ' ') {
+                            stripStart++;
+                        }
+                        text = text.substring(stripStart);
+                    }
+                }
+            }
+
+            sb.append(text);
+            messages.add(sb.toString());
+        }
+        return Joiner.on('\n').join(messages);
+    }
+
+    @Override
+    public String toString() {
+        return getMessage();
     }
 }

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .io.instructions;
+package com.duy.dx.io.instructions;
 
-import com.duy.dx .io.IndexType;
+import com.duy.dx.io.IndexType;
 
 /**
  * A decoded Dalvik instruction which has three register arguments.
@@ -44,27 +44,32 @@ public final class ThreeRegisterDecodedInstruction extends DecodedInstruction {
         this.c = c;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getRegisterCount() {
         return 3;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getA() {
         return a;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getB() {
         return b;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getC() {
         return c;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public DecodedInstruction withIndex(int newIndex) {
         return new ThreeRegisterDecodedInstruction(
                 getFormat(), getOpcode(), newIndex, getIndexType(),

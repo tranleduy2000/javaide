@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
-import com.duy.dx .util.Hex;
+import com.duy.dx.util.Hex;
 
 /**
  * Constants and utility methods for dealing with bytecode arrays at an

@@ -19,8 +19,12 @@ package com.android.ddmlib;
 import com.android.annotations.NonNull;
 import com.android.ddmlib.Log.LogLevel;
 import com.google.common.base.Joiner;
+import com.google.common.base.Throwables;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.Thread.State;
@@ -31,6 +35,8 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A connection to the host-side android debug bridge (adb)
@@ -39,6 +45,12 @@ import java.util.Map;
  * <p/><b>{@link #init(boolean)} must be called before anything is done.</b>
  */
 public final class AndroidDebugBridge {
+
+    /*
+     * Minimum and maximum version of adb supported. This correspond to
+     * ADB_SERVER_VERSION found in //device/tools/adb/adb.h
+     */
+    private static final AdbVersion MIN_ADB_VERSION = AdbVersion.parseFrom("1.0.20");
 
     private static final String ADB = "adb"; //$NON-NLS-1$
     private static final String DDMS = "ddms"; //$NON-NLS-1$
@@ -549,13 +561,102 @@ public final class AndroidDebugBridge {
         }
         mAdbOsLocation = osLocation;
 
-
+        try {
+            checkAdbVersion();
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     /**
      * Creates a new bridge not linked to any particular adb executable.
      */
     private AndroidDebugBridge() {
+    }
+
+    /**
+     * Queries adb for its version number and checks that it is atleast {@link #MIN_ADB_VERSION}.
+     */
+    private void checkAdbVersion() throws IOException {
+        // default is bad check
+        mVersionCheck = false;
+
+        if (mAdbOsLocation == null) {
+            return;
+        }
+
+        File adb = new File(mAdbOsLocation);
+        ListenableFuture<AdbVersion> future = getAdbVersion(adb);
+        AdbVersion version;
+        try {
+            version = future.get(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            return;
+        } catch (java.util.concurrent.TimeoutException e) {
+            String msg = "Unable to obtain result of 'adb version'";
+            Log.logAndDisplay(LogLevel.ERROR, ADB, msg);
+            return;
+        } catch (ExecutionException e) {
+            Log.logAndDisplay(LogLevel.ERROR, ADB, e.getCause().getMessage());
+            Throwables.propagateIfInstanceOf(e.getCause(), IOException.class);
+            return;
+        }
+
+        if (version.compareTo(MIN_ADB_VERSION) > 0) {
+            mVersionCheck = true;
+        } else {
+            String message = String.format(
+                    "Required minimum version of adb: %1$s."
+                            + "Current version is %2$s", MIN_ADB_VERSION, version);
+            Log.logAndDisplay(LogLevel.ERROR, ADB, message);
+        }
+    }
+
+    public static ListenableFuture<AdbVersion> getAdbVersion(@NonNull final File adb) {
+        final SettableFuture<AdbVersion> future = SettableFuture.create();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ProcessBuilder pb = new ProcessBuilder(adb.getPath(), "version");
+                pb.redirectErrorStream(true);
+
+                Process p = null;
+                try {
+                    p = pb.start();
+                } catch (IOException e) {
+                    future.setException(e);
+                    return;
+                }
+
+                StringBuilder sb = new StringBuilder();
+                BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                try {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        AdbVersion version = AdbVersion.parseFrom(line);
+                        if (version != AdbVersion.UNKNOWN) {
+                            future.set(version);
+                            return;
+                        }
+                        sb.append(line);
+                        sb.append('\n');
+                    }
+                } catch (IOException e) {
+                    future.setException(e);
+                    return;
+                } finally {
+                    try {
+                        br.close();
+                    } catch (IOException e) {
+                        future.setException(e);
+                    }
+                }
+
+                future.setException(new RuntimeException(
+                        "Unable to detect adb version, adb output: " + sb.toString()));
+            }
+        }, "Obtaining adb version").start();
+        return future;
     }
 
     /**

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
-import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx.rop.type.TypeBearer;
 
 /**
  * Base class for constants which implement {@link TypeBearer}.
@@ -28,21 +28,25 @@ public abstract class TypedConstant
      *
      * This implementation always returns {@code this}.
      */
+    @Override
     public final TypeBearer getFrameType() {
         return this;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getBasicType() {
         return getType().getBasicType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getBasicFrameType() {
         return getType().getBasicFrameType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final boolean isConstant() {
         return true;
     }

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.direct;
+package com.duy.dx.cf.direct;
 
-import com.duy.dx .cf.iface.Attribute;
-import com.duy.dx .cf.iface.ParseException;
-import com.duy.dx .cf.iface.ParseObserver;
-import com.duy.dx .cf.iface.StdAttributeList;
-import com.duy.dx .util.ByteArray;
-import com.duy.dx .util.Hex;
+import com.duy.dx.cf.iface.Attribute;
+import com.duy.dx.cf.iface.ParseException;
+import com.duy.dx.cf.iface.ParseObserver;
+import com.duy.dx.cf.iface.StdAttributeList;
+import com.duy.dx.util.ByteArray;
+import com.duy.dx.util.Hex;
 
 /**
  * Parser for lists of attributes.

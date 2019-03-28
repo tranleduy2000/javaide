@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstMemberRef;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .util.Bits;
-import com.duy.dx .util.IntList;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstInvokeDynamic;
+import com.duy.dx.rop.cst.CstMemberRef;
+import com.duy.dx.rop.cst.CstMethodHandle;
+import com.duy.dx.rop.cst.CstProtoRef;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.util.Bits;
+import com.duy.dx.util.IntList;
 import java.util.ArrayList;
 
 /**
@@ -119,11 +122,13 @@ public final class BasicBlocker implements BytecodeArray.Visitor {
      */
 
     /** {@inheritDoc} */
+    @Override
     public void visitInvalid(int opcode, int offset, int length) {
         visitCommon(offset, length, true);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitNoArgs(int opcode, int offset, int length, Type type) {
         switch (opcode) {
             case ByteOps.IRETURN:
@@ -184,6 +189,7 @@ public final class BasicBlocker implements BytecodeArray.Visitor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitLocal(int opcode, int offset, int length,
             int idx, Type type, int value) {
         if (opcode == ByteOps.RET) {
@@ -195,12 +201,14 @@ public final class BasicBlocker implements BytecodeArray.Visitor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitConstant(int opcode, int offset, int length,
             Constant cst, int value) {
         visitCommon(offset, length, true);
 
-        if ((cst instanceof CstMemberRef) || (cst instanceof CstType) ||
-            (cst instanceof CstString)) {
+        if (cst instanceof CstMemberRef || cst instanceof CstType ||
+            cst instanceof CstString || cst instanceof CstInvokeDynamic ||
+            cst instanceof CstMethodHandle || cst instanceof CstProtoRef) {
             /*
              * Instructions with these sorts of constants have the
              * possibility of throwing, so this instruction needs to
@@ -212,6 +220,7 @@ public final class BasicBlocker implements BytecodeArray.Visitor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitBranch(int opcode, int offset, int length,
             int target) {
         switch (opcode) {
@@ -243,6 +252,7 @@ public final class BasicBlocker implements BytecodeArray.Visitor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitSwitch(int opcode, int offset, int length,
             SwitchList cases, int padding) {
         visitCommon(offset, length, false);
@@ -257,6 +267,7 @@ public final class BasicBlocker implements BytecodeArray.Visitor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void visitNewarray(int offset, int length, CstType type,
             ArrayList<Constant> intVals) {
         visitCommon(offset, length, true);
@@ -439,6 +450,7 @@ public final class BasicBlocker implements BytecodeArray.Visitor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setPreviousOffset(int offset) {
         previousOffset = offset;
     }
@@ -446,6 +458,7 @@ public final class BasicBlocker implements BytecodeArray.Visitor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getPreviousOffset() {
         return previousOffset;
     }

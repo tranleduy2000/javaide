@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .command;
+package com.duy.dx.command;
 
 /**
  * Simple exception class used to communicate that the command-line tool

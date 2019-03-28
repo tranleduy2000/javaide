@@ -41,48 +41,9 @@ public class LegacyNdkOutputParser implements PatternAwareOutputParser {
 
     private static final char COLON = ':';
 
-    private static void addMessage(@NonNull Message message, @NonNull List<Message> messages) {
-        boolean duplicatesPrevious = false;
-        int messageCount = messages.size();
-        if (messageCount > 0) {
-            Message lastMessage = messages.get(messageCount - 1);
-            duplicatesPrevious = lastMessage.equals(message);
-        }
-        if (!duplicatesPrevious) {
-            messages.add(message);
-        }
-    }
-
-    private static boolean isMessageEnd(@Nullable String line) {
-        return line != null && !line.isEmpty() && Character.isWhitespace(line.charAt(0));
-    }
-
-    @NonNull
-    private static List<String> convertMessages(@NonNull List<String> messages) {
-        if (messages.size() <= 1) {
-            return messages;
-        }
-        final String line0 = messages.get(0);
-        final String line1 = messages.get(1);
-        final int colonIndex = line1.indexOf(':');
-        if (colonIndex > 0) {
-            String part1 = line1.substring(0, colonIndex).trim();
-            // jikes
-            if ("symbol".equals(part1)) {
-                String symbol = line1.substring(colonIndex + 1).trim();
-                messages.remove(1);
-                if (messages.size() >= 2) {
-                    messages.remove(1);
-                }
-                messages.set(0, line0 + " " + symbol);
-            }
-        }
-        return messages;
-    }
-
     @Override
     public boolean parse(@NonNull String line, @NonNull OutputLineReader reader,
-                         @NonNull List<Message> messages, @NonNull ILogger logger)
+            @NonNull List<Message> messages, @NonNull ILogger logger)
             throws ParsingFailedException {
         // Parses unknown message
         if (line.startsWith(UNKNOWN_MSG_PREFIX1) || line.startsWith(UNKNOWN_MSG_PREFIX2)) {
@@ -106,12 +67,14 @@ public class LegacyNdkOutputParser implements PatternAwareOutputParser {
                     int lineNumber = 0;
                     try {
                         lineNumber = Integer.parseInt(segments.get(1));
-                    } catch (NumberFormatException ignore) {
+                    }
+                    catch (NumberFormatException ignore) {
                     }
                     int column = 0;
                     try {
                         column = Integer.parseInt(segments.get(2));
-                    } catch (NumberFormatException ignore) {
+                    }
+                    catch (NumberFormatException ignore) {
                     }
                     SourceFilePosition position = new SourceFilePosition(file,
                             new SourcePosition(lineNumber - 1, column - 1, -1));
@@ -214,5 +177,44 @@ public class LegacyNdkOutputParser implements PatternAwareOutputParser {
             }
         }
         return false;
+    }
+
+    private static void addMessage(@NonNull Message message, @NonNull List<Message> messages) {
+        boolean duplicatesPrevious = false;
+        int messageCount = messages.size();
+        if (messageCount > 0) {
+            Message lastMessage = messages.get(messageCount - 1);
+            duplicatesPrevious = lastMessage.equals(message);
+        }
+        if (!duplicatesPrevious) {
+            messages.add(message);
+        }
+    }
+
+    private static boolean isMessageEnd(@Nullable String line) {
+        return line != null && !line.isEmpty() && Character.isWhitespace(line.charAt(0));
+    }
+
+    @NonNull
+    private static List<String> convertMessages(@NonNull List<String> messages) {
+        if (messages.size() <= 1) {
+            return messages;
+        }
+        final String line0 = messages.get(0);
+        final String line1 = messages.get(1);
+        final int colonIndex = line1.indexOf(':');
+        if (colonIndex > 0) {
+            String part1 = line1.substring(0, colonIndex).trim();
+            // jikes
+            if ("symbol".equals(part1)) {
+                String symbol = line1.substring(colonIndex + 1).trim();
+                messages.remove(1);
+                if (messages.size() >= 2) {
+                    messages.remove(1);
+                }
+                messages.set(0, line0 + " " + symbol);
+            }
+        }
+        return messages;
     }
 }

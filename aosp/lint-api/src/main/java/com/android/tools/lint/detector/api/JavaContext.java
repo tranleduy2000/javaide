@@ -16,14 +16,18 @@
 
 package com.android.tools.lint.detector.api;
 
+import static com.android.SdkConstants.CLASS_CONTEXT;
+import static com.android.tools.lint.client.api.JavaParser.ResolvedNode;
+import static com.android.tools.lint.client.api.JavaParser.TypeDescriptor;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.tools.lint.client.api.JavaParser;
 import com.android.tools.lint.client.api.JavaParser.ResolvedClass;
 import com.android.tools.lint.client.api.LintDriver;
+import com.google.common.collect.Iterators;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import lombok.ast.ClassDeclaration;
@@ -35,10 +39,6 @@ import lombok.ast.MethodDeclaration;
 import lombok.ast.MethodInvocation;
 import lombok.ast.Node;
 import lombok.ast.Position;
-
-import static com.android.SdkConstants.CLASS_CONTEXT;
-import static com.android.tools.lint.client.api.JavaParser.ResolvedNode;
-import static com.android.tools.lint.client.api.JavaParser.TypeDescriptor;
 
 /**
  * A {@link Context} used when checking Java files.
@@ -253,7 +253,7 @@ public class JavaContext extends Context {
         } else if (call instanceof EnumConstant) {
             return ((EnumConstant) call).astArguments().iterator();
         } else {
-            return new ArrayList<Expression>().iterator();
+            return Iterators.emptyIterator();
         }
     }
 

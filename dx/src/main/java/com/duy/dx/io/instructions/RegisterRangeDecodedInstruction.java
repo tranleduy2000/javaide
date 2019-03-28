@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .io.instructions;
+package com.duy.dx.io.instructions;
 
-import com.duy.dx .io.IndexType;
+import com.duy.dx.io.IndexType;
 
 /**
  * A decoded Dalvik instruction which has register range arguments (an
@@ -41,17 +41,20 @@ public final class RegisterRangeDecodedInstruction extends DecodedInstruction {
         this.registerCount = registerCount;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getRegisterCount() {
         return registerCount;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getA() {
         return a;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public DecodedInstruction withIndex(int newIndex) {
         return new RegisterRangeDecodedInstruction(
                 getFormat(), getOpcode(), newIndex, getIndexType(),

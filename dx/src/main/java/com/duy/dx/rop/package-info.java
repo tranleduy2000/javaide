@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop;
+package com.duy.dx.rop;
 
 /**
  * <h1>An Introduction to Rop Form</h1>
@@ -159,7 +159,7 @@ package com.duy.dx .rop;
  * {@link Rop.BRANCH_NONE} instruction. Note that the SSA optimizer arranges the
  * parameter assignments to align with the dex bytecode calling conventions.
  * With parameter assignments so arranged, the
- * {@link com.duy.dx .dex.code.RopTranslator} sees Rop {@code move-param}
+ * {@link com.duy.dx.dex.code.RopTranslator} sees Rop {@code move-param}
  * instructions as unnecessary in dex form and eliminates them.
  *
  * <h3>mark-local</h3>

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.iface;
+package com.duy.dx.cf.iface;
 
-import com.duy.dx .rop.cst.CstNat;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
+import com.duy.dx.rop.cst.CstNat;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
 
 /**
  * Standard implementation of {@link Member}, which directly stores
@@ -68,7 +68,7 @@ public abstract class StdMember implements Member {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(100);
+        StringBuilder sb = new StringBuilder(100);
 
         sb.append(getClass().getName());
         sb.append('{');
@@ -79,31 +79,37 @@ public abstract class StdMember implements Member {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final CstType getDefiningClass() {
         return definingClass;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getAccessFlags() {
         return accessFlags;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final CstNat getNat() {
         return nat;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final CstString getName() {
         return nat.getName();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final CstString getDescriptor() {
         return nat.getDescriptor();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final AttributeList getAttributes() {
         return attributes;
     }

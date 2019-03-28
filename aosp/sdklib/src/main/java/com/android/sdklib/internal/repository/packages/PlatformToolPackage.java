@@ -21,6 +21,7 @@ import com.android.annotations.NonNull;
 import com.android.annotations.VisibleForTesting;
 import com.android.annotations.VisibleForTesting.Visibility;
 import com.android.sdklib.SdkManager;
+import com.android.sdklib.internal.repository.AdbWrapper;
 import com.android.sdklib.internal.repository.ITaskMonitor;
 import com.android.sdklib.internal.repository.archives.Archive;
 import com.android.sdklib.internal.repository.sources.SdkSource;
@@ -28,6 +29,7 @@ import com.android.sdklib.repository.FullRevision.PreviewComparison;
 import com.android.sdklib.repository.IDescription;
 import com.android.sdklib.repository.descriptors.IPkgDesc;
 import com.android.sdklib.repository.descriptors.PkgDesc;
+
 import org.w3c.dom.Node;
 
 import java.io.File;
@@ -97,6 +99,33 @@ public class PlatformToolPackage extends FullRevisionPackage {
             File[] files = platformToolsFolder.listFiles();
             if (files == null || files.length == 0) {
                 error = "platform-tools folder is empty";
+            } else {
+                Set<String> names = new HashSet<String>();
+                for (File file : files) {
+                    names.add(file.getName());
+                }
+
+                // Package-tools revision 17+ matches sdk-repository-8 and above
+                // and only requires adb (other tools moved to the build-tool packages.)
+                String[] expected = new String[] { SdkConstants.FN_ADB };
+                if (ptp.getRevision().getMajor() < 17) {
+                    // Platform-tools before revision 17 should have adb, aapt, aidl and dx.
+                    expected = new String[] { SdkConstants.FN_ADB,
+                                              SdkConstants.FN_AAPT,
+                                              SdkConstants.FN_AIDL,
+                                              SdkConstants.FN_DX };
+                }
+
+                for (String name : expected) {
+                    if (!names.contains(name)) {
+                        if (error == null) {
+                            error = "platform-tools folder is missing ";
+                        } else {
+                            error += ", ";
+                        }
+                        error += name;
+                    }
+                }
             }
         }
 
@@ -277,6 +306,8 @@ public class PlatformToolPackage extends FullRevisionPackage {
     @Override
     public boolean preInstallHook(Archive archive, ITaskMonitor monitor,
             String osSdkRoot, File installFolder) {
+        AdbWrapper aw = new AdbWrapper(osSdkRoot, monitor);
+        aw.stopAdb();
         return super.preInstallHook(archive, monitor, osSdkRoot, installFolder);
     }
 

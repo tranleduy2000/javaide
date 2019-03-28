@@ -36,14 +36,14 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.List;
 
-import static com.android.SdkConstants.DOT_WEBP;
-import static com.android.SdkConstants.DOT_XML;
-import static com.android.SdkConstants.DOT_PNG;
-import static com.android.SdkConstants.DOT_GIF;
 import static com.android.SdkConstants.DOT_9PNG;
+import static com.android.SdkConstants.DOT_BMP;
+import static com.android.SdkConstants.DOT_GIF;
 import static com.android.SdkConstants.DOT_JPEG;
 import static com.android.SdkConstants.DOT_JPG;
-import static com.android.SdkConstants.DOT_BMP;
+import static com.android.SdkConstants.DOT_PNG;
+import static com.android.SdkConstants.DOT_WEBP;
+import static com.android.SdkConstants.DOT_XML;
 
 /** Miscellaneous utilities used by the Android SDK tools */
 public class SdkUtils {

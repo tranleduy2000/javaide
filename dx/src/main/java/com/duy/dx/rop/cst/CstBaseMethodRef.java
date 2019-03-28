@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
-import com.duy.dx .rop.type.Prototype;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeBearer;
+import com.duy.dx.rop.type.Prototype;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeBearer;
 
 /**
  * Base class for constants of "methodish" type.
@@ -47,7 +47,16 @@ public abstract class CstBaseMethodRef
         super(definingClass, nat);
 
         String descriptor = getNat().getDescriptor().getString();
-        this.prototype = Prototype.intern(descriptor);
+        if (isSignaturePolymorphic()) {
+            // The prototype for signature polymorphic methods is used to
+            // construct call-site information and select the true invocation
+            // target (invoke() or invokeExact(). The prototype is created
+            // without being interned to avoid polluting the DEX file with
+            // unused data.
+            this.prototype = Prototype.fromDescriptor(descriptor);
+        } else {
+            this.prototype = Prototype.intern(descriptor);
+        }
         this.instancePrototype = null;
     }
 
@@ -104,6 +113,7 @@ public abstract class CstBaseMethodRef
      *
      * @return {@code non-null;} the method's return type
      */
+    @Override
     public final Type getType() {
         return prototype.getReturnType();
     }
@@ -147,5 +157,60 @@ public abstract class CstBaseMethodRef
      */
     public final boolean isClassInit() {
         return getNat().isClassInit();
+    }
+
+    /**
+     * Get whether this is a reference to a signature polymorphic
+     * method. This means it is defined in {@code java.lang.invoke.MethodHandle} and
+     * is either the {@code invoke} or the {@code invokeExact} method.
+     *
+     * @return {@code true} iff this is a reference to a
+     * signature polymorphic method.
+     */
+    public final boolean isSignaturePolymorphic() {
+        CstType definingClass = getDefiningClass();
+        if (definingClass.equals(CstType.METHOD_HANDLE)) {
+            switch (getNat().getName().getString()) {
+                case "invoke":
+                case "invokeExact":
+                    return true;
+            }
+        } else if (definingClass.equals(CstType.VAR_HANDLE)) {
+            switch (getNat().getName().getString()) {
+                case "compareAndExchange":
+                case "compareAndExchangeAcquire":
+                case "compareAndExchangeRelease":
+                case "compareAndSet":
+                case "get":
+                case "getAcquire":
+                case "getAndAdd":
+                case "getAndAddAcquire":
+                case "getAndAddRelease":
+                case "getAndBitwiseAnd":
+                case "getAndBitwiseAndAcquire":
+                case "getAndBitwiseAndRelease":
+                case "getAndBitwiseOr":
+                case "getAndBitwiseOrAcquire":
+                case "getAndBitwiseOrRelease":
+                case "getAndBitwiseXor":
+                case "getAndBitwiseXorAcquire":
+                case "getAndBitwiseXorRelease":
+                case "getAndSet":
+                case "getAndSetAcquire":
+                case "getAndSetRelease":
+                case "getOpaque":
+                case "getVolatile":
+                case "set":
+                case "setOpaque":
+                case "setRelease":
+                case "setVolatile":
+                case "weakCompareAndSet":
+                case "weakCompareAndSetAcquire":
+                case "weakCompareAndSetPlain":
+                case "weakCompareAndSetRelease":
+                    return true;
+            }
+        }
+        return false;
     }
 }

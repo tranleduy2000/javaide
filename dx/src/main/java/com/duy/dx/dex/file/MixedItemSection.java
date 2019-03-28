@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
 import com.duy.dex.util.ExceptionWithContext;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.Hex;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.Hex;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,6 +52,7 @@ public final class MixedItemSection extends Section {
     /** {@code non-null;} sorter which sorts instances by type */
     private static final Comparator<OffsettedItem> TYPE_SORTER =
         new Comparator<OffsettedItem>() {
+        @Override
         public int compare(OffsettedItem item1, OffsettedItem item2) {
             ItemType type1 = item1.itemType();
             ItemType type2 = item2.itemType();

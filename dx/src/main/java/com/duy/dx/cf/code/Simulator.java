@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
-import com.duy.dx .rop.code.LocalItem;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstFieldRef;
-import com.duy.dx .rop.cst.CstInteger;
-import com.duy.dx .rop.cst.CstInterfaceMethodRef;
-import com.duy.dx .rop.cst.CstMethodRef;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.Prototype;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .util.Hex;
+import com.duy.dex.DexFormat;
+import com.duy.dx.dex.DexOptions;
+import com.duy.dx.rop.code.LocalItem;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstFieldRef;
+import com.duy.dx.rop.cst.CstInteger;
+import com.duy.dx.rop.cst.CstInterfaceMethodRef;
+import com.duy.dx.rop.cst.CstInvokeDynamic;
+import com.duy.dx.rop.cst.CstMethodHandle;
+import com.duy.dx.rop.cst.CstMethodRef;
+import com.duy.dx.rop.cst.CstProtoRef;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.Prototype;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.util.Hex;
 import java.util.ArrayList;
 
 /**
@@ -50,19 +55,26 @@ public class Simulator {
     /** {@code non-null;} array of bytecode */
     private final BytecodeArray code;
 
+    /** {@code non-null;} the method being simulated */
+    private ConcreteMethod method;
+
     /** {@code non-null;} local variable information */
     private final LocalVariableList localVariables;
 
     /** {@code non-null;} visitor instance to use */
     private final SimVisitor visitor;
 
+    /** {@code non-null;} options for dex output */
+    private final DexOptions dexOptions;
+
     /**
      * Constructs an instance.
      *
      * @param machine {@code non-null;} machine to use when simulating
      * @param method {@code non-null;} method data to use
+     * @param dexOptions {@code non-null;} options for dex output
      */
-    public Simulator(Machine machine, ConcreteMethod method) {
+    public Simulator(Machine machine, ConcreteMethod method, DexOptions dexOptions) {
         if (machine == null) {
             throw new NullPointerException("machine == null");
         }
@@ -71,10 +83,21 @@ public class Simulator {
             throw new NullPointerException("method == null");
         }
 
+        if (dexOptions == null) {
+            throw new NullPointerException("dexOptions == null");
+        }
+
         this.machine = machine;
         this.code = method.getCode();
+        this.method = method;
         this.localVariables = method.getLocalVariables();
         this.visitor = new SimVisitor();
+        this.dexOptions = dexOptions;
+
+        // This check assumes class is initialized (accesses dexOptions).
+        if (method.isDefaultOrStaticInterfaceMethod()) {
+            checkInterfaceMethodDeclaration(method);
+        }
     }
 
     /**
@@ -105,7 +128,7 @@ public class Simulator {
      * Simulates the effect of the instruction at the given offset, by
      * making appropriate calls on the given frame.
      *
-     * @param offset {@code >= 0;} offset of the instruction to simulate
+     * @param offset {@code offset >= 0;} offset of the instruction to simulate
      * @param frame {@code non-null;} frame to operate on
      * @return the length of the instruction, in bytes
      */
@@ -141,14 +164,19 @@ public class Simulator {
      * actually present on the stack.</p>
      *
      * <p>In the case where there is a known-null on the stack where
-     * an array is expected, we just fall back to the implied type of
-     * the instruction. Due to the quirk described above, this means
-     * that source code that uses <code>boolean[]</code> might get
-     * translated surprisingly -- but correctly -- into an instruction
-     * that specifies a <code>byte[]</code>. It will be correct,
-     * because should the code actually execute, it will necessarily
-     * throw a <code>NullPointerException</code>, and it won't matter
-     * what opcode variant is used to achieve that result.</p>
+     * an array is expected, our behavior depends on the implied type
+     * of the instruction. When the implied type is a reference, we
+     * don't attempt to infer anything, as we don't know the dimension
+     * of the null constant and thus any explicit inferred type could
+     * be wrong. When the implied type is a primitive, we fall back to
+     * the implied type of the instruction. Due to the quirk described
+     * above, this means that source code that uses
+     * <code>boolean[]</code> might get translated surprisingly -- but
+     * correctly -- into an instruction that specifies a
+     * <code>byte[]</code>. It will be correct, because should the
+     * code actually execute, it will necessarily throw a
+     * <code>NullPointerException</code>, and it won't matter what
+     * opcode variant is used to achieve that result.</p>
      *
      * @param impliedType {@code non-null;} type implied by the
      * instruction; is <i>not</i> an array type
@@ -160,7 +188,9 @@ public class Simulator {
     private static Type requiredArrayTypeFor(Type impliedType,
             Type foundArrayType) {
         if (foundArrayType == Type.KNOWN_NULL) {
-            return impliedType.getArrayType();
+            return impliedType.isReference()
+                ? Type.KNOWN_NULL
+                : impliedType.getArrayType();
         }
 
         if ((impliedType == Type.OBJECT)
@@ -222,11 +252,13 @@ public class Simulator {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitInvalid(int opcode, int offset, int length) {
             throw new SimException("invalid opcode " + Hex.u1(opcode));
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitNoArgs(int opcode, int offset, int length,
                 Type type) {
             switch (opcode) {
@@ -294,9 +326,8 @@ public class Simulator {
                 case ByteOps.ARRAYLENGTH: {
                     Type arrayType = frame.getStack().peekType(0);
                     if (!arrayType.isArrayOrKnownNull()) {
-                        throw new SimException("type mismatch: expected " +
-                                "array type but encountered " +
-                                arrayType.toHuman());
+                        fail("type mismatch: expected array type but encountered " +
+                             arrayType.toHuman());
                     }
                     machine.popArgs(frame, Type.OBJECT);
                     break;
@@ -317,7 +348,9 @@ public class Simulator {
                         requiredArrayTypeFor(type, foundArrayType);
 
                     // Make type agree with the discovered requiredArrayType.
-                    type = requiredArrayType.getComponentType();
+                    type = (requiredArrayType == Type.KNOWN_NULL)
+                        ? Type.KNOWN_NULL
+                        : requiredArrayType.getComponentType();
 
                     machine.popArgs(frame, requiredArrayType, Type.INT);
                     break;
@@ -375,7 +408,9 @@ public class Simulator {
                      * if it has local info.
                      */
                     if (foundArrayLocal) {
-                        type = requiredArrayType.getComponentType();
+                        type = (requiredArrayType == Type.KNOWN_NULL)
+                            ? Type.KNOWN_NULL
+                            : requiredArrayType.getComponentType();
                     }
 
                     machine.popArgs(frame, requiredArrayType, Type.INT, type);
@@ -537,13 +572,14 @@ public class Simulator {
              * they're compatible primitive types, etc.).
              */
             if (!Merger.isPossiblyAssignableFrom(returnType, encountered)) {
-                throw new SimException("return type mismatch: prototype " +
-                        "indicates " + returnType.toHuman() +
-                        ", but encountered type " + encountered.toHuman());
+                fail("return type mismatch: prototype " +
+                     "indicates " + returnType.toHuman() +
+                     ", but encountered type " + encountered.toHuman());
             }
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitLocal(int opcode, int offset, int length,
                 int idx, Type type, int value) {
             /*
@@ -570,8 +606,9 @@ public class Simulator {
                 localType = local.getType();
                 if (localType.getBasicFrameType() !=
                         type.getBasicFrameType()) {
-                    BaseMachine.throwLocalMismatch(type, localType);
-                    return;
+                    // wrong type, ignore local variable info
+                    local = null;
+                    localType = type;
                 }
             } else {
                 localType = type;
@@ -613,6 +650,7 @@ public class Simulator {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitConstant(int opcode, int offset, int length,
                 Constant cst, int value) {
             switch (opcode) {
@@ -636,33 +674,47 @@ public class Simulator {
                     machine.popArgs(frame, Type.OBJECT, fieldType);
                     break;
                 }
-                case ByteOps.INVOKEINTERFACE: {
+                case ByteOps.INVOKEINTERFACE:
+                case ByteOps.INVOKEVIRTUAL:
+                case ByteOps.INVOKESPECIAL:
+                case ByteOps.INVOKESTATIC: {
                     /*
                      * Convert the interface method ref into a normal
-                     * method ref.
+                     * method ref if necessary.
                      */
-                    cst = ((CstInterfaceMethodRef) cst).toMethodRef();
-                    // and fall through...
-                }
-                case ByteOps.INVOKEVIRTUAL:
-                case ByteOps.INVOKESPECIAL: {
+                    if (cst instanceof CstInterfaceMethodRef) {
+                        cst = ((CstInterfaceMethodRef) cst).toMethodRef();
+                        checkInvokeInterfaceSupported(opcode, (CstMethodRef) cst);
+                    }
+
                     /*
-                     * Get the instance prototype, and use it to direct
-                     * the machine.
+                     * Check whether invoke-polymorphic is required and supported.
                      */
-                    Prototype prototype =
-                        ((CstMethodRef) cst).getPrototype(false);
+                    if (cst instanceof CstMethodRef) {
+                        CstMethodRef methodRef = (CstMethodRef) cst;
+                        if (methodRef.isSignaturePolymorphic()) {
+                            checkInvokeSignaturePolymorphic(opcode);
+                        }
+                    }
+
+                    /*
+                     * Get the instance or static prototype, and use it to
+                     * direct the machine.
+                     */
+                    boolean staticMethod = (opcode == ByteOps.INVOKESTATIC);
+                    Prototype prototype
+                        = ((CstMethodRef) cst).getPrototype(staticMethod);
                     machine.popArgs(frame, prototype);
                     break;
                 }
-                case ByteOps.INVOKESTATIC: {
-                    /*
-                     * Get the static prototype, and use it to direct
-                     * the machine.
-                     */
-                    Prototype prototype =
-                        ((CstMethodRef) cst).getPrototype(true);
+                case ByteOps.INVOKEDYNAMIC: {
+                    checkInvokeDynamicSupported(opcode);
+                    CstInvokeDynamic invokeDynamicRef = (CstInvokeDynamic) cst;
+                    Prototype prototype = invokeDynamicRef.getPrototype();
                     machine.popArgs(frame, prototype);
+                    // Change the constant to be associated with instruction to
+                    // a call site reference.
+                    cst = invokeDynamicRef.addReference();
                     break;
                 }
                 case ByteOps.MULTIANEWARRAY: {
@@ -680,6 +732,14 @@ public class Simulator {
                     machine.popArgs(frame, prototype);
                     break;
                 }
+                case ByteOps.LDC:
+                case ByteOps.LDC_W: {
+                    if ((cst instanceof CstMethodHandle || cst instanceof CstProtoRef)) {
+                        checkConstMethodHandleSupported(cst);
+                    }
+                    machine.clearArgs();
+                    break;
+                }
                 default: {
                     machine.clearArgs();
                     break;
@@ -692,6 +752,7 @@ public class Simulator {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitBranch(int opcode, int offset, int length,
                 int target) {
             switch (opcode) {
@@ -741,6 +802,7 @@ public class Simulator {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitSwitch(int opcode, int offset, int length,
                 SwitchList cases, int padding) {
             machine.popArgs(frame, Type.INT);
@@ -750,6 +812,7 @@ public class Simulator {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void visitNewarray(int offset, int length, CstType type,
                 ArrayList<Constant> initValues) {
             machine.popArgs(frame, Type.INT);
@@ -759,13 +822,134 @@ public class Simulator {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void setPreviousOffset(int offset) {
             previousOffset = offset;
         }
 
         /** {@inheritDoc} */
+        @Override
         public int getPreviousOffset() {
             return previousOffset;
         }
+    }
+
+    private void checkConstMethodHandleSupported(Constant cst) throws SimException {
+        if (!dexOptions.apiIsSupported(DexFormat.API_CONST_METHOD_HANDLE)) {
+            fail(String.format("invalid constant type %s requires --min-sdk-version >= %d " +
+                               "(currently %d)",
+                               cst.typeName(), DexFormat.API_CONST_METHOD_HANDLE,
+                               dexOptions.minSdkVersion));
+        }
+    }
+
+    private void checkInvokeDynamicSupported(int opcode) throws SimException {
+        if (!dexOptions.apiIsSupported(DexFormat.API_METHOD_HANDLES)) {
+            fail(String.format("invalid opcode %02x - invokedynamic requires " +
+                               "--min-sdk-version >= %d (currently %d)",
+                               opcode, DexFormat.API_METHOD_HANDLES, dexOptions.minSdkVersion));
+        }
+    }
+
+    private void checkInvokeInterfaceSupported(final int opcode, CstMethodRef callee) {
+        if (opcode == ByteOps.INVOKEINTERFACE) {
+            // Invoked in the tranditional way, this is fine.
+            return;
+        }
+
+        if (dexOptions.apiIsSupported(DexFormat.API_INVOKE_INTERFACE_METHODS)) {
+            // Running at the officially support API level for default
+            // and static interface methods.
+            return;
+        }
+
+        //
+        // One might expect a hard API level for invoking interface
+        // methods. It's either okay to have code invoking static (and
+        // default) interface methods or not. Reality asks to be
+        // prepared for a little compromise here because the
+        // traditional guidance to Android developers when producing a
+        // multi-API level DEX file is to guard the use of the newer
+        // feature with an API level check, e.g.
+        //
+        // int x = (android.os.Build.VERSION.SDK_INT >= 038) ?
+        //         DoJava8Thing() : Do JavaOtherThing();
+        //
+        // This is fine advice if the bytecodes and VM semantics never
+        // change. Unfortunately, changes like Java 8 support
+        // introduce new bytecodes and also additional semantics to
+        // existing bytecodes. Invoking static and default interface
+        // methods is one of these awkward VM transitions.
+        //
+        // Experimentally invoke-static of static interface methods
+        // breaks on VMs running below API level 21. Invocations of
+        // default interface methods may soft-fail verification but so
+        // long as they are not called that's okay.
+        //
+        boolean softFail = dexOptions.allowAllInterfaceMethodInvokes;
+        if (opcode == ByteOps.INVOKESTATIC) {
+            softFail &= dexOptions.apiIsSupported(DexFormat.API_INVOKE_STATIC_INTERFACE_METHODS);
+        } else {
+            assert (opcode == ByteOps.INVOKESPECIAL) || (opcode == ByteOps.INVOKEVIRTUAL);
+        }
+
+        // Running below the officially supported API level. Fail hard
+        // unless the user has explicitly allowed this with
+        // "--allow-all-interface-method-invokes".
+        String invokeKind = (opcode == ByteOps.INVOKESTATIC) ? "static" : "default";
+        if (softFail) {
+            // The code we are warning about here should have an API check
+            // that protects it being used on API version < API_INVOKE_INTERFACE_METHODS.
+            String reason =
+                    String.format(
+                        "invoking a %s interface method %s.%s strictly requires " +
+                        "--min-sdk-version >= %d (experimental at current API level %d)",
+                        invokeKind, callee.getDefiningClass().toHuman(), callee.getNat().toHuman(),
+                        DexFormat.API_INVOKE_INTERFACE_METHODS, dexOptions.minSdkVersion);
+            warn(reason);
+        } else {
+            String reason =
+                    String.format(
+                        "invoking a %s interface method %s.%s strictly requires " +
+                        "--min-sdk-version >= %d (blocked at current API level %d)",
+                    invokeKind, callee.getDefiningClass().toHuman(), callee.getNat().toHuman(),
+                    DexFormat.API_INVOKE_INTERFACE_METHODS, dexOptions.minSdkVersion);
+            fail(reason);
+        }
+    }
+
+    private void checkInterfaceMethodDeclaration(ConcreteMethod declaredMethod) {
+        if (!dexOptions.apiIsSupported(DexFormat.API_DEFINE_INTERFACE_METHODS)) {
+            String reason
+                = String.format(
+                    "defining a %s interface method requires --min-sdk-version >= %d (currently %d)"
+                    + " for interface methods: %s.%s",
+                    declaredMethod.isStaticMethod() ? "static" : "default",
+                    DexFormat.API_DEFINE_INTERFACE_METHODS, dexOptions.minSdkVersion,
+                    declaredMethod.getDefiningClass().toHuman(), declaredMethod.getNat().toHuman());
+            warn(reason);
+        }
+    }
+
+    private void checkInvokeSignaturePolymorphic(final int opcode) {
+        if (!dexOptions.apiIsSupported(DexFormat.API_METHOD_HANDLES)) {
+            fail(String.format(
+                "invoking a signature-polymorphic requires --min-sdk-version >= %d (currently %d)",
+                DexFormat.API_METHOD_HANDLES, dexOptions.minSdkVersion));
+        } else if (opcode != ByteOps.INVOKEVIRTUAL) {
+            fail("Unsupported signature polymorphic invocation (" + ByteOps.opName(opcode) + ")");
+        }
+    }
+
+    private void fail(String reason) {
+        String message = String.format("ERROR in %s.%s: %s", method.getDefiningClass().toHuman(),
+                                       method.getNat().toHuman(), reason);
+        throw new SimException(message);
+    }
+
+    private void warn(String reason) {
+        String warning = String.format("WARNING in %s.%s: %s", method.getDefiningClass().toHuman(),
+                                       method.getNat().toHuman(), reason);
+        dexOptions.err.println(warning);
     }
 }

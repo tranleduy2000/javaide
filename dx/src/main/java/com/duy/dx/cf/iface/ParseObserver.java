@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.iface;
+package com.duy.dx.cf.iface;
 
-import com.duy.dx .util.ByteArray;
+import com.duy.dx.util.ByteArray;
 
 /**
  * Observer of parsing in action. This is used to supply feedback from

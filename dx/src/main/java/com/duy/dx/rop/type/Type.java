@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.type;
+package com.duy.dx.rop.type;
 
-import com.duy.dx .util.Hex;
-import java.util.HashMap;
+import com.duy.dx.util.Hex;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Representation of a value type, such as may appear in a field, in a
@@ -27,11 +28,13 @@ import java.util.HashMap;
  */
 public final class Type implements TypeBearer, Comparable<Type> {
     /**
-     * {@code non-null;} intern table mapping string descriptors to
-     * instances
+     * Intern table for instances.
+     *
+     * <p>The initial capacity is based on a medium-size project.
      */
-    private static final HashMap<String, Type> internTable =
-        new HashMap<String, Type>(500);
+    private static final ConcurrentMap<String, Type> internTable =
+            new ConcurrentHashMap<>(10_000, 0.75f);
+
 
     /** basic type constant for {@code void} */
     public static final int BT_VOID = 0;
@@ -102,11 +105,141 @@ public final class Type implements TypeBearer, Comparable<Type> {
     /** {@code non-null;} instance representing a subroutine return address */
     public static final Type RETURN_ADDRESS = new Type("<addr>", BT_ADDR);
 
+
+    /**
+     * {@code non-null;} instance representing
+     * {@code java.lang.annotation.Annotation}
+     */
+    public static final Type ANNOTATION =
+        new Type("Ljava/lang/annotation/Annotation;", BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code java.lang.Class} */
+    public static final Type CLASS = new Type("Ljava/lang/Class;", BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code java.lang.Cloneable} */
+    public static final Type CLONEABLE = new Type("Ljava/lang/Cloneable;", BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code java.lang.invoke.MethodHandle} */
+    public static final Type METHOD_HANDLE = new Type("Ljava/lang/invoke/MethodHandle;", BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code java.lang.invoke.MethodType} */
+    public static final Type METHOD_TYPE = new Type("Ljava/lang/invoke/MethodType;", BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code java.lang.invoke.VarHandle} */
+    public static final Type VAR_HANDLE = new Type("Ljava/lang/invoke/VarHandle;", BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code java.lang.Object} */
+    public static final Type OBJECT = new Type("Ljava/lang/Object;", BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code java.io.Serializable} */
+    public static final Type SERIALIZABLE = new Type("Ljava/io/Serializable;", BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code java.lang.String} */
+    public static final Type STRING = new Type("Ljava/lang/String;", BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code java.lang.Throwable} */
+    public static final Type THROWABLE = new Type("Ljava/lang/Throwable;", BT_OBJECT);
+
+    /**
+     * {@code non-null;} instance representing {@code java.lang.Boolean}; the
+     * suffix on the name helps disambiguate this from the instance
+     * representing a primitive type
+     */
+    public static final Type BOOLEAN_CLASS = new Type("Ljava/lang/Boolean;", BT_OBJECT);
+
+    /**
+     * {@code non-null;} instance representing {@code java.lang.Byte}; the
+     * suffix on the name helps disambiguate this from the instance
+     * representing a primitive type
+     */
+    public static final Type BYTE_CLASS = new Type("Ljava/lang/Byte;", BT_OBJECT);
+
+    /**
+     * {@code non-null;} instance representing {@code java.lang.Character}; the
+     * suffix on the name helps disambiguate this from the instance
+     * representing a primitive type
+     */
+    public static final Type CHARACTER_CLASS = new Type("Ljava/lang/Character;", BT_OBJECT);
+
+    /**
+     * {@code non-null;} instance representing {@code java.lang.Double}; the
+     * suffix on the name helps disambiguate this from the instance
+     * representing a primitive type
+     */
+    public static final Type DOUBLE_CLASS = new Type("Ljava/lang/Double;", BT_OBJECT);
+
+    /**
+     * {@code non-null;} instance representing {@code java.lang.Float}; the
+     * suffix on the name helps disambiguate this from the instance
+     * representing a primitive type
+     */
+    public static final Type FLOAT_CLASS = new Type("Ljava/lang/Float;", BT_OBJECT);
+
+    /**
+     * {@code non-null;} instance representing {@code java.lang.Integer}; the
+     * suffix on the name helps disambiguate this from the instance
+     * representing a primitive type
+     */
+    public static final Type INTEGER_CLASS = new Type("Ljava/lang/Integer;", BT_OBJECT);
+
+    /**
+     * {@code non-null;} instance representing {@code java.lang.Long}; the
+     * suffix on the name helps disambiguate this from the instance
+     * representing a primitive type
+     */
+    public static final Type LONG_CLASS = new Type("Ljava/lang/Long;", BT_OBJECT);
+
+    /**
+     * {@code non-null;} instance representing {@code java.lang.Short}; the
+     * suffix on the name helps disambiguate this from the instance
+     * representing a primitive type
+     */
+    public static final Type SHORT_CLASS = new Type("Ljava/lang/Short;", BT_OBJECT);
+
+    /**
+     * {@code non-null;} instance representing {@code java.lang.Void}; the
+     * suffix on the name helps disambiguate this from the instance
+     * representing a primitive type
+     */
+    public static final Type VOID_CLASS = new Type("Ljava/lang/Void;", BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code boolean[]} */
+    public static final Type BOOLEAN_ARRAY = new Type("[" + BOOLEAN.descriptor, BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code byte[]} */
+    public static final Type BYTE_ARRAY = new Type("[" + BYTE.descriptor, BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code char[]} */
+    public static final Type CHAR_ARRAY = new Type("[" + CHAR.descriptor, BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code double[]} */
+    public static final Type DOUBLE_ARRAY = new Type("[" + DOUBLE.descriptor, BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code float[]} */
+    public static final Type FLOAT_ARRAY = new Type("[" + FLOAT.descriptor, BT_OBJECT);;
+
+    /** {@code non-null;} instance representing {@code int[]} */
+    public static final Type INT_ARRAY = new Type("[" + INT.descriptor, BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code long[]} */
+    public static final Type LONG_ARRAY = new Type("[" + LONG.descriptor, BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code Object[]} */
+    public static final Type OBJECT_ARRAY = new Type("[" + OBJECT.descriptor, BT_OBJECT);
+
+    /** {@code non-null;} instance representing {@code short[]} */
+    public static final Type SHORT_ARRAY = new Type("[" + SHORT.descriptor, BT_OBJECT);
+
     static {
-        /*
-         * Put all the primitive types into the intern table. This needs
-         * to happen before the array types below get interned.
-         */
+        initInterns();
+    }
+
+    /**
+     * Put the constant fields, including primitive types in to the intern table.
+     *
+     * <p>Must be called after the types are initialized above.
+     */
+    private static void initInterns() {
         putIntern(BOOLEAN);
         putIntern(BYTE);
         putIntern(CHAR);
@@ -119,122 +252,38 @@ public final class Type implements TypeBearer, Comparable<Type> {
          * Note: VOID isn't put in the intern table, since it's special and
          * shouldn't be found by a normal call to intern().
          */
+
+        putIntern(ANNOTATION);
+        putIntern(CLASS);
+        putIntern(CLONEABLE);
+        putIntern(METHOD_HANDLE);
+        putIntern(VAR_HANDLE);
+        putIntern(OBJECT);
+        putIntern(SERIALIZABLE);
+        putIntern(STRING);
+        putIntern(THROWABLE);
+        putIntern(BOOLEAN_CLASS);
+        putIntern(BYTE_CLASS);
+        putIntern(CHARACTER_CLASS);
+        putIntern(DOUBLE_CLASS);
+        putIntern(FLOAT_CLASS);
+        putIntern(INTEGER_CLASS);
+        putIntern(LONG_CLASS);
+        putIntern(SHORT_CLASS);
+        putIntern(VOID_CLASS);
+
+        // Array types
+        putIntern(BOOLEAN_ARRAY);
+        putIntern(BYTE_ARRAY);
+        putIntern(CHAR_ARRAY);
+        putIntern(DOUBLE_ARRAY);
+        putIntern(FLOAT_ARRAY);
+        putIntern(INT_ARRAY);
+        putIntern(LONG_ARRAY);
+        putIntern(OBJECT_ARRAY);
+        putIntern(SHORT_ARRAY);
     }
 
-    /**
-     * {@code non-null;} instance representing
-     * {@code java.lang.annotation.Annotation}
-     */
-    public static final Type ANNOTATION =
-        intern("Ljava/lang/annotation/Annotation;");
-
-    /** {@code non-null;} instance representing {@code java.lang.Class} */
-    public static final Type CLASS = intern("Ljava/lang/Class;");
-
-    /** {@code non-null;} instance representing {@code java.lang.Cloneable} */
-    public static final Type CLONEABLE = intern("Ljava/lang/Cloneable;");
-
-    /** {@code non-null;} instance representing {@code java.lang.Object} */
-    public static final Type OBJECT = intern("Ljava/lang/Object;");
-
-    /** {@code non-null;} instance representing {@code java.io.Serializable} */
-    public static final Type SERIALIZABLE = intern("Ljava/io/Serializable;");
-
-    /** {@code non-null;} instance representing {@code java.lang.String} */
-    public static final Type STRING = intern("Ljava/lang/String;");
-
-    /** {@code non-null;} instance representing {@code java.lang.Throwable} */
-    public static final Type THROWABLE = intern("Ljava/lang/Throwable;");
-
-    /**
-     * {@code non-null;} instance representing {@code java.lang.Boolean}; the
-     * suffix on the name helps disambiguate this from the instance
-     * representing a primitive type
-     */
-    public static final Type BOOLEAN_CLASS = intern("Ljava/lang/Boolean;");
-
-    /**
-     * {@code non-null;} instance representing {@code java.lang.Byte}; the
-     * suffix on the name helps disambiguate this from the instance
-     * representing a primitive type
-     */
-    public static final Type BYTE_CLASS = intern("Ljava/lang/Byte;");
-
-    /**
-     * {@code non-null;} instance representing {@code java.lang.Character}; the
-     * suffix on the name helps disambiguate this from the instance
-     * representing a primitive type
-     */
-    public static final Type CHARACTER_CLASS = intern("Ljava/lang/Character;");
-
-    /**
-     * {@code non-null;} instance representing {@code java.lang.Double}; the
-     * suffix on the name helps disambiguate this from the instance
-     * representing a primitive type
-     */
-    public static final Type DOUBLE_CLASS = intern("Ljava/lang/Double;");
-
-    /**
-     * {@code non-null;} instance representing {@code java.lang.Float}; the
-     * suffix on the name helps disambiguate this from the instance
-     * representing a primitive type
-     */
-    public static final Type FLOAT_CLASS = intern("Ljava/lang/Float;");
-
-    /**
-     * {@code non-null;} instance representing {@code java.lang.Integer}; the
-     * suffix on the name helps disambiguate this from the instance
-     * representing a primitive type
-     */
-    public static final Type INTEGER_CLASS = intern("Ljava/lang/Integer;");
-
-    /**
-     * {@code non-null;} instance representing {@code java.lang.Long}; the
-     * suffix on the name helps disambiguate this from the instance
-     * representing a primitive type
-     */
-    public static final Type LONG_CLASS = intern("Ljava/lang/Long;");
-
-    /**
-     * {@code non-null;} instance representing {@code java.lang.Short}; the
-     * suffix on the name helps disambiguate this from the instance
-     * representing a primitive type
-     */
-    public static final Type SHORT_CLASS = intern("Ljava/lang/Short;");
-
-    /**
-     * {@code non-null;} instance representing {@code java.lang.Void}; the
-     * suffix on the name helps disambiguate this from the instance
-     * representing a primitive type
-     */
-    public static final Type VOID_CLASS = intern("Ljava/lang/Void;");
-
-    /** {@code non-null;} instance representing {@code boolean[]} */
-    public static final Type BOOLEAN_ARRAY = BOOLEAN.getArrayType();
-
-    /** {@code non-null;} instance representing {@code byte[]} */
-    public static final Type BYTE_ARRAY = BYTE.getArrayType();
-
-    /** {@code non-null;} instance representing {@code char[]} */
-    public static final Type CHAR_ARRAY = CHAR.getArrayType();
-
-    /** {@code non-null;} instance representing {@code double[]} */
-    public static final Type DOUBLE_ARRAY = DOUBLE.getArrayType();
-
-    /** {@code non-null;} instance representing {@code float[]} */
-    public static final Type FLOAT_ARRAY = FLOAT.getArrayType();
-
-    /** {@code non-null;} instance representing {@code int[]} */
-    public static final Type INT_ARRAY = INT.getArrayType();
-
-    /** {@code non-null;} instance representing {@code long[]} */
-    public static final Type LONG_ARRAY = LONG.getArrayType();
-
-    /** {@code non-null;} instance representing {@code Object[]} */
-    public static final Type OBJECT_ARRAY = OBJECT.getArrayType();
-
-    /** {@code non-null;} instance representing {@code short[]} */
-    public static final Type SHORT_ARRAY = SHORT.getArrayType();
 
     /** {@code non-null;} field descriptor for the type */
     private final String descriptor;
@@ -291,10 +340,8 @@ public final class Type implements TypeBearer, Comparable<Type> {
      * invalid syntax
      */
     public static Type intern(String descriptor) {
-        Type result;
-        synchronized (internTable) {
-            result = internTable.get(descriptor);
-        }
+        Type result = internTable.get(descriptor);
+
         if (result != null) {
             return result;
         }
@@ -484,6 +531,7 @@ public final class Type implements TypeBearer, Comparable<Type> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int compareTo(Type other) {
         return descriptor.compareTo(other.descriptor);
     }
@@ -495,6 +543,7 @@ public final class Type implements TypeBearer, Comparable<Type> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         switch (basicType) {
             case BT_VOID:    return "void";
@@ -519,11 +568,13 @@ public final class Type implements TypeBearer, Comparable<Type> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Type getType() {
         return this;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Type getFrameType() {
         switch (basicType) {
             case BT_BOOLEAN:
@@ -539,11 +590,13 @@ public final class Type implements TypeBearer, Comparable<Type> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getBasicType() {
         return basicType;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getBasicFrameType() {
         switch (basicType) {
             case BT_BOOLEAN:
@@ -559,6 +612,7 @@ public final class Type implements TypeBearer, Comparable<Type> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isConstant() {
         return false;
     }
@@ -848,14 +902,12 @@ public final class Type implements TypeBearer, Comparable<Type> {
      * @return {@code non-null;} the actual interned object
      */
     private static Type putIntern(Type type) {
-        synchronized (internTable) {
-            String descriptor = type.getDescriptor();
-            Type already = internTable.get(descriptor);
-            if (already != null) {
-                return already;
-            }
-            internTable.put(descriptor, type);
-            return type;
-        }
+        Type result = internTable.putIfAbsent(type.getDescriptor(), type);
+        return result != null ? result : type;
+    }
+
+    public static void clearInternTable() {
+        internTable.clear();
+        initInterns();
     }
 }

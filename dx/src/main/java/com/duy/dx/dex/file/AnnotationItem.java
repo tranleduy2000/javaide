@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
-import com.duy.dx .rop.annotation.Annotation;
-import com.duy.dx .rop.annotation.AnnotationVisibility;
-import com.duy.dx .rop.annotation.NameValuePair;
-import com.duy.dx .rop.cst.Constant;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.ByteArrayAnnotatedOutput;
-
+import com.duy.dx.rop.annotation.Annotation;
+import com.duy.dx.rop.annotation.AnnotationVisibility;
+import com.duy.dx.rop.annotation.NameValuePair;
+import com.duy.dx.rop.cst.Constant;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.ByteArrayAnnotatedOutput;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -44,7 +43,8 @@ public final class AnnotationItem extends OffsettedItem {
     /** the required alignment for instances of this class */
     private static final int ALIGNMENT = 1;
 
-    /** {@code non-null;} unique instance of {@link #TypeIdSorter} */
+    /** {@code non-null;} unique instance of
+     * {@link com.duy.dx.dex.file.AnnotationItem.TypeIdSorter} */
     private static final TypeIdSorter TYPE_ID_SORTER = new TypeIdSorter();
 
     /** {@code non-null;} the annotation to represent */
@@ -67,6 +67,7 @@ public final class AnnotationItem extends OffsettedItem {
      */
     private static class TypeIdSorter implements Comparator<AnnotationItem> {
         /** {@inheritDoc} */
+        @Override
         public int compare(AnnotationItem item1, AnnotationItem item2) {
             int index1 = item1.type.getIndex();
             int index2 = item2.type.getIndex();
@@ -142,6 +143,7 @@ public final class AnnotationItem extends OffsettedItem {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addContents(DexFile file) {
         type = file.getTypeIds().intern(annotation.getType());
         ValueEncoder.addContents(file, annotation);

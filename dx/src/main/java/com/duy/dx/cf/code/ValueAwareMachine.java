@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.code;
+package com.duy.dx.cf.code;
 
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.Prototype;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .rop.type.TypeBearer;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.cst.CstCallSiteRef;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.Prototype;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.rop.type.TypeBearer;
+import com.duy.dx.util.Hex;
 
 /**
  * {@link Machine} which keeps track of known values but does not do
@@ -38,6 +39,7 @@ public class ValueAwareMachine extends BaseMachine {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void run(Frame frame, int offset, int opcode) {
         switch (opcode) {
             case ByteOps.NOP:
@@ -160,6 +162,15 @@ public class ValueAwareMachine extends BaseMachine {
                     frame.makeInitialized(thisType);
                 }
                 Type type = ((TypeBearer) getAuxCst()).getType();
+                if (type == Type.VOID) {
+                    clearResult();
+                } else {
+                    setResult(type);
+                }
+                break;
+            }
+            case ByteOps.INVOKEDYNAMIC: {
+                Type type = ((CstCallSiteRef) getAuxCst()).getReturnType();
                 if (type == Type.VOID) {
                     clearResult();
                 } else {

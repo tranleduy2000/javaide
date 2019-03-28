@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecSet;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .util.FixedSizeList;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecSet;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.util.FixedSizeList;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,12 +163,14 @@ public final class LocalList extends FixedSizeList {
         }
 
         /** {@inheritDoc} */
+        @Override
         public String toString() {
             return Integer.toHexString(address) + " " + disposition + " " +
                 spec;
         }
 
         /** {@inheritDoc} */
+        @Override
         public boolean equals(Object other) {
             if (!(other instanceof Entry)) {
                 return false;
@@ -185,6 +187,7 @@ public final class LocalList extends FixedSizeList {
          * @param other {@code non-null;} entry to compare to
          * @return {@code -1..1;} standard result of comparison
          */
+        @Override
         public int compareTo(Entry other) {
             if (address < other.address) {
                 return -1;
@@ -467,7 +470,7 @@ public final class LocalList extends FixedSizeList {
         private int[] endIndices;
 
         /** {@code >= 0;} last address seen */
-        private int lastAddress;
+        private final int lastAddress;
 
         /**
          * Constructs an instance.

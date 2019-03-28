@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.file;
+package com.duy.dx.dex.file;
 
 import com.duy.dex.Leb128;
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .util.AnnotatedOutput;
-import com.duy.dx .util.ByteArray;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.util.AnnotatedOutput;
+import com.duy.dx.util.ByteArray;
+import com.duy.dx.util.Hex;
 
 /**
  * Representation of string data for a particular string, in a Dalvik file.

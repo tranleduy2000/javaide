@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .util;
+package com.duy.dx.util;
 
 /**
  * Utilities for formatting numbers as hexadecimal.
@@ -265,7 +265,7 @@ public final class Hex {
             return "";
         }
 
-        StringBuffer sb = new StringBuffer(length * 4 + 6);
+        StringBuilder sb = new StringBuilder(length * 4 + 6);
         boolean bol = true;
         int col = 0;
 

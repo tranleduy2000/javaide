@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.code;
+package com.duy.dx.rop.code;
 
-import com.duy.dx .util.Bits;
-import com.duy.dx .util.IntList;
+import com.duy.dx.util.Bits;
+import com.duy.dx.util.IntList;
 
 /**
  * Code to figure out which local variables are active at which points in

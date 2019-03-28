@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .util.FixedSizeList;
+import com.duy.dx.util.FixedSizeList;
 
 /**
  * Table of catch entries. Each entry includes a range of code
@@ -60,6 +60,7 @@ public final class CatchTable extends FixedSizeList
     }
 
     /** {@inheritDoc} */
+    @Override
     public int compareTo(CatchTable other) {
         if (this == other) {
             // Easy out.
@@ -145,6 +146,7 @@ public final class CatchTable extends FixedSizeList
         }
 
         /** {@inheritDoc} */
+        @Override
         public int compareTo(Entry other) {
             if (start < other.start) {
                 return -1;

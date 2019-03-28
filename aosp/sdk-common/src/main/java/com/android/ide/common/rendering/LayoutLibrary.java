@@ -47,7 +47,7 @@ import com.android.resources.ResourceType;
 import com.android.utils.ILogger;
 import com.android.utils.SdkUtils;
 
-
+import android.graphics.Bitmap;//TODO fix it:
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

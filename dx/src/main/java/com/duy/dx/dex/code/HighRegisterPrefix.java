@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code;
+package com.duy.dx.dex.code;
 
-import com.duy.dx .rop.code.RegisterSpec;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .rop.code.SourcePosition;
-import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx.rop.code.RegisterSpec;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.rop.code.SourcePosition;
+import com.duy.dx.util.AnnotatedOutput;
 
 /**
  * Combination instruction which turns into a variable number of
@@ -112,7 +112,7 @@ public final class HighRegisterPrefix extends VariableSizeInsn {
     protected String listingString0(boolean noteIndices) {
         RegisterSpecList registers = getRegisters();
         int sz = registers.size();
-        StringBuffer sb = new StringBuffer(100);
+        StringBuilder sb = new StringBuilder(100);
 
         for (int i = 0, outAt = 0; i < sz; i++) {
             RegisterSpec src = registers.get(i);

@@ -43,6 +43,7 @@ public final class MethodId implements Comparable<MethodId> {
         return nameIndex;
     }
 
+    @Override
     public int compareTo(MethodId other) {
         if (declaringClassIndex != other.declaringClassIndex) {
             return Unsigned.compare(declaringClassIndex, other.declaringClassIndex);
@@ -59,7 +60,8 @@ public final class MethodId implements Comparable<MethodId> {
         out.writeInt(nameIndex);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         if (dex == null) {
             return declaringClassIndex + " " + protoIndex + " " + nameIndex;
         }

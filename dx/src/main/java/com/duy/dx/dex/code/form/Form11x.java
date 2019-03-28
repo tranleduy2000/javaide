@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.duy.dx .dex.code.form;
+package com.duy.dx.dex.code.form;
 
-import com.duy.dx .dex.code.DalvInsn;
-import com.duy.dx .dex.code.InsnFormat;
-import com.duy.dx .dex.code.SimpleInsn;
-import com.duy.dx .rop.code.RegisterSpecList;
-import com.duy.dx .util.AnnotatedOutput;
+import com.duy.dx.dex.code.DalvInsn;
+import com.duy.dx.dex.code.InsnFormat;
+import com.duy.dx.dex.code.SimpleInsn;
+import com.duy.dx.rop.code.RegisterSpecList;
+import com.duy.dx.util.AnnotatedOutput;
 import java.util.BitSet;
 
 /**

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.annotation;
+package com.duy.dx.rop.annotation;
 
-import com.duy.dx .rop.cst.CstString;
-import com.duy.dx .rop.cst.CstType;
-import com.duy.dx .util.MutabilityControl;
-import com.duy.dx .util.ToHuman;
+import com.duy.dx.rop.cst.CstString;
+import com.duy.dx.rop.cst.CstType;
+import com.duy.dx.util.MutabilityControl;
+import com.duy.dx.util.ToHuman;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -79,6 +79,7 @@ public final class Annotation extends MutabilityControl
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
         int hash = type.hashCode();
         hash = (hash * 31) + elements.hashCode();
@@ -87,6 +88,7 @@ public final class Annotation extends MutabilityControl
     }
 
     /** {@inheritDoc} */
+    @Override
     public int compareTo(Annotation other) {
         int result = type.compareTo(other.type);
 
@@ -129,6 +131,7 @@ public final class Annotation extends MutabilityControl
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         StringBuilder sb = new StringBuilder();
 

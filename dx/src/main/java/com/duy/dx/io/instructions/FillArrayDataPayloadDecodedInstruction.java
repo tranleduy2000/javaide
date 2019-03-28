@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.duy.dx .io.instructions;
+package com.duy.dx.io.instructions;
 
 /**
  * A decoded Dalvik instruction which contains the payload for
@@ -76,7 +76,8 @@ public final class FillArrayDataPayloadDecodedInstruction
         this(format, opcode, data, data.length, 8);
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public int getRegisterCount() {
         return 0;
     }
@@ -93,7 +94,8 @@ public final class FillArrayDataPayloadDecodedInstruction
         return data;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
+    @Override
     public DecodedInstruction withIndex(int newIndex) {
         throw new UnsupportedOperationException("no index in instruction");
     }

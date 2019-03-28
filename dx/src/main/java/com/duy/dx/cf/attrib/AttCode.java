@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.duy.dx .cf.attrib;
+package com.duy.dx.cf.attrib;
 
-import com.duy.dx .cf.code.ByteCatchList;
-import com.duy.dx .cf.code.BytecodeArray;
-import com.duy.dx .cf.iface.AttributeList;
-import com.duy.dx .util.MutabilityException;
+import com.duy.dx.cf.code.ByteCatchList;
+import com.duy.dx.cf.code.BytecodeArray;
+import com.duy.dx.cf.iface.AttributeList;
+import com.duy.dx.util.MutabilityException;
 
 /**
  * Attribute class for standard {@code Code} attributes.
@@ -93,6 +93,7 @@ public final class AttCode extends BaseAttribute {
         this.attributes = attributes;
     }
 
+    @Override
     public int byteLength() {
         return 10 + code.byteLength() + catches.byteLength() +
             attributes.byteLength();

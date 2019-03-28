@@ -27,9 +27,13 @@ public class SdkInfo {
 
     @NonNull
     private final File mAnnotationJar;
+    @NonNull
+    private final File mAdb;
 
-    SdkInfo(@NonNull File annotationJar) {
+    SdkInfo(@NonNull File annotationJar,
+            @NonNull File adb) {
         mAnnotationJar = annotationJar;
+        mAdb = adb;
     }
 
     /**
@@ -40,5 +44,21 @@ public class SdkInfo {
         return mAnnotationJar;
     }
 
+    /**
+     * Returns the revision of the installed platform tools component.
+     *
+     * @return the FullRevision or null if the revision couldn't not be found
+     */
+//    @Nullable
+//    public FullRevision getPlatformToolsRevision() {
+//
+//    }
 
+    /**
+     * Returns the location of the adb tool.
+     */
+    @NonNull
+    public File getAdb() {
+        return mAdb;
+    }
 }

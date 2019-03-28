@@ -16,6 +16,8 @@
 
 package com.android.builder.core;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.internal.BaseConfigImpl;
@@ -25,6 +27,7 @@ import com.android.builder.model.SigningConfig;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.io.File;
@@ -32,8 +35,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The configuration of a product flavor.
@@ -53,14 +54,28 @@ public class DefaultProductFlavor extends BaseConfigImpl implements ProductFlavo
     private ApiVersion mTargetSdkVersion;
     @Nullable
     private Integer mMaxSdkVersion;
-
+    @Nullable
+    private Integer mRenderscriptTargetApi;
+    @Nullable
+    private Boolean mRenderscriptSupportModeEnabled;
+    @Nullable
+    private Boolean mRenderscriptNdkModeEnabled;
     @Nullable
     private Integer mVersionCode;
     @Nullable
     private String mVersionName;
     @Nullable
     private String mApplicationId;
-
+    @Nullable
+    private String mTestApplicationId;
+    @Nullable
+    private String mTestInstrumentationRunner;
+    @NonNull
+    private Map<String, String> mTestInstrumentationRunnerArguments = Maps.newHashMap();
+    @Nullable
+    private Boolean mTestHandleProfiling;
+    @Nullable
+    private Boolean mTestFunctionalTest;
     @Nullable
     private SigningConfig mSigningConfig;
     @Nullable
@@ -207,6 +222,146 @@ public class DefaultProductFlavor extends BaseConfigImpl implements ProductFlavo
         return mMaxSdkVersion;
     }
 
+    @Override
+    @Nullable
+    public Integer getRenderscriptTargetApi() {
+        return mRenderscriptTargetApi;
+    }
+
+    /** Sets the renderscript target API to the given value. */
+    public void setRenderscriptTargetApi(Integer renderscriptTargetApi) {
+        mRenderscriptTargetApi = renderscriptTargetApi;
+    }
+
+    @Override
+    @Nullable
+    public Boolean getRenderscriptSupportModeEnabled() {
+        return mRenderscriptSupportModeEnabled;
+    }
+
+    /**
+     * Sets whether the renderscript code should be compiled in support mode to make it compatible
+     * with older versions of Android.
+     */
+    public ProductFlavor setRenderscriptSupportModeEnabled(Boolean renderscriptSupportMode) {
+        mRenderscriptSupportModeEnabled = renderscriptSupportMode;
+        return this;
+    }
+
+    @Override
+    @Nullable
+    public Boolean getRenderscriptNdkModeEnabled() {
+        return mRenderscriptNdkModeEnabled;
+    }
+
+
+    /** Sets whether the renderscript code should be compiled to generate C/C++ bindings. */
+    public ProductFlavor setRenderscriptNdkModeEnabled(Boolean renderscriptNdkMode) {
+        mRenderscriptNdkModeEnabled = renderscriptNdkMode;
+        return this;
+    }
+
+    /** Sets the test application ID. */
+    @NonNull
+    public ProductFlavor setTestApplicationId(String applicationId) {
+        mTestApplicationId = applicationId;
+        return this;
+    }
+
+    /**
+     * Test application ID.
+     *
+     * <p>See <a href="http://tools.android.com/tech-docs/new-build-system/applicationid-vs-packagename">ApplicationId versus PackageName</a>
+     */
+    @Override
+    @Nullable
+    public String getTestApplicationId() {
+        return mTestApplicationId;
+    }
+
+    /** Sets the test instrumentation runner to the given value. */
+    @NonNull
+    public ProductFlavor setTestInstrumentationRunner(String testInstrumentationRunner) {
+        mTestInstrumentationRunner = testInstrumentationRunner;
+        return this;
+    }
+
+    /**
+     * Test instrumentation runner class name.
+     *
+     * <p>This is a fully qualified class name of the runner, e.g.
+     * <code>android.test.InstrumentationTestRunner</code>
+     *
+     * <p>See <a href="http://developer.android.com/guide/topics/manifest/instrumentation-element.html">
+     * instrumentation</a>.
+     */
+    @Override
+    @Nullable
+    public String getTestInstrumentationRunner() {
+        return mTestInstrumentationRunner;
+    }
+
+    /** Sets the test instrumentation runner custom arguments. */
+    @NonNull
+    public ProductFlavor setTestInstrumentationRunnerArguments(
+            @NonNull Map<String, String> testInstrumentationRunnerArguments) {
+        mTestInstrumentationRunnerArguments = checkNotNull(testInstrumentationRunnerArguments);
+        return this;
+    }
+
+    /**
+     * Test instrumentation runner custom arguments.
+     *
+     * e.g. <code>[key: "value"]</code> will give
+     * <code>adb shell am instrument -w <b>-e key value</b> com.example</code>...".
+     *
+     * <p>See <a href="http://developer.android.com/guide/topics/manifest/instrumentation-element.html">
+     * instrumentation</a>.
+     *
+     * <p>Test runner arguments can also be specified from the command line:
+     *
+     * <p><pre>
+     * INSTRUMENTATION_TEST_RUNNER_ARGS=size=medium,foo=bar ./gradlew connectedAndroidTest
+     * ./gradlew connectedAndroidTest -Pcom.android.tools.instrumentationTestRunnerArgs=size=medium,foo=bar
+     * </pre>
+     */
+    @Override
+    @NonNull
+    public Map<String, String> getTestInstrumentationRunnerArguments() {
+        return mTestInstrumentationRunnerArguments;
+    }
+
+    /**
+     * See <a href="http://developer.android.com/guide/topics/manifest/instrumentation-element.html">
+     * instrumentation</a>.
+     */
+    @Override
+    @Nullable
+    public Boolean getTestHandleProfiling() {
+        return mTestHandleProfiling;
+    }
+
+    @NonNull
+    public ProductFlavor setTestHandleProfiling(boolean handleProfiling) {
+        mTestHandleProfiling = handleProfiling;
+        return this;
+    }
+
+    /**
+     * See <a href="http://developer.android.com/guide/topics/manifest/instrumentation-element.html">
+     * instrumentation</a>.
+     */
+    @Override
+    @Nullable
+    public Boolean getTestFunctionalTest() {
+        return mTestFunctionalTest;
+    }
+
+    @NonNull
+    public ProductFlavor setTestFunctionalTest(boolean functionalTest) {
+        mTestFunctionalTest = functionalTest;
+        return this;
+    }
 
     /**
      * Signing config used by this product flavor.
@@ -295,14 +450,40 @@ public class DefaultProductFlavor extends BaseConfigImpl implements ProductFlavo
                 overlay.getMaxSdkVersion(),
                 base.getMaxSdkVersion());
 
-
-
+        flavor.mRenderscriptTargetApi = chooseNotNull(
+                overlay.getRenderscriptTargetApi(),
+                base.getRenderscriptTargetApi());
+        flavor.mRenderscriptSupportModeEnabled = chooseNotNull(
+                overlay.getRenderscriptSupportModeEnabled(),
+                base.getRenderscriptSupportModeEnabled());
+        flavor.mRenderscriptNdkModeEnabled = chooseNotNull(
+                overlay.getRenderscriptNdkModeEnabled(),
+                base.getRenderscriptNdkModeEnabled());
 
         flavor.mVersionCode = chooseNotNull(overlay.getVersionCode(), base.getVersionCode());
         flavor.mVersionName = chooseNotNull(overlay.getVersionName(), base.getVersionName());
 
         flavor.mApplicationId = chooseNotNull(overlay.getApplicationId(), base.getApplicationId());
 
+        flavor.mTestApplicationId = chooseNotNull(
+                overlay.getTestApplicationId(),
+                base.getTestApplicationId());
+        flavor.mTestInstrumentationRunner = chooseNotNull(
+                overlay.getTestInstrumentationRunner(),
+                base.getTestInstrumentationRunner());
+
+        flavor.mTestInstrumentationRunnerArguments.putAll(
+                base.getTestInstrumentationRunnerArguments());
+        flavor.mTestInstrumentationRunnerArguments.putAll(
+                overlay.getTestInstrumentationRunnerArguments());
+
+        flavor.mTestHandleProfiling = chooseNotNull(
+                overlay.getTestHandleProfiling(),
+                base.getTestHandleProfiling());
+
+        flavor.mTestFunctionalTest = chooseNotNull(
+                overlay.getTestFunctionalTest(),
+                base.getTestFunctionalTest());
 
         flavor.mSigningConfig = chooseNotNull(
                 overlay.getSigningConfig(),
@@ -352,12 +533,20 @@ public class DefaultProductFlavor extends BaseConfigImpl implements ProductFlavo
         flavor.mMinSdkVersion = productFlavor.getMinSdkVersion();
         flavor.mTargetSdkVersion = productFlavor.getTargetSdkVersion();
         flavor.mMaxSdkVersion = productFlavor.getMaxSdkVersion();
+        flavor.mRenderscriptTargetApi = productFlavor.getRenderscriptTargetApi();
+        flavor.mRenderscriptSupportModeEnabled = productFlavor.getRenderscriptSupportModeEnabled();
+        flavor.mRenderscriptNdkModeEnabled = productFlavor.getRenderscriptNdkModeEnabled();
 
         flavor.mVersionCode = productFlavor.getVersionCode();
         flavor.mVersionName = productFlavor.getVersionName();
 
         flavor.mApplicationId = productFlavor.getApplicationId();
 
+        flavor.mTestApplicationId = productFlavor.getTestApplicationId();
+        flavor.mTestInstrumentationRunner = productFlavor.getTestInstrumentationRunner();
+        flavor.mTestInstrumentationRunnerArguments = productFlavor.getTestInstrumentationRunnerArguments();
+        flavor.mTestHandleProfiling = productFlavor.getTestHandleProfiling();
+        flavor.mTestFunctionalTest = productFlavor.getTestFunctionalTest();
 
         flavor.mSigningConfig = productFlavor.getSigningConfig();
 
@@ -399,9 +588,19 @@ public class DefaultProductFlavor extends BaseConfigImpl implements ProductFlavo
                 Objects.equal(mMaxSdkVersion, that.mMaxSdkVersion) &&
                 Objects.equal(mMinSdkVersion, that.mMinSdkVersion) &&
                 Objects.equal(mName, that.mName) &&
+                Objects.equal(mRenderscriptNdkModeEnabled, that.mRenderscriptNdkModeEnabled) &&
+                Objects.equal(mRenderscriptSupportModeEnabled,
+                        that.mRenderscriptSupportModeEnabled) &&
+                Objects.equal(mRenderscriptTargetApi, that.mRenderscriptTargetApi) &&
                 Objects.equal(mResourceConfiguration, that.mResourceConfiguration) &&
                 Objects.equal(mSigningConfig, that.mSigningConfig) &&
                 Objects.equal(mTargetSdkVersion, that.mTargetSdkVersion) &&
+                Objects.equal(mTestApplicationId, that.mTestApplicationId) &&
+                Objects.equal(mTestFunctionalTest, that.mTestFunctionalTest) &&
+                Objects.equal(mTestHandleProfiling, that.mTestHandleProfiling) &&
+                Objects.equal(mTestInstrumentationRunner, that.mTestInstrumentationRunner) &&
+                Objects.equal(mTestInstrumentationRunnerArguments,
+                        that.mTestInstrumentationRunnerArguments) &&
                 Objects.equal(mVersionCode, that.mVersionCode) &&
                 Objects.equal(mVersionName, that.mVersionName);
     }
@@ -415,9 +614,17 @@ public class DefaultProductFlavor extends BaseConfigImpl implements ProductFlavo
                 mMinSdkVersion,
                 mTargetSdkVersion,
                 mMaxSdkVersion,
+                mRenderscriptTargetApi,
+                mRenderscriptSupportModeEnabled,
+                mRenderscriptNdkModeEnabled,
                 mVersionCode,
                 mVersionName,
                 mApplicationId,
+                mTestApplicationId,
+                mTestInstrumentationRunner,
+                mTestInstrumentationRunnerArguments,
+                mTestHandleProfiling,
+                mTestFunctionalTest,
                 mSigningConfig,
                 mResourceConfiguration);
     }
@@ -430,9 +637,17 @@ public class DefaultProductFlavor extends BaseConfigImpl implements ProductFlavo
                 .add("dimension", mDimension)
                 .add("minSdkVersion", mMinSdkVersion)
                 .add("targetSdkVersion", mTargetSdkVersion)
+                .add("renderscriptTargetApi", mRenderscriptTargetApi)
+                .add("renderscriptSupportModeEnabled", mRenderscriptSupportModeEnabled)
+                .add("renderscriptNdkModeEnabled", mRenderscriptNdkModeEnabled)
                 .add("versionCode", mVersionCode)
                 .add("versionName", mVersionName)
                 .add("applicationId", mApplicationId)
+                .add("testApplicationId", mTestApplicationId)
+                .add("testInstrumentationRunner", mTestInstrumentationRunner)
+                .add("testInstrumentationRunnerArguments", mTestInstrumentationRunnerArguments)
+                .add("testHandleProfiling", mTestHandleProfiling)
+                .add("testFunctionalTest", mTestFunctionalTest)
                 .add("signingConfig", mSigningConfig)
                 .add("resConfig", mResourceConfiguration)
                 .add("mBuildConfigFields", getBuildConfigFields())

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
-import com.duy.dx .rop.type.Type;
-import com.duy.dx .util.Hex;
+import com.duy.dx.rop.type.Type;
+import com.duy.dx.util.Hex;
 
 /**
  * Constants of type {@code CONSTANT_Float_info}.
@@ -65,6 +65,7 @@ public final class CstFloat
     }
 
     /** {@inheritDoc} */
+    @Override
     public Type getType() {
         return Type.FLOAT;
     }
@@ -76,6 +77,7 @@ public final class CstFloat
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         return Float.toString(Float.intBitsToFloat(getIntBits()));
     }

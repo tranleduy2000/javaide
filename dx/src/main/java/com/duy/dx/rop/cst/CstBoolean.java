@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.duy.dx .rop.cst;
+package com.duy.dx.rop.cst;
 
-import com.duy.dx .rop.type.Type;
+import com.duy.dx.rop.type.Type;
 
 /**
  * Constants of type {@code boolean}.
@@ -73,6 +73,7 @@ public final class CstBoolean
     }
 
     /** {@inheritDoc} */
+    @Override
     public Type getType() {
         return Type.BOOLEAN;
     }
@@ -84,6 +85,7 @@ public final class CstBoolean
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toHuman() {
         return getValue() ? "true" : "false";
     }

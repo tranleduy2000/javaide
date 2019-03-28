@@ -283,6 +283,7 @@ public class ProcessInfoBuilder extends ProcessEnvBuilder<ProcessInfoBuilder> {
         StringBuilder sb = new StringBuilder();
         sb.append("Executable : ").append(mExecutable).append("\n");
         sb.append("arguments : \n").append(Joiner.on("\n").join(mArgs)).append("\n");
+        sb.append("jvmArgs : \n").append(Joiner.on(",").join(mJvmArgs)).append("\n");
         return sb.toString();
     }
 

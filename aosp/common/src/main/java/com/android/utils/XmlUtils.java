@@ -15,21 +15,6 @@
  */
 package com.android.utils;
 
-import static com.android.SdkConstants.AMP_ENTITY;
-import static com.android.SdkConstants.ANDROID_NS_NAME;
-import static com.android.SdkConstants.ANDROID_URI;
-import static com.android.SdkConstants.APOS_ENTITY;
-import static com.android.SdkConstants.APP_PREFIX;
-import static com.android.SdkConstants.GT_ENTITY;
-import static com.android.SdkConstants.LT_ENTITY;
-import static com.android.SdkConstants.QUOT_ENTITY;
-import static com.android.SdkConstants.XMLNS;
-import static com.android.SdkConstants.XMLNS_PREFIX;
-import static com.android.SdkConstants.XMLNS_URI;
-import static com.google.common.base.Charsets.UTF_16BE;
-import static com.google.common.base.Charsets.UTF_16LE;
-import static com.google.common.base.Charsets.UTF_8;
-
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
@@ -56,6 +41,21 @@ import java.util.Locale;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import static com.android.SdkConstants.AMP_ENTITY;
+import static com.android.SdkConstants.ANDROID_NS_NAME;
+import static com.android.SdkConstants.ANDROID_URI;
+import static com.android.SdkConstants.APOS_ENTITY;
+import static com.android.SdkConstants.APP_PREFIX;
+import static com.android.SdkConstants.GT_ENTITY;
+import static com.android.SdkConstants.LT_ENTITY;
+import static com.android.SdkConstants.QUOT_ENTITY;
+import static com.android.SdkConstants.XMLNS;
+import static com.android.SdkConstants.XMLNS_PREFIX;
+import static com.android.SdkConstants.XMLNS_URI;
+import static com.google.common.base.Charsets.UTF_16BE;
+import static com.google.common.base.Charsets.UTF_16LE;
+import static com.google.common.base.Charsets.UTF_8;
 
 /** XML Utilities */
 public class XmlUtils {

@@ -300,7 +300,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
             addLib(project, "sdk/extras/com.android.support/support-compat/support-compat-28.0.0.aar", "/com.android.support/28.0.0/support-compat");
             addLib(project, "sdk/extras/com.android.support/support-core-ui/support-core-ui-28.0.0.aar", "/com.android.support/28.0.0/support-core-ui");
             addLib(project, "sdk/extras/com.android.support/support-core-utils/support-core-utils-28.0.0.aar", "/com.android.support/28.0.0/support-core-utils");
-            addLib(project, "sdk/extras/com.android.support/support-fragment-28ment/support-fragment-28.0.0.aar", "/com.android.support/28.0.0/support-fragment");
+            addLib(project, "sdk/extras/com.android.support/support-fragment-28/support-fragment-28.0.0.aar", "/com.android.support/28.0.0/support-fragment");
             addLib(project, "sdk/extras/com.android.support/support-vector-drawable/support-vector-drawable-28.0.0.aar", "/com.android.support/28.0.0/support-vector-drawable");
             addLib(project, "sdk/extras/com.android.support/swiperefreshlayout/swiperefreshlayout-28.0.0.aar", "/com.android.support/28.0.0/swiperefreshlayout");
             addLib(project, "sdk/extras/com.android.support/versionedparcelable/versionedparcelable-28.0.0.aar", "/com.android.support/28.0.0/versionedparcelable");

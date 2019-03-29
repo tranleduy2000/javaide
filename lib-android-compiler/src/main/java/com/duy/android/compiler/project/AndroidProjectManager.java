@@ -285,6 +285,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
             addLib(project, "sdk/extras/com.android.support/animated-vector-drawable/animated-vector-drawable-28.0.0.aar", "/com.android.support/28.0.0/animated-vector-drawable");
             addLib(project, "sdk/extras/com.android.support/appcompat-v7/appcompat-v7-28.0.0.aar", "/com.android.support/28.0.0/appcompat-v7");
             addLib(project, "sdk/extras/com.android.support/asynclayoutinflater/asynclayoutinflater-28.0.0.aar", "/com.android.support/28.0.0/asynclayoutinflater");
+            addLib(project, "sdk/extras/com.android.support/collections/collections-28.0.0.jargf", "collections-28.0.0.jar");
             addLib(project, "sdk/extras/com.android.support/coordinatorlayout/coordinatorlayout-28.0.0.aar", "/com.android.support/28.0.0/coordinatorlayout");
             addLib(project, "sdk/extras/com.android.support/cursoradapter/cursoradapter-28.0.0.aar", "/com.android.support/28.0.0/cursoradapter");
             addLib(project, "sdk/extras/com.android.support/customview/customview-28.0.0.aar", "/com.android.support/28.0.0/customview");
@@ -299,12 +300,13 @@ public class AndroidProjectManager implements IAndroidProjectManager {
             addLib(project, "sdk/extras/com.android.support/support-compat/support-compat-28.0.0.aar", "/com.android.support/28.0.0/support-compat");
             addLib(project, "sdk/extras/com.android.support/support-core-ui/support-core-ui-28.0.0.aar", "/com.android.support/28.0.0/support-core-ui");
             addLib(project, "sdk/extras/com.android.support/support-core-utils/support-core-utils-28.0.0.aar", "/com.android.support/28.0.0/support-core-utils");
-            addLib(project, "sdk/extras/com.android.support/support-fragment/support-fragment-28.0.0.aar", "/com.android.support/28.0.0/support-fragment");
+            addLib(project, "sdk/extras/com.android.support/support-fragment-28ment/support-fragment-28.0.0.aar", "/com.android.support/28.0.0/support-fragment");
             addLib(project, "sdk/extras/com.android.support/support-vector-drawable/support-vector-drawable-28.0.0.aar", "/com.android.support/28.0.0/support-vector-drawable");
             addLib(project, "sdk/extras/com.android.support/swiperefreshlayout/swiperefreshlayout-28.0.0.aar", "/com.android.support/28.0.0/swiperefreshlayout");
             addLib(project, "sdk/extras/com.android.support/versionedparcelable/versionedparcelable-28.0.0.aar", "/com.android.support/28.0.0/versionedparcelable");
             addLib(project, "sdk/extras/com.android.support/viewpager/viewpager-28.0.0.aar", "/com.android.support/28.0.0/viewpager");
             addLib(project, "sdk/extras/com.android.support.constraint/constraint-layout/constraint-layout-1.1.3.aar", "/com.android.support.constraint/1.1.3/constraint-layout-1.1.3");
+            addLib(project, "sdk/extras/com.android.support.constraint/constraint-layout-solver/constraint-layout-solver-1.1.3.jar", "constraint-layout-solver-1.1.3.jar");
 
             //AndroidX
             //addLib(project, "sdk/extras/androidx.arch.core/common/core-common-2.0.0.jar", "androidx.arch.core-common-2.0.0.jar");

@@ -6,7 +6,7 @@
             android:entries="@array/entries_java_versions"
             android:entryValues="@array/entries_java_versions"
             android:key="@string/key_pref_source_compatibility"
-            android:title="Source compatibility">
+            android:title="@string/source_compatibility">
 
         </ListPreference>
         <ListPreference
@@ -14,14 +14,14 @@
             android:entries="@array/entries_java_versions"
             android:entryValues="@array/entries_java_versions"
             android:key="@string/key_pref_target_compatibility"
-            android:title="Target compatibility">
+            android:title="@string/target_compatibility">
 
         </ListPreference>
         <EditTextPreference
             android:defaultValue="UTF-8"
             android:enabled="false"
             android:key="@string/key_pref_source_encoding"
-            android:title="Encoding" />
+            android:title="@string/encoding" />
 
 
         <EditTextPreference

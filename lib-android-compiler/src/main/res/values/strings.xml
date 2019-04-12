@@ -2,5 +2,8 @@
 <resources>
     <string name="classpath_desc">Classpath is a parameter in the Java Virtual Machine or the Java compiler that specifies the location of user-defined classes and packages. (android.jar)</string>
     <string name="pref_title_java_format_type">Format type</string>
+    <string name="source_compatibility">Source compatibility</string>
+    <string name="target_compatibility">Target compatibility</string>
+    <string name="encoding">Encoding</string>
 
 </resources>

@@ -38,7 +38,7 @@ public class GenerateBuildConfigTask extends Task<AndroidAppProject> {
         //map.put(PH_DEBUG, Boolean.toString(mDebug));
         generator.addField("boolean", "DEBUG",
                 getDebuggable() ? "Boolean.parseBoolean(\"true\")" : "false")
-                .addField("String", "APPLICATION_ID", "\"${getAppPackageName()}\"")
+                .addField("String", "APPLICATION_ID", "\"" + packageName + "\"")
                 .addField("String", "BUILD_TYPE", "\"${getBuildTypeName()}\"")
                 .addField("String", "FLAVOR", "\"${getFlavorName()}\"")
                 .addField("int", "VERSION_CODE", Integer.toString(getVersionCode()))

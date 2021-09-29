@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/newlinear"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- Ignored via attribute, should be hidden -->
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button1"
+        tools:ignore="HardcodedText" >
+    </Button>
+
+    <!-- Inherited ignore from parent -->
+
+    <LinearLayout
+        android:id="@+id/parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText" >
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button2" >
+        </Button>
+    </LinearLayout>
+
+    <!-- Hardcoded text warning ignored through "all" -->
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button3"
+        tools:ignore="all" >
+    </Button>
+
+    <!-- Ignored through item in ignore list -->
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hardcoded"
+        tools:ignore="NewApi,HardcodedText" >
+    </Button>
+
+    <!-- Not ignored: should show up as a warning -->
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hardcoded"
+        tools:ignore="Other" >
+    </Button>
+
+</LinearLayout>

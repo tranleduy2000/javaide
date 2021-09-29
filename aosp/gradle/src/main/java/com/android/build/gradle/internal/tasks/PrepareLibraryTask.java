@@ -22,14 +22,14 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
+import java.io.IOException;
 
 public class PrepareLibraryTask extends DefaultAndroidTask {
     private File bundle;
     private File explodedDir;
 
     @TaskAction
-    public void prepare() {
-        //LibraryCache.getCache().unzipLibrary(this.name, project, getBundle(), getExplodedDir())
+    public void prepare() throws IOException {
         LibraryCache.unzipAar(getBundle(), getExplodedDir(), getProject());
     }
 
@@ -38,13 +38,13 @@ public class PrepareLibraryTask extends DefaultAndroidTask {
         return bundle;
     }
 
+    public void setBundle(File bundle) {
+        this.bundle = bundle;
+    }
+
     @OutputDirectory
     public File getExplodedDir() {
         return explodedDir;
-    }
-
-    public void setBundle(File bundle) {
-        this.bundle = bundle;
     }
 
     public void setExplodedDir(File explodedDir) {

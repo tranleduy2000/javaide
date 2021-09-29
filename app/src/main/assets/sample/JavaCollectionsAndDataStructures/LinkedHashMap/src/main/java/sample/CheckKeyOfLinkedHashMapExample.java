@@ -9,15 +9,15 @@ import java.util.LinkedHashMap;
 
 public class CheckKeyOfLinkedHashMapExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create LinkedHashMap object
-    LinkedHashMap lHashMap = new LinkedHashMap();
+        //create LinkedHashMap object
+        LinkedHashMap lHashMap = new LinkedHashMap();
 
-    //add key value pairs to LinkedHashMap
-    lHashMap.put("1", "One");
-    lHashMap.put("2", "Two");
-    lHashMap.put("3", "Three");
+        //add key value pairs to LinkedHashMap
+        lHashMap.put("1", "One");
+        lHashMap.put("2", "Two");
+        lHashMap.put("3", "Three");
 
     /*
       To check whether a particular key exists in LinkedHashMap use
@@ -26,9 +26,9 @@ public class CheckKeyOfLinkedHashMapExample {
       otherwise false.
     */
 
-    boolean blnExists = lHashMap.containsKey("3");
-    System.out.println("3 exists in LinkedHashMap ? : " + blnExists);
-  }
+        boolean blnExists = lHashMap.containsKey("3");
+        System.out.println("3 exists in LinkedHashMap ? : " + blnExists);
+    }
 }
 
 /*

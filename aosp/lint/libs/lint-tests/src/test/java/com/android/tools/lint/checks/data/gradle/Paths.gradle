@@ -1,0 +1,6 @@
+apply plugin: 'com.android.application'
+
+dependencies {
+    compile files('my\\libs\\http.jar')
+    compile files('/libs/android-support-v4.jar')
+}

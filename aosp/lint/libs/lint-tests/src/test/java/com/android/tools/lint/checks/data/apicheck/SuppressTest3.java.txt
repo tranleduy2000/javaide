@@ -1,0 +1,25 @@
+package test.pkg;
+
+import org.w3c.dom.DOMLocator;
+
+import android.annotations.tools.SuppressLint;
+import android.app.Activity;
+import android.app.ApplicationErrorReport;
+import android.widget.Chronometer;
+import android.widget.GridLayout;
+
+@SuppressLint("NewApi")
+public class SuppressTest3 extends Activity {
+	public void method(Chronometer chronometer, DOMLocator locator) {
+		getActionBar(); // API 11
+	}
+
+	// Return type
+	GridLayout getGridLayout() { // API 14
+		return null;
+	}
+
+	private ApplicationErrorReport getReport() {
+		return null;
+	}
+}

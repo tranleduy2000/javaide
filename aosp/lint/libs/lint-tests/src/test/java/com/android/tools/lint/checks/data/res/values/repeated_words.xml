@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Repeated words -->
+    <string name="permdesc_accessLocationExtraCommands">Allows the app to access
+     extra location provider commands.  This may allow the app to to interfere
+     with the operation of the GPS or other location sources.</string>
+    <string name="other">"ü test\n zü zü"</string>
+    <string name="ignore1">android/android/foo"</string>
+    <string name="ignore2">%s/%s/%s</string>
+    <string name="ignore3">"Dial (866) 555 0123\" \n\"Dial 911, 811, ..."</string>
+</resources>

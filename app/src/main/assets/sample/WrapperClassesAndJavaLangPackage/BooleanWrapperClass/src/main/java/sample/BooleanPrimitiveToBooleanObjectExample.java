@@ -7,15 +7,15 @@ package sample;
 */
 public class BooleanPrimitiveToBooleanObjectExample {
 
-  public static void main(String[] args) {
-    boolean b = true;
+    public static void main(String[] args) {
+        boolean b = true;
 
-    //1. using constructor
-    Boolean blnObj1 = new Boolean(b);
+        //1. using constructor
+        Boolean blnObj1 = new Boolean(b);
 
-    //2. using valueOf method of Boolean class. This is a static method.
-    Boolean blnObj2 = Boolean.valueOf(b);
-  }
+        //2. using valueOf method of Boolean class. This is a static method.
+        Boolean blnObj2 = Boolean.valueOf(b);
+    }
 }
 
 /*

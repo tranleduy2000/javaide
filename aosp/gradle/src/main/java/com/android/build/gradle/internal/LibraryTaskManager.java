@@ -109,70 +109,55 @@ public class LibraryTaskManager extends TaskManager {
         // Add a task to process the manifest(s)
         createMergeLibManifestsTask(tasks, variantScope);
 
+        AndroidTask<MergeResources> packageRes;
+        {
+            // Create a merge task to only merge the resources from this library and not
+            // the dependencies. This is what gets packaged in the aar.
+            packageRes = basicCreateMergeResourcesTask(
+                    tasks,
+                    variantScope,
+                    "package",
+                    new File(variantScope.getGlobalScope().getIntermediatesDir(),
+                            DIR_BUNDLES + "/" +
+                                    variantScope.getVariantConfiguration().getDirName() + "/res"),
+                    false, false);
 
-        AndroidTask<MergeResources> packageRes = ThreadRecorder.get().record(
-                ExecutionType.LIB_TASK_MANAGER_CREATE_MERGE_RESOURCES_TASK,
-                new Recorder.Block<AndroidTask<MergeResources>>() {
-                    @Override
-                    public AndroidTask<MergeResources> call() throws Exception {
-                        // Create a merge task to only merge the resources from this library and not
-                        // the dependencies. This is what gets packaged in the aar.
-                        AndroidTask<MergeResources> mergeResourceTask =
-                                basicCreateMergeResourcesTask(
-                                        tasks,
-                                        variantScope,
-                                        "package",
-                                        new File(
-                                                variantScope.getGlobalScope().getIntermediatesDir(),
-                                                DIR_BUNDLES + "/" + variantScope
-                                                        .getVariantConfiguration().getDirName() +
-                                                        "/res"),
-                                        false /*includeDependencies*/,
-                                        false /*process9Patch*/);
+            if (variantData.getVariantDependency().hasNonOptionalLibraries()) {
+                // Add a task to merge the resource folders, including the libraries, in order to
+                // generate the R.txt file with all the symbols, including the ones from
+                // the dependencies.
+                createMergeResourcesTask(tasks, variantScope);
+            }
+            packageRes.configure(tasks, new Action<Task>() {
+                @Override
+                public void execute(@android.support.annotation.NonNull Task task) {
+                    MergeResources mergeResourcesTask = (MergeResources) task;
+                    mergeResourcesTask.setPublicFile(new File(
+                            variantScope.getGlobalScope().getIntermediatesDir(),
+                            DIR_BUNDLES + "/" + dirName + "/" +
+                                    SdkConstants.FN_PUBLIC_TXT));
+                }
+            });
 
-                        if (variantData.getVariantDependency().hasNonOptionalLibraries()) {
-                            // Add a task to merge the resource folders, including the libraries, in order to
-                            // generate the R.txt file with all the symbols, including the ones from
-                            // the dependencies.
-                            createMergeResourcesTask(tasks, variantScope);
-                        }
-
-                        mergeResourceTask.configure(tasks,
-                                new Action<Task>() {
-                                    @Override
-                                    public void execute(Task task) {
-                                        MergeResources mergeResourcesTask = (MergeResources) task;
-                                        mergeResourcesTask.setPublicFile(new File(
-                                                variantScope.getGlobalScope().getIntermediatesDir(),
-                                                DIR_BUNDLES + "/" + dirName + "/" +
-                                                        SdkConstants.FN_PUBLIC_TXT));
-                                    }
-                                });
-
-                        return mergeResourceTask;
-                    }
-                });
+        }
 
         // Add a task to merge the assets folders
-
         createMergeAssetsTask(tasks, variantScope);
 
         // Add a task to create the BuildConfig class
-
         createBuildConfigTask(tasks, variantScope);
 
         // Add a task to generate resource source files, directing the location
         // of the r.txt file to be directly in the bundle.
         createProcessResTask(tasks, variantScope,
-                new File(variantScope.getGlobalScope().getIntermediatesDir(),
-                        DIR_BUNDLES + "/" + dirName),
-                false /*generateResourcePackage*/);
+                new File(variantScope.getGlobalScope().getIntermediatesDir(), DIR_BUNDLES + "/" + dirName),
+                false);
 
         // process java resources
         createProcessJavaResTasks(tasks, variantScope);
 
-
         createAidlTask(tasks, variantScope);
+
         // Add a compile task
         AndroidTask<JavaCompile> javacTask = createJavacTask(tasks, variantScope);
         TaskManager.setJavaCompilerTask(javacTask, tasks, variantScope);
@@ -183,76 +168,32 @@ public class LibraryTaskManager extends TaskManager {
                 Sync.class);
 
         // Add dependencies on NDK tasks if NDK plugin is applied.
-        if (isNdkTaskNeeded) {
-            // Add NDK tasks
-            createNdkTasks(variantScope);
-            packageJniLibs.dependsOn(variantData.ndkCompileTask);
-            packageJniLibs.from(variantData.ndkCompileTask.getSoFolder())
-                    .include("**/*.so");
+        if (variantData.compileTask != null) {
+            variantData.compileTask.dependsOn();
         } else {
-            if (variantData.compileTask != null) {
-                variantData.compileTask.dependsOn(getNdkBuildable(variantData));
-            } else {
-                variantScope.getCompileTask().dependsOn(tasks, getNdkBuildable(variantData));
-            }
+            variantScope.getCompileTask().dependsOn(tasks);
         }
 
-        Sync packageRenderscript = ThreadRecorder.get().record(
-                ExecutionType.LIB_TASK_MANAGER_CREATE_PACKAGING_TASK,
-                new Recorder.Block<Sync>() {
-                    @Override
-                    public Sync call() throws Exception {
-                        // package from 2 sources.
-                        packageJniLibs.from(variantConfig.getJniLibsList())
-                                .include("**/*.so");
-                        packageJniLibs.into(new File(
-                                variantScope.getGlobalScope().getIntermediatesDir(),
-                                DIR_BUNDLES + "/" + dirName + "/jni"));
-
-                        // package the renderscript header files files into the bundle folder
-                        Sync packageRenderscript = project.getTasks().create(
-                                variantScope.getTaskName("package", "Renderscript"), Sync.class);
-                        // package from 3 sources. the order is important to make sure the override works well.
-                        packageRenderscript.from(variantConfig.getRenderscriptSourceList())
-                                .include("**/*.rsh");
-                        packageRenderscript.into(new File(
-                                variantScope.getGlobalScope().getIntermediatesDir(),
-                                DIR_BUNDLES + "/" + dirName + "/" + SdkConstants.FD_RENDERSCRIPT));
-                        return packageRenderscript;
-                    }
-                });
-
         // merge consumer proguard files from different build types and flavors
-        MergeFileTask mergeProGuardFileTask = ThreadRecorder.get().record(
-                ExecutionType.LIB_TASK_MANAGER_CREATE_MERGE_PROGUARD_FILE_TASK,
-                new Recorder.Block<MergeFileTask>() {
-                    @Override
-                    public MergeFileTask call() throws Exception {
-                        MergeFileTask mergeProGuardFileTask = project.getTasks().create(
-                                variantScope.getTaskName("merge", "ProguardFiles"),
-                                MergeFileTask.class);
-                        mergeProGuardFileTask.setVariantName(variantConfig.getFullName());
-                        mergeProGuardFileTask.setInputFiles(
-                                project.files(variantConfig.getConsumerProguardFiles())
-                                        .getFiles());
-                        mergeProGuardFileTask.setOutputFile(new File(
-                                variantScope.getGlobalScope().getIntermediatesDir(),
-                                DIR_BUNDLES + "/" + dirName + "/" + LibraryBundle.FN_PROGUARD_TXT));
-                        return mergeProGuardFileTask;
-                    }
-
-                });
+        MergeFileTask mergeProGuardFileTask;
+        {
+            mergeProGuardFileTask = project.getTasks().create(
+                    variantScope.getTaskName("merge", "ProguardFiles"),
+                    MergeFileTask.class);
+            mergeProGuardFileTask.setVariantName(variantConfig.getFullName());
+            mergeProGuardFileTask.setInputFiles(
+                    project.files(variantConfig.getConsumerProguardFiles())
+                            .getFiles());
+            mergeProGuardFileTask.setOutputFile(new File(
+                    variantScope.getGlobalScope().getIntermediatesDir(),
+                    DIR_BUNDLES + "/" + dirName + "/" + LibraryBundle.FN_PROGUARD_TXT));
+        }
 
         // copy lint.jar into the bundle folder
-        Copy lintCopy = project.getTasks().create(
-                variantScope.getTaskName("copy", "Lint"), Copy.class);
+        Copy lintCopy = project.getTasks().create(variantScope.getTaskName("copy", "Lint"), Copy.class);
         lintCopy.dependsOn(LINT_COMPILE);
-        lintCopy.from(new File(
-                variantScope.getGlobalScope().getIntermediatesDir(),
-                "lint/lint.jar"));
-        lintCopy.into(new File(
-                variantScope.getGlobalScope().getIntermediatesDir(),
-                DIR_BUNDLES + "/" + dirName));
+        lintCopy.from(new File(variantScope.getGlobalScope().getIntermediatesDir(), "lint/lint.jar"));
+        lintCopy.into(new File(variantScope.getGlobalScope().getIntermediatesDir(), DIR_BUNDLES + "/" + dirName));
 
         final Zip bundle = project.getTasks().create(variantScope.getTaskName("bundle"), Zip.class);
 
@@ -296,92 +237,75 @@ public class LibraryTaskManager extends TaskManager {
         checkState(pcData != null);
 
         if (buildType.isMinifyEnabled()) {
-            // run proguard on output of compile task
-            ThreadRecorder.get().record(
-                    ExecutionType.LIB_TASK_MANAGER_CREATE_PROGUARD_TASK,
-                    new Recorder.Block<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            File outFile = maybeCreateProguardTasks(tasks, variantScope,
-                                    pcData);
-                            checkNotNull(outFile);
-                            pcData.setInputFiles(Collections.singletonList(outFile));
-                            pcData.setInputDirCallable(null);
-                            pcData.setInputLibraries(Collections.<File>emptyList());
-                            return null;
-                        }
-                    });
+
+            File outFile = maybeCreateProguardTasks(tasks, variantScope,
+                    pcData);
+            checkNotNull(outFile);
+            pcData.setInputFiles(Collections.singletonList(outFile));
+            pcData.setInputDirCallable(null);
+            pcData.setInputLibraries(Collections.<File>emptyList());
         } else {
-            // package the local jar in libs/
-            ThreadRecorder.get().record(
-                    ExecutionType.LIB_TASK_MANAGER_CREATE_PACKAGE_LOCAL_JAR,
-                    new Recorder.Block<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            Sync packageLocalJar = project.getTasks().create(
-                                    variantScope.getTaskName("package", "LocalJar"), Sync.class);
-                            packageLocalJar.from(
-                                    DependencyManager
-                                            .getPackagedLocalJarFileList(
-                                                    variantData.getVariantDependency())
-                                            .toArray());
-                            packageLocalJar.into(new File(
-                                    variantScope.getGlobalScope().getIntermediatesDir(),
-                                    DIR_BUNDLES + "/" + dirName + "/" + LIBS_FOLDER));
 
-                            // add the input libraries. This is only going to be the agent jar if applicable
-                            // due to how inputLibraries is initialized.
-                            // TODO: clean this.
-                            packageLocalJar.from(pcData.getInputLibrariesCallable());
-                            TaskManager.optionalDependsOn(
-                                    packageLocalJar,
-                                    pcData.getLibraryGeneratingTasks());
-                            pcData.setLibraryGeneratingTasks(
-                                    Collections.singletonList(packageLocalJar));
+            Sync packageLocalJar = project.getTasks().create(
+                    variantScope.getTaskName("package", "LocalJar"), Sync.class);
+            packageLocalJar.from(
+                    DependencyManager
+                            .getPackagedLocalJarFileList(
+                                    variantData.getVariantDependency())
+                            .toArray());
+            packageLocalJar.into(new File(
+                    variantScope.getGlobalScope().getIntermediatesDir(),
+                    DIR_BUNDLES + "/" + dirName + "/" + LIBS_FOLDER));
 
-                            // jar the classes.
-                            Jar jar = project.getTasks().create(
-                                    variantScope.getTaskName("package", "Jar"), Jar.class);
-                            jar.dependsOn(variantScope.getMergeJavaResourcesTask().getName());
+            // add the input libraries. This is only going to be the agent jar if applicable
+            // due to how inputLibraries is initialized.
+            // TODO: clean this.
+            packageLocalJar.from(pcData.getInputLibrariesCallable());
+            TaskManager.optionalDependsOn(
+                    packageLocalJar,
+                    pcData.getLibraryGeneratingTasks());
+            pcData.setLibraryGeneratingTasks(
+                    Collections.singletonList(packageLocalJar));
 
-                            // add the class files (whether they are instrumented or not.
-                            jar.from(pcData.getInputDirCallable());
-                            TaskManager.optionalDependsOn(jar, pcData.getClassGeneratingTasks());
-                            pcData.setClassGeneratingTasks(Collections.singletonList(jar));
+            // jar the classes.
+            Jar jar = project.getTasks().create(
+                    variantScope.getTaskName("package", "Jar"), Jar.class);
+            jar.dependsOn(variantScope.getMergeJavaResourcesTask().getName());
 
-                            jar.from(variantScope.getJavaResourcesDestinationDir());
+            // add the class files (whether they are instrumented or not.
+            jar.from(pcData.getInputDirCallable());
+            TaskManager.optionalDependsOn(jar, pcData.getClassGeneratingTasks());
+            pcData.setClassGeneratingTasks(Collections.singletonList(jar));
 
-                            jar.setDestinationDir(new File(
-                                    variantScope.getGlobalScope().getIntermediatesDir(),
-                                    DIR_BUNDLES + "/" + dirName));
-                            jar.setArchiveName("classes.jar");
+            jar.from(variantScope.getJavaResourcesDestinationDir());
 
-                            String packageName = variantConfig.getPackageFromManifest();
-                            if (packageName == null) {
-                                throw new BuildException("Failed to read manifest", null);
-                            }
+            jar.setDestinationDir(new File(
+                    variantScope.getGlobalScope().getIntermediatesDir(),
+                    DIR_BUNDLES + "/" + dirName));
+            jar.setArchiveName("classes.jar");
 
-                            packageName = packageName.replace(".", "/");
+            String packageName = variantConfig.getPackageFromManifest();
+            if (packageName == null) {
+                throw new BuildException("Failed to read manifest", null);
+            }
 
-                            jar.exclude(packageName + "/R.class");
-                            jar.exclude(packageName + "/R$*.class");
-                            if (!getExtension().getPackageBuildConfig()) {
-                                jar.exclude(packageName + "/Manifest.class");
-                                jar.exclude(packageName + "/Manifest$*.class");
-                                jar.exclude(packageName + "/BuildConfig.class");
-                            }
+            packageName = packageName.replace(".", "/");
 
-                            if (libVariantData.generateAnnotationsTask != null) {
-                                // In case extract annotations strips out private typedef annotation classes
-                                jar.dependsOn(libVariantData.generateAnnotationsTask);
-                            }
-                            return null;
-                        }
-                    });
+            jar.exclude(packageName + "/R.class");
+            jar.exclude(packageName + "/R$*.class");
+            if (!getExtension().getPackageBuildConfig()) {
+                jar.exclude(packageName + "/Manifest.class");
+                jar.exclude(packageName + "/Manifest$*.class");
+                jar.exclude(packageName + "/BuildConfig.class");
+            }
+
+            if (libVariantData.generateAnnotationsTask != null) {
+                // In case extract annotations strips out private typedef annotation classes
+                jar.dependsOn(libVariantData.generateAnnotationsTask);
+            }
         }
 
-        bundle.dependsOn(packageRes.getName(), packageRenderscript, lintCopy, packageJniLibs,
-                mergeProGuardFileTask);
+        bundle.dependsOn(packageRes.getName(), lintCopy, packageJniLibs, mergeProGuardFileTask);
         TaskManager.optionalDependsOn(bundle, pcData.getClassGeneratingTasks());
         TaskManager.optionalDependsOn(bundle, pcData.getLibraryGeneratingTasks());
 
@@ -479,14 +403,7 @@ public class LibraryTaskManager extends TaskManager {
 
         });
 
-        ThreadRecorder.get().record(ExecutionType.LIB_TASK_MANAGER_CREATE_LINT_TASK,
-                new Recorder.Block<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        createLintTasks(tasks, variantScope);
-                        return null;
-                    }
-                });
+        createLintTasks(tasks, variantScope);
     }
 
     public ExtractAnnotations createExtractAnnotations(

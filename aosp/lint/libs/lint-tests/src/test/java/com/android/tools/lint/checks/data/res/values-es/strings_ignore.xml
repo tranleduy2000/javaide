@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="home_title">"Casa"</string>
+    <string name="show_all_apps">"Todo"</string>
+    <string name="menu_wallpaper">"Papel tapiz"</string>
+    <string name="menu_search">"Búsqueda"</string>
+    <!-- no translation found for menu_settings (1769059051084007158) -->
+    <skip />
+    <string name="wallpaper_instructions">"Puntee en la imagen para establecer papel tapiz vertical"</string>
+    <string name="other" tools:ignore="ExtraTranslation">"?"</string>
+
+  <string-array name="security_questions" tools:ignore="ExtraTranslation">
+    <item>"Comida favorita"</item>
+    <item>"Ciudad de nacimiento"</item>
+    <item>"Nombre de tu mejor amigo/a de la infancia"</item>
+    <item>"Nombre de tu colegio"</item>
+  </string-array>
+</resources>

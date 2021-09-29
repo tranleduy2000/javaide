@@ -56,6 +56,91 @@ public class ExtractJavaResourcesTask extends DefaultAndroidTask {
     @OutputDirectory
     public File outputDir;
 
+    /**
+     * process one jar entry in an input jar file and optionally stores the entry in the output
+     * folder.
+     *
+     * @param jarFile   the input jar file
+     * @param jarEntry  the jar entry in the jarFile to process
+     * @param outputDir the output folder to use to copy/merge the entry in.
+     * @throws IOException
+     */
+    private static void processJarEntry(JarFile jarFile, JarEntry jarEntry, File outputDir) throws IOException {
+        File outputFile = new File(outputDir, jarEntry.getName());
+        Action action = getAction(jarEntry.getName());
+        if (action == Action.COPY) {
+            if (!outputFile.getParentFile().exists() &&
+                    !outputFile.getParentFile().mkdirs()) {
+                throw new RuntimeException("Cannot create directory " + outputFile.getParent());
+            }
+            if (!outputFile.exists() || outputFile.lastModified()
+                    < jarEntry.getTime()) {
+                InputStream inputStream = null;
+                OutputStream outputStream = null;
+                try {
+                    inputStream = jarFile.getInputStream(jarEntry);
+                    if (inputStream != null) {
+                        outputStream = new BufferedOutputStream(
+                                new FileOutputStream(outputFile));
+                        ByteStreams.copy(inputStream, outputStream);
+                        outputStream.flush();
+                    } else {
+                        throw new RuntimeException("Cannot copy " + jarEntry.getName());
+                    }
+                } finally {
+                    try {
+                        if (outputStream != null) {
+                            outputStream.close();
+                        }
+                    } finally {
+                        if (inputStream != null) {
+                            inputStream.close();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Provides an {@link Action} for the archive entry.
+     *
+     * @param archivePath the archive entry path in the archive.
+     * @return the action to implement.
+     */
+    @NonNull
+    public static Action getAction(@NonNull String archivePath) {
+        // Manifest files are never merged.
+        if (JarFile.MANIFEST_NAME.equals(archivePath)) {
+            return Action.IGNORE;
+        }
+
+        // split the path into segments.
+        String[] segments = archivePath.split("/");
+
+        // empty path? skip to next entry.
+        if (segments.length == 0) {
+            return Action.IGNORE;
+        }
+
+        // Check each folders to make sure they should be included.
+        // Folders like CVS, .svn, etc.. should already have been excluded from the
+        // jar file, but we need to exclude some other folder (like /META-INF) so
+        // we check anyway.
+        for (int i = 0; i < segments.length - 1; i++) {
+            if (!PackagingUtils.checkFolderForPackaging(segments[i])) {
+                return Action.IGNORE;
+            }
+        }
+
+        // get the file name from the path
+        String fileName = segments[segments.length - 1];
+
+        return PackagingUtils.checkFileForPackaging(fileName)
+                ? Action.COPY
+                : Action.IGNORE;
+    }
+
     @InputFiles
     public Set<File> getJarInputFiles() {
         return jarInputFiles;
@@ -130,51 +215,6 @@ public class ExtractJavaResourcesTask extends DefaultAndroidTask {
     }
 
     /**
-     * process one jar entry in an input jar file and optionally stores the entry in the output
-     * folder.
-     * @param jarFile the input jar file
-     * @param jarEntry the jar entry in the jarFile to process
-     * @param outputDir the output folder to use to copy/merge the entry in.
-     * @throws IOException
-     */
-    private static void processJarEntry(JarFile jarFile, JarEntry jarEntry, File outputDir) throws IOException {
-        File outputFile = new File(outputDir, jarEntry.getName());
-        Action action = getAction(jarEntry.getName());
-        if (action == Action.COPY) {
-            if (!outputFile.getParentFile().exists() &&
-                    !outputFile.getParentFile().mkdirs()) {
-                throw new RuntimeException("Cannot create directory " + outputFile.getParent());
-            }
-            if (!outputFile.exists() || outputFile.lastModified()
-                    < jarEntry.getTime()) {
-                InputStream inputStream = null;
-                OutputStream outputStream = null;
-                try {
-                    inputStream = jarFile.getInputStream(jarEntry);
-                    if (inputStream != null) {
-                        outputStream = new BufferedOutputStream(
-                                new FileOutputStream(outputFile));
-                        ByteStreams.copy(inputStream, outputStream);
-                        outputStream.flush();
-                    } else {
-                        throw new RuntimeException("Cannot copy " + jarEntry.getName());
-                    }
-                } finally {
-                    try {
-                        if (outputStream != null) {
-                            outputStream.close();
-                        }
-                    } finally {
-                        if (inputStream != null) {
-                            inputStream.close();
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    /**
      * Define all possible actions for a Jar file entry.
      */
     enum Action {
@@ -186,44 +226,6 @@ public class ExtractJavaResourcesTask extends DefaultAndroidTask {
          * Ignore the file.
          */
         IGNORE
-    }
-
-    /**
-     * Provides an {@link Action} for the archive entry.
-     * @param archivePath the archive entry path in the archive.
-     * @return the action to implement.
-     */
-    @NonNull
-    public static Action getAction(@NonNull String archivePath) {
-        // Manifest files are never merged.
-        if (JarFile.MANIFEST_NAME.equals(archivePath)) {
-            return Action.IGNORE;
-        }
-
-        // split the path into segments.
-        String[] segments = archivePath.split("/");
-
-        // empty path? skip to next entry.
-        if (segments.length == 0) {
-            return Action.IGNORE;
-        }
-
-        // Check each folders to make sure they should be included.
-        // Folders like CVS, .svn, etc.. should already have been excluded from the
-        // jar file, but we need to exclude some other folder (like /META-INF) so
-        // we check anyway.
-        for (int i = 0 ; i < segments.length - 1; i++) {
-            if (!PackagingUtils.checkFolderForPackaging(segments[i])) {
-                return Action.IGNORE;
-            }
-        }
-
-        // get the file name from the path
-        String fileName = segments[segments.length-1];
-
-        return PackagingUtils.checkFileForPackaging(fileName)
-                ? Action.COPY
-                : Action.IGNORE;
     }
 
     public static class Config implements TaskConfigAction<ExtractJavaResourcesTask> {
@@ -249,11 +251,11 @@ public class ExtractJavaResourcesTask extends DefaultAndroidTask {
             ConventionMappingHelper.map(extractJavaResourcesTask, "jarInputFiles",
                     new Callable<Set<File>>() {
 
-                    @Override
-                    public Set<File> call() throws Exception {
-                        return scope.getVariantConfiguration().getPackagedJars();
-                    }
-                });
+                        @Override
+                        public Set<File> call() throws Exception {
+                            return scope.getVariantConfiguration().getPackagedJars();
+                        }
+                    });
             extractJavaResourcesTask.outputDir = scope.getPackagedJarsJavaResDestinationDir();
             extractJavaResourcesTask.setVariantName(scope.getVariantConfiguration().getFullName());
         }

@@ -7,13 +7,10 @@ import android.util.Log;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.duy.android.compiler.env.Environment;
-
-import org.apache.commons.io.IOUtils;
+import com.duy.common.io.IOUtils;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +22,6 @@ import java.util.Arrays;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class JavaProject {
     private static final String TAG = "ProjectFile";
-
     protected ArrayList<File> javaSrcDirs;
     protected File dirSrcMain;
     protected File dirGeneratedSource;
@@ -67,18 +63,14 @@ public class JavaProject {
         init();
     }
 
+
     public File createClass(String currentPackage, String className, String content) {
         File file = new File(javaSrcDirs.get(0), currentPackage.replace(".", File.separator));
         if (!file.exists()) file.mkdirs();
         File classf = new File(file, className + ".java");
-        FileOutputStream output = null;
         try {
-            output = new FileOutputStream(classf);
-            IOUtils.write(content, output);
-            output.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            IOUtils.writeAndClose(content, classf);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -197,9 +189,7 @@ public class JavaProject {
         File mainFile = new File(pkgPath, simpleName + ".java");
         if (!mainFile.exists()) {
             String content = Template.createClass(packageName, simpleName);
-            FileOutputStream output = new FileOutputStream(mainFile);
-            IOUtils.write(content, output);
-            output.close();
+            IOUtils.writeAndClose(content, mainFile);
         }
     }
 
@@ -287,5 +277,32 @@ public class JavaProject {
 
     public File getDirBuildIntermediates() {
         return dirBuildIntermediates;
+    }
+
+    public File getDirBuildOutput() {
+        return dirBuildOutput;
+    }
+
+    @Override
+    public String toString() {
+        return "JavaProject{" +
+                "javaSrcDirs=" + javaSrcDirs +
+                ", dirSrcMain=" + dirSrcMain +
+                ", dirGeneratedSource=" + dirGeneratedSource +
+                ", dirRoot=" + dirRoot +
+                ", dirApp=" + dirApp +
+                ", packageName='" + packageName + '\'' +
+                ", dirBuild=" + dirBuild +
+                ", dirBuildOutput=" + dirBuildOutput +
+                ", dirLibs=" + dirLibs +
+                ", dirBuildClasses=" + dirBuildClasses +
+                ", dirBuildOutputJar=" + dirBuildOutputJar +
+                ", dirBuildDexedLibs=" + dirBuildDexedLibs +
+                ", dirBuildDexedClass=" + dirBuildDexedClass +
+                ", dirBuildIntermediates=" + dirBuildIntermediates +
+                ", dexFile=" + dexFile +
+                ", outJarArchive=" + outJarArchive +
+                ", dirGenerated=" + dirGenerated +
+                '}';
     }
 }

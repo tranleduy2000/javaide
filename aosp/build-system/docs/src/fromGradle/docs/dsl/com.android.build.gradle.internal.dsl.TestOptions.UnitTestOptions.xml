@@ -19,18 +19,26 @@
         <title>Properties</title>
         <table>
             <thead>
-                <tr><td>Name</td></tr>
+                <tr>
+                    <td>Name</td>
+                </tr>
             </thead>
-            <tr><td>returnDefaultValues</td></tr>
+            <tr>
+                <td>returnDefaultValues</td>
+            </tr>
         </table>
     </section>
     <section>
         <title>Methods</title>
         <table>
             <thead>
-                <tr><td>Name</td></tr>
+                <tr>
+                    <td>Name</td>
+                </tr>
             </thead>
-            <tr><td>all</td></tr>
+            <tr>
+                <td>all</td>
+            </tr>
         </table>
     </section>
 </section>

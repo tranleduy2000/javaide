@@ -39,7 +39,7 @@ public class AndroidSourceSetFactory implements NamedDomainObjectFactory<Android
 
     public AndroidSourceSetFactory(@NonNull Instantiator instantiator,
                                    @NonNull Project project,
-                                            boolean isLibrary) {
+                                   boolean isLibrary) {
         this.instantiator = instantiator;
         this.isLibrary = isLibrary;
         this.project = project;

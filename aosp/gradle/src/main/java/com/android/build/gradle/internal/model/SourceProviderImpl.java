@@ -36,12 +36,14 @@ class SourceProviderImpl implements SourceProvider, Serializable {
     private Collection<File> javaDirs;
     private Collection<File> resourcesDirs;
     private Collection<File> aidlDirs;
-    private Collection<File> rsDirs;
     private Collection<File> cDirs;
     private Collection<File> cppDirs;
     private Collection<File> resDirs;
     private Collection<File> assetsDirs;
     private Collection<File> libsDirs;
+
+    private SourceProviderImpl() {
+    }
 
     @NonNull
     static SourceProviderImpl cloneProvider(@NonNull SourceProvider sourceProvider) {
@@ -52,7 +54,6 @@ class SourceProviderImpl implements SourceProvider, Serializable {
         sourceProviderClone.javaDirs = sourceProvider.getJavaDirectories();
         sourceProviderClone.resourcesDirs = sourceProvider.getResourcesDirectories();
         sourceProviderClone.aidlDirs = sourceProvider.getAidlDirectories();
-        sourceProviderClone.rsDirs = sourceProvider.getRenderscriptDirectories();
         sourceProviderClone.cDirs = sourceProvider.getCDirectories();
         sourceProviderClone.cppDirs = sourceProvider.getCDirectories();
         sourceProviderClone.resDirs = sourceProvider.getResDirectories();
@@ -71,9 +72,6 @@ class SourceProviderImpl implements SourceProvider, Serializable {
         }
 
         return results;
-    }
-
-    private SourceProviderImpl() {
     }
 
     @NonNull
@@ -104,12 +102,6 @@ class SourceProviderImpl implements SourceProvider, Serializable {
     @Override
     public Collection<File> getAidlDirectories() {
         return aidlDirs;
-    }
-
-    @NonNull
-    @Override
-    public Collection<File> getRenderscriptDirectories() {
-        return rsDirs;
     }
 
     @NonNull
@@ -149,7 +141,6 @@ class SourceProviderImpl implements SourceProvider, Serializable {
                 ", javaDirs=" + javaDirs +
                 ", resourcesDirs=" + resourcesDirs +
                 ", aidlDirs=" + aidlDirs +
-                ", rsDirs=" + rsDirs +
                 ", cDirs=" + cDirs +
                 ", cppDirs=" + cppDirs +
                 ", resDirs=" + resDirs +

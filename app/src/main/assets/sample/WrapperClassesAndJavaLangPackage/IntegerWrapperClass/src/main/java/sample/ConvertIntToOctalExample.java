@@ -7,15 +7,15 @@ package sample;
 
 public class ConvertIntToOctalExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    int i = 27;
+        int i = 27;
 
-    String strOctalNumber = Integer.toOctalString(i);
+        String strOctalNumber = Integer.toOctalString(i);
 
-    System.out.println("Convert decimal number to octal number example");
-    System.out.println("Octal value of " + i + " is " + strOctalNumber);
-  }
+        System.out.println("Convert decimal number to octal number example");
+        System.out.println("Octal value of " + i + " is " + strOctalNumber);
+    }
 }
 
 /*

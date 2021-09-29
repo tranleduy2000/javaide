@@ -1,0 +1,16 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.content.Context;
+
+public class StringFormat8 extends Activity {
+    public final void test(Context context, float amount) {
+        Resources resources = getResources();
+        String amount1 = resources.getString(R.string.amount_string, amount);
+        String amount2 = getResources().getString(R.string.amount_string, amount);
+        String amount3 = String.format(getResources().getString(R.string.amount_string), amount);
+        String amount4 = String.format(getResources().getString(R.string.amount_string));  // ERROR
+        String amount5 = getResources().getString(R.string.amount_string, amount, amount); // ERROR
+        String misc = String.format(resource.getString(R.string.percent_newline));
+    }
+}

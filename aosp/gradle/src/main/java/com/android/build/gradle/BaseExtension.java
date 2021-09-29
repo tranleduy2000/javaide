@@ -27,7 +27,6 @@ import com.android.build.gradle.internal.LoggingUtil;
 import com.android.build.gradle.internal.SdkHandler;
 import com.android.build.gradle.internal.SourceSetSourceProviderWrapper;
 import com.android.build.gradle.internal.dsl.AaptOptions;
-import com.android.build.gradle.internal.dsl.AdbOptions;
 import com.android.build.gradle.internal.dsl.AndroidSourceSetFactory;
 import com.android.build.gradle.internal.dsl.BuildType;
 import com.android.build.gradle.internal.dsl.CoreBuildType;
@@ -128,10 +127,6 @@ public abstract class BaseExtension implements AndroidConfig {
      */
     final NamedDomainObjectContainer<SigningConfig> signingConfigs;
     /**
-     * Adb options
-     */
-    final AdbOptions adbOptions;
-    /**
      * The source sets container.
      */
     final NamedDomainObjectContainer<AndroidSourceSet> sourceSetsContainer;
@@ -186,7 +181,6 @@ public abstract class BaseExtension implements AndroidConfig {
         compileOptions = instantiator.newInstance(CompileOptions.class);
         packagingOptions = instantiator.newInstance(PackagingOptions.class);
         preprocessingOptions = instantiator.newInstance(PreprocessingOptions.class);
-        adbOptions = instantiator.newInstance(AdbOptions.class);
         splits = instantiator.newInstance(Splits.class, instantiator);
 
         sourceSetsContainer = project.container(AndroidSourceSet.class,
@@ -428,14 +422,6 @@ public abstract class BaseExtension implements AndroidConfig {
     }
 
     /**
-     * Configures adb options.
-     */
-    public void adbOptions(Action<AdbOptions> action) {
-        checkWritability();
-        action.execute(adbOptions);
-    }
-
-    /**
      * Configures APK splits.
      */
     public void splits(Action<Splits> action) {
@@ -518,11 +504,6 @@ public abstract class BaseExtension implements AndroidConfig {
 
     public void setVariantFilter(Action<VariantFilter> filter) {
         variantFilter = filter;
-    }
-
-    @Override
-    public AdbOptions getAdbOptions() {
-        return adbOptions;
     }
 
     /**
@@ -641,20 +622,9 @@ public abstract class BaseExtension implements AndroidConfig {
         return sdkHandler.getSdkFolder();
     }
 
-    public File getNdkDirectory() {
-        return sdkHandler.getNdkFolder();
-    }
-
     public List<File> getBootClasspath() {
         ensureTargetSetup();
         return androidBuilder.getBootClasspath();
-    }
-
-    // ---------------
-    // TEMP for compatibility
-
-    public File getAdbExe() {
-        return sdkHandler.getSdkInfo().getAdb();
     }
 
     public File getDefaultProguardFile(String name) {

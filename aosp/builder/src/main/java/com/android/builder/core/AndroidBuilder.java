@@ -24,11 +24,9 @@ import com.android.builder.dependency.SymbolFileProvider;
 import com.android.builder.internal.ClassFieldImpl;
 import com.android.builder.internal.SymbolLoader;
 import com.android.builder.internal.SymbolWriter;
-import com.android.builder.internal.TestManifestGenerator;
 import com.android.builder.internal.compiler.AidlProcessor;
 import com.android.builder.internal.compiler.LeafFolderGatherer;
 import com.android.builder.internal.compiler.PreDexCache;
-import com.android.builder.internal.compiler.RenderScriptProcessor;
 import com.android.builder.internal.compiler.SourceSearcher;
 import com.android.builder.internal.incremental.DependencyData;
 import com.android.builder.internal.packaging.Packager;
@@ -61,7 +59,6 @@ import com.android.ide.common.signing.KeytoolException;
 import com.android.manifmerger.ManifestMerger2;
 import com.android.manifmerger.MergingReport;
 import com.android.manifmerger.PlaceholderEncoder;
-import com.android.manifmerger.PlaceholderHandler;
 import com.android.manifmerger.XmlDocument;
 import com.android.sdklib.BuildToolInfo;
 import com.android.sdklib.IAndroidTarget;
@@ -95,10 +92,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static com.android.SdkConstants.DOT_DEX;
-import static com.android.SdkConstants.DOT_XML;
-import static com.android.SdkConstants.FD_RES_XML;
-import static com.android.builder.core.BuilderConstants.ANDROID_WEAR;
-import static com.android.builder.core.BuilderConstants.ANDROID_WEAR_MICRO_APK;
 import static com.android.manifmerger.ManifestMerger2.Invoker;
 import static com.android.manifmerger.ManifestMerger2.SystemProperty;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -115,7 +108,6 @@ import static com.google.common.base.Preconditions.checkState;
  * <p>
  * then build steps can be done with
  * {@link #mergeManifests(File, List, List, String, int, String, String, String, Integer, String, String, ManifestMerger2.MergeType, Map, File)}
- * {@link #processTestManifest(String, String, String, String, String, Boolean, Boolean, File, List, Map, File, File)}
  * {@link #processResources(AaptPackageProcessBuilder, boolean, ProcessOutputHandler)}
  * {@link #compileAllAidlFiles(List, File, File, List, DependencyFileProcessor, ProcessOutputHandler)}
  * {@link #convertByteCode(Collection, Collection, File, boolean, File, DexOptions, List, File, boolean, boolean, ProcessOutputHandler)}
@@ -267,56 +259,6 @@ public class AndroidBuilder {
                 collectLibraries(manifestDependencies, manifestFiles);
             }
         }
-    }
-
-    private static void generateTestManifest(
-            @NonNull String testApplicationId,
-            @Nullable String minSdkVersion,
-            @Nullable String targetSdkVersion,
-            @NonNull String testedApplicationId,
-            @NonNull String instrumentationRunner,
-            @NonNull Boolean handleProfiling,
-            @NonNull Boolean functionalTest,
-            @NonNull File outManifestLocation) {
-        TestManifestGenerator generator = new TestManifestGenerator(
-                outManifestLocation,
-                testApplicationId,
-                minSdkVersion,
-                targetSdkVersion,
-                testedApplicationId,
-                instrumentationRunner,
-                handleProfiling,
-                functionalTest);
-        try {
-            generator.generate();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void generateApkDataEntryInManifest(
-            int minSdkVersion,
-            int targetSdkVersion,
-            @NonNull File manifestFile)
-            throws InterruptedException, LoggedErrorException, IOException {
-
-        StringBuilder content = new StringBuilder();
-        content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
-                .append("<manifest package=\"\" xmlns:android=\"http://schemas.android.com/apk/res/android\">\n")
-                .append("            <uses-sdk android:minSdkVersion=\"")
-                .append(minSdkVersion).append("\"");
-        if (targetSdkVersion != -1) {
-            content.append(" android:targetSdkVersion=\"").append(targetSdkVersion).append("\"");
-        }
-        content.append("/>\n");
-        content.append("    <application>\n")
-                .append("        <meta-data android:name=\"" + ANDROID_WEAR + "\"\n")
-                .append("                   android:resource=\"@xml/" + ANDROID_WEAR_MICRO_APK)
-                .append("\" />\n")
-                .append("   </application>\n")
-                .append("</manifest>\n");
-
-        Files.write(content, manifestFile, Charsets.UTF_8);
     }
 
     /**
@@ -592,24 +534,6 @@ public class AndroidBuilder {
     }
 
     /**
-     * Returns the jar file for the renderscript mode.
-     * <p>
-     * This may return null if the SDK has not been loaded yet.
-     *
-     * @return the jar file, or null.
-     * @see #setTargetInfo(SdkInfo, TargetInfo, Collection)
-     */
-    @Nullable
-    public File getRenderScriptSupportJar() {
-        if (mTargetInfo != null) {
-            return RenderScriptProcessor.getSupportJar(
-                    mTargetInfo.getBuildTools().getLocation().getAbsolutePath());
-        }
-
-        return null;
-    }
-
-    /**
      * Returns the compile classpath for this config. If the config tests a library, this
      * will include the classpath of the tested config.
      * <p>
@@ -633,24 +557,6 @@ public class AndroidBuilder {
     @NonNull
     public Set<File> getPackagedJars(@NonNull VariantConfiguration<?, ?, ?> variantConfiguration) {
         return Sets.newHashSet(variantConfiguration.getPackagedJars());
-    }
-
-    /**
-     * Returns the native lib folder for the renderscript mode.
-     * <p>
-     * This may return null if the SDK has not been loaded yet.
-     *
-     * @return the folder, or null.
-     * @see #setTargetInfo(SdkInfo, TargetInfo, Collection)
-     */
-    @Nullable
-    public File getSupportNativeLibFolder() {
-        if (mTargetInfo != null) {
-            return RenderScriptProcessor.getSupportNativeLibFolder(
-                    mTargetInfo.getBuildTools().getLocation().getAbsolutePath());
-        }
-
-        return null;
     }
 
     /**
@@ -764,132 +670,6 @@ public class AndroidBuilder {
     }
 
     /**
-     * Creates the manifest for a test variant
-     *
-     * @param testApplicationId     the application id of the test application
-     * @param minSdkVersion         the minSdkVersion of the test application
-     * @param targetSdkVersion      the targetSdkVersion of the test application
-     * @param testedApplicationId   the application id of the tested application
-     * @param instrumentationRunner the name of the instrumentation runner
-     * @param handleProfiling       whether or not the Instrumentation object will turn profiling on and off
-     * @param functionalTest        whether or not the Instrumentation class should run as a functional test
-     * @param testManifestFile      optionally user provided AndroidManifest.xml for testing application
-     * @param libraries             the library dependency graph
-     * @param outManifest           the output location for the merged manifest
-     * @see VariantConfiguration#getApplicationId()
-     * @see VariantConfiguration#getTestedConfig()
-     * @see VariantConfiguration#getMinSdkVersion()
-     * @see VariantConfiguration#getTestedApplicationId()
-     * @see VariantConfiguration#getInstrumentationRunner()
-     * @see VariantConfiguration#getHandleProfiling()
-     * @see VariantConfiguration#getFunctionalTest()
-     * @see VariantConfiguration#getDirectLibraries()
-     */
-    public void processTestManifest(
-            @NonNull String testApplicationId,
-            @Nullable String minSdkVersion,
-            @Nullable String targetSdkVersion,
-            @NonNull String testedApplicationId,
-            @NonNull String instrumentationRunner,
-            @NonNull Boolean handleProfiling,
-            @NonNull Boolean functionalTest,
-            @Nullable File testManifestFile,
-            @NonNull List<? extends ManifestDependency> libraries,
-            @NonNull Map<String, Object> manifestPlaceholders,
-            @NonNull File outManifest,
-            @NonNull File tmpDir) {
-        checkNotNull(testApplicationId, "testApplicationId cannot be null.");
-        checkNotNull(testedApplicationId, "testedApplicationId cannot be null.");
-        checkNotNull(instrumentationRunner, "instrumentationRunner cannot be null.");
-        checkNotNull(handleProfiling, "handleProfiling cannot be null.");
-        checkNotNull(functionalTest, "functionalTest cannot be null.");
-        checkNotNull(libraries, "libraries cannot be null.");
-        checkNotNull(outManifest, "outManifestLocation cannot be null.");
-
-        try {
-            tmpDir.mkdirs();
-            File generatedTestManifest = libraries.isEmpty() && testManifestFile == null
-                    ? outManifest : File.createTempFile("manifestMerger", ".xml", tmpDir);
-
-            mLogger.verbose("Generating in %1$s", generatedTestManifest.getAbsolutePath());
-            generateTestManifest(
-                    testApplicationId,
-                    minSdkVersion,
-                    targetSdkVersion.equals("-1") ? null : targetSdkVersion,
-                    testedApplicationId,
-                    instrumentationRunner,
-                    handleProfiling,
-                    functionalTest,
-                    generatedTestManifest);
-
-            if (testManifestFile != null) {
-                File mergedTestManifest = File.createTempFile("manifestMerger", ".xml", tmpDir);
-                mLogger.verbose("Merging user supplied manifest in %1$s",
-                        generatedTestManifest.getAbsolutePath());
-                Invoker invoker = ManifestMerger2.newMerger(
-                        testManifestFile, mLogger, ManifestMerger2.MergeType.APPLICATION)
-                        .setOverride(SystemProperty.PACKAGE, testApplicationId)
-                        .setPlaceHolderValues(manifestPlaceholders)
-                        .setPlaceHolderValue(PlaceholderHandler.INSTRUMENTATION_RUNNER,
-                                instrumentationRunner)
-                        .addLibraryManifests(generatedTestManifest);
-                if (minSdkVersion != null) {
-                    invoker.setOverride(SystemProperty.MIN_SDK_VERSION, minSdkVersion);
-                }
-                if (!targetSdkVersion.equals("-1")) {
-                    invoker.setOverride(SystemProperty.TARGET_SDK_VERSION, targetSdkVersion);
-                }
-                MergingReport mergingReport = invoker.merge();
-                if (libraries.isEmpty()) {
-                    handleMergingResult(mergingReport, outManifest);
-                } else {
-                    handleMergingResult(mergingReport, mergedTestManifest);
-                    generatedTestManifest = mergedTestManifest;
-                }
-            }
-
-            if (!libraries.isEmpty()) {
-                MergingReport mergingReport = ManifestMerger2.newMerger(
-                        generatedTestManifest, mLogger, ManifestMerger2.MergeType.APPLICATION)
-                        .withFeatures(Invoker.Feature.REMOVE_TOOLS_DECLARATIONS)
-                        .setOverride(SystemProperty.PACKAGE, testApplicationId)
-                        .addLibraryManifests(collectLibraries(libraries))
-                        .setPlaceHolderValues(manifestPlaceholders)
-                        .merge();
-
-                handleMergingResult(mergingReport, outManifest);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void handleMergingResult(@NonNull MergingReport mergingReport, @NonNull File outFile) {
-        switch (mergingReport.getResult()) {
-            case WARNING:
-                mergingReport.log(mLogger);
-                // fall through since these are just warnings.
-            case SUCCESS:
-                XmlDocument xmlDocument = mergingReport.getMergedDocument().get();
-                try {
-                    String annotatedDocument = mergingReport.getActions().blame(xmlDocument);
-                    mLogger.verbose(annotatedDocument);
-                } catch (Exception e) {
-                    mLogger.error(e, "cannot print resulting xml");
-                }
-                save(xmlDocument, outFile);
-                mLogger.info("Merged manifest saved to " + outFile);
-                break;
-            case ERROR:
-                mergingReport.log(mLogger);
-                throw new RuntimeException(mergingReport.getReportString());
-            default:
-                throw new RuntimeException("Unhandled result type : "
-                        + mergingReport.getResult());
-        }
-    }
-
-    /**
      * Process the resources and generate R.java and/or the packaged resources.
      *
      * @param aaptCommand              aapt command invocation parameters.
@@ -998,49 +778,6 @@ public class AndroidBuilder {
         }
     }
 
-    public void generateApkData(
-            @NonNull File apkFile,
-            @NonNull File outResFolder,
-            @NonNull String mainPkgName,
-            @NonNull String resName) throws ProcessException, IOException {
-
-        // need to run aapt to get apk information
-        BuildToolInfo buildToolInfo = mTargetInfo.getBuildTools();
-
-        String aapt = buildToolInfo.getPath(BuildToolInfo.PathId.AAPT);
-        if (aapt == null) {
-            throw new IllegalStateException(
-                    "Unable to get aapt location from Build Tools " + buildToolInfo.getRevision());
-        }
-
-        ApkInfoParser parser = new ApkInfoParser(new File(aapt), mProcessExecutor);
-        ApkInfoParser.ApkInfo apkInfo = parser.parseApk(apkFile);
-
-        if (!apkInfo.getPackageName().equals(mainPkgName)) {
-            throw new RuntimeException("The main and the micro apps do not have the same package name.");
-        }
-
-        String content = String.format(
-                "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                        "<wearableApp package=\"%1$s\">\n" +
-                        "    <versionCode>%2$s</versionCode>\n" +
-                        "    <versionName>%3$s</versionName>\n" +
-                        "    <rawPathResId>%4$s</rawPathResId>\n" +
-                        "</wearableApp>",
-                apkInfo.getPackageName(),
-                apkInfo.getVersionCode(),
-                apkInfo.getVersionName(),
-                resName);
-
-        // xml folder
-        File resXmlFile = new File(outResFolder, FD_RES_XML);
-        resXmlFile.mkdirs();
-
-        Files.write(content,
-                new File(resXmlFile, ANDROID_WEAR_MICRO_APK + DOT_XML),
-                Charsets.UTF_8);
-    }
-
     /**
      * Compiles all the aidl files found in the given source folders.
      *
@@ -1141,73 +878,6 @@ public class AndroidBuilder {
                 processOutputHandler);
 
         processor.processFile(sourceFolder, aidlFile);
-    }
-
-    /**
-     * Compiles all the renderscript files found in the given source folders.
-     * <p>
-     * Right now this is the only way to compile them as the renderscript compiler requires all
-     * renderscript files to be passed for all compilation.
-     * <p>
-     * Therefore whenever a renderscript file or header changes, all must be recompiled.
-     *
-     * @param sourceFolders   all the source folders to find files to compile
-     * @param importFolders   all the import folders.
-     * @param sourceOutputDir the output dir in which to generate the source code
-     * @param resOutputDir    the output dir in which to generate the bitcode file
-     * @param targetApi       the target api
-     * @param debugBuild      whether the build is debug
-     * @param optimLevel      the optimization level
-     * @param ndkMode
-     * @param supportMode     support mode flag to generate .so files.
-     * @param abiFilters      ABI filters in case of support mode
-     * @throws IOException
-     * @throws InterruptedException
-     * @throws LoggedErrorException
-     */
-    public void compileAllRenderscriptFiles(@NonNull List<File> sourceFolders,
-                                            @NonNull List<File> importFolders,
-                                            @NonNull File sourceOutputDir,
-                                            @NonNull File resOutputDir,
-                                            @NonNull File objOutputDir,
-                                            @NonNull File libOutputDir,
-                                            int targetApi,
-                                            boolean debugBuild,
-                                            int optimLevel,
-                                            boolean ndkMode,
-                                            boolean supportMode,
-                                            @Nullable Set<String> abiFilters,
-                                            @NonNull ProcessOutputHandler processOutputHandler)
-            throws InterruptedException, ProcessException, LoggedErrorException, IOException {
-        checkNotNull(sourceFolders, "sourceFolders cannot be null.");
-        checkNotNull(importFolders, "importFolders cannot be null.");
-        checkNotNull(sourceOutputDir, "sourceOutputDir cannot be null.");
-        checkNotNull(resOutputDir, "resOutputDir cannot be null.");
-        checkState(mTargetInfo != null,
-                "Cannot call compileAllRenderscriptFiles() before setTargetInfo() is called.");
-
-        BuildToolInfo buildToolInfo = mTargetInfo.getBuildTools();
-
-        String renderscript = buildToolInfo.getPath(BuildToolInfo.PathId.LLVM_RS_CC);
-        if (renderscript == null || !new File(renderscript).isFile()) {
-            throw new IllegalStateException("llvm-rs-cc is missing");
-        }
-
-        RenderScriptProcessor processor = new RenderScriptProcessor(
-                sourceFolders,
-                importFolders,
-                sourceOutputDir,
-                resOutputDir,
-                objOutputDir,
-                libOutputDir,
-                buildToolInfo,
-                targetApi,
-                debugBuild,
-                optimLevel,
-                ndkMode,
-                supportMode,
-                abiFilters);
-        processor.build(mProcessExecutor, processOutputHandler);
     }
 
     /**

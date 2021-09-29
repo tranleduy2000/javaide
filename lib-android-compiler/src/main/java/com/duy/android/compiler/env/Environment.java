@@ -2,6 +2,10 @@ package com.duy.android.compiler.env;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.duy.javacompiler.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +44,11 @@ public class Environment {
         return mkdirsIfNotExist(sdkDir);
     }
 
+    public static boolean isSdkInstalled(Context context) {
+        File classpathFile = Environment.getClasspathFile(context);
+        return classpathFile.exists();
+    }
+
     public static File getPlatformDir(Context context) {
         File dir = new File(getSdkDir(context), "platforms");
         return mkdirsIfNotExist(dir);
@@ -51,7 +60,15 @@ public class Environment {
     }
 
     public static File getClasspathFile(Context context) {
-        return new File(getPlatformApiDir(context, ANDROID_API), "android.jar");
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        String classpathFile = pref.getString(context.getString(R.string.key_classpath), "");
+        File file = new File(classpathFile);
+        if (!file.exists() || classpathFile.equals("default")) {
+            file = new File(getPlatformApiDir(context, ANDROID_API), "android.jar");
+        } else {
+            System.out.printf("Classpath file %s not exist%n", classpathFile);
+        }
+        return file;
     }
 
     public static File getSdCardLibraryExtractedFolder() {
@@ -73,4 +90,5 @@ public class Environment {
         File dir = new File(getSdkDir(context), ".repo");
         return mkdirsIfNotExist(dir);
     }
+
 }

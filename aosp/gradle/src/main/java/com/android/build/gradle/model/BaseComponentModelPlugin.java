@@ -17,24 +17,18 @@
 package com.android.build.gradle.model;
 
 import com.android.annotations.NonNull;
-import com.android.build.gradle.AndroidGradleOptions;
 import com.android.build.gradle.internal.AndroidConfigHelper;
 import com.android.build.gradle.internal.ExtraModelInfo;
-import com.android.build.gradle.internal.LibraryCache;
 import com.android.build.gradle.internal.LoggerWrapper;
-import com.android.build.gradle.internal.NdkOptionsHelper;
 import com.android.build.gradle.internal.SdkHandler;
 import com.android.build.gradle.internal.TaskManager;
 import com.android.build.gradle.internal.VariantManager;
 import com.android.build.gradle.internal.process.GradleJavaProcessExecutor;
 import com.android.build.gradle.internal.process.GradleProcessExecutor;
-import com.android.build.gradle.internal.profile.RecordingBuildListener;
 import com.android.build.gradle.internal.variant.VariantFactory;
 import com.android.build.gradle.managed.AndroidConfig;
 import com.android.build.gradle.managed.BuildType;
 import com.android.build.gradle.managed.ClassField;
-import com.android.build.gradle.managed.NdkConfig;
-import com.android.build.gradle.managed.NdkOptions;
 import com.android.build.gradle.managed.ProductFlavor;
 import com.android.build.gradle.managed.SigningConfig;
 import com.android.build.gradle.managed.adaptor.AndroidConfigAdaptor;
@@ -46,10 +40,8 @@ import com.android.builder.core.AndroidBuilder;
 import com.android.builder.internal.compiler.PreDexCache;
 import com.android.builder.profile.ProcessRecorderFactory;
 import com.android.builder.profile.Recorder;
-import com.android.builder.profile.ThreadRecorder;
 import com.android.builder.sdk.TargetInfo;
 import com.android.builder.signing.DefaultSigningConfig;
-import com.android.ide.common.internal.ExecutorSingleton;
 import com.android.ide.common.signing.KeystoreHelper;
 import com.android.prefs.AndroidLocation;
 import com.android.utils.ILogger;
@@ -74,12 +66,7 @@ import org.gradle.language.base.LanguageSourceSet;
 import org.gradle.model.Defaults;
 import org.gradle.model.Model;
 import org.gradle.model.ModelMap;
-import org.gradle.model.Mutate;
 import org.gradle.model.Path;
-import org.gradle.model.RuleSource;
-import org.gradle.model.internal.core.ModelCreators;
-import org.gradle.model.internal.core.ModelReference;
-import org.gradle.model.internal.registry.ModelRegistry;
 import org.gradle.platform.base.BinaryContainer;
 import org.gradle.platform.base.ComponentSpecContainer;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
@@ -88,7 +75,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.util.List;
-
 
 import groovy.lang.Closure;
 
@@ -101,22 +87,13 @@ import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
 
 public class BaseComponentModelPlugin implements Plugin<Project> {
 
-    private ToolingModelBuilderRegistry toolingRegistry;
-
-    private ModelRegistry modelRegistry;
-
-    protected BaseComponentModelPlugin(ToolingModelBuilderRegistry toolingRegistry,
-                                       ModelRegistry modelRegistry) {
-        this.toolingRegistry = toolingRegistry;
-        this.modelRegistry = modelRegistry;
+    protected BaseComponentModelPlugin() {
     }
 
     private static void createConfiguration(@NonNull ConfigurationContainer configurations,
-                                            @NonNull String configurationName, @NonNull String configurationDescription) {
+                                            @NonNull String configurationName,
+                                            @NonNull String configurationDescription) {
         Configuration configuration = configurations.findByName(configurationName);
-        if (configuration == null) {
-            configuration = configurations.create(configurationName);
-        }
 
         configuration.setVisible(false);
         configuration.setDescription(configurationDescription);
@@ -142,9 +119,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
         } catch (IOException e) {
             throw new RuntimeException("Unable to initialize ProcessRecorderFactory");
         }
-        project.getGradle().addListener(new RecordingBuildListener(ThreadRecorder.get()));
 
-        project.getPlugins().apply(AndroidComponentModelPlugin.class);
         project.getPlugins().apply(JavaBasePlugin.class);
 
         // TODO: Create configurations for build types and flavors, or migrate to new dependency
@@ -154,33 +129,15 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
         createConfiguration(configurations, "default-metadata", "Metadata for published APKs");
         createConfiguration(configurations, "default-mapping", "Metadata for published APKs");
 
-        project.getPlugins().apply(NdkComponentModelPlugin.class);
-
-        // Remove this when our models no longer depends on Project.
-        modelRegistry.create(ModelCreators
-                .bridgedInstance(ModelReference.of("projectModel", Project.class), project)
-                .descriptor("Model of project.").build());
-
-        toolingRegistry.register(new ComponentModelBuilder(modelRegistry));
-
-        // Inserting the ToolingModelBuilderRegistry into the model so that it can be use to create
-        // TaskManager in child classes.
-        modelRegistry.create(ModelCreators.bridgedInstance(
-                ModelReference.of("toolingRegistry", ToolingModelBuilderRegistry.class),
-                toolingRegistry).descriptor("Tooling model builder model registry.").build());
     }
 
-    @SuppressWarnings("MethodMayBeStatic")
-    public static class Rules extends RuleSource {
+    public static class Rules {
 
         private static void initBuildType(@NonNull BuildType buildType) {
             buildType.setDebuggable(false);
             buildType.setPseudoLocalesEnabled(false);
-            buildType.setRenderscriptDebuggable(false);
-            buildType.setRenderscriptOptimLevel(3);
             buildType.setMinifyEnabled(false);
             buildType.setZipAlignEnabled(true);
-            buildType.setEmbedMicroApp(true);
             buildType.setShrinkResources(false);
             buildType.setProguardFiles(Sets.<File>newHashSet());
             buildType.setConsumerProguardFiles(Sets.<File>newHashSet());
@@ -210,16 +167,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             });
         }
 
-        // com.android.build.gradle.AndroidConfig do not contain an NdkConfig.  Copy it to the
-        // defaultConfig for now.
-        @Defaults
-        public void copyNdkConfig(
-                @Path("android.defaultConfig.ndk") NdkOptions defaultNdkConfig,
-                @Path("android.ndk") NdkConfig pluginNdkConfig) {
-            NdkOptionsHelper.init(defaultNdkConfig);
-            NdkOptionsHelper.merge(defaultNdkConfig, pluginNdkConfig);
-        }
-
         // TODO: Remove code duplicated from BasePlugin.
         @Model(EXTRA_MODEL_INFO)
         public ExtraModelInfo createExtraModelInfo(
@@ -232,29 +179,6 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
         public SdkHandler createSdkHandler(final Project project) {
             final ILogger logger = new LoggerWrapper(project.getLogger());
             final SdkHandler sdkHandler = new SdkHandler(project, logger);
-
-            // call back on execution. This is called after the whole build is done (not
-            // after the current project is done).
-            // This is will be called for each (android) projects though, so this should support
-            // being called 2+ times.
-            project.getGradle().buildFinished(new Closure<Object>(this, this) {
-                public void doCall(Object it) {
-                    ExecutorSingleton.shutdown();
-                    sdkHandler.unload();
-                    try {
-                        PreDexCache.getCache().clear(project.getRootProject()
-                                .file(String.valueOf(project.getRootProject().getBuildDir()) + "/"
-                                        + FD_INTERMEDIATES + "/dex-cache/cache.xml"), logger);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    LibraryCache.getCache().unload();
-                }
-
-                public void doCall() {
-                    doCall(null);
-                }
-            });
 
             project.getGradle().getTaskGraph().whenReady(new Closure<Void>(this, this) {
                 public void doCall(TaskExecutionGraph taskGraph) {
@@ -294,7 +218,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
 
         }
 
-        @Mutate
+
         public void initDebugBuildTypes(
                 @Path("android.buildTypes") ModelMap<BuildType> buildTypes,
                 @Path("android.signingConfigs") final ModelMap<SigningConfig> signingConfigs) {
@@ -313,12 +237,12 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             });
         }
 
-        @Mutate
+
         public void initDefaultConfig(@Path("android.defaultConfig") ProductFlavor defaultConfig) {
             initProductFlavor(defaultConfig);
         }
 
-        @Mutate
+
         public void initProductFlavors(
                 @Path("android.productFlavors") final ModelMap<ProductFlavor> productFlavors) {
             productFlavors.beforeEach(new Action<ProductFlavor>() {
@@ -349,7 +273,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             });
         }
 
-        @Mutate
+
         public void addDefaultAndroidSourceSet(
                 @Path("android.sources") AndroidComponentModelSourceSet sources) {
             sources.addDefaultSourceSet("resources", AndroidLanguageSourceSet.class);
@@ -358,13 +282,12 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             sources.addDefaultSourceSet("res", AndroidLanguageSourceSet.class);
             sources.addDefaultSourceSet("assets", AndroidLanguageSourceSet.class);
             sources.addDefaultSourceSet("aidl", AndroidLanguageSourceSet.class);
-            sources.addDefaultSourceSet("renderscript", AndroidLanguageSourceSet.class);
             sources.addDefaultSourceSet("jniLibs", AndroidLanguageSourceSet.class);
 
             sources.all(new Action<FunctionalSourceSet>() {
                 @Override
                 public void execute(FunctionalSourceSet functionalSourceSet) {
-                    LanguageSourceSet manifest = functionalSourceSet.getByName("manifest");
+                    LanguageSourceSet manifest = functionalSourceSet.get("manifest");
                     manifest.getSource().setIncludes(ImmutableList.of("AndroidManifest.xml"));
                 }
             });
@@ -381,7 +304,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
                     .createSourceSetsContainer(project, instantiator, !isApplication));
         }
 
-        @Mutate
+
         public void createAndroidComponents(
                 ComponentSpecContainer androidSpecs,
                 ServiceRegistry serviceRegistry, AndroidConfig androidExtension,
@@ -423,7 +346,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             spec.setVariantManager(variantManager);
         }
 
-        @Mutate
+
         public void createVariantData(
                 ModelMap<AndroidBinary> binaries,
                 ModelMap<AndroidComponentSpec> specs,
@@ -447,12 +370,12 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
             });
         }
 
-        @Mutate
+
         public void createLifeCycleTasks(ModelMap<Task> tasks, TaskManager taskManager) {
             taskManager.createTasksBeforeEvaluate(new TaskModelMapAdaptor(tasks));
         }
 
-        @Mutate
+
         public void createAndroidTasks(
                 ModelMap<Task> tasks,
                 ModelMap<AndroidComponentSpec> androidSpecs,
@@ -472,7 +395,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
         }
 
         // TODO: Use @BinaryTasks after figuring how to configure non-binary specific tasks.
-        @Mutate
+
         public void createBinaryTasks(
                 final ModelMap<Task> tasks,
                 BinaryContainer binaries,
@@ -494,7 +417,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
         /**
          * Create tasks that must be created after other tasks for variants are created.
          */
-        @Mutate
+
         public void createRemainingTasks(
                 ModelMap<Task> tasks,
                 TaskManager taskManager,
@@ -504,7 +427,7 @@ public class BaseComponentModelPlugin implements Plugin<Project> {
 
         }
 
-        @Mutate
+
         public void modifyAssembleTaskDescription(@Path("tasks.assemble") Task assembleTask) {
             assembleTask.setDescription(
                     "Assembles all variants of all applications and secondary packages.");

@@ -1,0 +1,35 @@
+package test.pkg;
+
+import android.graphics.SurfaceTexture;
+import android.view.Surface;
+
+public class SurfaceTextureTest {
+    public void test1() {
+        SurfaceTexture texture = new SurfaceTexture(1); // OK: released
+        texture.release();
+    }
+
+    public void test2() {
+        SurfaceTexture texture = new SurfaceTexture(1); // OK: not sure what the method does
+        unknown(texture);
+    }
+
+    public void test3() {
+        SurfaceTexture texture = new SurfaceTexture(1); // Warn: texture not released
+    }
+
+    private void unknown(SurfaceTexture texture) {
+    }
+
+    public void test4() {
+        SurfaceTexture texture = new SurfaceTexture(1); // Warn: texture not released
+        Surface surface = new Surface(texture);
+        surface.release();
+    }
+
+    public void test5() {
+        SurfaceTexture texture = new SurfaceTexture(1);
+        Surface surface = new Surface(texture); // Warn: surface not released
+        texture.release();
+    }
+}

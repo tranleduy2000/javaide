@@ -1,0 +1,67 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.PorterDuff;
+
+@SuppressWarnings("incomplete-switch")
+public class TestEnum {
+    public static void test1(final CompressFormat format) {
+        switch (format) {
+            case JPEG: {
+                System.out.println("jpeg");
+                break;
+            }
+            default: {
+                System.out.println("Default");
+            }
+        }
+    }
+
+    public static void test2(final PorterDuff.Mode mode) {
+        switch (mode) {
+            case CLEAR: {
+                System.out.println("clear");
+            }
+            case OVERLAY: {
+                System.out.println("add");
+                break;
+            }
+        }
+
+        // Second usage: should also complain here
+        switch (mode) {
+            case CLEAR: {
+                System.out.println("clear");
+            }
+            case OVERLAY: {
+                System.out.println("add");
+                break;
+            }
+        }
+    }
+
+    @SuppressLint("NewApi")
+    public static void test3(PorterDuff.Mode mode) {
+        // Third usage: no complaint because it's suppressed
+        switch (mode) {
+            case CLEAR: {
+                System.out.println("clear");
+            }
+            case OVERLAY: {
+                System.out.println("add");
+                break;
+            }
+        }
+    }
+
+    public static void test4(final android.renderscript.Element.DataType type) {
+        // Switch usage where the whole underlying enum requires a higher API level:
+        // test customized error message
+        switch (type) {
+            case RS_FONT: {
+                System.out.println("font");
+            }
+        }
+    }
+}

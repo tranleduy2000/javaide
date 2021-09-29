@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="format_float">Formatted float value: %f</string>
+    <string name="format_integer">Formatted integer value: %d</string>
+    <string name="format_hex_float">Formatted float value: %A</string>
+    <string name="format_hex">Formatted integer value: %h</string>
+    <string name="decimal_format_string">Decimal string: %.2f</string>
+
+</resources>
+

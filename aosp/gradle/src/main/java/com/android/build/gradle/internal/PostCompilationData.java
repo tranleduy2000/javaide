@@ -73,12 +73,12 @@ public class PostCompilationData {
         return inputFiles;
     }
 
-    public void setInputFiles(@Nullable List<File> inputFiles) {
-        this.inputFiles = Callables.returning(inputFiles);
-    }
-
     public void setInputFilesCallable(@Nullable Callable<List<File>> inputFiles) {
         this.inputFiles = inputFiles;
+    }
+
+    public void setInputFiles(@Nullable List<File> inputFiles) {
+        this.inputFiles = Callables.returning(inputFiles);
     }
 
     @Nullable
@@ -86,12 +86,12 @@ public class PostCompilationData {
         return inputDir;
     }
 
-    public void setInputDir(@NonNull File inputDir) {
-        this.inputDir = Callables.returning(inputDir);
-    }
-
     public void setInputDirCallable(@Nullable Callable<File> inputDir) {
         this.inputDir = inputDir;
+    }
+
+    public void setInputDir(@NonNull File inputDir) {
+        this.inputDir = Callables.returning(inputDir);
     }
 
     @Nullable
@@ -99,12 +99,12 @@ public class PostCompilationData {
         return javaResourcesInputDir;
     }
 
-    public void setJavaResourcesInputDir(@NonNull File javaResourcesInputDir) {
-        this.javaResourcesInputDir = Callables.returning(javaResourcesInputDir);
-    }
-
     public void setJavaResourcesInputDirCallable(@Nullable Callable<File> javaResourcesInputDir) {
         this.javaResourcesInputDir = javaResourcesInputDir;
+    }
+
+    public void setJavaResourcesInputDir(@NonNull File javaResourcesInputDir) {
+        this.javaResourcesInputDir = Callables.returning(javaResourcesInputDir);
     }
 
     @Nullable
@@ -112,11 +112,11 @@ public class PostCompilationData {
         return inputLibraries;
     }
 
-    public void setInputLibraries(@NonNull List<File> inputLibraries) {
-        this.inputLibraries = Callables.returning(inputLibraries);
-    }
-
     public void setInputLibrariesCallable(@Nullable Callable<List<File>> inputLibraries) {
         this.inputLibraries = inputLibraries;
+    }
+
+    public void setInputLibraries(@NonNull List<File> inputLibraries) {
+        this.inputLibraries = Callables.returning(inputLibraries);
     }
 }

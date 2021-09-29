@@ -1,0 +1,35 @@
+<resources>
+    <style name="Style1">
+        <item name="android:textSize">50sp</item>
+    </style>
+    <style name="Style2">
+        <item name="android:textSize">50dp</item>
+    </style>
+    <style name="Style3">
+        <item name="android:textSize">50px</item>
+    </style>
+    <style name="Style4">
+        <item name="android:textSize"> 50dip </item>
+    </style>
+ 
+    <style name="Style5">
+        <item name="android:paddingLeft">@dimen/whats_on_item_padding</item>
+        <item name="android:paddingRight"> 50px </item>
+        <item name="android:paddingTop">50px</item>
+        <item name="android:paddingBottom">50dip</item>
+    </style>
+
+    <style name="Style6">
+        <item name="android:textSize">50mm</item>
+        <item name="android:textSize">
+            50in
+        </item>
+    </style>
+
+    <style name="Widget.TabStrip" parent="Widget">
+        <item name="android:divider">?android:attr/listDivider</item>
+        <item name="android:showDividers">middle</item>
+        <item name="android:dividerPadding">0px</item>
+        <item name="android:maxHeight">1px</item>
+    </style>
+</resources>

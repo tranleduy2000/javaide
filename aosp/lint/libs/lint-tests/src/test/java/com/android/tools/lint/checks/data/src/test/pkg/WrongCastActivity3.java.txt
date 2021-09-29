@@ -1,0 +1,11 @@
+package test.pkg;
+
+import android.app.*;
+import android.view.*;
+import android.widget.*;
+
+public class WrongCastActivity3 extends Activity {
+    private void test() {
+        final Checkable check = (Checkable) findViewById(R.id.additional);
+    }
+}

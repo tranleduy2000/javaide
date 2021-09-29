@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="ndash">
+        <!-- Nonsensical plural, just adding strings for typography check in plurals -->
+        <item quantity="one">For ages 3-5</item>
+        <item quantity="few">1/4 times</item>
+        <!-- ..and a typo -->
+        <item quantity="other">Andriod</item>
+    </plurals>
+
+    <!-- Nonsensical string array, just adding strings for typography check in arrays -->
+    <string-array name="security_questions">
+        <item>Seach</item>
+        <item>``second''</item>
+    </string-array>
+</resources>

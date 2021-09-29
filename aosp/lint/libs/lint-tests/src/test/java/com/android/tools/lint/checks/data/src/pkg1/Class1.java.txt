@@ -1,0 +1,29 @@
+package pkg1;
+
+public class Class1 {
+    void method() {
+    }
+
+    void method2(int foo) {
+    }
+
+    void method3() {
+    }
+
+    void method4() {
+    }
+
+    void method5() {
+    }
+
+    void method6() {
+    }
+
+    void method7() {
+    }
+
+    public static class Class4 extends Class1 {
+        void method() { // Not an error: same package
+        }
+    }
+}

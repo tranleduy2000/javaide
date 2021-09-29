@@ -1,5 +1,7 @@
 package com.duy.android.compiler.project;
 
+import com.duy.common.io.IOUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.regex.Pattern;
@@ -24,7 +26,7 @@ public class ClassUtil {
      */
     public static boolean hasMainFunction(File file) {
         try {
-            String s = org.apache.commons.io.IOUtils.toString(new FileInputStream(file));
+            String s = IOUtils.toString(new FileInputStream(file));
             return hasMainFunction(s);
         } catch (Exception e) {
             e.printStackTrace();

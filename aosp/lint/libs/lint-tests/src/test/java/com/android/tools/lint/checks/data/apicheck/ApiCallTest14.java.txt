@@ -1,0 +1,35 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.media.MediaRouter;
+import android.media.MediaRouter.RouteInfo;
+import android.media.MediaRouter.SimpleCallback;
+
+public class ApiCallTest14 {
+	@SuppressLint("NewApi")
+	public SimpleCallback cb = new SimpleCallback() {
+		@Override
+		public void onRoutePresentationDisplayChanged(MediaRouter router,
+				RouteInfo route) {
+			// do something
+		}
+	};
+
+	@SuppressLint("NewApi")
+	private SimpleCallback cb2 = new SimpleCallback() {
+		@Override
+		public void onRoutePresentationDisplayChanged(MediaRouter router,
+				RouteInfo route) {
+			// do something
+		}
+	};
+
+	@SuppressLint("NewApi")
+	private static final SimpleCallback cb3 = new SimpleCallback() {
+		@Override
+		public void onRoutePresentationDisplayChanged(MediaRouter router,
+				RouteInfo route) {
+			// do something
+		}
+	};
+}

@@ -29,7 +29,6 @@ import com.android.build.gradle.internal.dsl.Splits;
 import com.android.build.gradle.internal.scope.VariantScope;
 import com.android.build.gradle.internal.tasks.CheckManifest;
 import com.android.build.gradle.internal.tasks.FileSupplier;
-import com.android.build.gradle.internal.tasks.GenerateApkDataTask;
 import com.android.build.gradle.internal.tasks.PrepareDependenciesTask;
 import com.android.build.gradle.tasks.AidlCompile;
 import com.android.build.gradle.tasks.BinaryFileProviderTask;
@@ -37,13 +36,12 @@ import com.android.build.gradle.tasks.GenerateBuildConfig;
 import com.android.build.gradle.tasks.GenerateResValues;
 import com.android.build.gradle.tasks.MergeAssets;
 import com.android.build.gradle.tasks.MergeResources;
-import com.android.build.gradle.tasks.NdkCompile;
 import com.android.build.gradle.tasks.ProcessAndroidResources;
 import com.android.builder.core.VariantType;
 import com.android.builder.model.SourceProvider;
 import com.android.ide.common.res2.ResourceSet;
 import com.android.utils.StringHelper;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 
 import org.gradle.api.Task;
@@ -68,9 +66,9 @@ import java.util.Set;
 public abstract class BaseVariantData<T extends BaseVariantOutputData> {
 
     @NonNull
-    protected final AndroidConfig androidConfig;
-    @NonNull
     protected final TaskManager taskManager;
+    @NonNull
+    private final AndroidConfig androidConfig;
     @NonNull
     private final GradleVariantConfiguration variantConfiguration;
     // Needed for ModelBuilder.  Should be removed once VariantScope can replace BaseVariantData.
@@ -90,9 +88,7 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
     public GenerateBuildConfig generateBuildConfigTask;
     public GenerateResValues generateResValuesTask;
     public Copy copyApkTask;
-    public GenerateApkDataTask generateApkDataTask;
     public Sync processJavaResourcesTask;
-    public NdkCompile ndkCompileTask;
     /**
      * Can be JavaCompile depending on user's settings.
      */
@@ -104,7 +100,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
     public Task compileTask;
     public FileSupplier mappingFileProviderTask;
     public BinaryFileProviderTask binayFileProviderTask;
-    // TODO : why is Jack not registered as the obfuscationTask ???
     public Task obfuscationTask;
     // Task to assemble the variant and all its output.
     public Task assembleVariantTask;
@@ -119,7 +114,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
     private List<File> extraGeneratedResFolders;
     private Set<String> densityFilters;
     private Set<String> languageFilters;
-    private Set<String> abiFilters;
     private SplitHandlingPolicy mSplitHandlingPolicy;
 
     public BaseVariantData(
@@ -147,7 +141,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
                             variantConfiguration.getMinSdkVersion().getApiLevel()));
         }
         scope = new VariantScope(taskManager.getGlobalScope(), this);
-        taskManager.configureScopeForNdk(scope);
     }
 
     /**
@@ -361,7 +354,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
                 .getResourceSets(getGeneratedResFolders(), false);
         densityFilters = getFilters(resourceSets, DiscoverableFilterType.DENSITY, splits);
         languageFilters = getFilters(resourceSets, DiscoverableFilterType.LANGUAGE, splits);
-        abiFilters = getFilters(resourceSets, DiscoverableFilterType.ABI, splits);
     }
 
     /**
@@ -375,7 +367,7 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
      */
     @NonNull
     public Set<String> getFilters(OutputFile.FilterType filterType) {
-        if (densityFilters == null || languageFilters == null || abiFilters == null) {
+        if (densityFilters == null || languageFilters == null) {
             throw new IllegalStateException("calculateFilters method not called");
         }
         switch (filterType) {
@@ -383,8 +375,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
                 return densityFilters;
             case LANGUAGE:
                 return languageFilters;
-            case ABI:
-                return abiFilters;
             default:
                 throw new RuntimeException("Unhandled filter type");
         }
@@ -394,15 +384,9 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
      * Returns the list of generated res folders for this variant.
      */
     private List<File> getGeneratedResFolders() {
-        List<File> generatedResFolders = Lists.newArrayList(
-                scope.getRenderscriptResOutputDir(),
-                scope.getGeneratedResOutputDir());
+        List<File> generatedResFolders = Lists.newArrayList(scope.getGeneratedResOutputDir());
         if (extraGeneratedResFolders != null) {
             generatedResFolders.addAll(extraGeneratedResFolders);
-        }
-        if (generateApkDataTask != null &&
-                getVariantConfiguration().getBuildType().isEmbedMicroApp()) {
-            generatedResFolders.add(generateApkDataTask.getResOutputDir());
         }
         return generatedResFolders;
     }
@@ -478,7 +462,7 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .addValue(variantConfiguration.getFullName())
                 .toString();
     }
@@ -539,18 +523,6 @@ public abstract class BaseVariantData<T extends BaseVariantOutputData> {
             @Override
             boolean isAuto(@NonNull Splits splits) {
                 return splits.getLanguage().isAuto();
-            }
-        }, ABI("") {
-            @NonNull
-            @Override
-            Collection<String> getConfiguredFilters(@NonNull Splits splits) {
-                return splits.getAbiFilters();
-            }
-
-            @Override
-            boolean isAuto(@NonNull Splits splits) {
-                // so far, we never auto-discover abi filters.
-                return false;
             }
         };
 

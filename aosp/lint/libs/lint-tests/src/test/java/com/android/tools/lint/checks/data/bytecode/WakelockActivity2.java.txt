@@ -1,0 +1,24 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.os.PowerManager;
+
+public class WakelockActivity2 extends Activity {
+    private PowerManager.WakeLock mWakeLock;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mWakeLock != null && mWakeLock.isHeld()) {
+            mWakeLock.release(); // Should be done in onPause instead
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onDestroy();
+        if (mWakeLock != null && mWakeLock.isHeld()) {
+            mWakeLock.release(); // OK
+        }
+    }
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="test.mipmap"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <!-- Wrong icon resource type -->
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <!-- Wrong icon resource type -->
+        <activity
+            android:name=".Activity1"
+            android:icon="@drawable/activity1"
+            android:label="@string/activity1" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- Already a @mipmap resource -->
+        <activity
+            android:name=".Activity2"
+            android:icon="@mipmap/activity2"
+            android:label="@string/activity2" >
+        </activity>
+        <!-- Not a launchable activity -->
+        <activity
+            android:name=".Activity3"
+            android:icon="@drawable/activity3"
+            android:label="@string/activity3" >
+        </activity>
+    </application>
+
+</manifest>

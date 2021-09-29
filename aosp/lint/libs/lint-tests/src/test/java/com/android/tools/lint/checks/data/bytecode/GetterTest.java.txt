@@ -1,0 +1,59 @@
+package test.bytecode;
+
+public class GetterTest {
+	private int mFoo1;
+	private String mFoo2;
+	private int mBar1;
+	private static int sFoo4;
+
+	public int getFoo1() {
+		return mFoo1;
+	}
+
+	public String getFoo2() {
+		return mFoo2;
+	}
+
+	public int isBar1() {
+		return mBar1;
+	}
+
+	// Not "plain" getters:
+
+	public String getFoo3() {
+		// NOT a plain getter
+		if (mFoo2 == null) {
+			mFoo2 = "";
+		}
+		return mFoo2;
+	}
+
+	public int getFoo4() {
+		// NOT a plain getter (using static)
+		return sFoo4;
+	}
+
+	public int getFoo5(int x) {
+		// NOT a plain getter (has extra argument)
+		return sFoo4;
+	}
+
+	public int isBar2(String s) {
+		// NOT a plain getter (has extra argument)
+		return mFoo1;
+	}
+
+	public void test() {
+		getFoo1();
+		getFoo2();
+		getFoo3();
+		getFoo4();
+		getFoo5(42);
+		isBar1();
+		isBar2("foo");
+		this.getFoo1();
+		this.getFoo2();
+		this.getFoo3();
+		this.getFoo4();
+	}
+}

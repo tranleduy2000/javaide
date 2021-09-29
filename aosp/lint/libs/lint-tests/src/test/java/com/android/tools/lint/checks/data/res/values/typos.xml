@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- No typos -->
+    <string name="s1">Home Sample</string>
+    <!-- Plain typos -->
+    <string name="s2">Andriod activites!</string>
+    <!-- Make capitalization match typo -->
+    <string name="s3"> (Cmoputer </string>
+    <!-- Markup indirection -->
+    <string name="s4"><b>throught</b></string>
+    <!-- Typo, match capitalized -->
+    <string name="s5">Seach</string>
+    <!-- random words, shouldn't flag -->
+    <string name="s6">abcdefg qwerty asdf jklm</string>
+    <!-- typo, but should only match when capitalized -->
+    <string name="s7">Tuscon tuscon</string>
+    <!-- case changes only: valid -->
+    <string name="s8">OK Cancel dialog with a long message</string>
+    <!-- case changes only: invalid -->
+    <string name="dlg_button_ok">Ok</string>
+    <!-- escaped separator -->
+    <string name="issue39599">"Please take a moment\nto rate ^1"</string>
+    <!-- escaped separator 2 -->
+    <string name="issue39599_2">"\nto</string>
+    <!-- not translatable -->
+    <string name="translatable" translatable="false">"Andriod</string>
+    <!-- don't spell check resource references; not user visible anyway -->
+    <string name="issue77269_1">@android:string/ok</string>
+    <string name="issue77269_2"> @string/cmoputer </string>
+</resources>

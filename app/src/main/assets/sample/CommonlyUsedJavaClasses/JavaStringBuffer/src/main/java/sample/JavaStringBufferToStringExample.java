@@ -7,20 +7,20 @@ package sample;
 
 public class JavaStringBufferToStringExample {
 
-  public static void main(String args[]) {
+    public static void main(String args[]) {
 
-    //create StringBuffer object
-    StringBuffer sbf = new StringBuffer("Hello World!");
+        //create StringBuffer object
+        StringBuffer sbf = new StringBuffer("Hello World!");
 
-    /*
-     * To convert StringBuffer to String object, use
-     * String toString() method of StringBuffer class.
-     */
+        /*
+         * To convert StringBuffer to String object, use
+         * String toString() method of StringBuffer class.
+         */
 
-    String str = sbf.toString();
+        String str = sbf.toString();
 
-    System.out.println("StringBuffer to String: " + str);
-  }
+        System.out.println("StringBuffer to String: " + str);
+    }
 }
 
 /*

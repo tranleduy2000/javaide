@@ -1,0 +1,27 @@
+package test.pkg;
+
+import android.provider.BaseColumns;
+
+public interface TracksColumns extends BaseColumns {
+
+    String TABLE_NAME = "tracks";
+
+    String NAME = "name";
+    String CATEGORY = "category";
+    String STARTTIME = "starttime";
+    String MAXGRADE = "maxgrade";
+    String MAPID = "mapid";
+    String TABLEID = "tableid";
+    String ICON = "icon";
+
+    String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
+            + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + NAME + " STRING, "
+            + CATEGORY + " STRING, "
+            + STARTTIME + " INTEGER, "
+            + MAXGRADE + " FLOAT, "
+            + MAPID + " STRING, "
+            + TABLEID + " STRING, "
+            + ICON + " STRING"
+            + ");";
+}

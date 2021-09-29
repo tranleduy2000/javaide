@@ -1,0 +1,9 @@
+package test.pkg;
+
+import android.content.res.Resources;
+
+public class StringFormat9 {
+    public String format(Resources resources, int percentUsed) {
+        return resources.getString(R.string.toast_percent_copy_quota_used, percentUsed);
+    }
+}

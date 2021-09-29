@@ -6,14 +6,14 @@ package sample;
 
 public class JavaBooleanToStringExample {
 
-  public static void main(String[] args) {
-    //construct Boolean object
-    Boolean blnObj = new Boolean("true");
+    public static void main(String[] args) {
+        //construct Boolean object
+        Boolean blnObj = new Boolean("true");
 
-    //use toString method of Boolean class to convert it into String
-    String str = blnObj.toString();
-    System.out.println(str);
-  }
+        //use toString method of Boolean class to convert it into String
+        String str = blnObj.toString();
+        System.out.println(str);
+    }
 }
 
 /*

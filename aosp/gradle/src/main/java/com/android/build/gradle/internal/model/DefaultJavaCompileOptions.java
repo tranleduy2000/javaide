@@ -33,9 +33,9 @@ class DefaultJavaCompileOptions implements JavaCompileOptions, Serializable {
     private final String encoding;
 
     DefaultJavaCompileOptions(@NonNull CompileOptions options) {
-      sourceCompatibility = options.getSourceCompatibility().toString();
-      targetCompatibility = options.getTargetCompatibility().toString();
-      encoding = options.getEncoding();
+        sourceCompatibility = options.getSourceCompatibility().toString();
+        targetCompatibility = options.getTargetCompatibility().toString();
+        encoding = options.getEncoding();
     }
 
     @NonNull

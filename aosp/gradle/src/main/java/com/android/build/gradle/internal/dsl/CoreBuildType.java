@@ -16,16 +16,12 @@
 
 package com.android.build.gradle.internal.dsl;
 
-import com.android.annotations.Nullable;
 import com.android.builder.model.BuildType;
 
 /**
  * A build type with addition properties for building with Gradle plugin.
  */
 public interface CoreBuildType extends BuildType {
-
-    @Nullable
-    CoreNdkOptions getNdkConfig();
 
     boolean isShrinkResources();
 }

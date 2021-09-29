@@ -24,21 +24,19 @@ import com.android.build.gradle.tasks.Dex;
 import com.android.builder.core.AndroidBuilder;
 import com.android.builder.model.SigningConfig;
 
-import org.gradle.api.DefaultTask;
-
 import java.io.File;
 import java.util.Collection;
 
 /**
  * Implementation of the apk-generating variant.
- *
+ * <p>
  * This is a wrapper around the internal data model, in order to control what is accessible
  * through the external API.
  */
 public abstract class ApkVariantImpl extends BaseVariantImpl implements ApkVariant {
 
     protected ApkVariantImpl(@NonNull AndroidBuilder androidBuilder,
-            @NonNull ReadOnlyObjectProvider immutableObjectProvider) {
+                             @NonNull ReadOnlyObjectProvider immutableObjectProvider) {
         super(androidBuilder, immutableObjectProvider);
     }
 
@@ -59,11 +57,6 @@ public abstract class ApkVariantImpl extends BaseVariantImpl implements ApkVaria
     @Override
     public Dex getDex() {
         return getApkVariantData().dexTask;
-    }
-
-    @Override
-    public DefaultTask getUninstall() {
-        return getApkVariantData().uninstallTask;
     }
 
     @Override
@@ -90,8 +83,4 @@ public abstract class ApkVariantImpl extends BaseVariantImpl implements ApkVaria
         return androidBuilder.getPackagedJars(getVariantData().getVariantConfiguration());
     }
 
-    @Override
-    public DefaultTask getInstall() {
-        return getApkVariantData().installTask;
-    }
 }

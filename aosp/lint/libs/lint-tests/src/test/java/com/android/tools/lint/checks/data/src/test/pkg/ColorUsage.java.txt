@@ -1,0 +1,13 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.support.v4.widget.SwipeRefreshLayout;
+
+public class ColorUsage extends Activity  {
+
+    private SwipeRefreshLayout mPullToRefreshLayout;
+
+    private void test() {
+        mPullToRefreshLayout.setProgressBackgroundColor(android.R.color.transparent);
+    }
+}

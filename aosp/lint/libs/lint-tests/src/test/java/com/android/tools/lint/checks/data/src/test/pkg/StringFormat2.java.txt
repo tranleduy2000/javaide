@@ -1,0 +1,14 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class StringFormat2 extends Activity {
+    public static final String buildUserAgent(Context context) {
+        StringBuilder arg = new StringBuilder();
+        // Snip
+        final String base = context.getResources().getText(R.string.web_user_agent).toString();
+        String ua = String.format(base, arg);
+        return ua;
+    }
+}

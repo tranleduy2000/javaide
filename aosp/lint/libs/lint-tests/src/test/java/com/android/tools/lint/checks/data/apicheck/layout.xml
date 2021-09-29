@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- Requires API 5 -->
+
+    <QuickContactBadge
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Requires API 11 -->
+
+    <CalendarView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <!-- Requires API 14 -->
+
+    <GridLayout
+        foo="@android:attr/actionBarSplitStyle"
+        bar="@android:color/holo_red_light"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </GridLayout>
+
+</LinearLayout>

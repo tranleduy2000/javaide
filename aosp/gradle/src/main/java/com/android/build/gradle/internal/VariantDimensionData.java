@@ -17,9 +17,7 @@
 package com.android.build.gradle.internal;
 
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.api.DefaultAndroidSourceSet;
-import com.android.builder.core.VariantType;
 
 import org.gradle.api.Project;
 
@@ -29,28 +27,16 @@ import org.gradle.api.Project;
 public class VariantDimensionData {
 
     private final DefaultAndroidSourceSet sourceSet;
-    private final DefaultAndroidSourceSet androidTestSourceSet;
-    private final DefaultAndroidSourceSet unitTestSourceSet;
 
     private final ConfigurationProvider mainProvider;
-    private final ConfigurationProvider androidTestProvider;
-    private final ConfigurationProvider unitTestProvider;
 
     public VariantDimensionData(
             @NonNull DefaultAndroidSourceSet sourceSet,
-            @Nullable DefaultAndroidSourceSet androidTestSourceSet,
-            @Nullable DefaultAndroidSourceSet unitTestSourceSet,
             @NonNull Project project) {
         this.sourceSet = sourceSet;
-        this.androidTestSourceSet = androidTestSourceSet;
-        this.unitTestSourceSet = unitTestSourceSet;
 
         mainProvider = new ConfigurationProviderImpl(project, sourceSet);
 
-        androidTestProvider = androidTestSourceSet != null ?
-                new ConfigurationProviderImpl(project, androidTestSourceSet) : null;
-        unitTestProvider = unitTestSourceSet != null ?
-                new ConfigurationProviderImpl(project, unitTestSourceSet) : null;
     }
 
     @NonNull
@@ -63,32 +49,4 @@ public class VariantDimensionData {
         return sourceSet;
     }
 
-    @Nullable
-    public DefaultAndroidSourceSet getTestSourceSet(@NonNull VariantType type) {
-        switch (type) {
-            case ANDROID_TEST:
-                return androidTestSourceSet;
-            case UNIT_TEST:
-                return unitTestSourceSet;
-            default:
-                throw unknownTestType(type);
-        }
-    }
-
-    @Nullable
-    public ConfigurationProvider getTestConfigurationProvider(@NonNull VariantType type) {
-        switch (type) {
-            case ANDROID_TEST:
-                return androidTestProvider;
-            case UNIT_TEST:
-                return unitTestProvider;
-            default:
-                throw unknownTestType(type);
-        }
-    }
-
-    private static RuntimeException unknownTestType(VariantType type) {
-        throw new IllegalArgumentException(
-                String.format("Unknown test variant type %s", type));
-    }
 }

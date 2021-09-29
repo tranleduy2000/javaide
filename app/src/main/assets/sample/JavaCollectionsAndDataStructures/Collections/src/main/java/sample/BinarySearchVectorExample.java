@@ -11,16 +11,16 @@ import java.util.Vector;
 
 public class BinarySearchVectorExample {
 
-  public static void main(String[] args) {
-    //create a Vector object
-    Vector v = new Vector();
+    public static void main(String[] args) {
+        //create a Vector object
+        Vector v = new Vector();
 
-    //Add elements to Vector
-    v.add("A");
-    v.add("B");
-    v.add("D");
-    v.add("E");
-    v.add("F");
+        //Add elements to Vector
+        v.add("A");
+        v.add("B");
+        v.add("D");
+        v.add("E");
+        v.add("F");
 
     /*
       To Search an element of Java Vector using binary search algorithm use,
@@ -37,15 +37,15 @@ public class BinarySearchVectorExample {
       using binarySearch method.
     */
 
-    //First sort Vector using sort method of Collections class
-    Collections.sort(v);
-    System.out.println("Sorted Vector contains : " + v);
+        //First sort Vector using sort method of Collections class
+        Collections.sort(v);
+        System.out.println("Sorted Vector contains : " + v);
 
-    //search an element using binarySearch method of Collections class
-    int index = Collections.binarySearch(v, "D");
+        //search an element using binarySearch method of Collections class
+        int index = Collections.binarySearch(v, "D");
 
-    System.out.println("Element found at : " + index);
-  }
+        System.out.println("Element found at : " + index);
+    }
 }
 
 /*

@@ -1,0 +1,26 @@
+package test.pkg;
+
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
+
+import javax.crypto.KeyAgreement;
+import javax.crypto.KeyGenerator;
+
+public class PrngCalls {
+    public void testKeyGenerator() throws NoSuchAlgorithmException, NoSuchProviderException {
+        KeyGenerator generator = KeyGenerator.getInstance("AES", "BC");
+        generator.init(128);
+
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(512);
+
+        KeyAgreement agreement = KeyAgreement.getInstance("DH", "BC");
+        agreement.generateSecret();
+
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[20];
+        random.nextBytes(bytes);
+    }
+}

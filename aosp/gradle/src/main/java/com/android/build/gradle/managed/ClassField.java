@@ -16,30 +16,30 @@
 
 package com.android.build.gradle.managed;
 
-import org.gradle.model.Managed;
-import org.gradle.model.Unmanaged;
-
 import java.util.Set;
 
 /**
  * A Managed ClassField.
  */
-@Managed
 public interface ClassField {
 
     String getType();
+
     void setType(String type);
 
     String getName();
+
     void setName(String name);
 
     String getValue();
+
     void setValue(String value);
 
     String getDocumentation();
+
     void setDocumentation(String documentation);
 
-    @Unmanaged
     Set<String> getAnnotations();
+
     void setAnnotations(Set<String> annotations);
 }

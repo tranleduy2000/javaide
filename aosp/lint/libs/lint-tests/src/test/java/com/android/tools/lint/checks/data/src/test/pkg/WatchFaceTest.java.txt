@@ -1,0 +1,38 @@
+package test.pkg;
+
+import android.support.wearable.watchface.CanvasWatchFaceService;
+
+@SuppressWarnings("UnusedDeclaration")
+public class WatchFaceTest extends CanvasWatchFaceService {
+    private static class MyEngine1 extends CanvasWatchFaceService.Engine {
+        @Override
+        public void onVisibilityChanged(boolean visible) { // ERROR: Missing super call
+        }
+    }
+
+    private static class MyEngine2 extends CanvasWatchFaceService.Engine {
+        @Override
+        public void onVisibilityChanged(boolean visible) { // OK: Super called
+            super.onVisibilityChanged(visible);
+        }
+    }
+
+    private static class MyEngine3 extends CanvasWatchFaceService.Engine {
+        @Override
+        public void onVisibilityChanged(boolean visible) { // OK: Super called sometimes
+            boolean something = System.currentTimeMillis() % 1 != 0;
+            if (visible && something) {
+                super.onVisibilityChanged(true);
+            }
+        }
+    }
+
+    private static class MyEngine4 extends CanvasWatchFaceService.Engine {
+        public void onVisibilityChanged() { // OK: Different signature
+        }
+        public void onVisibilityChanged(int flags) { // OK: Different signature
+        }
+        public void onVisibilityChanged(boolean visible, int flags) { // OK: Different signature
+        }
+    }
+}

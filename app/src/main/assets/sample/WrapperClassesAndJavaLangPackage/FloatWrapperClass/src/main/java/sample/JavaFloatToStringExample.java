@@ -6,13 +6,13 @@ package sample;
 
 public class JavaFloatToStringExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    Float fObj = new Float(10.25);
-    //use toString method of Float class to convert Float into String.
-    String str = fObj.toString();
-    System.out.println("Float converted to String as " + str);
-  }
+        Float fObj = new Float(10.25);
+        //use toString method of Float class to convert Float into String.
+        String str = fObj.toString();
+        System.out.println("Float converted to String as " + str);
+    }
 }
 
 /*

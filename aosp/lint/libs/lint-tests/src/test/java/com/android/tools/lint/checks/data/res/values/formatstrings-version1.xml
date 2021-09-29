@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hour_minute_24">%-k:%M</string>
+    <string name="numeric_date">%Y-%m-%d</string>
+    <string name="month_day_year">%Y %B %-e</string>
+    <string translatable="false" name="web_user_agent">
+      Foo (Bar %s) Foo/731.11+ (Foo, like Bar) Version/1.2.3 Foo Bar/123.14.4
+    </string>
+</resources>

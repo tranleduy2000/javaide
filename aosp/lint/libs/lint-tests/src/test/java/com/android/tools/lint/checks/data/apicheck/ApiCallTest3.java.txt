@@ -1,0 +1,12 @@
+package test.pkg;
+
+/**
+ * Call test where the parent class is some other project class which in turn
+ * extends the public API
+ */
+public class ApiCallTest3 extends Intermediate {
+	public void foo() {
+		// Virtual call
+		getActionBar(); // API 11
+	}
+}

@@ -16,9 +16,6 @@
 
 package com.android.build.gradle.tasks.annotations;
 
-import static com.android.SdkConstants.DOT_CLASS;
-import static org.objectweb.asm.Opcodes.ASM5;
-
 import com.android.annotations.NonNull;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -33,6 +30,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import static com.android.SdkConstants.DOT_CLASS;
+import static org.objectweb.asm.Opcodes.ASM5;
+
 /**
  * Finds and deletes typedef annotation classes (and also warns if their
  * retention is wrong, such that usages of the annotation embeds data
@@ -46,7 +46,9 @@ public class TypedefRemover {
     private final boolean mQuiet;
     private final boolean mVerbose;
     private final boolean mDryRun;
-
+    private Set<String> mAnnotationNames = Sets.newHashSet();
+    private List<File> mAnnotationClassFiles = Lists.newArrayList();
+    private Set<File> mAnnotationOuterClassFiles = Sets.newHashSet();
     public TypedefRemover(
             @NonNull Extractor extractor,
             boolean quiet,
@@ -57,10 +59,6 @@ public class TypedefRemover {
         mVerbose = verbose;
         mDryRun = dryRun;
     }
-
-    private Set<String> mAnnotationNames = Sets.newHashSet();
-    private List<File> mAnnotationClassFiles = Lists.newArrayList();
-    private Set<File> mAnnotationOuterClassFiles = Sets.newHashSet();
 
     public void remove(@NonNull File classDir, @NonNull List<String> owners) {
         if (!mQuiet) {
@@ -83,7 +81,7 @@ public class TypedefRemover {
     /**
      * Records the given class name (internal name) and class file path as corresponding to a
      * typedef annotation
-     * */
+     */
     private void addTypeDef(String name, File file) {
         mAnnotationClassFiles.add(file);
         mAnnotationNames.add(name);
@@ -121,7 +119,7 @@ public class TypedefRemover {
             ClassVisitor classVisitor = new ClassVisitor(ASM5, classWriter) {
                 @Override
                 public void visitInnerClass(String name, String outerName, String innerName,
-                        int access) {
+                                            int access) {
                     if (!mAnnotationNames.contains(name)) {
                         super.visitInnerClass(name, outerName, innerName, access);
                     }

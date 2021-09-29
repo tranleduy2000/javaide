@@ -9,10 +9,10 @@ import java.util.Arrays;
 
 public class CompareByteArraysExample {
 
-  public static void main(String[] args) {
-    //create byte arrays
-    byte[] byteArray1 = new byte[]{7, 25, 12};
-    byte[] byteArray2 = new byte[]{7, 25, 12};
+    public static void main(String[] args) {
+        //create byte arrays
+        byte[] byteArray1 = new byte[]{7, 25, 12};
+        byte[] byteArray2 = new byte[]{7, 25, 12};
 
     /*
       To compare two byte arrays use,
@@ -22,15 +22,15 @@ public class CompareByteArraysExample {
       if they contain same elements in same order.
     */
 
-    boolean blnResult = Arrays.equals(byteArray1, byteArray2);
-    System.out.println("Are two byte arrays equal ? : " + blnResult);
+        boolean blnResult = Arrays.equals(byteArray1, byteArray2);
+        System.out.println("Are two byte arrays equal ? : " + blnResult);
 
     /*
       Please note that two byte array references pointing to null are
       considered as equal.
     */
 
-  }
+    }
 }
 
 /*

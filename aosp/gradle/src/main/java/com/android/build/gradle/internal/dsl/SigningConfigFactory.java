@@ -20,6 +20,7 @@ import com.android.annotations.NonNull;
 
 import org.gradle.api.NamedDomainObjectFactory;
 import org.gradle.internal.reflect.Instantiator;
+
 /**
  * Factory to create SigningConfig object using an {@link Instantiator} to add the DSL methods.
  */

@@ -1,9 +1,5 @@
 package com.android.build.gradle.internal;
 
-import static com.android.SdkConstants.APPCOMPAT_LIB_ARTIFACT;
-import static com.android.SdkConstants.SUPPORT_LIB_ARTIFACT;
-import static java.io.File.separatorChar;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.model.AndroidArtifact;
@@ -16,7 +12,6 @@ import com.android.builder.model.JavaLibrary;
 import com.android.builder.model.ProductFlavor;
 import com.android.builder.model.ProductFlavorContainer;
 import com.android.builder.model.SourceProvider;
-import com.android.builder.model.SourceProviderContainer;
 import com.android.builder.model.Variant;
 import com.android.sdklib.AndroidTargetHash;
 import com.android.sdklib.AndroidVersion;
@@ -38,6 +33,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import static com.android.SdkConstants.APPCOMPAT_LIB_ARTIFACT;
+import static com.android.SdkConstants.SUPPORT_LIB_ARTIFACT;
+import static java.io.File.separatorChar;
 
 /**
  * An implementation of Lint's {@link Project} class wrapping a Gradle model (project or
@@ -65,9 +64,9 @@ public class LintGradleProject extends Project {
      * a given {@link com.android.builder.model.Variant}, and returns it along with
      * a set of lint custom rule jars applicable for the given model project.
      *
-     * @param client the client
-     * @param project the model project
-     * @param variant the variant
+     * @param client        the client
+     * @param project       the model project
+     * @param variant       the variant
      * @param gradleProject the gradle project
      * @return a pair of new project and list of custom rule jars
      */
@@ -94,35 +93,11 @@ public class LintGradleProject extends Project {
             lintProject.addDirectLibrary(createLibrary(client, library, libraries, customRules));
         }
 
-        return Pair.<LintGradleProject,List<File>>of(lintProject, customRules);
-    }
-
-    @Override
-    protected void initialize() {
-        // Deliberately not calling super; that code is for ADT compatibility
-    }
-
-    protected void readManifest(File manifest) {
-        if (manifest.exists()) {
-            try {
-                String xml = Files.toString(manifest, Charsets.UTF_8);
-                Document document = XmlUtils.parseDocumentSilently(xml, true);
-                if (document != null) {
-                    readManifest(document);
-                }
-            } catch (IOException e) {
-                mClient.log(e, "Could not read manifest %1$s", manifest);
-            }
-        }
-    }
-
-    @Override
-    public boolean isGradleProject() {
-        return true;
+        return Pair.<LintGradleProject, List<File>>of(lintProject, customRules);
     }
 
     protected static boolean dependsOn(@NonNull Dependencies dependencies,
-            @NonNull String artifact) {
+                                       @NonNull String artifact) {
         for (AndroidLibrary library : dependencies.getLibraries()) {
             if (dependsOn(library, artifact)) {
                 return true;
@@ -153,14 +128,10 @@ public class LintGradleProject extends Project {
         return false;
     }
 
-    void addDirectLibrary(@NonNull Project project) {
-        mDirectLibraries.add(project);
-    }
-
     @NonNull
     private static LibraryProject createLibrary(@NonNull LintGradleClient client,
-            @NonNull AndroidLibrary library,
-            @NonNull Set<AndroidLibrary> seen, List<File> customRules) {
+                                                @NonNull AndroidLibrary library,
+                                                @NonNull Set<AndroidLibrary> seen, List<File> customRules) {
         seen.add(library);
         File dir = library.getFolder();
         LibraryProject project = new LibraryProject(client, dir, dir, library);
@@ -179,11 +150,38 @@ public class LintGradleProject extends Project {
         return project;
     }
 
+    @Override
+    protected void initialize() {
+        // Deliberately not calling super; that code is for ADT compatibility
+    }
+
+    protected void readManifest(File manifest) {
+        if (manifest.exists()) {
+            try {
+                String xml = Files.toString(manifest, Charsets.UTF_8);
+                Document document = XmlUtils.parseDocumentSilently(xml, true);
+                if (document != null) {
+                    readManifest(document);
+                }
+            } catch (IOException e) {
+                mClient.log(e, "Could not read manifest %1$s", manifest);
+            }
+        }
+    }
+
+    @Override
+    public boolean isGradleProject() {
+        return true;
+    }
+
+    void addDirectLibrary(@NonNull Project project) {
+        mDirectLibraries.add(project);
+    }
+
     private static class AppGradleProject extends LintGradleProject {
         private AndroidProject mProject;
         private Variant mVariant;
         private List<SourceProvider> mProviders;
-        private List<SourceProvider> mTestProviders;
 
         private AppGradleProject(
                 @NonNull LintGradleClient client,
@@ -243,7 +241,7 @@ public class LintGradleProject extends Project {
                     }
                 }
 
-                SourceProvider variantProvider =  mainArtifact.getVariantSourceProvider();
+                SourceProvider variantProvider = mainArtifact.getVariantSourceProvider();
                 if (variantProvider != null) {
                     providers.add(variantProvider);
                 }
@@ -252,49 +250,6 @@ public class LintGradleProject extends Project {
             }
 
             return mProviders;
-        }
-
-        private List<SourceProvider> getTestSourceProviders() {
-            if (mTestProviders == null) {
-                List<SourceProvider> providers = Lists.newArrayList();
-
-                ProductFlavorContainer defaultConfig = mProject.getDefaultConfig();
-                for (SourceProviderContainer extra : defaultConfig.getExtraSourceProviders()) {
-                    String artifactName = extra.getArtifactName();
-                    if (AndroidProject.ARTIFACT_ANDROID_TEST.equals(artifactName)) {
-                        providers.add(extra.getSourceProvider());
-                    }
-                }
-
-                for (String flavorName : mVariant.getProductFlavors()) {
-                    for (ProductFlavorContainer flavor : mProject.getProductFlavors()) {
-                        if (flavorName.equals(flavor.getProductFlavor().getName())) {
-                            for (SourceProviderContainer extra : flavor.getExtraSourceProviders()) {
-                                String artifactName = extra.getArtifactName();
-                                if (AndroidProject.ARTIFACT_ANDROID_TEST.equals(artifactName)) {
-                                    providers.add(extra.getSourceProvider());
-                                }
-                            }
-                        }
-                    }
-                }
-
-                String buildTypeName = mVariant.getBuildType();
-                for (BuildTypeContainer buildType : mProject.getBuildTypes()) {
-                    if (buildTypeName.equals(buildType.getBuildType().getName())) {
-                        for (SourceProviderContainer extra : buildType.getExtraSourceProviders()) {
-                            String artifactName = extra.getArtifactName();
-                            if (AndroidProject.ARTIFACT_ANDROID_TEST.equals(artifactName)) {
-                                providers.add(extra.getSourceProvider());
-                            }
-                        }
-                    }
-                }
-
-                mTestProviders = providers;
-            }
-
-            return mTestProviders;
         }
 
         @NonNull
@@ -388,24 +343,6 @@ public class LintGradleProject extends Project {
             }
 
             return mJavaSourceFolders;
-        }
-
-        @NonNull
-        @Override
-        public List<File> getTestSourceFolders() {
-            if (mTestSourceFolders == null) {
-                mTestSourceFolders = Lists.newArrayList();
-                for (SourceProvider provider : getTestSourceProviders()) {
-                    Collection<File> srcDirs = provider.getJavaDirectories();
-                    for (File srcDir : srcDirs) {
-                        if (srcDir.exists()) { // model returns path whether or not it exists
-                            mTestSourceFolders.add(srcDir);
-                        }
-                    }
-                }
-            }
-
-            return mTestSourceFolders;
         }
 
         @NonNull

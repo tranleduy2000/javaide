@@ -3,20 +3,32 @@
         <title>Properties</title>
         <table>
             <thead>
-                <tr><td>Name</td></tr>
+                <tr>
+                    <td>Name</td>
+                </tr>
             </thead>
-            <tr><td>excludes</td></tr>
-            <tr><td>pickFirsts</td></tr>
+            <tr>
+                <td>excludes</td>
+            </tr>
+            <tr>
+                <td>pickFirsts</td>
+            </tr>
         </table>
     </section>
     <section>
         <title>Methods</title>
         <table>
             <thead>
-                <tr><td>Name</td></tr>
+                <tr>
+                    <td>Name</td>
+                </tr>
             </thead>
-            <tr><td>exclude</td></tr>
-            <tr><td>pickFirst</td></tr>
+            <tr>
+                <td>exclude</td>
+            </tr>
+            <tr>
+                <td>pickFirst</td>
+            </tr>
         </table>
     </section>
 </section>

@@ -33,11 +33,13 @@ public class JarInfo {
 
     @NonNull
     private final File jarFile;
-    /** if the dependency is a sub-project, then the gradle project path */
+    /**
+     * if the dependency is a sub-project, then the gradle project path
+     */
     @Nullable
     private final String gradlePath;
     @NonNull
-    final List<JarInfo> dependencies = Lists.newArrayList();
+    private final List<JarInfo> dependencies = Lists.newArrayList();
     @NonNull
     private final MavenCoordinates resolvedCoordinates;
     private boolean compiled = false;
@@ -61,12 +63,12 @@ public class JarInfo {
         this.compiled = compiled;
     }
 
-    public void setPackaged(boolean packaged) {
-        this.packaged = packaged;
-    }
-
     public boolean isPackaged() {
         return packaged;
+    }
+
+    public void setPackaged(boolean packaged) {
+        this.packaged = packaged;
     }
 
     @NonNull

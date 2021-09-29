@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<foo.bar.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:unused1="http://schemas.android.com/apk/res/unused1"
+    xmlns:unused2="http://schemas.android.com/apk/res/unused1"
+    xmlns:unused3="http://foo.bar.com/foo"
+    xmlns:notunused="http://schemas.android.com/apk/res/notunused"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <foo.bar.Button
+        notunused:foo="Foo"
+        tools:ignore="HardcodedText" >
+    </foo.bar.Button>
+
+</foo.bar.LinearLayout>

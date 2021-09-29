@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?><!--
  * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Eclipse Public License, Version 1.0 (the "License");
@@ -15,13 +14,9 @@
  * limitations under the License.
 -->
 
-<xsd:schema
-    targetNamespace="http://schemas.android.com/sdk/devices/2"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:c="http://schemas.android.com/sdk/devices/2"
-    elementFormDefault="qualified"
-    attributeFormDefault="unqualified"
-    version="1">
+<xsd:schema xmlns:c="http://schemas.android.com/sdk/devices/2"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified"
+    elementFormDefault="qualified" targetNamespace="http://schemas.android.com/sdk/devices/2" version="1">
 
     <!-- The devices element contains a collection of device definitions.
 
@@ -43,7 +38,7 @@
             </xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="device" minOccurs="1" maxOccurs="unbounded">
+            <xsd:element name="device" maxOccurs="unbounded" minOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation xml:lang="en">
                         A device element contains one hardware profile for a device, along with
@@ -56,17 +51,15 @@
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="name"         type= "xsd:token" />
-                        <xsd:element name="id"           type= "xsd:token"       minOccurs="0" />
-                        <xsd:element name="manufacturer" type= "xsd:token" />
-                        <xsd:element name="meta"         type= "c:metaType"      minOccurs="0" />
-                        <xsd:element name="hardware"     type= "c:hardwareType" />
-                        <xsd:element name="software"     type= "c:softwareType"
-                                     maxOccurs="unbounded" />
-                        <xsd:element name="state"        type= "c:stateType"
-                                     maxOccurs="unbounded" />
-                        <xsd:element name="tag-id"       type= "c:idType"        minOccurs="0" />
-                        <xsd:element name="boot-props"   type= "c:bootPropsType" minOccurs="0" />
+                        <xsd:element name="name" type="xsd:token" />
+                        <xsd:element name="id" minOccurs="0" type="xsd:token" />
+                        <xsd:element name="manufacturer" type="xsd:token" />
+                        <xsd:element name="meta" minOccurs="0" type="c:metaType" />
+                        <xsd:element name="hardware" type="c:hardwareType" />
+                        <xsd:element name="software" maxOccurs="unbounded" type="c:softwareType" />
+                        <xsd:element name="state" maxOccurs="unbounded" type="c:stateType" />
+                        <xsd:element name="tag-id" minOccurs="0" type="c:idType" />
+                        <xsd:element name="boot-props" minOccurs="0" type="c:bootPropsType" />
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -80,28 +73,28 @@
             </xsd:documentation>
         </xsd:annotation>
         <xsd:restriction base="xsd:token">
-            <xsd:pattern value="[a-zA-Z0-9_-]+"/>
+            <xsd:pattern value="[a-zA-Z0-9_-]+" />
         </xsd:restriction>
     </xsd:simpleType>
 
-    <xsd:complexType name="bootPropsType" >
+    <xsd:complexType name="bootPropsType">
         <xsd:annotation>
             <xsd:documentation>
                 List of boot properties.
             </xsd:documentation>
         </xsd:annotation>
-        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+        <xsd:sequence maxOccurs="unbounded" minOccurs="0">
             <xsd:element name="boot-prop">
                 <xsd:complexType>
                     <xsd:all>
                         <xsd:element name="prop-name">
                             <xsd:simpleType>
                                 <xsd:restriction base="xsd:token">
-                                    <xsd:pattern value="[^\n\r\t =]+"/>
+                                    <xsd:pattern value="[^\n\r\t =]+" />
                                 </xsd:restriction>
                             </xsd:simpleType>
                         </xsd:element>
-                        <xsd:element name="prop-value" type= "xsd:string" />
+                        <xsd:element name="prop-value" type="xsd:string" />
                     </xsd:all>
                 </xsd:complexType>
             </xsd:element>
@@ -117,24 +110,23 @@
             </xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="screen"            type= "c:screenType" />
-            <xsd:element name="networking"        type= "c:networkingType" />
-            <xsd:element name="sensors"           type= "c:sensorsType" />
-            <xsd:element name="mic"               type= "c:micType" />
-            <xsd:element name="camera"            type= "c:cameraType"
-                         minOccurs="0"            maxOccurs="unbounded" />
-            <xsd:element name="keyboard"          type= "c:keyboardType" />
-            <xsd:element name="nav"               type= "c:navType" />
-            <xsd:element name="ram"               type= "c:ramType" />
-            <xsd:element name="buttons"           type= "c:buttonsType" />
-            <xsd:element name="internal-storage"  type= "c:internalStorageType" />
-            <xsd:element name="removable-storage" type= "c:removableStorageType" />
-            <xsd:element name="cpu"               type= "c:cpuType" />
-            <xsd:element name="gpu"               type= "c:gpuType" />
-            <xsd:element name="abi"               type= "c:abiType" />
-            <xsd:element name="dock"              type= "c:dockType" />
-            <xsd:element name="power-type"        type= "c:powerType" />
-            <xsd:element name="skin"              minOccurs="0">
+            <xsd:element name="screen" type="c:screenType" />
+            <xsd:element name="networking" type="c:networkingType" />
+            <xsd:element name="sensors" type="c:sensorsType" />
+            <xsd:element name="mic" type="c:micType" />
+            <xsd:element name="camera" maxOccurs="unbounded" minOccurs="0" type="c:cameraType" />
+            <xsd:element name="keyboard" type="c:keyboardType" />
+            <xsd:element name="nav" type="c:navType" />
+            <xsd:element name="ram" type="c:ramType" />
+            <xsd:element name="buttons" type="c:buttonsType" />
+            <xsd:element name="internal-storage" type="c:internalStorageType" />
+            <xsd:element name="removable-storage" type="c:removableStorageType" />
+            <xsd:element name="cpu" type="c:cpuType" />
+            <xsd:element name="gpu" type="c:gpuType" />
+            <xsd:element name="abi" type="c:abiType" />
+            <xsd:element name="dock" type="c:dockType" />
+            <xsd:element name="power-type" type="c:powerType" />
+            <xsd:element name="skin" minOccurs="0">
                 <xsd:annotation>
                     <xsd:documentation xml:lang="en">
                         Path to a custom skin directory.
@@ -162,11 +154,11 @@
                         with either limit missing. The default lower limit is
                         one, and the default upper limit is unbounded.
                         The following are valid:
-                            10
-                            7-10
-                            -10
-                            7-
-                            -
+                        10
+                        7-10
+                        -10
+                        7-
+                        -
                     </xsd:documentation>
                 </xsd:annotation>
                 <xsd:simpleType>
@@ -178,7 +170,7 @@
             <xsd:element name="live-wallpaper-support" type="xsd:boolean">
                 <xsd:annotation>
                     <xsd:documentation xml:lang="en">
-                       Specifies whether the device supports live wallpapers.
+                        Specifies whether the device supports live wallpapers.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
@@ -340,30 +332,25 @@
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:element>
-            <xsd:element name="screen"            type="c:screenType" minOccurs="0" />
-            <xsd:element name="networking"        type="c:networkingType"
-                         minOccurs="0" />
-            <xsd:element name="sensors"           type="c:sensorsType" minOccurs="0" />
-            <xsd:element name="mic"               type="c:micType" minOccurs="0" />
-            <xsd:element name="camera"            type="c:cameraType"
-                         minOccurs="0"            maxOccurs="unbounded" />
-            <xsd:element name="keyboard"          type="c:keyboardType" minOccurs="0" />
-            <xsd:element name="nav"               type="c:navType" minOccurs="0" />
-            <xsd:element name="ram"               type="c:ramType" minOccurs="0" />
-            <xsd:element name="buttons"           type="c:buttonsType" minOccurs="0" />
-            <xsd:element name="internal-storage"  type="c:internalStorageType"
-                         minOccurs="0" />
-            <xsd:element name="removable-storage" type="c:removableStorageType"
-                         minOccurs="0" />
-            <xsd:element name="cpu"               type="c:cpuType" minOccurs="0" />
-            <xsd:element name="gpu"               type="c:gpuType" minOccurs="0" />
-            <xsd:element name="abi"               type="c:abiType" minOccurs="0" />
-            <xsd:element name="dock"              type="c:dockType" minOccurs="0" />
-            <xsd:element name="power-type"        type="c:powerType"
-                         minOccurs="0" />
+            <xsd:element name="screen" minOccurs="0" type="c:screenType" />
+            <xsd:element name="networking" minOccurs="0" type="c:networkingType" />
+            <xsd:element name="sensors" minOccurs="0" type="c:sensorsType" />
+            <xsd:element name="mic" minOccurs="0" type="c:micType" />
+            <xsd:element name="camera" maxOccurs="unbounded" minOccurs="0" type="c:cameraType" />
+            <xsd:element name="keyboard" minOccurs="0" type="c:keyboardType" />
+            <xsd:element name="nav" minOccurs="0" type="c:navType" />
+            <xsd:element name="ram" minOccurs="0" type="c:ramType" />
+            <xsd:element name="buttons" minOccurs="0" type="c:buttonsType" />
+            <xsd:element name="internal-storage" minOccurs="0" type="c:internalStorageType" />
+            <xsd:element name="removable-storage" minOccurs="0" type="c:removableStorageType" />
+            <xsd:element name="cpu" minOccurs="0" type="c:cpuType" />
+            <xsd:element name="gpu" minOccurs="0" type="c:gpuType" />
+            <xsd:element name="abi" minOccurs="0" type="c:abiType" />
+            <xsd:element name="dock" minOccurs="0" type="c:dockType" />
+            <xsd:element name="power-type" minOccurs="0" type="c:powerType" />
         </xsd:sequence>
-        <xsd:attribute name="name"    use="required" type="xsd:token" />
-        <xsd:attribute name="default" use="optional" type="xsd:boolean" />
+        <xsd:attribute name="name" type="xsd:token" use="required" />
+        <xsd:attribute name="default" type="xsd:boolean" use="optional" />
     </xsd:complexType>
 
     <xsd:complexType name="metaType">
@@ -390,8 +377,7 @@
                                 </xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
-                        <xsd:element name="sixteen" type="xsd:normalizedString"
-                                     minOccurs="0">
+                        <xsd:element name="sixteen" minOccurs="0" type="xsd:normalizedString">
                             <xsd:annotation>
                                 <xsd:documentation xml:lang="en">
                                     Relative path for the 16x16 icon.
@@ -409,8 +395,7 @@
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="path"
-                                     type="xsd:normalizedString">
+                        <xsd:element name="path" type="xsd:normalizedString">
                             <xsd:annotation>
                                 <xsd:documentation xml:lang="en">
                                     The relative path to the emulator frame for
@@ -418,8 +403,7 @@
                                 </xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
-                        <xsd:element name="portrait-x-offset"
-                                     type="xsd:nonNegativeInteger">
+                        <xsd:element name="portrait-x-offset" type="xsd:nonNegativeInteger">
                             <xsd:annotation>
                                 <xsd:documentation xml:lang="en">
                                     The offset for the frame in the x direction,
@@ -427,8 +411,7 @@
                                 </xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
-                        <xsd:element name="portrait-y-offset"
-                                     type="xsd:nonNegativeInteger">
+                        <xsd:element name="portrait-y-offset" type="xsd:nonNegativeInteger">
                             <xsd:annotation>
                                 <xsd:documentation xml:lang="en">
                                     The offset for the frame in the y direction,
@@ -436,8 +419,7 @@
                                 </xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
-                        <xsd:element name="landscape-x-offset"
-                                     type="xsd:nonNegativeInteger">
+                        <xsd:element name="landscape-x-offset" type="xsd:nonNegativeInteger">
                             <xsd:annotation>
                                 <xsd:documentation xml:lang="en">
                                     The offset for the frame in the x direction,
@@ -445,8 +427,7 @@
                                 </xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
-                        <xsd:element name="landscape-y-offset"
-                                     type="xsd:nonNegativeInteger">
+                        <xsd:element name="landscape-y-offset" type="xsd:nonNegativeInteger">
                             <xsd:annotation>
                                 <xsd:documentation xml:lang="en">
                                     The offset for the frame in the y direction,
@@ -769,7 +750,7 @@
         </xsd:annotation>
         <xsd:restriction base="xsd:token">
             <xsd:enumeration value="qwerty" />
-            <xsd:enumeration value="12key"  />
+            <xsd:enumeration value="12key" />
             <xsd:enumeration value="nokeys" />
         </xsd:restriction>
     </xsd:simpleType>
@@ -824,8 +805,7 @@
         </xsd:annotation>
         <xsd:simpleContent>
             <xsd:extension base="c:storageListType">
-                <xsd:attribute name="unit" type="c:storageUnitType"
-                               use="required" />
+                <xsd:attribute name="unit" type="c:storageUnitType" use="required" />
             </xsd:extension>
         </xsd:simpleContent>
     </xsd:complexType>
@@ -841,8 +821,7 @@
         </xsd:annotation>
         <xsd:simpleContent>
             <xsd:extension base="c:storageListType">
-                <xsd:attribute name="unit" type="c:storageUnitType"
-                               use="required" />
+                <xsd:attribute name="unit" type="c:storageUnitType" use="required" />
             </xsd:extension>
         </xsd:simpleContent>
     </xsd:complexType>
@@ -894,14 +873,14 @@
         <xsd:list>
             <xsd:simpleType>
                 <xsd:restriction base="xsd:token">
-                    <xsd:enumeration value="armeabi"     />
+                    <xsd:enumeration value="armeabi" />
                     <xsd:enumeration value="armeabi-v7a" />
-                    <xsd:enumeration value="arm64-v8a"   />
-                    <xsd:enumeration value="x86"         />
-                    <xsd:enumeration value="x86_64"      />
-                    <xsd:enumeration value="mips"        />
+                    <xsd:enumeration value="arm64-v8a" />
+                    <xsd:enumeration value="x86" />
+                    <xsd:enumeration value="x86_64" />
+                    <xsd:enumeration value="mips" />
                     <!-- TODO double-check this is appropriate value for mips64 -->
-                    <xsd:enumeration value="mips64"      />
+                    <xsd:enumeration value="mips64" />
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:list>

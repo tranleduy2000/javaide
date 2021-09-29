@@ -16,7 +16,6 @@
 
 package com.android.build.gradle.internal.dsl;
 
-import com.android.annotations.Nullable;
 import com.android.builder.model.ProductFlavor;
 
 import org.gradle.api.Named;
@@ -25,8 +24,5 @@ import org.gradle.api.Named;
  * A product flavor with addition properties for building with Gradle plugin.
  */
 public interface CoreProductFlavor extends ProductFlavor, Named {
-
-    @Nullable
-    CoreNdkOptions getNdkConfig();
 
 }

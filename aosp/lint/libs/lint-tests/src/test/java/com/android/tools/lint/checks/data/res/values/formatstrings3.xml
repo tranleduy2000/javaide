@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="multiple_formats_with_percentage">%1$s 3%% %2$s</string>
+</resources>

@@ -6,21 +6,21 @@ package sample;
 
 public class ModulusOperatorExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    System.out.println("Java Modulus Operator example");
+        System.out.println("Java Modulus Operator example");
 
-    /*
-     * Modulus operator returns reminder of the devision of
-     * floating point or integer types.
-     */
+        /*
+         * Modulus operator returns reminder of the devision of
+         * floating point or integer types.
+         */
 
-    int i = 50;
-    double d = 32;
+        int i = 50;
+        double d = 32;
 
-    System.out.println("i mod 10 = " + i % 10);
-    System.out.println("d mod 10 = " + d % 10);
-  }
+        System.out.println("i mod 10 = " + i % 10);
+        System.out.println("d mod 10 = " + d % 10);
+    }
 }
 
 /*

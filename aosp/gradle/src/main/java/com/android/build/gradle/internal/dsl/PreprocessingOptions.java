@@ -16,13 +16,13 @@
 
 package com.android.build.gradle.internal.dsl;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.android.resources.Density;
 import com.google.common.collect.Sets;
 
 import java.util.EnumSet;
 import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Resource preprocessing options.
@@ -44,7 +44,7 @@ public class PreprocessingOptions {
 
     /**
      * Whether to enable resources pre-processing. This is disabled by default.
-     *
+     * <p>
      * <p>If resources pre-processing is enabled, the build process will create two copies of the
      * resource tree: one with a merged view of resources for a given variant and one with the
      * preprocessed files, ready to be packaged. This may slow down your clean builds.
@@ -60,7 +60,7 @@ public class PreprocessingOptions {
     /**
      * Set of screen densities for which PNG files should be generated based on vector drawable
      * resource files.
-     *
+     * <p>
      * <p>Default to {@code ["mdpi", "hdpi", "xhdpi", "xxhdpi"]}.
      */
     public Set<String> getDensities() {
@@ -83,7 +83,7 @@ public class PreprocessingOptions {
 
     /**
      * Returns the densities to generate as the underlying enum values.
-     *
+     * <p>
      * <p>Not meant to be used in build scripts.
      */
     public Set<Density> getTypedDensities() {

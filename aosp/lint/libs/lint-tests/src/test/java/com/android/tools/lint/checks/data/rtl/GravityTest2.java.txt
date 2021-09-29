@@ -1,0 +1,29 @@
+package test.pkg;
+
+import static android.view.Gravity.LEFT;
+
+@SuppressWarnings("StatementWithEmptyBody")
+public class GravityTest2 {
+    public static final int RIGHT = 5;
+
+    enum Direction {
+        LEFT, UP, RIGHT, DOWN; // OK
+
+        void test() {
+            if (this == LEFT || this == Direction.RIGHT) { // OK
+            }
+        }
+    }
+
+    public void test1(int gravity) {
+        if (gravity == LEFT) { // ERROR
+        }
+        if (gravity == RIGHT) { // OK
+        }
+    }
+
+    public void test2(int gravity, int RIGHT) {
+        if (gravity == RIGHT) { // OK
+        }
+    }
+}

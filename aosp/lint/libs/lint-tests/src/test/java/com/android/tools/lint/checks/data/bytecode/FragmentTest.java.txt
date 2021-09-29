@@ -1,0 +1,59 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.app.Fragment;
+
+@SuppressWarnings("unused")
+public class FragmentTest {
+
+	// Should be public
+	private static class Fragment1 extends Fragment {
+
+	}
+
+	// Should be static
+	public class Fragment2 extends Fragment {
+
+	}
+
+	// Should have a public constructor
+	public static class Fragment3 extends Fragment {
+		private Fragment3() {
+		}
+	}
+
+	// Should have a public constructor with no arguments
+	public static class Fragment4 extends Fragment {
+		private Fragment4(int dummy) {
+		}
+	}
+
+	// Should *only* have the default constructor, not the
+	// multi-argument one
+	public static class Fragment5 extends Fragment {
+		public Fragment5() {
+		}
+		public Fragment5(int dummy) {
+		}
+	}
+
+	// Suppressed
+	@SuppressLint("ValidFragment")
+	public static class Fragment6 extends Fragment {
+		private Fragment6() {
+		}
+	}
+
+	public static class ValidFragment1 extends Fragment {
+		public ValidFragment1() {
+		}
+	}
+
+	// (Not a fragment)
+	private class NotAFragment {
+	}
+
+	// Ok: Has implicit constructor
+	public static class Fragment7 extends Fragment {
+	}
+}

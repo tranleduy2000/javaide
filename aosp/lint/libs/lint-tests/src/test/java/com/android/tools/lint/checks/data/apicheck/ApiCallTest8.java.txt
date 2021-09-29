@@ -1,0 +1,10 @@
+package test.pkg;
+
+import android.text.style.LeadingMarginSpan;
+
+@SuppressWarnings("unused")
+public class ApiCallTest8 {
+    public void test() {
+        LeadingMarginSpan.LeadingMarginSpan2 span = null;        
+    }
+}

@@ -33,21 +33,32 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Reads a signature file in the format of the new API files in frameworks/base/api */
+/**
+ * Reads a signature file in the format of the new API files in frameworks/base/api
+ */
 public class ApiDatabase {
     @NonNull
     private final List<String> lines;
-    /** Map from class name to set of field names */
-    @NonNull private final  Map<String,Set<String>> fieldMap =
+    /**
+     * Map from class name to set of field names
+     */
+    @NonNull
+    private final Map<String, Set<String>> fieldMap =
             Maps.newHashMapWithExpectedSize(1000);
-    /** Map from class name to map of method names whose values are overloaded signatures */
-    @NonNull private final  Map<String,Map<String,List<String>>> methodMap =
+    /**
+     * Map from class name to map of method names whose values are overloaded signatures
+     */
+    @NonNull
+    private final Map<String, Map<String, List<String>>> methodMap =
             Maps.newHashMapWithExpectedSize(1000);
-    @NonNull private final Map<String, List<String>> inheritsFrom =
+    @NonNull
+    private final Map<String, List<String>> inheritsFrom =
             Maps.newHashMapWithExpectedSize(1000);
-    @NonNull private final  Map<String,Set<String>> intFieldMap =
+    @NonNull
+    private final Map<String, Set<String>> intFieldMap =
             Maps.newHashMapWithExpectedSize(1000);
-    @NonNull private final  Set<String> classSet =
+    @NonNull
+    private final Set<String> classSet =
             Sets.newHashSetWithExpectedSize(1000);
 
     public ApiDatabase(@NonNull List<String> lines) {
@@ -57,6 +68,82 @@ public class ApiDatabase {
 
     public ApiDatabase(@NonNull File api) throws IOException {
         this(Files.readLines(api, Charsets.UTF_8));
+    }
+
+    /**
+     * Drop generic type variables from a class name
+     */
+    @VisibleForTesting
+    static String getRawClass(@NonNull String name) {
+        int index = name.indexOf('<');
+        if (index != -1) {
+            int end = name.indexOf('>', index + 1);
+            if (end == -1 || end == name.length() - 1) {
+                return name.substring(0, index);
+            } else {
+                // e.g. test.pkg.ArrayAdapter<T>.Inner
+                return name.substring(0, index) + name.substring(end + 1);
+            }
+        }
+        return name;
+    }
+
+    /**
+     * Drop generic type variables from a method or constructor name
+     */
+    @VisibleForTesting
+    static String getRawMethod(@NonNull String name) {
+        int index = name.indexOf('<');
+        if (index != -1) {
+            return name.substring(0, index);
+        }
+        return name;
+    }
+
+    /**
+     * Drop generic type variables and varargs to produce a raw signature
+     */
+    @VisibleForTesting
+    static String getRawParameterList(String signature) {
+        if (signature.indexOf('<') == -1 && !signature.endsWith("...")) {
+            return signature;
+        }
+
+        int n = signature.length();
+        StringBuilder sb = new StringBuilder(n);
+        int start = 0;
+        while (true) {
+            int index = signature.indexOf('<', start);
+            if (index == -1) {
+                sb.append(signature.substring(start));
+                break;
+            }
+            sb.append(signature.substring(start, index));
+            int balance = 1;
+            for (int i = index + 1; i < n; i++) {
+                char c = signature.charAt(i);
+                if (c == '<') {
+                    balance++;
+                } else if (c == '>') {
+                    balance--;
+                    if (balance == 0) {
+                        start = i + 1;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Normalize varargs... to []
+        if (sb.length() > 3
+                && sb.charAt(sb.length() - 1) == '.'
+                && sb.charAt(sb.length() - 2) == '.'
+                && sb.charAt(sb.length() - 3) == '.') {
+            sb.setLength(sb.length() - 3);
+            sb.append('[').append(']');
+        }
+
+        return sb.toString();
     }
 
     public boolean hasMethod(String className, String methodName, String arguments) {
@@ -138,7 +225,7 @@ public class ApiDatabase {
                     Extractor.warning("Warning: Did not match as a member: " + line);
                 } else {
                     assert currentClass != null;
-                    Map<String,List<String>> memberMap = methodMap.get(currentClass);
+                    Map<String, List<String>> memberMap = methodMap.get(currentClass);
                     if (memberMap == null) {
                         memberMap = Maps.newHashMap();
                         methodMap.put(currentClass, memberMap);
@@ -171,7 +258,7 @@ public class ApiDatabase {
                     Extractor.warning("Warning: Did not match as a member: " + line);
                 } else {
                     assert currentClass != null;
-                    Map<String,List<String>> memberMap = methodMap.get(currentClass);
+                    Map<String, List<String>> memberMap = methodMap.get(currentClass);
                     if (memberMap == null) {
                         memberMap = Maps.newHashMap();
                         methodMap.put(currentClass, memberMap);
@@ -282,75 +369,5 @@ public class ApiDatabase {
             this.inheritsFrom.put(cls, list);
         }
         list.add(inheritsFrom);
-    }
-
-    /** Drop generic type variables from a class name */
-    @VisibleForTesting
-    static String getRawClass(@NonNull String name) {
-        int index = name.indexOf('<');
-        if (index != -1) {
-            int end = name.indexOf('>', index + 1);
-            if (end == -1 || end == name.length() - 1) {
-                return name.substring(0, index);
-            } else {
-                // e.g. test.pkg.ArrayAdapter<T>.Inner
-                return name.substring(0, index) + name.substring(end + 1);
-            }
-        }
-        return name;
-    }
-
-    /** Drop generic type variables from a method or constructor name */
-    @VisibleForTesting
-    static String getRawMethod(@NonNull String name) {
-        int index = name.indexOf('<');
-        if (index != -1) {
-            return name.substring(0, index);
-        }
-        return name;
-    }
-
-    /** Drop generic type variables and varargs to produce a raw signature */
-    @VisibleForTesting
-    static String getRawParameterList(String signature) {
-        if (signature.indexOf('<') == -1 && !signature.endsWith("...")) {
-            return signature;
-        }
-
-        int n = signature.length();
-        StringBuilder sb = new StringBuilder(n);
-        int start = 0;
-        while (true) {
-            int index = signature.indexOf('<', start);
-            if (index == -1) {
-                sb.append(signature.substring(start));
-                break;
-            }
-            sb.append(signature.substring(start, index));
-            int balance = 1;
-            for (int i = index + 1; i < n; i++) {
-                char c = signature.charAt(i);
-                if (c == '<') {
-                    balance++;
-                } else if (c == '>') {
-                    balance--;
-                    if (balance == 0) {
-                        start = i + 1;
-                        break;
-                    }
-                }
-            }
-        }
-
-        // Normalize varargs... to []
-        if (sb.length() > 3
-                && sb.charAt(sb.length() - 1) == '.'
-                && sb.charAt(sb.length() - 2) == '.'
-                && sb.charAt(sb.length() - 3) == '.') {
-            sb.setLength(sb.length() - 3);
-            sb.append('[').append(']');
-        }
-
-        return sb.toString();
     }
 }

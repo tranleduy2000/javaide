@@ -1,0 +1,50 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.content.Context;
+import android.widget.TextView;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+@SuppressWarnings("UnusedDeclaration")
+public class StringFormat10 extends Activity {
+    protected void check() {
+        // BigDecimal is okay as a float: f, e, E, g, G, a, A
+        // BigInteger is okay as an integer: d, o, x, X
+        // http://developer.android.com/reference/java/util/Formatter.html
+        BigDecimal decimal = new BigDecimal("3.14159265358979323846264338327950288419716939");
+        BigInteger integer = new BigInteger("2089986280348253421170679821480865132823066470");
+        TextView view1 = (TextView) findViewById(R.id.my_hello);
+        TextView view2 = (TextView) findViewById(R.id.my_hello2);
+        view1.setText(getResources().getString(R.string.format_float, decimal));
+        view2.setText(getResources().getString(R.string.format_integer, integer));
+        view1.setText(getResources().getString(R.string.format_hex_float, decimal));
+        view2.setText(getResources().getString(R.string.format_hex, integer));
+    }
+
+    protected void check2(Context mContext) {
+        String formatted = mContext.getString(R.string.decimal_format_string,
+                fnReturningDouble());
+    }
+
+    private BigDecimal fnReturningDouble() {
+        return new BigDecimal("3.14159265358979323846264338327950288419716939");
+    }
+
+    public static final class R {
+        public static final class string {
+            public static final int format_float = 0x7f0a000f;
+            public static final int format_integer = 0x7f0a0010;
+            public static final int format_hex_float = 0x7f0a0009;
+            public static final int format_hex = 0x7f0a000d;
+            public static final int decimal_format_string = 0x7f0a000e;
+        }
+
+        public static final class id {
+            public static final int my_hello = 0x7f07003c;
+            public static final int my_hello2 = 0x7f07003d;
+        }
+    }
+}
+

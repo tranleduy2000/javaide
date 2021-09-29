@@ -16,14 +16,6 @@
 
 package com.android.build.gradle.internal.dsl;
 
-import static com.android.SdkConstants.DOT_XML;
-import static com.android.builder.model.AndroidProject.FD_OUTPUTS;
-import static com.android.tools.lint.detector.api.Severity.ERROR;
-import static com.android.tools.lint.detector.api.Severity.FATAL;
-import static com.android.tools.lint.detector.api.Severity.IGNORE;
-import static com.android.tools.lint.detector.api.Severity.INFORMATIONAL;
-import static com.android.tools.lint.detector.api.Severity.WARNING;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.tools.lint.HtmlReporter;
@@ -52,6 +44,14 @@ import java.io.Serializable;
 import java.io.Writer;
 import java.util.Map;
 import java.util.Set;
+
+import static com.android.SdkConstants.DOT_XML;
+import static com.android.builder.model.AndroidProject.FD_OUTPUTS;
+import static com.android.tools.lint.detector.api.Severity.ERROR;
+import static com.android.tools.lint.detector.api.Severity.FATAL;
+import static com.android.tools.lint.detector.api.Severity.IGNORE;
+import static com.android.tools.lint.detector.api.Severity.INFORMATIONAL;
+import static com.android.tools.lint.detector.api.Severity.WARNING;
 
 /**
  * DSL object for configuring lint options.
@@ -89,7 +89,7 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
     @Nullable
     private File xmlOutput;
 
-    private Map<String,Severity> severities = Maps.newHashMap();
+    private Map<String, Severity> severities = Maps.newHashMap();
 
     public LintOptions() {
     }
@@ -115,7 +115,7 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
             boolean showAll,
             boolean explainIssues,
             boolean checkReleaseBuilds,
-            @Nullable Map<String,Integer> severityOverrides) {
+            @Nullable Map<String, Integer> severityOverrides) {
         this.disable = disable;
         this.enable = enable;
         this.check = check;
@@ -138,7 +138,7 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
         this.checkReleaseBuilds = checkReleaseBuilds;
 
         if (severityOverrides != null) {
-            for (Map.Entry<String,Integer> entry : severityOverrides.entrySet()) {
+            for (Map.Entry<String, Integer> entry : severityOverrides.entrySet()) {
                 severities.put(entry.getKey(), convert(entry.getValue()));
             }
         }
@@ -169,6 +169,96 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
                 source.isCheckReleaseBuilds(),
                 source.getSeverityOverrides()
         );
+    }
+
+    private static boolean isStdOut(@NonNull File output) {
+        return STDOUT.equals(output.getPath());
+    }
+
+    private static boolean isStdErr(@NonNull File output) {
+        return STDERR.equals(output.getPath());
+    }
+
+    @NonNull
+    private static File validateOutputFile(@NonNull File output) {
+        if (isStdOut(output) || isStdErr(output)) {
+            return output;
+        }
+
+        File parent = output.getParentFile();
+        if (!parent.exists()) {
+            parent.mkdirs();
+        }
+
+        output = output.getAbsoluteFile();
+        if (output.exists()) {
+            boolean delete = output.delete();
+            if (!delete) {
+                throw new org.gradle.api.GradleException("Could not delete old " + output);
+            }
+        }
+        if (output.getParentFile() != null && !output.getParentFile().canWrite()) {
+            throw new org.gradle.api.GradleException("Cannot write output file " + output);
+        }
+
+        return output;
+    }
+
+    private static File createOutputPath(
+            @NonNull org.gradle.api.Project project,
+            @NonNull String variantName,
+            @NonNull String extension,
+            boolean fatalOnly) {
+        StringBuilder base = new StringBuilder();
+        base.append(FD_OUTPUTS);
+        base.append(File.separator);
+        base.append("lint-results");
+        if (variantName != null) {
+            base.append("-");
+            base.append(variantName);
+        }
+        if (fatalOnly) {
+            base.append("-fatal");
+        }
+        base.append(extension);
+        return new File(project.getBuildDir(), base.toString());
+    }
+
+    // Without these qualifiers, Groovy compilation will fail with "Apparent variable
+    // 'SEVERITY_FATAL' was found in a static scope but doesn't refer to a local variable,
+    // static field or class"
+    //@SuppressWarnings("UnnecessaryQualifiedReference")
+    private static int convert(Severity s) {
+        switch (s) {
+            case FATAL:
+                return com.android.builder.model.LintOptions.SEVERITY_FATAL;
+            case ERROR:
+                return com.android.builder.model.LintOptions.SEVERITY_ERROR;
+            case WARNING:
+                return com.android.builder.model.LintOptions.SEVERITY_WARNING;
+            case INFORMATIONAL:
+                return com.android.builder.model.LintOptions.SEVERITY_INFORMATIONAL;
+            case IGNORE:
+            default:
+                return com.android.builder.model.LintOptions.SEVERITY_IGNORE;
+        }
+    }
+
+    //@SuppressWarnings("UnnecessaryQualifiedReference")
+    private static Severity convert(int s) {
+        switch (s) {
+            case com.android.builder.model.LintOptions.SEVERITY_FATAL:
+                return FATAL;
+            case com.android.builder.model.LintOptions.SEVERITY_ERROR:
+                return ERROR;
+            case com.android.builder.model.LintOptions.SEVERITY_WARNING:
+                return WARNING;
+            case com.android.builder.model.LintOptions.SEVERITY_INFORMATIONAL:
+                return INFORMATIONAL;
+            case com.android.builder.model.LintOptions.SEVERITY_IGNORE:
+            default:
+                return IGNORE;
+        }
     }
 
     /**
@@ -223,20 +313,25 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
 
     /**
      * Sets the <b>exact</b> set of issues to check.
+     *
      * @param ids the set of issue id's to check
      */
     public void setCheck(@NonNull Set<String> ids) {
         check.addAll(ids);
     }
 
-    /** Whether lint should set the exit code of the process if errors are found */
+    /**
+     * Whether lint should set the exit code of the process if errors are found
+     */
     @Override
     @Input
     public boolean isAbortOnError() {
         return abortOnError;
     }
 
-    /** Sets whether lint should set the exit code of the process if errors are found */
+    /**
+     * Sets whether lint should set the exit code of the process if errors are found
+     */
     public void setAbortOnError(boolean abortOnError) {
         this.abortOnError = abortOnError;
     }
@@ -295,44 +390,58 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
         this.quiet = quiet;
     }
 
-    /** Returns whether lint should check all warnings, including those off by default */
+    /**
+     * Returns whether lint should check all warnings, including those off by default
+     */
     @Override
     @Input
     public boolean isCheckAllWarnings() {
         return checkAllWarnings;
     }
 
-    /** Sets whether lint should check all warnings, including those off by default */
+    /**
+     * Sets whether lint should check all warnings, including those off by default
+     */
     public void setCheckAllWarnings(boolean warnAll) {
         this.checkAllWarnings = warnAll;
     }
 
-    /** Returns whether lint will only check for errors (ignoring warnings) */
+    /**
+     * Returns whether lint will only check for errors (ignoring warnings)
+     */
     @Override
     @Input
     public boolean isIgnoreWarnings() {
         return ignoreWarnings;
     }
 
-    /** Sets whether lint will only check for errors (ignoring warnings) */
+    /**
+     * Sets whether lint will only check for errors (ignoring warnings)
+     */
     public void setIgnoreWarnings(boolean noWarnings) {
         this.ignoreWarnings = noWarnings;
     }
 
-    /** Returns whether lint should treat all warnings as errors */
+    /**
+     * Returns whether lint should treat all warnings as errors
+     */
     @Override
     @Input
     public boolean isWarningsAsErrors() {
         return warningsAsErrors;
     }
 
-    /** Sets whether lint should treat all warnings as errors */
+    /**
+     * Sets whether lint should treat all warnings as errors
+     */
     public void setWarningsAsErrors(boolean allErrors) {
         this.warningsAsErrors = allErrors;
     }
 
-    /** Returns whether lint should include explanations for issue errors. (Note that
-     * HTML and XML reports intentionally do this unconditionally, ignoring this setting.) */
+    /**
+     * Returns whether lint should include explanations for issue errors. (Note that
+     * HTML and XML reports intentionally do this unconditionally, ignoring this setting.)
+     */
     @Override
     @Input
     public boolean isExplainIssues() {
@@ -379,13 +488,24 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
      * Returns the default configuration file to use as a fallback
      */
     @Override
-    @Optional @InputFile
+    @Optional
+    @InputFile
     public File getLintConfig() {
         return lintConfig;
     }
 
-    /** Whether we should write an text report. Default false. The location can be
-     * controlled by {@link #getTextOutput()}. */
+    /**
+     * Sets the default config file to use as a fallback. This corresponds to a {@code lint.xml}
+     * file with severities etc to use when a project does not have more specific information.
+     */
+    public void setLintConfig(@NonNull File lintConfig) {
+        this.lintConfig = lintConfig;
+    }
+
+    /**
+     * Whether we should write an text report. Default false. The location can be
+     * controlled by {@link #getTextOutput()}.
+     */
     @Override
     @Input
     public boolean getTextReport() {
@@ -394,22 +514,6 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
 
     public void setTextReport(boolean textReport) {
         this.textReport = textReport;
-    }
-
-    public void setHtmlReport(boolean htmlReport) {
-        this.htmlReport = htmlReport;
-    }
-
-    public void setHtmlOutput(@NonNull File htmlOutput) {
-        this.htmlOutput = htmlOutput;
-    }
-
-    public void setXmlReport(boolean xmlReport) {
-        this.xmlReport = xmlReport;
-    }
-
-    public void setXmlOutput(@NonNull File xmlOutput) {
-        this.xmlOutput = xmlOutput;
     }
 
     /**
@@ -424,15 +528,23 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
         return textOutput;
     }
 
-    /** Whether we should write an HTML report. Default true. The location can be
-     * controlled by {@link #getHtmlOutput()}. */
+    /**
+     * Whether we should write an HTML report. Default true. The location can be
+     * controlled by {@link #getHtmlOutput()}.
+     */
     @Override
     @Input
     public boolean getHtmlReport() {
         return htmlReport;
     }
 
-    /** The optional path to where an HTML report should be written */
+    public void setHtmlReport(boolean htmlReport) {
+        this.htmlReport = htmlReport;
+    }
+
+    /**
+     * The optional path to where an HTML report should be written
+     */
     @Override
     @Nullable
     @Optional
@@ -441,15 +553,27 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
         return htmlOutput;
     }
 
-    /** Whether we should write an XML report. Default true. The location can be
-     * controlled by {@link #getXmlOutput()}. */
+    public void setHtmlOutput(@NonNull File htmlOutput) {
+        this.htmlOutput = htmlOutput;
+    }
+
+    /**
+     * Whether we should write an XML report. Default true. The location can be
+     * controlled by {@link #getXmlOutput()}.
+     */
     @Override
     @Input
     public boolean getXmlReport() {
         return xmlReport;
     }
 
-    /** The optional path to where an XML report should be written */
+    public void setXmlReport(boolean xmlReport) {
+        this.xmlReport = xmlReport;
+    }
+
+    /**
+     * The optional path to where an XML report should be written
+     */
     @Override
     @Nullable
     @Optional
@@ -458,13 +582,11 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
         return xmlOutput;
     }
 
-    /**
-     * Sets the default config file to use as a fallback. This corresponds to a {@code lint.xml}
-     * file with severities etc to use when a project does not have more specific information.
-     */
-    public void setLintConfig(@NonNull File lintConfig) {
-        this.lintConfig = lintConfig;
+    public void setXmlOutput(@NonNull File xmlOutput) {
+        this.xmlOutput = xmlOutput;
     }
+
+    // -- DSL Methods.
 
     public void syncTo(
             @NonNull LintCliClient client,
@@ -497,7 +619,7 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
             if (textReport || flags.isFatalOnly()) {
                 File output = textOutput;
                 if (output == null) {
-                    output = new File(flags.isFatalOnly() ? STDERR: STDOUT);
+                    output = new File(flags.isFatalOnly() ? STDERR : STDOUT);
                 } else if (!output.isAbsolute() && !isStdOut(output) && !isStdErr(output)) {
                     output = project.file(output.getPath());
                 }
@@ -555,66 +677,13 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
         }
     }
 
-    private static boolean isStdOut(@NonNull File output) {
-        return STDOUT.equals(output.getPath());
-    }
-
-    private static boolean isStdErr(@NonNull File output) {
-        return STDERR.equals(output.getPath());
-    }
-
-    @NonNull
-    private static File validateOutputFile(@NonNull File output) {
-        if (isStdOut(output) || isStdErr(output)) {
-            return output;
-        }
-
-        File parent = output.getParentFile();
-        if (!parent.exists()) {
-            parent.mkdirs();
-        }
-
-        output = output.getAbsoluteFile();
-        if (output.exists()) {
-            boolean delete = output.delete();
-            if (!delete) {
-                throw new org.gradle.api.GradleException("Could not delete old " + output);
-            }
-        }
-        if (output.getParentFile() != null && !output.getParentFile().canWrite()) {
-            throw new org.gradle.api.GradleException("Cannot write output file " + output);
-        }
-
-        return output;
-    }
-
-    private static File createOutputPath(
-            @NonNull org.gradle.api.Project project,
-            @NonNull String variantName,
-            @NonNull String extension,
-            boolean fatalOnly) {
-        StringBuilder base = new StringBuilder();
-        base.append(FD_OUTPUTS);
-        base.append(File.separator);
-        base.append("lint-results");
-        if (variantName != null) {
-            base.append("-");
-            base.append(variantName);
-        }
-        if (fatalOnly) {
-            base.append("-fatal");
-        }
-        base.append(extension);
-        return new File(project.getBuildDir(), base.toString());
-    }
-
     /**
      * An optional map of severity overrides. The map maps from issue id's to the corresponding
      * severity to use, which must be "fatal", "error", "warning", or "ignore".
      *
      * @return a map of severity overrides, or null. The severities are one of the constants
-     *  {@link #SEVERITY_FATAL}, {@link #SEVERITY_ERROR}, {@link #SEVERITY_WARNING},
-     *  {@link #SEVERITY_INFORMATIONAL}, {@link #SEVERITY_IGNORE}
+     * {@link #SEVERITY_FATAL}, {@link #SEVERITY_ERROR}, {@link #SEVERITY_WARNING},
+     * {@link #SEVERITY_INFORMATIONAL}, {@link #SEVERITY_IGNORE}
      */
     @Override
     @Nullable
@@ -625,14 +694,12 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
 
         Map<String, Integer> map =
                 Maps.newHashMapWithExpectedSize(severities.size());
-        for (Map.Entry<String,Severity> entry : severities.entrySet()) {
+        for (Map.Entry<String, Severity> entry : severities.entrySet()) {
             map.put(entry.getKey(), convert(entry.getValue()));
         }
 
         return map;
     }
-
-    // -- DSL Methods.
 
     /**
      * Adds the id to the set of issues to check.
@@ -756,43 +823,6 @@ public class LintOptions implements com.android.builder.model.LintOptions, Seria
     public void ignore(String... ids) {
         for (String id : ids) {
             ignore(id);
-        }
-    }
-
-    // Without these qualifiers, Groovy compilation will fail with "Apparent variable
-    // 'SEVERITY_FATAL' was found in a static scope but doesn't refer to a local variable,
-    // static field or class"
-    //@SuppressWarnings("UnnecessaryQualifiedReference")
-    private static int convert(Severity s) {
-        switch (s) {
-            case FATAL:
-                return com.android.builder.model.LintOptions.SEVERITY_FATAL;
-            case ERROR:
-                return com.android.builder.model.LintOptions.SEVERITY_ERROR;
-            case WARNING:
-                return com.android.builder.model.LintOptions.SEVERITY_WARNING;
-            case INFORMATIONAL:
-                return com.android.builder.model.LintOptions.SEVERITY_INFORMATIONAL;
-            case IGNORE:
-            default:
-                return com.android.builder.model.LintOptions.SEVERITY_IGNORE;
-        }
-    }
-
-    //@SuppressWarnings("UnnecessaryQualifiedReference")
-    private static Severity convert(int s) {
-        switch (s) {
-            case com.android.builder.model.LintOptions.SEVERITY_FATAL:
-                return FATAL;
-            case com.android.builder.model.LintOptions.SEVERITY_ERROR:
-                return ERROR;
-            case com.android.builder.model.LintOptions.SEVERITY_WARNING:
-                return WARNING;
-            case com.android.builder.model.LintOptions.SEVERITY_INFORMATIONAL:
-                return INFORMATIONAL;
-            case com.android.builder.model.LintOptions.SEVERITY_IGNORE:
-            default:
-                return IGNORE;
         }
     }
 }

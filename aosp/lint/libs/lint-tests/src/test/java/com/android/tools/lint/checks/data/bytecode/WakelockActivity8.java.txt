@@ -1,0 +1,24 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
+
+import com.google.io.demo.R;
+
+public class WakelockActivity8 extends Activity {
+	private WakeLock mWakeLock;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+		PowerManager manager = (PowerManager) getSystemService(POWER_SERVICE);
+		mWakeLock = manager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Test");
+		mWakeLock.acquire();
+		if (mWakeLock.isHeld()) {
+			mWakeLock.release();
+		}
+	}
+}

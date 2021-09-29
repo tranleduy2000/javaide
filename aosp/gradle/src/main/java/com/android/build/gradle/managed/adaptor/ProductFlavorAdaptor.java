@@ -18,7 +18,6 @@ package com.android.build.gradle.managed.adaptor;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.android.build.gradle.internal.dsl.CoreNdkOptions;
 import com.android.build.gradle.internal.dsl.CoreProductFlavor;
 import com.android.build.gradle.managed.ProductFlavor;
 import com.android.builder.core.BuilderConstants;
@@ -26,7 +25,7 @@ import com.android.builder.internal.ClassFieldImpl;
 import com.android.builder.model.ApiVersion;
 import com.android.builder.model.ClassField;
 import com.android.builder.model.SigningConfig;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -71,8 +70,8 @@ public class ProductFlavorAdaptor implements CoreProductFlavor {
                             cf.getType(),
                             cf.getName(),
                             cf.getValue(),
-                            Objects.firstNonNull(cf.getAnnotations(), ImmutableSet.<String>of()),
-                            Objects.firstNonNull(cf.getDocumentation(), "")));
+                            MoreObjects.firstNonNull(cf.getAnnotations(), ImmutableSet.<String>of()),
+                            MoreObjects.firstNonNull(cf.getDocumentation(), "")));
         }
         return builder.build();
     }
@@ -88,8 +87,8 @@ public class ProductFlavorAdaptor implements CoreProductFlavor {
                             cf.getType(),
                             cf.getName(),
                             cf.getValue(),
-                            Objects.firstNonNull(cf.getAnnotations(), ImmutableSet.<String>of()),
-                            Objects.firstNonNull(cf.getDocumentation(), "")));
+                            MoreObjects.firstNonNull(cf.getAnnotations(), ImmutableSet.<String>of()),
+                            MoreObjects.firstNonNull(cf.getDocumentation(), "")));
         }
         return builder.build();
     }
@@ -195,11 +194,6 @@ public class ProductFlavorAdaptor implements CoreProductFlavor {
         return productFlavor.getSigningConfig() == null ?
                 null :
                 new SigningConfigAdaptor(productFlavor.getSigningConfig());
-    }
-
-    @Override
-    public CoreNdkOptions getNdkConfig() {
-        return new NdkOptionsAdaptor(productFlavor.getNdk());
     }
 
     @NonNull

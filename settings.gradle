@@ -1,4 +1,5 @@
-include ':app', ':treeview', ':androidlogcat', ':fileexplorer', ':common', ':styles'
+include ':common'
+include ':app', ':treeview', ':androidlogcat'
 include ':bouncycastle', ':jdk-1_7', ':dx'
 
 include ':aosp:annotations'
@@ -16,7 +17,12 @@ include ':aosp:profile'
 include ':aosp:project-test-lib'
 
 include ':aosp:gradle'
-
+include ':aosp:lint'
+include ':aosp:lint-api'
+include ':aosp:lint-checks'
 
 include ':lib-google-java-format'
+include ':lib-decompiler'
 include ':lib-android-compiler'
+
+include ':lib-n-ide-release-10'

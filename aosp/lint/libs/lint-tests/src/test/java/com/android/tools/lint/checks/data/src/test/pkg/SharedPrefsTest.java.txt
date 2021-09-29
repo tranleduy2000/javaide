@@ -1,0 +1,66 @@
+package foo.bar;
+
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.widget.Toast;
+
+public class SharedPrefsText {
+    // OK 1
+    public void onCreate1(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("foo", "bar");
+        editor.putInt("bar", 42);
+        editor.commit();
+    }
+
+    // OK 2
+    public void onCreate2(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("foo", "bar");
+        editor.putInt("bar", 42);
+        if (apply) {
+            editor.apply();
+        }
+    }
+
+    // OK 3
+    public boolean test1(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("foo", "bar");
+        editor.putInt("bar", 42);
+        return editor.apply();
+    }
+
+    // Not a bug
+    public void test(Foo foo) {
+        Bar bar1 = foo.edit();
+        Bar bar2 = Foo.edit();
+        Bar bar3 = edit();
+        SharedPreferences.Editor editor = preferences.edit(42);
+        apply();
+    }
+
+    // Bug
+    public void bug1(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("foo", "bar");
+        editor.putInt("bar", 42);
+    }
+
+    // Constructor test
+    public SharedPrefsText(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("foo", "bar");
+    }
+ }
+

@@ -1,0 +1,69 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.service.notification.NotificationListenerService;
+import android.service.notification.StatusBarNotification;
+
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+public class OverrideConcreteTest {
+    // OK: This one specifies both methods
+    private static class MyNotificationListenerService1 extends NotificationListenerService {
+        @Override
+        public void onNotificationPosted(StatusBarNotification statusBarNotification) {
+        }
+
+        @Override
+        public void onNotificationRemoved(StatusBarNotification statusBarNotification) {
+        }
+    }
+
+    // Error: Misses onNotificationPosted
+    private static class MyNotificationListenerService2 extends NotificationListenerService {
+        @Override
+        public void onNotificationRemoved(StatusBarNotification statusBarNotification) {
+        }
+    }
+
+    // Error: Misses onNotificationRemoved
+    private static class MyNotificationListenerService3 extends NotificationListenerService {
+        @Override
+        public void onNotificationPosted(StatusBarNotification statusBarNotification) {
+        }
+    }
+
+    // Error: Missing both; wrong signatures (first has wrong arg count, second has wrong type)
+    private static class MyNotificationListenerService4 extends NotificationListenerService {
+        public void onNotificationPosted(StatusBarNotification statusBarNotification, int flags) {
+        }
+
+        public void onNotificationRemoved(int statusBarNotification) {
+        }
+    }
+
+    // OK: Inherits from a class which define both
+    private static class MyNotificationListenerService5 extends MyNotificationListenerService1 {
+    }
+
+    // OK: Inherits from a class which defines only one, but the other one is defined here
+    private static class MyNotificationListenerService6 extends MyNotificationListenerService3 {
+        @Override
+        public void onNotificationRemoved(StatusBarNotification statusBarNotification) {
+        }
+    }
+
+    // Error: Inheriting from a class which only defines one
+    private static class MyNotificationListenerService7 extends MyNotificationListenerService3 {
+    }
+
+    // OK: Has target api setting a local version that is high enough
+    @TargetApi(21)
+    private static class MyNotificationListenerService8 extends NotificationListenerService {
+    }
+
+    // OK: Suppressed
+    @SuppressLint("OverrideAbstract")
+    private static class MyNotificationListenerService9 extends MyNotificationListenerService1 {
+    }
+}

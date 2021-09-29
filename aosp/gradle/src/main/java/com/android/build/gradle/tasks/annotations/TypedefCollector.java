@@ -36,12 +36,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/** Gathers information about typedefs (@IntDef and @StringDef */
+/**
+ * Gathers information about typedefs (@IntDef and @StringDef
+ */
 public class TypedefCollector extends ASTVisitor {
-    private Map<String,List<Annotation>> mMap = Maps.newHashMap();
-
     private final boolean mRequireHide;
     private final boolean mRequireSourceRetention;
+    private Map<String, List<Annotation>> mMap = Maps.newHashMap();
     private CompilationUnitDeclaration mCurrentUnit;
     private List<String> mTypedefClasses = Lists.newArrayList();
 
@@ -63,7 +64,7 @@ public class TypedefCollector extends ASTVisitor {
         return mTypedefClasses;
     }
 
-    public Map<String,List<Annotation>> getTypedefs() {
+    public Map<String, List<Annotation>> getTypedefs() {
         return mMap;
     }
 

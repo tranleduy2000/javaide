@@ -26,17 +26,22 @@ import org.gradle.model.Managed;
 public interface SigningConfig extends Named {
 
     String getStoreFile();
+
     void setStoreFile(String storeFile);
 
     String getStorePassword();
+
     void setStorePassword(String storePassword);
 
     String getKeyAlias();
+
     void setKeyAlias(String keyAlias);
 
     String getKeyPassword();
+
     void setKeyPassword(String keyPassword);
 
     String getStoreType();
+
     void setStoreType(String storeType);
 }

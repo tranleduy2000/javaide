@@ -112,19 +112,15 @@ public class VariantOutputScope {
 
     @NonNull
     public File getManifestOutputFile() {
-        switch(variantScope.getVariantConfiguration().getType()) {
+        switch (variantScope.getVariantConfiguration().getType()) {
             case DEFAULT:
                 return new File(getGlobalScope().getIntermediatesDir(),
-                        "/manifests/full/"  + variantOutputData.getDirName()
+                        "/manifests/full/" + variantOutputData.getDirName()
                                 + "/AndroidManifest.xml");
             case LIBRARY:
                 return new File(getGlobalScope().getIntermediatesDir(),
                         TaskManager.DIR_BUNDLES + "/"
                                 + getVariantScope().getVariantConfiguration().getDirName()
-                                + "/AndroidManifest.xml");
-            case ANDROID_TEST:
-                return new File(getGlobalScope().getIntermediatesDir(),
-                        "manifest/" + variantScope.getVariantConfiguration().getDirName()
                                 + "/AndroidManifest.xml");
             default:
                 throw new RuntimeException(

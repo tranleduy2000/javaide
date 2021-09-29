@@ -1,0 +1,39 @@
+package test.pkg;
+
+import android.annotation.TargetApi;
+import android.widget.GridLayout;
+
+// Test using the @TargetApi annotation on inner classes and anonymous inner classes
+@SuppressWarnings("unused")
+public class ApiTargetTest2 {
+    @TargetApi(value=14)
+    void foo2() {
+        new Runnable() {
+            @Override
+            public void run() {
+                new GridLayout(null, null, 0);
+            }
+
+            void foo3() {
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        new GridLayout(null, null, 0);
+                    }
+                };
+            }
+
+            @TargetApi(value=3)
+            void foo4() {
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        // This should be marked as an error since the effective target API is 3 here
+                        new GridLayout(null, null, 0);
+                    }
+                };
+            }
+
+        };
+    }
+}

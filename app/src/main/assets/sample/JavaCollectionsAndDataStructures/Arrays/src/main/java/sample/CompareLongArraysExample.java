@@ -9,10 +9,10 @@ import java.util.Arrays;
 
 public class CompareLongArraysExample {
 
-  public static void main(String[] args) {
-    //create long arrays
-    long[] longArray1 = new long[]{213873, 87210, 320918};
-    long[] longArray2 = new long[]{213873, 87210, 320918};
+    public static void main(String[] args) {
+        //create long arrays
+        long[] longArray1 = new long[]{213873, 87210, 320918};
+        long[] longArray2 = new long[]{213873, 87210, 320918};
 
     /*
       To compare two long arrays use,
@@ -22,15 +22,15 @@ public class CompareLongArraysExample {
       if they contain same elements in same order.
     */
 
-    boolean blnResult = Arrays.equals(longArray1, longArray2);
-    System.out.println("Are two long arrays equal ? : " + blnResult);
+        boolean blnResult = Arrays.equals(longArray1, longArray2);
+        System.out.println("Are two long arrays equal ? : " + blnResult);
 
     /*
       Please note that two long array references pointing to null are
       considered as equal.
     */
 
-  }
+    }
 }
 
 /*

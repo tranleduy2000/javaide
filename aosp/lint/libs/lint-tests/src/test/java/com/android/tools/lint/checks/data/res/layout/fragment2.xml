@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <fragment
+        class="my.app.Fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <view
+        class="my.app.MyView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <fragment
+        android:name="my.app.Fragment2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <view
+        android:name="test.pkg.TestService"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <view
+        class="test.pkg.TestService"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <fragment
+        android:name="test.pkg.TestService"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <fragment
+        class="test.pkg.TestService"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <fragment
+        class="test.pkg.Foo$Bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <fragment
+        class="test.pkg.Nonexistent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingRegistered" />
+
+</LinearLayout>

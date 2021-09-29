@@ -10,17 +10,17 @@ import java.util.Date;
 
 public class AddAMPMToFormattedDate {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create Date object
-    Date date = new Date();
+        //create Date object
+        Date date = new Date();
 
-    //formatting time to have AM/PM text using 'a' format
-    String strDateFormat = "HH:mm:ss a";
-    SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+        //formatting time to have AM/PM text using 'a' format
+        String strDateFormat = "HH:mm:ss a";
+        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
 
-    System.out.println("Time with AM/PM field : " + sdf.format(date));
-  }
+        System.out.println("Time with AM/PM field : " + sdf.format(date));
+    }
 }
 
 /*

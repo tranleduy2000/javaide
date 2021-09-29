@@ -1,5 +1,23 @@
+/*
+ * Copyright (C) 2018 Tran Le Duy
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.duy.ide.javaide.run.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -19,9 +37,8 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 
-import com.duy.ide.setting.AppSetting;
+import com.duy.ide.javaide.utils.ByteQueue;
 import com.duy.ide.javaide.run.utils.IntegerQueue;
-import com.spartacusrex.spartacuside.util.ByteQueue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,9 +60,9 @@ public class ConsoleEditText extends AppCompatEditText {
     private int mLength = 0;
 
     //out, in and err stream
-    private  PrintStream outputStream;
-    private  InputStream inputStream;
-    private  PrintStream errorStream;
+    private  PrintStream mOutputStream;
+    private  InputStream mInputStream;
+    private  PrintStream mErrorStream;
 
     /**
      * uses for input
@@ -61,16 +78,17 @@ public class ConsoleEditText extends AppCompatEditText {
      * buffer for output
      */
     private ByteQueue mStderrBuffer = new ByteQueue(IntegerQueue.QUEUE_SIZE);
-    private AtomicBoolean isRunning = new AtomicBoolean(true);
+    private AtomicBoolean mIsRunning = new AtomicBoolean(true);
 
     //filter input text, block a part of text
     private TextListener mTextListener = new TextListener();
     private EnterListener mEnterListener = new EnterListener();
     private byte[] mReceiveBuffer;
+    @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (!isRunning.get()) {
+            if (!mIsRunning.get()) {
                 return;
             }
             if (msg.what == NEW_OUTPUT) {
@@ -83,24 +101,22 @@ public class ConsoleEditText extends AppCompatEditText {
 
     public ConsoleEditText(Context context) {
         super(context);
-        init(context);
+        init();
     }
 
     public ConsoleEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
     public ConsoleEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
-        if (!isInEditMode()) {
-            AppSetting pref = new AppSetting(context);
-            setTypeface(pref.getConsoleFont());
-            setTextSize(pref.getConsoleTextSize());
+    private void init() {
+        if (isInEditMode()){
+            return;
         }
         setFilters(new InputFilter[]{mTextListener});
         setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
@@ -115,14 +131,14 @@ public class ConsoleEditText extends AppCompatEditText {
         mStdoutBuffer = new ByteQueue(4 * 1024);
         mStderrBuffer = new ByteQueue(4 * 1024);
 
-        inputStream = new ConsoleInputStream(mInputBuffer);
-        outputStream = new PrintStream(new ConsoleOutputStream(mStdoutBuffer, new StdListener() {
+        mInputStream = new ConsoleInputStream(mInputBuffer);
+        mOutputStream = new PrintStream(new ConsoleOutputStream(mStdoutBuffer, new StdListener() {
             @Override
             public void onUpdate() {
                 mHandler.sendMessage(mHandler.obtainMessage(NEW_OUTPUT));
             }
         }));
-        errorStream = new PrintStream(new ConsoleErrorStream(mStderrBuffer, new StdListener() {
+        mErrorStream = new PrintStream(new ConsoleErrorStream(mStderrBuffer, new StdListener() {
             @Override
             public void onUpdate() {
                 mHandler.sendMessage(mHandler.obtainMessage(NEW_ERR));
@@ -164,17 +180,17 @@ public class ConsoleEditText extends AppCompatEditText {
 
     @WorkerThread
     public PrintStream getOutputStream() {
-        return outputStream;
+        return mOutputStream;
     }
 
     @WorkerThread
     public InputStream getInputStream() {
-        return inputStream;
+        return mInputStream;
     }
 
     @WorkerThread
     public PrintStream getErrorStream() {
-        return errorStream;
+        return mErrorStream;
     }
 
 
@@ -209,7 +225,7 @@ public class ConsoleEditText extends AppCompatEditText {
 
     public void stop() {
         mInputBuffer.write(-1);
-        isRunning.set(false);
+        mIsRunning.set(false);
     }
 
     public interface StdListener {

@@ -1,0 +1,18 @@
+package test.pkg;
+
+import android.support.v4.app.Fragment;
+
+public class MyFragment extends Fragment {
+    public MyFragment() {
+    }
+
+    public void test() {
+        getActivity().getDrawable(R.color.my_color);
+    }
+
+    private static class R {
+        private static class color {
+            public static final int my_color =0x7f070031;
+        }
+    }
+}

@@ -1,0 +1,67 @@
+package test.pkg;
+
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+
+@SuppressWarnings("unused")
+public class CommitTest3 {
+	private void testOk() {
+		android.app.FragmentTransaction transaction =
+				getFragmentManager().beginTransaction();
+		transaction.commit();
+		android.app.FragmentTransaction transaction2 =
+				getFragmentManager().beginTransaction();
+		MyDialogFragment fragment = new MyDialogFragment();
+		fragment.show(transaction2, "MyTag");
+	}
+
+	private void testCompatOk() {
+		android.support.v4.app.FragmentTransaction transaction =
+				getCompatFragmentManager().beginTransaction();
+		transaction.commit();
+		android.support.v4.app.FragmentTransaction transaction2 =
+				getCompatFragmentManager().beginTransaction();
+		MyCompatDialogFragment fragment = new MyCompatDialogFragment();
+		fragment.show(transaction2, "MyTag");
+	}
+
+	private void testCompatWrong() {
+		android.support.v4.app.FragmentTransaction transaction =
+				getCompatFragmentManager().beginTransaction();
+		transaction.commit();
+		android.support.v4.app.FragmentTransaction transaction2 =
+				getCompatFragmentManager().beginTransaction();
+		MyCompatDialogFragment fragment = new MyCompatDialogFragment();
+		fragment.show(transaction, "MyTag"); // Note: Should have been transaction2!
+	}
+
+	private android.support.v4.app.FragmentManager getCompatFragmentManager() {
+		return null;
+	}
+
+	private android.app.FragmentManager getFragmentManager() {
+		return null;
+	}
+
+	public static class MyDialogFragment extends android.app.DialogFragment {
+		public MyDialogFragment() {
+		}
+
+		@Override
+		public int show(android.app.FragmentTransaction transaction, String tag) {
+			return super.show(transaction, tag);
+		}
+	}
+
+	public static class MyCompatDialogFragment extends android.support.v4.app.DialogFragment {
+		public MyCompatDialogFragment() {
+		}
+
+		@Override
+		public int show(android.support.v4.app.FragmentTransaction transaction, String tag) {
+			return super.show(transaction, tag);
+		}
+	}
+}

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,42 +9,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.duy.ide.view.LatinEditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/edit_class_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/class_name"/>
+            android:hint="@string/class_name" />
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:paddingTop="8dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="@string/kind"/>
+            android:text="@string/kind"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="?android:textColorPrimary" />
 
         <Spinner
             android:id="@+id/spinner_kind"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/kind_class"/>
+            android:entries="@array/kind_class" />
     </LinearLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.duy.ide.view.LatinEditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/edit_package_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/package_"/>
+            android:hint="@string/package_name" />
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
@@ -56,11 +57,11 @@
         android:orientation="horizontal"
         android:paddingTop="8dp">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="@string/visibility"/>
+            android:text="@string/visibility" />
 
         <RadioGroup
             android:id="@+id/visibility"
@@ -68,20 +69,20 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <RadioButton
-                android:checked="true"
+            <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/rad_public"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/public_"/>
+                android:checked="true"
+                android:text="@string/public_" />
 
-            <RadioButton
+            <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/rad_package_private"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/package_private"/>
+                android:text="@string/package_private" />
         </RadioGroup>
     </LinearLayout>
 
@@ -92,11 +93,11 @@
         android:orientation="horizontal"
         android:paddingTop="8dp">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="@string/modifiers"/>
+            android:text="@string/modifiers" />
 
         <RadioGroup
             android:id="@+id/modifiers"
@@ -104,29 +105,35 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <RadioButton
+            <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/rad_none"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:layout_weight="1"
-                android:text="@string/none"/>
+                android:checked="true"
+                android:text="@string/none" />
 
-            <RadioButton
+            <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/rad_abstract"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/abstract_"/>
+                android:text="@string/abstract_" />
 
-            <RadioButton
+            <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/rad_final"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/final_"/>
+                android:text="@string/final_" />
         </RadioGroup>
     </LinearLayout>
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/ckb_create_main_func"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/create_main_function" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -134,17 +141,18 @@
         android:gravity="end"
         android:orientation="horizontal">
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_cancel"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@android:string/cancel"/>
+            android:text="@android:string/cancel" />
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_create"
-            style="@style/Base.Widget.AppCompat.Button.Colored"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@android:string/ok"/>
+            android:text="@android:string/ok" />
     </LinearLayout>
 </LinearLayout>

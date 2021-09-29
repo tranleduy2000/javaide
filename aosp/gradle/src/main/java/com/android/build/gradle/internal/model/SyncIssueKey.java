@@ -28,13 +28,13 @@ public class SyncIssueKey {
     @NonNull
     private final String data;
 
-    public static SyncIssueKey from(@NonNull SyncIssue syncIssue) {
-        return new SyncIssueKey(syncIssue.getType(), syncIssue.getData());
-    }
-
     private SyncIssueKey(int type, @NonNull String data) {
         this.type = type;
         this.data = data;
+    }
+
+    public static SyncIssueKey from(@NonNull SyncIssue syncIssue) {
+        return new SyncIssueKey(syncIssue.getType(), syncIssue.getData());
     }
 
     @Override

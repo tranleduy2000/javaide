@@ -57,8 +57,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.android.builder.core.BuilderConstants.LINT;
-import static com.android.builder.core.VariantType.ANDROID_TEST;
-import static com.android.builder.core.VariantType.UNIT_TEST;
 
 /**
  * Class to create, manage variants.
@@ -114,9 +112,9 @@ public class VariantManager implements VariantModel {
         DefaultAndroidSourceSet mainSourceSet =
                 (DefaultAndroidSourceSet) extension.getSourceSets().getByName(extension.getDefaultConfig().getName());
 
-        defaultConfigData = new ProductFlavorData<CoreProductFlavor>(
+        defaultConfigData = new ProductFlavorData<>(
                 extension.getDefaultConfig(), mainSourceSet,
-                null, null, project);
+                project);
         signingOverride = createSigningOverride();
     }
 
@@ -163,9 +161,6 @@ public class VariantManager implements VariantModel {
     }
 
     private static void checkName(@NonNull String name, @NonNull String displayName) {
-        checkPrefix(name, displayName, ANDROID_TEST.getPrefix());
-        checkPrefix(name, displayName, UNIT_TEST.getPrefix());
-
         if (LINT.equals(name)) {
             throw new RuntimeException(String.format(
                     "%1$s names cannot be %2$s", displayName, LINT));
@@ -224,7 +219,7 @@ public class VariantManager implements VariantModel {
         DefaultAndroidSourceSet mainSourceSet = (DefaultAndroidSourceSet) extension.getSourceSets().maybeCreate(name);
 
         BuildTypeData buildTypeData = new BuildTypeData(
-                buildType, project, mainSourceSet, null);
+                buildType, project, mainSourceSet);
 
         buildTypes.put(name, buildTypeData);
     }
@@ -247,11 +242,9 @@ public class VariantManager implements VariantModel {
                 productFlavor.getName());
 
         ProductFlavorData<CoreProductFlavor> productFlavorData =
-                new ProductFlavorData<CoreProductFlavor>(
+                new ProductFlavorData<>(
                         productFlavor,
                         mainSourceSet,
-                        null,
-                        null,
                         project);
 
         productFlavors.put(productFlavor.getName(), productFlavorData);
@@ -274,27 +267,11 @@ public class VariantManager implements VariantModel {
 
         final TaskFactory tasks = new TaskContainerAdaptor(project.getTasks());
         if (variantDataList.isEmpty()) {
-            ThreadRecorder.get().record(ExecutionType.VARIANT_MANAGER_CREATE_VARIANTS,
-                    new Recorder.Block<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            populateVariantDataList();
-                            return null;
-                        }
-                    });
+            populateVariantDataList();
         }
 
-        for (final BaseVariantData<? extends BaseVariantOutputData> variantData : variantDataList) {
-
-            SpanRecorders.record(project, ExecutionType.VARIANT_MANAGER_CREATE_TASKS_FOR_VARIANT,
-                    new Recorder.Block<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            createTasksForVariantData(tasks, variantData);
-                            return null;
-                        }
-                    },
-                    new Recorder.Property(SpanRecorders.VARIANT, variantData.getName()));
+        for (BaseVariantData<? extends BaseVariantOutputData> variantData : variantDataList) {
+            createTasksForVariantData(tasks, variantData);
         }
     }
 
@@ -505,9 +482,8 @@ public class VariantManager implements VariantModel {
                     @Override
                     public Void call() {
                         taskManager.resolveDependencies(
-                                variantDep,
-                                null /*testedVariantDeps*/,
-                                null);
+                                variantDep
+                        );
                         return null;
                     }
                 }, new Recorder.Property(SpanRecorders.VARIANT, variantConfig.getFullName()));

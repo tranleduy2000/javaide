@@ -26,7 +26,7 @@ import com.android.build.gradle.internal.tasks.FileSupplier;
 public class MetadataPublishArtifact extends BasePublishArtifact {
 
     public MetadataPublishArtifact(@NonNull String name, @Nullable String classifier,
-            @NonNull FileSupplier outputFileSupplier) {
+                                   @NonNull FileSupplier outputFileSupplier) {
         super(name, classifier, outputFileSupplier);
     }
 

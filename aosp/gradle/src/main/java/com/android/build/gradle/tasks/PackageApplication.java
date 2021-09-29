@@ -1,11 +1,8 @@
 package com.android.build.gradle.tasks;
 
-import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
-
 import com.android.annotations.NonNull;
 import com.android.build.gradle.internal.annotations.ApkFile;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
-import com.android.build.gradle.internal.dsl.AbiSplitOptions;
 import com.android.build.gradle.internal.dsl.CoreSigningConfig;
 import com.android.build.gradle.internal.dsl.PackagingOptions;
 import com.android.build.gradle.internal.scope.ConventionMappingHelper;
@@ -23,7 +20,6 @@ import com.android.utils.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 
-import org.codehaus.groovy.runtime.StringGroovyMethods;
 import org.gradle.api.Task;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.logging.Logger;
@@ -44,10 +40,27 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
+
 @ParallelizableTask
 public class PackageApplication extends IncrementalTask implements FileSupplier {
 
     // ----- PUBLIC TASK API -----
+
+    private File resourceFile;
+    private File dexFolder;
+    private Collection<File> dexedLibraries;
+    private File javaResourceDir;
+    private Set<File> jniFolders;
+    private File mergingFolder;
+    @ApkFile
+    private File outputFile;
+    private Set<String> abiFilters;
+    private Set<File> packagedJars;
+    private boolean jniDebugBuild;
+    private CoreSigningConfig signingConfig;
+    private PackagingOptions packagingOptions;
+    private SignedJarBuilder.IZipEntryFilter packagingOptionsFilter;
 
     @InputFile
     public File getResourceFile() {
@@ -62,6 +75,8 @@ public class PackageApplication extends IncrementalTask implements FileSupplier 
     public File getDexFolder() {
         return dexFolder;
     }
+
+    // ----- PRIVATE TASK API -----
 
     public void setDexFolder(File dexFolder) {
         this.dexFolder = dexFolder;
@@ -120,35 +135,6 @@ public class PackageApplication extends IncrementalTask implements FileSupplier 
     public void setAbiFilters(Set<String> abiFilters) {
         this.abiFilters = abiFilters;
     }
-
-    // ----- PRIVATE TASK API -----
-
-    private File resourceFile;
-
-    private File dexFolder;
-
-    private Collection<File> dexedLibraries;
-
-    private File javaResourceDir;
-
-    private Set<File> jniFolders;
-
-    private File mergingFolder;
-
-    @ApkFile
-    private File outputFile;
-
-    private Set<String> abiFilters;
-
-    private Set<File> packagedJars;
-
-    private boolean jniDebugBuild;
-
-    private CoreSigningConfig signingConfig;
-
-    private PackagingOptions packagingOptions;
-
-    private SignedJarBuilder.IZipEntryFilter packagingOptionsFilter;
 
     @InputFiles
     public Set<File> getPackagedJars() {
@@ -264,6 +250,14 @@ public class PackageApplication extends IncrementalTask implements FileSupplier 
             this.scope = scope;
         }
 
+        private static File getOptionalDir(File dir) {
+            if (dir.isDirectory()) {
+                return dir;
+            }
+
+            return null;
+        }
+
         @Override
         public String getName() {
             return scope.getTaskName("package");
@@ -359,39 +353,9 @@ public class PackageApplication extends IncrementalTask implements FileSupplier 
             packageApp.setMergingFolder(new File(scope.getGlobalScope().getIntermediatesDir(),
                     variantOutputData.getFullName() + "/merging"));
 
-
-            ConventionMappingHelper.map(packageApp, "jniFolders", new Callable<Set<File>>() {
-                @Override
-                public Set<File> call() {
-
-                    if (variantData.getSplitHandlingPolicy() ==
-                            BaseVariantData.SplitHandlingPolicy.PRE_21_POLICY) {
-                        return scope.getVariantScope().getJniFolders();
-                    }
-                    Set<String> filters = AbiSplitOptions.getAbiFilters(
-                            scope.getGlobalScope().getExtension().getSplits().getAbiFilters());
-                    return filters.isEmpty() ? scope.getVariantScope().getJniFolders() : Collections.<File>emptySet();
-
-                }
-            });
-
-            ConventionMappingHelper.map(packageApp, "abiFilters", new Callable<Set<String>>() {
-                @Override
-                public Set<String> call() throws Exception {
-                    if (variantOutputData.getMainOutputFile().getFilter(com.android.build.OutputFile.ABI) != null) {
-                        return ImmutableSet.of(
-                                variantOutputData.getMainOutputFile()
-                                        .getFilter(com.android.build.OutputFile.ABI));
-                    }
-                    return config.getSupportedAbis();
-                }
-            });
-            ConventionMappingHelper.map(packageApp, "jniDebugBuild", new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    return config.getBuildType().isJniDebuggable();
-                }
-            });
+            packageApp.setJniFolders(scope.getVariantScope().getJniFolders());
+            packageApp.setAbiFilters(Collections.<String>emptySet());
+            packageApp.setJniDebugBuild(false);
 
             CoreSigningConfig sc = (CoreSigningConfig) config.getSigningConfig();
             packageApp.setSigningConfig(sc);
@@ -422,11 +386,11 @@ public class PackageApplication extends IncrementalTask implements FileSupplier 
 
             ConventionMappingHelper.map(packageApp, "packagingOptionsFilter",
                     new Callable<SignedJarBuilder.IZipEntryFilter>() {
-                @Override
-                public SignedJarBuilder.IZipEntryFilter call() throws Exception {
-                    return scope.getVariantScope().getPackagingOptionsFilter();
-                }
-            });
+                        @Override
+                        public SignedJarBuilder.IZipEntryFilter call() throws Exception {
+                            return scope.getVariantScope().getPackagingOptionsFilter();
+                        }
+                    });
 
             ConventionMappingHelper.map(packageApp, "outputFile", new Callable<File>() {
                 @Override
@@ -440,7 +404,7 @@ public class PackageApplication extends IncrementalTask implements FileSupplier 
                 final ApkVariantOutputData variantOutputData) {
             BaseVariantData<?> variantData = (BaseVariantData<?>) variantOutputData.variantData;
             ShrinkResources task = scope.getGlobalScope().getProject().getTasks()
-                    .create("shrink" + StringGroovyMethods
+                    .create("shrink" + StringHelper
                             .capitalize(variantOutputData.getFullName())
                             + "Resources", ShrinkResources.class);
             task.setAndroidBuilder(scope.getGlobalScope().getAndroidBuilder());
@@ -465,14 +429,6 @@ public class PackageApplication extends IncrementalTask implements FileSupplier 
                     variantOutputData.processResourcesTask);
 
             return task;
-        }
-
-        private static File getOptionalDir(File dir) {
-            if (dir.isDirectory()) {
-                return dir;
-            }
-
-            return null;
         }
     }
 }

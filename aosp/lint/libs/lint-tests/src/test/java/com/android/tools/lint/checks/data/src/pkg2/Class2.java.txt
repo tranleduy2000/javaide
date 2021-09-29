@@ -1,0 +1,33 @@
+package pkg2;
+
+import android.annotation.SuppressLint;
+import pkg1.Class1;
+
+public class Class2 extends Class1 {
+    void method() { // Flag this as an accidental override
+    }
+
+    void method2(String foo) { // not an override: different signature
+    }
+
+    static void method4() { // not an override: static
+    }
+
+    private void method3() { // not an override: private
+    }
+
+    protected void method5() { // not an override: protected
+    }
+
+    public void method6() { // not an override: public
+    }
+
+    @SuppressLint("DalvikOverride")
+    public void method7() { // suppressed: no warning
+    }
+
+    public class Class3 extends Object {
+        void method() { // Not an override: not a subclass
+        }
+    }
+}

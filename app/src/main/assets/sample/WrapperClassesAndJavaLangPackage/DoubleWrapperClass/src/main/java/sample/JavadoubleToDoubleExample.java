@@ -6,16 +6,16 @@ package sample;
 
 public class JavadoubleToDoubleExample {
 
-  public static void main(String[] args) {
-    double d = 10.56;
+    public static void main(String[] args) {
+        double d = 10.56;
 
     /*
     Use Double constructor to convert double primitive type to a Double object.
     */
 
-    Double dObj = new Double(d);
-    System.out.println(dObj);
-  }
+        Double dObj = new Double(d);
+        System.out.println(dObj);
+    }
 }
 
 /*

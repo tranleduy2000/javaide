@@ -13,12 +13,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<xsl:stylesheet
-        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-        xmlns:xi="http://www.w3.org/2001/XInclude"
-        version="1.0">
-    <xsl:import href="html/docbook.xsl"/>
-    <xsl:import href="userGuideHtmlCommon.xsl"/>
+<xsl:stylesheet xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+    <xsl:import href="html/docbook.xsl" />
+    <xsl:import href="userGuideHtmlCommon.xsl" />
 
     <xsl:param name="section.autolabel">0</xsl:param>
     <xsl:param name="chapter.autolabel">0</xsl:param>
@@ -26,14 +24,13 @@
 
     <!-- Inline the stylesheets directly into the generated html -->
 
-    <xsl:template name="output.html.stylesheets">
-    </xsl:template>
+    <xsl:template name="output.html.stylesheets"></xsl:template>
 
     <xsl:template name="user.head.content">
         <style type="text/css">
-            <xi:include href="base.css" parse="text"/>
-            <xi:include href="docs.css" parse="text"/>
-            <xi:include href="userguide.css" parse="text"/>
+            <xi:include href="base.css" parse="text" />
+            <xi:include href="docs.css" parse="text" />
+            <xi:include href="userguide.css" parse="text" />
         </style>
     </xsl:template>
 </xsl:stylesheet>

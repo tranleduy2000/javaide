@@ -32,7 +32,7 @@ import org.gradle.api.Project;
 
 /**
  * Interface for Variant Factory.
- *
+ * <p>
  * While VariantManager is the general variant management, implementation of this interface
  * provides variant type (app, lib) specific implementation.
  */
@@ -53,10 +53,9 @@ public interface VariantFactory {
 
     boolean isLibrary();
 
-    boolean hasTestScope();
-
     /**
      * Fail if the model is configured incorrectly.
+     *
      * @param model the non-null model to validate, as implemented by the VariantManager.
      * @throws org.gradle.api.GradleException when the model does not validate.
      */

@@ -9,22 +9,23 @@ import java.util.ArrayList;
 
 public class GetSizeOfArrayListExample {
 
-  public static void main(String[] args) {
-    //create an ArrayList object
-    ArrayList arrayList = new ArrayList();
+    public static void main(String[] args) {
+        //create an ArrayList object
+        ArrayList arrayList = new ArrayList();
 
-    //Add elements to Arraylist using
-    arrayList.add("1");
-    arrayList.add("2");
-    arrayList.add("3");
+        //Add elements to Arraylist using
+        arrayList.add("1");
+        arrayList.add("2");
+        arrayList.add("3");
 
-    //To get size of Java ArrayList use int size() method
-    int totalElements = arrayList.size();
+        //To get size of Java ArrayList use int size() method
+        int totalElements = arrayList.size();
 
-    System.out.println("ArrayList contains...");
-    //loop through it
-    for (int index = 0; index < totalElements; index++) System.out.println(arrayList.get(index));
-  }
+        System.out.println("ArrayList contains...");
+        //loop through it
+        for (int index = 0; index < totalElements; index++)
+            System.out.println(arrayList.get(index));
+    }
 }
 
 /*

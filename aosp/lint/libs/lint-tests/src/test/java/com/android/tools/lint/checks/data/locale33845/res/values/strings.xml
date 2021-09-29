@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
+
+    <string name="dateFormat">MM/dd/yyyy</string>
+    <string name="dateTimeFormat">MM/dd/yyyy - HH:mm</string>
+
+</resources>

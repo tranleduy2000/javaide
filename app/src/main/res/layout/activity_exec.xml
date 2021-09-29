@@ -60,7 +60,9 @@
                     android:imeOptions="flagNoExtractUi"
                     android:inputType="textMultiLine|textNoSuggestions|text"
                     android:padding="4dp"
-                    android:singleLine="false" />
+                    android:singleLine="false"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:typeface="monospace" />
             </HorizontalScrollView>
         </ScrollView>
 

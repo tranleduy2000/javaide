@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="dateFormat">ukformat</string>
+    <string name="dummy" tools:ignore="ExtraTranslation">DeleteMeToGetRidOfOtherWarning</string>
+
+</resources>

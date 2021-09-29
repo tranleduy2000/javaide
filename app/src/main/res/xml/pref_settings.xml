@@ -16,119 +16,8 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/code_editor">
-
-        <!--<SwitchPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_pref_auto_compile"-->
-        <!--android:summary="@string/auto_compile_summary"-->
-        <!--android:title="@string/auto_compile"/>-->
-
-        <EditTextPreference
-            android:contentDescription="@string/max_history_edit_desc"
-            android:defaultValue="100"
-            android:inputType="number"
-            android:key="@string/key_max_history_edit"
-            android:title="@string/max_history_edit" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="@string/key_pref_word_wrap"
-            android:summary="@string/word_wrap_desc"
-            android:title="@string/word_wrap" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="@string/key_show_line_number"
-            android:summary="@string/show_line_desc"
-            android:title="@string/show_line" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="@string/key_show_symbol"
-            android:summary="@string/show_symbol_decs"
-            android:title="@string/show_symbol" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="@string/key_show_suggest_popup"
-            android:summary="@string/show_hint_desc"
-            android:title="@string/show_suggest_popup" />
-
-        <ListPreference
-            android:defaultValue="12"
-            android:entries="@array/font_size"
-            android:entryValues="@array/font_size_value"
-            android:key="@string/key_pref_font_size"
-            android:title="@string/font_z" />
-
-        <ListPreference
-            android:defaultValue="@string/default_theme"
-            android:entries="@array/code_themes"
-            android:entryValues="@array/code_themes"
-            android:key="@string/key_code_theme"
-            android:title="@string/theme" />
-        <ListPreference
-            android:defaultValue="@string/zero"
-            android:entries="@array/format_types"
-            android:entryValues="@array/format_type_value"
-            android:key="@string/key_format_type"
-            android:title="@string/format_type_" />
-    </PreferenceCategory>
-
-    <!--<PreferenceCategory android:title="@string/console_screen">-->
-    <!--<com.flask.colorpicker.ColorPickerPreference-->
-    <!--android:enabled="false"-->
-    <!--android:key="pref_console_text_color"-->
-    <!--android:summary="@string/default_text_color"-->
-    <!--android:title="@string/text_color"/>-->
-
-    <!--<com.flask.colorpicker.ColorPickerPreference-->
-    <!--android:enabled="false"-->
-    <!--android:key="pref_console_bg_color"-->
-    <!--android:summary="@string/def_bg_color"-->
-    <!--android:title="@string/bg_color"/>-->
-
-    <!--<SwitchPreference-->
-    <!--android:defaultValue="true"-->
-    <!--android:key="pref_console_anti_alias"-->
-    <!--android:summary="@string/anti_alias_summary"-->
-    <!--android:title="@string/anti_alias"/>-->
-
-    <!--<SwitchPreference-->
-    <!--android:defaultValue="true"-->
-    <!--android:key="pref_console_hardware_acceleration"-->
-    <!--android:summary="@string/draw_screen_faster"-->
-    <!--android:title="@string/hardware_acceleration"/>-->
-
-    <!--<ListPreference-->
-    <!--android:defaultValue="12"-->
-    <!--android:entries="@array/font_size"-->
-    <!--android:entryValues="@array/font_size_value"-->
-    <!--android:key="key_pref_console_font_size"-->
-    <!--android:title="@string/console_font_size"/>-->
-    <!--</PreferenceCategory>-->
-
-    <!--<PreferenceCategory android:title="@string/compiler">-->
-    <!--<EditTextPreference-->
-    <!--android:defaultValue="40000"-->
-    <!--android:inputType="number"-->
-    <!--android:key="key_max_stack"-->
-    <!--android:summary="@string/stack_size_desc"-->
-    <!--android:title="@string/stack_size">-->
-
-    <!--</EditTextPreference>-->
-    <!--</PreferenceCategory>-->
 
     <PreferenceCategory android:title="@string/keyboard">
-
-        <!--<ListPreference-->
-        <!--android:defaultValue="@string/volume_down"-->
-        <!--android:entries="@array/control_key"-->
-        <!--android:entryValues="@array/control_key"-->
-        <!--android:key="@string/key_pref_control"-->
-        <!--android:shouldDisableView="true"-->
-        <!--android:title="@string/ctrl_key"/>-->
 
         <SwitchPreference
             android:defaultValue="false"
@@ -136,32 +25,10 @@
             android:summary="@string/ime_desc"
             android:title="@string/enable_ime_keyboard" />
 
-        <!--<SwitchPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_back_undo"-->
-        <!--android:visibility="gone"-->
-        <!--android:title="@string/back_to_undo" />-->
-
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/notifications">
-
-        <!-- A 'parent' preference, which enables/disables child preferences (below)
-             when checked/unchecked. -->
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="pref_notifications_new_message"
-            android:title="@string/pref_title_new_message_notifications" />
-
     </PreferenceCategory>
 
 
     <PreferenceCategory android:title="@string/user_interface">
-        <!--<ListPreference-->
-        <!--android:defaultValue="@string/lang_default"-->
-        <!--android:entries="@array/language_entry"-->
-        <!--android:entryValues="@array/language_code"-->
-        <!--android:key="@string/key_pref_lang"-->
-        <!--android:title="@string/language" />-->
 
         <EditTextPreference
             android:contentDescription="@string/max_page_desc"
@@ -170,11 +37,6 @@
             android:key="@string/key_max_page"
             android:title="@string/max_page" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="@string/key_full_screen"
-            android:summary="@string/hide_status_bar_desc"
-            android:title="@string/hide_status_bar" />
 
     </PreferenceCategory>
 

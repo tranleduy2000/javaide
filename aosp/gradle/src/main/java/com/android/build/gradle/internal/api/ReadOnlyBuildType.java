@@ -26,14 +26,14 @@ import java.util.List;
 
 /**
  * Read-only version of the BuildType wrapping another BuildType.
- *
+ * <p>
  * In the variant API, it is important that the objects returned by the variants
  * are read-only.
- *
+ * <p>
  * However, even though the API is defined to use the base interfaces as return
  * type (which all contain only getters), the dynamics of Groovy makes it easy to
  * actually use the setters of the implementation classes.
- *
+ * <p>
  * This wrapper ensures that the returned instance is actually just a strict implementation
  * of the base interface and is read-only.
  */
@@ -68,16 +68,6 @@ public class ReadOnlyBuildType extends ReadOnlyBaseConfig implements BuildType {
         return buildType.isPseudoLocalesEnabled();
     }
 
-    @Override
-    public boolean isRenderscriptDebuggable() {
-        return buildType.isRenderscriptDebuggable();
-    }
-
-    @Override
-    public int getRenderscriptOptimLevel() {
-        return buildType.getRenderscriptOptimLevel();
-    }
-
     @Nullable
     @Override
     public String getApplicationIdSuffix() {
@@ -98,11 +88,6 @@ public class ReadOnlyBuildType extends ReadOnlyBaseConfig implements BuildType {
     @Override
     public boolean isZipAlignEnabled() {
         return buildType.isZipAlignEnabled();
-    }
-
-    @Override
-    public boolean isEmbedMicroApp() {
-        return buildType.isEmbedMicroApp();
     }
 
     @Nullable

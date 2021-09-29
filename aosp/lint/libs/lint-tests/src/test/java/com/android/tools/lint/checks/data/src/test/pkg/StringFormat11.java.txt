@@ -1,0 +1,109 @@
+package test.pkg;
+
+import android.app.Activity;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+public class StringFormat11 extends Activity {
+
+    protected void check() {
+        // -------------------------
+        // Test integral types
+        // -------------------------
+
+        byte varByte = 1;
+        Byte varByteWrapper = 1;
+        short varShort = 1;
+        Short varShortWrapper = 1;
+        int varInt = 1;
+        Integer varIntWrapper = 1;
+        long varLong = 1L;
+        Long varLongWrapper = 1L;
+        BigInteger varBigInteger = new BigInteger("1");
+        float varFloat = 1.0f;
+        Float varFloatWrapper = 1.0f;
+        double varDouble = 1.0d;
+        double varDoubleWrapper = 1.0d;
+        BigDecimal varBigDecimal = new BigDecimal("1.0");
+
+        // Check variable references with known types
+        getResources().getString(R.string.format_integer, varByte);
+        getResources().getString(R.string.format_integer, varByteWrapper);
+        getResources().getString(R.string.format_integer, varShort);
+        getResources().getString(R.string.format_integer, varShortWrapper);
+        getResources().getString(R.string.format_integer, varInt);
+        getResources().getString(R.string.format_integer, varIntWrapper);
+        getResources().getString(R.string.format_integer, varLong);
+        getResources().getString(R.string.format_integer, varLongWrapper);
+        getResources().getString(R.string.format_integer, varBigInteger);
+
+        // Check resolved types
+        getResources().getString(R.string.format_integer, getResolvedByte());
+        getResources().getString(R.string.format_integer, getResolvedByteWrapper());
+        getResources().getString(R.string.format_integer, getResolvedShort());
+        getResources().getString(R.string.format_integer, getResolvedShortWrapper());
+        getResources().getString(R.string.format_integer, getResolvedInt());
+        getResources().getString(R.string.format_integer, getResolvedIntWrapper());
+        getResources().getString(R.string.format_integer, getResolvedLong());
+        getResources().getString(R.string.format_integer, getResolvedLongWrapper());
+        getResources().getString(R.string.format_integer, getResolvedBigInteger());
+
+        // -------------------------
+        // Test float types
+        // -------------------------
+
+        // Check variable references with known types
+        getResources().getString(R.string.format_float, varFloat);
+        getResources().getString(R.string.format_float, varFloatWrapper);
+        getResources().getString(R.string.format_float, varDouble);
+        getResources().getString(R.string.format_float, varDoubleWrapper);
+        getResources().getString(R.string.format_float, varBigDecimal);
+
+        // Check resolved types
+        getResources().getString(R.string.format_float, getResolvedFloat());
+        getResources().getString(R.string.format_float, getResolvedFloatWrapper());
+        getResources().getString(R.string.format_float, getResolvedDouble());
+        getResources().getString(R.string.format_float, getResolvedDoubleWrapper());
+        getResources().getString(R.string.format_float, getResolvedBigDecimal());
+
+        // -------------------------
+        // Test conversions
+        // -------------------------
+
+        // Conversion (integer as float)
+        getResources().getString(R.string.format_float, varInt);
+        getResources().getString(R.string.format_float, varIntWrapper);
+        getResources().getString(R.string.format_float, getResolvedInt());
+        getResources().getString(R.string.format_float, getResolvedIntWrapper());
+
+        // Conversion (float as integer)
+        getResources().getString(R.string.format_integer, varFloat);
+        getResources().getString(R.string.format_integer, varFloatWrapper);
+        getResources().getString(R.string.format_integer, getResolvedFloat());
+        getResources().getString(R.string.format_integer, getResolvedFloatWrapper());
+    }
+
+    private byte getResolvedByte() { return 0; }
+    private Byte getResolvedByteWrapper() { return 0; }
+    private short getResolvedShort() { return 0; }
+    private Short getResolvedShortWrapper() { return 0; }
+    private int getResolvedInt() { return 0; }
+    private Integer getResolvedIntWrapper() { return 0; }
+    private long getResolvedLong() { return 0L; }
+    private Long getResolvedLongWrapper() { return 0L; }
+    private float getResolvedFloat() { return 0f; }
+    private Float getResolvedFloatWrapper() { return 0f; }
+    private double getResolvedDouble() { return 0f; }
+    private Double getResolvedDoubleWrapper() { return 0d; }
+    private BigInteger getResolvedBigInteger() { return new BigInteger("0"); }
+    private BigDecimal getResolvedBigDecimal() { return new BigDecimal("0.0"); }
+
+    public static final class R {
+        public static final class string {
+            public static final int format_float = 0x7f0a000f;
+            public static final int format_integer = 0x7f0a0010;
+
+        }
+    }
+}

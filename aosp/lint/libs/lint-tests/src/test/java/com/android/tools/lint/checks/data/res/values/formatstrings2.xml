@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hour_minute_24">%H:%M</string>
+    <string name="numeric_wday1_mdy1_time1_wday2_mdy2_time2">%5$s %1$s, %4$s-%2$s-%3$s – %10$s %6$s, %9$s-%7$s-%8$s</string>
+    <string name="bogus">%2.99999s</string>
+</resources>

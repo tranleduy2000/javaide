@@ -31,13 +31,10 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
     private boolean mDebuggable = false;
     private boolean mPseudoLocalesEnabled = false;
     private boolean mJniDebuggable = false;
-    private boolean mRenderscriptDebuggable = false;
-    private int mRenderscriptOptimLevel = 3;
     private String mApplicationIdSuffix = null;
     private String mVersionNameSuffix = null;
     private boolean mMinifyEnabled = false;
     private SigningConfig mSigningConfig = null;
-    private boolean mEmbedMicroApp = true;
 
     private boolean mZipAlignEnabled = true;
 
@@ -49,15 +46,11 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
         _initWith(that);
 
         setDebuggable(that.isDebuggable());
-        setJniDebuggable(that.isJniDebuggable());
-        setRenderscriptDebuggable(that.isRenderscriptDebuggable());
-        setRenderscriptOptimLevel(that.getRenderscriptOptimLevel());
         setApplicationIdSuffix(that.getApplicationIdSuffix());
         setVersionNameSuffix(that.getVersionNameSuffix());
         setMinifyEnabled(that.isMinifyEnabled());
         setZipAlignEnabled(that.isZipAlignEnabled());
         setSigningConfig(that.getSigningConfig());
-        setEmbedMicroApp(that.isEmbedMicroApp());
         setPseudoLocalesEnabled(that.isPseudoLocalesEnabled());
 
         return this;
@@ -120,37 +113,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
     @Override
     public boolean isJniDebuggable() {
         return mJniDebuggable;
-    }
-
-    /**
-     * Whether the build type is configured to generate an apk with debuggable RenderScript code.
-     */
-    @Override
-    public boolean isRenderscriptDebuggable() {
-        return mRenderscriptDebuggable;
-    }
-
-    /**
-     * Whether the build type is configured to generate an apk with debuggable RenderScript code.
-     */
-    public BuildType setRenderscriptDebuggable(boolean renderscriptDebugBuild) {
-        mRenderscriptDebuggable = renderscriptDebugBuild;
-        return this;
-    }
-
-    /**
-     * Optimization level to use by the renderscript compiler.
-     */
-    @Override
-    public int getRenderscriptOptimLevel() {
-        return mRenderscriptOptimLevel;
-    }
-
-    /**
-     * Optimization level to use by the renderscript compiler.
-     */
-    public void setRenderscriptOptimLevel(int renderscriptOptimLevel) {
-        mRenderscriptOptimLevel = renderscriptOptimLevel;
     }
 
     /**
@@ -242,27 +204,6 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
         return mSigningConfig;
     }
 
-    /**
-     * Whether a linked Android Wear app should be embedded in variant using this build type.
-     * <p>
-     * <p>Wear apps can be linked with the following code:
-     * <p>
-     * <pre>
-     * dependencies {
-     *   freeWearApp project(:wear:free') // applies to variant using the free flavor
-     *   wearApp project(':wear:base') // applies to all other variants
-     * }
-     * </pre>
-     */
-    @Override
-    public boolean isEmbedMicroApp() {
-        return mEmbedMicroApp;
-    }
-
-    public void setEmbedMicroApp(boolean embedMicroApp) {
-        mEmbedMicroApp = embedMicroApp;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -275,11 +216,8 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
                 mDebuggable == buildType.mDebuggable &&
                 mJniDebuggable == buildType.mJniDebuggable &&
                 mPseudoLocalesEnabled == buildType.mPseudoLocalesEnabled &&
-                mRenderscriptDebuggable == buildType.mRenderscriptDebuggable &&
-                mRenderscriptOptimLevel == buildType.mRenderscriptOptimLevel &&
                 mMinifyEnabled == buildType.mMinifyEnabled &&
                 mZipAlignEnabled == buildType.mZipAlignEnabled &&
-                mEmbedMicroApp == buildType.mEmbedMicroApp &&
                 Objects.equal(mApplicationIdSuffix, buildType.mApplicationIdSuffix) &&
                 Objects.equal(mVersionNameSuffix, buildType.mVersionNameSuffix) &&
                 Objects.equal(mSigningConfig, buildType.mSigningConfig);
@@ -293,14 +231,11 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
                 mDebuggable,
                 mJniDebuggable,
                 mPseudoLocalesEnabled,
-                mRenderscriptDebuggable,
-                mRenderscriptOptimLevel,
                 mApplicationIdSuffix,
                 mVersionNameSuffix,
                 mMinifyEnabled,
                 mZipAlignEnabled,
-                mSigningConfig,
-                mEmbedMicroApp);
+                mSigningConfig);
     }
 
     @Override
@@ -311,14 +246,11 @@ public class DefaultBuildType extends BaseConfigImpl implements BuildType {
                 .add("debuggable", mDebuggable)
                 .add("jniDebuggable", mJniDebuggable)
                 .add("pseudoLocalesEnabled", mPseudoLocalesEnabled)
-                .add("renderscriptDebuggable", mRenderscriptDebuggable)
-                .add("renderscriptOptimLevel", mRenderscriptOptimLevel)
                 .add("applicationIdSuffix", mApplicationIdSuffix)
                 .add("versionNameSuffix", mVersionNameSuffix)
                 .add("minifyEnabled", mMinifyEnabled)
                 .add("zipAlignEnabled", mZipAlignEnabled)
                 .add("signingConfig", mSigningConfig)
-                .add("embedMicroApp", mEmbedMicroApp)
                 .add("mBuildConfigFields", getBuildConfigFields())
                 .add("mResValues", getResValues())
                 .add("mProguardFiles", getProguardFiles())

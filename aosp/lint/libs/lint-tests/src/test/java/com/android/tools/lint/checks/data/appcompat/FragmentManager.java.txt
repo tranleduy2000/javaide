@@ -1,0 +1,7 @@
+package android.support.v4.app;
+
+/** Stub to make unit tests able to resolve types without having a real dependency
+ * on the appcompat library */
+public abstract class FragmentManager {
+    public abstract FragmentTransaction beginTransaction();
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+    <TextView android:layout_margin="1dp"/> <!-- OK -->
+    <TextView android:layout_marginLeft="1dp"/> <!-- OK -->
+    <TextView android:layout_marginLeft="0dp"/> <!-- OK -->
+    <TextView android:layout_marginTop="-1dp"/> <!-- WARNING -->
+    <TextView android:layout_marginTop="@dimen/positive"/> <!-- OK -->
+    <TextView android:layout_marginTop="@dimen/negative"/> <!-- WARNING -->
+    <TextView android:paddingLeft="-1dp"/> <!-- OK -->
+    <TextView android:layout_marginTop="-1dp" tools:ignore="NegativeMargin"/> <!-- SUPPRESSED -->
+
+</GridLayout>

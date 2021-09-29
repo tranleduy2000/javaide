@@ -16,8 +16,6 @@
 
 package com.android.builder.internal.compiler;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.core.AndroidBuilder;
@@ -39,6 +37,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Pre Dexing cache.
@@ -76,8 +76,7 @@ public class PreDexCache extends PreProcessCache<DexKey> {
             @Override
             public DexKey of(@NonNull File sourceFile, @NonNull FullRevision revision,
                     @NonNull NamedNodeMap attrMap) {
-                return DexKey.of(sourceFile, revision,
-                        Boolean.parseBoolean(attrMap.getNamedItem(ATTR_JUMBO_MODE).getNodeValue()));
+                return DexKey.of(sourceFile, revision);
             }
         };
     }
@@ -109,8 +108,7 @@ public class PreDexCache extends PreProcessCache<DexKey> {
 
         DexKey itemKey = DexKey.of(
                 inputFile,
-                buildToolInfo.getRevision(),
-                dexOptions.getJumboMode());
+                buildToolInfo.getRevision());
 
         Pair<Item, Boolean> pair = getItem(itemKey);
         Item item = pair.getFirst();

@@ -56,7 +56,7 @@ public class MavenCoordinatesImpl implements MavenCoordinates, Serializable {
     }
 
     MavenCoordinatesImpl(String groupId, String artifactId, String version, String packaging,
-            String classifier) {
+                         String classifier) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;

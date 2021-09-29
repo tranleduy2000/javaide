@@ -1,0 +1,162 @@
+package test.pkg;
+
+import android.os.Build;
+import android.os.Build.VERSION_CODES;
+import android.view.ViewDebug;
+
+import static android.os.Build.VERSION_CODES.KITKAT_WATCH;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
+
+@SuppressWarnings({"unused", "StatementWithEmptyBody"})
+public class VersionConditional3b {
+    private void m28(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT > 21 && System.getProperty("something") == null) { // OK
+            boolean p = property.hasAdjacentMapping(); // OK
+        }
+    }
+
+    private void m27(ViewDebug.ExportedProperty property) {
+        // Test order (after call)
+        if (System.getProperty("something") != null &&
+                property.hasAdjacentMapping() && // ERROR
+                Build.VERSION.SDK_INT > 21) {
+        }
+    }
+
+    private void m26(ViewDebug.ExportedProperty property) {
+        // Test order (still before call)
+        if (System.getProperty("something") != null &&
+                Build.VERSION.SDK_INT > 21 &&
+                property.hasAdjacentMapping()) { // OK
+        }
+    }
+
+    private void m25(ViewDebug.ExportedProperty property) {
+        // Test multiple conditions in short circuit evaluation
+        if (Build.VERSION.SDK_INT > 21 &&
+                System.getProperty("something") != null &&
+                property.hasAdjacentMapping()) { // OK
+        }
+    }
+
+    private void m24(ViewDebug.ExportedProperty property) {
+        // Wrong operator
+        if (Build.VERSION.SDK_INT > 21 || property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m23(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT > LOLLIPOP && property.hasAdjacentMapping()) { // OK
+        }
+    }
+
+    private void m22(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT > KITKAT_WATCH && property.hasAdjacentMapping()) { // OK
+        }
+    }
+
+    private void m21(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT > VERSION_CODES.KITKAT && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m20(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT > VERSION_CODES.GINGERBREAD && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m19(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT <= 22 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m18(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT <= 18 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m17(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT < 22 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m16(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT < 18 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m15(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT == 22 && property.hasAdjacentMapping()) { // OK
+        }
+    }
+
+    private void m14(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT == 21 && property.hasAdjacentMapping()) { // OK
+        }
+    }
+
+    private void m13(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT == 20 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m12(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT == 19 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m11(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT == 18 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m10(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT >= 22 && property.hasAdjacentMapping()) { // OK
+        }
+    }
+
+    private void m9(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT >= 21 && property.hasAdjacentMapping()) { // OK
+        }
+    }
+
+    private void m8(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT >= 20 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m7(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT >= 19 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m6(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT >= 18 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m5(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT > 22 && property.hasAdjacentMapping()) { // OK
+        }
+    }
+
+    private void m4(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT > 21 && property.hasAdjacentMapping()) { // OK
+        }
+    }
+
+    private void m3(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT > 20 && property.hasAdjacentMapping()) { // OK
+        }
+    }
+
+    private void m2(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT > 19 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+
+    private void m1(ViewDebug.ExportedProperty property) {
+        if (Build.VERSION.SDK_INT > 18 && property.hasAdjacentMapping()) { // ERROR
+        }
+    }
+}

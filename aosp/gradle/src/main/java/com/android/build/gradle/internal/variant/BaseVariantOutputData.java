@@ -48,9 +48,8 @@ public abstract class BaseVariantOutputData implements VariantOutput {
 
     @NonNull
     private final ApkOutputFile mainApkOutputFile;
-
-    private boolean multiOutput = false;
-
+    @NonNull
+    private final VariantOutputScope scope;
     public ManifestProcessorTask manifestProcessorTask;
 
     public ProcessAndroidResources processResourcesTask;
@@ -60,9 +59,7 @@ public abstract class BaseVariantOutputData implements VariantOutput {
     public PackageSplitAbi packageSplitAbiTask;
 
     public Task assembleTask;
-
-    @NonNull
-    private final VariantOutputScope scope;
+    private boolean multiOutput = false;
 
     public BaseVariantOutputData(
             @NonNull OutputFile.OutputType outputType,
@@ -89,11 +86,10 @@ public abstract class BaseVariantOutputData implements VariantOutput {
         };
     }
 
-
-    public abstract void setOutputFile(@NonNull File file);
-
     @Nullable
     public abstract File getOutputFile();
+
+    public abstract void setOutputFile(@NonNull File file);
 
     @NonNull
     @Override

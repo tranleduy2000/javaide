@@ -29,11 +29,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 
-import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.Nested;
-import org.gradle.api.tasks.Optional;
-import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.ParallelizableTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 import org.gradle.api.tasks.incremental.InputFileDetails;
@@ -52,49 +47,37 @@ import java.util.concurrent.Callable;
  * Merges java resources from temporary expansion folders (created from the packaged jars
  * resources and source folder java resources) into a single output directory that can be used
  * during obfuscation and packaging.
- *
+ * <p>
  * This task is the default {@link JavaResourcesProvider} to provide merged java resources to
  * the final variant packaging step. However, if the variant obfuscation is turned on, some of
  * these resources packages might need to be adapted to match the obfuscated code. In such
  * a scenario, the {@link JavaResourcesProvider} will become the task responsible for obfuscation.
  */
-@ParallelizableTask
 public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaResourcesProvider {
 
-    @Nested
-    @Optional
-    @Nullable
     public PackagingOptions packagingOptions;
-
-    @InputDirectory
-    @Optional
-    @Nullable
-    public File getSourceJavaResourcesFolder() {
-        return sourceJavaResourcesFolder;
-    }
-
-    @InputDirectory
-    @Optional
-    @Nullable
-    public File getPackagedJarsJavaResourcesFolder() {
-        return packagedJarsJavaResourcesFolder;
-    }
-
     @Nullable
     private FileFilter packagingOptionsFilter;
-
     @SuppressWarnings({"UnusedDeclaration"})
     @Nullable
     private File sourceJavaResourcesFolder;
     @SuppressWarnings({"UnusedDeclaration"})
     @Nullable
     private File packagedJarsJavaResourcesFolder;
-
     @SuppressWarnings({"UnusedDeclaration"})
     @Nullable
     private File outputDir;
 
-    @OutputDirectory
+    @Nullable
+    public File getSourceJavaResourcesFolder() {
+        return sourceJavaResourcesFolder;
+    }
+
+    @Nullable
+    public File getPackagedJarsJavaResourcesFolder() {
+        return packagedJarsJavaResourcesFolder;
+    }
+
     @Nullable
     public File getOutputDir() {
         return outputDir;
@@ -144,35 +127,18 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
 
     }
 
+    @NonNull
+    @Override
+    public ImmutableList<JavaResourcesLocation> getJavaResourcesLocations() {
+        return ImmutableList.of(new JavaResourcesLocation(Type.FOLDER, getOutputDir()));
+    }
+
     /**
      * Defines a file filter contract which will use {@link PackagingOptions} to take appropriate
      * action.
      */
     @VisibleForTesting
     static final class FileFilter implements SignedJarBuilder.IZipEntryFilter {
-
-        /**
-         * User's setting for a particular archive entry. This is expressed in the build.gradle
-         * DSL and used by this filter to determine file merging behaviors.
-         */
-        private enum PackagingOption {
-            /**
-             * no action was described for archive entry.
-             */
-            NONE,
-            /**
-             * merge all archive entries with the same archive path.
-             */
-            MERGE,
-            /**
-             * pick to first archive entry with that archive path (not stable).
-             */
-            PICK_FIRST,
-            /**
-             * exclude all archive entries with that archive path.
-             */
-            EXCLUDE
-        }
 
         @Nullable
         private final PackagingOptions packagingOptions;
@@ -184,7 +150,7 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
         private final MergeJavaResourcesTask owner;
 
         public FileFilter(@NonNull MergeJavaResourcesTask owner,
-                @Nullable PackagingOptions packagingOptions) {
+                          @Nullable PackagingOptions packagingOptions) {
             this.owner = owner;
             this.packagingOptions = packagingOptions;
             excludes = this.packagingOptions != null ? this.packagingOptions.getExcludes() :
@@ -193,9 +159,28 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
                     Collections.<String>emptySet();
         }
 
+        private static void copy(@NonNull File inputFile,
+                                 @NonNull File outputDir,
+                                 @NonNull String archivePath) throws IOException {
+
+            File outputFile = new File(outputDir, archivePath);
+            createParentFolderIfNecessary(outputFile);
+            Files.copy(inputFile, outputFile);
+        }
+
+        private static void createParentFolderIfNecessary(@NonNull File outputFile) {
+            File parentFolder = outputFile.getParentFile();
+            if (!parentFolder.exists()) {
+                if (!parentFolder.mkdirs()) {
+                    throw new RuntimeException("Cannot create folder " + parentFolder);
+                }
+            }
+        }
+
         /**
          * Implementation of the {@link SignedJarBuilder.IZipEntryFilter} contract which only
          * cares about copying or ignoring files since merging is handled differently.
+         *
          * @param archivePath the archive file path of the entry
          * @return true if the archive entry satisfies the filter, false otherwise.
          * @throws ZipAbortException
@@ -204,7 +189,7 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
         public boolean checkEntry(@NonNull String archivePath)
                 throws ZipAbortException {
             PackagingOption packagingOption = getPackagingAction(archivePath);
-            switch(packagingOption) {
+            switch (packagingOption) {
                 case EXCLUDE:
                     return false;
                 case PICK_FIRST:
@@ -220,13 +205,13 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
 
         /**
          * Notification of an incremental file changed since last successful run of the task.
-         *
+         * <p>
          * Usually, we just copy the changed file into the merged folder. However, if the user
          * specified {@link PackagingOption#PICK_FIRST}, the file will only be copied if it the
          * first pick. Also, if the user specified {@link PackagingOption#MERGE}, all the files
          * with the same entry archive path will be re-merged.
          *
-         * @param outputDir merged resources folder.
+         * @param outputDir   merged resources folder.
          * @param changedFile changed file located in a temporary expansion folder
          * @throws IOException
          */
@@ -251,12 +236,12 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
 
         /**
          * Notification of a file removal.
-         *
+         * <p>
          * file was removed, we need to check that it was not a pickFirst item (since we
          * may now need to pick another one) or a merged item since we would need to re-merge
          * all remaining items.
          *
-         * @param outputDir expected merged output directory.
+         * @param outputDir   expected merged output directory.
          * @param removedFile removed file from the temporary resources folders.
          * @throws IOException
          */
@@ -274,7 +259,7 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
             }
             PackagingOption itemPackagingOption = getPackagingAction(archivePath);
 
-            switch(itemPackagingOption) {
+            switch (itemPackagingOption) {
                 case PICK_FIRST:
                     // this was a picked up item, make sure we copy the first still available
                     com.google.common.base.Optional<File> firstPick = getFirstPick(archivePath);
@@ -295,15 +280,6 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
                             + itemPackagingOption);
 
             }
-        }
-
-        private static void copy(@NonNull File inputFile,
-                @NonNull File outputDir,
-                @NonNull String archivePath) throws IOException {
-
-            File outputFile = new File(outputDir, archivePath);
-            createParentFolderIfNecessary(outputFile);
-            Files.copy(inputFile, outputFile);
         }
 
         private void mergeAll(@NonNull File outputDir, @NonNull String archivePath)
@@ -331,17 +307,9 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
             }
         }
 
-        private static void createParentFolderIfNecessary(@NonNull File outputFile) {
-            File parentFolder = outputFile.getParentFile();
-            if (!parentFolder.exists()) {
-                if (!parentFolder.mkdirs()) {
-                    throw new RuntimeException("Cannot create folder " + parentFolder);
-                }
-            }
-        }
-
         /**
          * Return the first file from the temporary expansion folders that satisfy the archive path.
+         *
          * @param archivePath the entry archive path.
          * @return the first file reference of {@link com.google.common.base.Optional#absent()} if
          * none exist in any temporary expansion folders.
@@ -366,6 +334,7 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
 
         /**
          * Returns all files from temporary expansion folders with the same archive path.
+         *
          * @param archivePath the entry archive path.
          * @return a list possibly empty of {@link File}s that satisfy the archive path.
          */
@@ -387,22 +356,8 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
         }
 
         /**
-         * An action on a folder.
-         */
-        private interface FolderAction {
-
-            /**
-             * Perform an action on a folder and stop the processing if something is returned
-             * @param folder the folder to perform the action on.
-             * @return a file to stop processing or null to continue to the next expansion folder
-             * if any.
-             */
-            @Nullable
-            File on(File folder);
-        }
-
-        /**
          * Perform the passed action on each expansion folder.
+         *
          * @param action the action to perform on each folder.
          * @return a file if any action returned a value, or null if none returned a value.
          */
@@ -427,6 +382,7 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
         /**
          * Returns the expansion folder for an expanded file. This represents the location
          * where the packaged jar our source directories java resources were extracted into.
+         *
          * @param expandedFile the java resource file.
          * @return the expansion folder used to extract the java resource into.
          */
@@ -438,11 +394,11 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
                 public File on(File folder) {
                     return expandedFile.getAbsolutePath().startsWith(folder.getAbsolutePath())
                             ? folder : null;
-                    }
-                });
+                }
+            });
             if (expansionFolder == null) {
                 throw new RuntimeException("Cannot determine expansion folder for " + expandedFile
-                        + " with folders "  + Joiner.on(",").join(owner.getExpandedFolders()));
+                        + " with folders " + Joiner.on(",").join(owner.getExpandedFolders()));
             }
             return expansionFolder;
         }
@@ -451,6 +407,7 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
          * Determines the archive entry path relative to its expansion folder. The archive entry
          * path is the path that was used to save the entry in the original .jar file that got
          * expanded in the expansion folder.
+         *
          * @param expandedFile the expanded file to find the relative archive entry from.
          * @return the expanded file relative path to its expansion folder.
          */
@@ -463,6 +420,7 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
 
         /**
          * Determine the user's intention for a particular archive entry.
+         *
          * @param archivePath the archive entry
          * @return a {@link PackagingOption} as provided by the user in the build.gradle
          */
@@ -481,12 +439,45 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
             }
             return PackagingOption.NONE;
         }
-    }
 
-    @NonNull
-    @Override
-    public ImmutableList<JavaResourcesLocation> getJavaResourcesLocations() {
-        return ImmutableList.of(new JavaResourcesLocation(Type.FOLDER, getOutputDir()));
+        /**
+         * User's setting for a particular archive entry. This is expressed in the build.gradle
+         * DSL and used by this filter to determine file merging behaviors.
+         */
+        private enum PackagingOption {
+            /**
+             * no action was described for archive entry.
+             */
+            NONE,
+            /**
+             * merge all archive entries with the same archive path.
+             */
+            MERGE,
+            /**
+             * pick to first archive entry with that archive path (not stable).
+             */
+            PICK_FIRST,
+            /**
+             * exclude all archive entries with that archive path.
+             */
+            EXCLUDE
+        }
+
+        /**
+         * An action on a folder.
+         */
+        private interface FolderAction {
+
+            /**
+             * Perform an action on a folder and stop the processing if something is returned
+             *
+             * @param folder the folder to perform the action on.
+             * @return a file to stop processing or null to continue to the next expansion folder
+             * if any.
+             */
+            @Nullable
+            File on(File folder);
+        }
     }
 
     public static class Config implements TaskConfigAction<MergeJavaResourcesTask> {
@@ -526,8 +517,8 @@ public class MergeJavaResourcesTask extends DefaultAndroidTask implements JavaRe
                         @Override
                         public File call() throws Exception {
                             return scope.getPackagedJarsJavaResDestinationDir().exists()
-                                ? scope.getPackagedJarsJavaResDestinationDir()
-                                : null;
+                                    ? scope.getPackagedJarsJavaResDestinationDir()
+                                    : null;
                         }
                     });
 

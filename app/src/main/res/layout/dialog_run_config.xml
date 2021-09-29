@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp">
 
-        <com.duy.ide.view.LatinEditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/edit_package_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.duy.ide.view.LatinEditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/edit_arg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,13 +61,13 @@
         android:layout_height="wrap_content"
         android:gravity="end">
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@android:string/cancel" />
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_save"
             style="@style/Base.Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"

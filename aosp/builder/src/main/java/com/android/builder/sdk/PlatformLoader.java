@@ -16,12 +16,6 @@
 
 package com.android.builder.sdk;
 
-import static com.android.SdkConstants.FN_AAPT;
-import static com.android.SdkConstants.FN_AIDL;
-import static com.android.SdkConstants.FN_BCC_COMPAT;
-import static com.android.SdkConstants.FN_RENDERSCRIPT;
-import static com.android.SdkConstants.FN_ZIPALIGN;
-
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.builder.internal.FakeAndroidTarget;
@@ -32,6 +26,11 @@ import com.android.utils.ILogger;
 import com.google.common.collect.ImmutableList;
 
 import java.io.File;
+
+import static com.android.SdkConstants.FN_AAPT;
+import static com.android.SdkConstants.FN_AIDL;
+import static com.android.SdkConstants.FN_BCC_COMPAT;
+import static com.android.SdkConstants.FN_ZIPALIGN;
 
 /**
  * Singleton-based implementation of SdkLoader for a platform-based SDK.
@@ -83,9 +82,6 @@ public class PlatformLoader implements SdkLoader {
                 new File(hostTools, FN_AIDL),
                 new File(mTreeLocation, "prebuilts/sdk/tools/dx"),
                 new File(mTreeLocation, "prebuilts/sdk/tools/lib/dx.jar"),
-                new File(hostTools, FN_RENDERSCRIPT),
-                new File(mTreeLocation, "prebuilts/sdk/renderscript/include"),
-                new File(mTreeLocation, "prebuilts/sdk/renderscript/clang-include"),
                 new File(hostTools, FN_BCC_COMPAT),
                 new File(hostTools, "arm-linux-androideabi-ld"),
                 new File(hostTools, "i686-linux-android-ld"),
@@ -126,8 +122,7 @@ public class PlatformLoader implements SdkLoader {
             }
 
             mSdkInfo = new SdkInfo(
-                    new File(mTreeLocation, "out/host/" + host + "/framework/annotations.jar"),
-                    new File(mTreeLocation, "out/host/" + host + "/bin/adb"));
+                    new File(mTreeLocation, "out/host/" + host + "/framework/annotations.jar")  );
         }
     }
 

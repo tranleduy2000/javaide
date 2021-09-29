@@ -8,7 +8,7 @@ package sample;
 
 public class JavaFloatCompareExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
     /*
     To compare two float primitive values use
@@ -16,17 +16,17 @@ public class JavaFloatCompareExample {
     It returns 0 if both the values are equal, returns value less than 0 if
     f1 is less than f2, and returns value grater than 0 if f2 is grater than f2.
     */
-    float f1 = 5.35f;
-    float f2 = 5.34f;
-    int i1 = Float.compare(f1, f2);
+        float f1 = 5.35f;
+        float f2 = 5.34f;
+        int i1 = Float.compare(f1, f2);
 
-    if (i1 > 0) {
-      System.out.println("First is grater");
-    } else if (i1 < 0) {
-      System.out.println("Second is grater");
-    } else {
-      System.out.println("Both are equal");
-    }
+        if (i1 > 0) {
+            System.out.println("First is grater");
+        } else if (i1 < 0) {
+            System.out.println("Second is grater");
+        } else {
+            System.out.println("Both are equal");
+        }
 
     /*
     To compare a Float object with another Float object use
@@ -35,18 +35,18 @@ public class JavaFloatCompareExample {
     this Float object is less than the argument, and returns value grater
     than 0 if this Float object is grater than f2.
     */
-    Float fObj1 = new Float("5.35");
-    Float fObj2 = new Float("5.34");
-    int i2 = fObj1.compareTo(fObj2);
+        Float fObj1 = new Float("5.35");
+        Float fObj2 = new Float("5.34");
+        int i2 = fObj1.compareTo(fObj2);
 
-    if (i2 > 0) {
-      System.out.println("First is grater");
-    } else if (i2 < 0) {
-      System.out.println("Second is grater");
-    } else {
-      System.out.println("Both are equal");
+        if (i2 > 0) {
+            System.out.println("First is grater");
+        } else if (i2 < 0) {
+            System.out.println("Second is grater");
+        } else {
+            System.out.println("Both are equal");
+        }
     }
-  }
 }
 
 /*

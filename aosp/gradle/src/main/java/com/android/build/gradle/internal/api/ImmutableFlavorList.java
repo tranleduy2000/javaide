@@ -87,7 +87,7 @@ public class ImmutableFlavorList implements List<ProductFlavor> {
         final int count = list.size();
         Object[] array = new Object[list.size()];
 
-        for (int i = 0 ; i < count ; i++) {
+        for (int i = 0; i < count; i++) {
             array[i] = immutableObjectProvider.getProductFlavor(list.get(i));
         }
 
@@ -103,12 +103,12 @@ public class ImmutableFlavorList implements List<ProductFlavor> {
             array = (T[]) Array.newInstance(array.getClass().getComponentType(), count);
         }
 
-        for (int i = 0 ; i < count ; i++) {
+        for (int i = 0; i < count; i++) {
             //noinspection unchecked
             array[i] = (T) immutableObjectProvider.getProductFlavor(list.get(i));
         }
 
-        for (int i = count ; i < array.length; i++) {
+        for (int i = count; i < array.length; i++) {
             array[i] = null;
         }
 

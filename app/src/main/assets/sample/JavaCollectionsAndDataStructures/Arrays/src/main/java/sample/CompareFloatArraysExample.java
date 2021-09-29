@@ -9,10 +9,10 @@ import java.util.Arrays;
 
 public class CompareFloatArraysExample {
 
-  public static void main(String[] args) {
-    //create float arrays
-    float[] floatArray1 = new float[]{459.432f, 348.43f, 5832.327f};
-    float[] floatArray2 = new float[]{459.432f, 348.43f, 5832.327f};
+    public static void main(String[] args) {
+        //create float arrays
+        float[] floatArray1 = new float[]{459.432f, 348.43f, 5832.327f};
+        float[] floatArray2 = new float[]{459.432f, 348.43f, 5832.327f};
 
     /*
       To compare two float arrays use,
@@ -25,8 +25,8 @@ public class CompareFloatArraysExample {
       new Float(d1).equals(new Float(d2))
     */
 
-    boolean blnResult = Arrays.equals(floatArray1, floatArray2);
-    System.out.println("Are two float arrays equal ? : " + blnResult);
+        boolean blnResult = Arrays.equals(floatArray1, floatArray2);
+        System.out.println("Are two float arrays equal ? : " + blnResult);
 
     /*
       Please note that two float array references pointing to null are
@@ -35,7 +35,7 @@ public class CompareFloatArraysExample {
       considered as unequal.
     */
 
-  }
+    }
 }
 
 /*

@@ -8,18 +8,18 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 public class JavaStringToInputStreamExample {
-  public static void main(String args[]) {
+    public static void main(String args[]) {
 
-    String str1 = "Java convert String to InputStream Example";
+        String str1 = "Java convert String to InputStream Example";
 
-    //convert string to bytes first using getBytes method of String class.
-    byte[] bytes = str1.getBytes();
+        //convert string to bytes first using getBytes method of String class.
+        byte[] bytes = str1.getBytes();
 
-    /*
-     * To convert Java String to InputStream, use
-     * ByteArrayInputStream class.
-     */
+        /*
+         * To convert Java String to InputStream, use
+         * ByteArrayInputStream class.
+         */
 
-    InputStream inputStream = new ByteArrayInputStream(bytes);
-  }
+        InputStream inputStream = new ByteArrayInputStream(bytes);
+    }
 }

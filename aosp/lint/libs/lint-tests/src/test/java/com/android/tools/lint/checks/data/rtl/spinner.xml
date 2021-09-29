@@ -1,0 +1,51 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView
+            android:id="@android:id/text1"
+            style="?android:attr/spinnerItemStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textAlignment="inherit"/> <!-- OK -->
+
+    <TextView
+          android:id="@android:id/text2"
+          style="?android:attr/spinnerItemStyle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:ellipsize="marquee"
+          android:singleLine="true"
+          android:textAlignment="inherit"/> <!-- OK -->
+
+    <TextView
+            android:id="@android:id/text2"
+            style="?android:attr/spinnerItemStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|top"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textAlignment="textStart"/> <!-- OK -->
+
+    <TextView
+            android:id="@android:id/text2"
+            style="?android:attr/spinnerItemStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textAlignment="textEnd"/> <!-- OK -->
+
+    <TextView
+            android:id="@android:id/text2"
+            style="?android:attr/spinnerItemStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textAlignment="textStart"/> <!-- ERROR -->
+
+</merge>

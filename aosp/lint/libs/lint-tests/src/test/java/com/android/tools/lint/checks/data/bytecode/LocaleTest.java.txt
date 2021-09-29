@@ -1,0 +1,37 @@
+package test.pkg;
+
+import java.text.*;
+import java.util.*;
+
+public class LocaleTest {
+    public void testStrings() {
+        System.out.println("OK".toUpperCase(Locale.getDefault()));
+        System.out.println("OK".toUpperCase(Locale.US));
+        System.out.println("OK".toUpperCase(Locale.CHINA));
+        System.out.println("WRONG".toUpperCase());
+
+        System.out.println("OK".toLowerCase(Locale.getDefault()));
+        System.out.println("OK".toLowerCase(Locale.US));
+        System.out.println("OK".toLowerCase(Locale.CHINA));
+        System.out.println("WRONG".toLowerCase());
+
+        String.format(Locale.getDefault(), "OK: %f", 1.0f);
+        String.format("OK: %x %A %c %b %B %h %n %%", 1, 2, 'c', true, false, 5);
+        String.format("WRONG: %f", 1.0f); // Implies locale
+        String.format("WRONG: %1$f", 1.0f);
+        String.format("WRONG: %e", 1.0f);
+        String.format("WRONG: %d", 1.0f);
+        String.format("WRONG: %g", 1.0f);
+        String.format("WRONG: %g", 1.0f);
+        String.format("WRONG: %1$tm %1$te,%1$tY",
+                new GregorianCalendar(2012, GregorianCalendar.AUGUST, 27));
+    }
+
+    @android.annotation.SuppressLint("NewApi") // DateFormatSymbols requires API 9
+    public void testSimpleDateFormat() {
+        new SimpleDateFormat(); // WRONG
+        new SimpleDateFormat("yyyy-MM-dd"); // WRONG
+        new SimpleDateFormat("yyyy-MM-dd", DateFormatSymbols.getInstance()); // WRONG
+        new SimpleDateFormat("yyyy-MM-dd", Locale.US); // OK
+    }
+}

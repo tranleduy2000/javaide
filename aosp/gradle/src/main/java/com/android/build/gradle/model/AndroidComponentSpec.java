@@ -23,6 +23,6 @@ import org.gradle.platform.base.ComponentSpec;
 /**
  * Android ComponentSpec.
  */
-public interface AndroidComponentSpec extends ComponentSpec{
+public interface AndroidComponentSpec extends ComponentSpec {
     AndroidConfig getExtension();
 }

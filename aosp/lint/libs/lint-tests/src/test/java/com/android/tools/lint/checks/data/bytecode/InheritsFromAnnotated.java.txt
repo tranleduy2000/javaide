@@ -1,0 +1,15 @@
+package test.pkg;
+
+import android.webkit.JavascriptInterface;
+
+public class InheritsFromAnnotated extends AnnotatedObject {
+
+	@Override
+	public void test1() {
+	}
+
+	@Override
+	public void test2() {
+	}
+
+}

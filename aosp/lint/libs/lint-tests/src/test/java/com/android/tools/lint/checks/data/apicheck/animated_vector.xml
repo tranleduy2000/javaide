@@ -1,0 +1,9 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/vector_drawable_progress_bar_large" >
+    <target
+        android:name="progressBar"
+        android:animation="@anim/progress_indeterminate_material" />
+    <target
+        android:name="root"
+        android:animation="@anim/progress_indeterminate_rotation_material" />
+</animated-vector>

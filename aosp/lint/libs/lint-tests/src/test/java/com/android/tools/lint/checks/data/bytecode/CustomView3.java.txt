@@ -1,0 +1,13 @@
+package test.Pkg;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.View;
+
+public class CustomView3 extends View {
+
+	public CustomView3(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+	}
+
+}

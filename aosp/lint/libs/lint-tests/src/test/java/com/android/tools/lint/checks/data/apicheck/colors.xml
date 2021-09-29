@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color1">@android:color/black</color>
+    <!-- Requires API 14 -->
+    <color name="color2">@android:color/holo_blue_bright</color>
+</resources>

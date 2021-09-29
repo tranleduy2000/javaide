@@ -14,7 +14,8 @@ import com.duy.android.compiler.builder.internal.dependency.LibraryDependencyImp
 import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.library.LibraryCache;
 import com.duy.android.compiler.utils.FileUtils;
-import org.apache.commons.io.IOUtils;
+import com.duy.common.io.IOUtils;
+
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -78,11 +79,18 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         AndroidAppProject project = new AndroidAppProject(rootDir, null, null);
         File file = new File(rootDir, AndroidGradleFileGenerator.DEFAULT_SETTING_FILE);
         if (!file.exists()) {
-            if (!tryToImport) {
-                throw new IOException("Can not find setting.gradle, try to create new project");
+            //old version
+            file = new File(rootDir, "setting.gradle");
+            if (!file.exists()) {
+                if (!tryToImport) {
+                    throw new IOException("Can not find settings.gradle, try to create new project");
+                } else {
+                    AndroidGradleFileGenerator generator = new AndroidGradleFileGenerator(context, project);
+                    generator.generate();
+                }
             } else {
-                AndroidGradleFileGenerator generator = new AndroidGradleFileGenerator(context, project);
-                generator.generate();
+                file.renameTo(new File(rootDir, AndroidGradleFileGenerator.DEFAULT_SETTING_FILE));
+                file = new File(rootDir, AndroidGradleFileGenerator.DEFAULT_SETTING_FILE);
             }
         }
 
@@ -152,19 +160,26 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         File resDir = project.getResDir();
 
         //drawable
-        copyAssets("templates/app/ic_launcher_hdpi.png", new File(resDir, "drawable-xhdpi/ic_launcher.png"));
-        copyAssets("templates/app/ic_launcher_ldpi.png", new File(resDir, "drawable-ldpi/ic_launcher.png"));
-        copyAssets("templates/app/ic_launcher_mdpi.png", new File(resDir, "drawable-mdpi/ic_launcher.png"));
-        copyAssets("templates/app/ic_launcher_xhdpi.png", new File(resDir, "drawable-xhdpi/ic_launcher.png"));
+        copyAssets("templates/app/ic_launcher_hdpi.png",
+                new File(resDir, "drawable-xhdpi/ic_launcher.png"));
+        copyAssets("templates/app/ic_launcher_ldpi.png",
+                new File(resDir, "drawable-ldpi/ic_launcher.png"));
+        copyAssets("templates/app/ic_launcher_mdpi.png",
+                new File(resDir, "drawable-mdpi/ic_launcher.png"));
+        copyAssets("templates/app/ic_launcher_xhdpi.png",
+                new File(resDir, "drawable-xhdpi/ic_launcher.png"));
 
         //styles
         File style = new File(resDir, "values/styles.xml");
-        String content = IOUtils.toString(context.getAssets().open("templates/app/styles.xml"));
-        content = content.replace("APP_STYLE", useAppCompat ? "Theme.AppCompat.Light" : "@android:style/Theme.Light");
+        String content = IOUtils.toString(
+                context.getAssets().open("templates/app/styles.xml"), "UTF-8");
+        content = content.replace("APP_STYLE", useAppCompat
+                ? "Theme.AppCompat.Light" : "@android:style/Theme.Light");
         saveFile(style, content);
 
         File string = new File(resDir, "values/strings.xml");
-        content = IOUtils.toString(context.getAssets().open("templates/app/strings.xml"));
+        content = IOUtils.toString(
+                context.getAssets().open("templates/app/strings.xml"), "UTF-8");
         content = content.replace("APP_NAME", appName);
         content = content.replace("MAIN_ACTIVITY_NAME", appName);
         saveFile(string, content);
@@ -207,7 +222,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
         outFile.getParentFile().mkdirs();
         FileOutputStream output = new FileOutputStream(outFile);
         InputStream input = context.getAssets().open(assetsPath);
-        org.apache.commons.io.IOUtils.copy(input, output);
+        IOUtils.copy(input, output);
         input.close();
         output.close();
     }
@@ -215,7 +230,7 @@ public class AndroidProjectManager implements IAndroidProjectManager {
     private void saveFile(File file, String content) throws IOException {
         file.getParentFile().mkdirs();
         FileOutputStream output = new FileOutputStream(file);
-        org.apache.commons.io.IOUtils.write(content, output);
+        IOUtils.write(content, output);
         output.close();
     }
 

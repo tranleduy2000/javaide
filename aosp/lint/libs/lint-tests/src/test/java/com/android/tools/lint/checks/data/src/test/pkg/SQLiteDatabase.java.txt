@@ -1,0 +1,10 @@
+package android.database.sqlite;
+
+import android.database.SQLException;
+
+// Lint unit testing stub
+public class SQLiteDatabase {
+    public void execSQL(String sql) throws SQLException {
+    }
+}
+

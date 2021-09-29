@@ -16,8 +16,6 @@
 
 package com.android.build.gradle.internal.model;
 
-import static com.android.builder.model.AndroidProject.ARTIFACT_MAIN;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.build.OutputFile;
@@ -25,12 +23,9 @@ import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.api.ApkOutputFile;
 import com.android.build.gradle.internal.BuildTypeData;
 import com.android.build.gradle.internal.ExtraModelInfo;
-import com.android.build.gradle.internal.NdkHandler;
 import com.android.build.gradle.internal.ProductFlavorData;
 import com.android.build.gradle.internal.TaskManager;
 import com.android.build.gradle.internal.VariantManager;
-import com.android.build.gradle.internal.core.Abi;
-import com.android.build.gradle.internal.dsl.CoreNdkOptions;
 import com.android.build.gradle.internal.core.GradleVariantConfiguration;
 import com.android.build.gradle.internal.dsl.CoreProductFlavor;
 import com.android.build.gradle.internal.scope.VariantScope;
@@ -39,7 +34,6 @@ import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.build.gradle.internal.variant.BaseVariantOutputData;
 import com.android.builder.Version;
 import com.android.builder.core.AndroidBuilder;
-import com.android.builder.core.VariantType;
 import com.android.builder.model.AaptOptions;
 import com.android.builder.model.AndroidArtifact;
 import com.android.builder.model.AndroidArtifactOutput;
@@ -49,7 +43,6 @@ import com.android.builder.model.ArtifactMetaData;
 import com.android.builder.model.JavaArtifact;
 import com.android.builder.model.LintOptions;
 import com.android.builder.model.NativeLibrary;
-import com.android.builder.model.NativeToolchain;
 import com.android.builder.model.ProductFlavor;
 import com.android.builder.model.SigningConfig;
 import com.android.builder.model.SourceProvider;
@@ -57,12 +50,9 @@ import com.android.builder.model.SourceProviderContainer;
 import com.android.builder.model.SyncIssue;
 import com.android.sdklib.AndroidVersion;
 import com.android.sdklib.IAndroidTarget;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import org.gradle.api.Project;
 import org.gradle.tooling.provider.model.ToolingModelBuilder;
@@ -71,7 +61,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+
+import static com.android.builder.model.AndroidProject.ARTIFACT_MAIN;
 
 /**
  * Builder for the custom Android model.
@@ -88,13 +79,6 @@ public class ModelBuilder implements ToolingModelBuilder {
     private final VariantManager variantManager;
     @NonNull
     private final TaskManager taskManager;
-    @NonNull
-    private final NdkHandler ndkHandler;
-    @NonNull
-    private Map<Abi, NativeToolchain> toolchains;
-    @NonNull
-    private NativeLibraryFactory nativeLibFactory;
-
     private final boolean isLibrary;
 
     public ModelBuilder(
@@ -103,292 +87,13 @@ public class ModelBuilder implements ToolingModelBuilder {
             @NonNull TaskManager taskManager,
             @NonNull AndroidConfig config,
             @NonNull ExtraModelInfo extraModelInfo,
-            @NonNull NdkHandler ndkHandler,
-            @NonNull NativeLibraryFactory nativeLibraryFactory,
             boolean isLibrary) {
         this.androidBuilder = androidBuilder;
         this.config = config;
         this.extraModelInfo = extraModelInfo;
         this.variantManager = variantManager;
         this.taskManager = taskManager;
-        this.ndkHandler = ndkHandler;
-        this.nativeLibFactory = nativeLibraryFactory;
         this.isLibrary = isLibrary;
-    }
-
-
-    @Override
-    public boolean canBuild(String modelName) {
-        // The default name for a model is the name of the Java interface.
-        return modelName.equals(AndroidProject.class.getName());
-    }
-
-    @Override
-    public Object buildAll(String modelName, Project project) {
-        Collection<? extends SigningConfig> signingConfigs = config.getSigningConfigs();
-
-        // Get the boot classpath. This will ensure the target is configured.
-        List<String> bootClasspath = androidBuilder.getBootClasspathAsStrings();
-
-        List<File> frameworkSource = Collections.emptyList();
-
-        // List of extra artifacts, with all test variants added.
-        List<ArtifactMetaData> artifactMetaDataList = Lists.newArrayList(
-                extraModelInfo.getExtraArtifacts());
-
-        for (VariantType variantType : VariantType.getTestingTypes()) {
-            artifactMetaDataList.add(new ArtifactMetaDataImpl(
-                    variantType.getArtifactName(),
-                    true /*isTest*/,
-                    variantType.getArtifactType()));
-        }
-
-        LintOptions lintOptions = com.android.build.gradle.internal.dsl.LintOptions.create(
-                config.getLintOptions());
-
-        AaptOptions aaptOptions = AaptOptionsImpl.create(config.getAaptOptions());
-
-        List<SyncIssue> syncIssues = Lists.newArrayList(extraModelInfo.getSyncIssues().values());
-
-        List<String> flavorDimensionList = (config.getFlavorDimensionList() != null ?
-                config.getFlavorDimensionList() : Lists.<String>newArrayList());
-
-        toolchains = createNativeToolchainModelMap(ndkHandler);
-
-        DefaultAndroidProject androidProject = new DefaultAndroidProject(
-                Version.ANDROID_GRADLE_PLUGIN_VERSION,
-                project.getName(),
-                flavorDimensionList,
-                androidBuilder.getTarget() != null ? androidBuilder.getTarget().hashString() : "",
-                bootClasspath,
-                frameworkSource,
-                cloneSigningConfigs(config.getSigningConfigs()),
-                aaptOptions,
-                artifactMetaDataList,
-                findUnresolvedDependencies(syncIssues),
-                syncIssues,
-                config.getCompileOptions(),
-                lintOptions,
-                project.getBuildDir(),
-                config.getResourcePrefix(),
-                ImmutableList.copyOf(toolchains.values()),
-                isLibrary,
-                Version.BUILDER_MODEL_API_VERSION);
-
-        androidProject.setDefaultConfig(ProductFlavorContainerImpl.createProductFlavorContainer(
-                variantManager.getDefaultConfig(),
-                extraModelInfo.getExtraFlavorSourceProviders(
-                        variantManager.getDefaultConfig().getProductFlavor().getName())));
-
-        for (BuildTypeData btData : variantManager.getBuildTypes().values()) {
-            androidProject.addBuildType(BuildTypeContainerImpl.create(
-                    btData,
-                    extraModelInfo.getExtraBuildTypeSourceProviders(btData.getBuildType().getName())));
-        }
-        for (ProductFlavorData pfData : variantManager.getProductFlavors().values()) {
-            androidProject.addProductFlavors(ProductFlavorContainerImpl.createProductFlavorContainer(
-                    pfData,
-                    extraModelInfo.getExtraFlavorSourceProviders(pfData.getProductFlavor().getName())));
-        }
-
-        for (BaseVariantData<? extends BaseVariantOutputData> variantData : variantManager.getVariantDataList()) {
-            androidProject.addVariant(createVariant(variantData));
-        }
-
-        return androidProject;
-    }
-
-    /**
-     * Create a map of ABI to NativeToolchain
-     */
-    public static Map<Abi, NativeToolchain> createNativeToolchainModelMap(
-            @NonNull NdkHandler ndkHandler) {
-        if (!ndkHandler.isNdkDirConfigured()) {
-            return ImmutableMap.of();
-        }
-
-        Map<Abi, NativeToolchain> toolchains = Maps.newHashMap();
-
-        for (Abi abi : ndkHandler.getSupportedAbis()) {
-            toolchains.put(
-                    abi,
-                    new NativeToolchainImpl(
-                            ndkHandler.getToolchain().getName() + "-" + abi.getName(),
-                            ndkHandler.getCCompiler(abi),
-                            ndkHandler.getCppCompiler(abi)));
-        }
-        return toolchains;
-    }
-
-    @NonNull
-    private VariantImpl createVariant(
-            @NonNull BaseVariantData<? extends BaseVariantOutputData> variantData) {
-        AndroidArtifact mainArtifact = createAndroidArtifact(ARTIFACT_MAIN, variantData);
-
-        GradleVariantConfiguration variantConfiguration = variantData.getVariantConfiguration();
-
-        String variantName = variantConfiguration.getFullName();
-
-        List<AndroidArtifact> extraAndroidArtifacts = Lists.newArrayList(
-                extraModelInfo.getExtraAndroidArtifacts(variantName));
-        // Make sure all extra artifacts are serializable.
-        Collection<JavaArtifact> extraJavaArtifacts = extraModelInfo.getExtraJavaArtifacts(
-                variantName);
-        List<JavaArtifact> clonedExtraJavaArtifacts = Lists.newArrayListWithCapacity(
-                extraJavaArtifacts.size());
-        for (JavaArtifact javaArtifact : extraJavaArtifacts) {
-            clonedExtraJavaArtifacts.add(JavaArtifactImpl.clone(javaArtifact));
-        }
-
-
-        // if the target is a codename, override the model value.
-        ApiVersion sdkVersionOverride = null;
-
-        // we know the getTargetInfo won't return null here.
-        @SuppressWarnings("ConstantConditions")
-        IAndroidTarget androidTarget = androidBuilder.getTargetInfo().getTarget();
-
-        AndroidVersion version = androidTarget.getVersion();
-        if (version.getCodename() != null) {
-            sdkVersionOverride = ApiVersionImpl.clone(version);
-        }
-
-        return new VariantImpl(
-                variantName,
-                variantConfiguration.getBaseName(),
-                variantConfiguration.getBuildType().getName(),
-                getProductFlavorNames(variantData),
-                ProductFlavorImpl.cloneFlavor(
-                        variantConfiguration.getMergedFlavor(),
-                        sdkVersionOverride,
-                        sdkVersionOverride),
-                mainArtifact,
-                extraAndroidArtifacts,
-                clonedExtraJavaArtifacts);
-    }
-
-    /**
-     * Create a NativeLibrary for each ABI.
-     */
-    private Collection<NativeLibrary> createNativeLibraries(
-            @NonNull Collection<Abi> abis,
-            @NonNull VariantScope scope) {
-        Collection<NativeLibrary> nativeLibraries = Lists.newArrayListWithCapacity(abis.size());
-        for (Abi abi : abis) {
-            NativeToolchain toolchain = toolchains.get(abi);
-            if (toolchain == null) {
-                continue;
-            }
-            Optional<NativeLibrary> lib = nativeLibFactory.create(scope, toolchain.getName(), abi);
-            if (lib.isPresent()) {
-                nativeLibraries.add(lib.get());
-            }
-        }
-        return nativeLibraries;
-    }
-
-    private AndroidArtifact createAndroidArtifact(
-            @NonNull String name,
-            @NonNull BaseVariantData<? extends BaseVariantOutputData> variantData) {
-        VariantScope scope = variantData.getScope();
-        GradleVariantConfiguration variantConfiguration = variantData.getVariantConfiguration();
-
-        SigningConfig signingConfig = variantConfiguration.getSigningConfig();
-        String signingConfigName = null;
-        if (signingConfig != null) {
-            signingConfigName = signingConfig.getName();
-        }
-
-        SourceProviders sourceProviders = determineSourceProviders(variantData);
-
-        // get the outputs
-        List<? extends BaseVariantOutputData> variantOutputs = variantData.getOutputs();
-        List<AndroidArtifactOutput> outputs = Lists.newArrayListWithCapacity(variantOutputs.size());
-
-        CoreNdkOptions ndkConfig = variantData.getVariantConfiguration().getNdkConfig();
-        Collection<NativeLibrary> nativeLibraries = ImmutableList.of();
-        if (ndkHandler.getNdkDirectory() != null) {
-            if (config.getSplits().getAbi().isEnable()) {
-                nativeLibraries = createNativeLibraries(
-                        config.getSplits().getAbi().isUniversalApk()
-                                ? ndkHandler.getSupportedAbis()
-                                : createAbiList(config.getSplits().getAbiFilters()),
-                        scope);
-            } else {
-                if (ndkConfig.getAbiFilters() == null || ndkConfig.getAbiFilters().isEmpty()) {
-                    nativeLibraries = createNativeLibraries(
-                            ndkHandler.getSupportedAbis(),
-                            scope);
-                } else {
-                    nativeLibraries = createNativeLibraries(
-                            createAbiList(ndkConfig.getAbiFilters()),
-                            scope);
-                }
-            }
-        }
-
-        for (BaseVariantOutputData variantOutputData : variantOutputs) {
-            int intVersionCode;
-            if (variantOutputData instanceof ApkVariantOutputData) {
-                intVersionCode =  variantOutputData.getVersionCode();
-            } else {
-                Integer versionCode = variantConfiguration.getMergedFlavor().getVersionCode();
-                intVersionCode = versionCode != null ? versionCode : 1;
-            }
-
-            ImmutableCollection.Builder<OutputFile> outputFiles = ImmutableList.builder();
-
-            // add the main APK
-            outputFiles.add(new OutputFileImpl(
-                    variantOutputData.getMainOutputFile().getFilters(),
-                    variantOutputData.getMainOutputFile().getType().name(),
-                    variantOutputData.getOutputFile()));
-
-            for (ApkOutputFile splitApk : variantOutputData.getOutputs()) {
-                if (splitApk.getType() == OutputFile.OutputType.SPLIT) {
-                    outputFiles.add(new OutputFileImpl(
-                            splitApk.getFilters(), OutputFile.SPLIT, splitApk.getOutputFile()));
-                }
-            }
-
-            // add the main APK.
-            outputs.add(new AndroidArtifactOutputImpl(
-                    outputFiles.build(),
-                    "assemble" + variantOutputData.getFullName(),
-                    variantOutputData.getScope().getManifestOutputFile(),
-                    intVersionCode));
-        }
-
-        return new AndroidArtifactImpl(
-                name,
-                outputs,
-                variantData.assembleVariantTask == null ? scope.getTaskName("assemble") : variantData.assembleVariantTask.getName(),
-                variantConfiguration.isSigningReady() || variantData.outputsAreSigned,
-                signingConfigName,
-                variantConfiguration.getApplicationId(),
-                // TODO: Need to determine the tasks' name when the tasks may not be created
-                // in component plugin.
-                scope.getSourceGenTask() == null ? scope.getTaskName("generate", "Sources") : scope.getSourceGenTask().getName(),
-                scope.getCompileTask() == null ? scope.getTaskName("compile", "Sources") : scope.getCompileTask().getName(),
-                getGeneratedSourceFolders(variantData),
-                getGeneratedResourceFolders(variantData),
-                (variantData.javacTask != null) ? variantData.javacTask.getDestinationDir() : scope.getJavaOutputDir(),
-                scope.getJavaResourcesDestinationDir(),
-                DependenciesImpl.cloneDependencies(variantData, androidBuilder),
-                sourceProviders.variantSourceProvider,
-                sourceProviders.multiFlavorSourceProvider,
-                variantConfiguration.getSupportedAbis(),
-                nativeLibraries,
-                variantConfiguration.getMergedBuildConfigFields(),
-                variantConfiguration.getMergedResValues());
-    }
-
-    private static Collection<Abi> createAbiList(Collection<String> abiNames) {
-        ImmutableList.Builder<Abi> builder = ImmutableList.builder();
-        for (String abiName : abiNames) {
-            builder.add(Abi.getByName(abiName));
-        }
-        return builder.build();
     }
 
     private static SourceProviders determineSourceProviders(
@@ -470,7 +175,6 @@ public class ModelBuilder implements ToolingModelBuilder {
 
         VariantScope scope = variantData.getScope();
 
-        result.add(scope.getRenderscriptResOutputDir());
         result.add(scope.getGeneratedResOutputDir());
 
         return result;
@@ -501,18 +205,6 @@ public class ModelBuilder implements ToolingModelBuilder {
         return null;
     }
 
-    private static class SourceProviders {
-        protected SourceProviderImpl variantSourceProvider;
-        protected SourceProviderImpl multiFlavorSourceProvider;
-
-        public SourceProviders(
-                SourceProviderImpl variantSourceProvider,
-                SourceProviderImpl multiFlavorSourceProvider) {
-            this.variantSourceProvider = variantSourceProvider;
-            this.multiFlavorSourceProvider = multiFlavorSourceProvider;
-        }
-    }
-
     /**
      * Return the unresolved dependencies in SyncIssues
      */
@@ -526,5 +218,211 @@ public class ModelBuilder implements ToolingModelBuilder {
             }
         }
         return unresolvedDependencies;
+    }
+
+    @Override
+    public boolean canBuild(String modelName) {
+        // The default name for a model is the name of the Java interface.
+        return modelName.equals(AndroidProject.class.getName());
+    }
+
+    @Override
+    public Object buildAll(String modelName, Project project) {
+        Collection<? extends SigningConfig> signingConfigs = config.getSigningConfigs();
+
+        // Get the boot classpath. This will ensure the target is configured.
+        List<String> bootClasspath = androidBuilder.getBootClasspathAsStrings();
+
+        List<File> frameworkSource = Collections.emptyList();
+
+        // List of extra artifacts, with all test variants added.
+        List<ArtifactMetaData> artifactMetaDataList = Lists.newArrayList(
+                extraModelInfo.getExtraArtifacts());
+
+        LintOptions lintOptions = com.android.build.gradle.internal.dsl.LintOptions.create(
+                config.getLintOptions());
+
+        AaptOptions aaptOptions = AaptOptionsImpl.create(config.getAaptOptions());
+
+        List<SyncIssue> syncIssues = Lists.newArrayList(extraModelInfo.getSyncIssues().values());
+
+        List<String> flavorDimensionList = (config.getFlavorDimensionList() != null ?
+                config.getFlavorDimensionList() : Lists.<String>newArrayList());
+
+
+        DefaultAndroidProject androidProject = new DefaultAndroidProject(
+                Version.ANDROID_GRADLE_PLUGIN_VERSION,
+                project.getName(),
+                flavorDimensionList,
+                androidBuilder.getTarget() != null ? androidBuilder.getTarget().hashString() : "",
+                bootClasspath,
+                frameworkSource,
+                cloneSigningConfigs(config.getSigningConfigs()),
+                aaptOptions,
+                artifactMetaDataList,
+                findUnresolvedDependencies(syncIssues),
+                syncIssues,
+                config.getCompileOptions(),
+                lintOptions,
+                project.getBuildDir(),
+                config.getResourcePrefix(),
+                isLibrary,
+                Version.BUILDER_MODEL_API_VERSION);
+
+        androidProject.setDefaultConfig(ProductFlavorContainerImpl.createProductFlavorContainer(
+                variantManager.getDefaultConfig(),
+                extraModelInfo.getExtraFlavorSourceProviders(
+                        variantManager.getDefaultConfig().getProductFlavor().getName())));
+
+        for (BuildTypeData btData : variantManager.getBuildTypes().values()) {
+            androidProject.addBuildType(BuildTypeContainerImpl.create(
+                    btData,
+                    extraModelInfo.getExtraBuildTypeSourceProviders(btData.getBuildType().getName())));
+        }
+        for (ProductFlavorData pfData : variantManager.getProductFlavors().values()) {
+            androidProject.addProductFlavors(ProductFlavorContainerImpl.createProductFlavorContainer(
+                    pfData,
+                    extraModelInfo.getExtraFlavorSourceProviders(pfData.getProductFlavor().getName())));
+        }
+
+        for (BaseVariantData<? extends BaseVariantOutputData> variantData : variantManager.getVariantDataList()) {
+            androidProject.addVariant(createVariant(variantData));
+        }
+
+        return androidProject;
+    }
+
+    @NonNull
+    private VariantImpl createVariant(
+            @NonNull BaseVariantData<? extends BaseVariantOutputData> variantData) {
+        AndroidArtifact mainArtifact = createAndroidArtifact(ARTIFACT_MAIN, variantData);
+
+        GradleVariantConfiguration variantConfiguration = variantData.getVariantConfiguration();
+
+        String variantName = variantConfiguration.getFullName();
+
+        List<AndroidArtifact> extraAndroidArtifacts = Lists.newArrayList(
+                extraModelInfo.getExtraAndroidArtifacts(variantName));
+        // Make sure all extra artifacts are serializable.
+        Collection<JavaArtifact> extraJavaArtifacts = extraModelInfo.getExtraJavaArtifacts(
+                variantName);
+        List<JavaArtifact> clonedExtraJavaArtifacts = Lists.newArrayListWithCapacity(
+                extraJavaArtifacts.size());
+        for (JavaArtifact javaArtifact : extraJavaArtifacts) {
+            clonedExtraJavaArtifacts.add(JavaArtifactImpl.clone(javaArtifact));
+        }
+
+
+        // if the target is a codename, override the model value.
+        ApiVersion sdkVersionOverride = null;
+
+        // we know the getTargetInfo won't return null here.
+        @SuppressWarnings("ConstantConditions")
+        IAndroidTarget androidTarget = androidBuilder.getTargetInfo().getTarget();
+
+        AndroidVersion version = androidTarget.getVersion();
+        if (version.getCodename() != null) {
+            sdkVersionOverride = ApiVersionImpl.clone(version);
+        }
+
+        return new VariantImpl(
+                variantName,
+                variantConfiguration.getBaseName(),
+                variantConfiguration.getBuildType().getName(),
+                getProductFlavorNames(variantData),
+                ProductFlavorImpl.cloneFlavor(
+                        variantConfiguration.getMergedFlavor(),
+                        sdkVersionOverride,
+                        sdkVersionOverride),
+                mainArtifact,
+                extraAndroidArtifacts,
+                clonedExtraJavaArtifacts);
+    }
+
+    private AndroidArtifact createAndroidArtifact(
+            @NonNull String name,
+            @NonNull BaseVariantData<? extends BaseVariantOutputData> variantData) {
+        VariantScope scope = variantData.getScope();
+        GradleVariantConfiguration variantConfiguration = variantData.getVariantConfiguration();
+
+        SigningConfig signingConfig = variantConfiguration.getSigningConfig();
+        String signingConfigName = null;
+        if (signingConfig != null) {
+            signingConfigName = signingConfig.getName();
+        }
+
+        SourceProviders sourceProviders = determineSourceProviders(variantData);
+
+        // get the outputs
+        List<? extends BaseVariantOutputData> variantOutputs = variantData.getOutputs();
+        List<AndroidArtifactOutput> outputs = Lists.newArrayListWithCapacity(variantOutputs.size());
+
+        Collection<NativeLibrary> nativeLibraries = ImmutableList.of();
+
+        for (BaseVariantOutputData variantOutputData : variantOutputs) {
+            int intVersionCode;
+            if (variantOutputData instanceof ApkVariantOutputData) {
+                intVersionCode = variantOutputData.getVersionCode();
+            } else {
+                Integer versionCode = variantConfiguration.getMergedFlavor().getVersionCode();
+                intVersionCode = versionCode != null ? versionCode : 1;
+            }
+
+            ImmutableCollection.Builder<OutputFile> outputFiles = ImmutableList.builder();
+
+            // add the main APK
+            outputFiles.add(new OutputFileImpl(
+                    variantOutputData.getMainOutputFile().getFilters(),
+                    variantOutputData.getMainOutputFile().getType().name(),
+                    variantOutputData.getOutputFile()));
+
+            for (ApkOutputFile splitApk : variantOutputData.getOutputs()) {
+                if (splitApk.getType() == OutputFile.OutputType.SPLIT) {
+                    outputFiles.add(new OutputFileImpl(
+                            splitApk.getFilters(), OutputFile.SPLIT, splitApk.getOutputFile()));
+                }
+            }
+
+            // add the main APK.
+            outputs.add(new AndroidArtifactOutputImpl(
+                    outputFiles.build(),
+                    "assemble" + variantOutputData.getFullName(),
+                    variantOutputData.getScope().getManifestOutputFile(),
+                    intVersionCode));
+        }
+
+        return new AndroidArtifactImpl(
+                name,
+                outputs,
+                variantData.assembleVariantTask == null ? scope.getTaskName("assemble") : variantData.assembleVariantTask.getName(),
+                variantConfiguration.isSigningReady() || variantData.outputsAreSigned,
+                signingConfigName,
+                variantConfiguration.getApplicationId(),
+                // TODO: Need to determine the tasks' name when the tasks may not be created
+                // in component plugin.
+                scope.getSourceGenTask() == null ? scope.getTaskName("generate", "Sources") : scope.getSourceGenTask().getName(),
+                scope.getCompileTask() == null ? scope.getTaskName("compile", "Sources") : scope.getCompileTask().getName(),
+                getGeneratedSourceFolders(variantData),
+                getGeneratedResourceFolders(variantData),
+                (variantData.javacTask != null) ? variantData.javacTask.getDestinationDir() : scope.getJavaOutputDir(),
+                scope.getJavaResourcesDestinationDir(),
+                DependenciesImpl.cloneDependencies(variantData, androidBuilder),
+                sourceProviders.variantSourceProvider,
+                sourceProviders.multiFlavorSourceProvider,
+                nativeLibraries,
+                variantConfiguration.getMergedBuildConfigFields(),
+                variantConfiguration.getMergedResValues());
+    }
+
+    private static class SourceProviders {
+        protected SourceProviderImpl variantSourceProvider;
+        protected SourceProviderImpl multiFlavorSourceProvider;
+
+        public SourceProviders(
+                SourceProviderImpl variantSourceProvider,
+                SourceProviderImpl multiFlavorSourceProvider) {
+            this.variantSourceProvider = variantSourceProvider;
+            this.multiFlavorSourceProvider = multiFlavorSourceProvider;
+        }
     }
 }

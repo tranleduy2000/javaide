@@ -1,0 +1,35 @@
+package test.pkg;
+
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+
+public class CheckPermissions {
+    private void foo(Context context) {
+        context.checkCallingOrSelfPermission(Manifest.permission.INTERNET); // WRONG
+        context.checkPermission(Manifest.permission.INTERNET, 1, 1);
+        check(context.checkCallingOrSelfPermission(Manifest.permission.INTERNET)); // OK
+        int check = context.checkCallingOrSelfPermission(Manifest.permission.INTERNET); // OK
+        if (context.checkCallingOrSelfPermission(Manifest.permission.INTERNET) // OK
+                != PackageManager.PERMISSION_GRANTED) {
+            showAlert(context, "Error",
+                    "Application requires permission to access the Internet");
+        }
+    }
+
+    private Bitmap checkResult(Bitmap bitmap) {
+        bitmap.extractAlpha(); // WARNING
+        Bitmap bitmap2 = bitmap.extractAlpha(); // OK
+        call(bitmap.extractAlpha()); // OK
+        return bitmap.extractAlpha(); // OK
+    }
+
+    private void showAlert(Context context, String error, String s) {
+    }
+
+    private void check(int i) {
+    }
+    private void call(Bitmap bitmap) {
+    }
+}

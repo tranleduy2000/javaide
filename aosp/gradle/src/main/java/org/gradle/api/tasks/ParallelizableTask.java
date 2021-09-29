@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 
 /**
  * Declares that the associated task can be safely executed in parallel with other tasks.
- *
+ * <p>
  * <h3>Implementation requirements of parallelizable tasks</h3>
  * <p>
  * Tasks are not parallelizable by default because it is possible for tasks to interfere with each other in unsafe ways.
@@ -35,21 +35,21 @@ import java.lang.annotation.Target;
  * For a task to be safely parallelizable, it should not change any data that may be read by other tasks.
  * It should not, for example, update project extensions, other tasks or any other shared data.
  * It may change internal variables and properties of the task, the filesystem and other external resources.
- *
+ * <p>
  * <h3>Inheritance</h3>
  * <p>
  * This annotation is not inherited.
  * A task class that extends from another task class that declares itself to be parallel safe is not implicitly also parallel safe.
  * If the subclass is indeed parallel safe, it must also have this annotation.
- *
+ * <p>
  * <h3>Task usage and configuration requirements for parallel execution</h3>
- *
+ * <p>
  * <h4>Custom actions</h4>
  * <p>
  * Any task that has custom actions (i.e. ones added via {@link org.gradle.api.Task#doLast(org.gradle.api.Action)} or {@link org.gradle.api.Task#doFirst(org.gradle.api.Action)})
  * is not considered parallelizable even if its type carries this annotation.
  * This is because it cannot be known whether the added action is parallel safe or not.
- *
+ * <p>
  * <h4>File system outputs</h4>
  * <p>
  * Any two tasks that declare overlapping file system outputs will not be run in parallel with each other even if they carry this annotation, to prevent data corruption.
@@ -61,7 +61,7 @@ import java.lang.annotation.Target;
  * <p>
  * If a task traverses a link that is a child of a declared output in order to change or create files, the real location of the files will not be considered.
  * However, declared outputs that are children of links <b>are</b> resolved to their real location.
- *
+ * <p>
  * <h3>Prevent parallel execution</h3>
  * <p>
  * In order to prevent two tasks from executing in parallel, a {@link org.gradle.api.Task#mustRunAfter(Object...)} relationship can be set up between the tasks.

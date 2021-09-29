@@ -19,14 +19,12 @@ package com.android.build.gradle.model;
 import com.android.build.gradle.managed.BuildType;
 import com.android.build.gradle.managed.ProductFlavor;
 
-import org.gradle.platform.base.BinarySpec;
-
 import java.util.List;
 
 /**
  * Binary interface for Android.
  */
-public interface AndroidBinary extends BinarySpec {
+public interface AndroidBinary {
     BuildType getBuildType();
 
     List<ProductFlavor> getProductFlavors();

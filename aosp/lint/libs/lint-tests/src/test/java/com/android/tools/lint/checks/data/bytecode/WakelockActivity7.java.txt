@@ -1,0 +1,17 @@
+package test.pkg;
+
+import android.os.PowerManager.WakeLock;
+
+public class WakelockActivity7 {
+    public void test(WakeLock lock) {
+        try {
+            lock.acquire();
+            new Runnable() {
+                public void run() {
+                }
+            };
+        } finally {
+            lock.release();
+        }
+    }
+}

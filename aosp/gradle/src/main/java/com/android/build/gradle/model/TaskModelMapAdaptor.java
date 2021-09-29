@@ -56,7 +56,7 @@ public class TaskModelMapAdaptor implements TaskFactory {
 
     @Override
     public <S extends Task> void create(String name, Class<S> type,
-            Action<? super S> configAction) {
+                                        Action<? super S> configAction) {
         tasks.create(name, type, configAction);
     }
 

@@ -1,0 +1,13 @@
+package test.pkg;
+
+public class Java7API {
+    public Object testReflection(String name) {
+        try {
+            Class<?> clazz = Class.forName(name);
+            return clazz.newInstance();
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+}

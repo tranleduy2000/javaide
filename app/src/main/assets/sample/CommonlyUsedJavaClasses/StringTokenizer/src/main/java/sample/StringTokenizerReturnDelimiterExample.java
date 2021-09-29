@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 
 public class StringTokenizerReturnDelimiterExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
     /*
       By default, StringTokenizer object does not return the delimiters along
@@ -18,12 +18,12 @@ public class StringTokenizerReturnDelimiterExample {
       StringTokenizer(String str, String delim, boolean returnDelims) construcor
     */
 
-    //Create StringTokenizer object
-    StringTokenizer st = new StringTokenizer("Java|StringTokenizer|Example 1", "|", true);
+        //Create StringTokenizer object
+        StringTokenizer st = new StringTokenizer("Java|StringTokenizer|Example 1", "|", true);
 
-    //iterate through tokens
-    while (st.hasMoreTokens()) System.out.println(st.nextToken("|"));
-  }
+        //iterate through tokens
+        while (st.hasMoreTokens()) System.out.println(st.nextToken("|"));
+    }
 }
 
 /*

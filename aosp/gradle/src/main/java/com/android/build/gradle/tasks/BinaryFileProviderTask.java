@@ -28,7 +28,10 @@ import java.io.File;
  */
 public interface BinaryFileProviderTask extends Task {
 
-    enum BinaryArtifactType { JAR}
+    @NonNull
+    Artifact getArtifact();
+
+    enum BinaryArtifactType {JAR}
 
     final class Artifact {
 
@@ -43,7 +46,4 @@ public interface BinaryFileProviderTask extends Task {
             this.artifactFile = artifactFile;
         }
     }
-
-    @NonNull
-    Artifact getArtifact();
 }

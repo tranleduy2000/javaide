@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/androi"
+    a:layout_width="match_parent"
+    a:layout_height="match_parent"
+    a:orientation="vertical" >
+
+    <include
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        layout="@layout/layout2" />
+
+    <Button
+        a:id="@+id/button1"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:text="Button" />
+
+    <Button
+        a:id="@+id/button2"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:text="Button" />
+
+</LinearLayout>

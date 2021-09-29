@@ -1,0 +1,21 @@
+package test.pkg;
+
+import static android.content.pm.PackageManager.*;
+
+import android.app.Activity;
+
+public class GetSignaturesNoFlagTest extends Activity {
+    public void passLintCheck() {
+        getPackageManager()
+            .getPackageInfo("some.pkg",
+                GET_ACTIVITIES |
+                GET_GIDS |
+                GET_CONFIGURATIONS |
+                GET_INSTRUMENTATION |
+                GET_PERMISSIONS |
+                GET_PROVIDERS |
+                GET_RECEIVERS |
+                GET_SERVICES |
+                GET_UNINSTALLED_PACKAGES);
+    }
+}

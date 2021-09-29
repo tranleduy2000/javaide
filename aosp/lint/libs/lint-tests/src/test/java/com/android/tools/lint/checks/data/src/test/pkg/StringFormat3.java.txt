@@ -1,0 +1,28 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.content.Context;
+
+import java.util.Locale;
+
+public class StringFormat3 extends Activity {
+    public final void test(Context context) {
+        Article article = new Article();
+        String s1 = String.format(Locale.FRANCE,
+                context.getString(R.string.gridview_views_count), article.playsCount);
+        String s2 = String.format(Locale.FRANCE,
+                context.getString(R.string.gridview_views_count), 5);
+        String s3 = String.format(Locale.FRANCE,
+                context.getString(R.string.gridview_views_count), "wrong");
+        String s4 = String.format(context.getString(R.string.gridview_views_count), "wrong");
+        String s5 = String.format(context.getString(R.string.gridview_views_count), 5); // OK
+        String s6 = String.format(Locale.getDefault(),
+                context.getString(R.string.gridview_views_count), 5);
+        String s7 = String.format((Locale) null,
+                context.getString(R.string.gridview_views_count), "string");
+    }
+
+    private static class Article {
+        String playsCount;
+    }
+}

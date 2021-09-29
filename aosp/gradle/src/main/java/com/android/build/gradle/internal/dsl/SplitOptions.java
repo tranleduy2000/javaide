@@ -43,6 +43,7 @@ public abstract class SplitOptions {
     }
 
     protected abstract Set<String> getDefaultValues();
+
     protected abstract ImmutableSet<String> getAllowedValues();
 
     /**
@@ -72,7 +73,7 @@ public abstract class SplitOptions {
 
     /**
      * Resets the list of included split configuration.
-     *
+     * <p>
      * <p>Use this before calling include, in order to manually configure the list of configuration
      * to split on, rather than excluding from the default list.
      */
@@ -82,7 +83,7 @@ public abstract class SplitOptions {
 
     /**
      * Returns a list of all applicable filters for this dimension.
-     *
+     * <p>
      * <p>The list can return null, indicating that the no-filter option must also be used.
      *
      * @return the filters to use.

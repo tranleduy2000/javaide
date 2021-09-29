@@ -29,7 +29,6 @@ import com.android.builder.png.QueuedCruncher;
 import com.android.builder.png.VectorDrawableRenderer;
 import com.android.ide.common.internal.PngCruncher;
 import com.android.ide.common.process.LoggedProcessOutputHandler;
-import com.android.ide.common.res2.FileStatus;
 import com.android.ide.common.res2.FileValidity;
 import com.android.ide.common.res2.GeneratedResourceSet;
 import com.android.ide.common.res2.MergedResourceWriter;
@@ -53,7 +52,6 @@ import org.gradle.api.tasks.StopExecutionException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 @ParallelizableTask
@@ -109,19 +107,11 @@ public class MergeResources extends IncrementalTask {
         return getBuildTools().getRevision().toString();
     }
 
-    @Override
-    protected boolean isIncremental() {
-        return true;
-    }
-
     private PngCruncher getCruncher() {
         if (getUseNewCruncher()) {
-            if (getBuilder().getTargetInfo().getBuildTools().getRevision().getMajor() >= 22) {
-                return QueuedCruncher.Builder.INSTANCE.newCruncher(
-                        getBuilder().getTargetInfo().getBuildTools().getPath(
-                                BuildToolInfo.PathId.AAPT), getILogger());
-            }
-            getLogger().info("New PNG cruncher will be enabled with build tools 22 and above.");
+            return QueuedCruncher.Builder.INSTANCE.newCruncher(
+                    getBuilder().getTargetInfo().getBuildTools().getPath(
+                            BuildToolInfo.PathId.AAPT), getILogger());
         }
         return getBuilder().getAaptCruncher(new LoggedProcessOutputHandler(getBuilder().getLogger()));
     }
@@ -158,71 +148,6 @@ public class MergeResources extends IncrementalTask {
             System.out.println(e.getMessage());
             merger.cleanBlob(getIncrementalFolder());
             throw new ResourceException(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    protected void doIncrementalTaskAction(Map<File, FileStatus> changedInputs) throws IOException {
-        // create a merger and load the known state.
-        ResourceMerger merger = new ResourceMerger();
-        try {
-            if (!merger.loadFromBlob(getIncrementalFolder(), true /*incrementalState*/)) {
-                doFullTaskAction();
-                return;
-            }
-
-            for (ResourceSet resourceSet : merger.getDataSets()) {
-                resourceSet.setNormalizeResources(normalizeResources);
-                resourceSet.setPreprocessor(preprocessor);
-            }
-
-            List<ResourceSet> resourceSets = getConfiguredResourceSets();
-
-            // compare the known state to the current sets to detect incompatibility.
-            // This is in case there's a change that's too hard to do incrementally. In this case
-            // we'll simply revert to full build.
-            if (!merger.checkValidUpdate(resourceSets)) {
-                getLogger().info("Changed Resource sets: full task run!");
-                doFullTaskAction();
-                return;
-            }
-
-            // The incremental process is the following:
-            // Loop on all the changed files, find which ResourceSet it belongs to, then ask
-            // the resource set to update itself with the new file.
-            for (Map.Entry<File, FileStatus> entry : changedInputs.entrySet()) {
-                File changedFile = entry.getKey();
-
-                merger.findDataSetContaining(changedFile, fileValidity);
-                if (fileValidity.getStatus() == FileValidity.FileStatus.UNKNOWN_FILE) {
-                    doFullTaskAction();
-                    return;
-                } else if (fileValidity.getStatus() == FileValidity.FileStatus.VALID_FILE) {
-                    if (!fileValidity.getDataSet().updateWith(
-                            fileValidity.getSourceFile(), changedFile, entry.getValue(),
-                            getILogger())) {
-                        getLogger().info(
-                                String.format("Failed to process %s event! Full task run",
-                                        entry.getValue()));
-                        doFullTaskAction();
-                        return;
-                    }
-                }
-            }
-
-            MergedResourceWriter writer = new MergedResourceWriter(
-                    getOutputDir(), getCruncher(),
-                    getCrunchPng(), getProcess9Patch(), getPublicFile(), preprocessor);
-            writer.setInsertSourceMarkers(getInsertSourceMarkers());
-            merger.mergeData(writer, false /*doCleanUp*/);
-            // No exception? Write the known state.
-            merger.writeBlobTo(getIncrementalFolder(), writer);
-        } catch (MergingException e) {
-            merger.cleanBlob(getIncrementalFolder());
-            throw new ResourceException(e.getMessage(), e);
-        } finally {
-            // some clean up after the task to help multi variant/module builds.
-            fileValidity.clear();
         }
     }
 
@@ -413,17 +338,10 @@ public class MergeResources extends IncrementalTask {
                         @Override
                         public List<ResourceSet> call() throws Exception {
                             List<File> generatedResFolders = Lists.newArrayList(
-                                    scope.getRenderscriptResOutputDir(),
                                     scope.getGeneratedResOutputDir());
                             if (variantData.getExtraGeneratedResFolders() != null) {
                                 generatedResFolders.addAll(
                                         variantData.getExtraGeneratedResFolders());
-                            }
-                            if (variantData.generateApkDataTask != null &&
-                                    variantData.getVariantConfiguration().getBuildType()
-                                            .isEmbedMicroApp()) {
-                                generatedResFolders.add(
-                                        variantData.generateApkDataTask.getResOutputDir());
                             }
                             return variantData.getVariantConfiguration()
                                     .getResourceSets(generatedResFolders, includeDependencies);

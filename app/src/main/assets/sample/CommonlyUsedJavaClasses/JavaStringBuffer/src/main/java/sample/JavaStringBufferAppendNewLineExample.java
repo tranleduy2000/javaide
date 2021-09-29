@@ -7,28 +7,28 @@ package sample;
 
 public class JavaStringBufferAppendNewLineExample {
 
-  public static void main(String args[]) {
+    public static void main(String args[]) {
 
-    //create StringBuffer object
-    StringBuffer sbf = new StringBuffer("This is the first line.");
+        //create StringBuffer object
+        StringBuffer sbf = new StringBuffer("This is the first line.");
 
-    /*
-     * To append new line to StringBuffer in Java, use
-     * append method of StringBuffer class.
-     *
-     * Different operating systems uses different escape characters to
-     * denote new line. For example, in Windows and DOS it is \r\n, in Unix
-     * it is \n.
-     *
-     * In order to write code which works in all OS, use Java System property
-     * line.separator instead of escape characters.
-     */
+        /*
+         * To append new line to StringBuffer in Java, use
+         * append method of StringBuffer class.
+         *
+         * Different operating systems uses different escape characters to
+         * denote new line. For example, in Windows and DOS it is \r\n, in Unix
+         * it is \n.
+         *
+         * In order to write code which works in all OS, use Java System property
+         * line.separator instead of escape characters.
+         */
 
-    sbf.append(System.getProperty("line.separator"));
-    sbf.append("This is second line.");
+        sbf.append(System.getProperty("line.separator"));
+        sbf.append("This is second line.");
 
-    System.out.println(sbf);
-  }
+        System.out.println(sbf);
+    }
 }
 
 /*

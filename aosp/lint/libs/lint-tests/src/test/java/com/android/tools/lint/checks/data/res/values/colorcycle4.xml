@@ -1,0 +1,3 @@
+<resources>
+    <color name="test3">@color/test1</color>
+</resources>

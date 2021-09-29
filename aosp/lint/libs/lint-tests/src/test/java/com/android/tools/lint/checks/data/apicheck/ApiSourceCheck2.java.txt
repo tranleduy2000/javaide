@@ -1,0 +1,18 @@
+package test.pkg;
+
+import android.widget.AbsListView;
+import android.widget.ListView;
+
+@SuppressWarnings("unused")
+public class ApiSourceCheck2 {
+    public void test() {
+        int mode1 = AbsListView.CHOICE_MODE_MULTIPLE;
+        int mode2 = AbsListView.CHOICE_MODE_MULTIPLE_MODAL;
+        int mode3 = AbsListView.CHOICE_MODE_NONE;
+        int mode4 = AbsListView.CHOICE_MODE_SINGLE;
+        int mode5 = ListView.CHOICE_MODE_MULTIPLE;
+        int mode6 = ListView.CHOICE_MODE_MULTIPLE_MODAL;
+        int mode7 = ListView.CHOICE_MODE_NONE;
+        int mode8 = ListView.CHOICE_MODE_SINGLE;
+    }
+}

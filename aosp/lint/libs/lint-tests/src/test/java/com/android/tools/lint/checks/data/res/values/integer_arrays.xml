@@ -1,0 +1,16 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="used">16dp</dimen>
+
+    <integer-array name="iconsets_array_ids" tools:ignore="UnusedResources">
+        <item>@array/iconset_pixelmixer_basic</item>
+        <item>@array/iconset_dryicons_coquette</item>
+    </integer-array>
+
+    <integer-array name="iconset_pixelmixer_basic">
+        <item>@dimen/used</item>
+    </integer-array>
+
+    <integer-array name="iconset_dryicons_coquette">
+        <item>@dimen/used</item>
+    </integer-array>
+</resources>

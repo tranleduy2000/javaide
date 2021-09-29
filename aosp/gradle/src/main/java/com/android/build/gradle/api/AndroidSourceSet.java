@@ -15,6 +15,7 @@
  */
 
 package com.android.build.gradle.api;
+
 import com.android.annotations.NonNull;
 
 import groovy.lang.Closure;
@@ -43,7 +44,7 @@ public interface AndroidSourceSet {
 
     /**
      * Configures the Java resources for this set.
-     *
+     * <p>
      * <p>The given closure is used to configure the {@link AndroidSourceDirectorySet} which
      * contains the java resources.
      *
@@ -64,7 +65,7 @@ public interface AndroidSourceSet {
 
     /**
      * Configures the Java source for this set.
-     *
+     * <p>
      * <p>The given closure is used to configure the {@link AndroidSourceDirectorySet} which
      * contains the Java source.
      *
@@ -76,6 +77,7 @@ public interface AndroidSourceSet {
 
     /**
      * Returns the name of the compile configuration for this source set.
+     *
      * @return The configuration name
      */
     @NonNull
@@ -83,6 +85,7 @@ public interface AndroidSourceSet {
 
     /**
      * Returns the name of the runtime configuration for this source set.
+     *
      * @return The runtime configuration name
      */
     @NonNull
@@ -90,6 +93,7 @@ public interface AndroidSourceSet {
 
     /**
      * Returns the name of the compiled-only configuration for this source set.
+     *
      * @return The provided configuration name
      */
     @NonNull
@@ -97,6 +101,7 @@ public interface AndroidSourceSet {
 
     /**
      * Returns the name of the wearApp configuration for this source set.
+     *
      * @return The configuration name
      */
     @NonNull
@@ -112,7 +117,7 @@ public interface AndroidSourceSet {
 
     /**
      * Configures the location of the Android Manifest for this set.
-     *
+     * <p>
      * <p>The given closure is used to configure the {@link AndroidSourceFile} which contains the
      * manifest.
      *
@@ -132,7 +137,7 @@ public interface AndroidSourceSet {
 
     /**
      * Configures the location of the Android Resources for this set.
-     *
+     * <p>
      * <p>The given closure is used to configure the {@link AndroidSourceDirectorySet}
      * which contains the resources.
      *
@@ -152,7 +157,7 @@ public interface AndroidSourceSet {
 
     /**
      * Configures the location of the Android Assets for this set.
-     *
+     * <p>
      * <p>The given closure is used to configure the {@link AndroidSourceDirectorySet}
      * which contains the assets.
      *
@@ -172,7 +177,7 @@ public interface AndroidSourceSet {
 
     /**
      * Configures the location of the Android AIDL source for this set.
-     *
+     * <p>
      * <p>The given closure is used to configure the {@link AndroidSourceDirectorySet}
      * which contains the AIDL source.
      *
@@ -181,26 +186,6 @@ public interface AndroidSourceSet {
      */
     @NonNull
     AndroidSourceSet aidl(Closure configureClosure);
-
-    /**
-     * The Android RenderScript source directory for this source set.
-     *
-     * @return the source. Never returns null.
-     */
-    @NonNull
-    AndroidSourceDirectorySet getRenderscript();
-
-    /**
-     * Configures the location of the Android RenderScript source for this set.
-     *
-     * <p>The given closure is used to configure the {@link AndroidSourceDirectorySet}
-     * which contains the Renderscript source.
-     *
-     * @param configureClosure The closure to use to configure the Renderscript source.
-     * @return this
-     */
-    @NonNull
-    AndroidSourceSet renderscript(Closure configureClosure);
 
     /**
      * The Android JNI source directory for this source set.
@@ -212,7 +197,7 @@ public interface AndroidSourceSet {
 
     /**
      * Configures the location of the Android JNI source for this set.
-     *
+     * <p>
      * <p>The given closure is used to configure the {@link AndroidSourceDirectorySet}
      * which contains the JNI source.
      *
@@ -232,7 +217,7 @@ public interface AndroidSourceSet {
 
     /**
      * Configures the location of the Android JNI libs for this set.
-     *
+     * <p>
      * <p>The given closure is used to configure the {@link AndroidSourceDirectorySet}
      * which contains the JNI libs.
      *
@@ -244,7 +229,7 @@ public interface AndroidSourceSet {
 
     /**
      * Sets the root of the source sets to a given path.
-     *
+     * <p>
      * All entries of the source set are located under this root directory.
      *
      * @param path the root directory.

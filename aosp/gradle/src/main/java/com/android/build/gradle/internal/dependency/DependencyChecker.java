@@ -58,6 +58,28 @@ public class DependencyChecker {
         this.skipLibrariesInThePlatform = skipLibrariesInThePlatform;
     }
 
+    private static int getApiLevelFromMavenArtifact(@NonNull String version) {
+        if ("1.5_r3".equals(version) || "1.5_r4".equals(version)) {
+            return 3;
+        } else if ("1.6_r2".equals(version)) {
+            return 4;
+        } else if ("2.1_r1".equals(version) || version.equals("2.1.2")) {
+            return 7;
+        } else if ("2.2.1".equals(version)) {
+            return 8;
+        } else if ("2.3.1".equals(version)) {
+            return 9;
+        } else if ("2.3.3".equals(version)) {
+            return 10;
+        } else if ("4.0.1.2".equals(version)) {
+            return 14;
+        } else if ("4.1.1.4".equals(version)) {
+            return 15;
+        }
+
+        return -1;
+    }
+
     @NonNull
     public Map<ModuleVersionIdentifier, Integer> getLegacyApiLevels() {
         return legacyApiLevels;
@@ -126,28 +148,6 @@ public class DependencyChecker {
         }
 
         return false;
-    }
-
-    private static int getApiLevelFromMavenArtifact(@NonNull String version) {
-        if ("1.5_r3".equals(version) || "1.5_r4".equals(version)) {
-            return 3;
-        } else if ("1.6_r2".equals(version)) {
-            return 4;
-        } else if ("2.1_r1".equals(version) || version.equals("2.1.2")) {
-            return 7;
-        } else if ("2.2.1".equals(version)) {
-            return 8;
-        } else if ("2.3.1".equals(version)) {
-            return 9;
-        } else if ("2.3.3".equals(version)) {
-            return 10;
-        } else if ("4.0.1.2".equals(version)) {
-            return 14;
-        } else if ("4.1.1.4".equals(version)) {
-            return 15;
-        }
-
-        return -1;
     }
 }
 

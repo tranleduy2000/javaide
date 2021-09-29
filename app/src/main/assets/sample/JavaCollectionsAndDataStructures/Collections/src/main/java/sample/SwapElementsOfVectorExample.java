@@ -10,19 +10,19 @@ import java.util.Vector;
 
 public class SwapElementsOfVectorExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create a Vector object
-    Vector v = new Vector();
+        //create a Vector object
+        Vector v = new Vector();
 
-    //Add elements to Vector
-    v.add("1");
-    v.add("2");
-    v.add("3");
-    v.add("4");
-    v.add("5");
+        //Add elements to Vector
+        v.add("1");
+        v.add("2");
+        v.add("3");
+        v.add("4");
+        v.add("5");
 
-    System.out.println("Before swaping, Vector contains : " + v);
+        System.out.println("Before swaping, Vector contains : " + v);
 
     /*
       To swap elements of Java Vector use,
@@ -37,10 +37,10 @@ public class SwapElementsOfVectorExample {
       any of the index values is not in range.
     */
 
-    Collections.swap(v, 0, 4);
+        Collections.swap(v, 0, 4);
 
-    System.out.println("After swaping, Vector contains : " + v);
-  }
+        System.out.println("After swaping, Vector contains : " + v);
+    }
 }
 
 /*

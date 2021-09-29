@@ -34,7 +34,7 @@ public interface ApkVariant extends BaseVariant {
     /**
      * Return the app versionCode. Even the value is not found, then 1 is returned as this
      * is the implicit value that the platform would use.
-     *
+     * <p>
      * If not output define its own variant override then this is used for all outputs.
      */
     int getVersionCode();
@@ -76,18 +76,4 @@ public interface ApkVariant extends BaseVariant {
     @NonNull
     Collection<File> getApkLibraries();
 
-    /**
-     * Returns the install task for the variant.
-     */
-    @Nullable
-    DefaultTask getInstall();
-
-    /**
-     * Returns the uninstallation task.
-     *
-     * For non-library project this is always true even if the APK is not created because
-     * signing isn't setup.
-     */
-    @Nullable
-    DefaultTask getUninstall();
 }

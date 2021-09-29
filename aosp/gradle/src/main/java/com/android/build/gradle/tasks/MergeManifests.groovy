@@ -174,9 +174,6 @@ public class MergeManifests extends ManifestProcessorTask {
             processManifestTask.setVariantName(config.getFullName())
 
             processManifestTask.dependsOn variantData.prepareDependenciesTask
-            if (variantData.generateApkDataTask != null) {
-                processManifestTask.dependsOn variantData.generateApkDataTask
-            }
             if (scope.compatibleScreensManifestTask != null) {
                 processManifestTask.dependsOn scope.compatibleScreensManifestTask.name
             }
@@ -190,13 +187,6 @@ public class MergeManifests extends ManifestProcessorTask {
             ConventionMappingHelper.map(processManifestTask, "libraries") {
                 List<ManifestDependencyImpl> manifests =
                         getManifestDependencies(config.directLibraries)
-
-                if (variantData.generateApkDataTask != null &&
-                        variantData.getVariantConfiguration().getBuildType().
-                                isEmbedMicroApp()) {
-                    manifests.add(new ManifestDependencyImpl(
-                            variantData.generateApkDataTask.getManifestFile(), []))
-                }
 
                 if (scope.compatibleScreensManifestTask != null) {
                     manifests.add(new ManifestDependencyImpl(

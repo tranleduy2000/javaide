@@ -8,22 +8,22 @@ package sample;
 
 public class ConvertBinaryToDecimalNumber {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //declare string containing binary number
-    String strBinaryNumber = "111000";
+        //declare string containing binary number
+        String strBinaryNumber = "111000";
 
-    /*
-     * to convert binary number to decimal number use,
-     * int parseInt method of Integer wrapper class.
-     *
-     * Pass 2 as redix second argument.
-     */
+        /*
+         * to convert binary number to decimal number use,
+         * int parseInt method of Integer wrapper class.
+         *
+         * Pass 2 as redix second argument.
+         */
 
-    int decimalNumber = Integer.parseInt(strBinaryNumber, 2);
-    System.out.println("Binary number converted to decimal number");
-    System.out.println("Decimal number is : " + decimalNumber);
-  }
+        int decimalNumber = Integer.parseInt(strBinaryNumber, 2);
+        System.out.println("Binary number converted to decimal number");
+        System.out.println("Decimal number is : " + decimalNumber);
+    }
 }
 
 /*

@@ -9,15 +9,15 @@ import java.util.HashMap;
 
 public class CheckValueOfHashMapExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create HashMap object
-    HashMap hMap = new HashMap();
+        //create HashMap object
+        HashMap hMap = new HashMap();
 
-    //add key value pairs to HashMap
-    hMap.put("1", "One");
-    hMap.put("2", "Two");
-    hMap.put("3", "Three");
+        //add key value pairs to HashMap
+        hMap.put("1", "One");
+        hMap.put("2", "Two");
+        hMap.put("3", "Three");
 
     /*
       To check whether a particular value exists in HashMap use
@@ -26,9 +26,9 @@ public class CheckValueOfHashMapExample {
       HashMap otherwise false.
     */
 
-    boolean blnExists = hMap.containsValue("Two");
-    System.out.println("Two exists in HashMap ? : " + blnExists);
-  }
+        boolean blnExists = hMap.containsValue("Two");
+        System.out.println("Two exists in HashMap ? : " + blnExists);
+    }
 }
 
 /*

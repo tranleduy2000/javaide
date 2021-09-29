@@ -16,8 +16,6 @@
 
 package com.android.build.gradle.internal;
 
-import static com.android.SdkConstants.FN_LOCAL_PROPERTIES;
-
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.builder.core.AndroidBuilder;
@@ -43,26 +41,20 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Properties;
 
+import static com.android.SdkConstants.FN_LOCAL_PROPERTIES;
+
 /**
  * Handles the all things SDK for the Gradle plugin. There is one instance per project, around
  * a singleton {@link com.android.builder.sdk.SdkLoader}.
  */
 public class SdkHandler {
 
-    // Used for injecting SDK location in tests.
-    public static File sTestSdkFolder;
-
     @NonNull
     private final ILogger logger;
 
     private SdkLoader sdkLoader;
     private File sdkFolder;
-    private File ndkFolder;
     private boolean isRegularSdk = true;
-
-    public static void setTestSdkFolder(File testSdkFolder) {
-        sTestSdkFolder = testSdkFolder;
-    }
 
     public SdkHandler(@NonNull Project project,
                       @NonNull ILogger logger) {
@@ -115,7 +107,7 @@ public class SdkHandler {
                 // For internal test we provide a fake SDK location through
                 // setTestSdkFolder in order to have an SDK, even though we don't use it
                 // so in this case we ignore the check.
-                if (sTestSdkFolder == null && !sdkFolder.isDirectory()) {
+                if (!sdkFolder.isDirectory()) {
                     throw new RuntimeException(String.format(
                             "The SDK directory '%1$s' does not exist.", sdkFolder));
                 }
@@ -139,11 +131,6 @@ public class SdkHandler {
 
             sdkLoader = null;
         }
-    }
-
-    @Nullable
-    public File getNdkFolder() {
-        return ndkFolder;
     }
 
     private void findSdkLocation(@NonNull Properties properties, @NonNull File rootDir) {
@@ -175,24 +162,7 @@ public class SdkHandler {
         }
     }
 
-    private void findNdkLocation(@NonNull Properties properties) {
-        String ndkDirProp = properties.getProperty("ndk.dir");
-        if (ndkDirProp != null) {
-            ndkFolder = new File(ndkDirProp);
-            return;
-        }
-
-        String envVar = System.getenv("ANDROID_NDK_HOME");
-        if (envVar != null) {
-            ndkFolder = new File(envVar);
-        }
-    }
-
     private void findLocation(@NonNull Project project) {
-        if (sTestSdkFolder != null) {
-            sdkFolder = sTestSdkFolder;
-            return;
-        }
 
         File rootDir = project.getRootDir();
         File localProperties = new File(rootDir, FN_LOCAL_PROPERTIES);
@@ -222,6 +192,5 @@ public class SdkHandler {
         }
 
         findSdkLocation(properties, rootDir);
-        findNdkLocation(properties);
     }
 }

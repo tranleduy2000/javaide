@@ -1,0 +1,36 @@
+package test.pkg;
+
+import java.io.File;
+import java.util.List;
+
+import android.content.Context;
+
+public class TestFieldGetter {
+    private int path;
+    private int foo;
+
+    public int getPath() {
+        return path;
+    }
+
+    public int getFoo() {
+        return foo;
+    }
+
+    public void test(TestFieldGetter other) {
+        getPath(); // Should be flagged
+        other.getPath(); // Ignore
+        File file = new File("/dummy");
+        file.getPath(); // Ignore
+    }
+
+    public static void test2(TestFieldGetter other) {
+        other.getPath(); // Ignore
+    }
+
+    public class Inner extends TestFieldGetter {
+        public void test() {
+            getFoo(); // Ignore
+        }
+    }
+}

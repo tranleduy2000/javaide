@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="TitleBar">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:id">@+id/titlebar</item>
+        <item name="android:background">@drawable/bg_titlebar</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">@dimen/titlebar_height</item>
+    </style>
+</resources>

@@ -1,0 +1,10 @@
+package my.pgk;
+
+class Test {
+   private static String s = " R.id.button1 \" "; // R.id.button1 should not be considered referenced
+   static {
+       System.out.println(R.id.button2);
+       char c = '"';
+       System.out.println(R.id.linearLayout1);
+   }
+}

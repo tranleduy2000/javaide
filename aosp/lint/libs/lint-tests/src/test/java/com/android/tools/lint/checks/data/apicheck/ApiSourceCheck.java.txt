@@ -1,0 +1,123 @@
+package test.pkg;
+
+import android.util.Property;
+import android.view.View;
+import static android.view.View.MEASURED_STATE_MASK;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
+import android.view.*;
+import android.annotation.*;
+import android.app.*;
+import android.widget.*;
+import static android.widget.ZoomControls.*;
+import android.Manifest.permission;
+import android.Manifest;
+
+/** Various tests for source-level checks */
+final class ApiSourceCheck extends LinearLayout {
+    public ApiSourceCheck(android.content.Context context) {
+        super(context);
+    }
+
+    /**
+     * Return only the state bits of {@link #getMeasuredWidthAndState()} and
+     * {@link #getMeasuredHeightAndState()}, combined into one integer. The
+     * width component is in the regular bits {@link #MEASURED_STATE_MASK} and
+     * the height component is at the shifted bits
+     * {@link #MEASURED_HEIGHT_STATE_SHIFT}>>{@link #MEASURED_STATE_MASK}.
+     */
+    public static int m1(View child) {
+        // from static import of field
+        int x = MEASURED_STATE_MASK;
+
+        // fully qualified name field access
+        int y = android.view.View.MEASURED_STATE_MASK;
+
+        // from explicitly imported class
+        int z = View.MEASURED_STATE_MASK;
+        int find2 = View.FIND_VIEWS_WITH_TEXT; // requires API 14
+
+        // from wildcard import of package
+        int w = ActivityManager.MOVE_TASK_NO_USER_ACTION;
+        int find1 = ZoomButton.FIND_VIEWS_WITH_CONTENT_DESCRIPTION; // requires
+                                                                    // API 14
+        // from static wildcard import
+        int overScroll = OVER_SCROLL_ALWAYS; // requires API 9
+
+        // Inherited field from ancestor class (View)
+        int auto = IMPORTANT_FOR_ACCESSIBILITY_AUTO; // requires API 16
+
+        // object field reference: ensure that we don't get two errors
+        // (one from source scan, the other from class scan)
+        Object rotationX = ZoomButton.ROTATION_X; // Requires API 14
+
+        // different type of expression than variable declaration
+        return (child.getMeasuredWidth() & View.MEASURED_STATE_MASK)
+                | ((child.getMeasuredHeight() >> View.MEASURED_HEIGHT_STATE_SHIFT) & (View.MEASURED_STATE_MASK >> View.MEASURED_HEIGHT_STATE_SHIFT));
+    }
+
+    @SuppressLint("NewApi")
+    private void testSuppress1() {
+        // Checks suppress on surrounding method
+        int w = ActivityManager.MOVE_TASK_NO_USER_ACTION;
+    }
+
+    private void testSuppress2() {
+        // Checks suppress on surrounding declaration statement
+        @SuppressLint("NewApi")
+        int w, z = ActivityManager.MOVE_TASK_NO_USER_ACTION;
+    }
+
+    @TargetApi(17)
+    private void testTargetApi1() {
+        // Checks @TargetApi on surrounding method
+        int w, z = ActivityManager.MOVE_TASK_NO_USER_ACTION;
+    }
+
+    @TargetApi(android.os.Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void testTargetApi2() {
+        // Checks @TargetApi with codename
+        int w, z = ActivityManager.MOVE_TASK_NO_USER_ACTION;
+    }
+
+    @TargetApi(JELLY_BEAN_MR1)
+    private void testTargetApi3() {
+        // Checks @TargetApi with codename
+        int w, z = ActivityManager.MOVE_TASK_NO_USER_ACTION;
+    }
+
+    private void checkOtherFields() {
+        // Look at fields that aren't capitalized
+        int custom = android.R.id.custom; // API 8
+    }
+
+    private void innerclass() {
+        String setPointerSpeed = permission.SET_POINTER_SPEED;
+        String setPointerSpeed2 = Manifest.permission.SET_POINTER_SPEED;
+    }
+
+    private void test() {
+        // Make sure that local variable references which look like fields,
+        // even imported ones, aren't taken as invalid references
+        int OVER_SCROLL_ALWAYS = 1, IMPORTANT_FOR_ACCESSIBILITY_AUTO = 2;
+        int x = OVER_SCROLL_ALWAYS;
+        int y = IMPORTANT_FOR_ACCESSIBILITY_AUTO;
+        findViewById(IMPORTANT_FOR_ACCESSIBILITY_AUTO); // yes, nonsensical
+    }
+
+    private void testBenignUsages(int x) {
+        // Certain types of usages (such as switch/case constants) are okay
+        switch (x) {
+            case View.MEASURED_STATE_MASK: { // OK
+                break;
+            }
+        }
+        if (x == View.MEASURED_STATE_MASK) { // OK
+        }
+        if (false || x == View.MEASURED_STATE_MASK) { // OK
+        }
+        if (x >= View.MEASURED_STATE_MASK) { // OK
+        }
+        int y = View.MEASURED_STATE_MASK; // Not OK
+        testBenignUsages(View.MEASURED_STATE_MASK); // Not OK
+    }
+}

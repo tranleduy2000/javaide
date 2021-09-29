@@ -4,4 +4,6 @@
     <string name="key_pref_source_encoding" translatable="false">key_pref_source_encoding</string>
     <string name="key_classpath" translatable="false">pref_key_classpath</string>
     <string name="default_classpath" translatable="false">default</string>
+    <string name="key_format_type" translatable="false">key_format_type</string>
+
 </resources>

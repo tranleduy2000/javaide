@@ -18,13 +18,12 @@ package com.android.build.gradle.managed.adaptor;
 
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
-import com.android.build.gradle.internal.dsl.CoreNdkOptions;
 import com.android.build.gradle.internal.dsl.CoreBuildType;
 import com.android.build.gradle.managed.BuildType;
 import com.android.builder.internal.ClassFieldImpl;
 import com.android.builder.model.ClassField;
 import com.android.builder.model.SigningConfig;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -62,8 +61,8 @@ public class BuildTypeAdaptor implements CoreBuildType {
                             cf.getType(),
                             cf.getName(),
                             cf.getValue(),
-                            Objects.firstNonNull(cf.getAnnotations(), ImmutableSet.<String>of()),
-                            Objects.firstNonNull(cf.getDocumentation(), "")));
+                            MoreObjects.firstNonNull(cf.getAnnotations(), ImmutableSet.<String>of()),
+                            MoreObjects.firstNonNull(cf.getDocumentation(), "")));
         }
         return builder.build();
     }
@@ -79,8 +78,8 @@ public class BuildTypeAdaptor implements CoreBuildType {
                             cf.getType(),
                             cf.getName(),
                             cf.getValue(),
-                            Objects.firstNonNull(cf.getAnnotations(), ImmutableSet.<String>of()),
-                            Objects.firstNonNull(cf.getDocumentation(), "")));
+                            MoreObjects.firstNonNull(cf.getAnnotations(), ImmutableSet.<String>of()),
+                            MoreObjects.firstNonNull(cf.getDocumentation(), "")));
         }
         return builder.build();
     }
@@ -135,22 +134,12 @@ public class BuildTypeAdaptor implements CoreBuildType {
 
     @Override
     public boolean isJniDebuggable() {
-        return Objects.firstNonNull(buildType.getNdk().getDebuggable(), false);
+        return false;
     }
 
     @Override
     public boolean isPseudoLocalesEnabled() {
         return buildType.getPseudoLocalesEnabled();
-    }
-
-    @Override
-    public boolean isRenderscriptDebuggable() {
-        return buildType.getRenderscriptDebuggable();
-    }
-
-    @Override
-    public int getRenderscriptOptimLevel() {
-        return buildType.getRenderscriptOptimLevel();
     }
 
     @Nullable
@@ -175,20 +164,10 @@ public class BuildTypeAdaptor implements CoreBuildType {
         return buildType.getZipAlignEnabled();
     }
 
-    @Override
-    public boolean isEmbedMicroApp() {
-        return buildType.getEmbedMicroApp();
-    }
-
     @Nullable
     @Override
     public SigningConfig getSigningConfig() {
         return buildType.getSigningConfig() == null ? null : new SigningConfigAdaptor(buildType.getSigningConfig());
-    }
-
-    @Override
-    public CoreNdkOptions getNdkConfig() {
-        return new NdkOptionsAdaptor(buildType.getNdk());
     }
 
     @Override

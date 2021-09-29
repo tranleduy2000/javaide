@@ -1,0 +1,14 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.content.Context;
+
+public class StringFormat4 extends Activity {
+    public final void test(Context context) {
+        // lint error:
+        getString(R.string.error_and_source, getString(R.string.data_source));
+        // no lint error:
+        getString(R.string.error_and_source, "data source");
+        String.format(getString(R.string.preferences_about_app_title), getString(R.string.app_name), "");
+    }
+}

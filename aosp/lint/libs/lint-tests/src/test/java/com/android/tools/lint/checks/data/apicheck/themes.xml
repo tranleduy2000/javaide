@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme" parent="android:Theme"/>
+
+    <style name="Theme.Test" parent="android:style/Theme.Light">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!-- Requires API 14 -->
+        <item name="android:windowBackground">  @android:color/holo_red_light </item>
+    </style>
+
+    <style name="Theme.Test.Transparent">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+</resources>

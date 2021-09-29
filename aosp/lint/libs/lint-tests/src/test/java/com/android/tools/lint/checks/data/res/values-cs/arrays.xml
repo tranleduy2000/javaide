@@ -1,0 +1,9 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string-array name="security_questions">
+    <item>"Oblíbené jídlo?"</item>
+    <item>"Město narození."</item>
+    <item>"Jméno nejlepšího kamaráda z dětství?"</item>
+    <item>"Název střední školy"</item>
+  </string-array>
+</resources>

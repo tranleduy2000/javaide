@@ -1,0 +1,15 @@
+package test.pkg;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public abstract class MyParcelable4 implements Parcelable {
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel arg0, int arg1) {
+    }
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="my_plural">
+        <item quantity="one">@string/hello</item>
+        <item quantity="few">@string/hello</item>
+        <item quantity="other">@string/hello</item>
+    </plurals>
+</resources>

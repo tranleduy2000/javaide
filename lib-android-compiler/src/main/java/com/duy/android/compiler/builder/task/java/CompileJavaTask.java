@@ -95,6 +95,7 @@ public class CompileJavaTask extends Task<JavaProject> {
         logger.setEmacs();
 
         System.out.println(TAG + ": Compiler arguments " + argument);
+        main.logger.endLoggingSource();
         return main.compile(argument.toArray());
     }
 

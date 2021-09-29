@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- No typos -->
+    <string name="s1">Dette er en test</string>
+    <!-- Plain typos -->
+    <string name="s2">Mer morro med Andriod</string>
+    <!-- Make capitalization match typo -->
+    <string name="s3"> Parallel </string>
+    <!-- Markup indirection -->
+    <string name="s4"><b>altid</b></string>
+    <!-- Typo, match capitalized -->
+    <string name="s5">Altid</string>
+    <!-- random words, shouldn't flag -->
+    <string name="s6">abcdefg qwerty asdf jklm</string>
+    <!-- typo, but should only match when capitalized -->
+    <string name="s7">Midt-Østen midt-østen</string>
+    <!-- Non-ASCII UTF-8 string -->
+    <string name="s7">Koding er en spennende karriære</string>
+    <string name="internet">"Koble til Internett.</string>
+
+</resources>
+

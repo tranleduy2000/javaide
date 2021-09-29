@@ -1,0 +1,19 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+
+@SuppressWarnings("unused")
+public class SharedPrefsTest2 extends Activity {
+    public void test1(SharedPreferences preferences) {
+        SharedPreferences.Editor editor = preferences.edit();
+    }
+
+    public void test2(SharedPreferences preferences) {
+        Editor editor = preferences.edit();
+    }
+}

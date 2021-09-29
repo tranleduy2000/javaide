@@ -16,7 +16,6 @@
 
 package com.android.builder.dependency;
 
-import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.android.annotations.concurrency.Immutable;
@@ -169,12 +168,6 @@ public abstract class LibraryBundle implements LibraryDependency {
     @NonNull
     public File getAidlFolder() {
         return new File(mBundleFolder, FD_AIDL);
-    }
-
-    @Override
-    @NonNull
-    public File getRenderscriptFolder() {
-        return new File(mBundleFolder, SdkConstants.FD_RENDERSCRIPT);
     }
 
     @Override

@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="ContentFrame">
+        <attr name="content" format="reference" />
+        <attr name="contentId" format="reference" />
+    </declare-styleable>
+</resources>

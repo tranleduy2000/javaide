@@ -19,19 +19,31 @@
         <title>Properties</title>
         <table>
             <thead>
-                <tr><td>Name</td></tr>
+                <tr>
+                    <td>Name</td>
+                </tr>
             </thead>
-            <tr><td>proguardFiles</td></tr>
-            <tr><td>consumerProguardFiles</td></tr>
-            <tr><td>manifestPlaceholders</td></tr>
-            <tr><td>multiDexEnabled</td></tr>
+            <tr>
+                <td>proguardFiles</td>
+            </tr>
+            <tr>
+                <td>consumerProguardFiles</td>
+            </tr>
+            <tr>
+                <td>manifestPlaceholders</td>
+            </tr>
+            <tr>
+                <td>multiDexEnabled</td>
+            </tr>
         </table>
     </section>
     <section>
         <title>Methods</title>
         <table>
             <thead>
-                <tr><td>Name</td></tr>
+                <tr>
+                    <td>Name</td>
+                </tr>
             </thead>
         </table>
     </section>

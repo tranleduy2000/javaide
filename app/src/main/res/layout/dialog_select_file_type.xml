@@ -15,29 +15,28 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:minWidth="200dp"
-              android:orientation="vertical"
-              android:padding="8dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="200dp"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:paddingBottom="8dp"
         android:text="@string/create_new_file"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/txt_path"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="8dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingStart="8dp"
-        android:text="path"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+        android:paddingBottom="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="?colorAccent"
+        tools:text="src/main/res/path" />
 
     <ListView
         android:id="@+id/file_types"

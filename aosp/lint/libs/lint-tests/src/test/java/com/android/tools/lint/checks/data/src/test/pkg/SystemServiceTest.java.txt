@@ -1,0 +1,30 @@
+package test.pkg;
+import android.content.ClipboardManager;
+import android.app.Activity;
+import android.app.WallpaperManager;
+import android.content.Context;
+import android.hardware.display.DisplayManager;
+import android.service.wallpaper.WallpaperService;
+
+public class SystemServiceTest extends Activity {
+
+    public void test1() {
+        DisplayManager displayServiceOk = (DisplayManager) getSystemService(DISPLAY_SERVICE);
+        DisplayManager displayServiceWrong = (DisplayManager) getSystemService(
+                DEVICE_POLICY_SERVICE);
+        WallpaperService wallPaperOk = (WallpaperService) getSystemService(WALLPAPER_SERVICE);
+        WallpaperManager wallPaperWrong = (WallpaperManager) getSystemService(WALLPAPER_SERVICE);
+    }
+
+    public void test2(Context context) {
+        DisplayManager displayServiceOk = (DisplayManager) context
+                .getSystemService(DISPLAY_SERVICE);
+        DisplayManager displayServiceWrong = (DisplayManager) context
+                .getSystemService(DEVICE_POLICY_SERVICE);
+    }
+
+    public void clipboard() {
+      ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+      android.content.ClipboardManager clipboard =  (android.content.ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+    }
+}

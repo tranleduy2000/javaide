@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="foo.bar2"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="14" />
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+
+        <!-- read+write permission attribute, win -->
+        <provider
+            android:name="com.sample.provider.providerClass"
+            android:authorities="com.sample.provider.providerData"
+            android:readPermission="com.sample.provider.READ_PERMISSON"
+            android:writePermission="com.sample.provider.WRITE_PERMISSON">
+        </provider>
+
+        <!-- permission attribute, win -->
+        <provider
+            android:name="com.sample.provider.providerClass"
+            android:authorities="com.sample.provider.providerData"
+            android:permission="com.sample.provider.PERMISSION">
+        </provider>
+
+        <!-- path-permission, win -->
+        <provider
+            android:name="com.sample.provider.providerClass"
+            android:authorities="com.sample.provider.providerData">
+            <path-permission
+                android:pathPrefix="/hello"
+                android:permission="com.sample.provider.PERMISSION">
+            </path-permission>
+        </provider>
+    </application>
+
+</manifest>

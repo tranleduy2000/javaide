@@ -10,29 +10,29 @@ import java.util.Vector;
 
 public class ShuffleElementsOfVectorExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create a Vector object
-    Vector v = new Vector();
+        //create a Vector object
+        Vector v = new Vector();
 
-    //Add elements to Vector
-    v.add("1");
-    v.add("2");
-    v.add("3");
-    v.add("4");
-    v.add("5");
+        //Add elements to Vector
+        v.add("1");
+        v.add("2");
+        v.add("3");
+        v.add("4");
+        v.add("5");
 
-    System.out.println("Before shuffling, Vector contains : " + v);
+        System.out.println("Before shuffling, Vector contains : " + v);
 
     /*
       To shuffle elements of Java Vector use,
       static void shuffle(List list) method of Collections class.
     */
 
-    Collections.shuffle(v);
+        Collections.shuffle(v);
 
-    System.out.println("After shuffling, Vector contains : " + v);
-  }
+        System.out.println("After shuffling, Vector contains : " + v);
+    }
 }
 
 /*

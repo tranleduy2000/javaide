@@ -1,0 +1,196 @@
+package test.pkg;
+
+
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.os.Message;
+import android.os.Parcel;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
+import android.view.View;
+
+@SuppressWarnings("unused")
+public class RecycleTest extends View {
+	// ---- Check recycling TypedArrays ----
+
+	public RecycleTest(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+	}
+
+	public void ok1(AttributeSet attrs, int defStyle) {
+		final TypedArray a = getContext().obtainStyledAttributes(attrs,
+				R.styleable.MyView, defStyle, 0);
+		String example = a.getString(R.styleable.MyView_exampleString);
+		a.recycle();
+	}
+
+	public void ok2(AttributeSet attrs, int defStyle) {
+		final TypedArray a = getContext().obtainStyledAttributes(attrs,
+				R.styleable.MyView, defStyle, 0);
+		String example = a.getString(R.styleable.MyView_exampleString);
+		// If there's complicated logic, don't flag
+		if (something()) {
+			a.recycle();
+		}
+	}
+
+	public TypedArray ok3(AttributeSet attrs, int defStyle) {
+		// Value passes out of method: don't flag, caller might be recycling
+		return getContext().obtainStyledAttributes(attrs, R.styleable.MyView,
+				defStyle, 0);
+	}
+
+	private TypedArray myref;
+
+	public void ok4(AttributeSet attrs, int defStyle) {
+		// Value stored in a field: might be recycled later
+		TypedArray ref = getContext().obtainStyledAttributes(attrs,
+				R.styleable.MyView, defStyle, 0);
+		myref = ref;
+	}
+
+	public void wrong1(AttributeSet attrs, int defStyle) {
+		final TypedArray a = getContext().obtainStyledAttributes(attrs,
+				R.styleable.MyView, defStyle, 0);
+		String example = a.getString(R.styleable.MyView_exampleString);
+		// a.recycle();
+	}
+
+	public void wrong2(AttributeSet attrs, int defStyle) {
+		final TypedArray a = getContext().obtainStyledAttributes(new int[0]);
+		// a.recycle();
+	}
+
+	public void unknown(AttributeSet attrs, int defStyle) {
+		final TypedArray a = getContext().obtainStyledAttributes(attrs,
+				R.styleable.MyView, defStyle, 0);
+		// We don't know what this method is (usually it will be in a different
+		// class)
+		// so don't flag it; it might recycle
+		handle(a);
+	}
+
+	// ---- Check recycling VelocityTracker ----
+
+	public void tracker() {
+		VelocityTracker tracker = VelocityTracker.obtain();
+	}
+
+	// ---- Check recycling Message ----
+
+	public void message() {
+		Message message1 = getHandler().obtainMessage();
+		Message message2 = Message.obtain();
+	}
+
+	// ---- Check recycling MotionEvent ----
+
+	public void motionEvent() {
+		MotionEvent event1 = MotionEvent.obtain(null);
+		MotionEvent event2 = MotionEvent.obtainNoHistory(null);
+	}
+
+	public void motionEvent2() {
+		MotionEvent event1 = MotionEvent.obtain(null); // OK
+		MotionEvent event2 = MotionEvent.obtainNoHistory(null); // Not recycled
+		event1.recycle();
+	}
+
+	public void motionEvent3() {
+		MotionEvent event1 = MotionEvent.obtain(null);  // Not recycled
+		MotionEvent event2 = MotionEvent.obtain(event1);
+		event2.recycle();
+	}
+
+	// ---- Using recycled objects ----
+
+	public void recycled() {
+		MotionEvent event1 = MotionEvent.obtain(null);  // Not recycled
+		event1.recycle();
+		int contents2 = event1.describeContents(); // BAD, after recycle
+		final TypedArray a = getContext().obtainStyledAttributes(new int[0]);
+		String example = a.getString(R.styleable.MyView_exampleString); // OK
+		a.recycle();
+		example = a.getString(R.styleable.MyView_exampleString); // BAD, after recycle
+	}
+
+	// ---- Check recycling Parcel ----
+
+	public void parcelOk() {
+		Parcel myparcel = Parcel.obtain();
+		myparcel.createBinderArray();
+		myparcel.recycle();
+	}
+
+	public void parcelMissing() {
+		Parcel myparcel = Parcel.obtain();
+		myparcel.createBinderArray();
+	}
+
+
+	// ---- Check suppress ----
+
+	@SuppressLint("Recycle")
+	public void recycledSuppress() {
+		MotionEvent event1 = MotionEvent.obtain(null);  // Not recycled
+		event1.recycle();
+		int contents2 = event1.describeContents(); // BAD, after recycle
+		final TypedArray a = getContext().obtainStyledAttributes(new int[0]);
+		String example = a.getString(R.styleable.MyView_exampleString); // OK
+	}
+
+	// ---- Stubs ----
+
+	static void handle(TypedArray a) {
+		// Unknown method
+	}
+
+	protected boolean something() {
+		return true;
+	}
+
+	public android.content.res.TypedArray obtainStyledAttributes(
+			AttributeSet set, int[] attrs, int defStyleAttr, int defStyleRes) {
+		return null;
+	}
+
+    private static class R {
+        public static class styleable {
+            public static final int[] MyView = new int[] {};
+            public static final int MyView_exampleString = 2;
+        }
+    }
+
+    // Local variable tracking
+
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    public void ok5(AttributeSet attrs, int defStyle) {
+        final TypedArray a = getContext().obtainStyledAttributes(attrs,
+                R.styleable.MyView, defStyle, 0);
+        String example = a.getString(R.styleable.MyView_exampleString);
+        TypedArray b = a;
+        b.recycle();
+    }
+
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    public void ok6(AttributeSet attrs, int defStyle) {
+        final TypedArray a = getContext().obtainStyledAttributes(attrs,
+                R.styleable.MyView, defStyle, 0);
+        String example = a.getString(R.styleable.MyView_exampleString);
+        TypedArray b;
+        b = a;
+        b.recycle();
+    }
+
+    @SuppressWarnings({"UnnecessaryLocalVariable", "UnusedAssignment"})
+    public void wrong3(AttributeSet attrs, int defStyle) {
+        final TypedArray a = getContext().obtainStyledAttributes(attrs,  // Not recycled
+                R.styleable.MyView, defStyle, 0);
+        String example = a.getString(R.styleable.MyView_exampleString);
+        TypedArray b;
+        b = a;
+    }
+}

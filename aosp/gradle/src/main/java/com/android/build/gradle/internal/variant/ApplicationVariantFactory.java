@@ -16,10 +16,6 @@
 
 package com.android.build.gradle.internal.variant;
 
-import static com.android.build.OutputFile.NO_FILTER;
-import static com.android.builder.core.BuilderConstants.DEBUG;
-import static com.android.builder.core.BuilderConstants.RELEASE;
-
 import com.android.annotations.NonNull;
 import com.android.build.FilterData;
 import com.android.build.OutputFile;
@@ -51,19 +47,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static com.android.build.OutputFile.NO_FILTER;
+import static com.android.builder.core.BuilderConstants.DEBUG;
+import static com.android.builder.core.BuilderConstants.RELEASE;
+
 /**
  * An implementation of VariantFactory for a project that generates APKs.
- *
+ * <p>
  * This can be an app project, or a test-only project, though the default
  * behavior is app.
  */
 public class ApplicationVariantFactory implements VariantFactory {
 
-    Instantiator instantiator;
     @NonNull
     protected final AndroidConfig extension;
     @NonNull
     private final AndroidBuilder androidBuilder;
+    private Instantiator instantiator;
 
     public ApplicationVariantFactory(
             @NonNull Instantiator instantiator,
@@ -72,6 +72,25 @@ public class ApplicationVariantFactory implements VariantFactory {
         this.instantiator = instantiator;
         this.androidBuilder = androidBuilder;
         this.extension = extension;
+    }
+
+    public static void createApkOutputApiObjects(
+            @NonNull Instantiator instantiator,
+            @NonNull BaseVariantData<? extends BaseVariantOutputData> variantData,
+            @NonNull ApkVariantImpl variant) {
+        List<? extends BaseVariantOutputData> outputList = variantData.getOutputs();
+        List<BaseVariantOutput> apiOutputList = Lists.newArrayListWithCapacity(outputList.size());
+
+        for (BaseVariantOutputData variantOutputData : outputList) {
+            ApkVariantOutputData apkOutput = (ApkVariantOutputData) variantOutputData;
+
+            ApkVariantOutputImpl output = instantiator.newInstance(
+                    ApkVariantOutputImpl.class, apkOutput);
+
+            apiOutputList.add(output);
+        }
+
+        variant.addOutputs(apiOutputList);
     }
 
     @Override
@@ -104,8 +123,7 @@ public class ApplicationVariantFactory implements VariantFactory {
 
             List<String> orderedAbis = new ArrayList<String>();
             // if the abi list is empty or we must generate a universal apk, add a NO_FILTER
-            if (abis.isEmpty() || (extension.getSplits().getAbi().isEnable() &&
-                    extension.getSplits().getAbi().isUniversalApk())) {
+            if (abis.isEmpty()) {
                 orderedAbis.add(NO_FILTER);
             }
             orderedAbis.addAll(abis);
@@ -151,25 +169,6 @@ public class ApplicationVariantFactory implements VariantFactory {
         return variant;
     }
 
-    public static void createApkOutputApiObjects(
-            @NonNull Instantiator instantiator,
-            @NonNull BaseVariantData<? extends BaseVariantOutputData> variantData,
-            @NonNull ApkVariantImpl variant) {
-        List<? extends BaseVariantOutputData> outputList = variantData.getOutputs();
-        List<BaseVariantOutput> apiOutputList = Lists.newArrayListWithCapacity(outputList.size());
-
-        for (BaseVariantOutputData variantOutputData : outputList) {
-            ApkVariantOutputData apkOutput = (ApkVariantOutputData) variantOutputData;
-
-            ApkVariantOutputImpl output = instantiator.newInstance(
-                    ApkVariantOutputImpl.class, apkOutput);
-
-            apiOutputList.add(output);
-        }
-
-        variant.addOutputs(apiOutputList);
-    }
-
     @NonNull
     @Override
     public VariantType getVariantConfigurationType() {
@@ -182,12 +181,7 @@ public class ApplicationVariantFactory implements VariantFactory {
     }
 
     @Override
-    public boolean hasTestScope() {
-        return true;
-    }
-
-    @Override
-    public void validateModel(@NonNull VariantModel model){
+    public void validateModel(@NonNull VariantModel model) {
         // No additional checks for ApplicationVariantFactory, so just return.
     }
 

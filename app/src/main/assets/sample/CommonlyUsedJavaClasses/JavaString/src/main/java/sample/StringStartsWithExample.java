@@ -7,10 +7,10 @@ package sample;
 
 public class StringStartsWithExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //declare the original String
-    String strOrig = "Hello World";
+        //declare the original String
+        String strOrig = "Hello World";
 
     /*
     check whether String starts with Hello or not.
@@ -18,12 +18,12 @@ public class StringStartsWithExample {
     startsWith() method returns true if a string is starting with a given word
     otherwise it returns false
     */
-    if (strOrig.startsWith("Hello")) {
-      System.out.println("String starts with Hello");
-    } else {
-      System.out.println("String does not start with Hello");
+        if (strOrig.startsWith("Hello")) {
+            System.out.println("String starts with Hello");
+        } else {
+            System.out.println("String does not start with Hello");
+        }
     }
-  }
 }
 
 /*

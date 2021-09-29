@@ -10,36 +10,36 @@ import java.util.Calendar;
 
 public class CompareDateTimesUsingAfter {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create first Calendar object
-    Calendar futureCal = Calendar.getInstance();
+        //create first Calendar object
+        Calendar futureCal = Calendar.getInstance();
 
-    //set it to some future date
-    futureCal.set(Calendar.YEAR, 2010);
+        //set it to some future date
+        futureCal.set(Calendar.YEAR, 2010);
 
-    //create second Calendar object
-    Calendar now = Calendar.getInstance();
+        //create second Calendar object
+        Calendar now = Calendar.getInstance();
 
-    /*
-     * To compare two different Calendar objects, use
-     * boolean after(Caledar anotherCal) method.
-     *
-     * If the first Calendar object's date and time is after
-     * anotherCal's date and time,
-     * it returns true, false otherwise.
-     */
+        /*
+         * To compare two different Calendar objects, use
+         * boolean after(Caledar anotherCal) method.
+         *
+         * If the first Calendar object's date and time is after
+         * anotherCal's date and time,
+         * it returns true, false otherwise.
+         */
 
-    System.out.println(
-            "Current date : "
-                    + (now.get(Calendar.MONTH) + 1)
-                    + "-"
-                    + now.get(Calendar.DATE)
-                    + "-"
-                    + now.get(Calendar.YEAR));
+        System.out.println(
+                "Current date : "
+                        + (now.get(Calendar.MONTH) + 1)
+                        + "-"
+                        + now.get(Calendar.DATE)
+                        + "-"
+                        + now.get(Calendar.YEAR));
 
-    System.out.println("Is futureCal after now ? : " + futureCal.after(now));
-  }
+        System.out.println("Is futureCal after now ? : " + futureCal.after(now));
+    }
 }
 
 /*

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+<header
+  android:fragment="foo.bar.MyFragment$Missing"
+  android:summary="@string/summary"
+  android:title="@string/title" />
+<header android:fragment="test.pkg.FragmentTest$Fragment1" />
+<header android:fragment="test.pkg.FragmentTest.Fragment1" />
+</preference-headers>

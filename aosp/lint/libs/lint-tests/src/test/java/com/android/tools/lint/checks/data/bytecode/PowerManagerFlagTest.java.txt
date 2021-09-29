@@ -1,0 +1,18 @@
+package test.pkg;
+
+import static android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP;
+import static android.os.PowerManager.FULL_WAKE_LOCK;
+import static android.os.PowerManager.PARTIAL_WAKE_LOCK;
+import android.content.Context;
+import android.os.PowerManager;
+
+public class PowerManagerFlagTest {
+    @SuppressWarnings("deprecation")
+    public void test(Context context) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+
+        pm.newWakeLock(PARTIAL_WAKE_LOCK, "Test"); // OK
+        pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|ACQUIRE_CAUSES_WAKEUP, "Test"); // Bad
+        pm.newWakeLock(FULL_WAKE_LOCK|ACQUIRE_CAUSES_WAKEUP, "Test"); // OK
+    }
+}

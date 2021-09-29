@@ -19,32 +19,13 @@ package com.android.builder.core;
 import com.android.annotations.NonNull;
 import com.android.builder.model.AndroidProject;
 import com.android.builder.model.ArtifactMetaData;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Type of a variant.
  */
 public enum VariantType {
     DEFAULT,
-    LIBRARY,
-    ANDROID_TEST(
-            "androidTest",
-            "AndroidTest",
-            true,
-            AndroidProject.ARTIFACT_ANDROID_TEST,
-            ArtifactMetaData.TYPE_ANDROID),
-    UNIT_TEST(
-            "test",
-            "UnitTest",
-            false,
-            AndroidProject.ARTIFACT_UNIT_TEST,
-            ArtifactMetaData.TYPE_JAVA),
-    ;
-
-    public static ImmutableList<VariantType> getTestingTypes() {
-        ImmutableList.Builder<VariantType> result = ImmutableList.builder();
-        return result.build();
-    }
+    LIBRARY,;
 
     private final String mPrefix;
     private final String mSuffix;

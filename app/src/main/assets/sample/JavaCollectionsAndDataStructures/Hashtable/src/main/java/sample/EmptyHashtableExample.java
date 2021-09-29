@@ -9,15 +9,15 @@ import java.util.Hashtable;
 
 public class EmptyHashtableExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create Hashtable object
-    Hashtable ht = new Hashtable();
+        //create Hashtable object
+        Hashtable ht = new Hashtable();
 
-    //add key value pairs to Hashtable
-    ht.put("1", "One");
-    ht.put("2", "Two");
-    ht.put("3", "Three");
+        //add key value pairs to Hashtable
+        ht.put("1", "One");
+        ht.put("2", "Two");
+        ht.put("3", "Three");
 
     /*
       To remove all values or clear Hashtable use
@@ -25,10 +25,10 @@ public class EmptyHashtableExample {
       key value pairs contained in Hashtable.
     */
 
-    ht.clear();
+        ht.clear();
 
-    System.out.println("Total key value pairs in Hashtable are : " + ht.size());
-  }
+        System.out.println("Total key value pairs in Hashtable are : " + ht.size());
+    }
 }
 
 /*

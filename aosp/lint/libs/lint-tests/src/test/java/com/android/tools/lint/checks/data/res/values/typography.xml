@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_title">Home 'Sample'</string>
+    <string name="show_all_apps">"All"</string>
+    <string name="show_all_apps2">Show "All"</string>
+    <string name="escaped">Skip \"All\"</string>
+    <string name="single">Android's</string>
+    <string name="copyright">(c) 2011</string>
+    <string name="badquotes1">`First'</string>
+    <string name="badquotes2">``second''</string>
+    <string name="notbadquotes">Type Option-` then 'Escape'</string>
+    <string name="fraction1">5 1/2 times</string>
+    <string name="fraction4">1/4 times</string>
+    <string name="notfraction">51/2 times, 1/20</string>
+    <string name="ellipsis">40 times...</string>
+    <string name="notellipsis">40 times.......</string>
+    <string name="ndash">For ages 3-5</string>
+    <string name="ndash2">Copyright 2007 - 2011</string>
+    <string name="nontndash">x-y</string>
+    <string name="mdash">Not found -- please try again</string>
+    <string name="nontndash">----</string>
+    <string name="notdirectional">A's and B's</string>
+    <string-array name="typography">
+        <item>Ages 3-5</item>
+        <item>Age 5 1/2</item>
+    </string-array>
+    <string name="ndash">X Y Z: 10 10 -1</string>
+    <string name="ga_trackingId">UA-0000-0</string>
+</resources>
+

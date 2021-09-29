@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="test.pkg"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="10" />
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/MyTheme" >
+        <activity
+            android:name=".OverdrawActivity"
+            android:label="@string/app_name"
+            android:theme="@style/MyTheme.First" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SecondActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".ThirdActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="test.pkg.FourthActivity"
+            android:label="@string/app_name"
+            android:theme="@style/MyTheme.Fourth" >
+        </activity>
+    </application>
+
+</manifest>

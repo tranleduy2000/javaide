@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="https://schemas.android.com/apk/res/android"
+          package="com.g.a.g.c"
+          android:versionCode="21"
+          android:versionName="0.0.1">
+    <uses-sdk android:minSdkVersion="4" />
+    <application />
+</manifest>
+

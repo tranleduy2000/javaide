@@ -10,22 +10,22 @@ import java.util.Date;
 
 public class FormattingSeconds {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create Date object
-    Date date = new Date();
+        //create Date object
+        Date date = new Date();
 
-    //formatting seconds in s format like 1,2 etc.
-    String strDateFormat = "s";
-    SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+        //formatting seconds in s format like 1,2 etc.
+        String strDateFormat = "s";
+        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
 
-    System.out.println("seconds in s format : " + sdf.format(date));
+        System.out.println("seconds in s format : " + sdf.format(date));
 
-    //formatting seconds in ss format like 01, 02 etc.
-    strDateFormat = "ss";
-    sdf = new SimpleDateFormat(strDateFormat);
-    System.out.println("seconds in ss format : " + sdf.format(date));
-  }
+        //formatting seconds in ss format like 01, 02 etc.
+        strDateFormat = "ss";
+        sdf = new SimpleDateFormat(strDateFormat);
+        System.out.println("seconds in ss format : " + sdf.format(date));
+    }
 }
 
 /*

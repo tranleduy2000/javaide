@@ -16,7 +16,6 @@
 package com.android.build.gradle.internal;
 
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.api.DefaultAndroidSourceSet;
 import com.android.build.gradle.internal.dsl.CoreProductFlavor;
 import com.android.builder.core.BuilderConstants;
@@ -36,10 +35,8 @@ public class ProductFlavorData<T extends CoreProductFlavor> extends VariantDimen
     ProductFlavorData(
             @NonNull T productFlavor,
             @NonNull DefaultAndroidSourceSet sourceSet,
-            @Nullable DefaultAndroidSourceSet androidTestSourceSet,
-            @Nullable DefaultAndroidSourceSet unitTestSourceSet,
             @NonNull Project project) {
-        super(sourceSet, androidTestSourceSet, unitTestSourceSet, project);
+        super(sourceSet, project);
 
         this.productFlavor = productFlavor;
 

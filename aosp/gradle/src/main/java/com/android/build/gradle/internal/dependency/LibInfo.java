@@ -28,10 +28,10 @@ import java.util.List;
 
 /**
  * Version of LibraryDependency that includes transitive jar dependencies as JarInfo.
- *
+ * <p>
  * This is used as a temporary object as the dependencies are processed. This object contains
  * more information and can be mutated ({@link #setIsOptional(boolean)}) during the process.
- *
+ * <p>
  * In the end the object will be converted into an immutable LibraryDependency instance.
  */
 public class LibInfo extends LibraryDependencyImpl {
@@ -42,14 +42,14 @@ public class LibInfo extends LibraryDependencyImpl {
     private boolean mutableIsOptional = false;
 
     public LibInfo(@NonNull File bundle,
-            @NonNull File explodedBundle,
-            @NonNull List<LibraryDependency> dependencies,
-            @NonNull Collection<JarInfo> jarDependencies,
-            @Nullable String name,
-            @Nullable String variantName,
-            @Nullable String projectPath,
-            @Nullable MavenCoordinates requestedCoordinates,
-            @Nullable MavenCoordinates resolvedCoordinates) {
+                   @NonNull File explodedBundle,
+                   @NonNull List<LibraryDependency> dependencies,
+                   @NonNull Collection<JarInfo> jarDependencies,
+                   @Nullable String name,
+                   @Nullable String variantName,
+                   @Nullable String projectPath,
+                   @Nullable MavenCoordinates requestedCoordinates,
+                   @Nullable MavenCoordinates resolvedCoordinates) {
         super(bundle,
                 explodedBundle,
                 dependencies,

@@ -10,7 +10,6 @@ import com.duy.android.compiler.builder.task.java.DexTask;
 import com.duy.android.compiler.builder.task.java.JarTask;
 import com.duy.android.compiler.project.JavaProject;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 
 public class JavaBuilder extends BuilderImpl<JavaProject> {
@@ -22,6 +21,11 @@ public class JavaBuilder extends BuilderImpl<JavaProject> {
         super(context);
         mProject = project;
 
+    }
+
+    @Override
+    public JavaProject getProject() {
+        return mProject;
     }
 
     @Override
@@ -44,32 +48,4 @@ public class JavaBuilder extends BuilderImpl<JavaProject> {
         return runTasks(tasks);
     }
 
-
-    public void stdout(String message) {
-        if (mVerbose) {
-            mStdout.println(message);
-        }
-    }
-
-    public void stderr(String stderr) {
-        if (mVerbose) {
-            mStderr.println(stderr);
-        }
-    }
-
-    public boolean isVerbose() {
-        return mVerbose;
-    }
-
-    public Context getContext() {
-        return mContext;
-    }
-
-    public JavaProject getProject() {
-        return mProject;
-    }
-
-    public PrintStream getStdout() {
-        return mStdout;
-    }
 }

@@ -1,0 +1,36 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.view.View;
+
+public class WrongAnnotation {
+    @Override
+    @SuppressLint("NewApi") // Valid: class-file check on method
+    public static void foobar(View view, @SuppressLint("NewApi") int foo) { // Invalid: class-file check
+        @SuppressLint("NewApi") // Invalid
+        boolean a;
+        @SuppressLint({"SdCardPath", "NewApi"}) // Invalid: class-file based check on local variable
+        boolean b;
+        @android.annotation.SuppressLint({"SdCardPath", "NewApi"}) // Invalid (FQN)
+        boolean c;
+        @SuppressLint("SdCardPath") // Valid: AST-based check
+        boolean d;
+    }
+
+    @SuppressLint("NewApi")
+    private int field1;
+
+    @SuppressLint("NewApi")
+    private int field2 = 5;
+
+    static {
+        // Local variable outside method: invalid
+        @SuppressLint("NewApi")
+        int localvar = 5;
+    }
+
+    private static void test() {
+        @SuppressLint("NewApi") // Invalid
+        int a = View.MEASURED_STATE_MASK;
+    }
+}

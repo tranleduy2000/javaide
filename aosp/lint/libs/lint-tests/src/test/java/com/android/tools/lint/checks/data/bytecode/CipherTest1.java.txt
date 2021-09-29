@@ -1,0 +1,21 @@
+package test.pkg;
+
+import java.security.Key;
+import java.security.SecureRandom;
+
+import javax.crypto.Cipher;
+
+@SuppressWarnings("all")
+public class CipherTest1 {
+    public void test1(Cipher cipher, Key key) throws Exception {
+        cipher.init(Cipher.WRAP_MODE, key); // FLAG
+    }
+
+    public void test2(Cipher cipher, Key key, SecureRandom random) throws Exception {
+        cipher.init(Cipher.ENCRYPT_MODE, key, random);
+    }
+
+    public void setup(String transform) throws Exception {
+        Cipher cipher = Cipher.getInstance(transform);
+    }
+}

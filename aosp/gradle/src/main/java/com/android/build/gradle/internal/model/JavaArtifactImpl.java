@@ -39,24 +39,6 @@ public class JavaArtifactImpl extends BaseArtifactImpl implements JavaArtifact, 
     @Nullable
     private final File mockablePlatformJar;
 
-    public static JavaArtifactImpl clone(@NonNull JavaArtifact javaArtifact) {
-        SourceProvider variantSP = javaArtifact.getVariantSourceProvider();
-        SourceProvider flavorsSP = javaArtifact.getMultiFlavorSourceProvider();
-
-        return new JavaArtifactImpl(
-                javaArtifact.getName(),
-                javaArtifact.getAssembleTaskName(),
-                javaArtifact.getCompileTaskName(),
-                javaArtifact.getIdeSetupTaskNames(),
-                javaArtifact.getGeneratedSourceFolders(),
-                javaArtifact.getClassesFolder(),
-                javaArtifact.getJavaResourcesFolder(),
-                javaArtifact.getMockablePlatformJar(),
-                DependenciesImpl.cloneDependenciesForJavaArtifacts(javaArtifact.getDependencies()),
-                variantSP != null ? SourceProviderImpl.cloneProvider(variantSP) : null,
-                flavorsSP != null ? SourceProviderImpl.cloneProvider(flavorsSP) : null);
-    }
-
     public JavaArtifactImpl(@NonNull String name,
                             @NonNull String assembleTaskName,
                             @NonNull String compileTaskName,
@@ -73,6 +55,24 @@ public class JavaArtifactImpl extends BaseArtifactImpl implements JavaArtifact, 
                 variantSourceProvider, multiFlavorSourceProviders, generatedSourceFolders);
         this.ideSetupTaskNames = Sets.newHashSet(ideSetupTaskNames);
         this.mockablePlatformJar = mockablePlatformJar;
+    }
+
+    public static JavaArtifactImpl clone(@NonNull JavaArtifact javaArtifact) {
+        SourceProvider variantSP = javaArtifact.getVariantSourceProvider();
+        SourceProvider flavorsSP = javaArtifact.getMultiFlavorSourceProvider();
+
+        return new JavaArtifactImpl(
+                javaArtifact.getName(),
+                javaArtifact.getAssembleTaskName(),
+                javaArtifact.getCompileTaskName(),
+                javaArtifact.getIdeSetupTaskNames(),
+                javaArtifact.getGeneratedSourceFolders(),
+                javaArtifact.getClassesFolder(),
+                javaArtifact.getJavaResourcesFolder(),
+                javaArtifact.getMockablePlatformJar(),
+                DependenciesImpl.cloneDependenciesForJavaArtifacts(javaArtifact.getDependencies()),
+                variantSP != null ? SourceProviderImpl.cloneProvider(variantSP) : null,
+                flavorsSP != null ? SourceProviderImpl.cloneProvider(flavorsSP) : null);
     }
 
     @NonNull

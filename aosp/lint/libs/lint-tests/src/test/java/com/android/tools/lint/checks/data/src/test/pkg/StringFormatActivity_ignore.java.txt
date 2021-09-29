@@ -1,0 +1,27 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.annotations.tools.SuppressLint;
+
+public class StringFormatActivity extends Activity {
+    /** Called when the activity is first created. */
+    @SuppressLint("all")
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        String target = "World";
+        String hello = getResources().getString(R.string.hello);
+        String output1 = String.format(hello, target);
+        String hello2 = getResources().getString(R.string.hello2);
+        String output2 = String.format(hello2, target, "How are you");
+        setContentView(R.layout.main);
+        String score = getResources().getString(R.string.score);
+        int points = 50;
+        boolean won = true;
+        String output3 = String.format(score, points);
+        String output4 = String.format(score, true);  // wrong
+        String output4 = String.format(score, won);   // wrong
+        String output5 = String.format(score, 75);
+    }
+}

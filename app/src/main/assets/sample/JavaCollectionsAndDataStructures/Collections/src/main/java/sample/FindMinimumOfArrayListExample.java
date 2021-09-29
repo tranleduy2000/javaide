@@ -10,17 +10,17 @@ import java.util.Collections;
 
 public class FindMinimumOfArrayListExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create an ArrayList object
-    ArrayList arrayList = new ArrayList();
+        //create an ArrayList object
+        ArrayList arrayList = new ArrayList();
 
-    //Add elements to Arraylist
-    arrayList.add(new Integer("327482"));
-    arrayList.add(new Integer("13408"));
-    arrayList.add(new Integer("802348"));
-    arrayList.add(new Integer("345308"));
-    arrayList.add(new Integer("509324"));
+        //Add elements to Arraylist
+        arrayList.add(new Integer("327482"));
+        arrayList.add(new Integer("13408"));
+        arrayList.add(new Integer("802348"));
+        arrayList.add(new Integer("345308"));
+        arrayList.add(new Integer("509324"));
 
     /*
        To find minimum element of Java ArrayList use,
@@ -30,10 +30,10 @@ public class FindMinimumOfArrayListExample {
        its natural ordering.
     */
 
-    Object obj = Collections.min(arrayList);
+        Object obj = Collections.min(arrayList);
 
-    System.out.println("Minimum Element of Java ArrayList is : " + obj);
-  }
+        System.out.println("Minimum Element of Java ArrayList is : " + obj);
+    }
 }
 /*
 Output would be

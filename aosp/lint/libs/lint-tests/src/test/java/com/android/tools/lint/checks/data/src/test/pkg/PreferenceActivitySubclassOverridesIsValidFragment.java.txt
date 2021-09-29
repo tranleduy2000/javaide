@@ -1,0 +1,10 @@
+package test.pkg;
+
+import android.preference.PreferenceActivity;
+
+public class PreferenceActivitySubclass extends PreferenceActivity {
+    @Override
+    protected boolean isValidFragment(String fragmentName) {
+        return false;
+    }
+}

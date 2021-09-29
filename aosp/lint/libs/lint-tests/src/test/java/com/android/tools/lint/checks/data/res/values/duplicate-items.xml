@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="DetailsPage_BuyButton" parent="@style/DetailsPage_Button">
+        <item name="android:textColor">@color/buy_button</item>
+        <item name="android:background">@drawable/details_page_buy_button</item>
+        <item name="android:textColor">#ff0000</item>
+    </style>
+
+    <declare-styleable name="ContentFrame">
+        <attr name="content" format="reference" />
+        <attr name="contentId" format="reference" />
+        <attr name="contentId" format="integer" />
+    </declare-styleable>
+
+</resources>
+

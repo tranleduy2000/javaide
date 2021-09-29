@@ -28,14 +28,14 @@ import java.util.List;
 /**
  * Implementation of SourceProviderContainer that is serializable and is meant to be used
  * in the model sent to the tooling API.
- *
+ * <p>
  * It also provides convenient methods to create an instance, cloning the original
  * SourceProvider.
- *
+ * <p>
  * When the source Provider is cloned, its values are queried and then statically stored.
  * Any further change through the DSL will not be impact. Therefore instances of this class
  * should only be used when the model is built.
- *
+ * <p>
  * To create more dynamic isntances of SourceProviderContainer, use
  * {@link com.android.build.gradle.internal.variant.DefaultSourceProviderContainer}
  */
@@ -47,12 +47,17 @@ class SourceProviderContainerImpl implements SourceProviderContainer, Serializab
     @NonNull
     private final SourceProvider sourceProvider;
 
+    private SourceProviderContainerImpl(@NonNull String name,
+                                        @NonNull SourceProvider sourceProvider) {
+        this.name = name;
+        this.sourceProvider = sourceProvider;
+    }
+
     /**
      * Create a {@link SourceProviderContainer} that is serializable to
      * use in the model sent through the tooling API.
      *
      * @param sourceProviderContainer the source provider
-     *
      * @return a non-null SourceProviderContainer
      */
     @NonNull
@@ -80,12 +85,6 @@ class SourceProviderContainerImpl implements SourceProviderContainer, Serializab
             @NonNull SourceProvider sourceProvider) {
         return new SourceProviderContainerImpl(name,
                 SourceProviderImpl.cloneProvider(sourceProvider));
-    }
-
-    private SourceProviderContainerImpl(@NonNull String name,
-                                        @NonNull SourceProvider sourceProvider) {
-        this.name = name;
-        this.sourceProvider = sourceProvider;
     }
 
     @NonNull

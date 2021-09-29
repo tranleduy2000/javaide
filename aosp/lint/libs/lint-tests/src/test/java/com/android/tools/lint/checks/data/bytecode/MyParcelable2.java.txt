@@ -1,0 +1,25 @@
+package test.pkg;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class MyParcelable2 implements Parcelable {
+	public static final Parcelable.Creator<MyParcelable2> CREATOR = new Parcelable.Creator<MyParcelable2>() {
+		public MyParcelable2 createFromParcel(Parcel in) {
+			return new MyParcelable2();
+		}
+
+		public MyParcelable2[] newArray(int size) {
+			return new MyParcelable2[size];
+		}
+	};
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel arg0, int arg1) {
+	}
+}

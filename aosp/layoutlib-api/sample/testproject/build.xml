@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="testproject" default="help">
 
-<!-- The local.properties file is created and updated by the 'android'
-     tool.
-     It contains the path to the SDK. It should *NOT* be checked into
-     Version Control Systems. -->
+    <!-- The local.properties file is created and updated by the 'android'
+         tool.
+         It contains the path to the SDK. It should *NOT* be checked into
+         Version Control Systems. -->
     <property file="local.properties" />
 
     <!-- The build.properties file can be created by you and is never touched
@@ -37,20 +37,20 @@
     <import file="${sdk.dir}/tools/ant/pre_setup.xml" />
 
 
-<!-- extension targets. Uncomment the ones where you want to do custom work
-     in between standard targets -->
-<!--
-    <target name="-pre-build">
-    </target>
-    <target name="-pre-compile">
-    </target>
+    <!-- extension targets. Uncomment the ones where you want to do custom work
+         in between standard targets -->
+    <!--
+        <target name="-pre-build">
+        </target>
+        <target name="-pre-compile">
+        </target>
 
-    [This is typically used for code obfuscation.
-     Compiled code location: ${out.classes.absolute.dir}
-     If this is not done in place, override ${out.dex.input.absolute.dir}]
-    <target name="-post-compile">
-    </target>
--->
+        [This is typically used for code obfuscation.
+         Compiled code location: ${out.classes.absolute.dir}
+         If this is not done in place, override ${out.dex.input.absolute.dir}]
+        <target name="-post-compile">
+        </target>
+    -->
 
     <!-- Execute the Android Setup task that will setup some properties
          specific to the target, and import the build rules files.

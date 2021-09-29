@@ -1,0 +1,11 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <size
+        android:height="64dp"
+        android:width="64dp" />
+
+    <viewport
+        android:viewportHeight="24"
+        android:viewportWidth="24" />
+
+</vector>

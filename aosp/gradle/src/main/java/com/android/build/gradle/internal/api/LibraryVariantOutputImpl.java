@@ -26,7 +26,7 @@ import org.gradle.api.tasks.bundling.Zip;
 
 /**
  * Implementation of variant output for library variants.
- *
+ * <p>
  * This is a wrapper around the internal data model, in order to control what is accessible
  * through the external API.
  */

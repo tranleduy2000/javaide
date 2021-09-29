@@ -1,0 +1,15 @@
+package test.pkg;
+
+import android.app.*;
+import android.view.*;
+import android.widget.*;
+
+public class WrongCastActivity2 extends Activity {
+    private TextView additionalButton;
+
+    private void configureAdditionalButton(View bodyView) {
+        this.additionalButton = (TextView) bodyView
+                .findViewById(R.id.additional);
+        Object x = (AdapterView<?>) bodyView.findViewById(R.id.reminder_lead);
+    }
+}

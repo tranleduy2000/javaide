@@ -9,21 +9,21 @@ import java.util.StringTokenizer;
 
 public class ReverseLine {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    String strLine = "Java Reverse string by word example";
+        String strLine = "Java Reverse string by word example";
 
-    //specify delimiter as " " space
-    StringTokenizer st = new StringTokenizer(strLine, " ");
+        //specify delimiter as " " space
+        StringTokenizer st = new StringTokenizer(strLine, " ");
 
-    String strReversedLine = "";
+        String strReversedLine = "";
 
-    while (st.hasMoreTokens()) {
-      strReversedLine = st.nextToken() + " " + strReversedLine;
+        while (st.hasMoreTokens()) {
+            strReversedLine = st.nextToken() + " " + strReversedLine;
+        }
+
+        System.out.println("Reversed string by word is : " + strReversedLine);
     }
-
-    System.out.println("Reversed string by word is : " + strReversedLine);
-  }
 }
 
 /*

@@ -7,7 +7,7 @@ Java String object or Java Object.
 
 public class JavaStringCompareExample {
 
-  public static void main(String args[]) {
+    public static void main(String args[]) {
 
     /*
     Java String class defines following methods to compare Java String object.
@@ -23,17 +23,17 @@ public class JavaStringCompareExample {
     Compares two strings ignoring the character case of the given String.
     */
 
-    String str = "Hello World";
-    String anotherString = "hello world";
-    Object objStr = str;
+        String str = "Hello World";
+        String anotherString = "hello world";
+        Object objStr = str;
 
-    /* compare two strings, case sensitive */
-    System.out.println(str.compareTo(anotherString));
-    /* compare two strings, ignores character case  */
-    System.out.println(str.compareToIgnoreCase(anotherString));
-    /* compare string with object */
-    System.out.println(str.compareTo(objStr.toString()));
-  }
+        /* compare two strings, case sensitive */
+        System.out.println(str.compareTo(anotherString));
+        /* compare two strings, ignores character case  */
+        System.out.println(str.compareToIgnoreCase(anotherString));
+        /* compare string with object */
+        System.out.println(str.compareTo(objStr.toString()));
+    }
 }
 
 /*

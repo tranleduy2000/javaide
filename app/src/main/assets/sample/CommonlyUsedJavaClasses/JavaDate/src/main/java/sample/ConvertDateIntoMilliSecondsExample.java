@@ -9,15 +9,15 @@ import java.util.Date;
 
 public class ConvertDateIntoMilliSecondsExample {
 
-  public static void main(String args[]) {
+    public static void main(String args[]) {
 
-    //create a Date object
-    Date date = new Date();
-    System.out.println("Date is : " + date);
+        //create a Date object
+        Date date = new Date();
+        System.out.println("Date is : " + date);
 
-    //use getTime() method to retrieve milliseconds
-    System.out.println("Milliseconds since January 1, 1970, 00:00:00 GMT : " + date.getTime());
-  }
+        //use getTime() method to retrieve milliseconds
+        System.out.println("Milliseconds since January 1, 1970, 00:00:00 GMT : " + date.getTime());
+    }
 }
 
 /*

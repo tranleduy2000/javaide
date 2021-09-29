@@ -3,14 +3,14 @@ package com.duy.android.compiler.project;
 
 import android.content.Context;
 
-import com.duy.android.compiler.utils.IOUtils;
+import com.duy.common.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
 
 public class AndroidGradleFileGenerator {
     public static final String DEFAULT_BUILD_FILE = "build.gradle";
-    public static final String DEFAULT_SETTING_FILE = "setting.gradle";
+    public static final String DEFAULT_SETTING_FILE = "settings.gradle";
     private Context context;
     private AndroidAppProject project;
 
@@ -26,7 +26,7 @@ public class AndroidGradleFileGenerator {
 
 
         File appGradle = new File(project.getAppDir(), DEFAULT_BUILD_FILE);
-        IOUtils.copyNotIfExistAndClose(context.getAssets().open("templates/app/build.gradle.app"), appGradle);
+        IOUtils.copyNotIfExistAndClose(context.getAssets().open("templates/app/build_gradle.template"), appGradle);
     }
 
     public void generateSettingFile() throws IOException {

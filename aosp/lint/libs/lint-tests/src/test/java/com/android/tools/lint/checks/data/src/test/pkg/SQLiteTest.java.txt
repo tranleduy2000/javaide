@@ -1,0 +1,41 @@
+package test.pkg;
+
+import android.database.sqlite.SQLiteDatabase;
+
+@SuppressWarnings({"unused", "SpellCheckingInspection"})
+public class SqliteTest {
+    public interface Tables {
+        interface AppKeys {
+            String NAME = "appkeys";
+
+            interface Columns {
+                String _ID = "_id";
+                String PKG_NAME = "packageName";
+                String PKG_SIG = "signatureDigest";
+            }
+
+            String SCHEMA =
+                    Columns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            Columns.PKG_NAME + " STRING NOT NULL," +
+                            Columns.PKG_SIG + " STRING NOT NULL";
+        }
+    }
+
+    public void test(SQLiteDatabase db, String name) {
+        db.execSQL("CREATE TABLE " + name + "(" + Tables.AppKeys.SCHEMA + ");"); // ERROR
+
+    }
+
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(TracksColumns.CREATE_TABLE); // ERROR
+    }
+
+    private void doCreate(SQLiteDatabase db) {
+        // Not yet handled; we need to flow string concatenation across procedure calls
+        createTable(db, Tables.AppKeys.NAME, Tables.AppKeys.SCHEMA); // ERROR
+    }
+
+    private void createTable(SQLiteDatabase db, String tableName, String schema) {
+        db.execSQL("CREATE TABLE " + tableName + "(" + schema + ");");
+    }
+}

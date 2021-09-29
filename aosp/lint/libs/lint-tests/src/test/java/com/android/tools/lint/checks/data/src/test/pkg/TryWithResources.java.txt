@@ -1,0 +1,27 @@
+package test.pkg;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+public class TryWithResources {
+    public String testTryWithResources(String path) throws IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            return br.readLine();
+        }
+    }
+
+    public void testMultiCatch() {
+        try {
+            Class.forName("java.lang.Integer").getMethod("toString").invoke(null);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}

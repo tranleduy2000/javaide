@@ -10,26 +10,26 @@ import java.util.Vector;
 
 public class ReplaceAllElementsOfVectorExample {
 
-  public static void main(String[] args) {
-    //create a Vector object
-    Vector v = new Vector();
+    public static void main(String[] args) {
+        //create a Vector object
+        Vector v = new Vector();
 
-    //Add elements to Vector
-    v.add("A");
-    v.add("B");
-    v.add("D");
+        //Add elements to Vector
+        v.add("A");
+        v.add("B");
+        v.add("D");
 
     /*
       To replace all elements of Java Vector with specified element use,
       static void fill(List list, Object element) method of Collections class.
     */
 
-    System.out.println("Before replacement, Vector contains : " + v);
+        System.out.println("Before replacement, Vector contains : " + v);
 
-    Collections.fill(v, "REPLACED");
+        Collections.fill(v, "REPLACED");
 
-    System.out.println("After replacement, Vector contains : " + v);
-  }
+        System.out.println("After replacement, Vector contains : " + v);
+    }
 }
 
 /*

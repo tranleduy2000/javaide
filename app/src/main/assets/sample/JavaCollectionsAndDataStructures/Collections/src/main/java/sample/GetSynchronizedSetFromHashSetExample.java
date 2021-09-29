@@ -11,9 +11,9 @@ import java.util.Set;
 
 public class GetSynchronizedSetFromHashSetExample {
 
-  public static void main(String[] args) {
-    //create HashSet object
-    HashSet hashSet = new HashSet();
+    public static void main(String[] args) {
+        //create HashSet object
+        HashSet hashSet = new HashSet();
 
     /*
       Java HashSet is NOT synchronized. To get synchronized Set from
@@ -21,12 +21,12 @@ public class GetSynchronizedSetFromHashSetExample {
       static void synchronizedSet(Set set) method of Collections class.
     */
 
-    Set set = Collections.synchronizedSet(hashSet);
+        Set set = Collections.synchronizedSet(hashSet);
 
     /*
        Use this set object to prevent any unsynchronized access to original
        HashSet object.
     */
 
-  }
+    }
 }

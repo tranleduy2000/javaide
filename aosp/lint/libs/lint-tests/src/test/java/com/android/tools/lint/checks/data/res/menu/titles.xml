@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_bar_progress_spinner"
+        android:showAsAction="always"
+        android:background="@null"
+        android:selectableItemBackground="@null"
+        android:actionLayout="@layout/action_bar_progress_spinner_layout"/>
+    <item android:id="@+id/refresh"
+        android:title="@string/menu_refresh"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_menu_refresh"/>
+    <item android:id="@+id/menu_plus_one"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_menu_plus1"/>
+</menu>

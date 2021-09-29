@@ -1,0 +1,7 @@
+// http://code.google.com/p/projectlombok/issues/detail?id=415
+package test.pkg;
+public class X {
+  public void X(Y parent) {
+    parent.new Z(parent.getW()).execute();
+  }
+}

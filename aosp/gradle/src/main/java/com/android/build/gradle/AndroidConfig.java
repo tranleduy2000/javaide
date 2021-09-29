@@ -20,7 +20,6 @@ import com.android.build.gradle.api.AndroidSourceSet;
 import com.android.build.gradle.api.VariantFilter;
 import com.android.build.gradle.internal.CompileOptions;
 import com.android.build.gradle.internal.dsl.AaptOptions;
-import com.android.build.gradle.internal.dsl.AdbOptions;
 import com.android.build.gradle.internal.dsl.CoreBuildType;
 import com.android.build.gradle.internal.dsl.CoreProductFlavor;
 import com.android.build.gradle.internal.dsl.DexOptions;
@@ -43,76 +42,117 @@ import java.util.List;
  */
 public interface AndroidConfig {
 
-    /** Build tool version */
+    /**
+     * Build tool version
+     */
     String getBuildToolsVersion();
 
-    /** Compile SDK version */
+    /**
+     * Compile SDK version
+     */
     String getCompileSdkVersion();
 
-    /** Build tool revisions */
+    /**
+     * Build tool revisions
+     */
     FullRevision getBuildToolsRevision();
 
-    /** Name of the variant to publish */
+    /**
+     * Name of the variant to publish
+     */
     String getDefaultPublishConfig();
 
-    /** Whether to also publish non-default variants */
+    /**
+     * Whether to also publish non-default variants
+     */
     boolean getPublishNonDefault();
 
-    /** Filter to determine which variants to build */
+    /**
+     * Filter to determine which variants to build
+     */
     Action<VariantFilter> getVariantFilter();
 
-    /** Adb options */
-    AdbOptions getAdbOptions();
-
-    /** A prefix to be used when creating new resources. Used by Studio */
+    /**
+     * A prefix to be used when creating new resources. Used by Studio
+     */
     String getResourcePrefix();
 
-    /** List of flavor dimensions */
+    /**
+     * List of flavor dimensions
+     */
     List<String> getFlavorDimensionList();
 
-    /** Whether to generate pure splits or multi apk */
+    /**
+     * Whether to generate pure splits or multi apk
+     */
     boolean getGeneratePureSplits();
 
-    /** Preprocessing Options */
+    /**
+     * Preprocessing Options
+     */
     PreprocessingOptions getPreprocessingOptions();
 
     @Deprecated
     boolean getEnforceUniquePackageName();
 
-    /** Default config, shared by all flavors. */
+    /**
+     * Default config, shared by all flavors.
+     */
     CoreProductFlavor getDefaultConfig();
 
-    /** Options for aapt, tool for packaging resources. */
+    /**
+     * Options for aapt, tool for packaging resources.
+     */
     AaptOptions getAaptOptions();
 
-    /** Compile options */
+    /**
+     * Compile options
+     */
     CompileOptions getCompileOptions();
 
-    /** Dex options. */
+    /**
+     * Dex options.
+     */
     DexOptions getDexOptions();
 
-    /** Lint options. */
+    /**
+     * Lint options.
+     */
     LintOptions getLintOptions();
 
-    /** Packaging options. */
+    /**
+     * Packaging options.
+     */
     PackagingOptions getPackagingOptions();
 
-    /** APK splits */
+    /**
+     * APK splits
+     */
     Splits getSplits();
 
-    /** All product flavors used by this project. */
+    /**
+     * All product flavors used by this project.
+     */
     Collection<? extends CoreProductFlavor> getProductFlavors();
 
-    /** Build types used by this project. */
+    /**
+     * Build types used by this project.
+     */
     Collection<? extends CoreBuildType> getBuildTypes();
 
-    /** Signing configs used by this project. */
+    /**
+     * Signing configs used by this project.
+     */
     Collection<? extends SigningConfig> getSigningConfigs();
 
-    /** Source sets for all variants */
+    /**
+     * Source sets for all variants
+     */
     NamedDomainObjectContainer<AndroidSourceSet> getSourceSets();
 
-    /** Whether to package build config class file */
+    /**
+     * Whether to package build config class file
+     */
     Boolean getPackageBuildConfig();
 
     Collection<LibraryRequest> getLibraryRequests();

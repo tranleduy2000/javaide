@@ -10,22 +10,22 @@ import java.util.Date;
 
 public class FormattingMinute {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create Date object
-    Date date = new Date();
+        //create Date object
+        Date date = new Date();
 
-    //formatting minute in m format like 1,2 etc.
-    String strDateFormat = "m";
-    SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+        //formatting minute in m format like 1,2 etc.
+        String strDateFormat = "m";
+        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
 
-    System.out.println("minutes in m format : " + sdf.format(date));
+        System.out.println("minutes in m format : " + sdf.format(date));
 
-    //formatting minutes in mm format like 01, 02 etc.
-    strDateFormat = "mm";
-    sdf = new SimpleDateFormat(strDateFormat);
-    System.out.println("minutes in mm format : " + sdf.format(date));
-  }
+        //formatting minutes in mm format like 01, 02 etc.
+        strDateFormat = "mm";
+        sdf = new SimpleDateFormat(strDateFormat);
+        System.out.println("minutes in mm format : " + sdf.format(date));
+    }
 }
 
 /*

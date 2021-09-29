@@ -1,0 +1,109 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.view.View;
+
+public class PasteError extends Activity {
+    protected void ok() {
+        Button button1 = (Button) findViewById(R.id.textView1);
+        mView2 = findViewById(R.id.textView2);
+        View view3 = findViewById(R.id.activity_main);
+    }
+
+    protected void error() {
+        View view1 = findViewById(R.id.textView1);
+        View view2 = findViewById(R.id.textView1);
+        View view3 = findViewById(R.id.textView2);
+    }
+
+    protected void ok2() {
+        View view1;
+        if (true) {
+            view1 = findViewById(R.id.textView1);
+        } else {
+            view1 = findViewById(R.id.textView1);
+        }
+    }
+
+    @SuppressLint("CutPasteId")
+    protected void suppressed() {
+        View view1 = findViewById(R.id.textView1);
+        View view2 = findViewById(R.id.textView1);
+    }
+
+    private void ok3() {
+        if (view == null || view.findViewById(R.id.city_name) == null) {
+            view = mInflater.inflate(R.layout.city_list_item, parent, false);
+        }
+        TextView name = (TextView) view.findViewById(R.id.city_name);
+    }
+
+    private void ok4() {
+        mPrevAlbumWrapper = mPrevTrackLayout.findViewById(R.id.album_wrapper);
+        mNextAlbumWrapper = mNextTrackLayout.findViewById(R.id.album_wrapper);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View listItem = convertView;
+        if (getItemViewType(position) == VIEW_TYPE_HEADER) {
+            TextView header = (TextView) listItem.findViewById(R.id.name);
+        } else if (getItemViewType(position) == VIEW_TYPE_BOOLEAN) {
+            TextView filterName = (TextView) listItem.findViewById(R.id.name);
+        } else {
+            TextView filterName = (TextView) listItem.findViewById(R.id.name);
+        }
+    }
+
+    protected void ok_branch_1() {
+        if (true) {
+            view1 = findViewById(R.id.textView1);
+        } else {
+            view2 = findViewById(R.id.textView1);
+        }
+    }
+
+    protected void error_branch_1() {
+        if (true) {
+            view1 = findViewById(R.id.textView1);
+        }
+        if (true) {
+            view2 = findViewById(R.id.textView1);
+        }
+    }
+
+    protected void error_branch_2() {
+        view1 = findViewById(R.id.textView1);
+        if (true) {
+            view2 = findViewById(R.id.textView1);
+        }
+    }
+
+    protected void error_branch_3() {
+        view1 = findViewById(R.id.textView1);
+        if (true) {
+        } else {
+            view2 = findViewById(R.id.textView1);
+        }
+    }
+
+    protected void error_branch_4() {
+        view1 = findViewById(R.id.textView1);
+        if (true) {
+        } else {
+            if (true) {
+                view2 = findViewById(R.id.textView1);
+            }
+        }
+    }
+
+    protected void ok_branch_2() {
+        if (true) {
+            view1 = findViewById(R.id.textView1);
+        } else {
+            if (true) {
+                view2 = findViewById(R.id.textView1);
+            }
+        }
+    }
+}

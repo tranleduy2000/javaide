@@ -1,0 +1,14 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 17
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:+'
+}

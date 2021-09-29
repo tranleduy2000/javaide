@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.InvalidParameterException;
 
 import dalvik.system.DexClassLoader;
 
@@ -36,7 +37,7 @@ public class Java {
                         jarfile = zArgs[i];
                     } else {
                         //Wrong Varibles
-                        throw new InvokeException("Wrong parameters. No JAR file specified.");
+                        throw new InvalidParameterException("Wrong parameters. No JAR file specified.");
                     }
                 } else if (zArgs[i].equals("-v") || zArgs[i].equals("-verbose")) {
                     //Property set
@@ -57,7 +58,7 @@ public class Java {
             }
 
             if (jarfile.equals("")) {
-                throw new InvokeException("No JAR Files specified");
+                throw new InvalidParameterException("No JAR Files specified");
             }
 
             if (tempDir == null) {
@@ -69,7 +70,7 @@ public class Java {
                     tempDir = System.getenv("TEMP");
                     if (tempDir == null || tempDir.equals("")) {
                         System.out.println("No TEMP OR ODEX_FOLDER specified!");
-                        throw new InvokeException("Please specify ODEX_FOLDER or TEMP environment variable");
+                        throw new InvalidParameterException("Please specify ODEX_FOLDER or TEMP environment variable");
                     }
                 }
             }
@@ -83,7 +84,7 @@ public class Java {
 
             //Check wee have the info we need..
             if (jarfile.equals("") || classname.equals("")) {
-                throw new InvokeException("Incorrect parameters");
+                throw new InvalidParameterException("Incorrect parameters");
             }
 
             //Now load this class..

@@ -13,7 +13,6 @@ integration-test/samples/basic/lint-report*
 integration-test/samples/dependencies/jarProject/build
 integration-test/samples/dependencies/jarProject2/build
 integration-test/samples/embedded/*/build
-integration-test/samples/embedded/micro-apps/*/build
 integration-test/samples/flavoredlib/*/build
 integration-test/samples/flavorlib/*/build
 integration-test/samples/libMinifyJarDep/*/build

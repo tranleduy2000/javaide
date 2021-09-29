@@ -1,0 +1,8 @@
+<resources>
+    <item name="layout10" type="layout">@layout/layout20</item>
+    <item name="layout20" type="layout">@layout/layout30</item>
+    <item name="layout30" type="layout">@layout/layout10</item>
+    <item name="test2" type="color">@color/test1</item>
+    <item name="layout4" type="layout">@layout/layout1</item>
+</resources>
+

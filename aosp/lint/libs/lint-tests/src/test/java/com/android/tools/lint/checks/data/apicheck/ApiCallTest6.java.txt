@@ -1,0 +1,10 @@
+package test.pkg;
+
+import java.io.IOException;
+
+public class ApiCallTest6 {
+    public void test(Throwable throwable) {
+        // IOException(Throwable) requires API 9
+        IOException ioException = new IOException(throwable);
+    }
+}

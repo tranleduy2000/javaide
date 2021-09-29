@@ -1,0 +1,26 @@
+apply plugin: 'android'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
+
+    defaultConfig {
+        minSdkVersion 7
+        targetSdkVersion 17
+        versionCode 1
+        versionName "1.0"
+    }
+
+    productFlavors {
+        free {
+        }
+        pro {
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:+'
+    freeCompile 'com.google.guava:guava:11.0.2'
+    compile 'com.android.support:appcompat-v7:13.0.0'
+}

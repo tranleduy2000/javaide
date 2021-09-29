@@ -19,7 +19,6 @@ package com.android.build.gradle.internal.tasks;
 import com.android.build.gradle.AndroidConfig;
 import com.android.build.gradle.api.AndroidSourceDirectorySet;
 import com.android.build.gradle.api.AndroidSourceSet;
-import com.android.builder.core.VariantType;
 import com.google.common.collect.Lists;
 
 import org.gradle.api.Project;
@@ -27,7 +26,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.diagnostics.AbstractReportTask;
 import org.gradle.api.tasks.diagnostics.internal.ReportRenderer;
 import org.gradle.api.tasks.diagnostics.internal.TextReportRenderer;
-import org.gradle.logging.StyledTextOutput;
+import org.gradle.internal.logging.text.StyledTextOutput;
 import org.gradle.util.CollectionUtils;
 
 import java.io.File;
@@ -69,22 +68,19 @@ public class SourceSetsTask extends AbstractReportTask {
 
                 renderDirectorySet("Java sources", sourceSet.getJava(), project);
 
-                if (!sourceSet.getName().startsWith(VariantType.UNIT_TEST.getPrefix())) {
-                    renderKeyValue(
-                            "Manifest file: ",
-                            project.getRootProject().relativePath(
-                                    sourceSet.getManifest().getSrcFile()));
+                renderKeyValue(
+                        "Manifest file: ",
+                        project.getRootProject().relativePath(
+                                sourceSet.getManifest().getSrcFile()));
 
-                    renderDirectorySet("Android resources", sourceSet.getRes(), project);
-                    renderDirectorySet("Assets", sourceSet.getAssets(), project);
-                    renderDirectorySet("AIDL sources", sourceSet.getAidl(), project);
-                    renderDirectorySet("RenderScript sources", sourceSet.getRenderscript(), project);
-                    renderDirectorySet("JNI sources", sourceSet.getJni(), project);
-                    renderDirectorySet("JNI libraries", sourceSet.getJniLibs(), project);
-                }
+                renderDirectorySet("Android resources", sourceSet.getRes(), project);
+                renderDirectorySet("Assets", sourceSet.getAssets(), project);
+                renderDirectorySet("AIDL sources", sourceSet.getAidl(), project);
+                renderDirectorySet("JNI sources", sourceSet.getJni(), project);
+                renderDirectorySet("JNI libraries", sourceSet.getJniLibs(), project);
 
                 renderDirectorySet("Java-style resources", sourceSet.getResources(), project);
-                
+
                 mRenderer.getTextOutput().println();
             }
         }

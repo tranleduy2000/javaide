@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_search"
+        android:showAsAction="always|collapseActionView"
+        android:actionViewClass="android.widget.SearchView" />
+
+    <group android:id="@+id/reader_items">
+
+        <item
+            android:id="@+id/menu_table_of_contents"
+            android:showAsAction="always|collapseActionView"
+            android:actionLayout="@layout/action_table_of_contents" />
+
+        <item
+            android:id="@+id/menu_settings"
+            android:showAsAction="always|collapseActionView" />
+
+        <item android:id="@+id/menu_mode"
+            android:showAsAction="never" />
+
+        <item
+            android:id="@+id/menu_buy"
+            android:showAsAction="never" />
+
+        <item
+            android:id="@+id/menu_about"
+            android:showAsAction="never" />
+
+        <item
+            android:id="@+id/menu_share"
+            android:showAsAction="never" />
+
+        <item
+            android:id="@+id/menu_keep"
+            android:checkable="true"
+            android:showAsAction="never" />
+
+        <item
+            android:id="@+id/menu_d"
+            android:showAsAction="never" />
+
+        <item
+            android:id="@+id/menu_help"
+            android:showAsAction="never" />
+
+    </group>
+
+    <group android:id="@+id/search_items">
+
+        <item
+            android:id="@+id/menu_table_of_contents"
+            android:showAsAction="always|collapseActionView"
+            android:actionLayout="@layout/action_table_of_contents" />
+
+        <item android:id="@+id/menu_search_exit"
+              android:showAsAction="never" />
+
+    </group>
+
+</menu>

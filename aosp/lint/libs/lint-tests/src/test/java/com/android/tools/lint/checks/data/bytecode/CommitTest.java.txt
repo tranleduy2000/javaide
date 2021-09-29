@@ -1,0 +1,119 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+
+@SuppressWarnings("unused")
+public class CommitTest extends Activity {
+        public void ok1() {
+        getFragmentManager().beginTransaction().commit();
+    }
+
+    public void ok2() {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.commit();
+    }
+
+    public void ok3() {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.commitAllowingStateLoss();
+    }
+
+    public void error1() {
+        getFragmentManager().beginTransaction(); // Missing commit
+    }
+
+    public void error() {
+        FragmentTransaction transaction1 = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction2 = getFragmentManager().beginTransaction(); // Missing commit
+        transaction1.commit();
+    }
+
+    public void error3_public() {
+        error3();
+    }
+
+    private void error3() {
+        getFragmentManager().beginTransaction(); // Missing commit
+    }
+
+    public void ok4(FragmentManager manager, String tag) {
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.add(null, tag);
+        ft.commit();
+    }
+
+    // Support library
+
+    private android.support.v4.app.FragmentManager getSupportFragmentManager() {
+        return null;
+    }
+
+    public void ok5() {
+        getSupportFragmentManager().beginTransaction().commit();
+    }
+
+    public void ok6(android.support.v4.app.FragmentManager manager, String tag) {
+        android.support.v4.app.FragmentTransaction ft = manager.beginTransaction();
+        ft.add(null, tag);
+        ft.commit();
+    }
+
+    public void error4() {
+        getSupportFragmentManager().beginTransaction();
+    }
+
+    android.support.v4.app.Fragment mFragment1 = null;
+    Fragment mFragment2 = null;
+
+    public void ok7() {
+        getSupportFragmentManager().beginTransaction().add(android.R.id.content, mFragment1).commit();
+    }
+
+    public void ok8() {
+        getFragmentManager().beginTransaction().add(android.R.id.content, mFragment2).commit();
+    }
+
+    public void ok10() {
+        // Test chaining
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().addToBackStack("test").attach(mFragment2).detach(mFragment2)
+        .disallowAddToBackStack().hide(mFragment2).setBreadCrumbShortTitle("test")
+        .show(mFragment2).setCustomAnimations(0, 0).commit();
+    }
+
+    public void ok9() {
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().commit();
+    }
+
+    public void ok11() {
+        FragmentTransaction transaction;
+        // Comment in between variable declaration and assignment
+        transaction = getFragmentManager().beginTransaction();
+        transaction.commit();
+    }
+
+    public void ok12() {
+        FragmentTransaction transaction;
+        transaction = (getFragmentManager().beginTransaction());
+        transaction.commit();
+    }
+
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    public void ok13() {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction temp;
+        temp = transaction;
+        temp.commitAllowingStateLoss();
+    }
+
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    public void ok14() {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction temp = transaction;
+        temp.commitAllowingStateLoss();
+    }
+}

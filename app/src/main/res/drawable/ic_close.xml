@@ -1,9 +1,0 @@
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/ic_close_accent_24dp" android:state_selected="true">
-
-    </item>
-
-    <item android:drawable="@drawable/ic_close_white_24dp">
-
-    </item>
-</selector>

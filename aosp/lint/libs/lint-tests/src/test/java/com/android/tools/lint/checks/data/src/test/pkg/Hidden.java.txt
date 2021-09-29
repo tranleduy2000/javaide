@@ -1,0 +1,14 @@
+package test.pkg;
+
+public class Hidden {
+    // Innocent comment...?
+    /* \u002a\u002f static { System.out.println("I'm executed on class load"); } \u002f\u002a */
+    /* \u002A\U002F static { System.out.println("I'm executed on class load"); } \u002f\u002a */
+    /* Normal \\u002A\U002F */ // OK
+    static {
+        String s = "\u002a\u002f"; // OK
+    }
+    // STOPSHIP
+    /* We must STOPSHIP! */
+    String x = "STOPSHIP"; // OK
+}

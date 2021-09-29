@@ -7,21 +7,21 @@ package sample;
 
 public class StringToUpperCaseExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    String str = "string touppercase example";
+        String str = "string touppercase example";
 
-    /*
-     * To change the case of string to upper case use,
-     * public String toUpperCase() method of String class.
-     *
-     */
+        /*
+         * To change the case of string to upper case use,
+         * public String toUpperCase() method of String class.
+         *
+         */
 
-    String strUpper = str.toUpperCase();
+        String strUpper = str.toUpperCase();
 
-    System.out.println("Original String: " + str);
-    System.out.println("String changed to upper case: " + strUpper);
-  }
+        System.out.println("Original String: " + str);
+        System.out.println("String changed to upper case: " + strUpper);
+    }
 }
 
 /*

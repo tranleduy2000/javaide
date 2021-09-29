@@ -5,6 +5,4 @@
 
     <dimen name="log_level_width">20dp</dimen>
 
-    <dimen name="main_button_height">60dp</dimen>
-    <dimen name="main_button_width">65dp</dimen>
 </resources>

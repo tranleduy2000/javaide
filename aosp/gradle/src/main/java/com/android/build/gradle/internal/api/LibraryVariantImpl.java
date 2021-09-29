@@ -25,7 +25,7 @@ import com.android.builder.core.AndroidBuilder;
 /**
  * implementation of the {@link LibraryVariant} interface around a
  * {@link LibraryVariantData} object.
- *
+ * <p>
  * This is a wrapper around the internal data model, in order to control what is accessible
  * through the external API.
  */

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="format_90">Battery remaining: 90%</string>
+    <string name="format_80">Battery remaining: 80%!</string>
+
+</resources>

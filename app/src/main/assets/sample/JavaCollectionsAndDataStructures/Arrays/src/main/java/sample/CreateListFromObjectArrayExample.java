@@ -11,9 +11,9 @@ import java.util.List;
 
 public class CreateListFromObjectArrayExample {
 
-  public static void main(String[] args) {
-    //create an array of type Object, in this case we will create String array
-    String[] strArray = new String[]{"Object", "Array", "Converted", "To", "List"};
+    public static void main(String[] args) {
+        //create an array of type Object, in this case we will create String array
+        String[] strArray = new String[]{"Object", "Array", "Converted", "To", "List"};
 
     /*
       To create List from an array of type Object use,
@@ -22,15 +22,15 @@ public class CreateListFromObjectArrayExample {
       This method returns a fixed sized list backed by original array.
     */
 
-    List list = Arrays.asList(strArray);
+        List list = Arrays.asList(strArray);
 
-    //get an iterator
-    Iterator itr = list.iterator();
+        //get an iterator
+        Iterator itr = list.iterator();
 
-    //iterate through list created from Array
-    System.out.println("List created from an Array of type Object contains,");
-    while (itr.hasNext()) System.out.println(itr.next());
-  }
+        //iterate through list created from Array
+        System.out.println("List created from an Array of type Object contains,");
+        while (itr.hasNext()) System.out.println(itr.next());
+    }
 }
 
 /*

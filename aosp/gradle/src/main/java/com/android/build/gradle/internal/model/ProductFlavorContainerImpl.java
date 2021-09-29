@@ -18,8 +18,6 @@ package com.android.build.gradle.internal.model;
 
 import com.android.annotations.NonNull;
 import com.android.build.gradle.internal.ProductFlavorData;
-import com.android.build.gradle.internal.api.DefaultAndroidSourceSet;
-import com.android.builder.core.VariantType;
 import com.android.builder.model.ProductFlavor;
 import com.android.builder.model.ProductFlavorContainer;
 import com.android.builder.model.SourceProvider;
@@ -41,12 +39,21 @@ class ProductFlavorContainerImpl implements ProductFlavorContainer, Serializable
     @NonNull
     private final Collection<SourceProviderContainer> extraSourceProviders;
 
+    private ProductFlavorContainerImpl(
+            @NonNull ProductFlavorImpl productFlavor,
+            @NonNull SourceProviderImpl sourceProvider,
+            @NonNull Collection<SourceProviderContainer> extraSourceProviders) {
+
+        this.productFlavor = productFlavor;
+        this.sourceProvider = sourceProvider;
+        this.extraSourceProviders = extraSourceProviders;
+    }
+
     /**
      * Create a ProductFlavorContainer from a ProductFlavorData
      *
-     * @param productFlavorData the product flavor data
+     * @param productFlavorData        the product flavor data
      * @param sourceProviderContainers collection of extra source providers
-     *
      * @return a non-null ProductFlavorContainer
      */
     @NonNull
@@ -57,30 +64,10 @@ class ProductFlavorContainerImpl implements ProductFlavorContainer, Serializable
         List<SourceProviderContainer> clonedContainers =
                 SourceProviderContainerImpl.cloneCollection(sourceProviderContainers);
 
-        for (VariantType variantType : VariantType.getTestingTypes()) {
-            DefaultAndroidSourceSet sourceSet
-                    = productFlavorData.getTestSourceSet(variantType);
-            if (sourceSet != null) {
-                clonedContainers.add(SourceProviderContainerImpl.create(
-                        variantType.getArtifactName(),
-                        sourceSet));
-            }
-        }
-
         return new ProductFlavorContainerImpl(
                 ProductFlavorImpl.cloneFlavor(productFlavorData.getProductFlavor(), null, null),
                 SourceProviderImpl.cloneProvider(productFlavorData.getSourceSet()),
                 clonedContainers);
-    }
-
-    private ProductFlavorContainerImpl(
-            @NonNull ProductFlavorImpl productFlavor,
-            @NonNull SourceProviderImpl sourceProvider,
-            @NonNull Collection<SourceProviderContainer> extraSourceProviders) {
-
-        this.productFlavor = productFlavor;
-        this.sourceProvider = sourceProvider;
-        this.extraSourceProviders = extraSourceProviders;
     }
 
     @NonNull

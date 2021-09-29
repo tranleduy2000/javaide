@@ -9,26 +9,26 @@ import java.util.Calendar;
 
 public class DisplayDayOfWeek {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    //create Calendar instance
-    Calendar now = Calendar.getInstance();
+        //create Calendar instance
+        Calendar now = Calendar.getInstance();
 
-    System.out.println(
-            "Current date : "
-                    + (now.get(Calendar.MONTH) + 1)
-                    + "-"
-                    + now.get(Calendar.DATE)
-                    + "-"
-                    + now.get(Calendar.YEAR));
+        System.out.println(
+                "Current date : "
+                        + (now.get(Calendar.MONTH) + 1)
+                        + "-"
+                        + now.get(Calendar.DATE)
+                        + "-"
+                        + now.get(Calendar.YEAR));
 
-    //create an array of days
-    String[] strDays =
-            new String[]{"Sunday", "Monday", "Tuesday", "Wednesday", "Thusday", "Friday", "Saturday"};
+        //create an array of days
+        String[] strDays =
+                new String[]{"Sunday", "Monday", "Tuesday", "Wednesday", "Thusday", "Friday", "Saturday"};
 
-    //Day_OF_WEEK starts from 1 while array index starts from 0
-    System.out.println("Current day is : " + strDays[now.get(Calendar.DAY_OF_WEEK) - 1]);
-  }
+        //Day_OF_WEEK starts from 1 while array index starts from 0
+        System.out.println("Current day is : " + strDays[now.get(Calendar.DAY_OF_WEEK) - 1]);
+    }
 }
 
 /*

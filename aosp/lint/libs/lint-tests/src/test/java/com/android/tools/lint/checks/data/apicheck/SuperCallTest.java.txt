@@ -1,0 +1,30 @@
+package test.pkg;
+
+import android.service.wallpaper.WallpaperService;
+import android.view.WindowInsets;
+
+@SuppressWarnings("UnusedDeclaration")
+public class SuperCallTest extends WallpaperService {
+    @Override
+    public Engine onCreateEngine() {
+        return new MyEngine1();
+    }
+
+    private class MyEngine1 extends WallpaperService.Engine {
+        @Override
+        public void onApplyWindowInsets(WindowInsets insets) {
+            super.onApplyWindowInsets(insets); // OK
+        }
+
+        public void notSameMethod(WindowInsets insets) {
+            super.onApplyWindowInsets(insets); // Error
+            onApplyWindowInsets(insets); // OK: overridden. This should arguably be an error.
+        }
+    }
+
+    private class MyEngine2 extends Engine {
+        public void notSameMethod(WindowInsets insets) {
+            onApplyWindowInsets(insets); // Error: not overridden
+        }
+    }
+}

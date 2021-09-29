@@ -17,7 +17,6 @@
 package com.android.build.gradle.internal.scope;
 
 import com.android.annotations.NonNull;
-import com.android.annotations.Nullable;
 import com.android.build.gradle.internal.TaskFactory;
 
 import org.gradle.api.Action;
@@ -34,19 +33,19 @@ import java.util.List;
  */
 public class AndroidTask<T extends Task> {
     @NonNull
-    private String name;
-    @NonNull
     private final Class<T> taskType;
     @NonNull
     private final List<AndroidTask<? extends Task>> upstreamTasks;
     @NonNull
     private final List<AndroidTask<? extends Task>> downstreamTasks;
+    @NonNull
+    private String name;
 
     public AndroidTask(@NonNull String name, @NonNull Class<T> taskType) {
         this.name = name;
         this.taskType = taskType;
-        upstreamTasks = new ArrayList<AndroidTask<? extends Task>>();
-        downstreamTasks = new ArrayList<AndroidTask<? extends Task>>();
+        upstreamTasks = new ArrayList<>();
+        downstreamTasks = new ArrayList<>();
     }
 
     /**
@@ -83,8 +82,9 @@ public class AndroidTask<T extends Task> {
 
     /**
      * Add dependency on another AndroidTask.
+     *
      * @param taskFactory TaskFactory used to configure the task for dependencies.
-     * @param other The task that this depends on.
+     * @param other       The task that this depends on.
      */
     public void dependsOn(final TaskFactory taskFactory, final AndroidTask<?> other) {
         taskFactory.named(name, new Action<Task>() {
@@ -101,7 +101,8 @@ public class AndroidTask<T extends Task> {
      * Add dependency on objects.
      * This method adds dependencies on any objects accepted by {@link Task#dependsOn} and is
      * needed for compatibility until all tasks are trasitioned to AndroidTask.
-     * @param taskFactory TaskFactory used to configure the task for dependencies.
+     *
+     * @param taskFactory  TaskFactory used to configure the task for dependencies.
      * @param dependencies Objects accepted by {@link Task#dependsOn}.
      */
     public void dependsOn(final TaskFactory taskFactory, final Object... dependencies) {
@@ -123,7 +124,8 @@ public class AndroidTask<T extends Task> {
      * Add dependency on other objects if the object is not null.
      * This method adds dependencies on any objects accepted by {@link Task#dependsOn} and is
      * needed for compatibility until all tasks are trasitioned to AndroidTask.
-     * @param taskFactory TaskFactory used to configure the task for dependencies.
+     *
+     * @param taskFactory  TaskFactory used to configure the task for dependencies.
      * @param dependencies Objects accepted by {@link Task#dependsOn}.
      */
     public void optionalDependsOn(final TaskFactory taskFactory, final Object... dependencies) {
@@ -153,7 +155,8 @@ public class AndroidTask<T extends Task> {
 
     /**
      * Add a configuration action for this task.
-     * @param taskFactory TaskFactory used to configure the task.
+     *
+     * @param taskFactory  TaskFactory used to configure the task.
      * @param configAction An Action to be executed.
      */
     public void configure(TaskFactory taskFactory, Action<? super Task> configAction) {
@@ -163,6 +166,7 @@ public class AndroidTask<T extends Task> {
     /**
      * Potentially instantiates and return the task. Should only be called once the task is
      * configured.
+     *
      * @param taskFactory the factory for tasks
      * @return the task instance.
      */

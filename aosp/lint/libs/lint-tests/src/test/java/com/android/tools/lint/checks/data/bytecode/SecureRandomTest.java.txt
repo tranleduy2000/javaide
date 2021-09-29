@@ -1,0 +1,42 @@
+package test.pkg;
+
+import java.security.SecureRandom;
+import java.util.Random;
+
+public class SecureRandomTest {
+    private static final long FIXED_SEED = 1000L;
+    protected int getDynamicSeed() {  return 1; }
+
+    public void testLiterals() {
+        SecureRandom random1 = new SecureRandom();
+        random1.setSeed(System.currentTimeMillis()); // OK
+        random1.setSeed(getDynamicSeed()); // OK
+        random1.setSeed(0); // Wrong
+        random1.setSeed(1); // Wrong
+        random1.setSeed((int)1023); // Wrong
+        random1.setSeed(1023L); // Wrong
+        random1.setSeed(FIXED_SEED); // Wrong
+    }
+
+    public void testRandomTypeOk() {
+        Random random2 = new Random();
+        random2.setSeed(0); // OK
+    }
+
+    public void testRandomTypeWrong() {
+        Random random3 = new SecureRandom();
+        random3.setSeed(0); // Wrong: owner is java/util/Random, but applied to SecureRandom object
+    }
+
+    public void testBytesOk() {
+        SecureRandom random1 = new SecureRandom();
+        byte[] seed = random1.generateSeed(4);
+        random1.setSeed(seed); // OK
+    }
+
+    public void testBytesWrong() {
+        SecureRandom random2 = new SecureRandom();
+        byte[] seed = new byte[3];
+        random2.setSeed(seed); // Wrong
+    }
+}

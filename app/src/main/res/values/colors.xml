@@ -17,22 +17,11 @@
 */
 -->
 <resources>
-    <color name="candidate_normal">#FF000000</color>
-    <color name="candidate_recommended">#FFE35900</color>
-    <color name="candidate_other">#ff808080</color>
-    <color name="candidate_background">#bbffffff</color>
 
     <color name="dark.color_primary_dark">#17191c</color>
     <color name="dark.color_primary">#20242A</color>
     <color name="dark.color_accent">#1de9b6</color>
     <color name="dark.color_background">#20242a</color>
     <color name="dark.color_folder">#02cb6d</color>
-    <color name="dark.color_diagnostic_file">#26c6da</color>
-    <color name="dark.color_file_java">#1e88e5</color>
-
-    <color name="light.color_primary_dark">#283593</color>
-    <color name="light.color_primary">#3949ab</color>
-    <color name="light.color_accent">#d50000</color>
-    <color name="light.color_background">#e8e8e8</color>
 
 </resources>

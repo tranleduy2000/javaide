@@ -6,7 +6,7 @@ import com.android.builder.dependency.LibraryDependency;
 import com.android.ide.common.xml.AndroidManifestParser;
 import com.android.ide.common.xml.ManifestData;
 import com.duy.android.compiler.builder.internal.dependency.LibraryDependencyImpl;
-import com.duy.android.compiler.utils.IOUtils;
+import com.duy.common.io.IOUtils;
 import com.google.common.base.MoreObjects;
 
 import org.json.JSONArray;
@@ -193,7 +193,7 @@ public class AndroidAppProject extends JavaProject {
 
     private void readLibraries() throws IOException, JSONException {
         File file = new File(getAppDir(), "libraries.json");
-        JSONObject jsonObject = new JSONObject(IOUtils.toStringAndClose(file));
+        JSONObject jsonObject = new JSONObject(IOUtils.toString(file));
         JSONArray array = jsonObject.getJSONArray("libraries");
         for (int i = 0; i < array.length(); i++) {
             JSONObject lib = array.getJSONObject(i);
@@ -218,7 +218,7 @@ public class AndroidAppProject extends JavaProject {
             array.put(item);
         }
         String str = jsonObject.toString(1);
-        org.apache.commons.io.IOUtils.write(str, new FileOutputStream(file), "UTF-8");
+        IOUtils.write(str, new FileOutputStream(file), "UTF-8");
     }
 
     public String getPackageForR() {

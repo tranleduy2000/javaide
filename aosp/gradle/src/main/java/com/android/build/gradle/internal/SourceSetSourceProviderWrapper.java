@@ -72,12 +72,6 @@ public class SourceSetSourceProviderWrapper implements SourceProvider {
 
     @NonNull
     @Override
-    public Collection<File> getRenderscriptDirectories() {
-        return Collections.emptyList();
-    }
-
-    @NonNull
-    @Override
     public Collection<File> getCDirectories() {
         return Collections.emptyList();
     }

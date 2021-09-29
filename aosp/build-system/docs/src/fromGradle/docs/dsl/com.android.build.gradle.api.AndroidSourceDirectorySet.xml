@@ -19,22 +19,38 @@
         <title>Properties</title>
         <table>
             <thead>
-                <tr><td>Name</td></tr>
+                <tr>
+                    <td>Name</td>
+                </tr>
             </thead>
-            <tr><td>name</td></tr>
-            <tr><td>sourceFiles</td></tr>
-            <tr><td>filter</td></tr>
-            <tr><td>srcDirs</td></tr>
+            <tr>
+                <td>name</td>
+            </tr>
+            <tr>
+                <td>sourceFiles</td>
+            </tr>
+            <tr>
+                <td>filter</td>
+            </tr>
+            <tr>
+                <td>srcDirs</td>
+            </tr>
         </table>
     </section>
     <section>
         <title>Methods</title>
         <table>
             <thead>
-                <tr><td>Name</td></tr>
+                <tr>
+                    <td>Name</td>
+                </tr>
             </thead>
-            <tr><td>srcDir</td></tr>
-            <tr><td>srcDirs</td></tr>
+            <tr>
+                <td>srcDir</td>
+            </tr>
+            <tr>
+                <td>srcDirs</td>
+            </tr>
         </table>
     </section>
 </section>

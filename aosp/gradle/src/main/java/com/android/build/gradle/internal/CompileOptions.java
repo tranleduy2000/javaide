@@ -19,6 +19,7 @@ package com.android.build.gradle.internal;
 import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.google.common.base.Charsets;
+
 import org.gradle.api.JavaVersion;
 
 import java.util.Locale;
@@ -27,90 +28,21 @@ import java.util.Locale;
  * Compilation options.
  */
 public class CompileOptions {
+    private static final String VERSION_PREFIX = "VERSION_";
     @Nullable
     private JavaVersion sourceCompatibility;
-
     @Nullable
     private JavaVersion targetCompatibility;
-
     private String encoding = Charsets.UTF_8.name();
-
     /**
      * Default Java version that will be used if the source and target compatibility levels will
      * not be set explicitly.
      */
     private JavaVersion defaultJavaVersion = JavaVersion.VERSION_1_6;
 
-    private boolean ndkCygwinMode = false;
-
-    /**
-     * Language level of the source code.
-     *
-     * <p>Formats supported are :
-     *      "1.6"
-     *      1.6
-     *      JavaVersion.Version_1_6
-     *      "Version_1_6"
-     */
-    public void setSourceCompatibility(@NonNull Object sourceCompatibility) {
-        this.sourceCompatibility = convert(sourceCompatibility);
-    }
-
-    /**
-     * Language level of the source code.
-     *
-     * <p>Similar to what <a href="http://www.gradle.org/docs/current/userguide/java_plugin.html">
-     * Gradle Java plugin</a> uses.
-     */
-    @NonNull
-    public JavaVersion getSourceCompatibility() {
-        return sourceCompatibility != null ? sourceCompatibility : defaultJavaVersion;
-    }
-
-    /**
-     * Language level of the target code.
-     *
-     * <p>Formats supported are :
-     *      "1.6"
-     *      1.6
-     *      JavaVersion.Version_1_6
-     *      "Version_1_6"
-     */
-    public void setTargetCompatibility(@NonNull Object targetCompatibility) {
-        this.targetCompatibility = convert(targetCompatibility);
-    }
-
-    /**
-     * Version of the generated Java bytecode.
-     *
-     * <p>Similar to what <a href="http://www.gradle.org/docs/current/userguide/java_plugin.html">
-     * Gradle Java plugin</a> uses.
-     */
-    @NonNull
-    public JavaVersion getTargetCompatibility() {
-        return targetCompatibility != null ? targetCompatibility : defaultJavaVersion;
-    }
-
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-    }
-
-    public String getEncoding() {
-        return encoding;
-    }
-
-    public void setDefaultJavaVersion(JavaVersion defaultJavaVersion) {
-        this.defaultJavaVersion = defaultJavaVersion;
-    }
-
-    public JavaVersion getDefaultJavaVersion() {
-        return defaultJavaVersion;
-    }
-
-
-    private static final String VERSION_PREFIX = "VERSION_";
     /**
      * Convert all possible supported way of specifying a Java version to {@link JavaVersion}
+     *
      * @param version the user provided java version.
      * @return {@link JavaVersion}
      * @throws RuntimeException if it cannot be converted.
@@ -125,5 +57,69 @@ public class CompileOptions {
             }
         }
         return JavaVersion.toVersion(version);
+    }
+
+    /**
+     * Language level of the source code.
+     * <p>
+     * <p>Similar to what <a href="http://www.gradle.org/docs/current/userguide/java_plugin.html">
+     * Gradle Java plugin</a> uses.
+     */
+    @NonNull
+    public JavaVersion getSourceCompatibility() {
+        return sourceCompatibility != null ? sourceCompatibility : defaultJavaVersion;
+    }
+
+    /**
+     * Language level of the source code.
+     * <p>
+     * <p>Formats supported are :
+     * "1.6"
+     * 1.6
+     * JavaVersion.Version_1_6
+     * "Version_1_6"
+     */
+    public void setSourceCompatibility(@NonNull Object sourceCompatibility) {
+        this.sourceCompatibility = convert(sourceCompatibility);
+    }
+
+    /**
+     * Version of the generated Java bytecode.
+     * <p>
+     * <p>Similar to what <a href="http://www.gradle.org/docs/current/userguide/java_plugin.html">
+     * Gradle Java plugin</a> uses.
+     */
+    @NonNull
+    public JavaVersion getTargetCompatibility() {
+        return targetCompatibility != null ? targetCompatibility : defaultJavaVersion;
+    }
+
+    /**
+     * Language level of the target code.
+     * <p>
+     * <p>Formats supported are :
+     * "1.6"
+     * 1.6
+     * JavaVersion.Version_1_6
+     * "Version_1_6"
+     */
+    public void setTargetCompatibility(@NonNull Object targetCompatibility) {
+        this.targetCompatibility = convert(targetCompatibility);
+    }
+
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    public JavaVersion getDefaultJavaVersion() {
+        return defaultJavaVersion;
+    }
+
+    public void setDefaultJavaVersion(JavaVersion defaultJavaVersion) {
+        this.defaultJavaVersion = defaultJavaVersion;
     }
 }

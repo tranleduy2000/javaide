@@ -12,16 +12,16 @@ import java.util.HashSet;
 
 public class GetEnumerationOverHashSetExample {
 
-  public static void main(String[] args) {
-    //create a HashSet object
-    HashSet hashSet = new HashSet();
+    public static void main(String[] args) {
+        //create a HashSet object
+        HashSet hashSet = new HashSet();
 
-    //Add elements to HashSet
-    hashSet.add("A");
-    hashSet.add("B");
-    hashSet.add("D");
-    hashSet.add("E");
-    hashSet.add("F");
+        //Add elements to HashSet
+        hashSet.add("A");
+        hashSet.add("B");
+        hashSet.add("D");
+        hashSet.add("E");
+        hashSet.add("F");
 
     /*
        Get Enumeration over Java HashSet object using,
@@ -31,13 +31,13 @@ public class GetEnumerationOverHashSetExample {
 
     */
 
-    //get the Enumeration object
-    Enumeration e = Collections.enumeration(hashSet);
+        //get the Enumeration object
+        Enumeration e = Collections.enumeration(hashSet);
 
-    //enumerate through the HashSet elements
-    System.out.println("Enumerating through Java HashSet");
-    while (e.hasMoreElements()) System.out.println(e.nextElement());
-  }
+        //enumerate through the HashSet elements
+        System.out.println("Enumerating through Java HashSet");
+        while (e.hasMoreElements()) System.out.println(e.nextElement());
+    }
 }
 
 /*

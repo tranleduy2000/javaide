@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<foo.bar.ContentFrame
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:foobar="http://schemas.android.com/apk/res/foo.bar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    foobar:contentId="@+id/test" />

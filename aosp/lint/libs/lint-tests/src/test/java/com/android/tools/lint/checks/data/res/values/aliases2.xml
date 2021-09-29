@@ -1,0 +1,6 @@
+<resources>
+    <item name="bright_foreground_dark" type="color">@color/color1</item>
+    <item name="textfield_search_pressed" type="drawable">@drawable/drawable2</item>
+    <item name="drawable2" type="drawable">@drawable/drawable1</item>
+</resources>
+

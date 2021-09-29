@@ -1,0 +1,50 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.widget.LinearLayout;
+
+public class ApiCallTest11 extends Activity {
+	MyActivity mActionBarHost;
+
+    public ActionBar getActionBar() {
+        return mActionBarHost.getActionBar();
+    }
+
+    public boolean isDestroyed() {
+        return true;
+    }
+
+    @SuppressLint("Override")
+    public void finishAffinity() {
+    }
+
+    private class MyLinear extends LinearLayout {
+        private Drawable mDividerDrawable;
+
+        public MyLinear(Context context) {
+            super(context);
+        }
+
+       /**
+         * Javadoc here
+         *
+         *
+         *
+         *
+         */
+        public void setDividerDrawable(Drawable dividerDrawable) {
+            mDividerDrawable = dividerDrawable;
+        }
+    }
+
+    private class MyActivity {
+        public ActionBar getActionBar() {
+            return null;
+        }
+    }
+}
+

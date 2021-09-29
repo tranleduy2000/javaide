@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<style name="DetailsPage_BuyButton" parent="@style/DetailsPage_Button">
+       <item name="android:textColor">@color/buy_button</item>
+       <item name="android:background">@drawable/details_page_buy_button</item>
+</style>
+
+<style name="DetailsPage_EditorialBuyButton" parent="@style/DetailsPage_EditorialBuyButton" />
+<!-- Should have been:
+<style name="DetailsPage_EditorialBuyButton" parent="@style/DetailsPage_BuyButton" />
+-->
+
+</resources>
+

@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class CreateDateFromSpecificTimeExample {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
     /*
      To create a Date object for sepefic date and time use
@@ -16,10 +16,10 @@ public class CreateDateFromSpecificTimeExample {
      since January 1, 1970, 00:00:00 GMT.
     */
 
-    //date after one year of January 1, 1970, 00:00:00 GMT
-    Date d = new Date(365L * 24L * 60L * 60L * 1000L);
-    System.out.println(d);
-  }
+        //date after one year of January 1, 1970, 00:00:00 GMT
+        Date d = new Date(365L * 24L * 60L * 60L * 1000L);
+        System.out.println(d);
+    }
 }
 
 /*

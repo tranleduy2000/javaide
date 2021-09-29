@@ -42,14 +42,6 @@ public class LibVariantOutputData extends BaseVariantOutputData {
         super(outputType, filters, variantData);
     }
 
-    @Override
-    public void setOutputFile(@NonNull File file) {
-        packageLibTask.setDestinationDir(file.getParentFile());
-        packageLibTask.setArchiveName(file.getName());
-    }
-
-
-
     @NonNull
     @Override
     public ImmutableList<ApkOutputFile> getOutputs() {
@@ -60,6 +52,12 @@ public class LibVariantOutputData extends BaseVariantOutputData {
     @Override
     public File getOutputFile() {
         return packageLibTask == null ? null : packageLibTask.getArchivePath();
+    }
+
+    @Override
+    public void setOutputFile(@NonNull File file) {
+        packageLibTask.setDestinationDir(file.getParentFile());
+        packageLibTask.setArchiveName(file.getName());
     }
 
     @Override

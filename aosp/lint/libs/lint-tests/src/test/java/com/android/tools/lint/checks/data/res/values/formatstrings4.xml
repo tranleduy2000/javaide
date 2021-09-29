@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="formattest1">"%1$s, %2$tF %3$tR"</string>
+    <string name="formattest2">%1$s, %2$tF %3$tR</string>
+    <string name="formattest3">"Note: Start point RPM differs by %d%%.\n\n"</string>
+    <string name="formattest4">Note: Start point RPM differs by %d%%.\n\n</string>
+    <string name="formattest5">%s%% c</string>
+    <string name="formattest6">%s%% </string>
+    <string name="formattest7">%1$s%%</string>
+</resources>

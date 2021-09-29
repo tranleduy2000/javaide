@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2018 Tran Le Duy
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.duy.ide.javaide.sample.activities;
 
 import android.content.DialogInterface;
@@ -11,11 +28,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.duy.android.compiler.env.Environment;
 import com.duy.android.compiler.project.JavaProject;
 import com.duy.android.compiler.project.JavaProjectManager;
 import com.duy.ide.R;
-import com.duy.ide.activities.BaseActivity;
-import com.duy.ide.file.FileManager;
+import com.duy.ide.javaide.activities.BaseActivity;
 import com.duy.ide.javaide.sample.AssetUtil;
 import com.duy.ide.javaide.sample.fragments.SelectCategoryFragment;
 import com.duy.ide.javaide.sample.fragments.SelectProjectFragment;
@@ -136,7 +153,7 @@ public class JavaSampleActivity extends BaseActivity implements
 
     private void openExample(CodeProjectSample codeProjectSample) {
         try {
-            File projectDir = new File(FileManager.EXTERNAL_DIR);
+            File projectDir = Environment.getSdkAppDir();
             JavaProjectManager manager = new JavaProjectManager(this);
             JavaProject javaProject = manager.createNewProject(projectDir, codeProjectSample.getName());
             File appDir = javaProject.getAppDir();

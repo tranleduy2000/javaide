@@ -7,9 +7,9 @@ package sample;
 
 public class StringToIntExample {
 
-  public static void main(String[] args) {
-    //declare String object
-    String str = new String("10");
+    public static void main(String[] args) {
+        //declare String object
+        String str = new String("10");
 
     /*
     use parseInt method of Integer class to convert String into int primitive
@@ -17,9 +17,9 @@ public class StringToIntExample {
     Please note that this method can throw a NumberFormatException if the string
     is not parsable to int.
     */
-    int i = Integer.parseInt(str);
-    System.out.println(i);
-  }
+        int i = Integer.parseInt(str);
+        System.out.println(i);
+    }
 }
 
 /*

@@ -1,0 +1,37 @@
+package test.pkg;
+
+import android.webkit.WebView;
+import android.content.Context;
+
+
+public class AddJavascriptInterfaceTest {
+    private static class WebViewChild extends WebView {
+        WebViewChild(Context context) {
+            super(context);
+        }
+    }
+
+    private static class CallAddJavascriptInterfaceOnWebView {
+        public void addJavascriptInterfaceToWebView(WebView webView, Object object, String string) {
+            webView.addJavascriptInterface(object, string);
+        }
+    }
+
+    private static class CallAddJavascriptInterfaceOnWebViewChild {
+        public void addJavascriptInterfaceToWebViewChild(
+            WebViewChild webView, Object object, String string) {
+            webView.addJavascriptInterface(object, string);
+        }
+    }
+
+    private static class NonWebView {
+        public void addJavascriptInterface(Object object, String string) { }
+    }
+
+    private static class CallAddJavascriptInterfaceOnNonWebView {
+        public void addJavascriptInterfaceToNonWebView(
+            NonWebView webView, Object object, String string) {
+            webView.addJavascriptInterface(object, string);
+        }
+    }
+}

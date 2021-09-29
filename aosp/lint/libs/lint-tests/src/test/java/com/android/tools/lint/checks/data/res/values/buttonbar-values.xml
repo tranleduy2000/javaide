@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="button"> Button </string>
+    <string name="ok"> OK </string>
+    <string name="cancel"> Cancel </string>
+    <string name="resume"> OK </string>
+    <string name="giveup"> Cancel </string>
+    <string name="resume2"> Ok </string>
+    <string name="giveup2">"CANCEL"</string>
+    <string name="send"> Send </string>
+    <string name="abort">Abort</string>
+    <string name="goback">'Back'</string>
+
+</resources>

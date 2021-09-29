@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string-array name="track_type_desc">
+        <item>Pendenza</item>
+    </string-array>
+    <string-array name="map_density_desc">
+        <item>Automatico (mappa leggibile su display HD)</item>
+    </string-array>
+    <string-array name="cache_size_desc">
+        <item>Piccolo (100)</item>
+    </string-array>
+</resources>

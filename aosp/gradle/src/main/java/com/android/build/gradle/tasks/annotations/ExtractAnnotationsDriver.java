@@ -16,10 +16,6 @@
 
 package com.android.build.gradle.tasks.annotations;
 
-import static com.android.SdkConstants.DOT_JAVA;
-import static java.io.File.pathSeparator;
-import static java.io.File.pathSeparatorChar;
-
 import com.android.annotations.NonNull;
 import com.android.tools.lint.EcjParser;
 import com.android.utils.Pair;
@@ -43,6 +39,10 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static com.android.SdkConstants.DOT_JAVA;
+import static java.io.File.pathSeparator;
+import static java.io.File.pathSeparatorChar;
 
 /**
  * The extract annotations driver is a command line interface to extracting annotations
@@ -83,6 +83,120 @@ public class ExtractAnnotationsDriver {
         output.println("--hide-filtered          : If filtering out non-APIs, supply this flag to hide listing matches");
         output.println("--skip-class-retention   : Don't extract annotations that have class retention");
         System.exit(-1);
+    }
+
+    private static void abort(@NonNull String message) {
+        System.err.println(message);
+        System.exit(-1);
+    }
+
+    private static List<File> getFiles(String value) {
+        List<File> files = Lists.newArrayList();
+        Splitter splitter = Splitter.on(pathSeparatorChar).omitEmptyStrings().trimResults();
+        for (String path : splitter.split(value)) {
+            if (path.startsWith("@")) {
+                // Special syntax for providing files in a list
+                File sourcePath = new File(path.substring(1));
+                if (!sourcePath.exists()) {
+                    abort(sourcePath + " does not exist");
+                }
+                try {
+                    for (String line : Files.readLines(sourcePath, Charsets.UTF_8)) {
+                        line = line.trim();
+                        if (!line.isEmpty()) {
+                            File file = new File(line);
+                            if (!file.exists()) {
+                                System.err.println("Warning: Could not find file " + line +
+                                        " listed in " + sourcePath);
+                            }
+                            files.add(file);
+                        }
+                    }
+                    continue;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.exit(-1);
+                }
+            }
+            File file = new File(path);
+            if (!file.exists()) {
+                abort(file + " does not exist");
+            }
+            files.add(file);
+        }
+
+        return files;
+    }
+
+    private static List<String> getPaths(String value) {
+        List<File> files = getFiles(value);
+        List<String> paths = Lists.newArrayListWithExpectedSize(files.size());
+        for (File file : files) {
+            paths.add(file.getPath());
+        }
+        return paths;
+    }
+
+    private static void addJavaSources(List<File> list, File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File child : files) {
+                    addJavaSources(list, child);
+                }
+            }
+        } else {
+            if (file.isFile() && file.getName().endsWith(DOT_JAVA)) {
+                list.add(file);
+            }
+        }
+    }
+
+    private static List<File> gatherJavaSources(List<File> sourcePath) {
+        List<File> sources = Lists.newArrayList();
+        for (File file : sourcePath) {
+            addJavaSources(sources, file);
+        }
+        return sources;
+    }
+
+    @NonNull
+    private static Pair<Collection<CompilationUnitDeclaration>, INameEnvironment> parseSources(
+            @NonNull List<File> sourcePaths,
+            @NonNull List<String> classpath,
+            @NonNull String encoding,
+            long languageLevel)
+            throws IOException {
+        List<ICompilationUnit> sourceUnits = Lists.newArrayListWithExpectedSize(100);
+
+        for (File source : gatherJavaSources(sourcePaths)) {
+            char[] contents = Util.getFileCharContent(source, encoding);
+            ICompilationUnit unit = new CompilationUnit(contents, source.getPath(), encoding);
+            sourceUnits.add(unit);
+        }
+
+        Map<ICompilationUnit, CompilationUnitDeclaration> outputMap = Maps.newHashMapWithExpectedSize(
+                sourceUnits.size());
+
+        CompilerOptions options = EcjParser.createCompilerOptions();
+        options.docCommentSupport = true; // So I can find @hide
+
+        // Note: We can *not* set options.ignoreMethodBodies=true because it disables
+        // type attribution!
+
+        options.sourceLevel = languageLevel;
+        options.complianceLevel = options.sourceLevel;
+        // We don't generate code, but just in case the parser consults this flag
+        // and makes sure that it's not greater than the source level:
+        options.targetJDK = options.sourceLevel;
+        options.originalComplianceLevel = options.sourceLevel;
+        options.originalSourceLevel = options.sourceLevel;
+        options.inlineJsrBytecode = true; // >= 1.5
+
+        INameEnvironment environment = EcjParser.parse(options, sourceUnits, classpath,
+                outputMap, null);
+        Collection<CompilationUnitDeclaration> parsedUnits = outputMap.values();
+        return Pair.of(parsedUnits, environment);
     }
 
     @SuppressWarnings("MethodMayBeStatic")
@@ -282,119 +396,5 @@ public class ExtractAnnotationsDriver {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private static void abort(@NonNull String message) {
-        System.err.println(message);
-        System.exit(-1);
-    }
-
-    private static List<File> getFiles(String value) {
-        List<File> files = Lists.newArrayList();
-        Splitter splitter = Splitter.on(pathSeparatorChar).omitEmptyStrings().trimResults();
-        for (String path : splitter.split(value)) {
-            if (path.startsWith("@")) {
-                // Special syntax for providing files in a list
-                File sourcePath = new File(path.substring(1));
-                if (!sourcePath.exists()) {
-                    abort(sourcePath + " does not exist");
-                }
-                try {
-                    for (String line : Files.readLines(sourcePath, Charsets.UTF_8)) {
-                        line = line.trim();
-                        if (!line.isEmpty()) {
-                            File file = new File(line);
-                            if (!file.exists()) {
-                                System.err.println("Warning: Could not find file " + line +
-                                        " listed in " + sourcePath);
-                            }
-                            files.add(file);
-                        }
-                    }
-                    continue;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.exit(-1);
-                }
-            }
-            File file = new File(path);
-            if (!file.exists()) {
-                abort(file + " does not exist");
-            }
-            files.add(file);
-        }
-
-        return files;
-    }
-
-    private static List<String> getPaths(String value) {
-        List<File> files = getFiles(value);
-        List<String> paths = Lists.newArrayListWithExpectedSize(files.size());
-        for (File file : files) {
-            paths.add(file.getPath());
-        }
-        return paths;
-    }
-
-    private static void addJavaSources(List<File> list, File file) {
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            if (files != null) {
-                for (File child : files) {
-                    addJavaSources(list, child);
-                }
-            }
-        } else {
-            if (file.isFile() && file.getName().endsWith(DOT_JAVA)) {
-                list.add(file);
-            }
-        }
-    }
-
-    private static List<File> gatherJavaSources(List<File> sourcePath) {
-        List<File> sources = Lists.newArrayList();
-        for (File file : sourcePath) {
-            addJavaSources(sources, file);
-        }
-        return sources;
-    }
-
-    @NonNull
-    private static Pair<Collection<CompilationUnitDeclaration>,INameEnvironment> parseSources(
-            @NonNull List<File> sourcePaths,
-            @NonNull List<String> classpath,
-            @NonNull String encoding,
-            long languageLevel)
-            throws IOException {
-        List<ICompilationUnit> sourceUnits = Lists.newArrayListWithExpectedSize(100);
-
-        for (File source : gatherJavaSources(sourcePaths)) {
-            char[] contents = Util.getFileCharContent(source, encoding);
-            ICompilationUnit unit = new CompilationUnit(contents, source.getPath(), encoding);
-            sourceUnits.add(unit);
-        }
-
-        Map<ICompilationUnit, CompilationUnitDeclaration> outputMap = Maps.newHashMapWithExpectedSize(
-                sourceUnits.size());
-
-        CompilerOptions options = EcjParser.createCompilerOptions();
-        options.docCommentSupport = true; // So I can find @hide
-
-        // Note: We can *not* set options.ignoreMethodBodies=true because it disables
-        // type attribution!
-
-        options.sourceLevel = languageLevel;
-        options.complianceLevel = options.sourceLevel;
-        // We don't generate code, but just in case the parser consults this flag
-        // and makes sure that it's not greater than the source level:
-        options.targetJDK = options.sourceLevel;
-        options.originalComplianceLevel = options.sourceLevel;
-        options.originalSourceLevel = options.sourceLevel;
-        options.inlineJsrBytecode = true; // >= 1.5
-
-        INameEnvironment environment = EcjParser.parse(options, sourceUnits, classpath,
-                outputMap, null);
-        Collection<CompilationUnitDeclaration> parsedUnits = outputMap.values();
-        return Pair.of(parsedUnits, environment);
     }
 }

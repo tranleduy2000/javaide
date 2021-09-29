@@ -32,7 +32,7 @@ import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
 /**
  * Gradle plugin class for 'application' projects.
  */
-class AppPlugin extends BasePlugin implements Plugin<Project> {
+public class AppPlugin extends BasePlugin implements Plugin<Project> {
     public AppPlugin(Instantiator instantiator, ToolingModelBuilderRegistry registry) {
         super(instantiator, registry);
     }

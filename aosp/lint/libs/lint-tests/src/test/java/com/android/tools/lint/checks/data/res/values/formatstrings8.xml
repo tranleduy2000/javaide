@@ -1,0 +1,4 @@
+<resources>
+    <string name="amount_string">Amount: $%1$.2f %n</string>
+    <string name="percent_newline">%%%n%n%n</string>
+</resources>

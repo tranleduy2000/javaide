@@ -67,7 +67,7 @@ public class VariantFilter implements com.android.build.gradle.api.VariantFilter
 
     /**
      * Returns a read-only ProductFlavor that represents the default config.
-     *
+     * <p>
      * <p>See {@link com.android.build.gradle.internal.dsl.ProductFlavor} for properties present
      * on the returned object.
      */
@@ -79,7 +79,7 @@ public class VariantFilter implements com.android.build.gradle.api.VariantFilter
 
     /**
      * Returns a read-only Build Type.
-     *
+     * <p>
      * <p>See {@link com.android.build.gradle.internal.dsl.BuildType} for properties present
      * on the returned object.
      */
@@ -91,7 +91,7 @@ public class VariantFilter implements com.android.build.gradle.api.VariantFilter
 
     /**
      * Returns the list of read-only flavors, or an empty list.
-     *
+     * <p>
      * <p>See {@link com.android.build.gradle.internal.dsl.ProductFlavor} for properties
      * present on the returned objects.
      */

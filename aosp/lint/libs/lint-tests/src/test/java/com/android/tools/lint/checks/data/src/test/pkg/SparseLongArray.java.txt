@@ -1,0 +1,12 @@
+package test.pkg;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import android.content.Context;
+
+public class SparseLongArray extends Button {
+    public void test() { // but only minSdkVersion >= 18
+        Map<Integer, Long> myStringMap = new HashMap<Integer, Long>();
+    }
+}

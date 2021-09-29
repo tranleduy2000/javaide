@@ -1,0 +1,14 @@
+package test.pkg;
+
+import java.io.IOException;
+
+@SuppressWarnings("serial")
+public class ApiCallTest7 extends IOException {
+    public ApiCallTest7(String message, Throwable cause) {
+        super(message, cause); // API 9
+    }
+
+    public void fun() throws IOException {
+        super.toString(); throw new IOException((Throwable) null); // API 9
+    }
+}

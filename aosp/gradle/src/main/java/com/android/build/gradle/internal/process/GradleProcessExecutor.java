@@ -68,7 +68,7 @@ public class GradleProcessExecutor implements ProcessExecutor {
         private final ProcessOutput processOutput;
 
         ExecAction(@NonNull final ProcessInfo processInfo,
-                @NonNull final ProcessOutput processOutput) {
+                   @NonNull final ProcessOutput processOutput) {
             this.processInfo = processInfo;
             this.processOutput = processOutput;
         }

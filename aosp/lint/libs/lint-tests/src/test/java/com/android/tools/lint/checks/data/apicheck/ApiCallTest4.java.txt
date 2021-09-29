@@ -1,0 +1,41 @@
+package test.pkg;
+
+import android.annotation.SuppressLint;
+import android.widget.GridLayout;
+
+@SuppressWarnings("unused")
+public class ApiCallTest4 {
+    public void foo() {
+        new GridLayout(null, null, 0);
+    }
+
+    @SuppressLint("NewApi")
+    void foo2() {
+        // Inner class suppressed via a method in outer class
+        new Runnable() {
+            @Override
+            public void run() {
+                new GridLayout(null, null, 0);
+            }
+        };
+    }
+
+    @SuppressLint("NewApi")
+    private class InnerClass1 {
+        void foo() {
+            new GridLayout(null, null, 0);
+        }
+
+        private class InnerInnerClass1 {
+            public void foo() {
+                new GridLayout(null, null, 0);
+            }
+        }
+    }
+
+    private class InnerClass2 {
+        public void foo() {
+            new GridLayout(null, null, 0);
+        }
+    }
+}

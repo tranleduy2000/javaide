@@ -1,0 +1,63 @@
+package test.pkg;
+
+import android.annotations.tools.SuppressLint;
+
+@SuppressWarnings("unused")
+public class SuppressTest5 {
+	private String suppressVariable() {
+		@SuppressLint("SdCardPath")
+		String string = "/sdcard/mypath1";
+		return string;
+	}
+
+	@SuppressLint("SdCardPath")
+	private String suppressMethod() {
+		String string = "/sdcard/mypath2";
+		return string;
+	}
+
+	@SuppressLint("SdCardPath")
+	private static class SuppressClass {
+		private String suppressMethod() {
+			String string = "/sdcard/mypath3";
+			return string;
+		}
+	}
+
+	private String suppressAll() {
+		@SuppressLint("all")
+		String string = "/sdcard/mypath4";
+		return string;
+	}
+
+	private String suppressCombination() {
+		@SuppressLint({"foo1", "foo2", "SdCardPath"})
+		String string = "/sdcard/mypath5";
+
+		// This is NOT annotated and *should* generate
+		// a warning (here to make sure we don't just
+		// suppress everything when we see an annotation
+		String notAnnotated = "/sdcard/mypath";
+
+		return string;
+	}
+
+	private String suppressWarnings() {
+		@SuppressWarnings("all")
+		String string = "/sdcard/mypath6";
+
+		@SuppressWarnings("SdCardPath")
+		String string2 = "/sdcard/mypath7";
+
+		@SuppressWarnings("AndroidLintSdCardPath")
+		String string3 = "/sdcard/mypath9";
+
+		//noinspection AndroidLintSdCardPath
+		String string4 = "/sdcard/mypath9";
+
+		return string;
+	}
+
+	@SuppressLint("SdCardPath")
+	private String supressField = "/sdcard/mypath8";
+}

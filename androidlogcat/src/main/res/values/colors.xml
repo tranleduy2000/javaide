@@ -1,19 +1,6 @@
 <resources>
 
-    <color name="imageBackground">#DDFFFFFF</color>
-    <color name="imageBorder">#FF333333</color>
-
-    <color name="orange1">#FFf26700</color>
-    <color name="orange2">#FFff9000</color>
     <color name="yellow1">#FFfbad00</color>
-    <color name="yellow2">#FFffc600</color>
-
-    <color name="action_bar_start">#FFFBFBFB</color>
-    <color name="action_bar_end">#FFCCCCCC</color>
-
-    <color name="linkColorBlue">#0099dd</color>
-
-    <color name="dark_divider">#33cccccc</color>
 
     <color name="background_wtf">#FF999900</color>
     <color name="background_error">#FFCC0000</color>
@@ -37,7 +24,6 @@
     <color name="main_background_sprint">#FF000000</color>
     <color name="main_background_tmobile">#FFeaeff3</color>
 
-    <color name="main_foreground_dark">@android:color/darker_gray</color>
     <color name="main_foreground_light">@android:color/black</color>
     <color name="main_foreground_android">@android:color/black</color>
     <color name="main_foreground_verizon">#FFed1f24</color>
@@ -115,8 +101,6 @@
     <color name="android_theme_tag_color_16">#FFCC3399</color>
     <color name="android_theme_tag_color_17">#FFFFCC00</color>
 
-    <color name="primary">#F44336</color>
-    <color name="primary_dark">#D32F2F</color>
     <color name="accent">#448AFF</color>
 
 

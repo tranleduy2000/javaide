@@ -1,0 +1,65 @@
+package test.pkg;
+
+import com.example.includetest.R;
+
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+@SuppressWarnings("unused")
+public class InflaterTest extends Activity {
+    private LayoutInflater mInflater;
+    private View mRootView;
+
+    private LayoutInflater getInflater() {
+        if (mInflater == null) {
+            mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        return mInflater;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    public void testInflate1() {
+        View.inflate(this, R.layout.size1, null);
+    }
+
+    public void testInflate2() {
+        mRootView = getInflater().inflate(R.layout.size2, null);
+    }
+
+    public void testInflate4() {
+        getInflater().inflate(R.layout.size3, null, false);
+    }
+
+    public void testInflate5() {
+        int mylayout = R.layout.size4;
+        getInflater().inflate(mylayout, null, false);
+    }
+
+    public void testNotNull(ViewGroup root) {
+        getInflater().inflate(R.layout.size5, root, false); // Should be flagged
+    }
+
+    public void testInflate6() {
+        int mylayout = R.layout.size7;
+        View.inflate(this, mylayout, null);
+    }
+
+    public class MyButton extends Button {
+        public MyButton(Context context) {
+            super(context);
+        }
+
+        public void test() {
+            inflate(getContext(), R.layout.size6, null);
+        }
+    }
+}

@@ -1,0 +1,22 @@
+package test.pkg;
+
+import android.app.AlarmManager;
+
+public class TestAlarm {
+    public void test(AlarmManager alarmManager) {
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 5000, 60000, null); // OK
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 6000, 70000, null); // OK
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 50, 10, null); // ERROR
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 5000,  // ERROR
+                OtherClass.MY_INTERVAL, null);                          // ERROR
+
+        // Check value flow analysis
+        int interval = 10;
+        long interval2 = 2 * interval;
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 5000, interval2, null); // ERROR
+    }
+
+    private static class OtherClass {
+        public static final long MY_INTERVAL = 1000L;
+    }
+}

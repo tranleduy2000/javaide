@@ -1,0 +1,15 @@
+package test.pkg;
+
+import android.content.SharedPreferences;
+
+public class SharedPrefsTest7 {
+    private static final String PREF_NAME = "MyPrefName";
+    private static final String MY_PREF_KEY = "MyKey";
+    SharedPreferences getSharedPreferences(String key, int deflt) {
+        return null;
+    }
+    public void test(String myPrefValue) {
+        SharedPreferences settings = getSharedPreferences(PREF_NAME, 0);
+        settings.edit().putString(MY_PREF_KEY, myPrefValue);
+    }
+}

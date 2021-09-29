@@ -61,21 +61,6 @@ public interface BuildType extends BaseConfig {
     boolean isJniDebuggable();
 
     /**
-     * Returns whether the build type is configured to generate an apk with debuggable
-     * renderscript code.
-     *
-     * @return true if the apk is debuggable
-     */
-    boolean isRenderscriptDebuggable();
-
-    /**
-     * Returns the optimization level of the renderscript compilation.
-     *
-     * @return the optimization level.
-     */
-    int getRenderscriptOptimLevel();
-
-    /**
      * Returns the application id suffix applied to this build type.
      * To get the final application id, use {@link AndroidArtifact#getApplicationId()}.
      *
@@ -105,11 +90,6 @@ public interface BuildType extends BaseConfig {
      * @return true if zipalign is enabled.
      */
     boolean isZipAlignEnabled();
-
-    /**
-     * Returns whether the variant embeds the micro app.
-     */
-    boolean isEmbedMicroApp();
 
     /**
      * Returns the associated signing config or null if none are set on the build type.

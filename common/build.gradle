@@ -25,8 +25,5 @@ android {
 dependencies {
     api "com.android.support:support-v4:$supportLibVersion"
     api "com.android.support:appcompat-v7:$supportLibVersion"
-    api 'com.rengwuxian.materialedittext:library:2.0.3'
-    api 'com.google.code.gson:gson:2.8.0'
-    api 'com.afollestad.material-dialogs:commons:0.9.6.0'
-
+    api "com.android.support:support-annotations:$supportLibVersion"
 }

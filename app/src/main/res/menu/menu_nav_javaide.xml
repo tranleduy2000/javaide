@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2017 Tran Le Duy
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_install_cpp_nide"
+        android:icon="@drawable/ic_code_white_24dp"
+        android:title="C/C++ N-IDE" />
+    <item
+        android:id="@+id/action_premium"
+        android:icon="@drawable/baseline_lock_open_24"
+        android:title="@string/title_premium_version"
+        android:visible="true" />
+    <item
+        android:id="@+id/action_editor_color_scheme"
+        android:icon="@drawable/ic_color_lens_white_24dp"
+        android:title="@string/editor_theme"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/action_see_logcat"
+        android:icon="@drawable/ic_line_weight_white_24dp"
+        android:title="@string/logcat" />
+    <item
+        android:id="@+id/action_sample"
+        android:icon="@drawable/ic_code_white_24dp"
+        android:title="@string/sample_code_java" />
+    <item android:title="Build">
+        <menu>
+            <item
+                android:id="@+id/action_build_jar"
+                android:icon="@drawable/ic_jar_file_format"
+                android:title="Build jar archive">
+            </item>
+            <item
+                android:id="@+id/action_run_jar"
+                android:icon="@drawable/ic_jar_file_format"
+                android:title="Run jar archive" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/action_report_bug"
+        android:icon="@drawable/ic_bug_report_white_24dp"
+        android:title="@string/report_bug" />
+    <item
+        android:id="@+id/action_compiler_setting"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:title="@string/compiler_setting" />
+
+</menu>

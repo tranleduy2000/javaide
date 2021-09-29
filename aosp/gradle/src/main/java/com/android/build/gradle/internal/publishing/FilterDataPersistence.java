@@ -34,18 +34,6 @@ import java.util.List;
  */
 public class FilterDataPersistence {
 
-    public static class Record {
-        public final String filterType;
-        public final String filterIdentifier;
-        public final String splitFileName;
-
-        private Record(String filterType, String filterIdentifier, String splitFileName) {
-            this.filterType = filterType;
-            this.filterIdentifier = filterIdentifier;
-            this.splitFileName = splitFileName;
-        }
-    }
-
     public void persist(List<FileSupplier> fileSuppliers, Writer writer) throws IOException {
         Gson gson = new Gson();
         ImmutableList.Builder<Record> records = ImmutableList.builder();
@@ -67,7 +55,20 @@ public class FilterDataPersistence {
 
     public List<Record> load(Reader reader) throws IOException {
         Gson gson = new Gson();
-        Type recordType = new TypeToken<List<Record>>() {}.getType();
+        Type recordType = new TypeToken<List<Record>>() {
+        }.getType();
         return gson.fromJson(reader, recordType);
+    }
+
+    public static class Record {
+        public final String filterType;
+        public final String filterIdentifier;
+        public final String splitFileName;
+
+        private Record(String filterType, String filterIdentifier, String splitFileName) {
+            this.filterType = filterType;
+            this.filterIdentifier = filterIdentifier;
+            this.splitFileName = splitFileName;
+        }
     }
 }

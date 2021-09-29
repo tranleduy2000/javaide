@@ -6,13 +6,13 @@ package sample;
 
 public class JavaDoubleToStringExample {
 
-  public static void main(String[] args) {
-    Double dObj = new Double(10.25);
+    public static void main(String[] args) {
+        Double dObj = new Double(10.25);
 
-    //use toString method of Double class to convert Double into String.
-    String str = dObj.toString();
-    System.out.println("Double converted to String as " + str);
-  }
+        //use toString method of Double class to convert Double into String.
+        String str = dObj.toString();
+        System.out.println("Double converted to String as " + str);
+    }
 }
 
 /*

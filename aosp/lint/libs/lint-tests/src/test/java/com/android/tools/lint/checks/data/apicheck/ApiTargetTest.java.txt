@@ -1,0 +1,42 @@
+package test.pkg;
+
+import org.w3c.dom.DOMErrorHandler;
+
+import android.annotation.TargetApi;
+
+// Test using the @TargetApi annotation to temporarily override
+// the required API levels
+@SuppressWarnings("unused")
+public class ApiTargetTest {
+	public void test1() {
+		// No annotation: should generate warning if manifest SDK < 8
+		Class<?> clz = DOMErrorHandler.class; // API 8
+	}
+
+	// Temporarily setting method min sdk to 12
+	@TargetApi(12)
+	public void test2() {
+		Class<?> clz = DOMErrorHandler.class; // API 8
+	}
+
+	// Temporarily setting method min sdk to 14
+	@TargetApi(4)
+	public void test3() {
+		Class<?> clz = DOMErrorHandler.class; // API 8
+	}
+
+	// Temporarily setting class min sdk to 12
+	@TargetApi(value=11)
+	public static class LocalClass {
+		public void test4() {
+			Class<?> clz = DOMErrorHandler.class; // API 8
+		}
+
+		// Overriding class min sdk: this should generate
+		// an API warning again
+		@TargetApi(7)
+		public void test5() {
+			Class<?> clz = DOMErrorHandler.class; // API 8
+		}
+	}
+}

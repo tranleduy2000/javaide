@@ -44,8 +44,6 @@ public interface AndroidProject {
     String PROPERTY_APK_LOCATION = "android.injected.apk.location";
 
     String ARTIFACT_MAIN = "_main_";
-    String ARTIFACT_ANDROID_TEST = "_android_test_";
-    String ARTIFACT_UNIT_TEST = "_unit_test_";
 
     String FD_INTERMEDIATES = "intermediates";
     String FD_OUTPUTS = "outputs";
@@ -163,14 +161,6 @@ public interface AndroidProject {
      */
     @NonNull
     Collection<File> getFrameworkSources();
-
-    /**
-     * Returns the collection of toolchains used to create any native libraries.
-     *
-     * @return collection of toolchains.
-     */
-    @NonNull
-    Collection<NativeToolchain> getNativeToolchains();
 
     /**
      * Returns a list of {@link SigningConfig}.

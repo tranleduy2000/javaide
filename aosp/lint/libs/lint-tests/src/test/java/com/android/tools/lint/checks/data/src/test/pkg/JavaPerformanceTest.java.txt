@@ -1,0 +1,203 @@
+package test.pkg;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.util.AttributeSet;
+import android.widget.Button;
+/** Some test data for the JavaPerformanceDetector */
+@SuppressWarnings("unused")
+public class JavaPerformanceTest extends Button {
+    public JavaPerformanceTest(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
+    private Rect cachedRect;
+
+    @Override
+    protected void onDraw(android.graphics.Canvas canvas) {
+        super.onDraw(canvas);
+
+        // Various allocations:
+        new String("foo");
+        String s = new String("bar");
+
+        // This one should not be reported:
+        @SuppressLint("DrawAllocation")
+        Integer i = new Integer(5);
+
+        // Cached object initialized lazily: should not complain about these
+        if (cachedRect == null) {
+            cachedRect = new Rect(0, 0, 100, 100);
+        }
+        if (cachedRect == null || cachedRect.width() != 50) {
+            cachedRect = new Rect(0, 0, 50, 100);
+        }
+
+        boolean b = Boolean.valueOf(true); // auto-boxing
+        dummy(1, 2);
+
+        // Non-allocations
+        super.animate();
+        dummy2(1, 2);
+        int x = 4 + '5';
+
+        // This will involve allocations, but we don't track
+        // inter-procedural stuff here
+        someOtherMethod();
+    }
+
+    void dummy(Integer foo, int bar) {
+        dummy2(foo, bar);
+    }
+
+    void dummy2(int foo, int bar) {
+    }
+
+    void someOtherMethod() {
+        // Allocations are okay here
+        new String("foo");
+        String s = new String("bar");
+        boolean b = Boolean.valueOf(true); // auto-boxing
+
+        // Sparse array candidates
+        Map<Integer, String> myMap = new HashMap<Integer, String>();
+        // Should use SparseBooleanArray
+        Map<Integer, Boolean> myBoolMap = new HashMap<Integer, Boolean>();
+        // Should use SparseIntArray
+        Map<Integer, Integer> myIntMap = new java.util.HashMap<Integer, Integer>();
+
+        // This one should not be reported:
+        @SuppressLint("UseSparseArrays")
+        Map<Integer, Object> myOtherMap = new HashMap<Integer, Object>();
+    }
+
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec,
+            boolean x) { // wrong signature
+        new String("not an error");
+    }
+
+    protected void onMeasure(int widthMeasureSpec) { // wrong signature
+        new String("not an error");
+    }
+
+    protected void onLayout(boolean changed, int left, int top, int right,
+            int bottom, int wrong) { // wrong signature
+        new String("not an error");
+    }
+
+    protected void onLayout(boolean changed, int left, int top, int right) {
+        // wrong signature
+        new String("not an error");
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right,
+            int bottom) {
+        new String("flag me");
+    }
+
+    @SuppressWarnings("null") // not real code
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        new String("flag me");
+
+        // Forbidden factory methods:
+        Bitmap.createBitmap(100, 100, null);
+        android.graphics.Bitmap.createScaledBitmap(null, 100, 100, false);
+        BitmapFactory.decodeFile(null);
+        Canvas canvas = null;
+        canvas.getClipBounds(); // allocates on your behalf
+        canvas.getClipBounds(null); // NOT an error
+
+        final int layoutWidth = getWidth();
+        final int layoutHeight = getHeight();
+        if (mAllowCrop && (mOverlay == null || mOverlay.getWidth() != layoutWidth ||
+                mOverlay.getHeight() != layoutHeight)) {
+            mOverlay = Bitmap.createBitmap(layoutWidth, layoutHeight, Bitmap.Config.ARGB_8888);
+            mOverlayCanvas = new Canvas(mOverlay);
+        }
+
+        if (widthMeasureSpec == 42) {
+            throw new IllegalStateException("Test"); // NOT an allocation
+        }
+
+        // More lazy init tests
+        boolean initialized = false;
+        if (!initialized) {
+            new String("foo");
+            initialized = true;
+        }
+
+        // NOT lazy initialization
+        if (!initialized || mOverlay == null) {
+            new String("foo");
+        }
+    }
+
+    void factories() {
+        Integer i1 = new Integer(42);
+        Long l1 = new Long(42L);
+        Boolean b1 = new Boolean(true);
+        Character c1 = new Character('c');
+        Float f1 = new Float(1.0f);
+        Double d1 = new Double(1.0);
+
+        // The following should not generate errors:
+        Object i2 = new foo.bar.Integer(42);
+        Integer i3 = Integer.valueOf(42);
+    }
+
+    private boolean mAllowCrop;
+    private Canvas mOverlayCanvas;
+    private Bitmap mOverlay;
+
+    @Override
+    public void layout(int l, int t, int r, int b) {
+        // Using "this." to reference fields
+        if (this.shader == null)
+            this.shader = new LinearGradient(0, 0, getWidth(), 0, GRADIENT_COLORS, null,
+                TileMode.REPEAT);
+    }
+
+    @Override
+    public void layout(int l, int t, int r, int b) {
+        int width = getWidth();
+        int height = getHeight();
+
+        if ((shader == null) || (lastWidth != width) || (lastHeight != height))
+        {
+           lastWidth = width;
+           lastHeight = height;
+
+           shader = new LinearGradient(0, 0, width, 0, GRADIENT_COLORS, null, TileMode.REPEAT);
+        }
+    }
+
+    @Override
+    public void layout(int l, int t, int r, int b) {
+        if ((shader == null) || (lastWidth != getWidth()) || (lastHeight != getHeight())) {
+        }
+    }
+
+    public void inefficientSparseArray() {
+        new SparseArray<Integer>(); // Use SparseIntArray instead
+        new SparseArray<Long>();    // Use SparseLongArray instead
+        new SparseArray<Boolean>(); // Use SparseBooleanArray instead
+        new SparseArray<Object>();  // OK
+    }
+
+    public void longSparseArray() { // but only minSdkVersion >= 17 or if has v4 support lib
+        Map<Long, String> myStringMap = new HashMap<Long, String>();
+    }
+
+    public void byteSparseArray() { // bytes easily apply to ints
+        Map<Byte, String> myByteMap = new HashMap<Byte, String>();
+    }
+}

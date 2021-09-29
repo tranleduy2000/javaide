@@ -1,0 +1,10 @@
+package test.pkg;
+
+import android.app.Activity;
+import android.content.pm.PackageManager;
+
+public class GetSignaturesBitwiseXorTest extends Activity {
+    public void failLintCheck() {
+        getPackageManager().getPackageInfo("some.pkg", PackageManager.GET_SIGNATURES ^ 0x0);
+    }
+}

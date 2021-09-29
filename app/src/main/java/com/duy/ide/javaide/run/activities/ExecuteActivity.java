@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2018 Tran Le Duy
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.duy.ide.javaide.run.activities;
 
 import android.content.Intent;
@@ -8,12 +25,12 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.android.annotations.NonNull;
-import com.duy.JavaApplication;
 import com.duy.android.compiler.java.Java;
-import com.duy.android.compiler.utils.IOUtils;
+import com.duy.common.io.IOUtils;
 import com.duy.ide.R;
-import com.duy.ide.activities.BaseActivity;
-import com.duy.ide.javaide.autocomplete.parser.JavaParser;
+import com.duy.ide.javaide.JavaApplication;
+import com.duy.ide.javaide.activities.BaseActivity;
+import com.duy.ide.javaide.editor.autocomplete.parser.JavaParser;
 import com.duy.ide.javaide.run.view.ConsoleEditText;
 import com.sun.tools.javac.tree.JCTree;
 
@@ -88,6 +105,7 @@ public class ExecuteActivity extends BaseActivity {
             @Override
             public void run() {
                 getSupportActionBar().setSubtitle(R.string.console_stopped);
+                removeIOFilter();
             }
         });
     }
@@ -112,7 +130,7 @@ public class ExecuteActivity extends BaseActivity {
         }
 
         JavaParser parser = new JavaParser();
-        JCTree.JCCompilationUnit unit = parser.parse(IOUtils.toStringAndClose(mainClassFile));
+        JCTree.JCCompilationUnit unit = parser.parse(IOUtils.toString(mainClassFile));
         JCTree.JCExpression packageName = unit.getPackageName();
         String simpleName = mainClassFile.getName().substring(0, mainClassFile.getName().indexOf("."));
         return packageName + "." + simpleName;
@@ -133,7 +151,10 @@ public class ExecuteActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         Log.d(TAG, "onStop() called");
+        removeIOFilter();
+    }
 
+    private void removeIOFilter() {
         mConsoleEditText.stop();
         JavaApplication application = (JavaApplication) getApplication();
         application.removeErrStream(mConsoleEditText.getErrorStream());

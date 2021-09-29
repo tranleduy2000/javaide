@@ -39,7 +39,7 @@ public interface AndroidSourceDirectorySet extends PatternFilterable {
      * Adds the given source directory to this set.
      *
      * @param srcDir The source directory. This is evaluated as for
-     *                {@link org.gradle.api.Project#file(Object)}
+     *               {@link org.gradle.api.Project#file(Object)}
      * @return this
      */
     @NonNull
@@ -54,16 +54,6 @@ public interface AndroidSourceDirectorySet extends PatternFilterable {
      */
     @NonNull
     AndroidSourceDirectorySet srcDirs(Object... srcDirs);
-
-    /**
-     * Sets the source directories for this set.
-     *
-     * @param srcDirs The source directories. These are evaluated as for
-     *                {@link org.gradle.api.Project#files(Object...)}
-     * @return this
-     */
-    @NonNull
-    AndroidSourceDirectorySet setSrcDirs(Iterable<?> srcDirs);
 
     /**
      * Returns the list of source files as a {@link org.gradle.api.file.FileTree}
@@ -81,10 +71,9 @@ public interface AndroidSourceDirectorySet extends PatternFilterable {
     @NonNull
     PatternFilterable getFilter();
 
-
     /**
      * Returns the resolved directories.
-     *
+     * <p>
      * <p>Setter can be called with a collection of {@link Object}s, just like
      * Gradle's {@code project.file(...)}.
      *
@@ -92,4 +81,14 @@ public interface AndroidSourceDirectorySet extends PatternFilterable {
      */
     @NonNull
     Set<File> getSrcDirs();
+
+    /**
+     * Sets the source directories for this set.
+     *
+     * @param srcDirs The source directories. These are evaluated as for
+     *                {@link org.gradle.api.Project#files(Object...)}
+     * @return this
+     */
+    @NonNull
+    AndroidSourceDirectorySet setSrcDirs(Iterable<?> srcDirs);
 }

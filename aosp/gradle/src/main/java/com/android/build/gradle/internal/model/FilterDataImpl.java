@@ -33,6 +33,10 @@ public class FilterDataImpl implements FilterData, Serializable {
         this.identifier = identifier;
     }
 
+    public static FilterData build(final String filterType, final String identifier) {
+        return new FilterDataImpl(filterType, identifier);
+    }
+
     @NonNull
     @Override
     public String getIdentifier() {
@@ -43,9 +47,5 @@ public class FilterDataImpl implements FilterData, Serializable {
     @Override
     public String getFilterType() {
         return filterType;
-    }
-
-    public static FilterData build(final String filterType, final String identifier) {
-        return new FilterDataImpl(filterType, identifier);
     }
 }

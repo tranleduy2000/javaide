@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="ad_view" type="id">10010</item>
+    <item name="action_new_java_project" type="id" />
+    <item name="action_new_android_project" type="id" />
+    <item name="action_new_class" type="id" />
+    <item name="action_open_android_project" type="id" />
+    <item name="action_open_java_project" type="id" />
 </resources>

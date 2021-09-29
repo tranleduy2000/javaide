@@ -12,16 +12,16 @@ import java.util.Vector;
 
 public class GetEnumerationOverVectorExample {
 
-  public static void main(String[] args) {
-    //create a Vector object
-    Vector v = new Vector();
+    public static void main(String[] args) {
+        //create a Vector object
+        Vector v = new Vector();
 
-    //Add elements to Vector
-    v.add("A");
-    v.add("B");
-    v.add("D");
-    v.add("E");
-    v.add("F");
+        //Add elements to Vector
+        v.add("A");
+        v.add("B");
+        v.add("D");
+        v.add("E");
+        v.add("F");
 
     /*
        Get Enumeration over Java Vector object using,
@@ -31,13 +31,13 @@ public class GetEnumerationOverVectorExample {
 
     */
 
-    //get the Enumeration object
-    Enumeration e = Collections.enumeration(v);
+        //get the Enumeration object
+        Enumeration e = Collections.enumeration(v);
 
-    //enumerate through the Vector elements
-    System.out.println("Enumerating through Java Vector");
-    while (e.hasMoreElements()) System.out.println(e.nextElement());
-  }
+        //enumerate through the Vector elements
+        System.out.println("Enumerating through Java Vector");
+        while (e.hasMoreElements()) System.out.println(e.nextElement());
+    }
 }
 
 /*

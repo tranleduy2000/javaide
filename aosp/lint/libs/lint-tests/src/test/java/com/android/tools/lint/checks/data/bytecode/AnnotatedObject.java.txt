@@ -1,0 +1,16 @@
+package test.pkg;
+
+import android.webkit.JavascriptInterface;
+
+public class AnnotatedObject {
+	@JavascriptInterface
+	public void test1() {
+	}
+
+	public void test2() {
+	}
+
+	@JavascriptInterface
+	public void test3() {
+	}
+}

@@ -10,24 +10,24 @@ import java.io.InputStream;
 
 public class StringBufferToInputStreamExample {
 
-  public static void main(String args[]) {
+    public static void main(String args[]) {
 
-    //create StringBuffer object
-    StringBuffer sbf = new StringBuffer("StringBuffer to InputStream Example");
+        //create StringBuffer object
+        StringBuffer sbf = new StringBuffer("StringBuffer to InputStream Example");
 
-    /*
-     * To convert StringBuffer to InputStream in Java, first get bytes
-     * from StringBuffer after converting it into String object.
-     */
+        /*
+         * To convert StringBuffer to InputStream in Java, first get bytes
+         * from StringBuffer after converting it into String object.
+         */
 
-    byte[] bytes = sbf.toString().getBytes();
+        byte[] bytes = sbf.toString().getBytes();
 
-    /*
-     * Get ByteArrayInputStream from byte array.
-     */
+        /*
+         * Get ByteArrayInputStream from byte array.
+         */
 
-    InputStream inputStream = new ByteArrayInputStream(bytes);
+        InputStream inputStream = new ByteArrayInputStream(bytes);
 
-    System.out.println("StringBuffer converted to InputStream");
-  }
+        System.out.println("StringBuffer converted to InputStream");
+    }
 }

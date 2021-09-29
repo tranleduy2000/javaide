@@ -17,7 +17,6 @@
 package com.android.build.gradle.internal.model;
 
 import com.android.annotations.NonNull;
-import com.android.build.gradle.internal.core.GradleVariantConfiguration;
 import com.android.build.gradle.internal.dependency.LibraryDependencyImpl;
 import com.android.build.gradle.internal.dependency.VariantDependencies;
 import com.android.build.gradle.internal.variant.BaseVariantData;
